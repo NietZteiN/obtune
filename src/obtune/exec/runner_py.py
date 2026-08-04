@@ -26,6 +26,24 @@ def _limit(mem_mb: int, cpu_s: int) -> None:
     resource.setrlimit(resource.RLIMIT_FSIZE, (1 << 20, 1 << 20))
 
 
+# Removed from the program's builtins. This is hygiene, not a security sandbox:
+# corpus/filters.py is what actually keeps I/O-touching programs out of the corpus.
+# The point here is that a program which slips past the static filter produces an
+# exception rather than a *plausible but unreproducible* gold label — reading a file
+# or stdin would make the label depend on the machine, not the program.
+_BLOCKED_BUILTINS = ("open", "input", "exec", "eval", "compile", "breakpoint", "help")
+
+
+def _builtins() -> dict:
+    import builtins as _b
+
+    d = {k: getattr(_b, k) for k in dir(_b) if not k.startswith("_")}
+    d["__import__"] = _b.__import__  # programs legitimately `import math`, `from collections import ...`
+    for name in _BLOCKED_BUILTINS:
+        d.pop(name, None)
+    return d
+
+
 def _parse_args(args_repr: str):
     """`args_repr` is the literal argument tuple source, e.g. "(3, [1, 2])"."""
     node = ast.parse(args_repr.strip(), mode="eval")
@@ -46,7 +64,7 @@ def main() -> int:
     from canon import Unserializable, canon  # local import so rlimits are already set
 
     out = sys.stdout
-    glb: dict = {"__name__": "__obtune_program__"}
+    glb: dict = {"__name__": "__obtune_program__", "__builtins__": _builtins()}
     try:
         exec(compile(job["code"], "<program>", "exec"), glb)
         fn = glb[job["entry_point"]]
