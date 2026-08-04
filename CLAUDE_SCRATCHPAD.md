@@ -54,6 +54,18 @@ Phase 0–1 complete and verified; the RQ1–RQ3 implementation is being built o
   set, consider raising `loc_min` for corpus admission rather than letting S1 silently select for long
   programs, which would confound "structural condition" with "longer program".
 - **Coverage of S2** on real programs is still unknown until the builder runs.
+- **H1 eligibility is literal-density-bound, and the two languages differ in reach.**
+  Measured on fixtures after fixing the acceptance bar: Python 9/12, JavaScript 4/10.
+  Every remaining JS rejection is exactly "2 sites < 3", a boundary effect of toy
+  fixtures (`fx_js_map_filter` contains no literals at all), so real ≤60-LOC corpus
+  programs should score far higher — but the asymmetry is structural, not just
+  fixture noise: Python's H1 counts binary-operator MBA sites *and* integer literals,
+  while JS's counts only string/number literals, because javascript-obfuscator applies
+  `numbersToExpressions` but no operator-level MBA. **Do not tune `min_total_sites`
+  against fixtures.** Measure H1 coverage on the real corpus first; if JS coverage is
+  materially below Python's, report the asymmetry (design doc §8 already commits to
+  reporting rather than hiding JS/Python tooling asymmetry) and compute the Invariance
+  Index on the H1-eligible common subset.
 - **JS corpus scale**: curated ceiling ≈1.3k programs. Transpilation is execution-gated so correctness is safe, but the distribution shifts — the `provenance` covariate must actually be tested in the GLMM, not just recorded.
 - **Attention span→token resolution** must be re-measured on Qwen2.5-Coder tokenizers (the transcoders validation was on Llama-3.1-8B and Qwen3-0.6B). Hard-fail below 0.98.
 - **Dataset A Python I/O** is human-formatted and the code is double-spaced; canonical outputs are re-derived by execution and disagreements with the human key are logged. Anything beyond `FALSE` vs `False` is a finding, not a formatting artifact.

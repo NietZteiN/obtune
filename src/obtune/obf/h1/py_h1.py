@@ -107,12 +107,30 @@ def verify_identities(trials: int = 2000, seed: int = 17) -> None:
 
 
 class _MBARewriter(ast.NodeTransformer):
-    """Wrap +, -, ^ BinOps in guarded helper calls (bottom-up). AugAssign is left
-    alone on purpose: rewriting ``d[f()] += 1`` to ``d[f()] = __mba_add(d[f()],1)``
-    would evaluate the target twice."""
+    """Wrap +, -, ^ in guarded helper calls, and expand int literals into equivalent
+    MBA expressions.
 
-    def __init__(self) -> None:
+    Literal expansion is what makes H1 applicable to ordinary programs. Requiring
+    binary +/-/^ alone left most programs below the acceptance bar (a loop that only
+    compares and indexes has no MBA sites at all), which would have made H1 a small,
+    arithmetic-heavy subset — and H1 is the held-out condition the Invariance Index
+    is computed on, so a biased H1 set biases the paper's headline number. It also
+    mirrors javascript-obfuscator's ``numbersToExpressions``, which the JS H1 already
+    enables, so the two languages now exercise the same feature set.
+
+    ``x += y`` is rewritten only when the target is a plain Name: for a subscript or
+    attribute target, ``d[f()] += 1`` -> ``d[f()] = __mba_add(d[f()], 1)`` would
+    evaluate the target expression twice.
+    """
+
+    #: Literal expansion is capped so a constant-dense program does not blow the
+    #: H1 size cap; sites beyond this keep their plain literal.
+    MAX_LITERAL_SITES = 24
+
+    def __init__(self, rng: random.Random | None = None) -> None:
         self.count = 0
+        self.literal_count = 0
+        self._rng = rng or random.Random(0)
 
     def visit_BinOp(self, node: ast.BinOp) -> ast.AST:
         self.generic_visit(node)  # transform operands first
@@ -121,6 +139,38 @@ class _MBARewriter(ast.NodeTransformer):
             return node
         self.count += 1
         return ast.Call(func=ast.Name(id=fn, ctx=ast.Load()), args=[node.left, node.right], keywords=[])
+
+    def visit_AugAssign(self, node: ast.AugAssign) -> ast.AST:
+        self.generic_visit(node)
+        fn = _MBA_FUNC.get(type(node.op))
+        if fn is None or not isinstance(node.target, ast.Name):
+            return node
+        self.count += 1
+        load_target = ast.Name(id=node.target.id, ctx=ast.Load())
+        return ast.Assign(
+            targets=[ast.Name(id=node.target.id, ctx=ast.Store())],
+            value=ast.Call(func=ast.Name(id=fn, ctx=ast.Load()),
+                           args=[load_target, node.value], keywords=[]),
+        )
+
+    def visit_Constant(self, node: ast.Constant) -> ast.AST:
+        # `type(v) is int` excludes bool: True is an int subclass, and rewriting it
+        # to an arithmetic expression would change `x is True` and repr behaviour.
+        if type(node.value) is not int or self.literal_count >= self.MAX_LITERAL_SITES:
+            return node
+        n = node.value
+        if abs(n) > (1 << 31):
+            return node
+        self.literal_count += 1
+        self.count += 1
+        k = self._rng.randrange(1, 1 << 16)
+        # ((n ^ k) ^ k) == n and ((n + k) - k) == n for every int, with no dependence
+        # on operand types at runtime — these are literals, so the guards are moot.
+        if self._rng.random() < 0.5:
+            inner = ast.BinOp(left=ast.Constant(value=n ^ k), op=ast.BitXor(), right=ast.Constant(value=k))
+        else:
+            inner = ast.BinOp(left=ast.Constant(value=n + k), op=ast.Sub(), right=ast.Constant(value=k))
+        return inner
 
 
 class _StringEncoder(ast.NodeTransformer):
@@ -182,9 +232,19 @@ class _StringEncoder(ast.NodeTransformer):
                         args=[value, ast.Constant(value="")], keywords=[])
 
 
-def transform(code: str, min_mba_sites: int = 3, min_encoded_strings: int = 1) -> H1Result:
+def transform(code: str, min_total_sites: int = 3, seed: int = 0) -> H1Result:
     """Apply H1 to Python source. Returns an H1Result; ``ok`` is False (with a
-    reason) when parsing fails or the variant falls below the quality bars."""
+    reason) when parsing fails or the variant is too close to the identity.
+
+    The acceptance bar is the COMBINED number of transformed sites, not a per-feature
+    conjunction. H1 is a transform *family* (string encoding + MBA), and requiring
+    both would restrict it to programs that are simultaneously arithmetic-heavy and
+    string-heavy: measured on the fixture corpus, a conjunctive bar accepted 0/12
+    Python programs while rejecting variants with 3 MBA sites and 0 strings, or 3
+    strings and 0 MBA sites. Since the Invariance Index is computed on H1 alone, a
+    biased H1 program set would bias the paper's headline number, so what matters is
+    that the variant is *meaningfully* transformed by some H1-family machinery.
+    """
     verify_identities()  # never ship a broken guard
     try:
         tree = ast.parse(code)
@@ -193,7 +253,7 @@ def transform(code: str, min_mba_sites: int = 3, min_encoded_strings: int = 1) -
 
     # MBA first (counts genuine arithmetic operators), then encode strings — the
     # f-string concatenations MBA would otherwise wrap stay as plain str '+'.
-    mba = _MBARewriter()
+    mba = _MBARewriter(random.Random(seed))
     tree = mba.visit(tree)
     enc = _StringEncoder()
     tree = enc.visit(tree)
@@ -211,11 +271,10 @@ def transform(code: str, min_mba_sites: int = 3, min_encoded_strings: int = 1) -
     except SyntaxError as e:
         return H1Result(ok=False, code=out, reason=f"emit-syntax-error: {e}")
 
-    if mba.count < min_mba_sites:
+    total = mba.count + enc.count
+    if total < min_total_sites:
         return H1Result(ok=False, code=out, n_mba_sites=mba.count, n_encoded_strings=enc.count,
-                        reason=f"too-few-mba-sites: {mba.count} < {min_mba_sites}")
-    if enc.count < min_encoded_strings:
-        return H1Result(ok=False, code=out, n_mba_sites=mba.count, n_encoded_strings=enc.count,
-                        reason=f"too-few-encoded-strings: {enc.count} < {min_encoded_strings}")
+                        reason=f"too-few-h1-sites: {mba.count} mba + {enc.count} strings "
+                               f"= {total} < {min_total_sites}")
 
     return H1Result(ok=True, code=out, n_mba_sites=mba.count, n_encoded_strings=enc.count)

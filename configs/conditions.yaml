@@ -89,8 +89,12 @@ conditions:
     size_cap: 12.0
     size_cap_floor_chars: 1400
     params:
-      min_mba_sites: 3
-      min_encoded_strings: 1
+      # Combined bar, not a per-feature conjunction: H1 is a transform FAMILY
+      # (string encoding + MBA), and requiring both restricts it to programs that
+      # are simultaneously arithmetic-heavy and string-heavy. Measured on the
+      # fixture corpus a conjunctive bar accepted 0/12 Python programs. A biased
+      # H1 set would bias the Invariance Index, which is computed on H1 alone.
+      min_total_sites: 3
 
 # Regexes that must NOT appear in any trainable-condition variant. Enforced by
 # obf/validate.py check 3 and scripts/check_manifest.py. This is what stops

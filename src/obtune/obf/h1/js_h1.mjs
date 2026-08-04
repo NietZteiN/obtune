@@ -92,7 +92,11 @@ try {
 const jobs = (job && Array.isArray(job.jobs)) ? job.jobs : [];
 for (const j of jobs) {
   const base = { program_id: j.program_id, entry_point: j.entry_point };
-  const minStrings = Number.isFinite(j.min_encoded_strings) ? j.min_encoded_strings : 1;
+  // Combined bar, mirroring obf/h1/py_h1.py: H1 is a transform FAMILY (string
+  // encoding + MBA/number expansion). Requiring strings specifically rejected every
+  // program without string literals, which would have made the held-out condition a
+  // biased subset — and the Invariance Index is computed on H1 alone.
+  const minTotal = Number.isFinite(j.min_total_sites) ? j.min_total_sites : 3;
   try {
     const { nStrings, nNumbers, parseOk } = countLiterals(j.code);
     if (!parseOk) {
@@ -100,15 +104,21 @@ for (const j of jobs) {
              reason: 'parse-error', error: null });
       continue;
     }
-    if (nStrings < minStrings) {
+    const nTotal = nStrings + nNumbers;
+    if (nTotal < minTotal) {
       emit({ ...base, ok: false, code: j.code, n_encoded: nStrings, n_number_sites: nNumbers,
-             reason: `too-few-strings: ${nStrings} < ${minStrings}`, error: null });
+             reason: `too-few-h1-sites: ${nStrings} strings + ${nNumbers} numbers = ${nTotal} < ${minTotal}`,
+             error: null });
       continue;
     }
     const out = JsObf.obfuscate(j.code, { ...OBF_OPTIONS, seed: (j.seed | 0) || 1 }).getObfuscatedCode();
-    if (!STRINGARRAY_MARKER.test(out) || out.trim() === j.code.trim()) {
+    // "Did H1 actually fire?" — the string array is the marker when there were
+    // strings to encode; otherwise numbersToExpressions is what did the work, so
+    // require only that the output genuinely changed.
+    const fired = nStrings > 0 ? STRINGARRAY_MARKER.test(out) : out.trim() !== j.code.trim();
+    if (!fired || out.trim() === j.code.trim()) {
       emit({ ...base, ok: false, code: out, n_encoded: nStrings, n_number_sites: nNumbers,
-             reason: 'string-array-did-not-fire', error: null });
+             reason: 'h1-transform-did-not-fire', error: null });
       continue;
     }
     emit({ ...base, ok: true, code: out, entry_point: j.entry_point,
