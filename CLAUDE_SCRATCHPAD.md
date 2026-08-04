@@ -44,7 +44,16 @@ Phase 0–1 complete and verified; the RQ1–RQ3 implementation is being built o
 
 ## Open questions / watch items
 
-- **Coverage of S1/S2** on real programs is unknown until the builder runs at scale. Target ≥90 % per condition; below that, headline numbers must use the all-conditions-succeeded common subset (already the plan) and the shortfall must be reported, not smoothed.
+- **S1 coverage is bounded by program *length*, not just by bail constructs.** Measured on the 12 Python
+  fixtures: 10 flattened cleanly (randomized state ids, shuffled cases, outputs identical), 2 bailed — and
+  both bails were `min_states=3`, i.e. the function body was too short to make a dispatch loop, not a
+  `try`/`with`/`yield` construct. `configs/data.yaml` sets `loc_min: 3`, so a meaningful slice of the corpus
+  will be S1-ineligible for this reason. Consequences to check once the builder runs at scale: (a) S1's
+  program set will systematically differ from L1b's — the all-conditions-succeeded common subset is the
+  defense and it must be used for headline numbers; (b) if the common subset is much smaller than the full
+  set, consider raising `loc_min` for corpus admission rather than letting S1 silently select for long
+  programs, which would confound "structural condition" with "longer program".
+- **Coverage of S2** on real programs is still unknown until the builder runs.
 - **JS corpus scale**: curated ceiling ≈1.3k programs. Transpilation is execution-gated so correctness is safe, but the distribution shifts — the `provenance` covariate must actually be tested in the GLMM, not just recorded.
 - **Attention span→token resolution** must be re-measured on Qwen2.5-Coder tokenizers (the transcoders validation was on Llama-3.1-8B and Qwen3-0.6B). Hard-fail below 0.98.
 - **Dataset A Python I/O** is human-formatted and the code is double-spaced; canonical outputs are re-derived by execution and disagreements with the human key are logged. Anything beyond `FALSE` vs `False` is a finding, not a formatting artifact.

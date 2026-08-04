@@ -19,6 +19,7 @@ conditions:
     trainable: true
     description: Normalized original. Comments/docstrings stripped, 4-space indent, LF endings.
     size_cap: 1.2
+    size_cap_floor_chars: 0
   L1b:
     family: identifier
     trainable: true
@@ -27,6 +28,7 @@ conditions:
       Names drawn from semantic-inversion tables (max->min, prime->composite) and a
       plausible-but-unrelated domain vocabulary (the fibfib->smoothArea trap).
     size_cap: 2.0
+    size_cap_floor_chars: 160
     params:
       rename_entry: true
       strength: strongest_on_entry
@@ -35,6 +37,7 @@ conditions:
     trainable: true
     description: Random hex renaming of all bindings — v_<4hex> for variables, f_<4hex> for functions.
     size_cap: 2.0
+    size_cap_floor_chars: 160
     params:
       rename_entry: true
       style: hex
@@ -46,6 +49,7 @@ conditions:
       of all bindings + type-annotation stripping. Doubles as the alpha-equivalence
       canonicalizer for dedup (corpus/dedup.py).
     size_cap: 1.5
+    size_cap_floor_chars: 80
     params:
       rename_entry: true
       style: seq
@@ -57,6 +61,11 @@ conditions:
       Control-flow flattening of the entry function body into a dispatch loop with
       randomized non-sequential state ids and shuffled case order.
     size_cap: 6.0
+    # Flattening costs a fixed scaffold (~150 chars) plus ~60 chars per dispatch
+    # state, so overhead is linear in statement count. 1000 covers a ~14-state
+    # function; genuine pathology (code duplication, exponential in nesting) still
+    # trips the ratio on anything larger.
+    size_cap_floor_chars: 1000
     params:
       min_states: 3
       randomize_state_ids: true
@@ -66,6 +75,7 @@ conditions:
     trainable: true
     description: Opaque predicates (always-false/always-true guards) + never-called dead helpers.
     size_cap: 4.0
+    size_cap_floor_chars: 900
     params:
       n_predicate_blocks: [1, 3]
       n_dead_helpers: [1, 2]
@@ -77,6 +87,7 @@ conditions:
       HELD OUT. String encoding (base64 + inline decoder / RC4 string array) plus
       guarded mixed-boolean-arithmetic rewriting of + - ^ operators.
     size_cap: 12.0
+    size_cap_floor_chars: 1400
     params:
       min_mba_sites: 3
       min_encoded_strings: 1

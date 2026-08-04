@@ -72,17 +72,27 @@ def test_h1_modules_imported_only_by_the_generator():
     )
 
 
+JS_OBFUSCATOR_USE = re.compile(
+    r"""(?:require\s*\(\s*['"]javascript-obfuscator|from\s+['"]javascript-obfuscator|"""
+    r"""import\s*\(\s*['"]javascript-obfuscator)"""
+)
+
+
 def test_javascript_obfuscator_confined_to_h1():
     """javascript-obfuscator's stringArray is default-on and deadCodeInjection forces it,
-    so any use outside the H1 generator would leak the held-out feature into training."""
+    so any use outside the H1 generator would leak the held-out feature into training.
+
+    Matches actual imports rather than the bare string: the trainable-condition modules
+    legitimately *mention* the package in comments explaining why they do not use it.
+    """
     offenders = []
     for f in list((ROOT / "src").rglob("*.mjs")) + list((ROOT / "src").rglob("*.js")):
         if "h1" in f.parts or f.name.startswith("js_h1"):
             continue
-        if "javascript-obfuscator" in f.read_text():
+        if JS_OBFUSCATOR_USE.search(f.read_text()):
             offenders.append(str(f.relative_to(ROOT)))
     assert not offenders, (
-        "javascript-obfuscator may only be used by the H1 generator: " + ", ".join(offenders)
+        "javascript-obfuscator may only be imported by the H1 generator: " + ", ".join(offenders)
     )
 
 
