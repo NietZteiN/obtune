@@ -1,0 +1,39 @@
+# Data-layer policy. Last updated: 2026-08-04.
+
+seed: 17
+
+test_set:
+  # 70 L0 parents (40 Python + 30 JavaScript) drawn from the ICSE stimuli.
+  dataset_a: /data/jvl210002/my_downloads/model_understanding/base/data/corpus/experiment_tasks/full_human_experiment_v2.json
+  dataset_b: /data/jvl210002/my_downloads/model_understanding/base/data/corpus/paper_sets/tasks_unified_50.json
+  spans_a: /data/jvl210002/my_downloads/transcoders/data/stimuli/dataset_a/dataset_a.jsonl
+  spans_b: /data/jvl210002/my_downloads/transcoders/data/stimuli/dataset_b/dataset_b.jsonl
+  # Legacy rows are copied byte-identical into data/eval/testset/legacy_icse/ and
+  # carry `tier_icse`; they are the ONLY rows comparable to the human baselines.
+  keep_legacy_tiers: [L0, L1, L1b, L2, L3]
+
+cases:
+  n_train_cases: 3 # per program per condition (design doc: 3–5; 3 favors program diversity)
+  n_eval_cases: 5
+  n_gate_inputs: 20
+
+filters:
+  loc_min: 3
+  loc_max: 60
+  max_chars: 2500
+  determinism_repeats: 3 # run 3x across 2 processes with different PYTHONHASHSEED
+  min_distinct_outputs: 2 # non-triviality: cases must not all return the same thing
+  max_output_chars: 200
+
+dedup:
+  minhash_perms: 128
+  shingle_n: 5
+  jaccard_threshold: 0.8
+  # AST-hash = sha256 of the L2-canonicalized program text (alpha-equivalence).
+
+splits:
+  by: program_id # NEVER split by row — a variant of a train program must not appear in test
+  val_fraction: 0.05
+  seed: 17
+
+train_size_per_condition: 24000 # examples; pilot also runs an 8k arm for the scaling check

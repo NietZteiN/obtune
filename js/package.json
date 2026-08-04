@@ -1,0 +1,14 @@
+{
+  "name": "obtune-js",
+  "private": true,
+  "description": "Node workspace for obtune JS transforms. Babel powers ALL trainable conditions (L1r/L2/L1b/S1/S2); javascript-obfuscator is used by the quarantined H1 generator ONLY (its default-on stringArray leaks H1 features into any other condition).",
+  "type": "module",
+  "dependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "@babel/generator": "^7.28.0",
+    "@babel/types": "^7.28.0",
+    "javascript-obfuscator": "5.5.0"
+  }
+}

@@ -1,0 +1,30 @@
+# Evaluation defaults (vLLM offline batched greedy).
+
+engine:
+  backend: vllm
+  dtype: bfloat16
+  gpu_memory_utilization: 0.90
+  max_lora_rank: 64
+  max_loras: 4
+  max_cpu_loras: 32
+  seed: 17
+
+sampling:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 64
+  stop: ["\n\n", "```"]
+
+prompt:
+  id: base_v1
+  oracle: false
+
+scoring:
+  # Strict normalized exact match. NO containment stage — the LOG.md 2026-06-09 audit
+  # showed it produces ~3% false positives ('927' matching inside '9273').
+  float_tol: 1.0e-6
+  case_sensitive_strings: true
+
+output:
+  cell_dir: results/cells
+  resume: true # a cell whose parquet exists is skipped

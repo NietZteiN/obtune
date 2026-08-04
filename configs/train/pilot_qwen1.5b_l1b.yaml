@@ -1,0 +1,12 @@
+# Week-1 kill-switch pilot: Qwen2.5-Coder-1.5B, Python, train on L1b only.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L1b]
+run_tag: pilot_l1b_24k
+phase: pilot
+
+train:
+  train_size: 24000
+  seed: 17

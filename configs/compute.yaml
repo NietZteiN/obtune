@@ -1,0 +1,38 @@
+# Host facts and compute policy. Last updated: 2026-08-04.
+# Inherited from the monorepo charter (../CLAUDE.md); no scheduler on this box.
+
+host: csr-94608.utdallas.edu
+gpus:
+  count: 4
+  model: NVIDIA RTX A6000
+  memory_gb: 48
+  nvlink_pairs: [[0, 1], [2, 3]] # cross-pair is PCIe/SYS — never use 1,2 for TP=2
+  driver: 595.71.05
+  cuda: "13.2"
+cpu_cores: 96
+ram_gb: 250
+scheduler: none # check nvidia-smi, pin CUDA_VISIBLE_DEVICES before importing torch, run in tmux
+
+paths:
+  conda_env: /data/jvl210002/conda_envs/obtune
+  python: /data/jvl210002/conda_envs/obtune/bin/python
+  r_env: /home/012/j/jv/jvl210002/miniconda3/envs/r_analysis
+  rscript: /home/012/j/jv/jvl210002/miniconda3/envs/r_analysis/bin/Rscript
+  hf_home: /data/jvl210002/my_downloads/.cache/huggingface
+  tmpdir: /data/jvl210002/tmp_pip
+  node: /home/012/j/jv/jvl210002/miniconda3/bin/node
+
+scheduler_policy:
+  # sched/worker.py refuses a GPU that is not idle (shared-box etiquette)
+  max_mem_used_mb: 2000
+  max_util_pct: 5
+  poll_seconds: 600
+  workers: one_tmux_session_per_gpu
+
+training_defaults:
+  attn_implementation: sdpa # flash-attn 2.x has no wheel for torch 2.11; SDPA-flash is enough at ~1.5k ctx
+  dtype: bfloat16
+  gradient_checkpointing: true
+
+exec_pool:
+  workers: 32 # subprocess pool for the semantic gate / corpus building

@@ -1,0 +1,10 @@
+# LoRA-space merge of the per-condition adapters via PEFT add_weighted_adapter.
+# (mergekit is avoided: its LoRA path is merge-into-base + SVD re-extraction and it
+# pins accelerate~=1.6, which conflicts with this env.)
+
+combination_type: ties # ties | dare_ties | dare_linear | linear | svd
+density: 0.5
+adapters: [L0, L1b, L1r, L2, S1, S2]
+weights: null # null => uniform 1/n
+density_sweep: [0.3, 0.5, 0.7] # swept on qwen25c-1.5b only; best density applied to 7B/8B
+seed: 17

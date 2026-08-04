@@ -1,0 +1,41 @@
+# LoRA SFT defaults (design doc §4.2). Override per run; every resolved config is
+# dumped into the run's run_manifest.json.
+
+model: qwen25c-1.5b # key into configs/models.yaml
+language: python
+train_conditions: [L1b] # >1 entry => monolithic multi-condition run
+
+peft:
+  r: 32
+  alpha: 64
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+  task_type: CAUSAL_LM
+
+train:
+  dtype: bfloat16
+  attn_implementation: sdpa
+  gradient_checkpointing: true
+  max_seq_len: 1536 # covers S1/S2 inflation; truncation rate logged, must stay <1%
+  per_device_batch: null # null => take from configs/models.yaml
+  grad_accum: null # effective batch is per_device_batch * grad_accum = 64
+  lr: 1.0e-4
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.03
+  epochs: 3
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  seed: 17
+  train_size: 24000
+  val_size: 1000
+  save_strategy: epoch
+  eval_steps: 200
+  logging_steps: 20
+  l0_replay_fraction: 0.0 # raised to 0.1 if the pilot shows L0 forgetting < -3 pts
+
+# Checkpoint selection: after training, greedy exact-match on the held-in val slice
+# picks the best epoch (eval_vllm.py --mode ckpt-select). Later epochs must beat the
+# earlier one by more than `tolerance_pts` to win.
+ckpt_select:
+  metric: exact_match
+  tolerance_pts: 0.2

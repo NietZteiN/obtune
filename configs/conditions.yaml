@@ -1,0 +1,105 @@
+# The obfuscation-condition ladder — SINGLE SOURCE OF TRUTH.
+# Last updated: 2026-08-04
+#
+# Conditions are SINGLE-TRANSFORM from the L0 parent, never stacked. Definitions
+# are identical in Python and JavaScript (unlike the legacy ICSE tiers, whose
+# semantics differed per language — see docs/TIER_MAPPING.md).
+#
+# HARD RULE (CLAUDE.md §3.1): H1 is generated only by scripts/gen_h1_quarantined.py,
+# lives only under data/quarantine/, and never enters training, hyperparameter
+# selection, router training, or merge tuning.
+
+global_seed: 17
+seed_stride: 7919 # retry seeds: seed + attempt * seed_stride (ported from allocation_replication)
+max_attempts: 5
+
+conditions:
+  L0:
+    family: none
+    trainable: true
+    description: Normalized original. Comments/docstrings stripped, 4-space indent, LF endings.
+    size_cap: 1.2
+  L1b:
+    family: identifier
+    trainable: true
+    description: >
+      Adversarial/misleading renaming of ALL bindings including the entry function.
+      Names drawn from semantic-inversion tables (max->min, prime->composite) and a
+      plausible-but-unrelated domain vocabulary (the fibfib->smoothArea trap).
+    size_cap: 2.0
+    params:
+      rename_entry: true
+      strength: strongest_on_entry
+  L1r:
+    family: identifier
+    trainable: true
+    description: Random hex renaming of all bindings — v_<4hex> for variables, f_<4hex> for functions.
+    size_cap: 2.0
+    params:
+      rename_entry: true
+      style: hex
+  L2:
+    family: identifier
+    trainable: true
+    description: >
+      Maximal identifier destruction: sequential minification (a, b, c, ... aa, ab)
+      of all bindings + type-annotation stripping. Doubles as the alpha-equivalence
+      canonicalizer for dedup (corpus/dedup.py).
+    size_cap: 1.5
+    params:
+      rename_entry: true
+      style: seq
+      strip_annotations: true
+  S1:
+    family: structural
+    trainable: true
+    description: >
+      Control-flow flattening of the entry function body into a dispatch loop with
+      randomized non-sequential state ids and shuffled case order.
+    size_cap: 6.0
+    params:
+      min_states: 3
+      randomize_state_ids: true
+      shuffle_cases: true
+  S2:
+    family: structural
+    trainable: true
+    description: Opaque predicates (always-false/always-true guards) + never-called dead helpers.
+    size_cap: 4.0
+    params:
+      n_predicate_blocks: [1, 3]
+      n_dead_helpers: [1, 2]
+  H1:
+    family: heldout
+    trainable: false
+    quarantined: true
+    description: >
+      HELD OUT. String encoding (base64 + inline decoder / RC4 string array) plus
+      guarded mixed-boolean-arithmetic rewriting of + - ^ operators.
+    size_cap: 12.0
+    params:
+      min_mba_sites: 3
+      min_encoded_strings: 1
+
+# Regexes that must NOT appear in any trainable-condition variant. Enforced by
+# obf/validate.py check 3 and scripts/check_manifest.py. This is what stops
+# javascript-obfuscator's default-on stringArray (and the legacy ICSE JS L2/L3
+# string-keyed dispatch tables) from silently poisoning a trainable condition.
+h1_marker_patterns:
+  - "atob\\s*\\("
+  - "fromCharCode"
+  - "b64decode"
+  - "base64"
+  - "_0x[0-9a-f]{4,}"
+  - "__mba_"
+  - "_mba_(add|sub|xor)"
+  - "stringArray"
+  - "rc4"
+
+# Gate policy (obf/validate.py)
+gate:
+  n_gate_inputs: 20
+  runtime_ratio_max: 5.0
+  exec_timeout_s: 2.0
+  mem_mb: 512
+  compare_exception: type_only # renaming legitimately changes messages/tracebacks

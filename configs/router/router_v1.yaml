@@ -1,0 +1,26 @@
+# RQ2 router: obfuscation-type classifier over frozen base-model prompt features.
+
+features:
+  layer: null # null => models.yaml router_layer (mid-depth)
+  pooling: mean # over non-special prompt tokens
+  batch_size: 32
+
+model:
+  hidden: 512
+  activation: gelu
+  dropout: 0.1
+  n_classes: 6 # the 6 trainable conditions; H1 is NEVER a class
+
+train:
+  lr: 1.0e-3
+  batch_size: 256
+  max_epochs: 50
+  early_stop_patience: 5
+  per_class_train: 5000
+  seed: 17
+
+report:
+  # H1 forces an out-of-distribution routing decision — its entropy distribution vs
+  # the held-in conditions is a reported RQ2 result, not a diagnostic afterthought.
+  routing_entropy_on: [H1]
+  confusion_matrix: true

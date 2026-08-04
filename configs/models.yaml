@@ -1,0 +1,38 @@
+# Base-model panel. Last updated: 2026-08-04.
+# All three are in $HF_HOME already (Coder-1.5B downloaded 2026-08-04).
+
+models:
+  qwen25c-1.5b:
+    hf_id: Qwen/Qwen2.5-Coder-1.5B-Instruct
+    family: coder
+    n_layers: 28
+    router_layer: 14 # mid-depth hidden state for the RQ2 router features
+    hidden_size: 1536
+    max_seq_len: 1536
+    per_device_batch: 16
+    grad_accum: 4
+    role: pilot_and_ablation
+  qwen25c-7b:
+    hf_id: Qwen/Qwen2.5-Coder-7B-Instruct
+    family: coder
+    n_layers: 28
+    router_layer: 14
+    hidden_size: 3584
+    max_seq_len: 1536
+    per_device_batch: 8
+    grad_accum: 8
+    role: main
+  llama31-8b:
+    hf_id: meta-llama/Llama-3.1-8B-Instruct
+    family: instruct
+    n_layers: 32
+    router_layer: 16
+    hidden_size: 4096
+    max_seq_len: 1536
+    per_device_batch: 8
+    grad_accum: 8
+    role: main
+
+# Model used for execution-gated Python->JS transpilation (corpus/transpile.py).
+# Its outputs are accepted only if the JS reproduces the Python canonical outputs.
+transpiler: qwen25c-7b

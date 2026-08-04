@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# Node
+js/node_modules/
+js/npm_install.log
+
+# Environment build artifacts (the lockfile IS committed)
+env/build.log
+
+# Large run artifacts — manifests and resolved configs are re-included below
+runs/adapters/
+runs/logs/
+runs/manifest/running/
+results/cells/
+results/attn/
+results/forgetting/*.parquet
+results/*.parquet
+*.safetensors
+*.bin
+*.npz
+*.pt
+
+# Keep the reproducibility record
+!runs/**/run_manifest.json
+!results/**/cell_meta.json
+!results/analysis/*.json
+!results/attn/SCHEMA.md
+
+# Scratch
+*.log
+.DS_Store

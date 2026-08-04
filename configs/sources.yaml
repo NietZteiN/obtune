@@ -1,0 +1,74 @@
+# Training-corpus sources + contamination exclusion lists. Last updated: 2026-08-04.
+#
+# Tier 1 = already in the local HF cache (zero download) — the Week-1 pilot corpus.
+# Tier 2 = small downloads. Tier 3 = scale-out, post-pilot.
+
+python:
+  tier1:
+    - name: apps
+      hf_id: codeparrot/apps
+      split: train
+      loader: obtune.corpus.sources.apps
+      note: call-based problems only (input_output.fn_name present); ~3062 of 5000
+    - name: cruxeval
+      hf_id: cruxeval-org/cruxeval
+      split: test
+      loader: obtune.corpus.sources.cruxeval
+    - name: humaneval
+      hf_id: openai_humaneval
+      split: test
+      loader: obtune.corpus.sources.humaneval
+  tier2:
+    - name: mbpp
+      hf_id: google-research-datasets/mbpp
+      split: train+validation+test
+      loader: obtune.corpus.sources.mbpp
+    - name: mbppplus
+      hf_id: evalplus/mbppplus
+      split: test
+      loader: obtune.corpus.sources.mbpp
+      note: extra test inputs for MBPP programs, not new programs
+  tier3:
+    - name: csn
+      hf_id: claudios/code_search_net
+      config: python
+      split: train
+      loader: obtune.corpus.sources.csn
+      note: no I/O given — requires type-directed input synthesis; yield ~5-7%
+
+javascript:
+  tier1:
+    - name: humaneval_x_js
+      path: /data/jvl210002/my_downloads/dataset/humaneval_js/humaneval_x_js_full.json
+      loader: obtune.corpus.sources.humaneval
+      note: 164 programs with structured io_pairs, all <=60 LOC
+  tier2:
+    - name: cruxeval_x_js
+      hf_id: xhwl/cruxeval-x
+      data_file: data/JavaScript-00000-of-00001.parquet
+      loader: obtune.corpus.sources.cruxeval_x
+    - name: multipl_e_mbpp_js
+      hf_id: nuprl/MultiPL-E
+      config: mbpp-js
+      loader: obtune.corpus.sources.multipl_e
+  tier3:
+    - name: transpiled
+      loader: obtune.corpus.transpile
+      note: >
+        Execution-gated Python->JS transpilation with the model in configs/models.yaml
+        `transpiler`. Accepted only if the JS reproduces the Python canonical outputs on
+        all cases + gate inputs. Rows carry provenance="transpiled" so the GLMM can test
+        a provenance covariate.
+
+# Contamination control: upstream ids that appear in the test set. Excluded from
+# training regardless of what dedup finds (belt-and-braces; corpus/dedup.py also
+# runs AST-hash + MinHash against the test L0 programs).
+exclude_ids:
+  dataset_a:
+    python: ["Python/31", "Python/36", "Python/40", "Python/43", "Python/74",
+             "Python/101", "Python/104", "Python/121", "Python/125", "Python/154"]
+    javascript: ["JavaScript/58", "JavaScript/63", "JavaScript/69", "JavaScript/82",
+                 "JavaScript/87", "JavaScript/136", "JavaScript/137", "JavaScript/150",
+                 "JavaScript/151", "JavaScript/163"]
+  dataset_b_sources: [humaneval-x-python, humaneval-x-javascript, cruxeval-x-python,
+                      cruxeval-x-javascript, leetcode-2025-05]

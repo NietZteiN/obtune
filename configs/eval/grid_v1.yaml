@@ -1,0 +1,22 @@
+# Full post-gate evaluation grid: every system x every eval condition, per model/language.
+_extends: _base_eval.yaml
+
+phase: main
+models: [qwen25c-1.5b, qwen25c-7b, llama31-8b]
+languages: [python, javascript]
+
+systems:
+  - {name: base, arch: none}
+  - {name: per_type, arch: per_type, expand_over: train_conditions} # 6 adapters
+  - {name: mono, arch: mono}
+  - {name: merge_ties, arch: merge_ties}
+  - {name: merge_dare_ties, arch: merge_dare_ties}
+  - {name: merge_dare_linear, arch: merge_dare_linear}
+  - {name: router, arch: router}
+  - {name: oracle_routing, arch: per_type, oracle_route: true}
+  - {name: oracle_prompt, arch: oracle_prompt, prompt_oracle: true}
+  - {name: oracle_prompt_1shot, arch: oracle_prompt, prompt_oracle: true, one_shot: true}
+
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval

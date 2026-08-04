@@ -1,0 +1,26 @@
+# Week-1 kill-switch pilot evaluation grid.
+_extends: _base_eval.yaml
+
+phase: pilot
+model: qwen25c-1.5b
+language: python
+
+# Cells = (system, eval_condition). H1 is evaluated with purpose=pilot_eval and the
+# access is appended to data/quarantine/h1/ACCESS_LOG.md.
+systems:
+  - {name: base, adapter: null, arch: none}
+  - {name: tuned_L1b, adapter: "runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best", arch: per_type, train_cond: L1b}
+  - {name: oracle_prompt, adapter: null, arch: oracle_prompt, prompt_oracle: true}
+  - {name: oracle_prompt_1shot, adapter: null, arch: oracle_prompt, prompt_oracle: true, one_shot: true}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: pilot_eval
+
+decision:
+  out: results/analysis/pilot_decision.json
+  gates:
+    self_gain_min_pts: 5.0
+    format_fail_max: 0.02
+    forget_L0_min_pts: -3.0
+    cond_recovery_conditioning: 0.5 # >= => "conditioning" branch
+    cond_recovery_capability: 0.2 # <= => "capability" branch
