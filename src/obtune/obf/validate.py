@@ -218,21 +218,57 @@ def _has_dispatch_loop(language: str, code: str, entry_point: str) -> bool:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == entry_point:
                 return any(isinstance(s, ast.While) for s in node.body)
         return False
+    body = _js_entry_body(code, entry_point)
+    if body is None:
+        return False
+    return any(
+        child.type in ("while_statement", "for_statement", "do_statement", "switch_statement")
+        for child in body.named_children
+    )
+
+
+#: JS function forms that can carry an entry point. The ICSE stimuli are mostly
+#: `const f = (n) => {...}`, so matching only `function_declaration` misses them —
+#: which silently failed S1's purity check on 20 of 30 JavaScript test programs even
+#: though the transform had produced a correct dispatch loop.
+_JS_FUNC_TYPES = (
+    "function_declaration", "generator_function_declaration",
+    "function_expression", "generator_function", "arrow_function", "function",
+)
+
+
+def _js_entry_body(code: str, entry_point: str):
+    """Statement-block body of `entry_point`, whichever way JavaScript binds it."""
     root = parse("javascript", code)
     for node in iter_nodes(root):
-        if node.type not in ("function_declaration", "generator_function_declaration"):
+        if node.type not in _JS_FUNC_TYPES:
             continue
-        name = node.child_by_field_name("name")
-        if name is None or node_text(code, name) != entry_point:
+
+        name_node = node.child_by_field_name("name")
+        name = node_text(code, name_node) if name_node is not None else None
+        if name is None:
+            # Anonymous: take the name from the binding it is attached to —
+            # `const f = () => {}`, `f = function () {}`, `{ f() {} }`.
+            parent = node.parent
+            while parent is not None and parent.type in ("parenthesized_expression",):
+                parent = parent.parent
+            if parent is None:
+                continue
+            if parent.type in ("variable_declarator", "assignment_expression", "pair",
+                               "method_definition", "public_field_definition"):
+                target = parent.child_by_field_name("name") or parent.child_by_field_name("left")
+                if target is not None:
+                    name = node_text(code, target)
+        if name != entry_point:
             continue
+
         body = node.child_by_field_name("body")
         if body is None:
-            return False
-        return any(
-            child.type in ("while_statement", "for_statement", "do_statement", "switch_statement")
-            for child in body.named_children
-        )
-    return False
+            return None
+        # A concise arrow body (`n => expr`) is an expression, not a block, so it
+        # cannot contain a dispatch loop.
+        return body if body.type == "statement_block" else None
+    return None
 
 
 def _batch(program_id: str, language: str, code: str, entry: str, args: Sequence[str]) -> BatchItem:
