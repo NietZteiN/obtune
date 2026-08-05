@@ -67,17 +67,50 @@ From CLAUDE.md §4 — the tuning-specific silent-failure list:
 
 ## 5. Kill-switch verdict box
 
-*Filled in by the Week-1 pilot; leave blank until the numbers exist.*
+*Run 2026-08-05. Qwen2.5-Coder-1.5B, Python, trained on L1b only (2,231-program corpus,
+6,285 L1b pairs, 3 epochs, checkpoint-198 selected by held-in val EM 0.378). Evaluated on
+the 23-program all-conditions-succeeded common subset, 99 items/cell, 2,772 trials.
+Cluster-bootstrap CIs over `program_id`, 2,000 resamples, seed 17. Full table:
+[`../results/analysis/pilot_decision.json`](../results/analysis/pilot_decision.json).*
 
-| Quantity | Value | CI | Gate | Verdict |
+| Quantity | Value | CI95 | Gate | Verdict |
 |---|---|---|---|---|
-| self_gain (L1b) | — | — | ≥ +5 pts | — |
-| format_fail_rate | — | — | < 2 % | — |
-| forget_L0 | — | — | > −3 pts | — |
-| cond_recovery | — | — | ≥0.5 conditioning / ≤0.2 capability | — |
-| h1_delta | — | — | sign + CI | — |
-| transfer_L2 / transfer_S1 | — | — | L2 > S1 expected | — |
-| data_scaling (8k vs 24k) | — | — | within 1 pt ⇒ halve the grid | — |
-| seed_noise | — | — | ≪ self_gain | — |
+| self_gain (L1b) | **+27.3 pts** | [11.0, 43.2] | ≥ +5 pts | ✅ pass |
+| format_fail_rate (tuned) | **1.0 %** | — | < 2 % | ✅ pass |
+| forget_L0 | **+29.3 pts** | [14.0, 44.9] | > −3 pts | ✅ pass (improves) |
+| cond_recovery (1-shot oracle) | **0.333** | gain [−3.7, 24.2] | ≥0.5 cond. / ≤0.2 cap. | ⚠️ inconclusive band |
+| cond_recovery (bare oracle) | **0.259** | gain [1.0, 13.7] | as above | ⚠️ inconclusive band |
+| **h1_delta (Invariance Index, raw)** | **+27.3 pts** | **[16.1, 40.9]** | sign + CI excludes 0 | ✅ **excludes 0** |
+| h1 beyond prompt-only conditioning | **+19.2 pts** | oracle gain +8.1 [2.2, 15.4] | — | not merely format learning |
+| transfer_L2 / transfer_S1 | **+33.3 / +15.2** | — | L2 > S1 expected | ✅ as predicted |
+| data_scaling (8k vs 24k) | not run | — | within 1 pt ⇒ halve the grid | ⏳ deferred |
+| seed_noise | not run | — | ≪ self_gain | ⏳ deferred |
 
-**Branch decision:** —
+Per-condition accuracy (base → tuned):
+
+| | L0 | L1b | L1r | L2 | S1 | S2 | H1 |
+|---|---|---|---|---|---|---|---|
+| base | .253 | .242 | .202 | .202 | .323 | .212 | **.111** |
+| 1-shot oracle | .475 | .333 | .323 | .333 | .323 | .343 | .192 |
+| tuned on L1b | **.545** | **.515** | **.576** | **.535** | **.475** | **.495** | **.384** |
+
+**Branch decision: PROCEED to the full RQ1→RQ2→RQ3 arc, running both RQ2 arms.**
+No gate failed. `cond_recovery` landed at 0.26–0.33, inside the 0.2–0.5 band the design
+reserved for "run both" — prompt-only conditioning recovers roughly a third of the tuning
+gain, so conditioning is a real part of the story but does not explain it. The RQ2 oracle
+comparison stays a headline arm rather than an appendix.
+
+**H1c (the discriminator) is provisionally SUPPORTED**, with caveats that the full grid must
+settle:
+- Training on L1b alone lifted the held-out obfuscator by +27.3 pts, CI excluding zero.
+- That is *not* just the model learning the answer format: the 1-shot oracle, which also
+  teaches the format (H1 format-fail 21.2 % → 9.1 %), recovers only +8.1 pts, leaving
+  **+19.2 pts** attributable to tuning beyond conditioning.
+- **Caveat 1 — one training condition.** Transfer Ratio is undefined for every off-diagonal
+  cell here (no `tuned_j` exists for j ≠ L1b), so the Invariance Index is reported in raw
+  points only. The normalized form needs the full per-condition grid.
+- **Caveat 2 — gains are large everywhere, including L0 (+29.3).** A substantial share of
+  every number is task acquisition, not obfuscation robustness. The base model is weak at
+  the task itself (L0 .253). The grid must separate "learned the task" from "learned
+  invariance"; the L0-trained adapter is the control that does it, and it is not run yet.
+- **Caveat 3 — n=23 programs.** Adequate for a kill-switch, not for the paper's claims.

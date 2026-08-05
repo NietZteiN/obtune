@@ -1,0 +1,260 @@
+{
+  "model": "Qwen2.5-Coder-1.5B",
+  "language": "python",
+  "phase": "pilot",
+  "n_programs_common": 23,
+  "n_trials": 2772,
+  "n_resamples": 2000,
+  "seed": 17,
+  "train_cond": "L1b",
+  "accuracy": {
+    "L0": {
+      "base": {
+        "n": 99,
+        "acc": 0.2525,
+        "format_fail": 0.0808
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.5455,
+        "format_fail": 0.0101
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.4747,
+        "format_fail": 0.0404
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.2323,
+        "format_fail": 0.0808
+      }
+    },
+    "L1b": {
+      "base": {
+        "n": 99,
+        "acc": 0.2424,
+        "format_fail": 0.0808
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.5152,
+        "format_fail": 0.0101
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.3333,
+        "format_fail": 0.0101
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.3131,
+        "format_fail": 0.0404
+      }
+    },
+    "L1r": {
+      "base": {
+        "n": 99,
+        "acc": 0.202,
+        "format_fail": 0.0808
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.5758,
+        "format_fail": 0.0101
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.3232,
+        "format_fail": 0.0202
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.202,
+        "format_fail": 0.0909
+      }
+    },
+    "L2": {
+      "base": {
+        "n": 99,
+        "acc": 0.202,
+        "format_fail": 0.0808
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.5354,
+        "format_fail": 0.0101
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.3333,
+        "format_fail": 0.0505
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.1919,
+        "format_fail": 0.0808
+      }
+    },
+    "S1": {
+      "base": {
+        "n": 99,
+        "acc": 0.3232,
+        "format_fail": 0.0101
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.4747,
+        "format_fail": 0.0
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.3232,
+        "format_fail": 0.0303
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.2626,
+        "format_fail": 0.0
+      }
+    },
+    "S2": {
+      "base": {
+        "n": 99,
+        "acc": 0.2121,
+        "format_fail": 0.0
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.4949,
+        "format_fail": 0.0101
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.3434,
+        "format_fail": 0.0606
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.2525,
+        "format_fail": 0.0101
+      }
+    },
+    "H1": {
+      "base": {
+        "n": 99,
+        "acc": 0.1111,
+        "format_fail": 0.2121
+      },
+      "tuned": {
+        "n": 99,
+        "acc": 0.3838,
+        "format_fail": 0.0505
+      },
+      "oracle_1shot_v1": {
+        "n": 99,
+        "acc": 0.1919,
+        "format_fail": 0.0909
+      },
+      "oracle_v1": {
+        "n": 99,
+        "acc": 0.0808,
+        "format_fail": 0.1414
+      }
+    }
+  },
+  "gates": {
+    "self_gain_pts": {
+      "value": 27.2727,
+      "ci95": [
+        10.989,
+        43.1579
+      ],
+      "threshold": 5.0,
+      "direction": "min",
+      "pass": true,
+      "note": "acc_L1b(tuned) - acc_L1b(base)"
+    },
+    "format_fail_rate": {
+      "value": 0.0101,
+      "ci95": [
+        0.0101,
+        0.0101
+      ],
+      "threshold": 0.02,
+      "direction": "max",
+      "pass": true,
+      "note": "tuned model, train condition"
+    },
+    "forget_L0_pts": {
+      "value": 29.2929,
+      "ci95": [
+        14.0131,
+        44.8644
+      ],
+      "threshold": -3.0,
+      "direction": "min",
+      "pass": true,
+      "note": "acc_L0(tuned) - acc_L0(base); negative = forgetting"
+    },
+    "cond_recovery__oracle_1shot_v1": {
+      "oracle_gain_pts": 9.0909,
+      "ci95": [
+        -3.7383,
+        24.2432
+      ],
+      "ratio_to_self_gain": 0.3333,
+      "branch": "inconclusive",
+      "note": ">=0.5 conditioning, <=0.2 capability, else run both arms"
+    },
+    "cond_recovery__oracle_v1": {
+      "oracle_gain_pts": 7.0707,
+      "ci95": [
+        1.0101,
+        13.6842
+      ],
+      "ratio_to_self_gain": 0.2593,
+      "branch": "inconclusive",
+      "note": ">=0.5 conditioning, <=0.2 capability, else run both arms"
+    },
+    "h1_delta_pts": {
+      "value": 27.2727,
+      "ci95": [
+        16.092,
+        40.8741
+      ],
+      "excludes_zero": true,
+      "note": "Invariance Index (raw). >0 with CI excluding 0 supports H1c: semantic invariance rather than transform memorization."
+    },
+    "h1_format_control__oracle_1shot_v1": {
+      "oracle_gain_pts": 8.0808,
+      "ci95": [
+        2.1955,
+        15.3846
+      ],
+      "tuning_beyond_oracle_pts": 19.1919,
+      "note": "tuning gain on H1 above what prompt-only conditioning achieves"
+    },
+    "h1_format_control__oracle_v1": {
+      "oracle_gain_pts": -3.0303,
+      "ci95": [
+        -6.8966,
+        0.0
+      ],
+      "tuning_beyond_oracle_pts": 30.303,
+      "note": "tuning gain on H1 above what prompt-only conditioning achieves"
+    },
+    "family_sanity": {
+      "transfer_L2_pts": 33.3333,
+      "transfer_S1_pts": 15.1515,
+      "L2_gt_S1": true,
+      "note": "identifier-family transfer expected to exceed structural-family"
+    }
+  },
+  "notes": [],
+  "verdict": {
+    "gates_failed": [],
+    "proceed_to_grid": true,
+    "branch": "inconclusive"
+  }
+}

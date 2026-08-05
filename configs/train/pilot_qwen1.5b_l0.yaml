@@ -1,0 +1,17 @@
+# L0 CONTROL for the pilot's H1 result.
+#
+# The L1b adapter lifted the held-out obfuscator by +27.3 pts — but it also lifted
+# clean L0 code by +29.3, which is the signature of learning the TASK (output
+# prediction, answer format) rather than obfuscation robustness. Training the same
+# recipe on clean code separates the two: if this adapter lifts H1 by a comparable
+# amount, the pilot measured task acquisition and the invariance claim collapses.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0]
+run_tag: pilot_l0_control
+phase: pilot
+
+train:
+  seed: 17

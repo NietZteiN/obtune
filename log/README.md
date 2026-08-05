@@ -12,7 +12,7 @@ Update both tables below on every new entry.
 | Thread | Purpose | Status | Entries |
 |---|---|---|---|
 | [`setup/`](setup/) | Scaffold, environment, data layer, obfuscation pipeline | active | 1 |
-| [`pilot/`](pilot/) | Week-1 kill-switch pilot and its gate decision | not started | 0 |
+| [`pilot/`](pilot/) | Week-1 kill-switch pilot and its gate decision | done — gate passed | 1 |
 | [`transfer/`](transfer/) | RQ1 — per-condition adapters, transfer matrix, GLMMs | not started | 0 |
 | [`modularity/`](modularity/) | RQ2 — router, merges, monolithic, oracle arms | not started | 0 |
 | [`attention/`](attention/) | RQ3 — token classes, slicers, anchoring metrics, regression | not started | 0 |
@@ -25,3 +25,4 @@ Update both tables below on every new entry.
 | Date | Thread | Entry | Headline |
 |---|---|---|---|
 | 2026-08-04 | setup | [`2026-08-04_scaffold-and-pipeline.md`](setup/2026-08-04_scaffold-and-pipeline.md) | Project created; contracts, obfuscation pipeline, training/eval stack built |
+| 2026-08-05 | pilot | [`2026-08-05_kill-switch-pilot.md`](pilot/2026-08-05_kill-switch-pilot.md) | Kill-switch passed: L1b adapter +27.3 pts on held-out H1; L0 control is the next run |
