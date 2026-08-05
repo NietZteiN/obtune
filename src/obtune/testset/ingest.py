@@ -29,13 +29,15 @@ key rather than about us.
 from __future__ import annotations
 
 import ast
+import dataclasses
 import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from obtune.config import load_config
+from obtune.config import GLOBAL_SEED, load_config
+from obtune.corpus.inputs import build_cases
 from obtune.corpus.normalize import normalize
 from obtune.exec import BatchItem, canon, run_batch
 from obtune.paths import EVAL_ROOT, MANIFESTS_ROOT, write_jsonl
@@ -253,10 +255,14 @@ class IngestReport:
     answer_disagreements: list[dict[str, Any]] = field(default_factory=list)
     unparsed: list[dict[str, Any]] = field(default_factory=list)
     exec_failures: list[dict[str, Any]] = field(default_factory=list)
+    #: Programs whose input domain defeated the fuzzer, so they keep only their one
+    #: human case and are gated on that alone. Recorded rather than dropped: these
+    #: are the stimuli the human study actually ran.
+    fuzz_failures: list[dict[str, Any]] = field(default_factory=list)
     whitespace_normalized: int = 0
 
 
-def ingest_dataset(path: str | Path, dataset: str, n_gate_inputs: int = 20) -> tuple[list[dict], list[dict], IngestReport]:
+def ingest_dataset(path: str | Path, dataset: str, n_gate_inputs: int = 20, n_cases: int = 5) -> tuple[list[dict], list[dict], IngestReport]:
     """Return (legacy_rows, base_programs, report) for one dataset file."""
     rows = json.loads(Path(path).read_text())
     report = IngestReport(dataset=dataset)
@@ -323,14 +329,39 @@ def ingest_dataset(path: str | Path, dataset: str, n_gate_inputs: int = 20) -> t
                 "task_id": cand["row"]["task_id"], "language": cand["language"],
                 "executed": case.output, "human_key": cand["human"],
             })
+        # Extend the one human-provided case with fuzzed cases and the ~20 gate
+        # inputs. Without this the semantic gate would validate every test-set
+        # variant on a SINGLE input, which is far weaker than the design requires
+        # (a variant that diverges on any other input would be admitted silently),
+        # and the eval set would be one item per program. `keep_roles` pins the
+        # human case first so the human-comparable analysis can still filter to it.
+        bundle = build_cases(
+            f"{dataset}:{cand['row']['task_id']}", cand["language"], cand["code"], cand["entry"],
+            [cand["args"]], n_cases=n_cases, n_gate_inputs=n_gate_inputs,
+            min_gate_inputs=0, seed=GLOBAL_SEED, keep_roles=["human"],
+        )
+        if getattr(bundle, "ok", False) and bundle.cases:
+            cases = [InputCase(**dataclasses.asdict(c)) for c in bundle.cases]
+            gate_inputs = [InputCase(**dataclasses.asdict(c)) for c in bundle.gate_inputs]
+        else:
+            # Fuzzing failed (a narrow input domain, or a type we cannot generate).
+            # Keep the program on its human case alone and record why, rather than
+            # dropping a stimulus that the human study actually used.
+            cases = [InputCase(args_repr=cand["args"], output_canon=case.output or "", case_role="human")]
+            gate_inputs = []
+            report.fuzz_failures.append({
+                "task_id": cand["row"]["task_id"], "language": cand["language"],
+                "reasons": list(getattr(bundle, "reasons", None) or ["unknown"]),
+            })
+
         program = BaseProgram(
             program_id=f"{dataset}:{cand['row']['task_id']}",
             language=cand["language"],
             source=f"dataset_{dataset.lower()}",
             code=cand["code"],
             entry_point=cand["entry"],
-            cases=[InputCase(args_repr=cand["args"], output_canon=case.output or "", case_role="human")],
-            gate_inputs=[],
+            cases=cases,
+            gate_inputs=gate_inputs,
             loc=len(cand["code"].splitlines()),
             meta={
                 "task_id": cand["row"]["task_id"],
@@ -340,6 +371,8 @@ def ingest_dataset(path: str | Path, dataset: str, n_gate_inputs: int = 20) -> t
                 "receiver_param_dropped": cand["dropped_self"],
                 "human_answer_key": cand["human"],
                 "n_gate_inputs_requested": n_gate_inputs,
+                "n_gate_inputs_actual": len(gate_inputs),
+                "n_cases": len(cases),
             },
         )
         programs.append(program.model_dump())
@@ -352,10 +385,11 @@ def ingest_dataset(path: str | Path, dataset: str, n_gate_inputs: int = 20) -> t
 def run(write: bool = True) -> dict[str, Any]:
     cfg = load_config("data.yaml")
     n_gate = int(cfg["cases"]["n_gate_inputs"])
+    n_cases = int(cfg["cases"]["n_eval_cases"])
     out: dict[str, Any] = {"datasets": {}}
 
     for key, dataset in (("dataset_a", "A"), ("dataset_b", "B")):
-        legacy, programs, report = ingest_dataset(cfg["test_set"][key], dataset, n_gate)
+        legacy, programs, report = ingest_dataset(cfg["test_set"][key], dataset, n_gate, n_cases)
         if write:
             write_jsonl(EVAL_ROOT / "testset" / "legacy_icse" / f"{key}.jsonl", legacy)
             write_jsonl(EVAL_ROOT / "testset" / "base" / f"{key}.jsonl", programs)

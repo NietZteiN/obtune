@@ -413,7 +413,13 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
         for language in languages:
             engine = Engine(
                 mcfg["hf_id"],
-                {**(cfg.get("engine") or {}), "max_model_len": mcfg.get("max_seq_len", 1536) + 128},
+                # An explicit engine.max_model_len in the eval config wins: eval
+                # prompts are longer than training sequences (a one-shot oracle demo
+                # prepended to flattened S1/S2 code overruns the train-time bound),
+                # and silently truncating them would corrupt exactly the structural
+                # conditions the transfer matrix is about.
+                {"max_model_len": mcfg.get("max_seq_len", 1536) + 128,
+                 **(cfg.get("engine") or {})},
                 stub=args.stub,
             )
             for cond in eval_conditions:

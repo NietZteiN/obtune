@@ -76,6 +76,13 @@ def _json_or_none(text: Any) -> Any:
         return json.loads(text)
     except json.JSONDecodeError:
         return None
+    except ValueError:
+        # Python 3.11+ caps int<->str conversion at 4300 digits as a DoS guard, and
+        # APPS contains competitive-programming answers far past it (one is 9131
+        # digits). Such a program is unusable for output prediction anyway — the
+        # max_output_chars filter would drop it — but the exception fires during
+        # dataset LOAD, so without this it takes the whole corpus build down.
+        return None
 
 
 def _seed_cases(io: dict[str, Any]) -> list[str]:

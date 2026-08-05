@@ -33,7 +33,10 @@ from obtune.exec.canon import Unserializable, canon
 from obtune.schema import EvalItem, TrainPair
 
 PAIRS_SUBDIR = "pairs"
-EVAL_VARIANTS_SUBDIR = "testset/variants"
+# Evaluation reads the materialized EvalItem rows (variant x input case with gold),
+# not the Variant rows the gate emits into testset/variants/. Separate directories
+# mean re-running 05_build_variants.py never clobbers eval inputs and vice versa.
+EVAL_VARIANTS_SUBDIR = "testset/items"
 H1_ACCESS_LOG = paths.QUARANTINE_ROOT / "h1" / "ACCESS_LOG.md"
 
 
@@ -54,7 +57,7 @@ def eval_variants_path(condition: str, language: str) -> Path:
 
 
 def h1_path(language: str) -> Path:
-    return paths.QUARANTINE_ROOT / "h1" / f"{language}.jsonl"
+    return paths.QUARANTINE_ROOT / "h1" / "testset" / "items" / f"{language}.jsonl"
 
 
 # --------------------------------------------------------------------------- #

@@ -8,6 +8,10 @@ engine:
   max_loras: 4
   max_cpu_loras: 32
   seed: 17
+  # Larger than the 1536 training window: a one-shot oracle demo in front of
+  # flattened S1/S2 code exceeds it, and truncation would silently damage the
+  # structural conditions rather than failing loudly.
+  max_model_len: 4096
 
 sampling:
   temperature: 0.0
