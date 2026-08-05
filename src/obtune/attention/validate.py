@@ -69,12 +69,33 @@ def _testset_rows() -> list[FixtureProgram]:
     return rows
 
 
+def _eval_max_model_len(default: int = 4096) -> int:
+    """Match the evaluation context window.
+
+    Truncating here at a different length than eval does makes span resolution
+    look broken when it is not: a 168-line S1 variant runs to ~2.5k tokens, so a
+    2048 cap silently dropped the tail of the largest flattened program and read
+    as a 0.978 resolution failure. Attention metrics must be computed over the
+    same token window the accuracy numbers came from.
+    """
+    try:
+        from obtune.config import load_config
+
+        return int((load_config("eval/_base_eval.yaml").get("engine") or {})
+                   .get("max_model_len", default))
+    except Exception:  # noqa: BLE001 — config problems must not break validation
+        return default
+
+
+EVAL_MAX_MODEL_LEN = _eval_max_model_len()
+
+
 def validate(
     programs: Sequence[FixtureProgram],
     model_id: str = DEFAULT_MODEL,
     *,
     min_rate: float = MIN_RATE,
-    max_length: int = 2048,
+    max_length: int = EVAL_MAX_MODEL_LEN,
 ) -> dict[str, Any]:
     _ensure_hf_home()
     from transformers import AutoTokenizer
