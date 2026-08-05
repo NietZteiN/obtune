@@ -1,0 +1,36 @@
+{
+  "model": "Qwen2.5-Coder-1.5B",
+  "language": "python",
+  "core_only": true,
+  "n_trials": 2772,
+  "n_programs": 23,
+  "n_resamples": 2000,
+  "seed": 17,
+  "min_denominator_pts": 3.0,
+  "summary": {
+    "n_cells": 7,
+    "n_offdiagonal": 6,
+    "n_tr_defined": 0,
+    "n_tr_undefined": 6,
+    "mean_tr_offdiagonal": NaN,
+    "mean_self_delta_pts": 27.27272727272727,
+    "n_significant_bh05": 7
+  },
+  "invariance_index": {
+    "held_out": "H1",
+    "n_train_conditions": 1,
+    "raw_delta_pts": 27.27272727272727,
+    "raw_delta_pts_min": 27.27272727272727,
+    "raw_delta_pts_max": 27.27272727272727,
+    "per_condition_delta_pts": {
+      "L1b": 27.2727
+    },
+    "normalized_defined": false,
+    "n_defined": 0,
+    "normalized": NaN,
+    "normalizer": "mono",
+    "normalizer_pts": NaN
+  },
+  "matrix_parquet": "/data/jvl210002/my_downloads/obtune/results/analysis/transfer_Qwen2.5-Coder-1.5B_python.parquet",
+  "accuracy_parquet": "/data/jvl210002/my_downloads/obtune/results/analysis/accuracy_Qwen2.5-Coder-1.5B_python.parquet"
+}

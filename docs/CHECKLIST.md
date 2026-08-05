@@ -1,6 +1,6 @@
 # CHECKLIST — hypothesis ledger, experiment tracker, phased task list
 
-*Last updated: 2026-08-04*
+*Last updated: 2026-08-05*
 
 The living plan that `log/` threads resolve against. Hypotheses are pre-registered here **before** the runs that test them; a hypothesis moves to *resolved* only with a dated log entry quoting the deciding metric.
 
@@ -13,7 +13,8 @@ The living plan that `log/` threads resolve against. Hypotheses are pre-register
 | **H1a-trainable** | LoRA on condition *i* improves accuracy on *i* (the trainability gate) | self-gain ≥ +5 pts, Wilson/bootstrap CI excludes 0 | gain < 5 pts or CI includes 0 | pilot + RQ1 diagonal | open |
 | **H1a** | Within-family transfer (identifier→identifier) is partial; cross-family (identifier→structural) is weak | TR(L1b→L1r/L2) > TR(L1b→S1/S2), both CIs separated | no family structure in the matrix | RQ1 transfer matrix | open |
 | **H1b** | Cross-language transfer is weaker than cross-tier transfer within a language | mean TR(py→js) < mean within-language TR | equal or greater | RQ1, both languages | open |
-| **H1c** | **The discriminator.** Positive transfer onto the held-out obfuscator H1 ⇒ semantic invariance | Invariance Index (raw ΔH1) > 0 with CI excluding 0 | ΔH1 ≈ 0 or negative ⇒ transform memorization | RQ1 H1 column (final_eval) | open |
+| ~~**H1c**~~ | ~~Positive **raw** transfer onto H1 ⇒ semantic invariance~~ | — | — | — | ✗ **retired 2026-08-05** — raw ΔH1 is confounded with task acquisition (§5.1) |
+| **H1c-rev** | **The discriminator, control-relative.** `acc_H1(tuned_i) − acc_H1(tuned_L0)` > 0 ⇒ invariance | CI excludes 0 and positive | ≈0 or negative ⇒ transform memorization | RQ1 H1 column vs the L0 control | **pilot: refuted for i=L1b** (−3.0 pts, CI [−10.5, +3.9]) |
 | **H2a** | Obfuscation type is surface-detectable, so learned routing ≈ oracle routing | router test accuracy > 0.95; routed accuracy within 1 pt of oracle-routed | router accuracy < 0.8 or a large routed/oracle gap | RQ2 router | open |
 | **H2b** | Per-type adapters + router ≥ monolithic at matched budget | routed accuracy > monolithic, CI excludes 0 | monolithic ≥ routed | RQ2 | open |
 | **H2c** | **Conditioning vs capacity.** If oracle prompting recovers most of the tuning gain, the failure is conditioning, not capacity | cond_recovery ≥ 0.5 ⇒ conditioning branch | cond_recovery ≤ 0.2 ⇒ capability branch | pilot + RQ2 | open |
@@ -22,7 +23,13 @@ The living plan that `log/` threads resolve against. Hypotheses are pre-register
 | **H3-causal** | Tuned-invariant models are less damaged by identifier-attention knockout than base | Δaccuracy(knockout) smaller post-tuning | equal or larger damage | RQ3 knockout (stretch) | open |
 | **HA1** | Tuning moves model difficulty orderings toward human ones | Δρ > 0, bootstrap CI excludes 0 | Δρ ≤ 0 | human alignment (Paper-2 98 cells) | open |
 
-**Resolved:** (none yet)
+**Resolved:**
+- ✗ **H1c (raw form) — retired.** The pilot's L0 control showed raw ΔH1 measures task acquisition:
+  an adapter trained on clean code reached H1 at .414 vs .384 for the L1b-trained one. Replaced by
+  **H1c-rev** (control-relative). See §5.1 and
+  [`../log/pilot/2026-08-05_l0-control-refutes-invariance.md`](../log/pilot/2026-08-05_l0-control-refutes-invariance.md).
+- ✓ **H1a-trainable — SUPPORTED.** Self-gain +27.3 pts, CI [11.0, 43.2]; and +16.2 pts, CI [+4.7, +28.5]
+  even against the clean-code control.
 
 ---
 
@@ -38,8 +45,8 @@ The living plan that `log/` threads resolve against. Hypotheses are pre-register
 | Phase | Deliverable | Log thread | Status |
 |---|---|---|---|
 | **0 — Scaffold** | repo, charter, configs, env, canon/exec contracts verified in both languages | `setup/` | done 2026-08-04 |
-| **1 — Data layer** | obfuscation pipeline (7 conditions × 2 languages), semantic gate, H1 quarantine, test-set ingest, training corpus | `setup/` | in progress |
-| **2 — Kill-switch pilot (GATE)** | 1.5B / Python / train L1b / eval all conditions + oracle prompt → `pilot_decision.json` | `pilot/` | not started |
+| **1 — Data layer** | obfuscation pipeline (7 conditions × 2 languages), semantic gate, H1 quarantine, test-set ingest, training corpus | `setup/` | done (Python); JS corpus pending |
+| **2 — Kill-switch pilot (GATE)** | 1.5B / Python / train L1b / eval all conditions + oracle prompt → `pilot_decision.json` | `pilot/` | **done 2026-08-05 — passed, + L0 control** |
 | **3 — RQ1 transfer matrix** | 54-run grid, transfer matrices, GLMMs, BH-FDR | `transfer/` | not started |
 | **4 — RQ2 modularity** | router, merges, monolithic, oracle arms | `modularity/` | not started |
 | **5 — RQ3 attention** | token classes + slicers validated, extraction, anchoring metrics, predictive regression | `attention/` | not started |
@@ -100,8 +107,10 @@ reserved for "run both" — prompt-only conditioning recovers roughly a third of
 gain, so conditioning is a real part of the story but does not explain it. The RQ2 oracle
 comparison stays a headline arm rather than an appendix.
 
-**H1c (the discriminator) is provisionally SUPPORTED**, with caveats that the full grid must
-settle:
+> ⚠️ **SUPERSEDED 2026-08-05 by the L0 control** — see the block below and
+> [`../log/pilot/2026-08-05_l0-control-refutes-invariance.md`](../log/pilot/2026-08-05_l0-control-refutes-invariance.md).
+
+**H1c was provisionally read as SUPPORTED**, with caveats that the control has now settled:
 - Training on L1b alone lifted the held-out obfuscator by +27.3 pts, CI excluding zero.
 - That is *not* just the model learning the answer format: the 1-shot oracle, which also
   teaches the format (H1 format-fail 21.2 % → 9.1 %), recovers only +8.1 pts, leaving
@@ -114,3 +123,38 @@ settle:
   the task itself (L0 .253). The grid must separate "learned the task" from "learned
   invariance"; the L0-trained adapter is the control that does it, and it is not run yet.
 - **Caveat 3 — n=23 programs.** Adequate for a kill-switch, not for the paper's claims.
+
+### 5.1 L0 control — H1c refuted as stated (2026-08-05)
+
+Caveat 2 was the decisive one. An adapter trained on **clean L0 code only**, same recipe, reaches
+the held-out obfuscator *at least as well* as the L1b-trained adapter:
+
+| | L0 | L1b | L1r | L2 | S1 | S2 | H1 |
+|---|---|---|---|---|---|---|---|
+| base | .253 | .242 | .202 | .202 | .323 | .212 | .111 |
+| tuned on L1b | .545 | .515 | .576 | .535 | .475 | .495 | **.384** |
+| tuned on L0 (control) | .485 | .354 | .495 | .535 | .434 | .455 | **.414** |
+
+**Control-relative benefit** of training on obfuscated rather than clean code —
+`acc(tuned_L1b) − acc(tuned_L0)`:
+
+| eval cond | Δ pts | CI95 | excludes 0 |
+|---|---|---|---|
+| **L1b** (trained) | **+16.2** | [+4.7, +28.5] | **yes** |
+| L1r (same family) | +8.1 | [−1.0, +18.4] | no |
+| L2 | +0.0 | [−8.4, +8.1] | no |
+| S1 | +4.0 | [−1.2, +10.1] | no |
+| S2 | +4.0 | [−4.4, +12.6] | no |
+| **H1** (held out) | **−3.0** | [−10.5, +3.9] | no |
+
+**Verdict: H1c as originally stated is REFUTED.** The +27.3 pt raw H1 gain is task acquisition —
+learning output prediction and its answer format — obtainable from clean code alone. What survives
+is a **transform-memorization gradient**: obfuscation-specific benefit is significant only on the
+trained condition, fades on its family, and is zero-to-negative on the held-out one.
+
+**Consequences already applied:**
+- The Invariance Index is redefined relative to the clean-code control (design doc §5.1, §9.9);
+  raw Δ-vs-base is a task-acquisition measure and must never be cited as invariance.
+- An **L0 control adapter is a required cell** of every model × language block.
+- `src/obtune/pilot.py` reports `condition_specific_benefit` and
+  `invariance_index_control_relative` as first-class outputs.

@@ -113,7 +113,24 @@ Primary: **execution-verified exact-match accuracy** per condition, under a stri
 
 Transfer matrix per model/language; `TR(i→j)` as defined in §2, with a **denominator guard**: TR is reported only when the self-gain `acc_j(tuned_j) − acc_j(base)` is ≥ 3 points and its bootstrap CI excludes zero — otherwise the ratio is unstable and the cell is marked undefined rather than plotted as a large number. Raw Δ-accuracy is reported alongside every TR.
 
-**Invariance Index** = mean over training conditions of `TR(i→H1)`; because H1 has no self-tuned denominator, it is reported both normalized by the monolithic H1 gain and — as the primary form — as raw Δ-H1 points.
+**Invariance Index.** *Revised 2026-08-05 after the pilot's L0 control — see §9.9.* The original
+definition (mean `TR(i→H1)`, reported as raw Δ-H1 points against the untuned base) is
+**confounded with task acquisition** and must not be used as the headline. The base model is
+weak at output prediction itself, so *any* adapter improves on *every* condition just by
+learning the task and its answer format. Measured in the pilot: an adapter trained only on
+clean L0 code lifted the held-out obfuscator by +30.3 pts — *more* than the L1b-trained
+adapter's +27.3.
+
+The index is therefore defined **relative to a clean-code control**:
+
+> `InvarianceIndex(i) = acc_H1(tuned_i) − acc_H1(tuned_L0)`
+
+i.e. what training on *obfuscated* code buys on the held-out obfuscator over training on
+*clean* code. Positive with a CI excluding zero ⇒ invariance; ≈0 or negative ⇒ the gains were
+task acquisition and, if they are concentrated on the trained condition, transform
+memorization. An L0-trained control adapter is consequently a **required** cell of every
+model × language block, not an optional ablation. Raw Δ-vs-base is still reported, labelled
+as a task-acquisition measure rather than an invariance one.
 
 Catastrophic-forgetting check: L0 and HumanEval+ pass@1 pre/post tuning.
 
@@ -199,3 +216,9 @@ Recorded here so the implementation and the design stay honest with each other.
 6. **Merging via PEFT rather than mergekit** (dependency conflict; LoRA-space merge is also the more direct operation).
 7. **Training-set size stated and justified** (24k/condition) rather than "all pairs"; the pilot tests whether even that is more than needed.
 8. **JS corpus scale** acknowledged: curated ceiling ≈1.3k, reached via execution-gated transpilation with a provenance covariate.
+9. **Invariance Index redefined relative to a clean-code control** (§5.1), after the Week-1
+   pilot showed the original raw-Δ-vs-base form was confounded with task acquisition: an
+   L0-trained adapter reached the held-out obfuscator *better* (+30.3 pts) than the
+   L1b-trained one (+27.3). An L0 control adapter is now a required cell of every
+   model × language block. This is the pilot doing the job a kill-switch exists to do —
+   the confound would otherwise have surfaced only after the full 54-run grid.

@@ -1,0 +1,38 @@
+{
+  "n_cells": 35,
+  "n_trials": 5700,
+  "n_duplicate_trials_dropped": 0,
+  "n_programs": 40,
+  "n_core_trials": 3465,
+  "phases": [
+    "pilot"
+  ],
+  "models": [
+    "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+  ],
+  "languages": [
+    "python"
+  ],
+  "eval_conditions": [
+    "H1",
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2"
+  ],
+  "systems": [
+    "none|-",
+    "oracle_prompt|-",
+    "per_type|L0",
+    "per_type|L1b"
+  ],
+  "overall_accuracy": 0.33157894736842103,
+  "overall_format_fail_rate": 0.03263157894736842,
+  "h1_trials": 575,
+  "h1_access_purposes": [
+    "pilot_eval"
+  ],
+  "out": "/data/jvl210002/my_downloads/obtune/results/trials.parquet"
+}

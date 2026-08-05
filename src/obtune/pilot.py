@@ -128,7 +128,47 @@ def build(model: str, language: str, trials_path: Path, n_resamples: int, seed: 
             "note": ">=0.5 conditioning, <=0.2 capability, else run both arms",
         }
 
-    # 5. the headline invariance read — transfer onto the held-out obfuscator
+    # 5a. THE CONTROL CONTRAST — what did training on *obfuscated* code buy over
+    #     training on clean code? Raw Δ-vs-base cannot answer this: the base model is
+    #     weak at output prediction itself, so every adapter gains on every condition
+    #     simply by learning the task. Only the gap to an L0-trained control isolates
+    #     the obfuscation-specific effect, and it is the quantity H1c actually needs.
+    if "L0" in set(df[df["adapter_arch"] == "per_type"]["train_cond"].dropna()):
+        ctl = lambda c: df[(df["adapter_arch"] == "per_type") & (df["train_cond"] == "L0")  # noqa: E731
+                           & (df["eval_cond"] == c)]
+        tgt = lambda c: df[(df["adapter_arch"] == "per_type") & (df["train_cond"] == train_cond)  # noqa: E731
+                           & (df["eval_cond"] == c)]
+        vs_control: dict[str, Any] = {}
+        for c in conds:
+            if not len(ctl(c)) or not len(tgt(c)):
+                continue
+            pt, lo, hi = _cluster_bootstrap_delta(tgt(c), ctl(c), n_resamples, seed)
+            vs_control[c] = {
+                "value_pts": round(pt, 4), "ci95": [round(lo, 4), round(hi, 4)],
+                "excludes_zero": bool(lo > 0 or hi < 0),
+            }
+        out["condition_specific_benefit"] = {
+            "definition": f"acc(tuned_{train_cond}) - acc(tuned_L0), per eval condition",
+            "control_train_cond": "L0",
+            "per_condition": vs_control,
+            "note": "The obfuscation-specific effect. A gain concentrated on the trained "
+                    "condition and vanishing on the held-out one is the signature of "
+                    "transform memorization; a gain that survives onto H1 is invariance.",
+        }
+        if "H1" in vs_control:
+            v = vs_control["H1"]
+            out["invariance_index_control_relative"] = {
+                "value_pts": v["value_pts"], "ci95": v["ci95"],
+                "excludes_zero": v["excludes_zero"],
+                "verdict": ("invariance" if v["excludes_zero"] and v["value_pts"] > 0
+                            else "memorization_or_null"),
+                "note": "Supersedes the raw Δ-vs-base Invariance Index, which the L0 "
+                        "control showed to be confounded with task acquisition.",
+            }
+
+    # 5b. the raw read — transfer onto the held-out obfuscator vs the untuned base.
+    #     Kept because it is the design doc's original definition, but it is NOT the
+    #     invariance measure: see 5a.
     if "H1" in conds:
         hd, hd_lo, hd_hi = _cluster_bootstrap_delta(tuned("H1"), base("H1"), n_resamples, seed)
         out["gates"]["h1_delta_pts"] = {

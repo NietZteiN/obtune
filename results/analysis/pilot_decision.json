@@ -3,7 +3,7 @@
   "language": "python",
   "phase": "pilot",
   "n_programs_common": 23,
-  "n_trials": 2772,
+  "n_trials": 3465,
   "n_resamples": 2000,
   "seed": 17,
   "train_cond": "L1b",
@@ -15,8 +15,8 @@
         "format_fail": 0.0808
       },
       "tuned": {
-        "n": 99,
-        "acc": 0.5455,
+        "n": 198,
+        "acc": 0.5152,
         "format_fail": 0.0101
       },
       "oracle_1shot_v1": {
@@ -37,8 +37,8 @@
         "format_fail": 0.0808
       },
       "tuned": {
-        "n": 99,
-        "acc": 0.5152,
+        "n": 198,
+        "acc": 0.4343,
         "format_fail": 0.0101
       },
       "oracle_1shot_v1": {
@@ -59,9 +59,9 @@
         "format_fail": 0.0808
       },
       "tuned": {
-        "n": 99,
-        "acc": 0.5758,
-        "format_fail": 0.0101
+        "n": 198,
+        "acc": 0.5354,
+        "format_fail": 0.0202
       },
       "oracle_1shot_v1": {
         "n": 99,
@@ -81,9 +81,9 @@
         "format_fail": 0.0808
       },
       "tuned": {
-        "n": 99,
+        "n": 198,
         "acc": 0.5354,
-        "format_fail": 0.0101
+        "format_fail": 0.0202
       },
       "oracle_1shot_v1": {
         "n": 99,
@@ -103,8 +103,8 @@
         "format_fail": 0.0101
       },
       "tuned": {
-        "n": 99,
-        "acc": 0.4747,
+        "n": 198,
+        "acc": 0.4545,
         "format_fail": 0.0
       },
       "oracle_1shot_v1": {
@@ -125,9 +125,9 @@
         "format_fail": 0.0
       },
       "tuned": {
-        "n": 99,
-        "acc": 0.4949,
-        "format_fail": 0.0101
+        "n": 198,
+        "acc": 0.4747,
+        "format_fail": 0.0152
       },
       "oracle_1shot_v1": {
         "n": 99,
@@ -147,8 +147,8 @@
         "format_fail": 0.2121
       },
       "tuned": {
-        "n": 99,
-        "acc": 0.3838,
+        "n": 198,
+        "acc": 0.399,
         "format_fail": 0.0505
       },
       "oracle_1shot_v1": {
@@ -165,10 +165,10 @@
   },
   "gates": {
     "self_gain_pts": {
-      "value": 27.2727,
+      "value": 19.1919,
       "ci95": [
-        10.989,
-        43.1579
+        5.4945,
+        32.6093
       ],
       "threshold": 5.0,
       "direction": "min",
@@ -187,10 +187,10 @@
       "note": "tuned model, train condition"
     },
     "forget_L0_pts": {
-      "value": 29.2929,
+      "value": 26.2626,
       "ci95": [
-        14.0131,
-        44.8644
+        10.9195,
+        41.2651
       ],
       "threshold": -3.0,
       "direction": "min",
@@ -203,7 +203,7 @@
         -3.7383,
         24.2432
       ],
-      "ratio_to_self_gain": 0.3333,
+      "ratio_to_self_gain": 0.4737,
       "branch": "inconclusive",
       "note": ">=0.5 conditioning, <=0.2 capability, else run both arms"
     },
@@ -213,15 +213,15 @@
         1.0101,
         13.6842
       ],
-      "ratio_to_self_gain": 0.2593,
+      "ratio_to_self_gain": 0.3684,
       "branch": "inconclusive",
       "note": ">=0.5 conditioning, <=0.2 capability, else run both arms"
     },
     "h1_delta_pts": {
-      "value": 27.2727,
+      "value": 28.7879,
       "ci95": [
-        16.092,
-        40.8741
+        16.6667,
+        42.6316
       ],
       "excludes_zero": true,
       "note": "Invariance Index (raw). >0 with CI excluding 0 supports H1c: semantic invariance rather than transform memorization."
@@ -232,7 +232,7 @@
         2.1955,
         15.3846
       ],
-      "tuning_beyond_oracle_pts": 19.1919,
+      "tuning_beyond_oracle_pts": 20.7071,
       "note": "tuning gain on H1 above what prompt-only conditioning achieves"
     },
     "h1_format_control__oracle_v1": {
@@ -241,17 +241,90 @@
         -6.8966,
         0.0
       ],
-      "tuning_beyond_oracle_pts": 30.303,
+      "tuning_beyond_oracle_pts": 31.8182,
       "note": "tuning gain on H1 above what prompt-only conditioning achieves"
     },
     "family_sanity": {
       "transfer_L2_pts": 33.3333,
-      "transfer_S1_pts": 15.1515,
+      "transfer_S1_pts": 13.1313,
       "L2_gt_S1": true,
       "note": "identifier-family transfer expected to exceed structural-family"
     }
   },
   "notes": [],
+  "condition_specific_benefit": {
+    "definition": "acc(tuned_L1b) - acc(tuned_L0), per eval condition",
+    "control_train_cond": "L0",
+    "per_condition": {
+      "L0": {
+        "value_pts": 6.0606,
+        "ci95": [
+          0.0,
+          12.6437
+        ],
+        "excludes_zero": false
+      },
+      "L1b": {
+        "value_pts": 16.1616,
+        "ci95": [
+          4.6729,
+          28.5714
+        ],
+        "excludes_zero": true
+      },
+      "L1r": {
+        "value_pts": 8.0808,
+        "ci95": [
+          -0.9709,
+          18.4466
+        ],
+        "excludes_zero": false
+      },
+      "L2": {
+        "value_pts": 0.0,
+        "ci95": [
+          -8.4211,
+          8.0808
+        ],
+        "excludes_zero": false
+      },
+      "S1": {
+        "value_pts": 4.0404,
+        "ci95": [
+          -1.1508,
+          10.101
+        ],
+        "excludes_zero": false
+      },
+      "S2": {
+        "value_pts": 4.0404,
+        "ci95": [
+          -4.3956,
+          12.6316
+        ],
+        "excludes_zero": false
+      },
+      "H1": {
+        "value_pts": -3.0303,
+        "ci95": [
+          -10.5263,
+          3.8835
+        ],
+        "excludes_zero": false
+      }
+    },
+    "note": "The obfuscation-specific effect. A gain concentrated on the trained condition and vanishing on the held-out one is the signature of transform memorization; a gain that survives onto H1 is invariance."
+  },
+  "invariance_index_control_relative": {
+    "value_pts": -3.0303,
+    "ci95": [
+      -10.5263,
+      3.8835
+    ],
+    "excludes_zero": false,
+    "verdict": "memorization_or_null",
+    "note": "Supersedes the raw \u0394-vs-base Invariance Index, which the L0 control showed to be confounded with task acquisition."
+  },
   "verdict": {
     "gates_failed": [],
     "proceed_to_grid": true,

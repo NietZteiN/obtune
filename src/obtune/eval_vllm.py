@@ -199,6 +199,21 @@ def assert_adapter_effective(tuned_cell: Path, base_cell: Path) -> None:
 # Engine
 # --------------------------------------------------------------------------- #
 
+def _gpu_mem_util(ecfg: dict) -> float:
+    """vLLM's share of the GPU, with a shared-box escape hatch.
+
+    The configured 0.90 assumes an idle GPU, which is the normal case for a grid
+    run. On this host other people's jobs come and go, and vLLM refuses to start
+    (rather than shrinking) when the requested fraction exceeds what is free —
+    so OBTUNE_GPU_MEM_UTIL lets a run fit into the headroom beside a neighbour
+    instead of either failing or crowding them out. Grid runs leave it unset.
+    """
+    env = os.environ.get("OBTUNE_GPU_MEM_UTIL")
+    if env:
+        return float(env)
+    return float(ecfg.get("gpu_memory_utilization", 0.90))
+
+
 class Engine:
     """Thin wrapper over `vllm.LLM` with a per-adapter LoRARequest registry.
 
@@ -231,7 +246,7 @@ class Engine:
             self._llm = LLM(
                 model=self.model_id,
                 dtype=self.ecfg.get("dtype", "bfloat16"),
-                gpu_memory_utilization=float(self.ecfg.get("gpu_memory_utilization", 0.90)),
+                gpu_memory_utilization=_gpu_mem_util(self.ecfg),
                 enable_lora=True,
                 max_lora_rank=int(self.ecfg.get("max_lora_rank", 64)),
                 max_loras=int(self.ecfg.get("max_loras", 4)),

@@ -1,0 +1,17 @@
+# Evaluate the L0 control adapter on the same grid as the L1b pilot.
+#
+# The comparison that matters is the H1 column. The L1b adapter lifted H1 by
+# +27.3 pts, but it lifted clean L0 code by +29.3 — which is what learning the
+# TASK would also look like. If tuning on clean code moves H1 by a comparable
+# amount, the pilot measured task acquisition, not obfuscation invariance.
+_extends: _base_eval.yaml
+
+phase: pilot
+model: qwen25c-1.5b
+language: python
+
+systems:
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: pilot_eval
