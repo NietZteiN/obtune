@@ -92,15 +92,56 @@ Every obfuscated variant must pass a **semantic gate**: it has to produce byte-i
 its clean parent on all its input cases plus ~20 fuzzed inputs. Exceptions are compared by type
 only, because renaming legitimately changes error messages.
 
-### What was run
+### Model
 
-| | |
-|---|---|
-| Model | Qwen2.5-Coder-1.5B-Instruct |
-| Method | LoRA, r=32, α=64, on all attention + MLP projections; 3 epochs, lr 1e-4, effective batch 64, seed 17 |
-| Training corpus | 2,231 Python programs (APPS, CruxEval, HumanEval), deduplicated against the test set → 38,343 training examples |
-| Test set | 70 programs from a prior human study, held separate; 2,052 evaluation items |
-| Scoring | execution-verified exact match, strict (no substring leniency) |
+**Qwen2.5-Coder-1.5B-Instruct** (HuggingFace `Qwen/Qwen2.5-Coder-1.5B-Instruct`) — a 1.5B-parameter,
+code-specialized, instruction-tuned model. It is the project's cheap ablation platform; the full
+panel also includes Qwen2.5-Coder-7B-Instruct and Llama-3.1-8B-Instruct, so that any finding can be
+checked for scale-dependence and for being a quirk of one model family. Everything in this report is
+the 1.5B, Python only.
+
+Adaptation is **LoRA** (rank 32, α 64, dropout 0.05) on all attention projections (q, k, v, o) and
+all MLP projections (gate, up, down) — the base weights are frozen and only the adapter is trained.
+3 epochs, lr 1e-4 cosine, effective batch 64, bf16, sequence length 1536, seed 17. The best epoch is
+chosen by exact-match accuracy on a held-in validation slice rather than by loss (epoch 2 won for
+both adapters).
+
+### Data
+
+**Training corpus — 2,231 Python programs**, built fresh for this project and disjoint from the test
+set:
+
+| source | programs | what it is |
+|---|---|---|
+| APPS (call-based subset) | 1,584 | competitive-programming problems with function-call I/O |
+| CruxEval | 543 | short functions built for input/output-prediction benchmarks |
+| HumanEval | 104 | the canonical hand-written Python benchmark |
+
+Median 7 lines of code (mean 8.4, max 57). Every program is filtered to be self-contained and
+deterministic — no I/O, no randomness, no clock or environment access — and is then *executed* to
+confirm it returns the same value across repeated runs with different hash seeds. Programs whose
+outputs are constant across inputs, or that echo their input, are dropped as uninformative. Each
+program is expanded into all six trainable conditions and ~3 input cases, giving **38,343 training
+examples**; the L1b adapter saw 6,285 of them, the L0 control 6,693.
+
+**Test set — 70 programs**, reused from a prior human study of obfuscated-code comprehension so that
+model results stay comparable to human data:
+
+- *Dataset A*: 20 HumanEval-X snippets (10 Python, 10 JavaScript), each with human accuracy labels.
+- *Dataset B*: 50 contamination-controlled problems (30 Python, 20 JavaScript) drawn from HumanEval-X,
+  CruxEval-X and a 2025 LeetCode set.
+
+Expanded across conditions and input cases, this yields **2,052 evaluation items**. This report uses
+the 40 Python parents, of which 23 survive in every condition (see §5).
+
+**Contamination control.** The training corpus is deduplicated against the test set by exact
+alpha-equivalence hash (structurally identical programs modulo variable names) and by MinHash
+near-duplicate detection at Jaccard ≥ 0.8, plus explicit exclusion of the upstream problem IDs that
+appear in the test set. 29 training programs were dropped this way.
+
+**Scoring.** Execution-verified exact match, strict: no substring or containment leniency, and string
+comparison is case-sensitive. A prior audit on related work showed substring matching produces ~3%
+false positives (a predicted `9273` counted as matching a gold `927`), so that stage was removed.
 
 Two adapters were trained, identical except for what they saw:
 
