@@ -1,9 +1,13 @@
 # Foundational literature
 
-*Last updated: 2026-08-04*
+*Last updated: 2026-08-05*
 
 The three papers this project builds on are symlinked here from `../../transcoders/papers/`
 (one canonical copy in the monorepo). BibTeX keys are in [`references.bib`](references.bib).
+
+> **This file covers the lineage obtune descends from.** For the *deobfuscation and fine-tuning*
+> literature obtune is positioned **against**, see [`RELATED_WORK.md`](RELATED_WORK.md) — 26 works with
+> per-claim verification marks (20 with PDFs in this folder) and a per-RQ citation map.
 
 ## The lineage
 
@@ -33,8 +37,27 @@ internal signature.
 
 ## Adjacent work to cite
 
-- **DOBF** and identifier-recovery pretraining — the lineage we are separating from.
-- KLEE-augmented pair tuning (arXiv:2511.19130), OASIF (VM-obfuscated binaries) — recent deobfuscation-oriented tuning.
-- **CodeSteer** (Rong, Yadavally, Nguyen, ASE '26; PDF in `../../allocation_replication/paper/`) — post-hoc attention steering for robust code understanding under obfuscation. The training-free counterpart to our RQ2 conditioning arm.
-- LoRA, TIES-merging, DARE — the adapter and merging machinery of RQ2.
-- "Attention is not explanation" and its rebuttals — why RQ3 claims are framed as predictive and upgrade to causal only through the knockout intervention.
+Mapped in full, with verified numbers and a per-RQ citation plan, in
+[`RELATED_WORK.md`](RELATED_WORK.md). The four that carry the positioning:
+
+- **DOBF** `roziere2021dobf` and identifier-recovery pretraining — the lineage we are separating from.
+- **`nikiema2025contrastive`** — the nearest prior work to our pilot result: names the same failure
+  ("cognitive specialization"), measures it on the *forward/reverse* axis where we measure it on the
+  *held-out obfuscator* axis. Standard SFT → 0 % reversibility; their CFT fix works on renaming only.
+- **`guzman2026poisoned`** — misleading identifiers survive deobfuscation 100 % of the time, but prompt
+  reframing drops that to 0–20 %. Direct evidence the RQ2 oracle-prompt arm is a live hypothesis.
+- **CodeSteer** `rong2026codesteer` (PDF in `../../allocation_replication/paper/`) — post-hoc attention
+  steering under obfuscation. The training-free counterpart to our RQ2 conditioning arm.
+
+Still un-registered (no PDF, no bib entry yet): **"Attention is not explanation"** and its rebuttals —
+why RQ3 claims are framed as predictive and upgrade to causal only through the knockout intervention.
+
+## Changelog
+
+- **2026-08-05** — Added the pointer to [`RELATED_WORK.md`](RELATED_WORK.md) and rewrote
+  `## Adjacent work to cite`, which had been five un-cited bullets, into four keyed entries. Repaired two
+  `file = {…}` fields in [`references.bib`](references.bib) that still carried the `transcoders/`
+  filenames (with the arXiv id) rather than the local symlink names. Added this Changelog — required for
+  a living document by [`../CLAUDE.md`](../CLAUDE.md) §6 and previously missing.
+- **2026-08-04** — File created; the three foundational papers registered and symlinked from
+  `../../transcoders/papers/`.

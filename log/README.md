@@ -11,7 +11,7 @@ Update both tables below on every new entry.
 
 | Thread | Purpose | Status | Entries |
 |---|---|---|---|
-| [`setup/`](setup/) | Scaffold, environment, data layer, obfuscation pipeline | active | 1 |
+| [`setup/`](setup/) | Scaffold, environment, data layer, obfuscation pipeline | active | 2 |
 | [`pilot/`](pilot/) | Week-1 kill-switch pilot and its gate decision | done — gate passed; H1 gain shown to be task acquisition | 2 |
 | [`transfer/`](transfer/) | RQ1 — per-condition adapters, transfer matrix, GLMMs | not started | 0 |
 | [`modularity/`](modularity/) | RQ2 — router, merges, monolithic, oracle arms | not started | 0 |
@@ -27,3 +27,4 @@ Update both tables below on every new entry.
 | 2026-08-04 | setup | [`2026-08-04_scaffold-and-pipeline.md`](setup/2026-08-04_scaffold-and-pipeline.md) | Project created; contracts, obfuscation pipeline, training/eval stack built |
 | 2026-08-05 | pilot | [`2026-08-05_kill-switch-pilot.md`](pilot/2026-08-05_kill-switch-pilot.md) | Kill-switch passed: L1b adapter +27.3 pts on held-out H1; L0 control is the next run |
 | 2026-08-05 | pilot | [`2026-08-05_l0-control-refutes-invariance.md`](pilot/2026-08-05_l0-control-refutes-invariance.md) | L0 control reaches H1 as well as L1b training does — the H1 gain is task acquisition; Invariance Index redefined |
+| 2026-08-05 | setup | [`2026-08-05_register-deobfuscation-literature.md`](setup/2026-08-05_register-deobfuscation-literature.md) | 26 works registered; the DOBF-separation claim holds, and the pilot's memorization finding has prior measurement (`nikiema2025contrastive`) |

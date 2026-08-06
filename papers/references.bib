@@ -1,6 +1,18 @@
-% Foundational references for the transcoders research project.
-% These three papers are the human/LLM code-obfuscation comprehension line
-% this project builds on. Cite with the keys below.
+% References for the obtune research project.
+%
+% PART 1 — the three foundational papers (the human/LLM code-obfuscation
+% comprehension line this project builds on), indexed in REFERENCES.md.
+% PART 2 — the deobfuscation / fine-tuning literature obtune is positioned
+% against, mapped in RELATED_WORK.md.
+%
+% Key convention: <firstauthorlastname><year><keyword>, all lowercase
+% (see ../../translation/refs/README.md). Institutional authors and
+% anonymous submissions are the only exceptions: dualprocess2026,
+% promon2026atr, llm4dobf2026.
+%
+% The non-standard `file` field names the PDF in this folder; filename IS
+% the citation key. Entries without a `file` field are paywalled and have
+% no local PDF by design — see RELATED_WORK.md "How to read this".
 
 @article{nguyen2026obfuscation,
   title   = {The Effect of Code Obfuscation on Human Program Comprehension},
@@ -13,7 +25,7 @@
   archivePrefix = {arXiv},
   primaryClass  = {cs.SE},
   institution   = {University of Texas at Dallas},
-  file    = {paper1_Nguyen2026_ObfuscationHumanComprehension_arXiv-2603.07668.pdf}
+  file    = {paper1_Nguyen2026_ObfuscationHumanComprehension.pdf}
 }
 
 @article{le2026machines,
@@ -27,7 +39,7 @@
   archivePrefix = {arXiv},
   primaryClass  = {cs.SE},
   institution   = {University of Texas at Dallas},
-  file    = {paper2_Le2026_LLMvsHumanObfuscatedCode_arXiv-2606.31725.pdf}
+  file    = {paper2_Le2026_LLMvsHumanObfuscatedCode.pdf}
 }
 
 @unpublished{dualprocess2026,
@@ -36,4 +48,355 @@
   note   = {Under double-blind review; builds on nguyen2026obfuscation and le2026machines},
   year   = {2026},
   file   = {paper3_DualProcess_FastErrorsSlowEffort.pdf}
+}
+
+% ============================================================================
+% PART 2 — deobfuscation & fine-tuning literature (mapped in RELATED_WORK.md)
+% ============================================================================
+
+% --- 2a. The recovery lineage: obfuscated input -> recovered/simplified output
+
+@inproceedings{roziere2021dobf,
+  title     = {{DOBF}: A Deobfuscation Pre-Training Objective for Programming Languages},
+  author    = {Roziere, Baptiste and Lachaux, Marie-Anne and Szafraniec, Marc and Lample, Guillaume},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2021},
+  eprint    = {2102.07492},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {The lineage obtune separates from: recovery as the training objective},
+  file      = {roziere2021dobf.pdf}
+}
+
+@inproceedings{gong2024astt5,
+  title     = {{AST-T5}: Structure-Aware Pretraining for Code Generation and Understanding},
+  author    = {Gong, Linyuan and Elhoushi, Mostafa and Cheung, Alvin},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2024},
+  eprint    = {2401.03003},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  file      = {gong2024astt5.pdf}
+}
+
+@inproceedings{noh2025gmba,
+  title     = {{gMBA}: Expression Semantic Guided Mixed Boolean-Arithmetic Deobfuscation Using Transformer Architectures},
+  author    = {Noh, Youjeong and Paik, Joon-Young and Kwon, Jingun and Cho, Eun-Sun},
+  booktitle = {Findings of the Association for Computational Linguistics (ACL Findings)},
+  year      = {2025},
+  eprint    = {2506.23634},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  institution   = {Chungnam National University},
+  note      = {92.78\% exact match / 95.53\% BLEU vs vanilla Transformer 40.84\% / 78.05\% on NeuReduce},
+  file      = {noh2025gmba.pdf}
+}
+
+@inproceedings{beste2025exploring,
+  title  = {Exploring the Potential of {LLMs} for Code Deobfuscation},
+  author = {Beste, David and Menguy, Gr{\'e}goire and Hajipour, Hossein and Fritz, Mario
+            and Cin{\`a}, Antonio Emanuele and Bardin, S{\'e}bastien and Holz, Thorsten
+            and Eisenhofer, Thorsten and Sch{\"o}nherr, Lea},
+  year   = {2025},
+  doi    = {10.1007/978-3-031-97620-9_15},
+  institution = {CISPA Helmholtz Center for Information Security},
+  note   = {89.21\% avg Halstead length reduction; up to 7 chained Tigress transforms;
+            memorization test passed. Local PDF is the author preprint (eisenhofer.me);
+            camera-ready venue not verified from an open source},
+  file   = {beste2025exploring.pdf}
+}
+
+@inproceedings{tan2024llm4decompile,
+  title     = {{LLM4Decompile}: Decompiling Binary Code with Large Language Models},
+  author    = {Tan, Hanzhuo and Luo, Qi and Li, Jing and Zhang, Yuqun},
+  booktitle = {Findings of the Association for Computational Linguistics (EMNLP Findings)},
+  year      = {2024},
+  eprint    = {2403.05286},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.PL},
+  file      = {tan2024llm4decompile.pdf}
+}
+
+@article{mariano2024chisel,
+  title   = {Control-Flow Deobfuscation Using Trace-Informed Compositional Program Synthesis},
+  author  = {Mariano, Benjamin and Wang, Ziteng and Pailoor, Shankara and Collberg, Christian and Dillig, I{\c{s}}il},
+  journal = {Proceedings of the ACM on Programming Languages},
+  volume  = {8},
+  number  = {OOPSLA2},
+  pages   = {349:1--349:44},
+  year    = {2024},
+  doi     = {10.1145/3689789},
+  note    = {Pure program synthesis --- NO LLM. 86\% of 546 benchmarks recovered
+             almost identical modulo variable renaming (structural, not execution)},
+  file    = {mariano2024chisel.pdf}
+}
+
+@article{sudhir2026pushan,
+  title   = {Pushan: Trace-Free Deobfuscation of Virtualization-Obfuscated Binaries},
+  author  = {Sudhir, Ashwin and Basque, Zion Leonahenahe and Gibbs, Wil and Bajaj, Ati Priya
+             and Singaria, Pulkit Singh and Zakocs, Mitchell and Hu, Jie and Schloegel, Moritz
+             and Bao, Tiffany and Doup{\'e}, Adam and Shoshitaishvili, Yan and Wang, Ruoyu},
+  journal = {arXiv preprint arXiv:2603.18355},
+  year    = {2026},
+  eprint  = {2603.18355},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  file    = {sudhir2026pushan.pdf}
+}
+
+@misc{llm4dobf2026,
+  title  = {Toward Efficient Deobfuscation via Large Language Models ({LLM4DOBF})},
+  author = {{Authors not verified}},
+  year   = {2026},
+  howpublished = {IEEE (paywalled)},
+  url    = {https://ieeexplore.ieee.org/iel8/6287639/6514899/11370748.pdf},
+  note   = {NO LOCAL PDF --- paywalled. Framework confirmed to exist; the widely-quoted
+            SacreBLEU 54.66 was NOT located in an accessible primary source. Cite with care},
+}
+
+% --- 2b. Memorization vs. genuine transformation learning (the core of RELATED_WORK §2)
+
+@article{nikiema2025contrastive,
+  title   = {Using Contrastive Learning to Improve Two-Way Reasoning in Large Language
+             Models: The Obfuscation Task as a Case Study},
+  author  = {Nikiema, Serge Lionel and Samhi, Jordan and Moumoula, Micheline B{\'e}n{\'e}dicte
+             and Djir{\'e}, Alb{\'e}rick Euraste and Kabor{\'e}, Abdoul Kader
+             and Klein, Jacques and Bissyand{\'e}, Tegawend{\'e} F.},
+  journal = {arXiv preprint arXiv:2509.05553},
+  year    = {2025},
+  eprint  = {2509.05553},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  institution   = {University of Luxembourg},
+  note    = {NEAREST PRIOR WORK to obtune's memorization finding. Coins "cognitive
+             specialization"; standard SFT gives 0\% reverse success; CFT recovers
+             39--52\% on VARIABLE RENAMING ONLY},
+  file    = {nikiema2025contrastive.pdf}
+}
+
+@article{guzman2026poisoned,
+  title   = {Poisoned Identifiers Survive {LLM} Deobfuscation: A Case Study on Claude Opus 4.6},
+  author  = {Guzm{\'a}n Lorenzo, Luis},
+  journal = {arXiv preprint arXiv:2604.04289},
+  year    = {2026},
+  eprint  = {2604.04289},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  note    = {Direct hit on the L1b condition. Misleading names persisted in every baseline
+             run; task reframing cut propagation from 100\% to 0--20\%},
+  file    = {guzman2026poisoned.pdf}
+}
+
+@article{hu2026bindeobf,
+  title   = {Can {LLMs} Deobfuscate Binary Code? A Systematic Analysis of Large Language
+             Models into Pseudocode Deobfuscation},
+  author  = {Hu, Li and Shang, Xiuwei and Shi, Jieke and Cheng, Shaoyin and Zhang, Junqi
+             and Li, Gangyang and Yang, Zhou and Zhang, Weiming and Lo, David},
+  journal = {arXiv preprint arXiv:2604.08083},
+  year    = {2026},
+  eprint  = {2604.08083},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  note    = {BinDeObfBench. Task-specific SFT beats scale; the in-context-learning
+             divergence (few-shot helps instruct models, degrades reasoning models)},
+  file    = {hu2026bindeobf.pdf}
+}
+
+% --- 2c. Comprehension under obfuscation without recovery
+
+@techreport{promon2026atr,
+  title       = {App Threat Report Q1 2026: The State of Code Obfuscation Against {AI}},
+  author      = {{Promon Security Research Team}},
+  institution = {Promon AS},
+  year        = {2026},
+  url         = {https://promon.io/security-news/app-threat-report-2026-q1-the-state-of-code-obfuscation-against-ai},
+  note        = {10 models x OLLVM (SUB/FLA/BCF) x ARM+x86 x assembly+pseudocode.
+                 Table 1 reproduced in RELATED_WORK.md §3.1},
+  file        = {promon2026atr.pdf}
+}
+
+@article{tkachenko2025deconstructing,
+  title   = {Deconstructing Obfuscation: A Four-Dimensional Framework for Evaluating
+             Large Language Models Assembly Code Deobfuscation Capabilities},
+  author  = {Tkachenko, Anton and Suskevic, Dmitrij and others},
+  journal = {arXiv preprint arXiv:2505.19887},
+  year    = {2025},
+  eprint  = {2505.19887},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  institution   = {Promon AS},
+  note    = {The peer-reviewable precursor to promon2026atr, from the same lab},
+  file    = {tkachenko2025deconstructing.pdf}
+}
+
+@article{li2025obfvuln,
+  title   = {A Systematic Study of Code Obfuscation Against {LLM}-based Vulnerability Detection},
+  author  = {Li, Xiao and Li, Yue and Wu, Hao and Zhang, Yue and Zhang, Yechao
+             and Xu, Fengyuan and Zhong, Sheng},
+  journal = {arXiv preprint arXiv:2512.16538},
+  year    = {2025},
+  eprint  = {2512.16538},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  institution   = {Nanjing University},
+  note    = {19 techniques / 11 subcategories / 3 classes x 15 LLMs. Obfuscation has a
+             DUAL effect --- some transforms improve detection by stripping misleading cues},
+  file    = {li2025obfvuln.pdf}
+}
+
+@article{rao2026acoda,
+  title   = {Acoda: Adversarial Code Obfuscation for Defending against {LLM}-based Analysis},
+  author  = {Rao, Hongzhou and Dong, Zikan and Zhao, Yanjie and Li, Haodong and Wang, Haoyu},
+  journal = {arXiv preprint arXiv:2606.11755},
+  year    = {2026},
+  eprint  = {2606.11755},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  note    = {Genetic search over 8 semantics-preserving strategies; ASR up to 70\%
+             across 7 models. The adversarial ceiling H1 is NOT},
+  file    = {rao2026acoda.pdf}
+}
+
+@article{patsakis2024assessing,
+  title   = {Assessing {LLMs} in Malicious Code Deobfuscation of Real-World Malware Campaigns},
+  author  = {Patsakis, Constantinos and Casino, Fran and Lykousas, Nikolaos},
+  journal = {Expert Systems with Applications},
+  year    = {2024},
+  url     = {https://www.sciencedirect.com/science/article/pii/S0957417424017792},
+  note    = {Real-world PowerShell malware campaigns rather than synthetic benchmarks},
+  file    = {patsakis2024assessing.pdf}
+}
+
+@article{wang2026oasif,
+  title   = {{OASIF}: An Efficient Obfuscation-Aware Self-Improving Framework for
+             {LLM}-Based Assembly Code Instruction Following and Comprehension},
+  author  = {Wang, Xinyi and Chen, Rongze and Wang, Ke and Chen, Qiyuan and Liu, Yanming
+             and Li, Xiang and Jia, Chunfu},
+  journal = {arXiv preprint arXiv:2606.29155},
+  year    = {2026},
+  eprint  = {2606.29155},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  file    = {wang2026oasif.pdf}
+}
+
+@article{feng2025recover,
+  title   = {Can {LLMs} Recover Program Semantics? A Systematic Evaluation with Symbolic Execution},
+  author  = {Feng, Rong and Saha, Suman},
+  journal = {arXiv preprint arXiv:2511.19130},
+  year    = {2025},
+  eprint  = {2511.19130},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  institution   = {The Pennsylvania State University},
+  file    = {feng2025recover.pdf}
+}
+
+% --- 2d. Vulnerability / malware adjacent (tangential --- cite in passing only)
+
+@article{manuel2024debinvul,
+  title   = {Enhancing Reverse Engineering: Investigating and Benchmarking Large Language
+             Models for Vulnerability Analysis in Decompiled Binaries},
+  author  = {Manuel, Dylan and Islam, Nafis Tanveer and Khoury, Joseph and Nunez, Ana
+             and Bou-Harb, Elias and Najafirad, Peyman},
+  journal = {arXiv preprint arXiv:2411.04981},
+  year    = {2024},
+  eprint  = {2411.04981},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  note    = {DeBinVul, 150,872 samples},
+  file    = {manuel2024debinvul.pdf}
+}
+
+@article{taskin2026paradigms,
+  title   = {From Hand-Crafted Features to Large Language Models: A Comparative Evaluation
+             of Android Malware Detection Paradigms},
+  author  = {Ta{\c{s}}k{\i}n, Egemen and Do{\u{g}}ru, {\.I}brahim Alper},
+  journal = {Applied Sciences},
+  volume  = {16},
+  number  = {11},
+  pages   = {5600},
+  year    = {2026},
+  doi     = {10.3390/app16115600},
+  note    = {NO LOCAL PDF --- MDPI blocks automated fetch. Qwen3.5-27B + LoRA reaches
+             ~0.982 F1 on 12,000 AndroZoo APKs vs RF 0.975. TANGENTIAL: malware
+             detection, not deobfuscation},
+}
+
+% --- 2e. PEFT and merging machinery for RQ2
+
+@inproceedings{hu2022lora,
+  title     = {{LoRA}: Low-Rank Adaptation of Large Language Models},
+  author    = {Hu, Edward J. and Shen, Yelong and Wallis, Phillip and Allen-Zhu, Zeyuan
+               and Li, Yuanzhi and Wang, Shean and Wang, Lu and Chen, Weizhu},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022},
+  eprint    = {2106.09685},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {r=32, alpha=64 in configs/train/_base_lora.yaml},
+}
+
+@inproceedings{yadav2023ties,
+  title     = {{TIES-Merging}: Resolving Interference When Merging Models},
+  author    = {Yadav, Prateek and Tam, Derek and Choshen, Leshem and Raffel, Colin and Bansal, Mohit},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2023},
+  eprint    = {2306.01708},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {The merge_ties arm of RQ2},
+}
+
+@inproceedings{yu2024dare,
+  title     = {Language Models are Super Mario: Absorbing Abilities from Homologous
+               Models as a Free Lunch},
+  author    = {Yu, Le and Yu, Bowen and Yu, Haiyang and Huang, Fei and Li, Yongbin},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2024},
+  eprint    = {2311.03099},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {DARE --- the merge_dare_ties / merge_dare_linear arms of RQ2},
+}
+
+@article{hajipour2024hexacoder,
+  title     = {{HexaCoder}: Secure Code Generation via Oracle-Guided Synthetic Training Data},
+  author    = {Hajipour, Hossein and Sch{\"o}nherr, Lea and Holz, Thorsten and Fritz, Mario},
+  journal   = {arXiv preprint arXiv:2409.06446},
+  year      = {2024},
+  eprint    = {2409.06446},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  institution   = {CISPA Helmholtz Center for Information Security},
+  note      = {Oracle-verified training pairs before the weight update. Methodological
+               precedent for obtune's semantic gate in scripts/05_build_variants.py},
+  file      = {hajipour2024hexacoder.pdf}
+}
+
+@article{gravereaux2025tradeoffs,
+  title   = {Accuracy and Efficiency Trade-Offs in {LLM}-Based Malware Detection and
+             Explanation: A Comparative Study of Parameter Tuning vs. Full Fine-Tuning},
+  author  = {Gravereaux, Stephen C. and Islam, Sheikh Rabiul},
+  journal = {IEEE Big Data},
+  year    = {2025},
+  eprint  = {2511.19654},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  note    = {LoRA at 15.5\% trainable params: ~81\% smaller footprint, >80\% less
+             training time, BLEU/ROUGE within ~10\% of full FT},
+  file    = {gravereaux2025tradeoffs.pdf}
+}
+
+% --- 2f. Attention steering (RQ3 neighbour; PDF lives in a sibling project)
+
+@inproceedings{rong2026codesteer,
+  title     = {Post-hoc Attention Steering of Large Language Models for Robust Code
+               Understanding under Obfuscation},
+  author    = {Rong, Yu and Yadavally, Aashish and Nguyen, Tien N.},
+  booktitle = {International Conference on Automated Software Engineering (ASE)},
+  year      = {2026},
+  note      = {CodeSteer. Training-free counterpart to the RQ2 conditioning arm and the
+               closest neighbour to RQ3's anchoring-shift metric. PDF is NOT in this folder:
+               ../../allocation_replication/paper/Post_hoc_Attention_Steering_of_Large_Language_Models_for_Robust_Code_Understanding_under_Obfuscation.pdf},
 }
