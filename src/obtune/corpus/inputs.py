@@ -326,7 +326,7 @@ def run_cases(
 
 def non_trivial(
     args_reprs: Sequence[str], outputs: Sequence[str],
-    min_distinct: int = 2, max_output_chars: int = 200,
+    min_distinct: int = 2, max_output_chars: int = 200, max_args_chars: int = 2000,
 ) -> tuple[bool, list[str]]:
     """A case set must actually discriminate between models that understand the program
     and models that pattern-match.
@@ -343,6 +343,9 @@ def non_trivial(
     if len(set(outputs)) < min_distinct:
         reasons.append(f"constant_output:{len(set(outputs))}<{min_distinct}")
     for a, o in zip(args_reprs, outputs):
+        if len(a) > max_args_chars:
+            reasons.append(f"args_too_long:{len(a)}>{max_args_chars}")
+            continue
         if not 1 <= len(o) <= max_output_chars:
             reasons.append(f"output_len_out_of_range:{len(o)}")
             break
@@ -421,6 +424,7 @@ def build_cases(
     fuzz_pool: int = 60,
     min_distinct_outputs: int = 2,
     max_output_chars: int = 200,
+    max_args_chars: int = 2000,
     determinism_repeats: int = 3,
     timeout_s: float = 2.0,
     keep_roles: Sequence[str] | None = None,

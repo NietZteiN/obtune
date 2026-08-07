@@ -98,6 +98,36 @@ def resolve_path(p: str | os.PathLike) -> Path:
 # Prompt + row construction (pure — no engine needed, so it is unit-testable)
 # --------------------------------------------------------------------------- #
 
+def drop_overlong(
+    items: Sequence[EvalItem], texts: Sequence[str], tokenizer: Any,
+    max_model_len: int, max_new_tokens: int,
+) -> tuple[list[EvalItem], list[str], list[dict[str, Any]]]:
+    """Remove prompts that cannot fit the context window.
+
+    vLLM raises on an over-long prompt, which kills the ENTIRE cell — a single
+    pathological item (one APPS program shipped a 19,950-character argument literal)
+    took out all 1,671 items with it. Dropping and recording is the right trade: the
+    item is unanswerable either way, and the other 1,670 are not.
+
+    Truncating instead would be worse than dropping. A truncated program is a
+    different program, so the model would be graded against the output of code it
+    never saw.
+    """
+    budget = max_model_len - max_new_tokens
+    keep_i: list[EvalItem] = []
+    keep_t: list[str] = []
+    dropped: list[dict[str, Any]] = []
+    for it, tx in zip(items, texts):
+        n = len(tokenizer(tx).input_ids)
+        if n > budget:
+            dropped.append({"item_id": it.item_id, "program_id": it.program_id,
+                            "n_tokens": n, "budget": budget})
+        else:
+            keep_i.append(it)
+            keep_t.append(tx)
+    return keep_i, keep_t, dropped
+
+
 def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any) -> list[str]:
     return [
         prompts.render_chat(
@@ -339,6 +369,16 @@ def run_cell(
 
     items = list(items)[: limit or None]
     texts = render_prompts(items, system, engine.tokenizer)
+    items, texts, overlong = drop_overlong(
+        items, texts, engine.tokenizer,
+        max_model_len=int(engine.ecfg.get("max_model_len", 4096)),
+        max_new_tokens=int((engine.ecfg.get("max_tokens") or 64)),
+    )
+    if overlong:
+        print(f"[eval_vllm] dropped {len(overlong)} over-long prompt(s): "
+              f"{[d['item_id'] for d in overlong][:3]}")
+    if not items:
+        raise RuntimeError("every prompt in this cell exceeded the context window")
 
     if system.is_routed:
         route = _load_route_map(system.route_map)

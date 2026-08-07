@@ -11,7 +11,10 @@ engine:
   # Larger than the 1536 training window: a one-shot oracle demo in front of
   # flattened S1/S2 code exceeds it, and truncation would silently damage the
   # structural conditions rather than failing loudly.
-  max_model_len: 4096
+  # p99 of held-out prompts is ~1.5k tokens; 8192 leaves headroom for a one-shot
+  # oracle demo in front of flattened S1 code. Genuinely pathological items are
+  # dropped and recorded by drop_overlong() rather than raising and killing the cell.
+  max_model_len: 8192
 
 sampling:
   temperature: 0.0

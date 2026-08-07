@@ -24,6 +24,11 @@ filters:
   determinism_repeats: 3 # run 3x across 2 processes with different PYTHONHASHSEED
   min_distinct_outputs: 2 # non-triviality: cases must not all return the same thing
   max_output_chars: 200
+  # Inputs were never capped, only outputs. One APPS program carried a 19,950-char
+  # argument literal against 175 chars of code — a ~20k-token prompt that is not an
+  # output-prediction task in any meaningful sense, and which killed a whole 1,671-item
+  # eval cell by exceeding the context window. Median args are 13 chars, p99 is 85.
+  max_args_chars: 2000
 
 dedup:
   minhash_perms: 128
