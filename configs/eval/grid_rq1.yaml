@@ -1,0 +1,30 @@
+# RQ1 control-relative transfer matrix — the memorization test.
+#
+# Every per-condition adapter evaluated on every condition, so the shape of the
+# gradient can be read: memorization predicts a strong diagonal (each adapter helps
+# only on its own condition) and a flat off-diagonal, including zero on held-out H1.
+#
+# `expand_over: train_conditions` generates one system per (train condition x seed),
+# resolving each adapter path the way train_sft.adapter_dir() builds it.
+_extends: _base_eval.yaml
+
+phase: main
+models: [qwen25c-1.5b]
+languages: [python, javascript]
+
+# Held-out PROGRAMS, not the 70 ICSE stimuli: the ICSE set yields a 23-program common
+# subset, which cannot resolve the ~8-point effects this experiment has to call zero.
+eval_source: heldout
+
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+seeds: [17, 42]
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval
+
+peft:
+  r: 32 # only used to resolve adapter directory names
+
+systems:
+  - {name: base, arch: none}
+  - {name: per_type, arch: per_type, expand_over: train_conditions}
+  - {name: oracle_prompt_1shot, arch: oracle_prompt, prompt_oracle: true, one_shot: true}

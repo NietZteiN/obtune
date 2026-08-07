@@ -1,0 +1,24 @@
+# MONOLITHIC adapter — the gate that decides whether the complex grid is needed.
+#
+# One LoRA trained on the union of ALL trainable conditions. This is what a
+# practitioner would actually do, and it is the strongest simple baseline: if it
+# reaches the held-out obfuscator H1 above the clean-code control, then breadth of
+# obfuscation training already buys invariance and the per-condition adapters,
+# router and merges of RQ2 have nothing left to explain.
+#
+# Deliberately NOT size-matched to the per-condition adapters: it sees the full
+# ~27k train-split pairs (roughly 5.7x a single-condition adapter). Handicapping the
+# simple approach and then declaring it insufficient would be an unfair gate. If it
+# SUCCEEDS, a size-matched arm is then required to separate "breadth helps" from
+# "more data helps".
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono_py_all
+phase: main
+
+train:
+  train_size: 30000 # >= the union of all train-split pairs, so nothing is subsampled away
+  seed: 17

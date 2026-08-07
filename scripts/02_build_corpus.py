@@ -49,10 +49,20 @@ SOURCE_LOADERS = {
 }
 
 
-def _load_source(name: str, language: str, limit: int | None):
+def _load_source(name: str, language: str, limit: int | None, module: str | None = None):
+    """Resolve a source loader.
+
+    `module` comes from the `loader:` key in configs/sources.yaml and is
+    authoritative. Guessing from the source name is not safe: `cruxeval_x_js`
+    prefix-matched to the *Python* `cruxeval` loader, which silently fed 799 Python
+    programs into the JavaScript corpus where they all died in normalization.
+    """
     import importlib
 
-    mod_name, attr = SOURCE_LOADERS[name]
+    if module:
+        mod_name, attr = module, "load"
+    else:
+        mod_name, attr = SOURCE_LOADERS[name]
     mod = importlib.import_module(mod_name)
     fn = getattr(mod, attr)
     kwargs = {}
@@ -111,15 +121,20 @@ def main() -> int:
     raw: list[dict] = []
     for tier in args.tiers:
         for spec in (src_cfg.get(lang) or {}).get(tier, []) or []:
-            name = spec["name"].split("_")[0] if spec["name"] not in SOURCE_LOADERS else spec["name"]
-            loader = spec["name"] if spec["name"] in SOURCE_LOADERS else name
-            if loader not in SOURCE_LOADERS:
-                print(f"  skip {spec['name']}: no loader registered")
+            module = spec.get("loader")
+            loader = spec["name"] if spec["name"] in SOURCE_LOADERS else None
+            if not module and not loader:
+                print(f"  skip {spec['name']}: no loader registered and no `loader:` key")
                 continue
             try:
-                got = _load_source(loader, lang, args.limit)
-            except (NotImplementedError, FileNotFoundError) as exc:
-                print(f"  skip {spec['name']}: {exc}")
+                got = _load_source(loader or spec["name"], lang, args.limit, module=module)
+            except Exception as exc:  # noqa: BLE001
+                # One unavailable source must not kill the build: sources are tiered
+                # precisely so a corpus can be assembled from whatever is present.
+                # The skip is printed and recorded, never silent.
+                first = str(exc).splitlines()[0] if str(exc) else type(exc).__name__
+                print(f"  skip {spec['name']}: {type(exc).__name__}: {first}")
+                reasons[f"source_unavailable:{spec['name']}"] += 1
                 continue
             print(f"  loaded {len(got):>6} from {spec['name']}")
             raw.extend(got)
@@ -234,12 +249,25 @@ def main() -> int:
     print(f"  dedup: {len(unique)} unique ({dropped} dropped vs test set / self / exclusion lists)")
 
     # -- 6. split by program_id and write --------------------------------- #
+    # THREE-way split. `test` programs are never trained on AND never used for
+    # checkpoint selection, so they are a clean evaluation set — unlike `val`, which
+    # model selection touches and which would therefore bias the diagonal of a
+    # transfer matrix (the cell where each adapter is evaluated on its own condition).
     rng = random.Random(int(data_cfg["splits"]["seed"]))
     ids = sorted({p["program_id"] for p in unique})
     rng.shuffle(ids)
-    n_val = max(1, int(len(ids) * float(data_cfg["splits"]["val_fraction"]))) if ids else 0
+    n = len(ids)
+    n_val = int(n * float(data_cfg["splits"]["val_fraction"])) if n else 0
+    n_test = int(n * float(data_cfg["splits"].get("test_fraction", 0.0))) if n else 0
+    if n:  # never let rounding empty a split that was asked for
+        n_val = max(1, n_val) if data_cfg["splits"]["val_fraction"] > 0 else 0
+        n_test = max(1, n_test) if data_cfg["splits"].get("test_fraction", 0) > 0 else 0
     val_ids = set(ids[:n_val])
-    assignment = {pid: ("val" if pid in val_ids else "train") for pid in ids}
+    test_ids = set(ids[n_val : n_val + n_test])
+    assignment = {
+        pid: ("val" if pid in val_ids else "test" if pid in test_ids else "train")
+        for pid in ids
+    }
 
     rows = []
     for p in unique:
@@ -263,6 +291,7 @@ def main() -> int:
         {"seed": int(data_cfg["splits"]["seed"]), "by": "program_id",
          "n_train": sum(1 for v in assignment.values() if v == "train"),
          "n_val": sum(1 for v in assignment.values() if v == "val"),
+         "n_test": sum(1 for v in assignment.values() if v == "test"),
          "assignment": assignment}, indent=1))
 
     report = {

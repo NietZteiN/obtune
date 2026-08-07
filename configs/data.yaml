@@ -33,7 +33,12 @@ dedup:
 
 splits:
   by: program_id # NEVER split by row — a variant of a train program must not appear in test
-  val_fraction: 0.05
+  val_fraction: 0.05 # checkpoint selection only
+  # Held-out PROGRAMS: never trained on, never used for checkpoint selection. This is
+  # the evaluation set for the transfer matrix. It has to be distinct from `val`
+  # because model selection touches val on each adapter's own training condition,
+  # which would bias precisely the matrix diagonal that the memorization test reads.
+  test_fraction: 0.25
   seed: 17
 
 train_size_per_condition: 24000 # examples; pilot also runs an 8k arm for the scaling check

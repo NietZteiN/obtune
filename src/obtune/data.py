@@ -39,6 +39,16 @@ PAIRS_SUBDIR = "pairs"
 EVAL_VARIANTS_SUBDIR = "testset/items"
 H1_ACCESS_LOG = paths.QUARANTINE_ROOT / "h1" / "ACCESS_LOG.md"
 
+#: Named evaluation sets. `testset` is the 70 ICSE programs, kept because they carry
+#: human accuracy labels; `heldout` is the corpus programs reserved by the `test`
+#: split — far more of them, and the only set with enough power to call an
+#: off-diagonal transfer cell zero. Each has its own H1 quarantine subset.
+EVAL_SOURCES = {
+    "testset": {"items": "testset/items", "h1_subset": "testset"},
+    "heldout": {"items": "heldout/items", "h1_subset": "heldout"},
+}
+DEFAULT_EVAL_SOURCE = "testset"
+
 
 class DataContractError(RuntimeError):
     """A corpus violates the dataset contract (split leakage, bad gold, H1 present)."""
@@ -52,12 +62,19 @@ def pairs_path(condition: str, language: str) -> Path:
     return paths.TRAIN_ROOT / PAIRS_SUBDIR / condition / f"{language}.jsonl"
 
 
-def eval_variants_path(condition: str, language: str) -> Path:
-    return paths.EVAL_ROOT / EVAL_VARIANTS_SUBDIR / condition / f"{language}.jsonl"
+def _source_spec(source: str) -> dict[str, str]:
+    if source not in EVAL_SOURCES:
+        raise ValueError(f"unknown eval source {source!r}; expected one of {sorted(EVAL_SOURCES)}")
+    return EVAL_SOURCES[source]
 
 
-def h1_path(language: str) -> Path:
-    return paths.QUARANTINE_ROOT / "h1" / "testset" / "items" / f"{language}.jsonl"
+def eval_variants_path(condition: str, language: str, source: str = DEFAULT_EVAL_SOURCE) -> Path:
+    return paths.EVAL_ROOT / _source_spec(source)["items"] / condition / f"{language}.jsonl"
+
+
+def h1_path(language: str, source: str = DEFAULT_EVAL_SOURCE) -> Path:
+    subset = _source_spec(source)["h1_subset"]
+    return paths.QUARANTINE_ROOT / "h1" / subset / "items" / f"{language}.jsonl"
 
 
 # --------------------------------------------------------------------------- #
@@ -100,22 +117,25 @@ def load_eval_items(
     language: str,
     h1_access_purpose: Optional[str] = None,
     script: str = "unknown",
+    source: str = DEFAULT_EVAL_SOURCE,
 ) -> list[EvalItem]:
-    """Load test-set rows. H1 is routed to the quarantine tree and logged."""
+    """Load evaluation rows from a named set. H1 is routed to quarantine and logged."""
     items: list[EvalItem] = []
     for cond in conditions:
         if cond == "H1":
-            items.extend(load_h1_items(language, purpose=h1_access_purpose, script=script))
+            items.extend(load_h1_items(language, purpose=h1_access_purpose,
+                                       script=script, source=source))
             continue
-        p = eval_variants_path(cond, language)
+        p = eval_variants_path(cond, language, source)
         if not p.exists():
-            raise FileNotFoundError(f"missing eval variants for {cond}/{language}: {p}")
+            raise FileNotFoundError(f"missing eval items for {cond}/{language} in {source!r}: {p}")
         items.extend(EvalItem(**raw) for raw in paths.iter_jsonl(p))
     return items
 
 
 def load_h1_items(
-    language: str, purpose: Optional[str], script: str = "unknown", note: str = ""
+    language: str, purpose: Optional[str], script: str = "unknown", note: str = "",
+    source: str = DEFAULT_EVAL_SOURCE,
 ) -> list[EvalItem]:
     """Read the held-out condition. CLAUDE.md §3.2 rule 3: every read is logged.
 
@@ -128,7 +148,7 @@ def load_h1_items(
             f"got {purpose!r}. H1 is never used for training, checkpoint selection, "
             "router training or merge tuning (CLAUDE.md §3.2)."
         )
-    p = h1_path(language)
+    p = h1_path(language, source)
     if not p.exists():
         raise FileNotFoundError(f"missing H1 quarantine file: {p}")
     items = [EvalItem(**raw) for raw in paths.iter_jsonl(p)]

@@ -1,0 +1,24 @@
+# The monolithic gate: does one adapter trained on ALL obfuscation types generalize?
+#
+# Read the H1 column against `tuned_L0` (the clean-code control), not against the
+# untuned base — the base is weak at the task itself, so every adapter beats it on
+# every condition just by learning output prediction.
+#
+#   mono >> L0 control on H1   ->  breadth of obfuscation training gives invariance;
+#                                  per-type adapters, routing and merges are moot.
+#   mono ~= L0 control on H1   ->  breadth does not reach a held-out obfuscator, and
+#                                  the per-condition matrix is what explains why.
+_extends: _base_eval.yaml
+
+phase: main
+model: qwen25c-1.5b
+language: python
+eval_source: heldout # 557 held-out programs, not the 23-program ICSE common subset
+
+systems:
+  - {name: mono_all, adapter: "runs/adapters/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: mono, train_cond: mix}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: base, arch: none}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval

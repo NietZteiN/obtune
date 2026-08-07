@@ -1,0 +1,23 @@
+{
+ "job_id": "train__qwen25c-1.5b_python_L0_s17",
+ "kind": "train",
+ "argv": [
+  "-m",
+  "obtune.train_sft",
+  "--config",
+  "train/grid_qwen1.5b_py_L0.yaml",
+  "--seed",
+  "17"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.7,
+ "priority": 10,
+ "meta": {
+  "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s17",
+  "language": "python",
+  "train_conditions": [
+   "L0"
+  ],
+  "seed": 17
+ }
+}

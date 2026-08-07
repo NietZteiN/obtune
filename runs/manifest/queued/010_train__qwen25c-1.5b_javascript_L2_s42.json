@@ -1,0 +1,23 @@
+{
+ "job_id": "train__qwen25c-1.5b_javascript_L2_s42",
+ "kind": "train",
+ "argv": [
+  "-m",
+  "obtune.train_sft",
+  "--config",
+  "train/grid_qwen1.5b_js_L2.yaml",
+  "--seed",
+  "42"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.7,
+ "priority": 10,
+ "meta": {
+  "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L2_r32_s42",
+  "language": "javascript",
+  "train_conditions": [
+   "L2"
+  ],
+  "seed": 42
+ }
+}

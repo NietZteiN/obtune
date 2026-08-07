@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Optional, Sequence
 
 from obtune import data, prompts, scoring
-from obtune.config import GLOBAL_SEED, PROJECT_ROOT, RESULTS_DIR, load_config
+from obtune.config import GLOBAL_SEED, PROJECT_ROOT, RESULTS_DIR, RUNS_DIR, load_config
 from obtune.provenance import sha256_dir, sha256_file, sha256_text
 from obtune.schema import EvalItem, TrialRow
 
@@ -391,6 +391,51 @@ def run_cell(
                       tokens_per_sec=meta["tokens_per_sec"])
 
 
+def expand_systems(
+    raw_systems: Sequence[Mapping[str, Any]],
+    model_key: str,
+    language: str,
+    train_conditions: Sequence[str],
+    seeds: Sequence[int],
+    rank: int = 32,
+) -> list[SystemSpec]:
+    """Turn `systems:` config rows into concrete SystemSpecs.
+
+    A row carrying `expand_over: train_conditions` becomes one system per
+    (train condition x seed), with its adapter path derived the same way
+    train_sft.adapter_dir() builds it. Without this the row collapses to a single
+    system with `adapter: None`, which evaluates the BASE weights while labelling
+    the cell `per_type` — a silent, invisible corruption of the whole matrix.
+    """
+    from obtune.train_sft import cond_tag
+
+    out: list[SystemSpec] = []
+    for row in raw_systems:
+        row = dict(row)
+        if row.pop("expand_over", None) != "train_conditions":
+            out.append(SystemSpec.from_config(row))
+            continue
+        for cond in train_conditions:
+            for seed in seeds:
+                tag = cond_tag([cond])
+                adapter = (RUNS_DIR / "adapters" / model_key / language
+                           / f"{tag}_r{rank}_s{seed}" / "best")
+                spec = dict(row)
+                spec["name"] = f"tuned_{cond}_s{seed}" if len(seeds) > 1 else f"tuned_{cond}"
+                spec["train_cond"] = cond
+                spec["adapter"] = str(adapter)
+                out.append(SystemSpec.from_config(spec))
+
+    # A per_type/mono system without an adapter is the failure above; refuse it.
+    for spec in out:
+        if spec.arch in ("per_type", "mono") and not spec.adapter:
+            raise ValueError(
+                f"system {spec.name!r} has arch={spec.arch!r} but no adapter path — "
+                "it would evaluate base weights labelled as a tuned system"
+            )
+    return out
+
+
 def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     from obtune.train_sft import resolve_model_cfg
 
@@ -399,16 +444,12 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     languages = cfg.get("languages") or [cfg["language"]]
     models = cfg.get("models") or [cfg["model"]]
     eval_conditions = list(cfg["eval_conditions"])
-    systems = [SystemSpec.from_config(s) for s in cfg["systems"]]
-    if args.systems:
-        keep = set(args.systems.split(","))
-        systems = [s for s in systems if s.name in keep]
+    raw_systems = list(cfg["systems"])
+    eval_source = args.source or cfg.get("eval_source", data.DEFAULT_EVAL_SOURCE)
+    grid_train_conditions = list(cfg.get("train_conditions") or [])
+    grid_seeds = [int(x) for x in (cfg.get("seeds") or [cfg.get("seed", GLOBAL_SEED)])]
     if args.eval_conditions:
         eval_conditions = [c for c in eval_conditions if c in set(args.eval_conditions.split(","))]
-    if args.route_map:
-        for s in systems:
-            if s.arch == "router":
-                s.route_map = args.route_map
 
     out_root = resolve_path(args.out_root) if args.out_root else RESULTS_DIR / "cells"
     if args.stub and out_root.is_relative_to(RESULTS_DIR / "cells") and not args.allow_stub_in_results:
@@ -426,6 +467,20 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     for model_key in models:
         mcfg = resolve_model_cfg({"model": model_key})
         for language in languages:
+            # Adapter paths depend on model AND language, so systems are expanded
+            # here rather than once at config-load time.
+            systems = expand_systems(
+                raw_systems, model_key, language, grid_train_conditions, grid_seeds,
+                rank=int((cfg.get("peft") or {}).get("r", 32)),
+            )
+            if args.systems:
+                keep = set(args.systems.split(","))
+                systems = [sy for sy in systems if sy.name in keep]
+            if args.route_map:
+                for sy in systems:
+                    if sy.arch == "router":
+                        sy.route_map = args.route_map
+
             engine = Engine(
                 mcfg["hf_id"],
                 # An explicit engine.max_model_len in the eval config wins: eval
@@ -443,6 +498,7 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
                     language,
                     h1_access_purpose=cfg.get("h1_access_purpose"),
                     script="eval_vllm.py",
+                    source=eval_source,
                 )
                 data.validate_eval_items(items)
                 for system in systems:
@@ -620,6 +676,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--adapter-root", default=None, help="ckpt-select: override the adapter dir")
     ap.add_argument("--route-map", default=None, help="JSON item_id -> adapter path (routed cells)")
     ap.add_argument("--systems", default=None, help="comma-separated subset of system names")
+    ap.add_argument("--source", default=None, choices=["testset", "heldout"],
+                    help="evaluation set: testset = the human-labelled ICSE programs, "
+                         "heldout = corpus programs in the `test` split (higher n)")
     ap.add_argument("--eval-conditions", default=None, help="comma-separated subset")
     ap.add_argument("--limit", type=int, default=None, help="cap items per cell (smoke runs)")
     ap.add_argument("--no-resume", action="store_true")

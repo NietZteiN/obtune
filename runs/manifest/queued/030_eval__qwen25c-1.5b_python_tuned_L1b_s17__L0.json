@@ -1,0 +1,25 @@
+{
+ "job_id": "eval__qwen25c-1.5b_python_tuned_L1b_s17__L0",
+ "kind": "eval-cell",
+ "argv": [
+  "-m",
+  "obtune.eval_vllm",
+  "--config",
+  "eval/grid_rq1.yaml",
+  "--systems",
+  "tuned_L1b_s17",
+  "--eval-conditions",
+  "L0"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.08,
+ "priority": 30,
+ "meta": {
+  "model": "qwen25c-1.5b",
+  "language": "python",
+  "system": "tuned_L1b_s17",
+  "eval_cond": "L0",
+  "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best",
+  "train_cond": "L1b"
+ }
+}

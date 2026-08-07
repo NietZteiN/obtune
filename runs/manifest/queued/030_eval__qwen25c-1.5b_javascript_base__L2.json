@@ -1,0 +1,25 @@
+{
+ "job_id": "eval__qwen25c-1.5b_javascript_base__L2",
+ "kind": "eval-cell",
+ "argv": [
+  "-m",
+  "obtune.eval_vllm",
+  "--config",
+  "eval/grid_rq1.yaml",
+  "--systems",
+  "base",
+  "--eval-conditions",
+  "L2"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.08,
+ "priority": 30,
+ "meta": {
+  "model": "qwen25c-1.5b",
+  "language": "javascript",
+  "system": "base",
+  "eval_cond": "L2",
+  "adapter": null,
+  "train_cond": null
+ }
+}

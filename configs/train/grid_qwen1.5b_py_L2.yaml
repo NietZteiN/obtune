@@ -1,0 +1,12 @@
+# Grid adapter: L2 (python) — sequential minification (a, b, c)
+#
+# One of the 6 per-condition adapters whose control-relative transfer matrix tests
+# whether obfuscation-specific learning generalizes past the condition trained.
+# Seeds are supplied on the command line (train_sft --seed), not here.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L2]
+run_tag: grid_py_L2
+phase: main
