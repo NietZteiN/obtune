@@ -95,10 +95,13 @@ def train_jobs(configs: list[Path], seeds: list[int]) -> list[dict[str, Any]]:
 
 
 def eval_jobs(eval_cfg_path: Path, systems_filter: list[str] | None) -> list[dict[str, Any]]:
-    """One job per (model, language, system, eval condition).
+    """One job per (model, language, system) — all eval conditions inside it.
 
-    Split this finely rather than one job per config: cells are independent, so a
-    per-cell queue keeps every GPU busy and makes a failure cost one cell, not a run.
+    NOT one job per cell. Measured: 7 cells x 1,670 items take 88 s when they share a
+    vLLM engine, but a per-cell job pays ~50 s of engine startup EACH — 196 cells
+    would burn ~2.7 GPU-hours starting engines. Resumability does not suffer: the
+    cell-level parquet check inside eval_vllm still skips finished cells, so a job
+    that dies half way redoes only the cells it had not written.
     """
     from obtune.eval_vllm import expand_systems
 
@@ -124,16 +127,13 @@ def eval_jobs(eval_cfg_path: Path, systems_filter: list[str] | None) -> list[dic
             for sysspec in systems:
                 if systems_filter and sysspec.name not in systems_filter:
                     continue
-                for cond in cfg["eval_conditions"]:
-                    jid = f"eval__{model}_{language}_{sysspec.name}__{cond}"
-                    out.append(job(
-                        "eval-cell", jid,
-                        ["-m", "obtune.eval_vllm", "--config", str(rel),
-                         "--systems", sysspec.name, "--eval-conditions", cond],
-                        {"model": model, "language": language, "system": sysspec.name,
-                         "eval_cond": cond, "adapter": sysspec.adapter,
-                         "train_cond": sysspec.train_cond},
-                    ))
+                out.append(job(
+                    "eval-cell", f"eval__{model}_{language}_{sysspec.name}",
+                    ["-m", "obtune.eval_vllm", "--config", str(rel), "--systems", sysspec.name],
+                    {"model": model, "language": language, "system": sysspec.name,
+                     "n_eval_conditions": len(cfg["eval_conditions"]),
+                     "adapter": sysspec.adapter, "train_cond": sysspec.train_cond},
+                ))
     return out
 
 
@@ -202,21 +202,20 @@ def rq2_jobs(eval_cfg_path: Path) -> list[dict[str, Any]]:
             ))
 
             # --- the RQ2 eval systems ---------------------------------------------
-            for cond in cfg["eval_conditions"]:
+            out.append(job(
+                "eval-rq2", f"evalrq2__{tag}_router",
+                ["-m", "obtune.eval_vllm", "--config", rel, "--systems", "router",
+                 "--route-map", f"{rq2_dir}/route_map.json"],
+                {"model": model, "language": language, "system": "router",
+                 "depends_on": f"router_route__{tag}"},
+            ))
+            for combo in ("ties", "dare_ties", "dare_linear"):
                 out.append(job(
-                    "eval-rq2", f"evalrq2__{tag}_router__{cond}",
-                    ["-m", "obtune.eval_vllm", "--config", rel, "--systems", "router",
-                     "--eval-conditions", cond, "--route-map", f"{rq2_dir}/route_map.json"],
-                    {"model": model, "language": language, "system": "router", "eval_cond": cond},
+                    "eval-rq2", f"evalrq2__{tag}_merge_{combo}",
+                    ["-m", "obtune.eval_vllm", "--config", rel, "--systems", f"merge_{combo}"],
+                    {"model": model, "language": language, "system": f"merge_{combo}",
+                     "depends_on": f"merge__{tag}__{combo}"},
                 ))
-                for combo in ("ties", "dare_ties", "dare_linear"):
-                    out.append(job(
-                        "eval-rq2", f"evalrq2__{tag}_merge_{combo}__{cond}",
-                        ["-m", "obtune.eval_vllm", "--config", rel,
-                         "--systems", f"merge_{combo}", "--eval-conditions", cond],
-                        {"model": model, "language": language,
-                         "system": f"merge_{combo}", "eval_cond": cond},
-                    ))
     return out
 
 
