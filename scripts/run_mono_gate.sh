@@ -153,7 +153,10 @@ VERDICT=$(python -c "import json;print(json.load(open('$DECISION'))['h1_verdict'
 say "gate verdict: $VERDICT"
 
 if [ "$RUN_GRID" = "True" ]; then
-  say "breadth did not settle it — launching the per-condition grid (244 queued jobs)"
+  say "breadth did not settle it — rebuilding the queue with RQ1 + RQ2 and launching workers"
+  python scripts/build_manifest.py --train "configs/train/grid_qwen1.5b_*.yaml" \
+      --eval configs/eval/grid_rq1.yaml --rq2 configs/eval/grid_rq1.yaml \
+      --seeds 17 42 --clear >> "$LOG" 2>&1
   bash scripts/launch_workers.sh >> "$LOG" 2>&1 && say "grid workers launched" \
     || say "WARN: could not launch grid workers (no idle GPU?) — queue is still in runs/manifest/queued/"
 else

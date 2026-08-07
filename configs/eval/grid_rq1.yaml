@@ -28,3 +28,13 @@ systems:
   - {name: base, arch: none}
   - {name: per_type, arch: per_type, expand_over: train_conditions}
   - {name: oracle_prompt_1shot, arch: oracle_prompt, prompt_oracle: true, one_shot: true}
+
+  # --- RQ2: modularity ---------------------------------------------------------
+  # ONE router over the 6 trainable conditions, dispatching each item to the matching
+  # per-type adapter (not one router per condition). H1 is never a router class — its
+  # routing entropy is the out-of-distribution result, reported rather than trained on.
+  # `--route-map` supplies the item_id -> adapter assignment at eval time.
+  - {name: router, arch: router}
+  - {name: merge_ties, arch: merge_ties, adapter: "runs/adapters/qwen25c-1.5b/python/merge_ties_r32_s17"}
+  - {name: merge_dare_ties, arch: merge_dare_ties, adapter: "runs/adapters/qwen25c-1.5b/python/merge_dare_ties_r32_s17"}
+  - {name: merge_dare_linear, arch: merge_dare_linear, adapter: "runs/adapters/qwen25c-1.5b/python/merge_dare_linear_r32_s17"}

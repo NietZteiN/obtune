@@ -33,8 +33,13 @@ from obtune.config import GLOBAL_SEED, RUNS_DIR, load_config  # noqa: E402
 
 QUEUE = RUNS_DIR / "manifest" / "queued"
 
-PRIORITY = {"train": 10, "ckpt-select": 20, "eval-cell": 30}
-EST_GPU_H = {"train": 0.7, "ckpt-select": 0.1, "eval-cell": 0.08}
+# Priorities encode the dependency chain, since the queue has no DAG: nothing can
+# route among per-condition adapters until those adapters exist and have been
+# checkpoint-selected, and nothing can merge them either.
+PRIORITY = {"train": 10, "ckpt-select": 20, "eval-cell": 30,
+            "merge": 40, "router": 45, "eval-rq2": 50}
+EST_GPU_H = {"train": 0.7, "ckpt-select": 0.1, "eval-cell": 0.08,
+             "merge": 0.1, "router": 0.4, "eval-rq2": 0.08}
 
 
 def cfg_rel(path: Path) -> str:
@@ -125,11 +130,96 @@ def eval_jobs(eval_cfg_path: Path, systems_filter: list[str] | None) -> list[dic
     return out
 
 
+
+def rq2_jobs(eval_cfg_path: Path) -> list[dict[str, Any]]:
+    """RQ2 — per-type adapters behind a learned router, and LoRA merges.
+
+    These are the systems that only make sense once the per-condition adapters exist,
+    which is why they carry higher priority numbers rather than living in a separate
+    manifest: one queue, ordered, so a worker that frees up late still does useful work.
+
+    The router is ONE classifier over the trainable conditions that dispatches to the
+    matching per-type adapter — not one router per condition. H1 is never a class; its
+    routing entropy is a reported RQ2 result (the out-of-distribution decision).
+    """
+    rel = cfg_rel(eval_cfg_path)
+    cfg = load_config(rel)
+    models = cfg.get("models") or [cfg["model"]]
+    languages = cfg.get("languages") or [cfg["language"]]
+    conds = list(cfg.get("train_conditions") or [])
+    rank = int((cfg.get("peft") or {}).get("r", 32))
+    seed = int((cfg.get("seeds") or [GLOBAL_SEED])[0])  # RQ2 uses one seed's adapters
+
+    out = []
+    for model in models:
+        for language in languages:
+            tag = f"{model}_{language}"
+            rq2_dir = f"results/router/{model}/{language}"
+
+            # --- merges: cheap, CPU-ish, no dependency beyond the adapters --------
+            for combo in ("ties", "dare_ties", "dare_linear"):
+                out.append(job(
+                    "merge", f"merge__{tag}__{combo}",
+                    ["-m", "obtune.merge_adapters", "--config", "merge/ties_v1.yaml",
+                     "--model", model, "--language", language, "--rank", str(rank),
+                     "--out", f"runs/adapters/{model}/{language}/merge_{combo}_r{rank}_s{seed}"],
+                    {"model": model, "language": language, "combination_type": combo},
+                ))
+
+            # --- router: features -> classifier -> routing map ---------------------
+            feats = f"{rq2_dir}/features.npz"
+            router = f"{rq2_dir}/router.npz"
+            out.append(job(
+                "router", f"router_features__{tag}",
+                ["-m", "obtune.router.features", "--config", "router/router_v1.yaml",
+                 "--model", model, "--out", feats],
+                {"model": model, "language": language, "stage": "features"},
+            ))
+            out.append(job(
+                "router", f"router_train__{tag}",
+                ["-m", "obtune.router.train_router", "--config", "router/router_v1.yaml",
+                 "--features", feats, "--out", router],
+                {"stage": "train", "depends_on": f"router_features__{tag}"},
+            ))
+            adapter_map = {
+                c: f"runs/adapters/{model}/{language}/{c}_r{rank}_s{seed}/best" for c in conds
+            }
+            map_path = f"{rq2_dir}/adapter_map.json"
+            out.append(job(
+                "router", f"router_route__{tag}",
+                ["-m", "obtune.router.route", "--router", router, "--features", feats,
+                 "--adapter-map", map_path, "--out", f"{rq2_dir}/route_map.json",
+                 "--report", f"{rq2_dir}/routing_report.json"],
+                {"stage": "route", "depends_on": f"router_train__{tag}",
+                 "adapter_map": adapter_map, "adapter_map_path": map_path},
+            ))
+
+            # --- the RQ2 eval systems ---------------------------------------------
+            for cond in cfg["eval_conditions"]:
+                out.append(job(
+                    "eval-rq2", f"evalrq2__{tag}_router__{cond}",
+                    ["-m", "obtune.eval_vllm", "--config", rel, "--systems", "router",
+                     "--eval-conditions", cond, "--route-map", f"{rq2_dir}/route_map.json"],
+                    {"model": model, "language": language, "system": "router", "eval_cond": cond},
+                ))
+                for combo in ("ties", "dare_ties", "dare_linear"):
+                    out.append(job(
+                        "eval-rq2", f"evalrq2__{tag}_merge_{combo}__{cond}",
+                        ["-m", "obtune.eval_vllm", "--config", rel,
+                         "--systems", f"merge_{combo}", "--eval-conditions", cond],
+                        {"model": model, "language": language,
+                         "system": f"merge_{combo}", "eval_cond": cond},
+                    ))
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--train", nargs="*", default=[], help="training config globs")
     ap.add_argument("--eval", nargs="*", default=[], help="evaluation config paths")
+    ap.add_argument("--rq2", nargs="*", default=[],
+                    help="eval configs to also expand into RQ2 router + merge jobs")
     ap.add_argument("--seeds", nargs="*", type=int, default=[GLOBAL_SEED])
     ap.add_argument("--systems", nargs="*", default=None, help="restrict eval to these systems")
     ap.add_argument("--dry-run", action="store_true")
@@ -155,6 +245,8 @@ def main() -> int:
         jobs += train_jobs(train_cfgs, args.seeds)
     for e in args.eval:
         jobs += eval_jobs(Path(e), args.systems)
+    for e in args.rq2:
+        jobs += rq2_jobs(Path(e))
 
     if not jobs:
         print("no jobs — pass --train and/or --eval")
