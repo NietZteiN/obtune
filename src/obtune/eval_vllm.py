@@ -398,6 +398,7 @@ def expand_systems(
     train_conditions: Sequence[str],
     seeds: Sequence[int],
     rank: int = 32,
+    route_map: Optional[str] = None,
 ) -> list[SystemSpec]:
     """Turn `systems:` config rows into concrete SystemSpecs.
 
@@ -426,12 +427,25 @@ def expand_systems(
                 spec["adapter"] = str(adapter)
                 out.append(SystemSpec.from_config(spec))
 
-    # A per_type/mono system without an adapter is the failure above; refuse it.
+    if route_map:
+        for spec in out:
+            if spec.arch == "router" and not spec.route_map:
+                spec.route_map = route_map
+
+    # A tuned system with nothing to load is the failure above; refuse it. `router`
+    # carries no adapter of its own — it needs a route map instead, supplied by
+    # --route-map — so it is checked separately rather than exempted.
     for spec in out:
-        if spec.arch in ("per_type", "mono") and not spec.adapter:
+        if spec.arch in ("per_type", "mono") or spec.arch.startswith("merge"):
+            if not spec.adapter:
+                raise ValueError(
+                    f"system {spec.name!r} has arch={spec.arch!r} but no adapter path — "
+                    "it would evaluate base weights labelled as a tuned system"
+                )
+        if spec.arch == "router" and not spec.route_map:
             raise ValueError(
-                f"system {spec.name!r} has arch={spec.arch!r} but no adapter path — "
-                "it would evaluate base weights labelled as a tuned system"
+                f"system {spec.name!r} has arch='router' but no route map — it would "
+                "evaluate base weights labelled as routed. Pass --route-map."
             )
     return out
 
@@ -472,6 +486,7 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
             systems = expand_systems(
                 raw_systems, model_key, language, grid_train_conditions, grid_seeds,
                 rank=int((cfg.get("peft") or {}).get("r", 32)),
+                route_map=args.route_map,
             )
             if args.systems:
                 keep = set(args.systems.split(","))

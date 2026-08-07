@@ -112,7 +112,14 @@ def eval_jobs(eval_cfg_path: Path, systems_filter: list[str] | None) -> list[dic
     out = []
     for model in models:
         for language in languages:
-            systems = expand_systems(cfg["systems"], model, language,
+            # RQ2 systems (router, merges) are emitted by rq2_jobs(), which attaches
+            # the routing map and the ordering that makes them meaningful. Dropped here
+            # BEFORE expansion, because `router` without a route map is refused by
+            # design — it would otherwise evaluate base weights labelled as routed.
+            raw = [r for r in cfg["systems"]
+                   if not (r.get("arch", "none") == "router"
+                           or str(r.get("arch", "")).startswith("merge"))]
+            systems = expand_systems(raw, model, language,
                                      cfg.get("train_conditions") or [], seeds, rank=rank)
             for sysspec in systems:
                 if systems_filter and sysspec.name not in systems_filter:
