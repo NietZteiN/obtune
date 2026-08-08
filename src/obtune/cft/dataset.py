@@ -35,7 +35,7 @@ import json
 import random
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import Any, Callable, Collection, Iterable, Mapping, Optional, Sequence
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -529,5 +529,13 @@ def label_balance(rows: Sequence[CFTInstance]) -> dict[str, Any]:
     return out
 
 
-def to_sft_records(rows: Iterable[CFTInstance]) -> list[dict[str, Any]]:
-    return [prompts.build_example(r.model_dump()) for r in rows]
+def to_sft_records(
+    rows: Iterable[CFTInstance],
+    build_example: Optional[Callable[[Mapping[str, Any]], dict[str, Any]]] = None,
+) -> list[dict[str, Any]]:
+    """`build_example` is injectable so a follow-up experiment can add a task format
+    without touching this module's frozen prompt contract (the replication's reverse
+    direction must stay unsupervised — see `prompts.completion_for`). Defaults to the
+    replication's own builder, so existing callers are unaffected."""
+    builder = build_example or prompts.build_example
+    return [builder(r.model_dump()) for r in rows]

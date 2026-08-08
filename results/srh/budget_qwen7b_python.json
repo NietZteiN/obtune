@@ -1,0 +1,258 @@
+{
+  "arms": {
+    "cft": {
+      "by_task": {
+        "gen": 7383,
+        "neg": 5611,
+        "pos": 5611
+      },
+      "drop_rate": 0.00016122098022355977,
+      "effective_batch": 64,
+      "epochs": 3.0,
+      "instances": 18605,
+      "len_max": 2846,
+      "len_p95": 775,
+      "mean_supervised_tokens_by_task": {
+        "gen": 196.72666937559256,
+        "neg": 3.0,
+        "pos": 3.0
+      },
+      "n_dropped": 3,
+      "sequence_tokens": 6841124,
+      "steps": 872,
+      "supervised_tokens": 1486099,
+      "supervised_tokens_by_task": {
+        "gen": 1452433,
+        "neg": 16833,
+        "pos": 16833
+      },
+      "task_token_share": {
+        "gen": 0.9773460583716159,
+        "neg": 0.011326970814192056,
+        "pos": 0.011326970814192056
+      }
+    },
+    "cftflip": {
+      "by_task": {
+        "gen": 7383,
+        "neg": 5611,
+        "pos": 5611,
+        "rev": 7383
+      },
+      "drop_rate": 0.0001538935056940597,
+      "effective_batch": 64,
+      "epochs": 3.0,
+      "instances": 25988,
+      "len_max": 2858,
+      "len_p95": 778,
+      "mean_supervised_tokens_by_task": {
+        "gen": 196.72666937559256,
+        "neg": 3.0,
+        "pos": 3.0,
+        "rev": 84.35852634430448
+      },
+      "n_dropped": 4,
+      "sequence_tokens": 9662059,
+      "steps": 1218,
+      "supervised_tokens": 2108918,
+      "supervised_tokens_by_task": {
+        "gen": 1452433,
+        "neg": 16833,
+        "pos": 16833,
+        "rev": 622819
+      },
+      "task_token_share": {
+        "gen": 0.6887100399351705,
+        "neg": 0.00798181816457539,
+        "pos": 0.00798181816457539,
+        "rev": 0.2953263237356787
+      }
+    },
+    "flip": {
+      "by_task": {
+        "gen": 7383,
+        "rev": 7383
+      },
+      "drop_rate": 0.00013542795232936077,
+      "effective_batch": 64,
+      "epochs": 3.0,
+      "instances": 14766,
+      "len_max": 2858,
+      "len_p95": 766,
+      "mean_supervised_tokens_by_task": {
+        "gen": 196.72666937559256,
+        "rev": 84.35852634430448
+      },
+      "n_dropped": 2,
+      "sequence_tokens": 5406769,
+      "steps": 692,
+      "supervised_tokens": 2075252,
+      "supervised_tokens_by_task": {
+        "gen": 1452433,
+        "rev": 622819
+      },
+      "task_token_share": {
+        "gen": 0.6998827130391875,
+        "rev": 0.30011728696081247
+      }
+    },
+    "fwd": {
+      "by_task": {
+        "gen": 7383
+      },
+      "drop_rate": 0.00013542795232936077,
+      "effective_batch": 64,
+      "epochs": 3.0,
+      "instances": 7383,
+      "len_max": 2827,
+      "len_p95": 751,
+      "mean_supervised_tokens_by_task": {
+        "gen": 196.72666937559256
+      },
+      "n_dropped": 1,
+      "sequence_tokens": 2585834,
+      "steps": 346,
+      "supervised_tokens": 1452433,
+      "supervised_tokens_by_task": {
+        "gen": 1452433
+      },
+      "task_token_share": {
+        "gen": 1.0
+      }
+    },
+    "fwd2x": {
+      "by_task": {
+        "gen": 7383
+      },
+      "drop_rate": 0.00013542795232936077,
+      "effective_batch": 64,
+      "epochs": 6.0,
+      "instances": 7383,
+      "len_max": 2827,
+      "len_p95": 751,
+      "mean_supervised_tokens_by_task": {
+        "gen": 196.72666937559256
+      },
+      "n_dropped": 1,
+      "sequence_tokens": 2585834,
+      "steps": 692,
+      "supervised_tokens": 1452433,
+      "supervised_tokens_by_task": {
+        "gen": 1452433
+      },
+      "task_token_share": {
+        "gen": 1.0
+      }
+    },
+    "mix50": {
+      "by_task": {
+        "gen": 3688,
+        "rev": 3695
+      },
+      "drop_rate": 0.00013542795232936077,
+      "effective_batch": 64,
+      "epochs": 3.0,
+      "instances": 7383,
+      "len_max": 2858,
+      "len_p95": 767,
+      "mean_supervised_tokens_by_task": {
+        "gen": 195.12310195227766,
+        "rev": 85.93369418132612
+      },
+      "n_dropped": 1,
+      "sequence_tokens": 2703495,
+      "steps": 346,
+      "supervised_tokens": 1037139,
+      "supervised_tokens_by_task": {
+        "gen": 719614,
+        "rev": 317525
+      },
+      "task_token_share": {
+        "gen": 0.693845280140849,
+        "rev": 0.306154719859151
+      }
+    },
+    "rev": {
+      "by_task": {
+        "rev": 7383
+      },
+      "drop_rate": 0.00013542795232936077,
+      "effective_batch": 64,
+      "epochs": 3.0,
+      "instances": 7383,
+      "len_max": 2858,
+      "len_p95": 782,
+      "mean_supervised_tokens_by_task": {
+        "rev": 84.35852634430448
+      },
+      "n_dropped": 1,
+      "sequence_tokens": 2820935,
+      "steps": 346,
+      "supervised_tokens": 622819,
+      "supervised_tokens_by_task": {
+        "rev": 622819
+      },
+      "task_token_share": {
+        "rev": 1.0
+      }
+    }
+  },
+  "baseline": "fwd",
+  "effective_batch": 64,
+  "epochs": {
+    "cft": 3.0,
+    "cftflip": 3.0,
+    "flip": 3.0,
+    "fwd": 3.0,
+    "fwd2x": 6.0,
+    "mix50": 3.0,
+    "rev": 3.0
+  },
+  "language": "python",
+  "max_seq_len": 2560,
+  "model": "qwen25c-7b",
+  "ratios_vs_baseline": {
+    "cft": {
+      "instances": 2.519978328592713,
+      "sequence_tokens": 2.6456160758965965,
+      "steps": 2.520231213872832,
+      "supervised_tokens": 1.023179038206926
+    },
+    "cftflip": {
+      "instances": 3.519978328592713,
+      "sequence_tokens": 3.736534905179528,
+      "steps": 3.520231213872832,
+      "supervised_tokens": 1.451989868035221
+    },
+    "flip": {
+      "instances": 2.0,
+      "sequence_tokens": 2.0909188292829315,
+      "steps": 2.0,
+      "supervised_tokens": 1.428810829828295
+    },
+    "fwd": {
+      "instances": 1.0,
+      "sequence_tokens": 1.0,
+      "steps": 1.0,
+      "supervised_tokens": 1.0
+    },
+    "fwd2x": {
+      "instances": 1.0,
+      "sequence_tokens": 1.0,
+      "steps": 2.0,
+      "supervised_tokens": 1.0
+    },
+    "mix50": {
+      "instances": 1.0,
+      "sequence_tokens": 1.0455021474696364,
+      "steps": 1.0,
+      "supervised_tokens": 0.7140701154545511
+    },
+    "rev": {
+      "instances": 1.0,
+      "sequence_tokens": 1.0909188292829315,
+      "steps": 1.0,
+      "supervised_tokens": 0.428810829828295
+    }
+  }
+}

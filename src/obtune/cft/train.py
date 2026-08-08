@@ -97,15 +97,20 @@ def adapter_dir(cfg: Mapping[str, Any]) -> Path:
     """
     r = int(cfg["peft"]["r"])
     seed = int(cfg.get("train", {}).get("seed", GLOBAL_SEED))
-    return (
-        RUNS_DIR / "adapters_cft" / cfg["model"] / cfg["language"]
-        / f"{arm_tag(cfg)}_r{r}_s{seed}"
-    )
+    # `adapter_root` is config-driven so a follow-up experiment lands its adapters
+    # somewhere an eval config cannot pick them up by accident, for the same reason
+    # this root is separate from `runs/adapters/` in the first place.
+    root = cfg.get("adapter_root", "adapters_cft")
+    scope = cfg.get("scope")
+    tag = f"{scope}_{arm_tag(cfg)}" if scope else arm_tag(cfg)
+    return RUNS_DIR / root / cfg["model"] / cfg["language"] / f"{tag}_r{r}_s{seed}"
 
 
-def run_id_for(cfg: Mapping[str, Any]) -> str:
+def run_id_for(cfg: Mapping[str, Any], prefix: str = "cft") -> str:
     seed = int(cfg.get("train", {}).get("seed", GLOBAL_SEED))
-    return f"cft__{cfg['model']}__{cfg['language']}__{arm_tag(cfg)}__s{seed}"
+    scope = cfg.get("scope")
+    tag = f"{scope}-{arm_tag(cfg)}" if scope else arm_tag(cfg)
+    return f"{prefix}__{cfg['model']}__{cfg['language']}__{tag}__s{seed}"
 
 
 def resolve_model_cfg(cfg: Mapping[str, Any]) -> dict[str, Any]:
@@ -136,7 +141,10 @@ def expand_by_weight(
 
 
 def measure_lengths(
-    rows: Sequence[cft_data.CFTInstance], tokenizer: Any, max_seq_len: int
+    rows: Sequence[cft_data.CFTInstance],
+    tokenizer: Any,
+    max_seq_len: int,
+    build_example: Optional[Any] = None,
 ) -> tuple[list[int], dict[str, Any]]:
     """Tokenize as TRL will, and report length + supervised-token stats per task.
 
@@ -144,7 +152,8 @@ def measure_lengths(
     `len(prompt+completion) - len(prompt)`, which is what the loss mask actually
     supervises under `completion_only_loss=True`.
     """
-    examples = [cft_prompts.build_example(r.model_dump()) for r in rows]
+    builder = build_example or cft_prompts.build_example
+    examples = [builder(r.model_dump()) for r in rows]
     full_texts = [
         tokenizer.apply_chat_template(list(e["prompt"]) + list(e["completion"]), tokenize=False)
         for e in examples
@@ -207,8 +216,23 @@ def build_parser() -> argparse.ArgumentParser:
     return ap
 
 
-def main(argv: Optional[list[str]] = None) -> int:
+def main(
+    argv: Optional[list[str]] = None,
+    *,
+    load_mixture: Optional[Any] = None,
+    build_example: Optional[Any] = None,
+    run_id_prefix: str = "cft",
+) -> int:
+    """Train one arm.
+
+    The three keyword-only hooks let a follow-up experiment reuse this trainer instead
+    of forking it. They default to the replication's own loader and prompt builder, so
+    every existing caller is unaffected — and the replication's guarantee that its
+    reverse direction is never supervised stays enforced by `cft.prompts.completion_for`,
+    which is untouched.
+    """
     args = build_parser().parse_args(argv)
+    mixture = load_mixture or cft_data.load_mixture
 
     cfg = load_config(args.config)
     cfg.setdefault("train", {})
@@ -249,7 +273,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     out_dir = Path(args.out) if args.out else adapter_dir(cfg)
     out_dir.mkdir(parents=True, exist_ok=True)
-    run_id = run_id_for(cfg)
+    run_id = run_id_for(cfg, run_id_prefix)
 
     tokenizer = AutoTokenizer.from_pretrained(mcfg["hf_id"])
     if tokenizer.pad_token is None:
@@ -259,8 +283,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     import random
 
     paired = bool((cfg.get("train", {}) or {}).get("pair_pos_neg", True))
-    train_rows = cft_data.load_mixture(language, tasks, splits=("train",), paired=paired)
-    val_rows = cft_data.load_mixture(language, tasks, splits=("val",), paired=paired)
+    mix_kw = dict(cfg.get("train", {}).get("mixture_kwargs", {}) or {})
+    train_rows = mixture(language, tasks, splits=("train",), paired=paired, **mix_kw)
+    val_rows = mixture(language, tasks, splits=("val",), paired=paired, **mix_kw)
     weights = dict((cfg.get("train", {}) or {}).get("task_weights", {}) or {})
     if weights:
         train_rows = expand_by_weight(train_rows, weights)
@@ -273,15 +298,21 @@ def main(argv: Optional[list[str]] = None) -> int:
     if tcfg.get("val_size"):
         val_rows = val_rows[: int(tcfg["val_size"])]
 
-    keep, length_stats = measure_lengths(train_rows, tokenizer, int(tcfg["max_seq_len"]))
+    keep, length_stats = measure_lengths(
+        train_rows, tokenizer, int(tcfg["max_seq_len"]), build_example
+    )
     print(f"[cft.train] lengths: {json.dumps(length_stats)}", flush=True)
     train_rows = [train_rows[i] for i in keep]
 
-    val_keep, val_length_stats = measure_lengths(val_rows, tokenizer, int(tcfg["max_seq_len"]))
+    val_keep, val_length_stats = measure_lengths(
+        val_rows, tokenizer, int(tcfg["max_seq_len"]), build_example
+    )
     val_rows = [val_rows[i] for i in val_keep]
 
-    train_ds = Dataset.from_list(cft_data.to_sft_records(train_rows))
-    val_ds = Dataset.from_list(cft_data.to_sft_records(val_rows)) if val_rows else None
+    train_ds = Dataset.from_list(cft_data.to_sft_records(train_rows, build_example))
+    val_ds = (
+        Dataset.from_list(cft_data.to_sft_records(val_rows, build_example)) if val_rows else None
+    )
 
     dataset_meta = {
         "language": language,
@@ -305,7 +336,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     manifest = (
         RunManifest(
-            experiment="cft/replication",
+            experiment=cfg.get("experiment", "cft/replication"),
             run_id=run_id,
             seed=seed,
             config_path=str(cfg.get("_config_path", args.config)),

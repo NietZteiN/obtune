@@ -253,6 +253,13 @@ class VerifyStats:
     n_verified: int = 0
     reject_reasons: dict[str, int] = field(default_factory=dict)
     by_family: dict[str, int] = field(default_factory=dict)
+    #: Populated only when `verify(collect_rejects=True)`. The `equivalent_mutant`
+    #: rejects are scientifically useful rather than waste: a single-token edit that
+    #: provably does NOT change behaviour is the ideal construct-validity control for a
+    #: semantic-equivalence probe — it separates "the probe detects semantics" from
+    #: "the probe detects that an edit happened". Capturing them costs zero extra
+    #: executions, because they were already run and adjudicated.
+    rejects: list["Mutant"] = field(default_factory=list)
 
     def reject(self, reason: str) -> None:
         self.reject_reasons[reason] = self.reject_reasons.get(reason, 0) + 1
@@ -301,6 +308,7 @@ def verify(
     workers: int = 32,
     families: Sequence[str] = OP_FAMILIES,
     keep_per_program: int = 1,
+    collect_rejects: bool = False,
 ) -> tuple[list[Mutant], VerifyStats]:
     """Propose and execution-verify mutants for a batch of base programs.
 
@@ -394,11 +402,15 @@ def verify(
             if m.n_cases_differing == 0:
                 m.reject_reason = "equivalent_mutant"
                 stats.reject("equivalent_mutant")
+                if collect_rejects:
+                    stats.rejects.append(m)
                 continue
             if m.n_cases_ok < min_ok_fraction * len(ok_idx):
                 # Broken everywhere: a trivially-spottable negative, see the module docstring.
                 m.reject_reason = "mutant_mostly_broken"
                 stats.reject("mutant_mostly_broken")
+                if collect_rejects:
+                    stats.rejects.append(m)
                 continue
             m.verified = True
             kept.append(m)

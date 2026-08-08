@@ -459,3 +459,135 @@ def forward_success_exec(verdict: ExecVerdict) -> bool:
     """Forward obfuscation is correct only if the generated program still computes the
     original outputs — the paper's "semantic evaluation" (§3.3) made executable."""
     return verdict.all_match
+
+
+# --------------------------------------------------------------------------- #
+# Structural recovery — the reverse criterion the paper's one cannot express
+
+#: Node types that branch or loop, per language. Used to compare control-flow shape
+#: rather than tokens, because the reverse direction for a structural transform is a
+#: claim about shape.
+_BRANCH_TYPES = {
+    "python": {"if_statement", "elif_clause", "else_clause", "conditional_expression",
+               "match_statement", "case_clause"},
+    "javascript": {"if_statement", "else_clause", "ternary_expression", "switch_statement",
+                   "switch_case", "switch_default"},
+}
+_LOOP_TYPES = {
+    "python": {"for_statement", "while_statement"},
+    "javascript": {"for_statement", "for_in_statement", "while_statement", "do_statement"},
+}
+
+
+def control_flow_signature(code: str, language: str) -> dict[str, float]:
+    """Branch/loop counts, nesting depth, and a dispatch-loop indicator.
+
+    The dispatch-loop indicator is what detects `S1`: control-flow flattening rewrites a
+    body into `while <state> != -1:` followed by a chain of `elif <state> == <k>:`, so the
+    signature is a loop whose immediate body is a long comparison chain against ONE
+    variable. Counting branches alone would not catch it — a flattened program has plenty
+    of branches, they are just all at the same depth against the same variable.
+    """
+    empty = {"n_branches": 0.0, "n_loops": 0.0, "max_depth": 0.0,
+             "dispatch_loop": 0.0, "max_branch_fanout": 0.0}
+    if not code.strip():
+        return empty
+    try:
+        root = parse(language, code)
+    except Bail:
+        return empty
+
+    branch_types = _BRANCH_TYPES.get(language, set())
+    loop_types = _LOOP_TYPES.get(language, set())
+    n_branches = n_loops = 0
+    max_depth = 0
+    max_fanout = 0
+    dispatch = 0.0
+
+    def walk(node: Any, depth: int) -> None:
+        nonlocal n_branches, n_loops, max_depth, max_fanout, dispatch
+        d = depth
+        if node.type in branch_types:
+            n_branches += 1
+            d = depth + 1
+        elif node.type in loop_types:
+            n_loops += 1
+            d = depth + 1
+            # A flattening dispatcher: this loop's subtree contains a chain of
+            # comparisons all naming the same identifier.
+            names: list[str] = []
+            for sub in iter_nodes(node):
+                if sub.type in ("comparison_operator", "binary_expression"):
+                    kids = [c for c in sub.children if c.is_named]
+                    if kids and kids[0].type == "identifier":
+                        names.append(node_text(code, kids[0]))
+            if names:
+                top = max(names.count(x) for x in set(names))
+                max_fanout = max(max_fanout, top)
+                # 3 is `configs/conditions.yaml::S1.params.min_states`, the smallest
+                # dispatch table the generator will emit.
+                if top >= 3:
+                    dispatch = 1.0
+        max_depth = max(max_depth, d)
+        for child in node.children:
+            walk(child, d)
+
+    walk(root, 0)
+    return {
+        "n_branches": float(n_branches),
+        "n_loops": float(n_loops),
+        "max_depth": float(max_depth),
+        "dispatch_loop": dispatch,
+        "max_branch_fanout": float(max_fanout),
+    }
+
+
+def structural_recovery(
+    prediction: str,
+    original: str,
+    obfuscated: str,
+    language: str,
+    branch_tolerance: int = 2,
+) -> bool:
+    """Did the model actually undo a STRUCTURAL transform?
+
+    `reverse_success_paper` cannot answer this for our primary condition. `S1` preserves
+    identifier names, so `readability_proxy(S1) = 0.810` against `L0`'s 0.818 — the
+    readability clause of the paper's criterion is free, and the criterion collapses to a
+    single CodeBLEU inequality on the transformation the whole study is built around.
+
+    This asks the structural question directly: the dispatch loop must be gone, and the
+    branch count must be back within `branch_tolerance` of the original's. Both halves
+    matter — deleting the dispatcher by emitting an empty function would satisfy the
+    first alone, and `exec_equivalence` is what stops that in the combined criterion.
+
+    Returns False when the obfuscation was not structural to begin with (no dispatcher in
+    the input), because then there is nothing structural to recover and the metric has
+    nothing to say; report it only for S1/S2.
+
+    Measured on 200 Python corpus programs:
+
+        dispatch_loop detector   S1 200/200 (100 %) · L0 9/200 (4.5 %) · S2 9/200 · L1r 9/200
+        structural_recovery      emit the true original 95.5 % · echo the input 0 %
+
+    The 4.5 % is the *same nine programs* in every condition — originals that already
+    contain a `while` loop comparing one variable against several constants. For those the
+    metric cannot separate the original's own shape from a dispatcher and conservatively
+    returns False, which is why it costs 4.5 % of the true-recovery rate too.
+
+    **Never report this alone.** An empty stub passes it 47 % of the time (the branch-count
+    guard cannot fail a function with no branches when the original had few). Its job is to
+    be ANDed with `exec_equivalence`, which is what stops a model from "recovering" a
+    program by deleting it — see `reverse_success_structural` in `cft.evaluate`.
+    """
+    obf_sig = control_flow_signature(obfuscated, language)
+    if not obf_sig["dispatch_loop"]:
+        return False
+    if not prediction.strip() or not tree_ok(language, prediction):
+        return False
+    pred_sig = control_flow_signature(prediction, language)
+    orig_sig = control_flow_signature(original, language)
+    return (
+        pred_sig["dispatch_loop"] == 0.0
+        and abs(pred_sig["n_branches"] - orig_sig["n_branches"]) <= branch_tolerance
+    )

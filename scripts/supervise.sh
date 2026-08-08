@@ -96,10 +96,26 @@ print(next((g.owner for g in gpu_alloc.survey() if g.index == $idx), 'free'))" 2
       fi
     done
 
-    # Top up to the budget on whatever is free right now.
-    claim=$(python -c "
+    # Top up to the budget on whatever is free right now — but never onto a card the
+    # rank sweep is using. The sweep runs arms in pairs and briefly releases both GPUs
+    # between pairs; claiming one in that gap put a grid job and a sweep arm on the
+    # same card. A live sweep reserves the GPUs it was launched with, not just the
+    # ones it happens to occupy this second.
+    reserved=""
+    if pgrep -f "run_rank_sweep.sh" >/dev/null 2>&1; then
+      reserved=$(pgrep -af "bash scripts/run_rank_sweep.sh" | head -1 \
+                 | sed 's/.*run_rank_sweep\.sh //' | tr -s ' ')
+    fi
+    claim=$(RESERVED="$reserved" python -c "
+import os
 from obtune import gpu_alloc
-print(' '.join(str(i) for i in gpu_alloc.claim($MAX_GPUS)))" 2>/dev/null)
+reserved = {int(x) for x in os.environ.get('RESERVED', '').split() if x.strip().isdigit()}
+st = [g for g in gpu_alloc.survey() if g.index not in reserved]
+held = len(gpu_alloc.ours()) # holdings count reserved cards too: they are ours
+slots = max(0, $MAX_GPUS - held)
+avail = [g.index for g in st if g.available]
+print(' '.join(str(i) for i in avail[:slots]))
+" 2>/dev/null)
     if [ -n "$claim" ]; then
       say "claiming free GPU(s): $claim (budget $MAX_GPUS)"
       # shellcheck disable=SC2086

@@ -1,0 +1,29 @@
+# Shared recipe for EVERY Experiment-1 arm.
+# Last updated: 2026-08-08
+#
+# Extends the CFT replication's base so the two experiments train under an identical
+# recipe. That is not tidiness — if the arms differed in learning rate or epochs, every
+# FLIP-vs-CFT gap would be confounded with the recipe, and the whole experiment collapses.
+# Each arm config below differs from this file in `arm` and `tasks` and nothing else.
+_extends: ../../cft/train/_base_cft.yaml
+
+experiment: srh/exp1
+adapter_root: adapters_srh # never runs/adapters_cft/ — an eval config must not confuse them
+scope: all5 # which condition set; part of the adapter directory name
+
+model: qwen25c-1.5b # 1.5B is the kill-gate tier; the 7B configs override this
+language: python
+
+# The full trainable ladder minus H1. S1 (control-flow flattening) is the PRIMARY
+# transformation for this study — it preserves identifier names, so its inverse is purely
+# structural, well-posed and execution-verifiable. S2 is the easy sanity check. The three
+# renaming conditions are kept for the cross-family generalization cells and reported with
+# the ill-posed-inverse caveat (there is no unique correct answer to "un-rename").
+# String encryption is absent because it is H1: quarantined, never trainable.
+train:
+  conditions: [L1b, L1r, L2, S1, S2]
+  # `common` restricts to programs covered by EVERY condition. Needed on the TRAIN side,
+  # not just at eval: S1 bails on short bodies, so its programs are systematically longer
+  # (283 vs 187 mean chars), and a cross-transformation cell would otherwise cross
+  # transformation family and program-length distribution at once.
+  program_subset: null # null for the main arms; "common" for the cross-transformation grid

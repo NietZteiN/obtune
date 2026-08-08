@@ -22,16 +22,24 @@ systems:
   sft: runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s17/final
   cft: runs/adapters_cft/qwen25c-1.5b/python/cft_r32_s17/final
 
+# Restrict to programs carrying a variant under EVERY evaluated condition before any
+# capping. Without this the S1 cell is scored on a different — and systematically longer
+# — program set than the L1r cell (heldout: 296 vs 166 mean chars), which confounds the
+# transform with the program (CLAUDE.md §4 coverage honesty; mirrors transfer.core_subset).
+eval_program_set: common_subset
+
 # 300 programs matches the paper's evaluation set size (§3.2.3: "an Evaluation Set of 300
-# curated samples"). Each program contributes 5 conditions x (1 forward + 4 reverse) x
-# 3 systems, so this is ~22 500 generations.
+# curated samples"), now sampled from the common subset rather than from all programs.
 limit: 300
 seed: 17
 
 sampling:
   temperature: 0.0 # greedy: the comparison must be reproducible, not sampled
   top_p: 1.0
-  max_tokens: 1024 # whole programs, not return values
+  # 1536, not 1024: S1 forward targets average ~377 tokens with a long tail, and a
+  # truncated generation is scored as a forward failure — which would present as a
+  # structural-condition effect with no way to detect it downstream (CLAUDE.md §4.8).
+  max_tokens: 1536
   seed: 17
 
 engine:

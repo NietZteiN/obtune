@@ -66,12 +66,35 @@ class EvalProgram:
     variants: dict[str, dict[str, str]] = field(default_factory=dict)
 
 
+def common_subset(
+    programs: Sequence[EvalProgram], conditions: Sequence[str]
+) -> list[EvalProgram]:
+    """Programs carrying a variant under EVERY evaluated condition.
+
+    The same coverage-honesty rule `transfer.core_subset` applies to obtune's own
+    matrix (CLAUDE.md §4), enforced here because the bidirectional evaluation needs it
+    just as badly: `S1` bails on programs whose body is too short to flatten, so without
+    this the S1 cell is scored on a different — and systematically LONGER — program set
+    than the L1r cell (measured on the heldout split: 296 vs 166 mean characters). A
+    per-condition comparison across differing program sets confounds the transform with
+    the program, and nothing downstream can detect it.
+
+    `L0` is excluded from the requirement: it is the reference source, not an evaluated
+    condition, and every program with cases has it by construction.
+    """
+    wanted = [c for c in conditions if c != "L0"]
+    if not wanted:
+        return list(programs)
+    return [p for p in programs if all(c in p.variants for c in wanted)]
+
+
 def load_eval_programs(
     language: str,
     conditions: Sequence[str],
     source: str = "heldout",
     limit: Optional[int] = None,
     seed: int = GLOBAL_SEED,
+    program_set: str = "common_subset",
 ) -> list[EvalProgram]:
     """Assemble program-level eval rows from the per-case eval item files.
 
@@ -124,6 +147,14 @@ def load_eval_programs(
     progs = [p for p in by_program.values() if p.cases]
     progs.sort(key=lambda p: p.program_id)
     cft_prompts.assert_demo_disjoint([p.program_id for p in progs])
+
+    if program_set == "common_subset":
+        progs = common_subset(progs, conditions)
+    elif program_set != "all":
+        raise ValueError(f"program_set must be 'common_subset' or 'all'; got {program_set!r}")
+
+    # The cap is applied AFTER the common-subset restriction, so the sample is drawn
+    # from one program set rather than from a different one per condition.
     if limit:
         import random
 
@@ -331,6 +362,16 @@ def score_trials(
             row["reverse_success_strict"] = int(
                 verdict.all_match and row["reverse_success_paper"] == 1
             )
+            # The structural criterion, for the conditions where the paper's is vacuous.
+            # `S1` preserves identifiers, so its readability barely moves and the paper's
+            # criterion degenerates to one CodeBLEU inequality — on the primary condition.
+            # ANDed with execution because the structural test alone passes an empty stub
+            # about half the time (measured; see metrics.structural_recovery).
+            structural = metrics.structural_recovery(
+                pred, prog.original_code, obf_code, req.language
+            )
+            row["structural_recovery"] = int(structural)
+            row["reverse_success_structural"] = int(structural and verdict.all_match)
         else:
             row["forward_success_exec"] = int(metrics.forward_success_exec(verdict))
     return rows
@@ -463,6 +504,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     programs = load_eval_programs(
         language, conditions, source=cfg.get("eval_source", "heldout"),
         limit=args.limit or cfg.get("limit"), seed=seed,
+        program_set=cfg.get("eval_program_set", "common_subset"),
     )
     assert_eval_disjoint_from_training(programs, language)
     prog_index = {p.program_id: p for p in programs}
@@ -508,6 +550,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         "reverse_strategies": strategies,
         "systems": systems,
         "criteria": criteria,
+        "eval_program_set": cfg.get("eval_program_set", "common_subset"),
         "n_programs": len(programs),
         "n_trials": len(rows),
         "adapter_effectiveness": effective,
