@@ -1,0 +1,137 @@
+{
+  "gate": "mono_all vs tuned_L0 on held-out H1",
+  "n_programs_common": 317,
+  "n_trials": 19950,
+  "accuracy": {
+    "base": {
+      "L0": 0.20105263157894737,
+      "L1b": 0.16526315789473683,
+      "L1r": 0.16421052631578947,
+      "L2": 0.17578947368421052,
+      "S1": 0.18736842105263157,
+      "S2": 0.14736842105263157,
+      "H1": 0.06631578947368422
+    },
+    "tuned_L0": {
+      "L0": 0.44,
+      "L1b": 0.32105263157894737,
+      "L1r": 0.34842105263157896,
+      "L2": 0.3547368421052632,
+      "S1": 0.3778947368421053,
+      "S2": 0.4126315789473684,
+      "H1": 0.2578947368421053
+    },
+    "mono_all": {
+      "L0": 0.391578947368421,
+      "L1b": 0.3547368421052632,
+      "L1r": 0.3410526315789474,
+      "L2": 0.3589473684210526,
+      "S1": 0.37157894736842106,
+      "S2": 0.3894736842105263,
+      "H1": 0.22842105263157894
+    }
+  },
+  "contrasts_vs_control": {
+    "L0": {
+      "label": "L0",
+      "value_pts": -4.8421,
+      "ci_lo": -7.1579,
+      "ci_hi": -2.529,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.3916,
+      "acc_control": 0.44,
+      "excludes_zero": true,
+      "equivalent": false,
+      "eq_margin_pts": 3.0,
+      "verdict": "hurts"
+    },
+    "L1b": {
+      "label": "L1b",
+      "value_pts": 3.3684,
+      "ci_lo": 0.5263,
+      "ci_hi": 6.0988,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.3547,
+      "acc_control": 0.3211,
+      "excludes_zero": true,
+      "equivalent": false,
+      "eq_margin_pts": 3.0,
+      "verdict": "generalizes"
+    },
+    "L1r": {
+      "label": "L1r",
+      "value_pts": -0.7368,
+      "ci_lo": -3.2597,
+      "ci_hi": 1.7895,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.3411,
+      "acc_control": 0.3484,
+      "excludes_zero": false,
+      "equivalent": true,
+      "eq_margin_pts": 3.0,
+      "verdict": "null_accepted"
+    },
+    "L2": {
+      "label": "L2",
+      "value_pts": 0.4211,
+      "ci_lo": -2.0067,
+      "ci_hi": 2.9474,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.3589,
+      "acc_control": 0.3547,
+      "excludes_zero": false,
+      "equivalent": true,
+      "eq_margin_pts": 3.0,
+      "verdict": "null_accepted"
+    },
+    "S1": {
+      "label": "S1",
+      "value_pts": -0.6316,
+      "ci_lo": -3.2666,
+      "ci_hi": 2.0021,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.3716,
+      "acc_control": 0.3779,
+      "excludes_zero": false,
+      "equivalent": true,
+      "eq_margin_pts": 3.0,
+      "verdict": "null_accepted"
+    },
+    "S2": {
+      "label": "S2",
+      "value_pts": -2.3158,
+      "ci_lo": -4.837,
+      "ci_hi": 0.2103,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.3895,
+      "acc_control": 0.4126,
+      "excludes_zero": false,
+      "equivalent": false,
+      "eq_margin_pts": 3.0,
+      "verdict": "inconclusive"
+    },
+    "H1": {
+      "label": "H1",
+      "value_pts": -2.9474,
+      "ci_lo": -5.158,
+      "ci_hi": -0.7368,
+      "n_programs": 317,
+      "n_items": 950,
+      "acc_treatment": 0.2284,
+      "acc_control": 0.2579,
+      "excludes_zero": true,
+      "equivalent": false,
+      "eq_margin_pts": 4.0,
+      "verdict": "hurts"
+    }
+  },
+  "h1_verdict": "BREADTH_HURTS__worse_than_clean_code_control",
+  "launch_per_condition_grid": true,
+  "note": "mono is NOT size-matched to a per-condition adapter (~27k vs ~4.7k pairs): the simple approach is given every advantage, so a failure here is decisive while a success needs a size-matched arm to separate breadth from volume."
+}

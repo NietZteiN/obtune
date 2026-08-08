@@ -1,0 +1,21 @@
+{
+ "job_id": "router_train__qwen25c-1.5b_python",
+ "kind": "router",
+ "argv": [
+  "-m",
+  "obtune.router.train_router",
+  "--config",
+  "router/router_v1.yaml",
+  "--features",
+  "results/router/qwen25c-1.5b/python/features.npz",
+  "--out",
+  "results/router/qwen25c-1.5b/python/router.npz"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.4,
+ "priority": 45,
+ "meta": {
+  "stage": "train",
+  "depends_on": "router_features__qwen25c-1.5b_python"
+ }
+}

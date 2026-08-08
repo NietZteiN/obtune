@@ -145,20 +145,25 @@ def bootstrap_delta(
         elo, ehi = (float(x) for x in np.percentile(draws, [5.0, 95.0]))
         c.eq_margin_pts = eq_margin
         c.equivalent = bool(elo > -eq_margin and ehi < eq_margin)
-        c.verdict = _verdict(c.excludes_zero, c.equivalent)
+        c.verdict = _verdict(c.excludes_zero, c.equivalent, c.value_pts)
     return c
 
 
-def _verdict(sig: bool, equiv: Optional[bool]) -> str:
-    """The 2x2 that keeps 'no effect' honest.
+def _verdict(sig: bool, equiv: Optional[bool], value_pts: float = 0.0) -> str:
+    """The 2x2 that keeps 'no effect' honest, with the SIGN carried through.
 
     A non-significant result is only evidence of absence when it is ALSO
     equivalent; otherwise the study was simply underpowered on that cell.
+
+    Sign matters and was originally omitted: a significant NEGATIVE delta was
+    labelled "generalizes", which reads as positive transfer when it is the
+    opposite — training on obfuscated code doing measurably WORSE than the
+    clean-code control.
     """
     if equiv is None:
         return "significant" if sig else "not_significant"
     if sig and not equiv:
-        return "generalizes"
+        return "generalizes" if value_pts > 0 else "hurts"
     if not sig and equiv:
         return "null_accepted"
     if sig and equiv:

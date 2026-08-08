@@ -130,6 +130,10 @@ if h1 is None:
     verdict, run_grid = "no_h1_cells", True
 elif h1["value_pts"] > 0 and h1["excludes_zero"]:
     verdict, run_grid = "INVARIANCE__breadth_generalizes", False
+elif h1["value_pts"] < 0 and h1["excludes_zero"]:
+    # Missing branch: a significantly NEGATIVE delta fell through to
+    # "inconclusive/underpowered", which is the opposite of what it means.
+    verdict, run_grid = "BREADTH_HURTS__worse_than_clean_code_control", True
 elif h1.get("equivalent"):
     verdict, run_grid = "NO_TRANSFER__breadth_does_not_reach_heldout", True
 else:

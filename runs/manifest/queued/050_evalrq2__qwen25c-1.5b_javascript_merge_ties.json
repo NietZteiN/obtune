@@ -1,0 +1,21 @@
+{
+ "job_id": "evalrq2__qwen25c-1.5b_javascript_merge_ties",
+ "kind": "eval-rq2",
+ "argv": [
+  "-m",
+  "obtune.eval_vllm",
+  "--config",
+  "eval/grid_rq1.yaml",
+  "--systems",
+  "merge_ties"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.08,
+ "priority": 50,
+ "meta": {
+  "model": "qwen25c-1.5b",
+  "language": "javascript",
+  "system": "merge_ties",
+  "depends_on": "merge__qwen25c-1.5b_javascript__ties"
+ }
+}

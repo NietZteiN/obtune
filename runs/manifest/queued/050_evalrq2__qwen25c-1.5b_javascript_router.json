@@ -1,0 +1,23 @@
+{
+ "job_id": "evalrq2__qwen25c-1.5b_javascript_router",
+ "kind": "eval-rq2",
+ "argv": [
+  "-m",
+  "obtune.eval_vllm",
+  "--config",
+  "eval/grid_rq1.yaml",
+  "--systems",
+  "router",
+  "--route-map",
+  "results/router/qwen25c-1.5b/javascript/route_map.json"
+ ],
+ "raw": false,
+ "est_gpu_h": 0.08,
+ "priority": 50,
+ "meta": {
+  "model": "qwen25c-1.5b",
+  "language": "javascript",
+  "system": "router",
+  "depends_on": "router_route__qwen25c-1.5b_javascript"
+ }
+}
