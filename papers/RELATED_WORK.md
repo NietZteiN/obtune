@@ -9,6 +9,12 @@ train or evaluate on recovery/deobfuscation. That is the clean separation from t
 
 That separation is a claim about what other people have done. This file is the evidence for it.
 
+**Two literatures, one gap.** §§1–3 cover work on *obfuscation*; **§4** covers work on *obtune's task* —
+fine-tuning a model to predict what a program outputs. The two barely cite each other, and they leave
+exactly complementary holes: the obfuscation papers have obfuscation without output prediction, the
+execution papers have output prediction without obfuscation. **obtune is the intersection**, which is
+the sharpest one-line statement of its novelty available.
+
 ## How to read this
 
 Every numeric claim carries a verification mark:
@@ -230,7 +236,54 @@ overlooked.
 
 ---
 
-## 4. Benchmarks, datasets, metrics
+## 4. Fine-tuning for execution reasoning and output prediction — obtune's actual task
+
+Sections 1–3 cover work on *obfuscation*. This section covers work on *obtune's task*: training a model
+to predict what a program outputs. It is a separate literature that barely cites the obfuscation one,
+and the two leave exactly complementary gaps — **the deobfuscation papers have obfuscation without
+output prediction; these have output prediction without obfuscation. obtune is the intersection.**
+
+| Key | System | Method | Result |
+|---|---|---|---|
+| `nye2021scratchpads` | **Scratchpads** (Nye et al., 2021) | Emit intermediate execution state token-by-token before the answer, rather than predicting it in one pass | Beats direct execution prediction "significantly in both the few-shot and fine-tuning regimes" ✅ |
+| `liu2023codeexecutor` | **CodeExecutor** (Liu et al., ACL Findings 2023) | Pre-train on execution *traces*; mutation-based data augmentation + curriculum learning | ~**94 %** of single-line transformations; **76.42 %** output accuracy vs Codex **13.07 %**; **48.06 %** on the harder CodeNetMut ✅ |
+| `gu2024cruxeval` | **CRUXEval** (Gu, Rozière, Leather, Solar-Lezama, Synnaeve, Wang) | *The benchmark, not a method.* 800 Python functions, 3–13 lines, input prediction + output prediction | GPT-4 + CoT **81 %** pass@1 on CRUXEval-O; Code Llama 34B **46 %** ✅ |
+| `ni2024next` | **NExT** (Ni, Allamanis, Cohan, Deng, Shi, Sutton, Yin — ICML 2024) | Self-training: bootstrap execution-aware CoT rationales from traces, no manual annotation | **+26.1 pts** absolute fix rate on MBPP, **+14.3 pts** on HumanEval (PaLM 2); generalizes when traces are absent at test time ✅ |
+| `ding2024semcoder` | **SemCoder** (Ding, Peng, Min, Kaiser, Yang, Ray — NeurIPS 2024) | "Monologue reasoning" — verbalize execution effects in natural language, rubber-duck style; SFT at 6.7B | CRUXEval-O **63.9 %**, CRUXEval-I **63.6 %**, HumanEval **79.3 %** — beats GPT-3.5-turbo (**59.0** / **50.3** / **76.8**) at 6.7B ✅ |
+
+### 4.1 The one methodological tension this exposes
+
+Every gain in the table comes from making execution **explicit** — a trace, a scratchpad, a monologue.
+That is the field's central lever, and **obtune has deliberately switched it off**: the v1 SFT format is
+no-CoT, justified in [`REFERENCES.md`](REFERENCES.md) by Paper 3's finding that CoT length
+*anticorrelates* with accuracy (ρ = −0.52) on obfuscated code.
+
+Both positions are defensible and they are not actually in conflict — Paper 3 measured *unprompted,
+inference-time* CoT on obfuscated code, while this literature *trains* on execution-grounded rationales.
+But the writeup should state the choice rather than leave it implicit, because a reviewer who knows
+`ding2024semcoder` and `ni2024next` will ask why obtune does not do the one thing that reliably works on
+this task. The honest answer is that it is a scoped v1 decision, not a claim that traces do not help.
+
+### 4.2 `ding2024semcoder` is the direct methodological neighbour
+
+Same task (output prediction), comparable scale (6.7B vs our 1.5B and 7–8B), same metric family
+(exact-match pass@1 on execution). It is the natural "what does the ceiling look like without
+obfuscation" reference for RQ1, and the closest thing to a baseline obtune's numbers can be read
+against — with the caveat that its evaluation code is clean and ours never is.
+
+### 4.3 ⚠️ CRUXEval is a training source, so it cannot also be the external yardstick
+
+CRUXEval-O is the obvious external validity check for obtune's task. But `cruxeval` is already a
+**tier-1 Python training source** in [`../configs/sources.yaml`](../configs/sources.yaml), and
+`cruxeval-x` feeds Dataset B of the test set. The `exclude_ids` contamination list covers overlap with
+obtune's *own* test set; it does not make a reported CRUXEval-O number clean, because the training
+corpus is drawn from the same pool. Either exclude CRUXEval from training in a dedicated run, or report
+external validity on a benchmark obtune does not train on. Worth deciding deliberately now rather than
+discovering it at writeup.
+
+---
+
+## 5. Benchmarks, datasets, metrics
 
 | Benchmark / dataset | Size | Task | Metric | What it cannot measure |
 |---|---|---|---|---|
@@ -253,7 +306,7 @@ together when defending execution-grounded evaluation.
 
 ---
 
-## 5. PEFT machinery for RQ2
+## 6. PEFT machinery for RQ2
 
 | Key | What it gives RQ2 |
 |---|---|
@@ -265,7 +318,7 @@ together when defending execution-grounded evaluation.
 
 ---
 
-## 6. What this means for each obtune RQ
+## 7. What this means for each obtune RQ
 
 **RQ1 — Generalization.** `nikiema2025contrastive` is the citation that makes the pilot result *expected*
 rather than anomalous, and CFT is the named intervention if the full grid confirms it. `hu2026bindeobf`
@@ -286,7 +339,7 @@ Papers 1–3's territory and is a genuine gap obtune inherits rather than shares
 
 ---
 
-## 7. Gaps this literature leaves open
+## 8. Gaps this literature leaves open
 
 The defensible novelty claim, stated as precisely as the evidence allows:
 
@@ -308,7 +361,7 @@ is in the design, not the scale, and the writeup should say so.
 
 ---
 
-## 8. Corrections to the source survey
+## 9. Corrections to the source survey
 
 This file was seeded from an AI-generated survey (`../../LLM Obfuscated Code Fine-Tuning.md`). Primary
 sources contradict it in seven places. Recorded here so the errors are not re-imported later.
@@ -344,3 +397,13 @@ listing; number not in an accessible source).
   `assaf2024malware` is really **Patsakis, Casino & Lykousas** (`patsakis2024assessing`, and the PDF *is*
   here — it was wrongly listed as paywalled), and `benmoussa2026paradigms` is really **Taşkın & Doğru**
   (`taskin2026paradigms`).
+- **2026-08-05 (third pass)** — Added **§4**, the execution-reasoning / output-prediction literature. The
+  first two passes mapped only the *obfuscation* field; obtune's actual task is output prediction, and
+  that has its own fine-tuning line (`nye2021scratchpads`, `liu2023codeexecutor`, `gu2024cruxeval`,
+  `ni2024next`, `ding2024semcoder` — 5 papers, 5 PDFs, bib now 34 entries). Records two things the
+  earlier passes could not see: the **no-CoT tension** (§4.1 — every gain in that literature comes from
+  making execution explicit, which obtune's v1 format switches off) and the **CRUXEval contamination
+  caveat** (§4.3 — `cruxeval` is already a tier-1 training source, so CRUXEval-O is not a clean external
+  yardstick). Sections 4–8 renumbered to 5–9; this incidentally repaired two cross-references
+  ("See §9", "§5 returns to this") that had been off-by-one since the first pass. **Note for anyone
+  following an older pointer: the corrections table moved from §8 to §9.**

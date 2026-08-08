@@ -388,7 +388,83 @@
   file    = {gravereaux2025tradeoffs.pdf}
 }
 
-% --- 2f. Attention steering (RQ3 neighbour; PDF lives in a sibling project)
+% --- 2f. Execution reasoning & output prediction — obtune's ACTUAL task (RELATED_WORK §4)
+% This is a separate literature from the deobfuscation one above: it fine-tunes for
+% output prediction but never on obfuscated code. obtune is the intersection.
+
+@article{nye2021scratchpads,
+  title   = {Show Your Work: Scratchpads for Intermediate Computation with Language Models},
+  author  = {Nye, Maxwell and Andreassen, Anders Johan and Gur-Ari, Guy and Michalewski, Henryk
+             and Austin, Jacob and Bieber, David and Dohan, David and Lewkowycz, Aitor
+             and Bosma, Maarten and Luan, David and Sutton, Charles and Odena, Augustus},
+  journal = {arXiv preprint arXiv:2112.00114},
+  year    = {2021},
+  eprint  = {2112.00114},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note    = {The method ancestor: emit intermediate execution state before the answer},
+  file    = {nye2021scratchpads.pdf}
+}
+
+@inproceedings{liu2023codeexecutor,
+  title     = {Code Execution with Pre-trained Language Models},
+  author    = {Liu, Chenxiao and Lu, Shuai and Chen, Weizhu and Jiang, Daxin and Svyatkovskiy, Alexey
+               and Fu, Shengyu and Sundaresan, Neel and Duan, Nan},
+  booktitle = {Findings of the Association for Computational Linguistics (ACL Findings)},
+  year      = {2023},
+  eprint    = {2305.05383},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.PL},
+  note      = {Execution-trace pretraining + curriculum learning. ~94\% single-line;
+               76.42\% output accuracy vs Codex 13.07\%; 48.06\% on CodeNetMut},
+  file      = {liu2023codeexecutor.pdf}
+}
+
+@article{gu2024cruxeval,
+  title   = {{CRUXEval}: A Benchmark for Code Reasoning, Understanding and Execution},
+  author  = {Gu, Alex and Rozi{\`e}re, Baptiste and Leather, Hugh and Solar-Lezama, Armando
+             and Synnaeve, Gabriel and Wang, Sida I.},
+  journal = {arXiv preprint arXiv:2401.03065},
+  year    = {2024},
+  eprint  = {2401.03065},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  note    = {800 Python functions, input + output prediction. GPT-4+CoT 81\% pass@1 on
+             CRUXEval-O; Code Llama 34B 46\%. NOTE: cruxeval is a tier-1 TRAINING source
+             in configs/sources.yaml --- see RELATED_WORK.md §4.3 before reporting it},
+  file    = {gu2024cruxeval.pdf}
+}
+
+@inproceedings{ni2024next,
+  title     = {{NExT}: Teaching Large Language Models to Reason about Code Execution},
+  author    = {Ni, Ansong and Allamanis, Miltiadis and Cohan, Arman and Deng, Yinlin
+               and Shi, Kensen and Sutton, Charles and Yin, Pengcheng},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2024},
+  eprint    = {2404.14662},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {Self-training on execution-trace rationales. +26.1 pts fix rate on MBPP,
+               +14.3 on HumanEval (PaLM 2); generalizes without traces at test time},
+  file      = {ni2024next.pdf}
+}
+
+@inproceedings{ding2024semcoder,
+  title     = {{SemCoder}: Training Code Language Models with Comprehensive Semantics Reasoning},
+  author    = {Ding, Yangruibo and Peng, Jinjun and Min, Marcus J. and Kaiser, Gail
+               and Yang, Junfeng and Ray, Baishakhi},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024},
+  eprint    = {2406.01006},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {THE DIRECT METHODOLOGICAL NEIGHBOUR: same task, comparable scale (6.7B).
+               "Monologue reasoning". CRUXEval-O 63.9\%, CRUXEval-I 63.6\%, HumanEval 79.3\%
+               --- beats GPT-3.5-turbo (59.0 / 50.3 / 76.8)},
+  file      = {ding2024semcoder.pdf}
+}
+
+% --- 2g. Attention steering (RQ3 neighbour; PDF lives in a sibling project)
 
 @inproceedings{rong2026codesteer,
   title     = {Post-hoc Attention Steering of Large Language Models for Robust Code
