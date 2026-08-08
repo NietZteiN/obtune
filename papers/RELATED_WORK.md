@@ -339,25 +339,102 @@ Papers 1–3's territory and is a genuine gap obtune inherits rather than shares
 
 ---
 
-## 8. Gaps this literature leaves open
+## 8. Gaps in the field — what is actually unclaimed
 
-The defensible novelty claim, stated as precisely as the evidence allows:
+The openings this survey exposes, audited honestly. **Read §8.3 first if you are looking for the
+novelty claim** — one of the three claims the earlier draft of this section made does not survive
+contact with `nikiema2025contrastive`.
 
-1. **Everything above evaluates on recovered code.** Every fine-tuning system in §1 optimises
-   obfuscated → clean. None asks whether a model can *use* code it cannot clean.
-2. **No held-out obfuscator family.** The closest work, `nikiema2025contrastive`, tests direction
-   (forward vs. reverse) on transforms the model was trained on. `hu2026bindeobf` has six transforms and
-   Level-1..6 stacking, but trains and tests on the same six. obtune's `H1` quarantine — a family the
-   model provably never saw, enforced by four independent layers (`../CLAUDE.md` §3.2) and read exactly
-   twice — has no equivalent in the papers surveyed here.
-3. **Memorization is diagnosed, never controlled for.** `beste2025exploring` runs a memorization test and
-   passes it ✅, but tests for *training-sample retrieval*, not for *obfuscator-specific* learning. A
-   clean-code (`L0`) control adapter, which is what actually falsified obtune's pilot hypothesis, does
-   not appear anywhere in this literature.
+### 8.1 Status audit
 
-**Honest counterweight:** obtune's evaluated scale is much smaller than BinDeObfBench's or Beste's,
-and the pilot's decisive comparison rests on a **23-program common subset** (3,465 trials). The novelty
-is in the design, not the scale, and the writeup should say so.
+| Claim obtune might make | Nearest prior work | Status |
+|---|---|---|
+| "Fine-tuning teaches transform memorization, not the transform class" | `nikiema2025contrastive` — *cognitive specialization*, 0 % reverse under standard SFT | ⚠️ **Largely taken.** Different task, same headline. Being second *without a fix* is the weak position |
+| "Models must be evaluated on still-obfuscated code, not recovered code" | `wang2026oasif` tunes for comprehension (assembly); §4 tunes for output prediction (clean code) | ⚠️ **Narrower than it looks.** Survives only as *source-level output prediction under obfuscation* |
+| "A clean-code control is required to interpret any transfer claim" | **nobody** | ✅ **Open, and obtune already has the result** |
+| "Memorization is graded by transform-family distance, not binary" | `nikiema2025contrastive` has forward/reverse binary | ✅ **Open** |
+| "Held-out obfuscator *family*, quarantine-enforced" | `hu2026bindeobf` trains and tests on the same six transforms | ✅ **Open** |
+| "Execution-grounded training under obfuscation" | §4 papers do it on clean code; Paper 3 contradicts them on obfuscated code | ✅ **Open, with a real prior disagreement** |
+| "Does tuning move models toward or away from human difficulty orderings?" | **nobody in either literature has human data** | ✅ **Open, and obtune uniquely equipped** |
+
+### 8.2 The openings, ranked by (claim strength × what obtune already has)
+
+**G1 — The clean-code control invalidates a methodology.** *The strongest thing in the project.*
+No work in §§1–4 includes a control adapter trained on unobfuscated code. obtune's pilot shows the
+`L0` control reaches the held-out obfuscator **as well or better** than the obfuscated-code adapter
+(**+30.3** vs **+27.3** pts over base). The consequence generalises far beyond obtune: **every claim of
+the form "we trained on obfuscation X and generalised to unseen Y" in this literature is uninterpretable
+without a clean control, because task acquisition alone reproduces that pattern.** That is a transferable
+critique of a methodology, not a result about one model. *Needs:* replication at grid scale across models
+and languages — already a required cell. *Risk:* low. *This should lead the paper, not sit in §3 of it.*
+
+**G2 — Nobody has tested whether a proposed fix survives past renaming.** `nikiema2025contrastive`'s CFT
+reaches 39–52 % on *variable renaming* and roughly nothing on dead-code insertion and string encryption —
+their own reported scope limit. No one has tested an invariance intervention against **structural**
+transforms or a **held-out family**. obtune's `S1`/`S2`/`H1` are purpose-built for exactly that.
+*Needs:* a CFT arm ported to output prediction. *Risk:* medium — CFT might work, which is equally
+publishable. *This is the opening that converts "we replicated Nikiema" into "we bounded Nikiema."*
+
+**G3 — Does execution-grounded training rescue invariance? (highest ceiling)** A genuine prior
+disagreement, not just a gap. §4 says making execution explicit is *the* lever — `ding2024semcoder` beats
+GPT-3.5-turbo on CRUXEval-O at 6.7B by verbalizing execution; `ni2024next` gets +26.1 pts from trace
+rationales. Paper 3 says CoT length **anticorrelates** with accuracy on obfuscated code (ρ = −0.52).
+Neither has tested the other's regime, and **nobody has run execution-grounded SFT on obfuscated code.**
+*Needs:* a trace/monologue SFT format and trace generation. *Risk:* medium-high, and it is the only
+opening that converts obtune's no-CoT decision from an unrun ablation into a tested arm — see §8.3.
+
+**G4 — Conditioning vs. capacity, measured on one ladder.** `guzman2026poisoned` moved a 100 % → 0–20 %
+failure by prompt reframing alone, **zero weight updates**. `hu2026bindeobf` shows in-context examples
+help instruct models and *hurt* reasoning models. Nobody has compared prompting against adapters against
+merging on a single controlled obfuscation ladder. RQ2 already is this experiment. *Risk:* low —
+"models know how but not when" is publishable either way.
+
+**G5 — Human alignment under tuning (unique, currently under-weighted).** Nothing in either literature
+has item-level human data; obtune has the 98-cell Paper-2 anchor. A **dissociation** — accuracy rises
+while alignment with human difficulty orderings falls — would be a striking and wholly unclaimed result.
+*Needs:* nothing new; the data exists. *Risk:* power, at n=98 cells. *Currently labelled "secondary";
+on this evidence it may deserve promotion.*
+
+**G6 — When does obfuscation *help*?** `li2025obfvuln` found some transforms *improve* model performance
+by stripping misleading surface cues. obtune's pilot is already consistent: base scores `.242` on `L1b`
+but `.202` on `L1r` and `L2`, and the `L1b`-tuned adapter scores **higher** on `L1r` (`.576`) than on
+`L1b` itself (`.515`). Nobody has characterised *when* the identifier channel is worse than no channel.
+*Needs:* nothing — the grid already produces the data. Cheap to pre-register, and it makes a
+non-monotonic tier ordering a predicted finding rather than a confusing one.
+
+**G7 — Mechanism.** Nothing in §§1–4 opens the model. CodeSteer steers attention *without* training;
+no one has asked what *tuning* changes internally under obfuscation. RQ3. *Risk:* high — the
+attention-is-not-explanation problem is why the design keeps the claim predictive until knockout.
+
+**G8 — There is no benchmark for comprehension under obfuscation.** CRUXEval is clean code;
+BinDeObfBench and the rest are recovery. A released stimulus set with a quarantined held-out family
+would be an artifact contribution independent of whether the RQ1 result is positive or negative.
+
+### 8.3 What looks like an opening but is not
+
+- **"We deliberately did not train on explicit execution."** This is an *unrun ablation*, not a finding.
+  It becomes a contribution only under **G3**, where both arms are run and compared. Stated as a design
+  choice it reads to any reviewer who knows `ding2024semcoder` as skipping the one lever known to work.
+- **"We use output prediction rather than recovery."** A framing, not a result, until it produces a
+  finding recovery-based evaluation could not have produced. **G1** is that finding; the framing alone
+  is not.
+- **"Fine-tuning teaches memorization, not invariance."** As a standalone claim this is a
+  better-controlled replication of `nikiema2025contrastive` on a different task. Strong as a *section*;
+  thin as a *paper*. What makes it a paper is G1 (the control), G2 (bounding their fix), or G3 (a
+  different intervention).
+
+### 8.4 Honest counterweight
+
+obtune's evaluated scale is much smaller than BinDeObfBench's or Beste's, and the pilot's decisive
+comparison rests on a **23-program common subset** (2,772–3,465 trials). The novelty is in the design,
+not the scale, and the writeup should say so plainly.
+
+Two further cautions. `../docs/design_doc_v0.1.md` §1 currently asserts "No existing work tests whether
+fine-tuning improves reasoning on still-obfuscated code" — that needs narrowing to *source-level output
+prediction*, since `wang2026oasif` tunes for assembly comprehension and §4 tunes for output prediction
+on clean code. And if the RQ1 grid merely confirms the pilot while RQ2 and RQ3 come back null, the
+project holds a partly-scooped negative result; **G1, G2 and G5 are the hedges against that, and all
+three are cheap.** Better decided now than in the writeup phase.
 
 ---
 
@@ -407,3 +484,14 @@ listing; number not in an accessible source).
   yardstick). Sections 4–8 renumbered to 5–9; this incidentally repaired two cross-references
   ("See §9", "§5 returns to this") that had been off-by-one since the first pass. **Note for anyone
   following an older pointer: the corrections table moved from §8 to §9.**
+- **2026-08-05 (fourth pass)** — Rewrote **§8** from a three-item novelty claim into an audited openings
+  list (G1–G8), after a full read of `nikiema2025contrastive` §§1–4 prompted by the question *"do we
+  actually have novelty over them?"* **The audit says: not on the headline claim.** Their cognitive
+  specialization result and obtune's memorization result are the same claim on different tasks, and they
+  have a fix where obtune has a negative result. §8.1 now marks each candidate claim taken / narrower /
+  open; §8.2 ranks the real openings (G1 the clean-code control is the strongest and obtune already has
+  the result; G2 bounding CFT past renaming; G3 execution-grounded training under obfuscation);
+  §8.3 records three things that *look* like openings and are not — including "we deliberately did not
+  train on explicit execution", which is an unrun ablation rather than a finding. §8.4 flags that
+  `../docs/design_doc_v0.1.md` §1's "no existing work tests…" claim needs narrowing to *source-level*
+  output prediction, given `wang2026oasif` and §4.

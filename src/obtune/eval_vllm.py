@@ -61,6 +61,11 @@ class SystemSpec:
     one_shot: bool = False
     oracle_route: bool = False
     route_map: Optional[str] = None  # item_id -> adapter path (JSON), for arch="router"
+    #: External baseline (e.g. "semcoder"). Such a model is run in ITS OWN prompt and
+    #: answer format, not obtune's — measuring a published model through a foreign
+    #: template would understate it and make the comparison meaningless.
+    baseline: Optional[str] = None
+    prompt_style: Optional[str] = None  # baseline-specific, e.g. monologue | cot
 
     @classmethod
     def from_config(cls, d: Mapping[str, Any]) -> "SystemSpec":
@@ -129,6 +134,13 @@ def drop_overlong(
 
 
 def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any) -> list[str]:
+    if system.baseline == "semcoder":
+        from obtune.baselines.semcoder import SemCoderSpec
+
+        spec = SemCoderSpec(style=system.prompt_style or "monologue")
+        # Raw completion prompts, not the chat template: this is the form SemCoder was
+        # trained and evaluated in upstream.
+        return [spec.build(it.code, it.entry_point, it.args_repr) for it in items]
     return [
         prompts.render_chat(
             prompts.build_prompt(
@@ -157,8 +169,15 @@ def build_trial_rows(
     """Grade + shape into schema.TrialRow dicts. Validated row by row, on purpose:
     a malformed trial must fail here, not in the R stats layer three days later."""
     rows: list[dict[str, Any]] = []
+    extract = None
+    if system.baseline == "semcoder":
+        from obtune.baselines.semcoder import extract_answer as extract
+
     for it, out, ntok in zip(items, outputs, n_tokens):
-        g = scoring.grade(out, it.output_repr, it.language, float_tol)
+        # A baseline answers in its own format; recover the literal before grading, or
+        # every row scores zero against a correct answer wrapped in [ANSWER] tags.
+        graded_text = extract(out) if extract else out
+        g = scoring.grade(graded_text, it.output_repr, it.language, float_tol)
         row = TrialRow(
             run_id=meta["run_id"],
             run_ts=meta["run_ts"],

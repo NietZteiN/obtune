@@ -1,0 +1,36 @@
+# SemCoder as an external baseline on obtune's obfuscation conditions.
+#
+# The question it answers: does training a model explicitly for EXECUTION SEMANTICS
+# confer obfuscation robustness? SemCoder's native task is output prediction and it
+# beats GPT-3.5 on CRUXEval-O, so if semantic training buys invariance, it should show
+# here. If SemCoder degrades across L1b/S1/H1 like every other model we have measured,
+# the project's negative result stops being about LoRA recipes and becomes a statement
+# about execution-semantics training in general.
+#
+# Run in SemCoder's OWN format (monologue + [ANSWER] tags), so this measures the model
+# rather than its fluency in our template. Both arms are reported: `monologue` is what
+# it was trained on, `cot` is the few-shot chain-of-thought variant from the same repo.
+_extends: _base_eval.yaml
+
+phase: main
+model: semcoder-s
+language: python
+eval_source: heldout
+
+engine:
+  # 6.7B; the monologue is a reasoning trace, so it needs a real generation budget —
+  # obtune's 64-token literal budget would truncate before [ANSWER] is ever emitted.
+  max_model_len: 8192
+  gpu_memory_utilization: 0.85
+
+sampling:
+  temperature: 0.0
+  max_tokens: 1024
+  stop: ["[/ANSWER]"]
+
+systems:
+  - {name: semcoder_s_monologue, arch: none, baseline: semcoder, prompt_style: monologue}
+  - {name: semcoder_s_cot, arch: none, baseline: semcoder, prompt_style: cot}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval
