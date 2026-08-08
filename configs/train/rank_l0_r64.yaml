@@ -1,0 +1,21 @@
+# Rank control for the sweep: does more capacity help the CLEAN-code adapter too?
+#
+# Without this, a gain in mono at higher rank is ambiguous — it could be capacity
+# helping everything rather than capacity relieving the breadth bottleneck
+# specifically. The control saturated with a clear peak at epoch 2, so unlike mono it
+# shows no sign of being capacity-bound; this checks that directly.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0]
+run_tag: rank_l0_r64
+phase: main
+
+peft:
+  r: 64
+  alpha: 128
+
+train:
+  epochs: 1
+  seed: 17

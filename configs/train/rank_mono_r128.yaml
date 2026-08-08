@@ -1,0 +1,31 @@
+# Rank sweep — is "breadth hurts" a capacity limit rather than a fact about breadth?
+#
+# The gate found mono (all 6 conditions, r=32) BELOW the clean-code control on the
+# held-out obfuscator (-2.9 pts, CI [-5.2,-0.7]). Its checkpoint curve was flat
+# (.3698 / .3704 / .3678), so it was not undertrained on steps — but a flat curve at
+# a low ceiling is equally the signature of a capacity limit: the control spends
+# rank 32 on ONE condition, mono spends the same 32 on six.
+#
+# r=192 is the parameter-matched arm: six per-condition adapters at r=32 have 6x the
+# parameters of one mono at r=32, so "specialists beat the generalist" may partly be
+# "6x the parameters beat 1x".
+#
+# ONE epoch: mono's val EM moved by 0.0026 across three epochs, and its SELECTED
+# checkpoint was epoch 1 — so epoch 1 is the like-for-like comparison point, and the
+# sweep costs a third as much.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: rank_mono_r128
+phase: main
+
+peft:
+  r: 128
+  alpha: 256
+
+train:
+  train_size: 30000
+  epochs: 1
+  seed: 17

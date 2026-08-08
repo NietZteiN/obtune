@@ -1,65 +1,80 @@
 #!/usr/bin/env bash
-# Launch one detached tmux worker per IDLE GPU (CLAUDE.md §1).
+# Launch one detached worker per IDLE GPU (CLAUDE.md §1).
 #
-# CUDA_VISIBLE_DEVICES is set at tmux-spawn time, before any python/torch import,
-# which is the only point where the pin is guaranteed to take effect. The worker
-# then re-checks that the same physical GPU is still idle before claiming each job,
-# because this box is shared and someone else may start a run at any time.
+# Uses setsid, NOT tmux. The tmux server on this host has died twice mid-run, taking
+# every worker with it and costing hours of idle GPU; processes started with setsid
+# reparent to init and have survived both times. A worker is a background daemon, not
+# something anyone attaches to, so tmux bought nothing here — `--status` and the
+# per-worker logs under runs/logs/ are the interface.
 #
 #   bash scripts/launch_workers.sh            # every idle GPU
-#   bash scripts/launch_workers.sh 0 2        # only these
-#   bash scripts/launch_workers.sh --status   # what is running
-#   bash scripts/launch_workers.sh --stop     # stop all obtune workers
-set -euo pipefail
+#   bash scripts/launch_workers.sh 0 1        # specific GPUs
+#   bash scripts/launch_workers.sh --status
+#   bash scripts/launch_workers.sh --stop
+#
+# CUDA_VISIBLE_DEVICES is set at spawn time, before any python/torch import.
+set -uo pipefail
+cd "$(dirname "$0")/.."
+source scripts/env.sh
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-PY=/data/jvl210002/conda_envs/obtune/bin/python
+QUEUE=runs/manifest/queued
+PIDDIR=runs/manifest/workers
+mkdir -p "$PIDDIR" runs/logs
+
+worker_pids() { pgrep -f "obtune.sched.worker --gpu-tag" 2>/dev/null; }
 
 case "${1:-}" in
   --status)
-    tmux ls 2>/dev/null | grep '^obtune-' || echo "no obtune workers running"
-    echo
-    for d in queued running done failed; do
-      n=$(find "$ROOT/runs/manifest/$d" -name '*.json' 2>/dev/null | wc -l)
-      printf '  %-8s %s\n' "$d" "$n"
+    n=$(worker_pids | wc -l)
+    echo "workers running: $n"
+    for f in "$PIDDIR"/*.pid; do
+      [ -e "$f" ] || continue
+      pid=$(cat "$f"); tag=$(basename "$f" .pid)
+      kill -0 "$pid" 2>/dev/null && echo "  $tag: pid $pid alive" || echo "  $tag: pid $pid DEAD"
     done
-    exit 0
-    ;;
+    echo "queued=$(ls "$QUEUE" 2>/dev/null | wc -l)" \
+         "running=$(find runs/manifest/running -name '*.json' 2>/dev/null | wc -l)" \
+         "done=$(ls runs/manifest/done 2>/dev/null | wc -l)" \
+         "failed=$(ls runs/manifest/failed 2>/dev/null | wc -l)"
+    exit 0 ;;
   --stop)
-    tmux ls 2>/dev/null | grep '^obtune-' | cut -d: -f1 | while read -r s; do
-      tmux kill-session -t "$s" && echo "stopped $s"
-    done
-    echo "note: jobs left in runs/manifest/running/ can be requeued with:"
-    echo "  PYTHONPATH=src $PY -m obtune.sched.worker --gpu-tag any --requeue-stale"
-    exit 0
-    ;;
+    for pid in $(worker_pids); do kill -TERM "$pid" 2>/dev/null && echo "stopped $pid"; done
+    sleep 3
+    for pid in $(worker_pids); do kill -KILL "$pid" 2>/dev/null; done
+    rm -f "$PIDDIR"/*.pid
+    echo "note: jobs left in runs/manifest/running/ can be recovered with --requeue-stale"
+    exit 0 ;;
 esac
 
-if [ $# -gt 0 ]; then
-  GPUS="$*"
+if [ "$#" -gt 0 ]; then
+  GPUS=("$@")
 else
-  GPUS=$(PYTHONPATH="$ROOT/src" "$PY" - <<'EOF'
+  # Only idle GPUs — this is a shared box with no scheduler (CLAUDE.md §1).
+  mapfile -t GPUS < <(python -c "
 from obtune import gpu
-print(" ".join(str(s.index) for s in gpu.query() if s.is_idle(2000, 5)))
-EOF
-)
+try:
+    print('\n'.join(str(i) for i in gpu.pick_free_gpus(4)))
+except RuntimeError:
+    pass
+")
 fi
 
-if [ -z "${GPUS// /}" ]; then
-  echo "no idle GPUs — nothing launched. On a shared box you wait; there is no queue."
+if [ "${#GPUS[@]}" -eq 0 ]; then
+  echo "no idle GPU — queue stays in $QUEUE ($(ls "$QUEUE" 2>/dev/null | wc -l) jobs)"
   exit 1
 fi
 
-for g in $GPUS; do
-  session="obtune-gpu${g}"
-  if tmux has-session -t "$session" 2>/dev/null; then
-    echo "$session already running — skipping"
+for g in "${GPUS[@]}"; do
+  tag="gpu${g}"
+  if pgrep -f "obtune.sched.worker --gpu-tag $tag\b" >/dev/null 2>&1; then
+    echo "worker for $tag already running"
     continue
   fi
-  tmux new-session -d -s "$session" \
-    "cd '$ROOT' && CUDA_VISIBLE_DEVICES=$g PYTHONPATH='$ROOT/src' '$PY' -m obtune.sched.worker --gpu-tag gpu$g 2>&1 | tee -a runs/logs/worker-gpu$g.log"
-  echo "launched $session (CUDA_VISIBLE_DEVICES=$g)"
+  log="runs/logs/worker_${tag}.log"
+  CUDA_VISIBLE_DEVICES="$g" setsid nohup python -m obtune.sched.worker --gpu-tag "$tag" \
+    >> "$log" 2>&1 < /dev/null &
+  pid=$!
+  disown 2>/dev/null || true
+  echo "$pid" > "$PIDDIR/${tag}.pid"
+  echo "launched worker $tag (pid $pid, CUDA_VISIBLE_DEVICES=$g) -> $log"
 done
-
-echo
-echo "attach with: tmux attach -t obtune-gpu<N>    status: bash scripts/launch_workers.sh --status"
