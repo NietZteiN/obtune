@@ -71,6 +71,49 @@ Phase 0–1 complete and verified; the RQ1–RQ3 implementation is being built o
 
 ---
 
+## Side thread — CFT replication (`nikiema2025contrastive`), started 2026-08-08
+
+Full design and the deviation list: [`docs/CFT_REPLICATION.md`](docs/CFT_REPLICATION.md).
+Code in `src/obtune/cft/`, configs in `configs/cft/`, tests in `tests/test_cft_*.py`.
+
+**Why:** it is the nearest prior work to the pilot finding (`papers/RELATED_WORK.md` §2.1) and
+§7 names CFT as the candidate RQ1 intervention. Before adopting an intervention, check whether
+its result reproduces on our corpus.
+
+**Scope limit that cannot be worked around:** the paper's third transformation is string
+encryption, which maps onto our `H1`. H1 is quarantined, so this replication covers renaming
+(`L1b`/`L1r`/`L2`) and dead code (`S2`), and adds `S1` (control-flow flattening), which the
+paper lacks. The paper's *hardest* arm is the one we cannot run.
+
+**Decisions taken here (2026-08-08):**
+- **Negatives are the obfuscated variant with one token changed**, not clean-vs-clean as the
+  paper does. Under the paper's construction "is B obfuscated?" predicts the label perfectly,
+  so L_pos/L_neg can be solved without comparing semantics. `clean_mutant` is kept as a config
+  option so the confound is measurable rather than arguable.
+- **Every negative is executed** against its parent's cases and kept only if an output really
+  differs *and* it still runs on ≥50 % of them. Rejects equivalent mutants (which would teach
+  the inverse of the intended lesson) and everywhere-broken ones (trivially spottable).
+- **CodeBLEU is the published implementation** (`codebleu==0.7.0`), vendored to `env/vendor/`
+  so `env/lock-obtune.txt` is untouched. The distribution's tree-sitter 0.22 pin is deliberately
+  NOT vendored — it would shadow the 0.26 grammars `obf/base.py` depends on. `metrics.py`
+  *appends* the vendor dir to `sys.path` for that reason.
+- **Readability is a labelled substitute**, not Scalabrino et al.'s Java model. Only within-run
+  contrasts are interpretable. Its short-identifier threshold (0.5) was set by measurement over
+  400 programs (L0 flagged 8 % / L2 flagged 89 %), not by taste.
+- **Model ladder:** 1.5B is a pipeline smoke test only. The headline number runs on
+  `qwen25c-7b` — the paper's own "QwenCoder" row (39.00 % reverse under CFT), and the paper
+  reports an architectural capacity hierarchy, so a null at 1.5B would be uninformative.
+- **Queue priority 60** — behind the entire RQ1 grid. A replication of someone else's paper
+  does not preempt the project's own experiments.
+
+**Watch item:** `train.py` records `task_token_share` per run. Equal *instance* counts across
+the three pools (the paper's balancing) do NOT mean equal loss weight — a `gen` target is a
+whole program, a `pos`/`neg` target is one token. If the measured gen share is ~0.99, the
+"three-term loss" is close to gen-only plus a rounding error, and that is a fact about the
+paper's recipe worth reporting rather than silently correcting.
+
+---
+
 ## Next up
 
 1. Finish the module build-out and integration review; get the full test suite green.

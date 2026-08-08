@@ -107,6 +107,28 @@ the clean-code control transfers to the held-out obfuscator *as well or better*.
 only significant cell is the trained condition itself (`L1b` **+16.2 pts** [+4.7, +28.5]); held-out `H1`
 is **−3.0 pts** [−10.5, +3.9]. The gain was task acquisition, not invariance.
 
+**We are replicating it** (started 2026-08-08). Design, condition mapping and the deviation list:
+[`../docs/CFT_REPLICATION.md`](../docs/CFT_REPLICATION.md); ledger:
+[`../log/cft-replication/`](../log/cft-replication/). Two findings about the *method* fell out of
+building the data layer, before any GPU time, and both belong in a writeup that cites this paper:
+
+- **The three-term objective is not three-way balanced.** `L_CFT = L_pos + L_neg + L_gen` (eq. 5) is
+  balanced by *instance count* ("10 000 each", §5.0.2), but a `gen` target is a whole program and a
+  `pos`/`neg` target is the single token YES or NO. Measured on our Python mixture with the
+  Qwen2.5-Coder tokenizer, `gen` carries **97.7 %** of the supervised-token mass (mean tokens per
+  instance: gen 196.7, pos 3.0, neg 3.0). Instance upsampling cannot repair it — equal token mass
+  needs ~86× and a ~976 000-instance mixture.
+- **The reverse-success criterion has no validity gate.** As stated (§4.3.2) it is two inequalities —
+  similarity to the obfuscated input below threshold, readability restored — and an empty string
+  satisfies the first perfectly. In a stub run of our evaluator the literal placeholder
+  `<stub:a1b2c3>` scored **17–24 %** "reverse success" until we added a `parses` precondition. This
+  does not touch their 0 % SFT figure, but their **39–52 %** CFT figures rest on it.
+
+A third observation is about obfuscation metrics generally rather than about this paper: our
+readability proxy scores adversarial renaming (`L1b`) *above* the original, because misleading names
+are well-formed English. Any readability-based reverse criterion is structurally blind to the
+`L1b` family — a metric-level echo of `guzman2026poisoned` below.
+
 ### 2.2 `guzman2026poisoned` — misleading names survive the attempt to remove them
 
 *Poisoned Identifiers Survive LLM Deobfuscation: A Case Study on Claude Opus 4.6* (Guzmán Lorenzo,

@@ -1,0 +1,21 @@
+# Arm A at the paper's own scale — Standard Fine-Tuning baseline on Qwen2.5-Coder-7B.
+#
+# This is the model the paper reports as "QwenCoder" (§3.1), and the only open-source
+# model where CFT worked at all (39.00 % reverse capability, Fig. 4). Running the
+# replication on the same model is what makes our number directly comparable to theirs;
+# the 1.5B runs are a pipeline smoke test, not evidence about CFT — the paper's own
+# "architectural capacity hierarchy" (§5.0.3) says a null at small scale is uninformative.
+_extends: _base_cft.yaml
+
+arm: sft
+model: qwen25c-7b
+language: python
+tasks: [gen]
+
+train:
+  # bf16 + gradient checkpointing on a 7B at 2560 tokens peaks well above what the
+  # batch-8 output-prediction recipe in configs/models.yaml assumes: a CFT sequence
+  # carries two whole programs where an obtune sequence carries a program and a short
+  # literal. Effective batch stays 64, matching every other run in the project.
+  per_device_batch: 2
+  grad_accum: 32

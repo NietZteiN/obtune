@@ -1,0 +1,14 @@
+# Arm B at the paper's own scale — Contrastive Fine-Tuning on Qwen2.5-Coder-7B.
+# L_CFT = L_pos + L_neg + L_gen (paper eq. 5). Differs from sft_qwen7b_py.yaml in
+# `tasks` and nothing else, so any gap between the arms is attributable to the two
+# extra losses rather than to the recipe.
+_extends: _base_cft.yaml
+
+arm: cft
+model: qwen25c-7b
+language: python
+tasks: [gen, pos, neg]
+
+train:
+  per_device_batch: 2
+  grad_accum: 32

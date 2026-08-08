@@ -1,0 +1,19 @@
+# Bidirectional evaluation at the paper's scale — Qwen2.5-Coder-7B ("QwenCoder", §3.1).
+# The headline comparison; configs/cft/eval/bidir_v1.yaml is its 1.5B smoke counterpart.
+_extends: bidir_v1.yaml
+
+model: qwen25c-7b
+
+systems:
+  base: null
+  sft: runs/adapters_cft/qwen25c-7b/python/sft_r32_s17/final
+  cft: runs/adapters_cft/qwen25c-7b/python/cft_r32_s17/final
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  # Lower than the 1.5B run's 0.85: a 7B in bf16 plus three LoRA slots plus a 4k KV
+  # cache leaves less headroom, and vLLM refuses to start rather than shrinking.
+  gpu_memory_utilization: 0.80
+  seed: 17

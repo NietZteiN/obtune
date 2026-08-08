@@ -1,7 +1,7 @@
 # obtune — Does fine-tuning teach semantic invariance?
 
 *Generalization, Modularity, and Attention Under Code Obfuscation.*
-*Last updated: 2026-08-04*
+*Last updated: 2026-08-08*
 
 LLMs degrade sharply on obfuscated code. Prior fine-tuning work targets **deobfuscation** —
 recovering the original source. This project asks a different question: does fine-tuning on
@@ -47,6 +47,7 @@ scripts/     numbered pipeline steps + smoke/lint/manifest checks
 stats/       R GLMM stack (adapted from Papers 2–3), runs in the existing r_analysis env
 data/        symlinked inputs + generated corpora (see data/DATA_SOURCES.md)
 log/         dated research ledger, one folder per thread
+src/obtune/cft/  side thread: replication of `nikiema2025contrastive` (docs/CFT_REPLICATION.md)
 ```
 
 ## Setup
@@ -83,4 +84,7 @@ not through checkpoint or prompt selection. Four independent enforcement layers 
 repair it.
 
 ## Changelog
+- **2026-08-08** — Added the `nikiema2025contrastive` (Contrastive Fine-Tuning) replication as a
+  side thread: `src/obtune/cft/`, `configs/cft/`, [`docs/CFT_REPLICATION.md`](docs/CFT_REPLICATION.md).
+  It answers *their* question (forward vs reverse direction) on our corpus and does not touch RQ1–RQ3.
 - **2026-08-04** — Project created; scaffold, condition ladder, execution/canonicalization contracts, and the RQ1–RQ3 implementation.

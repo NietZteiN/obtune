@@ -1,0 +1,7 @@
+# Arm B — Contrastive Fine-Tuning: L_CFT = L_pos + L_neg + L_gen (paper eq. 5).
+# Differs from sft_qwen1.5b_py.yaml in `tasks` and nothing else.
+_extends: _base_cft.yaml
+
+arm: cft
+language: python
+tasks: [gen, pos, neg]

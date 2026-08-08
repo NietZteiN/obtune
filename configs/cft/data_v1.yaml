@@ -1,0 +1,48 @@
+# CFT instance-pool construction — replication of nikiema2025contrastive §3.2/§5.0.2.
+# Last updated: 2026-08-08
+#
+# Consumed by scripts/cft/10_build_cft_data.py -> data/train/cft/<lang>/{gen,pos,neg}.jsonl
+
+languages: [python, javascript]
+
+# The paper's three transformation types are variable renaming, dead code insertion and
+# string encryption (§3.2.2). Our ladder covers the first two with more resolution
+# (three renaming variants) and adds control-flow flattening, which the paper lacks.
+# String encryption maps onto H1, which is QUARANTINED and therefore absent by design —
+# it is never trained on under any circumstances (CLAUDE.md §3.2).
+conditions: [L1b, L1r, L2, S1, S2]
+
+# Programs come from the corpus train/val splits; `test` is reserved for the
+# bidirectional evaluation and dataset.validate_pools refuses any test-split instance.
+splits: [train, val]
+
+# obfuscated_mutant: negatives are the obfuscated variant with one token changed, so
+#   positives and negatives are equally obfuscated and surface obfuscation-ness carries
+#   no label information.
+# clean_mutant: the paper's literal construction (§5.0.2) — kept so the confound it
+#   leaves open can be measured rather than argued about.
+negative_style: obfuscated_mutant
+
+# null = "use everything the corpus supports". The paper caps each pool at 10 000; our
+# corpus (1 563 Python / ~640 JavaScript train programs x 5 conditions) supports fewer,
+# and pretending otherwise by resampling would inflate the apparent scale.
+n_per_task: null
+
+seed: 17
+
+mutation:
+  # Candidates proposed per program before execution filtering. 6 is enough that the
+  # ~46 % verification rate measured on a 40-program probe still yields a mutant for
+  # nearly every program, without a large executor bill.
+  mutants_per_program: 6
+  keep_per_program: 1
+  # A mutant must still run cleanly on >= this share of the cases where the parent ran
+  # cleanly. Below it, the negative is "broken everywhere" and spottable from the
+  # traceback alone — see src/obtune/cft/mutate.py.
+  min_ok_fraction: 0.5
+  max_cases: 12
+  families: [AOR, ROR, LCR, ICR] # arithmetic / relational / logical / integer-constant
+  # A mutation of control-flow-flattened code (S1) can turn the dispatch loop into a
+  # non-terminating one, so the timeout tail — not the mean — dominates build time.
+  exec_timeout_s: 2.0
+  exec_workers: 48 # of 96 cores; the GPU jobs on this shared box are not CPU-bound

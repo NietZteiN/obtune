@@ -1,0 +1,47 @@
+# Shared LoRA recipe for BOTH CFT arms. The SFT baseline and the CFT arm must differ in
+# exactly one key (`tasks`), or the comparison measures the recipe instead of the losses.
+# Last updated: 2026-08-08
+#
+# Paper §3.4: "We employ LoRA for open-source models". Rank/alpha/targets mirror
+# configs/train/_base_lora.yaml so this replication sits on the same footing as obtune's
+# own adapters.
+
+model: qwen25c-1.5b # key into configs/models.yaml
+language: python
+tasks: [gen] # overridden per arm; [gen] = SFT baseline, [gen, pos, neg] = CFT
+
+peft:
+  r: 32
+  alpha: 64
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+  task_type: CAUSAL_LM
+
+train:
+  dtype: bfloat16
+  attn_implementation: sdpa
+  gradient_checkpointing: true
+  # Raised from obtune's 1536: a `gen` example carries a whole program in the prompt AND
+  # a whole (often longer) program in the completion, and a `pos`/`neg` example carries
+  # two programs in the prompt. Instances over this length are dropped, not truncated —
+  # right-truncation would eat the target program, which is the entire supervision
+  # signal for `gen`. The realised drop rate is gated at 25 % and always reported.
+  max_seq_len: 2560
+  per_device_batch: 4 # smaller than obtune's 16: sequences are ~2x longer here
+  grad_accum: 16 # effective batch 64, matching the output-prediction runs
+  lr: 1.0e-4
+  lr_scheduler_type: cosine
+  warmup_ratio: 0.03
+  epochs: 3
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  seed: 17
+  train_size: 0 # 0 = use the whole mixture
+  val_size: 600
+  save_strategy: epoch
+  eval_steps: 200
+  logging_steps: 20
+  # Per-task instance upsampling. All 1 for the replication: the paper balances at the
+  # dataset level ("10 000 each"), not at the loss level. `task_token_share` in the run
+  # manifest records what that balancing is actually worth once tokenized.
+  task_weights: { gen: 1, pos: 1, neg: 1 }

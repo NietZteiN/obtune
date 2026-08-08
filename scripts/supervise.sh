@@ -16,10 +16,14 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 source scripts/env.sh
 
-GRID_GPUS="${GRID_GPUS:-2 3}"
+# obtune holds at most this many GPUs at once, and follows whatever is FREE rather
+# than being pinned to fixed indices — a neighbour can claim a card at any time, and a
+# worker parked on someone else's GPU does nothing while another card sits idle.
+MAX_GPUS="${MAX_GPUS:-2}"
 SWEEP_GPUS="${SWEEP_GPUS:-0 1}"
 INTERVAL="${INTERVAL:-300}"
 LOG=runs/logs/supervisor.log
+PIDDIR=runs/manifest/workers   # written by launch_workers.sh; unset here would crash `set -u`
 LOCK=runs/manifest/.supervisor.lock
 SWEEP_DONE=results/analysis/rank_sweep.json
 mkdir -p runs/logs runs/manifest
@@ -28,6 +32,7 @@ say() { echo "[$(date -u +%F' '%H:%M:%S)] $*" | tee -a "$LOG"; }
 
 if [ "${1:-}" = "--status" ]; then
   echo "supervisor: $(pgrep -f 'supervise.sh' | grep -v $$ | wc -l) process(es)"
+  python -m obtune.gpu_alloc 2>/dev/null | sed 's/^/  /'
   bash scripts/launch_workers.sh --status
   echo "sweep: $([ -f "$SWEEP_DONE" ] && echo COMPLETE || echo running/pending)"
   for d in runs/adapters/qwen25c-1.5b/python/*_r{64,128,192}_s17; do
@@ -43,7 +48,7 @@ fi
 echo $$ > "$LOCK"
 trap 'rm -f "$LOCK"' EXIT
 
-say "=== supervisor start (grid: $GRID_GPUS | sweep: $SWEEP_GPUS | every ${INTERVAL}s) ==="
+say "=== supervisor start (budget: ${MAX_GPUS} GPUs, following whatever is free | sweep: $SWEEP_GPUS | every ${INTERVAL}s) ==="
 
 requeue_orphans() {
   # A worker that dies mid-job leaves its claim in running/<tag>/. Nothing else ever
@@ -73,20 +78,48 @@ while true; do
   # --- grid ---------------------------------------------------------------- #
   if grid_work_left; then
     requeue_orphans
-    for g in $GRID_GPUS; do
-      if ! pgrep -f "obtune.sched.worker --gpu-tag gpu${g}\b" >/dev/null 2>&1; then
-        say "worker gpu${g} is not running — relaunching"
-        bash scripts/launch_workers.sh "$g" >> "$LOG" 2>&1
+
+    # Retire any worker parked on a card a neighbour has taken. It cannot run
+    # anything there, and while it lives it counts against our budget and blocks us
+    # from starting on a card that IS free.
+    for f in "$PIDDIR"/*.pid; do
+      [ -e "$f" ] || continue
+      tag=$(basename "$f" .pid); idx="${tag#gpu}"
+      pid=$(cat "$f" 2>/dev/null)
+      kill -0 "$pid" 2>/dev/null || continue
+      owner=$(python -c "
+from obtune import gpu_alloc
+print(next((g.owner for g in gpu_alloc.survey() if g.index == $idx), 'free'))" 2>/dev/null)
+      if [ "$owner" = "theirs" ]; then
+        say "gpu${idx} was taken by another user — retiring our idle worker there"
+        kill -TERM "$pid" 2>/dev/null; rm -f "$f"
       fi
     done
+
+    # Top up to the budget on whatever is free right now.
+    claim=$(python -c "
+from obtune import gpu_alloc
+print(' '.join(str(i) for i in gpu_alloc.claim($MAX_GPUS)))" 2>/dev/null)
+    if [ -n "$claim" ]; then
+      say "claiming free GPU(s): $claim (budget $MAX_GPUS)"
+      # shellcheck disable=SC2086
+      bash scripts/launch_workers.sh $claim >> "$LOG" 2>&1
+    fi
   fi
 
   # --- rank sweep ---------------------------------------------------------- #
   if [ ! -f "$SWEEP_DONE" ]; then
     if ! pgrep -f "run_rank_sweep.sh" >/dev/null 2>&1; then
-      say "rank sweep is not running and not complete — relaunching on $SWEEP_GPUS"
+      # Relaunch on whatever is free, within budget — the pair it started on may
+      # have been claimed by a neighbour in the meantime.
+      gpus=$(python -c "
+from obtune import gpu_alloc
+c = gpu_alloc.claim($MAX_GPUS)
+print(' '.join(str(i) for i in (c or gpu_alloc.ours()))[:32])" 2>/dev/null)
+      gpus="${gpus:-$SWEEP_GPUS}"
+      say "rank sweep is not running and not complete — relaunching on $gpus"
       # shellcheck disable=SC2086
-      setsid nohup bash scripts/run_rank_sweep.sh $SWEEP_GPUS \
+      setsid nohup bash scripts/run_rank_sweep.sh $gpus \
         >> runs/logs/rank_sweep_outer.log 2>&1 < /dev/null &
       disown 2>/dev/null || true
     fi

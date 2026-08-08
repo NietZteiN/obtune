@@ -1,0 +1,5 @@
+_extends: _base_cft.yaml
+
+arm: cft
+language: javascript
+tasks: [gen, pos, neg]

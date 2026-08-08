@@ -1,0 +1,52 @@
+# Bidirectional evaluation — paper Experiment 1 (forward, §4.1) + Experiment 3 (reverse, §4.3).
+# Last updated: 2026-08-08
+#
+#   python -m obtune.cft.evaluate --config cft/eval/bidir_v1.yaml --gpu <idle>
+
+model: qwen25c-1.5b
+language: python
+eval_source: heldout # the corpus test split (557 programs), not the 70-program ICSE set
+conditions: [L1b, L1r, L2, S1, S2]
+directions: [forward, reverse]
+
+# The paper evaluates four reverse-direction prompting strategies (§4.3.2) and reports
+# that none of them helps (ΔR ~ 0.01–0.05). Running all four is what licenses the claim
+# that the failure is not a prompting artefact.
+reverse_strategies: [simple, few_shot, cot, augmented]
+
+# Adapter paths are relative to the project root; `null` = the untuned base model.
+# `base` is REQUIRED: it is the reference for the paper's S2/S3 comparisons and the only
+# way to distinguish "fine-tuning destroyed the reverse direction" from "it was never there".
+systems:
+  base: null
+  sft: runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s17/final
+  cft: runs/adapters_cft/qwen25c-1.5b/python/cft_r32_s17/final
+
+# 300 programs matches the paper's evaluation set size (§3.2.3: "an Evaluation Set of 300
+# curated samples"). Each program contributes 5 conditions x (1 forward + 4 reverse) x
+# 3 systems, so this is ~22 500 generations.
+limit: 300
+seed: 17
+
+sampling:
+  temperature: 0.0 # greedy: the comparison must be reproducible, not sampled
+  top_p: 1.0
+  max_tokens: 1024 # whole programs, not return values
+  seed: 17
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  gpu_memory_utilization: 0.85
+  seed: 17
+
+exec:
+  timeout_s: 2.0
+  workers: 32
+
+# Thresholds for the paper's reverse-success criterion (§4.3.2/§4.3.3). Stated loosely in
+# the text, so they live here and are copied into every result file.
+criteria:
+  reverse_sim_threshold: 0.4 # S(C_deobf, C_obf) must fall below this
+  reverse_readability_tolerance: 0.1 # R(C_deobf) >= R(C_orig) - this

@@ -1,0 +1,7 @@
+# Arm A — the paper's Standard Fine-Tuning baseline: forward obfuscation only.
+# This is the arm that, in the paper, reaches P(T) > 0.85 forward and 0 % reverse (§4.3.3).
+_extends: _base_cft.yaml
+
+arm: sft
+language: python
+tasks: [gen]
