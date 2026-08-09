@@ -20,10 +20,12 @@ language: python
 # renaming conditions are kept for the cross-family generalization cells and reported with
 # the ill-posed-inverse caveat (there is no unique correct answer to "un-rename").
 # String encryption is absent because it is H1: quarantined, never trainable.
+# Everything under `mixture_kwargs` is forwarded verbatim to srh.dataset.load_mixture.
 train:
-  conditions: [L1b, L1r, L2, S1, S2]
-  # `common` restricts to programs covered by EVERY condition. Needed on the TRAIN side,
-  # not just at eval: S1 bails on short bodies, so its programs are systematically longer
-  # (283 vs 187 mean chars), and a cross-transformation cell would otherwise cross
-  # transformation family and program-length distribution at once.
-  program_subset: null # null for the main arms; "common" for the cross-transformation grid
+  mixture_kwargs:
+    conditions: [L1b, L1r, L2, S1, S2]
+    # `common` restricts to programs covered by EVERY condition. Needed on the TRAIN
+    # side, not just at eval: S1 bails on short bodies, so its programs are
+    # systematically longer (283 vs 187 mean chars), and a cross-transformation cell
+    # would otherwise cross transformation family and program-length distribution at once.
+    program_subset: null # null for the main arms; "common" for the cross-transformation grid

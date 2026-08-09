@@ -1,21 +1,29 @@
 {
- "job_id": "evalrq2__qwen25c-1.5b_javascript_merge_dare_linear",
- "kind": "eval-rq2",
- "argv": [
-  "-m",
-  "obtune.eval_vllm",
-  "--config",
-  "eval/grid_rq1.yaml",
-  "--systems",
-  "merge_dare_linear"
- ],
- "raw": false,
- "est_gpu_h": 0.08,
- "priority": 50,
- "meta": {
-  "model": "qwen25c-1.5b",
-  "language": "javascript",
-  "system": "merge_dare_linear",
-  "depends_on": "merge__qwen25c-1.5b_javascript__dare_linear"
- }
+  "job_id": "evalrq2__qwen25c-1.5b_javascript_merge_dare_linear",
+  "kind": "eval-rq2",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/grid_rq1.yaml",
+    "--systems",
+    "merge_dare_linear"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 50,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "javascript",
+    "system": "merge_dare_linear",
+    "depends_on": "merge__qwen25c-1.5b_javascript__dare_linear"
+  },
+  "result": {
+    "returncode": 1,
+    "seconds": 0.2,
+    "log": "runs/logs/evalrq2__qwen25c-1.5b_javascript_merge_dare_linear.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T03:19:21.842605+00:00",
+    "tail": "# evalrq2__qwen25c-1.5b_javascript_merge_dare_linear on gpu1 at 2026-08-09T03:19:21.639819+00:00\n# argv: ['/data/jvl210002/conda_envs/obtune/bin/python', '-m', 'obtune.eval_vllm', '--config', 'eval/grid_rq1.yaml', '--systems', 'merge_dare_linear']\n\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 810, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 804, in main\n    summary = run_grid(args)\n              ^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 545, in run_grid\n    systems = expand_systems(\n              ^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 505, in expand_systems\n    raise ValueError(\nValueError: system 'router' has arch='router' but no route map \u2014 it would evaluate base weights labelled as routed. Pass --route-map.\n"
+  }
 }

@@ -1,0 +1,215 @@
+{
+  "experiment": "cft/replication",
+  "run_id": "cft__qwen25c-1.5b__python__sft__s17",
+  "seed": 17,
+  "config_path": "/data/jvl210002/my_downloads/obtune/configs/cft/train/sft_qwen1.5b_py.yaml",
+  "config_resolved": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "tasks": [
+      "gen"
+    ],
+    "peft": {
+      "r": 32,
+      "alpha": 64,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "task_type": "CAUSAL_LM"
+    },
+    "train": {
+      "dtype": "bfloat16",
+      "attn_implementation": "sdpa",
+      "gradient_checkpointing": true,
+      "max_seq_len": 2560,
+      "per_device_batch": 4,
+      "grad_accum": 16,
+      "lr": 0.0001,
+      "lr_scheduler_type": "cosine",
+      "warmup_ratio": 0.03,
+      "epochs": 3,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0,
+      "seed": 17,
+      "train_size": 0,
+      "val_size": 600,
+      "save_strategy": "epoch",
+      "eval_steps": 200,
+      "logging_steps": 20,
+      "task_weights": {
+        "gen": 1,
+        "pos": 1,
+        "neg": 1
+      }
+    },
+    "_config_path": "/data/jvl210002/my_downloads/obtune/configs/cft/train/sft_qwen1.5b_py.yaml",
+    "arm": "sft"
+  },
+  "model_hf_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "model_revision_resolved": null,
+  "adapter": {
+    "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s17",
+    "train_cond": "cft:gen",
+    "rank": 32,
+    "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "sha256": "a1144f461e6d76558ca7816cd196a0945b6b0c010941c337573579fadcc12103"
+  },
+  "gpu_visible": "0",
+  "command": "/data/jvl210002/my_downloads/obtune/src/obtune/cft/train.py --config cft/train/sft_qwen1.5b_py.yaml",
+  "git_commit": "560f44dace8c6faa6e35a688e6656423e7601219",
+  "script_sha256": {
+    "src/obtune/cft/train.py": "d1a1e3032a34853a2ac6a506c0fc4ce11f42ad94e9ed5e4ab4f0d6fe3d03723a",
+    "src/obtune/cft/dataset.py": "9d651ffb975efd0a261cd2eff2cfc662d0080ed31c58e4bba1bb39ce7bb4da67",
+    "src/obtune/cft/prompts.py": "bc883d6ca7db8e4b47b6ebd901e0a84cd8ff7c1ec03ab4b2d56df589f58dba3e",
+    "src/obtune/cft/mutate.py": "3e2ebbf424de61ed1e2ab64b714b89c58f8eb646ded65fdfabd347699648ba8b",
+    "src/obtune/paths.py": "25ca09233ab3170185c164b064d0140c38f64364a45de19e9edbcb4b120a7a8d"
+  },
+  "started_utc": "2026-08-09T03:20:27.418445+00:00",
+  "finished_utc": "2026-08-09T04:27:15.981423+00:00",
+  "libraries": {
+    "python": "3.12.12",
+    "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "dataset": {
+      "language": "python",
+      "tasks": [
+        "gen"
+      ],
+      "arm": "sft",
+      "task_weights": {
+        "gen": 1,
+        "pos": 1,
+        "neg": 1
+      },
+      "n_train": 7383,
+      "n_val": 528,
+      "n_train_programs": 1563,
+      "train_by_task": {
+        "gen": 7383
+      },
+      "train_by_condition": {
+        "L1b": 1542,
+        "L1r": 1563,
+        "L2": 1562,
+        "S1": 1155,
+        "S2": 1561
+      },
+      "negative_style": null,
+      "pair_pos_neg": true,
+      "label_balance": {
+        "ALL": {
+          "pos": 0,
+          "neg": 0,
+          "p_yes": null
+        }
+      },
+      "lengths": {
+        "n_examples": 7384,
+        "n_kept": 7383,
+        "n_dropped": 1,
+        "drop_rate": 0.00013542795232936077,
+        "dropped_by_task": {
+          "gen": 1
+        },
+        "max_seq_len": 2560,
+        "len_mean": 350.5770585048754,
+        "len_p50": 297,
+        "len_p95": 751,
+        "len_max": 2827,
+        "kept_by_task": {
+          "gen": 7383
+        },
+        "supervised_tokens_by_task": {
+          "gen": 1452433
+        },
+        "task_token_share": {
+          "gen": 1.0
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 196.72666937559256
+        }
+      },
+      "val_lengths": {
+        "n_examples": 528,
+        "n_kept": 528,
+        "n_dropped": 0,
+        "drop_rate": 0.0,
+        "dropped_by_task": {},
+        "max_seq_len": 2560,
+        "len_mean": 347.5871212121212,
+        "len_p50": 308,
+        "len_p95": 723,
+        "len_max": 1534,
+        "kept_by_task": {
+          "gen": 528
+        },
+        "supervised_tokens_by_task": {
+          "gen": 103263
+        },
+        "task_token_share": {
+          "gen": 1.0
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 195.57386363636363
+        }
+      },
+      "cft_prompt_version": "cft_v1",
+      "cft_prompt_template_sha256": "101309399bb1223a7cb31bba4bfc493ee1c783057d68e944885fbe8526891862"
+    },
+    "training_summary": {
+      "run_id": "cft__qwen25c-1.5b__python__sft__s17",
+      "arm": "sft",
+      "finished_utc": "2026-08-09T04:27:15.796755+00:00",
+      "train_runtime_s": 3978.1053,
+      "train_loss": 0.37877337000835903,
+      "steps": 348,
+      "n_train": 7383,
+      "n_val": 528,
+      "lengths": {
+        "n_examples": 7384,
+        "n_kept": 7383,
+        "n_dropped": 1,
+        "drop_rate": 0.00013542795232936077,
+        "dropped_by_task": {
+          "gen": 1
+        },
+        "max_seq_len": 2560,
+        "len_mean": 350.5770585048754,
+        "len_p50": 297,
+        "len_p95": 751,
+        "len_max": 2827,
+        "kept_by_task": {
+          "gen": 7383
+        },
+        "supervised_tokens_by_task": {
+          "gen": 1452433
+        },
+        "task_token_share": {
+          "gen": 1.0
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 196.72666937559256
+        }
+      },
+      "checkpoints": [
+        "checkpoint-116",
+        "checkpoint-232",
+        "checkpoint-348"
+      ]
+    }
+  }
+}

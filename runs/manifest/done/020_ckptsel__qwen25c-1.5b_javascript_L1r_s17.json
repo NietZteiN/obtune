@@ -1,0 +1,28 @@
+{
+  "job_id": "ckptsel__qwen25c-1.5b_javascript_L1r_s17",
+  "kind": "ckpt-select",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "train/grid_qwen1.5b_js_L1r.yaml",
+    "--mode",
+    "ckpt-select",
+    "--adapter-root",
+    "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L1r_r32_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 20,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L1r_r32_s17",
+    "depends_on": "train__qwen25c-1.5b_javascript_L1r_s17"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 46.2,
+    "log": "runs/logs/ckptsel__qwen25c-1.5b_javascript_L1r_s17.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T02:55:28.689836+00:00"
+  }
+}

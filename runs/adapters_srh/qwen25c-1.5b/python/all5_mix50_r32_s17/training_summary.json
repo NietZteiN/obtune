@@ -1,0 +1,45 @@
+{
+  "run_id": "srh__qwen25c-1.5b__python__all5-mix50__s17",
+  "arm": "mix50",
+  "finished_utc": "2026-08-09T08:06:23.577904+00:00",
+  "train_runtime_s": 3939.8963,
+  "train_loss": 0.30408066031576575,
+  "steps": 348,
+  "n_train": 7383,
+  "n_val": 528,
+  "lengths": {
+    "n_examples": 7384,
+    "n_kept": 7383,
+    "n_dropped": 1,
+    "drop_rate": 0.00013542795232936077,
+    "dropped_by_task": {
+      "rev": 1
+    },
+    "max_seq_len": 2560,
+    "len_mean": 366.51584507042253,
+    "len_p50": 314,
+    "len_p95": 767,
+    "len_max": 2858,
+    "kept_by_task": {
+      "gen": 3688,
+      "rev": 3695
+    },
+    "supervised_tokens_by_task": {
+      "gen": 719614,
+      "rev": 317525
+    },
+    "task_token_share": {
+      "gen": 0.693845280140849,
+      "rev": 0.306154719859151
+    },
+    "mean_supervised_tokens_by_task": {
+      "gen": 195.12310195227766,
+      "rev": 85.93369418132612
+    }
+  },
+  "checkpoints": [
+    "checkpoint-116",
+    "checkpoint-232",
+    "checkpoint-348"
+  ]
+}

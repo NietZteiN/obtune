@@ -1,0 +1,5 @@
+# CFT+FLIP — does the contrastive objective add anything ON TOP of bidirectional exposure?
+# If FLIP already captures the effect, this arm should not beat it.
+_extends: _base_srh.yaml
+arm: cftflip
+tasks: [gen, rev, pos, neg]

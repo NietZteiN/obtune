@@ -1,0 +1,58 @@
+{
+  "mono r32 (gate)": {
+    "label": "mono r32 (gate)",
+    "value_pts": -2.9474,
+    "ci_lo": -5.158,
+    "ci_hi": -0.7368,
+    "n_programs": 317,
+    "n_items": 950,
+    "acc_treatment": 0.2284,
+    "acc_control": 0.2579,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 4.0,
+    "verdict": "hurts"
+  },
+  "mono r64": {
+    "label": "mono r64",
+    "value_pts": -1.4737,
+    "ci_lo": -2.9474,
+    "ci_hi": -0.0526,
+    "n_programs": 317,
+    "n_items": 1900,
+    "acc_treatment": 0.2432,
+    "acc_control": 0.2579,
+    "excludes_zero": true,
+    "equivalent": true,
+    "eq_margin_pts": 4.0,
+    "verdict": "trivial"
+  },
+  "mono r128": {
+    "label": "mono r128",
+    "value_pts": -4.1053,
+    "ci_lo": -6.3158,
+    "ci_hi": -1.9979,
+    "n_programs": 317,
+    "n_items": 950,
+    "acc_treatment": 0.2168,
+    "acc_control": 0.2579,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 4.0,
+    "verdict": "hurts"
+  },
+  "mono r192": {
+    "label": "mono r192",
+    "value_pts": -4.6316,
+    "ci_lo": -7.0526,
+    "ci_hi": -2.4185,
+    "n_programs": 317,
+    "n_items": 950,
+    "acc_treatment": 0.2116,
+    "acc_control": 0.2579,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 4.0,
+    "verdict": "hurts"
+  }
+}

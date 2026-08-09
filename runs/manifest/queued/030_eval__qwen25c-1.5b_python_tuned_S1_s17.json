@@ -1,23 +1,31 @@
 {
- "job_id": "eval__qwen25c-1.5b_python_tuned_S1_s17",
- "kind": "eval-cell",
- "argv": [
-  "-m",
-  "obtune.eval_vllm",
-  "--config",
-  "eval/grid_rq1.yaml",
-  "--systems",
-  "tuned_S1_s17"
- ],
- "raw": false,
- "est_gpu_h": 0.08,
- "priority": 30,
- "meta": {
-  "model": "qwen25c-1.5b",
-  "language": "python",
-  "system": "tuned_S1_s17",
-  "n_eval_conditions": 7,
-  "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s17/best",
-  "train_cond": "S1"
- }
+  "job_id": "eval__qwen25c-1.5b_python_tuned_S1_s17",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/grid_rq1.yaml",
+    "--systems",
+    "tuned_S1_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 30,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "system": "tuned_S1_s17",
+    "n_eval_conditions": 7,
+    "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s17/best",
+    "train_cond": "S1"
+  },
+  "result": {
+    "returncode": 1,
+    "seconds": 0.2,
+    "log": "runs/logs/eval__qwen25c-1.5b_python_tuned_S1_s17.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T03:08:28.477107+00:00",
+    "tail": "# eval__qwen25c-1.5b_python_tuned_S1_s17 on gpu1 at 2026-08-09T03:08:28.272502+00:00\n# argv: ['/data/jvl210002/conda_envs/obtune/bin/python', '-m', 'obtune.eval_vllm', '--config', 'eval/grid_rq1.yaml', '--systems', 'tuned_S1_s17']\n\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 810, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 804, in main\n    summary = run_grid(args)\n              ^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 545, in run_grid\n    systems = expand_systems(\n              ^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 505, in expand_systems\n    raise ValueError(\nValueError: system 'router' has arch='router' but no route map \u2014 it would evaluate base weights labelled as routed. Pass --route-map.\n"
+  }
 }

@@ -1,26 +1,34 @@
 {
- "job_id": "merge__qwen25c-1.5b_python__dare_ties",
- "kind": "merge",
- "argv": [
-  "-m",
-  "obtune.merge_adapters",
-  "--config",
-  "merge/ties_v1.yaml",
-  "--model",
-  "qwen25c-1.5b",
-  "--language",
-  "python",
-  "--rank",
-  "32",
-  "--out",
-  "runs/adapters/qwen25c-1.5b/python/merge_dare_ties_r32_s17"
- ],
- "raw": false,
- "est_gpu_h": 0.1,
- "priority": 40,
- "meta": {
-  "model": "qwen25c-1.5b",
-  "language": "python",
-  "combination_type": "dare_ties"
- }
+  "job_id": "merge__qwen25c-1.5b_python__dare_ties",
+  "kind": "merge",
+  "argv": [
+    "-m",
+    "obtune.merge_adapters",
+    "--config",
+    "merge/ties_v1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--rank",
+    "32",
+    "--out",
+    "runs/adapters/qwen25c-1.5b/python/merge_dare_ties_r32_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 40,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "combination_type": "dare_ties"
+  },
+  "result": {
+    "returncode": 1,
+    "seconds": 6.8,
+    "log": "runs/logs/merge__qwen25c-1.5b_python__dare_ties.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T03:19:12.679376+00:00",
+    "tail": "# merge__qwen25c-1.5b_python__dare_ties on gpu1 at 2026-08-09T03:19:05.885715+00:00\n# argv: ['/data/jvl210002/conda_envs/obtune/bin/python', '-m', 'obtune.merge_adapters', '--config', 'merge/ties_v1.yaml', '--model', 'qwen25c-1.5b', '--language', 'python', '--rank', '32', '--out', 'runs/adapters/qwen25c-1.5b/python/merge_dare_ties_r32_s17']\n\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/merge_adapters.py\", line 279, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/merge_adapters.py\", line 269, in main\n    p = merge_adapters(spec, out_dir, dtype=args.dtype)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/merge_adapters.py\", line 137, in merge_adapters\n    raise FileNotFoundError(f\"adapter dirs missing for {missing}\")\nFileNotFoundError: adapter dirs missing for ['S1']\n"
+  }
 }

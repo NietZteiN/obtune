@@ -1,21 +1,29 @@
 {
- "job_id": "ckptsel__qwen25c-1.5b_python_S1_s42",
- "kind": "ckpt-select",
- "argv": [
-  "-m",
-  "obtune.eval_vllm",
-  "--config",
-  "train/grid_qwen1.5b_py_S1.yaml",
-  "--mode",
-  "ckpt-select",
-  "--adapter-root",
-  "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42"
- ],
- "raw": false,
- "est_gpu_h": 0.1,
- "priority": 20,
- "meta": {
-  "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42",
-  "depends_on": "train__qwen25c-1.5b_python_S1_s42"
- }
+  "job_id": "ckptsel__qwen25c-1.5b_python_S1_s42",
+  "kind": "ckpt-select",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "train/grid_qwen1.5b_py_S1.yaml",
+    "--mode",
+    "ckpt-select",
+    "--adapter-root",
+    "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 20,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42",
+    "depends_on": "train__qwen25c-1.5b_python_S1_s42"
+  },
+  "result": {
+    "returncode": 1,
+    "seconds": 0.2,
+    "log": "runs/logs/ckptsel__qwen25c-1.5b_python_S1_s42.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T03:07:23.004998+00:00",
+    "tail": "# ckptsel__qwen25c-1.5b_python_S1_s42 on gpu0 at 2026-08-09T03:07:22.805877+00:00\n# argv: ['/data/jvl210002/conda_envs/obtune/bin/python', '-m', 'obtune.eval_vllm', '--config', 'train/grid_qwen1.5b_py_S1.yaml', '--mode', 'ckpt-select', '--adapter-root', '/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42']\n\nno checkpoints under /data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42\n"
+  }
 }

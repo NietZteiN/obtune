@@ -82,6 +82,12 @@ done
   echo "model: qwen25c-1.5b"
   echo "language: python"
   echo "eval_source: heldout"
+  echo "engine:"
+  # The whole point of this sweep is adapters ABOVE the default rank; the engine cap
+  # (64 in _base_eval.yaml) rejected r=128/192 and killed the eval after one cell.
+  # vLLM only accepts specific values (1,8,16,32,64,128,256,320,512) — 192 is NOT one
+  # of them, so the cap is the next allowed value above our largest adapter rank.
+  echo "  max_lora_rank: 256"
   echo "systems:"
   for a in "${ARMS[@]}"; do
     rest="${a#*:}"; dir="${rest%%:*}"; name="${rest#*:}"

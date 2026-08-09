@@ -1,0 +1,5 @@
+# FLIP — the baseline the source paper never ran. Reverse training data is free here:
+# every (original, obfuscated) pair is also an (obfuscated, original) pair.
+_extends: _base_srh.yaml
+arm: flip
+tasks: [gen, rev]

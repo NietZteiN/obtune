@@ -19,7 +19,7 @@ Update both tables below on every new entry.
 | [`human-align/`](human-align/) | Secondary — Δρ vs human difficulty orderings | not started | 0 |
 | [`holdout-final/`](holdout-final/) | The second and final H1 evaluation pass | not started | 0 |
 | [`writeup/`](writeup/) | Figures, paper draft, artifact packaging | not started | 0 |
-| [`cft-replication/`](cft-replication/) | Does `nikiema2025contrastive` (Contrastive Fine-Tuning) reproduce on our corpus? | active | 1 |
+| [`cft-replication/`](cft-replication/) | Does `nikiema2025contrastive` (Contrastive Fine-Tuning) reproduce on our corpus, and is it the objective or just the data direction? | active | 2 |
 
 ## Timeline
 
@@ -30,3 +30,4 @@ Update both tables below on every new entry.
 | 2026-08-05 | pilot | [`2026-08-05_l0-control-refutes-invariance.md`](pilot/2026-08-05_l0-control-refutes-invariance.md) | L0 control reaches H1 as well as L1b training does — the H1 gain is task acquisition; Invariance Index redefined |
 | 2026-08-05 | setup | [`2026-08-05_register-deobfuscation-literature.md`](setup/2026-08-05_register-deobfuscation-literature.md) | 26 works registered; the DOBF-separation claim holds, and the pilot's memorization finding has prior measurement (`nikiema2025contrastive`) |
 | 2026-08-08 | cft-replication | [`2026-08-08_implement-cft.md`](cft-replication/2026-08-08_implement-cft.md) | CFT replication built and data layer done; the paper's three-term loss measured at 97.7 % L_gen, and its reverse-success criterion shown to award ~20 % to non-code |
+| 2026-08-08 | cft-replication | [`2026-08-08_srh-exp1-plumbing.md`](cft-replication/2026-08-08_srh-exp1-plumbing.md) | SRH Experiment 1 built; measured budget shows CFT costs 2.65x forward-only SFT's compute for 1.02x its supervised signal, while the free flip costs 2.09x for 1.43x |

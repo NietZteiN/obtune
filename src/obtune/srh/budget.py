@@ -72,12 +72,18 @@ def budget_row(
     n = len(kept)
     steps = int(round(epochs * n / max(1, effective_batch)))
 
+    # All four axes are TOTALS OVER TRAINING, i.e. multiplied by epochs. Mixing
+    # conventions — per-epoch tokens against total steps — makes `fwd2x` read as using
+    # FWD's compute when matching FLIP's compute is the arm's entire purpose.
     return {
-        "instances": n,
-        "supervised_tokens": supervised,
-        "sequence_tokens": seq_tokens,
+        "instances": int(round(n * epochs)),
+        "supervised_tokens": int(round(supervised * epochs)),
+        "sequence_tokens": int(round(seq_tokens * epochs)),
         "steps": steps,
         "epochs": epochs,
+        "instances_per_epoch": n,
+        "supervised_tokens_per_epoch": supervised,
+        "sequence_tokens_per_epoch": seq_tokens,
         "effective_batch": effective_batch,
         "by_task": stats["kept_by_task"],
         "supervised_tokens_by_task": stats["supervised_tokens_by_task"],

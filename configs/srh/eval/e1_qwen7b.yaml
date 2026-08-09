@@ -1,0 +1,41 @@
+# Experiment 1 bidirectional evaluation — 7B headline tier.
+# Last updated: 2026-08-08
+#
+#   python -m obtune.cft.evaluate --config srh/eval/e1_qwen7b.yaml --gpu <idle>
+#
+# Extends the replication's eval config so the two experiments are scored by exactly the
+# same harness, on exactly the same program set, with exactly the same criteria. Only the
+# `systems` map differs.
+_extends: ../../cft/eval/bidir_v1.yaml
+
+model: qwen25c-7b
+
+# `base` is REQUIRED in every eval job: it is the reference for assert_adapters_effective
+# and the floor for every transfer ratio. `fwd`/`cft` are the REPLICATION's adapters,
+# reused rather than retrained — Experiment 1 needs them as arms and retraining them would
+# risk a seed difference being read as an arm effect.
+systems:
+  base: null
+  fwd: runs/adapters_cft/qwen25c-7b/python/sft_r32_s17/final
+  cft: runs/adapters_cft/qwen25c-7b/python/cft_r32_s17/final
+  rev: runs/adapters_srh/qwen25c-7b/python/all5_rev_r32_s17/final
+  flip: runs/adapters_srh/qwen25c-7b/python/all5_flip_r32_s17/final
+  mix50: runs/adapters_srh/qwen25c-7b/python/all5_mix50_r32_s17/final
+  flipsym: runs/adapters_srh/qwen25c-7b/python/all5_flipsym_r32_s17/final
+
+# Only the `simple` reverse strategy at this tier. The four-strategy sweep answers the
+# paper's question (does prompting rescue the reverse direction?), which the replication
+# already covers for base/fwd; running it on every arm would triple the bill for a claim
+# Experiment 1 does not make.
+reverse_strategies: [simple]
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  # 7 systems, so the default max_loras: 4 is not enough for one batched pass.
+  max_loras: 8
+  # A 7B in bf16 plus 6 LoRA slots plus a 4k KV cache leaves less headroom, and vLLM
+  # refuses to start rather than shrinking.
+  gpu_memory_utilization: 0.72
+  seed: 17

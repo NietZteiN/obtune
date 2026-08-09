@@ -1,0 +1,245 @@
+{
+  "experiment": "srh/exp1",
+  "run_id": "srh__qwen25c-1.5b__python__all5-flip__s17",
+  "seed": 17,
+  "config_path": "/data/jvl210002/my_downloads/obtune/configs/srh/train/flip_qwen1.5b_py.yaml",
+  "config_resolved": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "tasks": [
+      "gen",
+      "rev"
+    ],
+    "peft": {
+      "r": 32,
+      "alpha": 64,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "task_type": "CAUSAL_LM"
+    },
+    "train": {
+      "dtype": "bfloat16",
+      "attn_implementation": "sdpa",
+      "gradient_checkpointing": true,
+      "max_seq_len": 2560,
+      "per_device_batch": 4,
+      "grad_accum": 16,
+      "lr": 0.0001,
+      "lr_scheduler_type": "cosine",
+      "warmup_ratio": 0.03,
+      "epochs": 3,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0,
+      "seed": 17,
+      "train_size": 0,
+      "val_size": 600,
+      "save_strategy": "epoch",
+      "eval_steps": 200,
+      "logging_steps": 20,
+      "task_weights": {
+        "gen": 1,
+        "pos": 1,
+        "neg": 1
+      },
+      "mixture_kwargs": {
+        "conditions": [
+          "L1b",
+          "L1r",
+          "L2",
+          "S1",
+          "S2"
+        ],
+        "program_subset": null
+      }
+    },
+    "_config_path": "/data/jvl210002/my_downloads/obtune/configs/srh/train/flip_qwen1.5b_py.yaml",
+    "experiment": "srh/exp1",
+    "adapter_root": "adapters_srh",
+    "scope": "all5",
+    "arm": "flip"
+  },
+  "model_hf_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "model_revision_resolved": null,
+  "adapter": {
+    "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s17",
+    "train_cond": "cft:gen+rev",
+    "rank": 32,
+    "base_model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "sha256": "54408429f439befea3a9ac6fa3993c6db68c0c309eedec274f2661443d1f607d"
+  },
+  "gpu_visible": "0",
+  "command": "/data/jvl210002/my_downloads/obtune/src/obtune/srh/train.py --config srh/train/flip_qwen1.5b_py.yaml",
+  "git_commit": "560f44dace8c6faa6e35a688e6656423e7601219",
+  "script_sha256": {
+    "src/obtune/cft/train.py": "d1a1e3032a34853a2ac6a506c0fc4ce11f42ad94e9ed5e4ab4f0d6fe3d03723a",
+    "src/obtune/cft/dataset.py": "9d651ffb975efd0a261cd2eff2cfc662d0080ed31c58e4bba1bb39ce7bb4da67",
+    "src/obtune/cft/prompts.py": "bc883d6ca7db8e4b47b6ebd901e0a84cd8ff7c1ec03ab4b2d56df589f58dba3e",
+    "src/obtune/cft/mutate.py": "3e2ebbf424de61ed1e2ab64b714b89c58f8eb646ded65fdfabd347699648ba8b",
+    "src/obtune/paths.py": "25ca09233ab3170185c164b064d0140c38f64364a45de19e9edbcb4b120a7a8d"
+  },
+  "started_utc": "2026-08-09T04:37:47.222125+00:00",
+  "finished_utc": "2026-08-09T06:49:53.170051+00:00",
+  "libraries": {
+    "python": "3.12.12",
+    "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "dataset": {
+      "language": "python",
+      "tasks": [
+        "gen",
+        "rev"
+      ],
+      "arm": "flip",
+      "task_weights": {
+        "gen": 1,
+        "pos": 1,
+        "neg": 1
+      },
+      "n_train": 14766,
+      "n_val": 600,
+      "n_train_programs": 1563,
+      "train_by_task": {
+        "gen": 7383,
+        "rev": 7383
+      },
+      "train_by_condition": {
+        "L1b": 3084,
+        "L1r": 3126,
+        "L2": 3124,
+        "S1": 2310,
+        "S2": 3122
+      },
+      "negative_style": null,
+      "pair_pos_neg": true,
+      "label_balance": {
+        "ALL": {
+          "pos": 0,
+          "neg": 0,
+          "p_yes": null
+        }
+      },
+      "lengths": {
+        "n_examples": 14768,
+        "n_kept": 14766,
+        "n_dropped": 2,
+        "drop_rate": 0.00013542795232936077,
+        "dropped_by_task": {
+          "gen": 1,
+          "rev": 1
+        },
+        "max_seq_len": 2560,
+        "len_mean": 366.49878114842903,
+        "len_p50": 314,
+        "len_p95": 766,
+        "len_max": 2858,
+        "kept_by_task": {
+          "gen": 7383,
+          "rev": 7383
+        },
+        "supervised_tokens_by_task": {
+          "gen": 1452433,
+          "rev": 622819
+        },
+        "task_token_share": {
+          "gen": 0.6998827130391875,
+          "rev": 0.30011728696081247
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 196.72666937559256,
+          "rev": 84.35852634430448
+        }
+      },
+      "val_lengths": {
+        "n_examples": 600,
+        "n_kept": 600,
+        "n_dropped": 0,
+        "drop_rate": 0.0,
+        "dropped_by_task": {},
+        "max_seq_len": 2560,
+        "len_mean": 362.26,
+        "len_p50": 327,
+        "len_p95": 717,
+        "len_max": 1565,
+        "kept_by_task": {
+          "gen": 293,
+          "rev": 307
+        },
+        "supervised_tokens_by_task": {
+          "gen": 57313,
+          "rev": 24774
+        },
+        "task_token_share": {
+          "gen": 0.6981982530729591,
+          "rev": 0.3018017469270408
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 195.6075085324232,
+          "rev": 80.6970684039088
+        }
+      },
+      "cft_prompt_version": "cft_v1",
+      "cft_prompt_template_sha256": "101309399bb1223a7cb31bba4bfc493ee1c783057d68e944885fbe8526891862"
+    },
+    "training_summary": {
+      "run_id": "srh__qwen25c-1.5b__python__all5-flip__s17",
+      "arm": "flip",
+      "finished_utc": "2026-08-09T06:49:52.987209+00:00",
+      "train_runtime_s": 7870.0421,
+      "train_loss": 0.28573869901990134,
+      "steps": 693,
+      "n_train": 14766,
+      "n_val": 600,
+      "lengths": {
+        "n_examples": 14768,
+        "n_kept": 14766,
+        "n_dropped": 2,
+        "drop_rate": 0.00013542795232936077,
+        "dropped_by_task": {
+          "gen": 1,
+          "rev": 1
+        },
+        "max_seq_len": 2560,
+        "len_mean": 366.49878114842903,
+        "len_p50": 314,
+        "len_p95": 766,
+        "len_max": 2858,
+        "kept_by_task": {
+          "gen": 7383,
+          "rev": 7383
+        },
+        "supervised_tokens_by_task": {
+          "gen": 1452433,
+          "rev": 622819
+        },
+        "task_token_share": {
+          "gen": 0.6998827130391875,
+          "rev": 0.30011728696081247
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 196.72666937559256,
+          "rev": 84.35852634430448
+        }
+      },
+      "checkpoints": [
+        "checkpoint-231",
+        "checkpoint-462",
+        "checkpoint-693"
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "job_id": "train__qwen25c-1.5b_javascript_S1_s42",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_qwen1.5b_js_S1.yaml",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/S1_r32_s42",
+    "language": "javascript",
+    "train_conditions": [
+      "S1"
+    ],
+    "seed": 42
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 549.0,
+    "log": "runs/logs/train__qwen25c-1.5b_javascript_S1_s42.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-08T22:36:25.809464+00:00"
+  }
+}

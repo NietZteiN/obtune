@@ -1,0 +1,13 @@
+# MIX50 at the paper's scale. See mix50_qwen1.5b_py.yaml for why this arm is decisive.
+# NOTE: `direction_mix` lives in the SAME `train:` block as the batch shape. Splitting it
+# across two `train:` keys is valid YAML that silently drops the first — which would train
+# this arm as plain FWD and produce a null that looks like a finding.
+_extends: _base_srh.yaml
+arm: mix50
+tasks: [gen]
+model: qwen25c-7b
+train:
+  mixture_kwargs:
+    direction_mix: { reverse_fraction: 0.5, disjoint_programs: true, seed: 17 }
+  per_device_batch: 2
+  grad_accum: 32

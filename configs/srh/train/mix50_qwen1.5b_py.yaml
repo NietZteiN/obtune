@@ -1,0 +1,16 @@
+# MIX50 — the arm the experiment turns on.
+#
+# Half the PROGRAMS contribute forward, half reverse, so it is matched to FWD on
+# instances, sequence tokens (FLOPs), wall-clock and optimizer steps simultaneously —
+# while carrying strictly LESS supervised signal (0.76x), because a reverse target is the
+# shorter original rather than the inflated obfuscation. It is therefore a conservative
+# test: reverse capability here was bought at a budget discount, not a premium.
+#
+# Partitioning by program, not by row, is load-bearing. By row, one program could appear
+# in both directions and the arm would silently become FLIP at half the data.
+_extends: _base_srh.yaml
+arm: mix50
+tasks: [gen]
+train:
+  mixture_kwargs:
+    direction_mix: { reverse_fraction: 0.5, disjoint_programs: true, seed: 17 }

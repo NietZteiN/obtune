@@ -212,3 +212,61 @@ def test_non_code_scores_zero_readability():
 def test_forward_success_requires_an_exact_execution_match():
     assert metrics.forward_success_exec(metrics.ExecVerdict("match", 3, 3))
     assert not metrics.forward_success_exec(metrics.ExecVerdict("mismatch", 3, 2))
+
+
+# --------------------------------------------------------------------------- #
+# Structural recovery — the reverse criterion for S1, where the paper's is vacuous
+
+FLATTENED = """def running_total(numbers, start):
+    _st = 39
+    total = start
+    output = []
+    while _st != -1:
+        if _st == 39:
+            _it = iter(numbers)
+            _st = 86
+        elif _st == 86:
+            _nx = next(_it, None)
+            _st = 52 if _nx is None else 127
+        elif _st == 127:
+            total = total + _nx
+            output.append(total)
+            _st = 86
+        elif _st == 52:
+            _st = -1
+    return output
+"""
+
+
+def test_dispatch_loop_detected_in_flattened_code_only():
+    assert metrics.control_flow_signature(FLATTENED, "python")["dispatch_loop"] == 1.0
+    assert metrics.control_flow_signature(ORIG, "python")["dispatch_loop"] == 0.0
+    assert metrics.control_flow_signature(HEX_RENAMED, "python")["dispatch_loop"] == 0.0
+
+
+def test_control_flow_signature_counts_branches_and_loops():
+    sig = metrics.control_flow_signature(ORIG, "python")
+    assert sig["n_loops"] == 1.0
+    assert sig["max_depth"] >= 1.0
+    assert metrics.control_flow_signature("", "python")["n_loops"] == 0.0
+
+
+def test_structural_recovery_accepts_the_true_original():
+    assert metrics.structural_recovery(ORIG, ORIG, FLATTENED, "python")
+
+
+def test_structural_recovery_rejects_echoing_the_obfuscated_input():
+    """The failure the paper reports for every SFT model in reverse (§4.3.3):
+    "outputs nearly identical to the obfuscated input"."""
+    assert not metrics.structural_recovery(FLATTENED, ORIG, FLATTENED, "python")
+
+
+def test_structural_recovery_rejects_non_code():
+    assert not metrics.structural_recovery("<stub:a1b2c3>", ORIG, FLATTENED, "python")
+    assert not metrics.structural_recovery("", ORIG, FLATTENED, "python")
+
+
+def test_structural_recovery_is_false_when_the_input_was_not_structural():
+    """Nothing structural to recover means the metric has nothing to say — report it
+    only for S1/S2, never as a general reverse criterion."""
+    assert not metrics.structural_recovery(ORIG, ORIG, HEX_RENAMED, "python")

@@ -181,3 +181,33 @@ def test_label_balance_reports_all_and_per_condition():
     b = cft_data.label_balance(rows)
     assert b["ALL"] == {"pos": 1, "neg": 1, "p_yes": 0.5}
     assert b["L1r"]["p_yes"] == 0.5
+
+
+# --------------------------------------------------------------------------- #
+# Eval common subset — the `limit: 300` bug
+
+def test_common_subset_keeps_only_fully_covered_programs():
+    """`limit` used to shuffle and truncate the full program list, so each condition was
+    scored on a different set — and S1's programs are systematically longer, which
+    confounds the transform with the program (CLAUDE.md §4 coverage honesty)."""
+    from obtune.cft.evaluate import EvalProgram, common_subset
+
+    def prog(pid, conds):
+        return EvalProgram(
+            program_id=pid, language="python", original_code="def f():\n    return 1\n",
+            entry_point="f", cases=[{"args_repr": "()", "output_canon": "1"}],
+            variants={c: {"code": "x", "entry_point": "f"} for c in conds},
+        )
+
+    progs = [
+        prog("all", ["L1b", "L1r", "L2", "S1", "S2"]),
+        prog("no_s1", ["L1b", "L1r", "L2", "S2"]),
+        prog("only_l1r", ["L1r"]),
+    ]
+    kept = common_subset(progs, ["L1b", "L1r", "L2", "S1", "S2"])
+    assert [p.program_id for p in kept] == ["all"]
+    # L0 is the reference source, not an evaluated condition, so it is never required:
+    # every program here carries L1r, so requiring {L0, L1r} keeps all three.
+    assert len(common_subset(progs, ["L0", "L1r"])) == 3
+    # ...and the filtering is still real for a condition some programs lack.
+    assert [p.program_id for p in common_subset(progs, ["L0", "S2"])] == ["all", "no_s1"]

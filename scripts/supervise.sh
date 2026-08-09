@@ -101,10 +101,31 @@ print(next((g.owner for g in gpu_alloc.survey() if g.index == $idx), 'free'))" 2
     # between pairs; claiming one in that gap put a grid job and a sweep arm on the
     # same card. A live sweep reserves the GPUs it was launched with, not just the
     # ones it happens to occupy this second.
+    # Reserve a sweep GPU only while it is plausibly still in use. A flat reservation
+    # for the sweep's whole lifetime is too blunt: once its last arm is running on one
+    # card, the other sits idle for the rest of the run. A grace window covers the
+    # seconds-long gap between arm pairs (the race this exists to prevent) without
+    # holding a card the sweep has actually finished with.
     reserved=""
     if pgrep -f "run_rank_sweep.sh" >/dev/null 2>&1; then
-      reserved=$(pgrep -af "bash scripts/run_rank_sweep.sh" | head -1 \
+      launched=$(pgrep -af "bash scripts/run_rank_sweep.sh" | head -1 \
                  | sed 's/.*run_rank_sweep\.sh //' | tr -s ' ')
+      now=$(date +%s)
+      for idx in $launched; do
+        marker="runs/manifest/.sweep_gpu${idx}.seen"
+        owner=$(python -c "
+from obtune import gpu_alloc
+print(next((g.owner for g in gpu_alloc.survey() if g.index == $idx), 'free'))" 2>/dev/null)
+        if [ "$owner" = "ours" ]; then
+          echo "$now" > "$marker"
+          reserved="$reserved $idx"
+        else
+          last=$(cat "$marker" 2>/dev/null || echo 0)
+          if [ $((now - last)) -lt "${SWEEP_GRACE:-240}" ]; then
+            reserved="$reserved $idx"   # still inside the between-arms gap
+          fi
+        fi
+      done
     fi
     claim=$(RESERVED="$reserved" python -c "
 import os

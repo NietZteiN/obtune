@@ -1,0 +1,9 @@
+# FWD2x at the paper's scale. See fwd2x_qwen1.5b_py.yaml.
+_extends: _base_srh.yaml
+arm: fwd2x
+tasks: [gen]
+model: qwen25c-7b
+train:
+  epochs: 6
+  per_device_batch: 2
+  grad_accum: 32

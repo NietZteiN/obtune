@@ -147,6 +147,53 @@ python scripts/cft/11_enqueue_arms.py --language python --write
 python -m obtune.cft.evaluate --config cft/eval/bidir_v1.yaml --gpu <idle>
 ```
 
+## Follow-up: Experiment 1 — is it the objective, or just the data direction?
+
+Built 2026-08-08 in `src/obtune/srh/` (ledger:
+[`../log/cft-replication/2026-08-08_srh-exp1-plumbing.md`](../log/cft-replication/2026-08-08_srh-exp1-plumbing.md)).
+
+The paper attributes reverse capability to the contrastive *objective*, but never ran the
+obvious baseline: reverse training data is free here, because every `(original, obfuscated)`
+pair is also an `(obfuscated, original)` pair. The arms:
+
+| arm | mixture | role |
+|---|---|---|
+| `fwd` | forward only | **reuses the replication's `sft` adapter** |
+| `rev` | reverse only | reverse ceiling; the kill-gate |
+| `flip` | both directions | the missing baseline |
+| `mix50` | 50/50, split by program | matched to `fwd` on every budget axis |
+| `fwd2x` | forward, 6 epochs | rules out "flip just trained longer" |
+| `cft` | contrastive triplets | **reuses the replication's `cft` adapter** |
+| `cftflip` | triplets + flip | does the objective add over exposure? |
+| `flipsym` | flip, one shared system prompt | confound control |
+
+**The budget accounting settles one question before any GPU time.** "Same data budget" is not
+one quantity; measured on the Python corpus with the Qwen2.5-Coder tokenizer, totals over
+training, relative to forward-only SFT:
+
+| arm | instances | supervised tok | sequence tok (∝FLOPs) | steps |
+|---|---|---|---|---|
+| `flip` | 2.00x | **1.43x** | 2.09x | 2.00x |
+| `mix50` | **1.00x** | **0.71x** | **1.05x** | **1.00x** |
+| `cft` | 2.52x | **1.02x** | **2.65x** | 2.52x |
+
+CFT costs more than FLIP on every axis a practitioner pays for while adding almost no supervised
+signal — because a `pos`/`neg` example carries two whole programs in its prompt but supervises the
+single token YES or NO (3.0 tokens against a forward target's 196.7). So the honest frame is
+**dominance**, not budget-matching: if FLIP beats CFT in reverse, no budget account rescues CFT.
+`mix50` then supplies the arm matched to `fwd` on instances, steps and compute simultaneously,
+with *strictly less* supervision — a conservative test of whether bidirectional exposure alone
+does the work.
+
+`flipsym` is the confound control and is not optional once representations are examined: forward
+is cued by `GEN_SYSTEM` and reverse by `DEOBF_SYSTEM`, so a model could hold two *disjoint*
+circuits and still look bidirectional simply because the directions arrived under two personas.
+
+Two metric changes came out of this and apply to the replication too: `common_subset` in
+`cft.evaluate` (the old `limit: 300` scored each condition on a different, and for `S1`
+systematically longer, program set) and `metrics.structural_recovery` (the paper's reverse
+criterion is near-vacuous for `S1`, which preserves identifiers, so its readability clause is free).
+
 ## What a result would mean for obtune
 
 * **CFT reproduces (reverse success rises from ~0 to tens of percent on renaming).**

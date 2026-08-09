@@ -1,0 +1,12 @@
+# FLIP-sym — the confound control, and it is not optional once the mechanistic phase runs.
+#
+# Forward is cued by GEN_SYSTEM ("rewrite as instructed"), reverse by DEOBF_SYSTEM
+# ("recover the original readable source") — two different personas. A model can hold two
+# DISJOINT circuits and still look perfectly bidirectional if the directions arrive under
+# different system prompts, which is exactly the null the probes are meant to reject.
+# Here both directions share one system prompt and the direction is carried only by the
+# user turn, so "two personas" cannot masquerade as "two disjoint circuits".
+_extends: _base_srh.yaml
+arm: flipsym
+tasks: [gen, rev]
+symmetric: true

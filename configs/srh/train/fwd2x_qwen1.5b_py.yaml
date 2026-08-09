@@ -1,0 +1,7 @@
+# FWD2x — forward-only at double the epochs. Matches FLIP's FLOPs and optimizer-step
+# count with forward-only data, so "FLIP just trained longer" cannot explain a FLIP win.
+_extends: _base_srh.yaml
+arm: fwd2x
+tasks: [gen]
+train:
+  epochs: 6

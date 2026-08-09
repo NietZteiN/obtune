@@ -1,0 +1,8 @@
+# REV — reverse-only. Two jobs at once, which is why it runs first:
+#   1. the reverse ceiling that normalizes every transfer ratio;
+#   2. the kill-gate — if REV's reverse score is ~0, reverse is not learnable on this
+#      corpus at this scale, and every other arm's null becomes uninterpretable.
+# Same instance count and sequence content as FWD, so it costs exactly what FWD costs.
+_extends: _base_srh.yaml
+arm: rev
+tasks: [rev]

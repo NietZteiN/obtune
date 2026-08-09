@@ -1,0 +1,32 @@
+{
+  "job_id": "srh__qwen25c-1.5b__python__all5-mix50__s17",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.srh.train",
+    "--config",
+    "srh/train/mix50_qwen1.5b_py.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 61,
+  "meta": {
+    "experiment": "srh/exp1",
+    "stage": 1,
+    "arm": "mix50",
+    "role": "the decisive arm: matched to fwd on instances, sequence tokens and steps simultaneously, with strictly LESS supervised signal",
+    "tasks": [
+      "gen"
+    ],
+    "language": "python",
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17",
+    "already_trained": false
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 3990.7,
+    "log": "runs/logs/srh__qwen25c-1.5b__python__all5-mix50__s17.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T08:06:25.298311+00:00"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "run_id": "cft__qwen25c-1.5b__python__sft__s17",
+  "arm": "sft",
+  "finished_utc": "2026-08-09T04:27:15.796755+00:00",
+  "train_runtime_s": 3978.1053,
+  "train_loss": 0.37877337000835903,
+  "steps": 348,
+  "n_train": 7383,
+  "n_val": 528,
+  "lengths": {
+    "n_examples": 7384,
+    "n_kept": 7383,
+    "n_dropped": 1,
+    "drop_rate": 0.00013542795232936077,
+    "dropped_by_task": {
+      "gen": 1
+    },
+    "max_seq_len": 2560,
+    "len_mean": 350.5770585048754,
+    "len_p50": 297,
+    "len_p95": 751,
+    "len_max": 2827,
+    "kept_by_task": {
+      "gen": 7383
+    },
+    "supervised_tokens_by_task": {
+      "gen": 1452433
+    },
+    "task_token_share": {
+      "gen": 1.0
+    },
+    "mean_supervised_tokens_by_task": {
+      "gen": 196.72666937559256
+    }
+  },
+  "checkpoints": [
+    "checkpoint-116",
+    "checkpoint-232",
+    "checkpoint-348"
+  ]
+}

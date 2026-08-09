@@ -16,7 +16,11 @@ train:
   dtype: bfloat16
   attn_implementation: sdpa
   gradient_checkpointing: true
-  max_seq_len: 1536 # covers S1/S2 inflation; truncation rate logged, must stay <1%
+  # 1536 did NOT cover S1: control-flow flattening pushed the truncation rate to
+  # 1.038% (p95=1080, max=3349) and the guard correctly refused to train, since silent
+  # truncation eats the gold answer and would masquerade as a structural-condition
+  # effect. 2048 clears the p95 with room and costs ~30% more memory per step.
+  max_seq_len: 2048
   per_device_batch: null # null => take from configs/models.yaml
   grad_accum: null # effective batch is per_device_batch * grad_accum = 64
   lr: 1.0e-4

@@ -1,0 +1,222 @@
+{
+  "experiment": "cft/replication",
+  "run_id": "cft__qwen25c-7b__python__cft__s17",
+  "seed": 17,
+  "config_path": "/data/jvl210002/my_downloads/obtune/configs/cft/train/cft_qwen7b_py.yaml",
+  "config_resolved": {
+    "model": "qwen25c-7b",
+    "language": "python",
+    "tasks": [
+      "gen",
+      "pos",
+      "neg"
+    ],
+    "peft": {
+      "r": 32,
+      "alpha": 64,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "task_type": "CAUSAL_LM"
+    },
+    "train": {
+      "dtype": "bfloat16",
+      "attn_implementation": "sdpa",
+      "gradient_checkpointing": true,
+      "max_seq_len": 2560,
+      "per_device_batch": 2,
+      "grad_accum": 32,
+      "lr": 0.0001,
+      "lr_scheduler_type": "cosine",
+      "warmup_ratio": 0.03,
+      "epochs": 3,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0,
+      "seed": 17,
+      "train_size": 0,
+      "val_size": 600,
+      "save_strategy": "epoch",
+      "eval_steps": 200,
+      "logging_steps": 20,
+      "task_weights": {
+        "gen": 1,
+        "pos": 1,
+        "neg": 1
+      }
+    },
+    "_config_path": "/data/jvl210002/my_downloads/obtune/configs/cft/train/cft_qwen7b_py.yaml",
+    "arm": "cft"
+  },
+  "model_hf_id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "model_revision_resolved": null,
+  "adapter": {
+    "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_cft/qwen25c-7b/python/cft_r32_s17",
+    "train_cond": "cft:gen+neg+pos",
+    "rank": 32,
+    "base_model": "Qwen/Qwen2.5-Coder-7B-Instruct"
+  },
+  "gpu_visible": "1",
+  "command": "/data/jvl210002/my_downloads/obtune/src/obtune/cft/train.py --config cft/train/cft_qwen7b_py.yaml",
+  "git_commit": "560f44dace8c6faa6e35a688e6656423e7601219",
+  "script_sha256": {
+    "src/obtune/cft/train.py": "d1a1e3032a34853a2ac6a506c0fc4ce11f42ad94e9ed5e4ab4f0d6fe3d03723a",
+    "src/obtune/cft/dataset.py": "9d651ffb975efd0a261cd2eff2cfc662d0080ed31c58e4bba1bb39ce7bb4da67",
+    "src/obtune/cft/prompts.py": "bc883d6ca7db8e4b47b6ebd901e0a84cd8ff7c1ec03ab4b2d56df589f58dba3e",
+    "src/obtune/cft/mutate.py": "3e2ebbf424de61ed1e2ab64b714b89c58f8eb646ded65fdfabd347699648ba8b",
+    "src/obtune/paths.py": "25ca09233ab3170185c164b064d0140c38f64364a45de19e9edbcb4b120a7a8d"
+  },
+  "started_utc": "2026-08-09T08:38:04.813180+00:00",
+  "finished_utc": null,
+  "libraries": {
+    "python": "3.12.12",
+    "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "dataset": {
+      "language": "python",
+      "tasks": [
+        "gen",
+        "pos",
+        "neg"
+      ],
+      "arm": "cft",
+      "task_weights": {
+        "gen": 1,
+        "pos": 1,
+        "neg": 1
+      },
+      "n_train": 18605,
+      "n_val": 600,
+      "n_train_programs": 1563,
+      "train_by_task": {
+        "gen": 7383,
+        "neg": 5611,
+        "pos": 5611
+      },
+      "train_by_condition": {
+        "L1b": 4044,
+        "L1r": 4107,
+        "L2": 4104,
+        "S1": 3107,
+        "S2": 3243
+      },
+      "negative_style": "obfuscated_mutant",
+      "pair_pos_neg": true,
+      "label_balance": {
+        "L1b": {
+          "pos": 1251,
+          "neg": 1251,
+          "p_yes": 0.5
+        },
+        "L1r": {
+          "pos": 1272,
+          "neg": 1272,
+          "p_yes": 0.5
+        },
+        "L2": {
+          "pos": 1271,
+          "neg": 1271,
+          "p_yes": 0.5
+        },
+        "S1": {
+          "pos": 976,
+          "neg": 976,
+          "p_yes": 0.5
+        },
+        "S2": {
+          "pos": 841,
+          "neg": 841,
+          "p_yes": 0.5
+        },
+        "ALL": {
+          "pos": 5611,
+          "neg": 5611,
+          "p_yes": 0.5
+        }
+      },
+      "lengths": {
+        "n_examples": 18608,
+        "n_kept": 18605,
+        "n_dropped": 3,
+        "drop_rate": 0.00016122098022355977,
+        "dropped_by_task": {
+          "gen": 1,
+          "neg": 1,
+          "pos": 1
+        },
+        "max_seq_len": 2560,
+        "len_mean": 368.1020528804815,
+        "len_p50": 311,
+        "len_p95": 775,
+        "len_max": 2846,
+        "kept_by_task": {
+          "gen": 7383,
+          "neg": 5611,
+          "pos": 5611
+        },
+        "supervised_tokens_by_task": {
+          "gen": 1452433,
+          "neg": 16833,
+          "pos": 16833
+        },
+        "task_token_share": {
+          "gen": 0.9773460583716159,
+          "neg": 0.011326970814192056,
+          "pos": 0.011326970814192056
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 196.72666937559256,
+          "neg": 3.0,
+          "pos": 3.0
+        }
+      },
+      "val_lengths": {
+        "n_examples": 600,
+        "n_kept": 600,
+        "n_dropped": 0,
+        "drop_rate": 0.0,
+        "dropped_by_task": {},
+        "max_seq_len": 2560,
+        "len_mean": 355.725,
+        "len_p50": 311,
+        "len_p95": 750,
+        "len_max": 1534,
+        "kept_by_task": {
+          "gen": 234,
+          "neg": 189,
+          "pos": 177
+        },
+        "supervised_tokens_by_task": {
+          "gen": 44077,
+          "neg": 567,
+          "pos": 531
+        },
+        "task_token_share": {
+          "gen": 0.9756945213060321,
+          "neg": 0.012551189817376868,
+          "pos": 0.011754288876591034
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 188.36324786324786,
+          "neg": 3.0,
+          "pos": 3.0
+        }
+      },
+      "cft_prompt_version": "cft_v1",
+      "cft_prompt_template_sha256": "101309399bb1223a7cb31bba4bfc493ee1c783057d68e944885fbe8526891862"
+    }
+  }
+}

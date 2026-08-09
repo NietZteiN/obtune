@@ -1,9 +1,9 @@
 {
-  "n_cells": 56,
-  "n_trials": 38088,
+  "n_cells": 84,
+  "n_trials": 81272,
   "n_duplicate_trials_dropped": 0,
   "n_programs": 597,
-  "n_core_trials": 23415,
+  "n_core_trials": 50015,
   "phases": [
     "main",
     "pilot"
@@ -30,9 +30,9 @@
     "per_type|L0",
     "per_type|L1b"
   ],
-  "overall_accuracy": 0.31162045788699855,
-  "overall_format_fail_rate": 0.0655849611426171,
-  "h1_trials": 4217,
+  "overall_accuracy": 0.3450388817797027,
+  "overall_format_fail_rate": 0.038500344522098634,
+  "h1_trials": 9073,
   "h1_access_purposes": [
     "final_eval",
     "pilot_eval"

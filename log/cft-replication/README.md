@@ -1,7 +1,7 @@
 # cft-replication — does `nikiema2025contrastive` reproduce on our corpus?
 
 *Last updated: 2026-08-08*
-**Status:** active — implementation and data layer done; both training arms queued behind the RQ1 grid
+**Status:** active — replication built and queued; SRH Experiment 1 built, Stage 1 queued at priority 61
 
 Replication of Nikiema et al. (2025), *"Using Contrastive Learning to Improve Two-Way Reasoning in
 Large Language Models: The Obfuscation Task as a Case Study"* (arXiv:2509.05553). Design, the
@@ -14,6 +14,17 @@ whether its result reproduces here. This thread does **not** touch obtune's own 
 is their question (forward vs reverse direction) on our data, not ours (held-out obfuscator family).
 
 ## Hypotheses — open
+
+### Experiment 1 (SRH follow-up) — is it the objective, or just the data direction?
+- **E1-A (kill-gate):** `r(REV) > 0` — reverse is learnable at all here. If not, every other
+  arm's null is uninterpretable and the experiment stops.
+- **E1-B:** `r(MIX50) > 0` while `r(FWD) ≈ r(FWD2x) ≈ 0` — bidirectional *exposure* alone
+  produces reverse capability, at no extra budget on any axis.
+- **E1-C:** `r(FLIP) > r(CFT)` — the contrastive objective is dominated.
+- **E1-E:** does bidirectionality cost forward accuracy? MIX50 halves forward supervision at
+  matched compute, so the FWD−MIX50 forward gap is the price of it.
+
+### Replication
 
 - **C1 (cognitive specialization reproduces).** An adapter trained only on forward obfuscation
   (`tasks: [gen]`) scores near zero on reverse deobfuscation while scoring well forward.
@@ -30,15 +41,23 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 - **C4 (prompting cannot substitute).** Reverse performance is flat across the four prompting
   strategies for every system. CONFIRM if the spread across simple / few-shot / CoT / augmented is
   small relative to the SFT→CFT gap. Paper: ΔR ≈ 0.01–0.05 (§4.3.3).
-- **C5 (the three-term loss is not three-way balanced).** Equal instance counts across the pools —
-  the paper's stated balancing — do not give the three loss terms comparable weight, because a
-  `gen` target is a whole program and a `pos`/`neg` target is one token. CONFIRM if the measured
-  `task_token_share` for `gen` exceeds 0.95. This is a claim about the paper's recipe, testable
-  from the run manifest alone without any GPU.
 
 ## Hypotheses — resolved
 
-- (none yet)
+- ✓ **C5 (the three-term loss is not three-way balanced) SUPPORTED**, 2026-08-08, no GPU.
+  Equal instance counts across the pools — the paper's stated balancing — do not give the three
+  loss terms comparable weight: a `gen` target is a whole program (**196.7** supervised tokens),
+  a `pos`/`neg` target is the single token YES or NO (**3.0**). Measured
+  `task_token_share` = gen **0.977** / pos 0.011 / neg 0.011, against a 0.95 threshold. Instance
+  upsampling cannot repair it (equal token mass needs ~86×, a ~976 000-instance mixture).
+  Deciding entry: [`2026-08-08_implement-cft.md`](2026-08-08_implement-cft.md).
+- ✓ **E1-D (budget dominance) SUPPORTED**, 2026-08-08, no GPU. Extending C5's accounting to all
+  four axes: CFT costs **2.65×** forward-only SFT's compute (2.52× instances, 2.52× steps) to add
+  **1.02×** its supervised signal, while the free flip costs **2.09×** to add **1.43×** — all of
+  it on the target direction. The Experiment-1 comparison is therefore framed as *dominance*, not
+  as budget-matching. Deciding entry:
+  [`2026-08-08_srh-exp1-plumbing.md`](2026-08-08_srh-exp1-plumbing.md); table in
+  `../../results/srh/budget_qwen7b_python.json`.
 
 ## What worked
 
@@ -49,6 +68,11 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 - **Setting the readability threshold by measurement.** The short-identifier cutoff separates clean
   code from `L2` at 8 % false positives / 89 % detection over 400 programs; a guessed 0.4 scored
   17 % of ordinary code as minified.
+- **Testing arm configs against a registry.** Generating the 7B configs by appending a second
+  `train:` block is valid YAML in which the later key silently wins — it cost `mix50_qwen7b` its
+  `direction_mix` and `fwd2x_qwen7b` its `epochs: 6`, so both would have trained as plain FWD and
+  produced a null that read as a finding. `tests/test_srh_dataset.py` now checks every arm config
+  against `srh/arms.py`.
 
 ## What didn't
 
@@ -59,6 +83,9 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 - **A `verify_rate` that looked like a quality signal but was not.** It is per-*proposal* and
   deflated by design, because verification stops once a program has its mutant quota.
   `program_coverage` is the number to read; both are now reported.
+- **Mixed epoch conventions in the first budget table.** `steps` applied epochs and
+  `sequence_tokens` did not, so `fwd2x` — whose entire purpose is to match FLIP's compute —
+  reported 1.00× compute. All four axes are now totals over training.
 
 ## Open ideas
 
@@ -70,6 +97,8 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 
 ## Entries
 
+- [`2026-08-08_srh-exp1-plumbing.md`](2026-08-08_srh-exp1-plumbing.md) — SRH Experiment 1 built;
+  the four-axis budget table shows CFT is dominated on compute-for-signal before any GPU time.
 - [`2026-08-08_implement-cft.md`](2026-08-08_implement-cft.md) — implementation, data layer, and the
   six deviations from the paper; both arms queued behind the RQ1 grid.
 
