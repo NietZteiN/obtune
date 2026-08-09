@@ -323,13 +323,18 @@ def main() -> int:
     if rep.get("cells"):
         conds = [c for c in ("L0", "L1b", "L1r", "L2", "S1", "S2", "H1")
                  if any(x["eval_cond"] == c for x in rep["cells"])]
-        trains = sorted({x["train_cond"] for x in rep["cells"]})
+        # Reference row first: zeros by construction, but naming the baseline in the
+        # table beats making the reader remember it.
+        trains = [CONTROL_TRAIN_COND] + sorted({x["train_cond"] for x in rep["cells"]})
         print(f"\nDelta vs the {CONTROL_TRAIN_COND}-only control, per condition"
               " (accuracy points; * = CI excludes 0)")
         print(f"{'trained on':14}" + "".join(f"{c:>10}" for c in conds))
         for t in trains:
             row = []
             for c in conds:
+                if t == CONTROL_TRAIN_COND:
+                    row.append(f"{0.0:>9.1f} ")
+                    continue
                 cell = next((x for x in rep["cells"]
                              if x["train_cond"] == t and x["eval_cond"] == c), None)
                 row.append(

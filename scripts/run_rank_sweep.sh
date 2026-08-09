@@ -140,7 +140,10 @@ for label, sub in arms:
 # an H1-only view hides where breadth genuinely does pay (it pays on exactly one
 # condition). The control's own rank arm is included as the noise floor: if it moves,
 # the differences below are not readable.
-all_arms = arms + [("ctl r64", "/L0_r64_s17")]
+# The control appears as its own row (zeros by construction) so a reader never has to
+# infer what the deltas are measured against, and as an r=64 arm so the noise floor is
+# visible in the same table.
+all_arms = [("ctl r32 (ref)", "/L0_r32_s17")] + arms + [("ctl r64", "/L0_r64_s17")]
 print("\nDelta vs the L0-only control (r=32), accuracy points; * = CI excludes 0")
 print(f"{'arm':18}" + "".join(f"{c:>10}" for c in conds))
 out = {"_control": "L0-only adapter, r=32", "per_condition": {}, "h1": {}}
