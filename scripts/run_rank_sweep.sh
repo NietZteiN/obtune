@@ -135,15 +135,37 @@ for label, sub in arms:
         continue
     print(f"{label:18}" + "".join(f"{r.correct.mean():8.3f}" if len(r) else f"{'--':>8}" for r in row))
 
-print("\nH1 vs the r=32 clean-code control (the capacity test):")
+# Everything is reported against the L0-ONLY control, on every condition — not just
+# H1. Raw accuracy cannot separate "learned the task" from "learned obfuscation", and
+# an H1-only view hides where breadth genuinely does pay (it pays on exactly one
+# condition). The control's own rank arm is included as the noise floor: if it moves,
+# the differences below are not readable.
+all_arms = arms + [("ctl r64", "/L0_r64_s17")]
+print("\nDelta vs the L0-only control (r=32), accuracy points; * = CI excludes 0")
+print(f"{'arm':18}" + "".join(f"{c:>10}" for c in conds))
+out = {"_control": "L0-only adapter, r=32", "per_condition": {}, "h1": {}}
+for label, sub in all_arms:
+    cells_out, row = {}, []
+    for c in conds:
+        t, k = by_adapter(sub, c), ctl32(c)
+        if not len(t) or not len(k):
+            row.append(f"{'--':>10}"); continue
+        con = bootstrap_delta(t, k, f"{label}:{c}", n_resamples=2000,
+                              eq_margin=(4.0 if c == "H1" else 3.0))
+        cells_out[c] = con.to_dict()
+        row.append(f"{con.value_pts:>9.1f}{'*' if con.excludes_zero else ' '}")
+    if cells_out:
+        out["per_condition"][label] = cells_out
+        print(f"{label:18}" + "".join(row))
+
+print("\nH1 vs the L0-only control (the capacity test):")
 print(f"{'arm':18}{'delta':>9}{'CI95':>20}{'verdict':>16}")
-out = {}
 for label, sub in arms:
     t, c = by_adapter(sub, "H1"), ctl32("H1")
     if not len(t) or not len(c):
         continue
     con = bootstrap_delta(t, c, label, n_resamples=4000, eq_margin=4.0)
-    out[label] = con.to_dict()
+    out["h1"][label] = con.to_dict()
     print(f"{label:18}{con.value_pts:>+9.1f}"
           f"{f'[{con.ci_lo:+.1f},{con.ci_hi:+.1f}]':>20}{con.verdict:>16}")
 json.dump(out, open("results/analysis/rank_sweep.json", "w"), indent=2)

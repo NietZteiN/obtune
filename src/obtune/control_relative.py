@@ -317,6 +317,27 @@ def main() -> int:
           f"programs={rep['n_programs']} trials={rep['n_trials']}")
     print(f"control seed SD {rep['control_seed_sd_pts']} pts -> equivalence margin "
           f"{rep['eq_margin_pts']} pts ({rep['eq_margin_held_out_pts']} for held_out)\n")
+    # Per-condition deltas against the L0-only control. The relation-class summary
+    # below pools cells and is the confirmatory family, but pooling hides which single
+    # condition carries an effect — in this project exactly one does (L1b).
+    if rep.get("cells"):
+        conds = [c for c in ("L0", "L1b", "L1r", "L2", "S1", "S2", "H1")
+                 if any(x["eval_cond"] == c for x in rep["cells"])]
+        trains = sorted({x["train_cond"] for x in rep["cells"]})
+        print(f"\nDelta vs the {CONTROL_TRAIN_COND}-only control, per condition"
+              " (accuracy points; * = CI excludes 0)")
+        print(f"{'trained on':14}" + "".join(f"{c:>10}" for c in conds))
+        for t in trains:
+            row = []
+            for c in conds:
+                cell = next((x for x in rep["cells"]
+                             if x["train_cond"] == t and x["eval_cond"] == c), None)
+                row.append(
+                    f"{cell['value_pts']:>9.1f}{'*' if cell['excludes_zero'] else ' '}"
+                    if cell else f"{'--':>10}")
+            print(f"{t:14}" + "".join(row))
+        print()
+
     print(f"{'relation':14}{'cells':>6}{'delta':>9}{'CI95':>20}{'verdict':>16}")
     for c in rep["relation_classes"]:
         ci = f"[{c['ci_lo']:+.1f},{c['ci_hi']:+.1f}]"

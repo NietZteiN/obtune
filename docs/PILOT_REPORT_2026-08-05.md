@@ -318,3 +318,62 @@ python -m obtune.pilot --model Qwen2.5-Coder-1.5B --language python
 (the first reading) and [`../log/pilot/2026-08-05_l0-control-refutes-invariance.md`](../log/pilot/2026-08-05_l0-control-refutes-invariance.md)
 (the control that corrected it). Design and its revisions:
 [`design_doc_v0.1.md`](design_doc_v0.1.md) §5.1 and §9.9.
+
+---
+
+## Addendum — 2026-08-09: is "breadth hurts" just a capacity limit?
+
+The gate (§4) found an adapter trained on **all six conditions** below the clean-code
+control on the held-out obfuscator. The obvious objection: the control spends LoRA rank
+32 on one condition while the generalist spends the same 32 on six, and the generalist's
+flat checkpoint curve is equally consistent with a ceiling. Four more arms test it —
+including **r=192, parameter-matched to six r=32 specialists**.
+
+**Everything below is measured against the L0-only control**, not the untuned base.
+Against the base every adapter looks good, because the base is weak at the task itself;
+only the gap to a clean-code-trained adapter isolates what obfuscation training buys.
+
+Accuracy, 317 held-out programs, 46,550 trials:
+
+| system | L0 | L1b | L1r | L2 | S1 | S2 | **H1** |
+|---|---|---|---|---|---|---|---|
+| untuned base | .201 | .165 | .164 | .176 | .187 | .147 | .066 |
+| **L0-only control (r=32)** | **.440** | .321 | .348 | .355 | .378 | .413 | **.258** |
+| L0-only control (r=64) | .443 | .317 | .354 | .355 | .378 | .411 | .243 |
+| all-conditions r=32 | .392 | .355 | .341 | .359 | .372 | .389 | .228 |
+| all-conditions r=64 | .405 | .362 | .352 | .363 | .383 | .418 | .243 |
+| all-conditions r=128 | .417 | .361 | .359 | .363 | .382 | .402 | .217 |
+| all-conditions r=192 | .395 | .349 | .354 | .354 | .360 | .391 | .212 |
+
+Difference from the L0-only control, in accuracy points (* = bootstrap CI excludes 0):
+
+| trained on | L0 | L1b | L1r | L2 | S1 | S2 | H1 |
+|---|---|---|---|---|---|---|---|
+| all-conditions r=32 | −4.8* | **+3.4*** | −0.7 | +0.4 | −0.6 | −2.3 | −2.9* |
+| all-conditions r=64 | −3.5* | **+4.1*** | +0.3 | +0.8 | +0.5 | +0.5 | −1.5 |
+| all-conditions r=128 | −2.3 | **+4.0*** | +1.1 | +0.8 | +0.4 | −1.1 | −4.1* |
+| all-conditions r=192 | −4.5* | **+2.8*** | +0.5 | −0.1 | −1.8 | −2.2 | −4.6* |
+| *L0-only control r=64* | *+0.3* | *−0.4* | *+0.5* | *0.0* | *0.0* | *−0.2* | *−1.5* |
+
+The last row is the **noise floor**: raising the control's own rank moves nothing
+(±0.5 pts). Differences above it are readable; differences inside it are not.
+
+**Findings.**
+
+1. **Capacity is not the explanation.** The H1 gap does not close as rank rises — it is
+   −2.9, −1.5, −4.1, −4.6 at r=32/64/128/192, and the parameter-matched r=192 arm is the
+   *worst* of the four. Rank does not help the control either (H1 .258 → .243), so extra
+   capacity buys nothing here for anyone.
+2. **Breadth buys exactly one condition.** Training on all five obfuscation types beats
+   clean-code training only on **L1b, adversarial renaming**, by +2.8 to +4.1 pts, and it
+   does so consistently at every rank. That is the single robust positive effect in the
+   whole experiment.
+3. **And it costs clean code.** L0 drops 2.3–4.8 pts across arms. An adapter trained on
+   obfuscation is worse at reading ordinary code.
+4. **Everything else is null.** L1r, L2, S1, S2 sit inside the noise floor at every rank.
+
+Taken with §5.1, the picture is consistent: obfuscation-specific learning is real but
+narrow — it attaches to the *specific* transform trained (misleading identifiers), does
+not spread to its own family, and does not reach a held-out obfuscator, at any capacity.
+
+*Sources: `results/analysis/rank_sweep.json`, `results/analysis/mono_gate_decision.json`.*
