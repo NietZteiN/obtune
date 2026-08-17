@@ -12,14 +12,23 @@ js/npm_install.log
 # Environment build artifacts (the lockfile IS committed)
 env/build.log
 
-# Large run artifacts — manifests and resolved configs are re-included below
+# Large run artifacts — manifests and resolved configs are re-included below.
+#
+# 2026-08-17: `runs/adapters/` never matched anything. The real trees are
+# `runs/adapters_srh/` and `runs/adapters_cft/`, so 53 GB of LoRA weights sat UNIGNORED and
+# `git add -A` would have committed all of it. Globbed now so a new `adapters_<thread>/`
+# tree is covered the day it appears. CLAUDE.md §2 requires these to be gitignored; the
+# rule was stated but not enforced.
 runs/adapters/
+runs/adapters_*/
 runs/logs/
 runs/manifest/running/
+runs/manifest/.supervisor.lock
 results/cells/
 results/attn/
 results/forgetting/*.parquet
 results/*.parquet
+results/**/*.parquet
 *.safetensors
 *.bin
 *.npz
