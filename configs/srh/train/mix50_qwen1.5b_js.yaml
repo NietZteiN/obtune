@@ -1,0 +1,10 @@
+# MIX50, JavaScript — item M of the ATTRIB plan (E3 replication).
+#
+# The budget-matched arm: same instances, same optimizer steps as forward-only, with strictly
+# less supervised signal and no program appearing in both directions. Carrying it into the
+# second language is what lets the replication test the *decisive* arm rather than only the
+# easy one.
+#
+# Differs from mix50_qwen1.5b_py.yaml in `language` and nothing else.
+_extends: mix50_qwen1.5b_py.yaml
+language: javascript

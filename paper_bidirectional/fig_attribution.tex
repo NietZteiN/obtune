@@ -1,0 +1,58 @@
+% The paper's central diagram. Hand-authored TikZ rather than an image so it sets in the
+% document's own fonts and survives a style change. Both panels are deliberately identical
+% except for the loss and the direction of the second arrow, because that is the whole point.
+%
+% Geometry note: the vertical gap between the two boxes has to be wide enough for the two
+% arcs to read as a loop. A gap smaller than roughly the box height turns them into stubs.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  box/.style  ={draw=black!22, fill=black!4, rounded corners=4pt,
+                minimum width=2.6cm, minimum height=0.88cm, font=\normalsize},
+  hdr/.style  ={font=\small\bfseries},
+  eqn/.style  ={font=\small},
+  side/.style ={font=\scriptsize, text=black!55},
+  vmark/.style ={font=\small\bfseries},
+  fwd/.style  ={-{Latex[length=2.2mm]}, line width=0.9pt, black!78},
+  dead/.style ={-{Latex[length=2.2mm]}, line width=0.9pt, black!30, densely dashed},
+  live/.style ={-{Latex[length=2.2mm]}, line width=1.2pt, flipteal},
+]
+
+% ---------------- panel (a): the published intervention ----------------
+\begin{scope}[shift={(0,0)}]
+  \node[box] (ax)  at (0,2.05) {$x$};
+  \node[box] (axo) at (0,0)    {$\tilde x$};
+  \node[hdr] at (0,3.40) {(a)\; add a contrastive objective};
+  \node[eqn] at (0,2.85)
+    {$\mathcal{L}=\mathcal{L}_{\mathrm{gen}}+\mathcal{L}_{\mathrm{pos}}
+                 +\mathcal{L}_{\mathrm{neg}}$};
+  \draw[fwd]  ([xshift=-7mm]ax.south)  to[bend right=45] ([xshift=-7mm]axo.north);
+  \draw[dead] ([xshift=7mm]axo.north) to[bend right=45] ([xshift=7mm]ax.south);
+  \node[side, anchor=east] at (-1.55,1.02) {obfuscate};
+  \node[side, anchor=west, text=black!40] (adl) at (1.55,1.02) {deobfuscate};
+  \node[vmark, text=failred, anchor=west] at (adl.east) {\,\texttimes};
+\end{scope}
+
+% ---------------- panel (b): reading the same pairs backwards ----------------
+\begin{scope}[shift={(7.6,0)}]
+  \node[box] (bx)  at (0,2.05) {$x$};
+  \node[box] (bxo) at (0,0)    {$\tilde x$};
+  \node[hdr, text=flipteal] at (0,3.40) {(b)\; flip the training pairs};
+  \node[eqn] at (0,2.85) {$\mathcal{L}=\mathcal{L}_{\mathrm{gen}}$};
+  \draw[fwd]  ([xshift=-7mm]bx.south)  to[bend right=45] ([xshift=-7mm]bxo.north);
+  \draw[live] ([xshift=7mm]bxo.north) to[bend right=45] ([xshift=7mm]bx.south);
+  \node[side, anchor=east] at (-1.55,1.02) {obfuscate};
+  \node[side, anchor=west] (bdl) at (1.55,1.02) {deobfuscate};
+  \node[vmark, text=flipteal, anchor=west] at (bdl.east) {\,\checkmark};
+\end{scope}
+
+\end{tikzpicture}
+\caption{The attribution this paper tests. Both panels fine-tune the same model on the same
+obfuscation pairs. \textbf{(a)}~Contrastive Fine-Tuning augments the generation loss with two
+equivalence-judgement terms and is credited with restoring the reverse direction. In our
+experiments it does not. Reverse success stays at zero and falls below the untouched model.
+\textbf{(b)}~Keeping the plain generation loss and reading half of the same pairs backwards
+restores the reverse direction at identical training cost. The recovery comes from the
+direction of the data, not from the objective.}
+\label{fig:attribution}
+\end{figure}

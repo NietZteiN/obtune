@@ -1,0 +1,24 @@
+# §2.2 FILL — Grid A COMPOSITES, from `mono_gate.yaml`'s systems.
+#
+# THESE CELLS WERE NEVER IMPOSSIBLE — ONLY UNEMITTED.
+# ---------------------------------------------------
+# §2.2 recorded the 114 composite x Grid A blanks as "undefined: no heldout composite
+# variants exist". That was wrong. `scripts/pipeline.sh`'s `p3_composites` stage built the
+# stacked variants for BOTH `--target train` and `--target testset`, but then called
+# `07_emit_eval_items.py` with no `--source`, which defaults to `testset`. So the heldout
+# variants (1,660-2,228 per condition) sat on disk for four days with no eval items emitted
+# from them, and the absence read as a structural limit.
+#
+# Emitted 2026-08-15: 1,254-1,671 items over 418-557 programs, every set a strict subset of
+# the Grid A program list. The S1-bearing composites carry 418 programs rather than 557
+# because S1 bails on short bodies by design — the same coverage limit `S1` alone has.
+#
+# This makes the composite question answerable at Grid A scale: ~1,500 items instead of the
+# 150 Grid B carries, which is 8-10x the statistical power on the one condition where a
+# mixture-over-experts is supposed to have headroom.
+_extends: mono_gate.yaml
+
+experiment_id: fill22c_mono_gate
+run_tag: fill22c_mono_gate
+
+eval_conditions: [C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3]

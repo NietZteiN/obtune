@@ -1,0 +1,30 @@
+{
+  "job_id": "fill22_overtrain_sweep_nobase",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_merge_overtrain_sweep.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "overtrain_sweep_ties_e1,overtrain_sweep_dare_ties_e1,overtrain_sweep_ties_e3,overtrain_sweep_dare_ties_e3,overtrain_sweep_ties_e6,overtrain_sweep_dare_ties_e6,overtrain_sweep_ties_e9,overtrain_sweep_dare_ties_e9"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 121,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 172.3,
+    "log": "runs/logs/fill22_overtrain_sweep_nobase.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-15T22:18:22.823209+00:00"
+  }
+}

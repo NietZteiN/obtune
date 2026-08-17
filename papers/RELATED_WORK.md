@@ -258,6 +258,58 @@ overlooked.
 
 ---
 
+### 3.5 The FSE-shaped gap: *repairing* comprehension under obfuscation, not measuring it
+
+*Added 2026-08-13, while scoping an FSE submission.*
+
+§3.1–§3.4 are, without exception, **measurement** papers. `promon2026atr` builds the field's best
+"how bad is it" table; `li2025obfvuln` reports that obfuscation sometimes *helps* a downstream
+task; the adversarial and steering work perturbs inputs and observes damage. Every one of them
+establishes that models degrade under transformation. **None of them tries to fix it and then
+tests whether the fix generalises to a transformation it never saw.**
+
+That is the gap, and it is narrower and more defensible than "obfuscated code understanding is
+unexplored" — which is not true and a reviewer of `promon2026atr` will say so. The accurate claim
+has three parts, and obtune can support all three:
+
+1. **Nobody has built a controlled ladder and trained on it.** The measurement papers use whatever
+   an off-the-shelf obfuscator emits, usually one setting. obtune has six single-transform
+   conditions with identical semantics in two languages, plus a quarantined seventh
+   (§3.2 of the charter) that no training run may touch.
+2. **Nobody reports a held-out-transform result.** This is the sharp end. Measuring degradation on
+   the transformation you selected is a within-distribution claim. The question a maintainer
+   actually has — *will this survive an obfuscator I have not seen?* — requires a held-out family
+   and a control that isolates "was fine-tuned at all" from "was fine-tuned on obfuscation".
+3. **Nobody has compared the repair strategies against each other on one ladder.** Prompting,
+   per-condition adapters, a learned router, monolithic training and weight merging are all
+   plausible; §6 registers the merging machinery as *tools*, never as an object of study on this
+   task.
+
+**What obtune can honestly claim here, and what it cannot.**
+
+| claim | support | status |
+|---|---|---|
+| specialisation is close to worthless | own-condition gain 3–4 pts, p95 seed noise 3.61 | **supported**, both languages, both seeds |
+| routing is solved and buys nothing | router 100 % accurate, entropy ~1e-6, recovers specialists only | **supported** |
+| merging generalises to an unseen obfuscator better than any specialist or the monolith | `merge_dare_ties` .348 on `H1` vs `tuned_L0` .245 and `mono_all` .229 | **strongest positive**, but n=40, one seed, one model |
+| it works at scale | — | **NOT supported.** RQ1/RQ2 are 1.5B only; the 7B runs exist solely in the CFT thread |
+| it works out of distribution | the `H1` row above | **partially** — one held-out family, and `H1` is a *family*, not a distribution shift in the statistical sense |
+
+The third row is the paper. It is a modularity-and-maintenance result — *combine the specialists,
+do not choose between them* — which is an FSE-shaped finding rather than an ML-benchmark one. But
+it currently rests on 40 programs at one model size, and two cheap runs would change that: the 12
+missing Grid B control cells (~10 GPU-minutes, §8.2 of the master report) and a second seed for
+the merge arms. Without those, a reviewer's first two questions are exactly the two the table
+above marks as unsupported.
+
+**Counterweight, stated because §8.4 requires one.** "Merging beats specialists on held-out data"
+has a mundane competing explanation: merged weights are closer to the clean-code model, and §3's
+`tuned_L0` control already shows most of the `H1` gain comes from tuning on clean code at all. A
+merge that dilutes six obfuscation-specific updates may simply be *regressing toward the control*.
+Distinguishing "merging composes skills" from "merging averages toward clean-code tuning" needs a
+merge of N random-seed L0 adapters as a control, which has not been run and should be before this
+claim is made in print.
+
 ## 4. Fine-tuning for execution reasoning and output prediction — obtune's actual task
 
 Sections 1–3 cover work on *obfuscation*. This section covers work on *obtune's task*: training a model
@@ -481,6 +533,10 @@ listing; number not in an accessible source).
 ---
 
 ## Changelog
+- **2026-08-13** — §3.5 added: the FSE-shaped gap is *repairing* comprehension under obfuscation
+  and testing it on a held-out transform, not measuring degradation (which §3.1–§3.4 already do).
+  Records what obtune can and cannot claim, marks "works at scale" as unsupported (RQ1/RQ2 are
+  1.5B only), and adds the merge-toward-control counterweight that must be ruled out first.
 
 - **2026-08-05** — File created. Seeded from a supplied AI-generated survey, then every load-bearing
   number re-checked against primary sources. 20 open-access PDFs fetched into this folder. Seven survey

@@ -1,0 +1,151 @@
+{
+  "cells": {
+    "base|simple": {
+      "system": "base",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.027333333333333334,
+      "strict_ci": [
+        0.018666666666666668,
+        0.036
+      ],
+      "paper": 0.098,
+      "exec": 0.8333333333333334,
+      "identity": 0.47533333333333333
+    },
+    "cft|simple": {
+      "system": "cft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.004,
+      "strict_ci": [
+        0.0013333333333333333,
+        0.007333333333333333
+      ],
+      "paper": 0.078,
+      "exec": 0.7126666666666667,
+      "identity": 0.009333333333333334
+    },
+    "flip|simple": {
+      "system": "flip",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.30866666666666664,
+      "strict_ci": [
+        0.292,
+        0.3253333333333333
+      ],
+      "paper": 0.356,
+      "exec": 0.8993333333333333,
+      "identity": 0.0
+    },
+    "flipsym|simple": {
+      "system": "flipsym",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.308,
+      "strict_ci": [
+        0.292,
+        0.32466666666666666
+      ],
+      "paper": 0.3526666666666667,
+      "exec": 0.9153333333333333,
+      "identity": 0.0
+    },
+    "mix50|simple": {
+      "system": "mix50",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.3,
+      "strict_ci": [
+        0.2833333333333333,
+        0.31733333333333336
+      ],
+      "paper": 0.36,
+      "exec": 0.874,
+      "identity": 0.0
+    },
+    "rev|simple": {
+      "system": "rev",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.312,
+      "strict_ci": [
+        0.2946666666666667,
+        0.3293333333333333
+      ],
+      "paper": 0.3606666666666667,
+      "exec": 0.8833333333333333,
+      "identity": 0.0
+    },
+    "sft|simple": {
+      "system": "sft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.004,
+      "strict_ci": [
+        0.0013333333333333333,
+        0.007333333333333333
+      ],
+      "paper": 0.09733333333333333,
+      "exec": 0.7213333333333334,
+      "identity": 0.04533333333333334
+    }
+  },
+  "systems": [
+    "base",
+    "cft",
+    "flip",
+    "flipsym",
+    "mix50",
+    "rev",
+    "sft"
+  ],
+  "strategies": [
+    "simple"
+  ],
+  "headline_contrast": {
+    "cft": {
+      "best_strategy": "simple",
+      "best_strict": 0.004,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.027333333333333334,
+      "below_base_worst": true
+    },
+    "flip": {
+      "best_strategy": "simple",
+      "best_strict": 0.30866666666666664,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.027333333333333334,
+      "below_base_worst": false
+    },
+    "flipsym": {
+      "best_strategy": "simple",
+      "best_strict": 0.308,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.027333333333333334,
+      "below_base_worst": false
+    },
+    "mix50": {
+      "best_strategy": "simple",
+      "best_strict": 0.3,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.027333333333333334,
+      "below_base_worst": false
+    },
+    "rev": {
+      "best_strategy": "simple",
+      "best_strict": 0.312,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.027333333333333334,
+      "below_base_worst": false
+    },
+    "sft": {
+      "best_strategy": "simple",
+      "best_strict": 0.004,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.027333333333333334,
+      "below_base_worst": true
+    }
+  }
+}

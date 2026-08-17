@@ -1,0 +1,9 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "adapter": "/data/jvl210002/my_downloads/obtune/runs/taskvecs/unlearn/qwen25c-7b/python/flip_minus_sft_lam1p25",
+  "n_tasks": 164,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.8598,
+  "pass@1_plus": 0.8232,
+  "model_key": "qwen25c-7b"
+}

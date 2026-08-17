@@ -1,0 +1,33 @@
+{
+  "bounds": {
+    "S3": {
+      "oracle_bestof8": 0.6193181818181818,
+      "best_single_expert": 0.48295454545454547,
+      "headroom_pts": 13.63636363636363,
+      "n_items": 176,
+      "n_experts": 8
+    },
+    "S4": {
+      "oracle_bestof8": 0.6193181818181818,
+      "best_single_expert": 0.5056818181818182,
+      "headroom_pts": 11.363636363636353,
+      "n_items": 176,
+      "n_experts": 8
+    }
+  },
+  "skipped": {
+    "C_L1b_S1": "only 0 expert cell(s): []",
+    "C_L1r_S1": "only 0 expert cell(s): []",
+    "C_L1r_S3": "only 0 expert cell(s): []",
+    "C_L2_S4": "only 0 expert cell(s): []",
+    "C_S1_L1r": "only 0 expert cell(s): []",
+    "C_S4_S3": "only 0 expert cell(s): []",
+    "H1": "only 1 expert cell(s): ['L0']",
+    "L0": "expert cells span >1 grid, refusing to pool: {'L0': 1670, 'L1b': 176, 'L1r': 176, 'L2': 176, 'S1': 176, 'S2': 176, 'S3': 176, 'S4': 176}",
+    "L1b": "expert cells span >1 grid, refusing to pool: {'L0': 1658, 'L1b': 176, 'L1r': 176, 'L2': 176, 'S1': 176, 'S2': 176, 'S3': 176, 'S4': 176}",
+    "L1r": "expert cells span >1 grid, refusing to pool: {'L0': 1670, 'L1b': 176, 'L1r': 176, 'L2': 176, 'S1': 176, 'S2': 176, 'S3': 176, 'S4': 176}",
+    "L2": "expert cells span >1 grid, refusing to pool: {'L0': 1670, 'L1b': 176, 'L1r': 176, 'L2': 176, 'S1': 176, 'S2': 176, 'S3': 176, 'S4': 176}",
+    "S1": "expert cells span >1 grid, refusing to pool: {'L0': 1247, 'L1b': 145, 'L1r': 145, 'L2': 145, 'S1': 145, 'S2': 145, 'S3': 145, 'S4': 145}",
+    "S2": "expert cells span >1 grid, refusing to pool: {'L0': 1667, 'L1b': 176, 'L1r': 176, 'L2': 176, 'S1': 176, 'S2': 176, 'S3': 176, 'S4': 176}"
+  }
+}

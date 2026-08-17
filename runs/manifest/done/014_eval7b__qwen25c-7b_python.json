@@ -1,0 +1,28 @@
+{
+  "job_id": "eval7b__qwen25c-7b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/zeroshot_7b.yaml",
+    "--model",
+    "qwen25c-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 4.0,
+  "priority": 14,
+  "meta": {
+    "experiment": "baseline/zeroshot_7b",
+    "note": "base-model panel only; no RQ1 ladder adapters exist at 7B"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 111.5,
+    "log": "runs/logs/eval7b__qwen25c-7b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-13T20:20:18.350616+00:00"
+  }
+}

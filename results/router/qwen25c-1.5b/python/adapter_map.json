@@ -1,0 +1,8 @@
+{
+  "L0": "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best",
+  "L1b": "runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best",
+  "L1r": "runs/adapters/qwen25c-1.5b/python/L1r_r32_s17/best",
+  "L2": "runs/adapters/qwen25c-1.5b/python/L2_r32_s17/best",
+  "S1": "runs/adapters/qwen25c-1.5b/python/S1_r32_s17/best",
+  "S2": "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best"
+}

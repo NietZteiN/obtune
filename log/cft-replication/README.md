@@ -1,7 +1,9 @@
 # cft-replication — does `nikiema2025contrastive` reproduce on our corpus?
 
-*Last updated: 2026-08-08*
-**Status:** active — replication built and queued; SRH Experiment 1 built, Stage 1 queued at priority 61
+*Last updated: 2026-08-17*
+**Status:** active — replication RESOLVED at both scales (C1–C4 below); SRH Experiment 1
+**complete** (dose ladder, seeds, 4-strategy sweep and the JavaScript replication all landed
+2026-08-12); ATTRIB draft at v3 in `paper_bidirectional/`, body fits the 6-page limit
 
 Replication of Nikiema et al. (2025), *"Using Contrastive Learning to Improve Two-Way Reasoning in
 Large Language Models: The Obfuscation Task as a Case Study"* (arXiv:2509.05553). Design, the
@@ -24,25 +26,53 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 - **E1-E:** does bidirectionality cost forward accuracy? MIX50 halves forward supervision at
   matched compute, so the FWD−MIX50 forward gap is the price of it.
 
-### Replication
+### Criterion fidelity (from 2026-08-17)
+- **H-R2:** the CodeBLEU threshold of 0.4 in Eq. (1) is the other constant borrowed from the
+  original criterion, and should be as redundant with execution as the readability conjunct
+  turned out to be. CONFIRM if strict reverse success is flat over a threshold sweep of roughly
+  0.3 to 0.5; REFUTE if any reported contrast moves. Zero GPU, same recomputation as
+  [`2026-08-17_readability-substitution-sensitivity.md`](2026-08-17_readability-substitution-sensitivity.md).
 
-- **C1 (cognitive specialization reproduces).** An adapter trained only on forward obfuscation
-  (`tasks: [gen]`) scores near zero on reverse deobfuscation while scoring well forward.
-  CONFIRM if `reverse_success_paper` ≤ 5 % with forward exec-parity clearly above the base model;
-  REFUTE if reverse success is materially above zero. Paper's number: **0 %** (§4.3.3, Fig. 4).
-- **C2 (CFT recovers the reverse direction).** Adding L_pos + L_neg lifts reverse success without
-  costing forward performance. CONFIRM if CFT's reverse success exceeds SFT's with a
-  cluster-bootstrap CI (by `program_id`) excluding zero, and forward exec-parity is within noise;
-  REFUTE if the two arms are indistinguishable in reverse. Paper: **39–52 %**, Qwen2.5-Coder-7B **39.00 %**.
-- **C3 (the gain is renaming-only).** Any CFT reverse gain is concentrated on the identifier
-  conditions (`L1b`/`L1r`/`L2`) and absent on the structural ones (`S1`/`S2`). CONFIRM if the
-  identifier-condition gain exceeds the structural one; REFUTE if `S1`/`S2` gain equally. The paper
-  reports dead code and string encryption still failing after CFT (§5.0.3).
-- **C4 (prompting cannot substitute).** Reverse performance is flat across the four prompting
-  strategies for every system. CONFIRM if the spread across simple / few-shot / CoT / augmented is
-  small relative to the SFT→CFT gap. Paper: ΔR ≈ 0.01–0.05 (§4.3.3).
+### Experiment 3 (unlearning)
+- **H-U2:** do the 2026-08-10 unlearning conclusions survive dropping the spurious `cft` arm?
+  It was never part of the FLIP - lambda*FWD argument, so they should be untouched; CONFIRM if
+  `flip`/`rev`/`u_lam*` reproduce within seed noise, REFUTE if any contrast moves.
+- **H-U1:** the CodeBLEU timeouts found on 2026-08-11 are an over-negation signature, not a corpus
+  property. CONFIRM if `codebleu_timeout` on `u_lam1p25`/`u_lam1p5` exceeds the
+  `base`/`rev`/`flip`/`sft` rate by an order of magnitude; REFUTE if it is flat across systems.
+  See [`2026-08-11_codebleu-scoring-hang.md`](2026-08-11_codebleu-scoring-hang.md).
 
 ## Hypotheses — resolved
+
+- ✓ **C2 (CFT recovers the reverse direction) REFUTED**, 2026-08-09, Qwen2.5-Coder-7B — the
+  paper's own model, which it reports at **39.00 %**. CFT never exceeds **3.0 %** under any of the
+  four prompting strategies, and pooled over strategies is **−5.7 pts [−6.4, −5.0]** *below* the
+  plain SFT it is meant to repair — a CI excluding zero in the wrong direction. Not a broken
+  adapter: forward exec-parity is 97.5 % (SFT 97.2 %, base 92.6 %) and `assert_adapters_effective`
+  reports 1.7 % identical-to-base. Already refuted at 1.5 B; scale was the last defence and it does
+  not hold. Deciding entry:
+  [`2026-08-09_7b-refutation-and-scheduler-repair.md`](2026-08-09_7b-refutation-and-scheduler-repair.md).
+- ✓ **C6 (the paper's headline is achievable without any fine-tuning) SUPPORTED**, 2026-08-09 — a
+  hypothesis we did not pre-register and should have. The **untouched base model** scores
+  **38.7 % [35.9, 41.5]** under the `augmented` strategy, statistically indistinguishable from the
+  39.00 % the paper attributes to its contrastive method. The paper reports **no untouched
+  baseline**, so its headline number is not separable from what the model could already do. This is
+  now the strongest criticism in the writeup — it needs no budget accounting, only the missing row.
+- ✓ **C1 (cognitive specialization reproduces) SUPPORTED, but prompt-dependent**, 2026-08-09. Under
+  the paper's `simple` instruction the forward-only adapter scores **0.3 % [0.1, 0.7]** in reverse
+  while beating base forward (97.2 % vs 92.6 %) — the paper's 0 %, reproduced. But the *same
+  adapter* scores **12.5 %** under `augmented`. A 40× swing from instruction wording alone means
+  the effect is substantially a property of the elicitation, not only of the model.
+- ✓ **C4 (prompting cannot substitute) REFUTED**, 2026-08-09. The paper reports ΔR ≈ 0.01–0.05
+  across strategies. Here the spread is **0.3 % → 12.5 %** for SFT and **23.6 % → 38.7 %** for
+  base — far larger than the −5.7 pt SFT→CFT difference. Prompting matters more than the method
+  does, in the opposite direction to the paper's claim.
+- ✓ **C3 (any CFT gain is renaming-only) NOT EVALUABLE — vacuous**, 2026-08-09. There is no CFT
+  gain to decompose. The by-condition table is still informative in its own right: the reverse
+  signal that *does* exist concentrates on `S1` (base 71.8 %) and is near-absent on `L1b`
+  (base 10.5 %) — the structural transformation is mechanically invertible, adversarial renaming
+  destroys information no method can recover. So a single pooled reverse number is dominated by
+  transformation mix, and the paper's is too.
 
 - ✓ **C5 (the three-term loss is not three-way balanced) SUPPORTED**, 2026-08-08, no GPU.
   Equal instance counts across the pools — the paper's stated balancing — do not give the three
@@ -97,6 +127,30 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 
 ## Entries
 
+- [`2026-08-17_readability-substitution-sensitivity.md`](2026-08-17_readability-substitution-sensitivity.md)
+  — the reverse criterion's readability conjunct uses our proxy rather than the model the
+  original study uses. **H-R1 refuted:** strict reverse success is insensitive to the choice.
+  Dropping the conjunct moves no arm by more than 0.6 pp and the headline contrast by 0.2 pp,
+  and it decides only 0.2 % of trials for `flip`/`mix50`, because execution plus the CodeBLEU
+  bound already imply it. Open follow-up **H-R2**, sweep the borrowed 0.4 CodeBLEU threshold
+  the same way.
+- [`2026-08-17_attrib-v2-and-determinism.md`](2026-08-17_attrib-v2-and-determinism.md) — the
+  four 08-12 evals folded into draft v2 (Fig. 1 generated from the run, App. B/D/E rebuilt).
+  **H-D1 refuted:** the differing `base` rates across passes are not program-set drift — the
+  sets are byte-identical — but batch nondeterminism in greedy decoding, worth ±0.3 pp
+  cross-pass; the seeds config's gate was testing the wrong thing and is rewritten. Computing
+  the dose CIs also caught an overclaim before it reached the paper: `mix50` − `mix5` is
+  +4.5 pp [+3.2, +5.8], so the ladder saturates rather than stepping.
+- [`2026-08-11_codebleu-scoring-hang.md`](2026-08-11_codebleu-scoring-hang.md) — the four
+  `srh/exp3-unlearning` cells died twice without producing a verdict; `codebleu`'s `DFG_python`
+  does not terminate on deeply-nested predictions. Bounded at 20 s and surfaced as
+  `codebleu_timeout`; cells requeued. Two addenda: obtune cut to GPUs 0–1 (2–3 lent out), and
+  `_extends` was found to MERGE `systems:`, so every unlearning run evaluated an undeclared `cft`
+  arm — the root cause of the 7B "cft pointed at a 1.5B adapter" bug in the master report, and
+  wider than that entry states.
+- [`2026-08-09_7b-refutation-and-scheduler-repair.md`](2026-08-09_7b-refutation-and-scheduler-repair.md)
+  — CFT refuted at the paper's own 7B model; the untouched base matches its headline number; four
+  scheduler defects fixed, three of which were our own infrastructure killing our own jobs.
 - [`2026-08-08_srh-exp1-plumbing.md`](2026-08-08_srh-exp1-plumbing.md) — SRH Experiment 1 built;
   the four-axis budget table shows CFT is dominated on compute-for-signal before any GPU time.
 - [`2026-08-08_implement-cft.md`](2026-08-08_implement-cft.md) — implementation, data layer, and the
@@ -104,6 +158,10 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
 
 ## Doc / results links
 
+- [`../../docs/REPORT_bidirectional_2026-08-09.md`](../../docs/REPORT_bidirectional_2026-08-09.md)
+  — standalone report, written for a reader new to the terms; §6.1 carries the 7B result
+- [`../../results/2026-08-09_cft-bidirectional/qwen25c-7b/python/bidir_qwen7b/report.md`](../../results/2026-08-09_cft-bidirectional/qwen25c-7b/python/bidir_qwen7b/report.md)
+  — generated 7B tables with CIs
 - [`../../docs/CFT_REPLICATION.md`](../../docs/CFT_REPLICATION.md) — design + deviation list
 - [`../../papers/RELATED_WORK.md`](../../papers/RELATED_WORK.md) §2.1 — the paper's position
 - `../../results/YYYY-MM-DD_cft-bidirectional/` — results (not yet produced)

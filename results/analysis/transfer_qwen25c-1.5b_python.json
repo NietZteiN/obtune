@@ -1,0 +1,41 @@
+{
+  "model": "qwen25c-1.5b",
+  "language": "python",
+  "core_only": true,
+  "n_trials": 163498,
+  "n_programs": 350,
+  "n_resamples": 2000,
+  "seed": 17,
+  "min_denominator_pts": 3.0,
+  "summary": {
+    "n_cells": 70,
+    "n_offdiagonal": 62,
+    "n_tr_defined": 62,
+    "n_tr_undefined": 0,
+    "mean_tr_offdiagonal": 0.9805136583008732,
+    "mean_self_delta_pts": 23.844794714177706,
+    "n_significant_bh05": 70
+  },
+  "invariance_index": {
+    "held_out": "H1",
+    "n_train_conditions": 6,
+    "raw_delta_pts": 20.257923168263844,
+    "raw_delta_pts_min": 18.736842105263158,
+    "raw_delta_pts_max": 22.736842105263158,
+    "per_condition_delta_pts": {
+      "L0": 20.3051,
+      "L1b": 20.4004,
+      "L1r": 19.3684,
+      "L2": 18.7368,
+      "S1": 20.0,
+      "S2": 22.7368
+    },
+    "normalized_defined": true,
+    "n_defined": 6,
+    "normalized": 1.2496770785617306,
+    "normalizer": "mono",
+    "normalizer_pts": 16.210526315789473
+  },
+  "matrix_parquet": "/data/jvl210002/my_downloads/obtune/results/analysis/transfer_qwen25c-1.5b_python.parquet",
+  "accuracy_parquet": "/data/jvl210002/my_downloads/obtune/results/analysis/accuracy_qwen25c-1.5b_python.parquet"
+}

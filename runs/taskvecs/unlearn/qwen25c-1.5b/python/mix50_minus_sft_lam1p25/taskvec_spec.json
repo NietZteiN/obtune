@@ -1,0 +1,17 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "combination_type": "cat",
+  "ingredients": [
+    {
+      "coefficient": 1.0,
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17/final",
+      "sha256": "0bf48dca0bca095d427df0ea003b21f88880f92354e51f48962c0cbaaddc9959"
+    },
+    {
+      "coefficient": -1.25,
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s17/final",
+      "sha256": "a1144f461e6d76558ca7816cd196a0945b6b0c010941c337573579fadcc12103"
+    }
+  ],
+  "total_rank": 64
+}

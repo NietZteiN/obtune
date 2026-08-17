@@ -1,0 +1,17 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_flipsym_r32_s17/final",
+  "language": "python",
+  "source": "heldout",
+  "condition": "L0",
+  "n_items": 1670,
+  "n_dropped_overlong": 1,
+  "n_programs": 557,
+  "accuracy": 0.2581,
+  "format_fail_rate": 0.1898,
+  "parse_ok_rate": 0.8102,
+  "prompt_id": "base_v1",
+  "prompt_template_sha256": "c1e8fe28c30873d7daec2e5cbcb0cbc28b1bf4d6f1b5924ebb03b209bec51958",
+  "prompt_version": "v1",
+  "model_key": "qwen25c-1.5b"
+}

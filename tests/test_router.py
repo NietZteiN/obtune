@@ -66,7 +66,7 @@ def test_h1_is_never_a_class():
     fs = _synth()
     assert "H1" not in CONDITION_TO_LABEL
     ck = train_router(fs, max_epochs=8, early_stop_patience=8, seed=17, verbose=False)
-    assert ck.n_classes == len(TRAINABLE_CONDITIONS) == 6
+    assert ck.n_classes == len(TRAINABLE_CONDITIONS)
     assert ck.class_order == list(TRAINABLE_CONDITIONS)
     assert ck.meta["n_train"] + ck.meta["n_val"] == int(fs.trainable_mask().sum())
 

@@ -74,9 +74,16 @@ def validate_rows(df: pd.DataFrame, sample: Optional[int] = None) -> list[str]:
 
 def compute_is_core(df: pd.DataFrame) -> pd.DataFrame:
     """is_core=1 iff the program appears in every eval condition of its own grid."""
+    # `experiment_id` is part of the grouping: without it the intersection spans every grid
+    # sharing a (phase, model, language), so a sparse supplementary grid redefines `is_core`
+    # for all of them. Landing the 40-program S3/S4 expansion beside the 597-program main grid
+    # cut the core set to 23 on 2026-08-10 — silently, since nothing errors.
     df = df.copy()
     df["is_core"] = 0
-    for (_, _, _), sub in df.groupby(["phase", "base_model", "language"], dropna=False):
+    keys = ["phase", "base_model", "language"]
+    if "experiment_id" in df.columns:
+        keys.append("experiment_id")
+    for _, sub in df.groupby(keys, dropna=False):
         per_cond = sub.groupby("eval_cond")["snippet_id"].apply(set)
         if per_cond.empty:
             continue

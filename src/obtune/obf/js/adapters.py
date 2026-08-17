@@ -84,3 +84,13 @@ def transform_flatten(ctx) -> TransformResult:
 def transform_deadcode(ctx) -> TransformResult:
     """S2 — opaque predicates + never-called dead helpers."""
     return _run(ctx, "S2")
+
+
+def transform_deadhelpers(ctx) -> TransformResult:
+    """S3 — never-called program-scope helpers only (the S2 half that must be IGNORED)."""
+    return _run(ctx, "S3")
+
+
+def transform_opaque(ctx) -> TransformResult:
+    """S4 — opaque predicates only (the S2 half that must be REASONED ABOUT)."""
+    return _run(ctx, "S4")

@@ -1,0 +1,59 @@
+# Cross-seed merge control — does merging care about task-vector orthogonality?
+#
+# THE QUESTION. The 2026-08-15 geometry readout found that pairwise cosine between LoRA task
+# vectors is dominated by SHARED INITIALIZATION, not by learned content: three `L0` adapters
+# trained on byte-identical data are near-orthogonal (cosine 0.053, sign conflict 0.487 — a coin
+# flip), while eight adapters trained on completely different transforms sit at 0.592 purely
+# because they share a seed and therefore a rank-32 subspace.
+#
+# That makes every cosine / sign-conflict figure in MASTER_REPORT §5.3 a measure of drift within
+# one shared subspace rather than of "how different the experts' knowledge is". This arm tests
+# whether the quantity matters at all for the outcome.
+#
+# THE DESIGN. Same six conditions, same rank, same recipe, same algorithms and density as the
+# §5.2 headline merges. The ONLY difference is which seed each expert was drawn from
+# (`scripts/merge/24_crossseed_control.py`, BANK = L0@17, L1b@42, L1r@17, L2@42, S1@17, S2@42).
+# Measured before building, with `merge_geometry.cosine`:
+#
+#     same-seed bank (merge_ties / merge_dare_ties)   mean cosine 0.5633   15/15 same-seed
+#     this bank                                       mean cosine 0.2458    9/15 cross-seed,
+#                                                                            those 9 at 0.0348
+#
+# 2.3x apart on geometry, identical on ingredients. Magnitude checked before queueing (the
+# diagnostic that caught the `merge_dare_linear` 7.175x scale artifact): ||dW|| ratios vs a
+# single expert are 0.244 (crossseed_ties) and 0.675 (crossseed_dare_ties), against 0.189 and
+# 0.623 for their same-seed counterparts — comparable, nothing collapsed or inflated.
+#
+# PREDICTION, REGISTERED BEFORE THE RUN. If accuracy lands within the seed band (1.32 mean /
+# 3.61 p95) of `merge_ties` / `merge_dare_ties`, then LoRA merging is insensitive to task-vector
+# orthogonality and the §5.3 diagnostics do not bound the outcome. If it collapses, geometry does
+# bound merging — but then the L0-merge control's success (built from the SAME near-orthogonal
+# regime, and fine: .339 on H1 = `tuned_L0`) needs its own explanation.
+#
+# NO H1 HERE, DELIBERATELY. This is a method comparison, and CLAUDE.md §3.2 rule 2 forbids H1 for
+# merge tuning — the same argument `merge_headroom_qwen1.5b.yaml` makes for the density sweep.
+# The comparators (`merge_ties`, `merge_dare_ties`) already have `testset` cells on these six
+# conditions, so the contrast is complete without spending a quarantine access. If the arm earns a
+# confirmatory H1 read it goes into the single batched final pass with everything else.
+#
+# GRID. `testset` (Grid B), matching `merge_ties`/`merge_dare_ties`, so the comparison is
+# same-grid. System names are new, so no cell path collides (cell_dir keys on phase, NOT on
+# eval_source — the defect behind three separate incidents).
+#
+# Smoke first:
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/crossseed_merge_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: crossseed_merge_control
+run_tag: crossseed_merge
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+systems:
+  - {name: crossseed_ties, adapter: "runs/merges/qwen25c-1.5b_python_crossseed_ties/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: crossseed_dare_ties, adapter: "runs/merges/qwen25c-1.5b_python_crossseed_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

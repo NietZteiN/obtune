@@ -1,0 +1,151 @@
+{
+  "cells": {
+    "base|simple": {
+      "system": "base",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.02666666666666667,
+      "strict_ci": [
+        0.019333333333333334,
+        0.035333333333333335
+      ],
+      "paper": 0.09466666666666666,
+      "exec": 0.8333333333333334,
+      "identity": 0.4826666666666667
+    },
+    "cft|simple": {
+      "system": "cft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.0033333333333333335,
+      "strict_ci": [
+        0.0006666666666666666,
+        0.006666666666666667
+      ],
+      "paper": 0.08666666666666667,
+      "exec": 0.7393333333333333,
+      "identity": 0.010666666666666666
+    },
+    "mix10|simple": {
+      "system": "mix10",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.2813333333333333,
+      "strict_ci": [
+        0.26266666666666666,
+        0.3006666666666667
+      ],
+      "paper": 0.37733333333333335,
+      "exec": 0.8353333333333334,
+      "identity": 0.0013333333333333333
+    },
+    "mix25|simple": {
+      "system": "mix25",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.2946666666666667,
+      "strict_ci": [
+        0.2773333333333333,
+        0.312
+      ],
+      "paper": 0.364,
+      "exec": 0.862,
+      "identity": 0.0006666666666666666
+    },
+    "mix5|simple": {
+      "system": "mix5",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.26066666666666666,
+      "strict_ci": [
+        0.24266666666666667,
+        0.28
+      ],
+      "paper": 0.372,
+      "exec": 0.8086666666666666,
+      "identity": 0.007333333333333333
+    },
+    "mix50|simple": {
+      "system": "mix50",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.30533333333333335,
+      "strict_ci": [
+        0.2886666666666667,
+        0.32266666666666666
+      ],
+      "paper": 0.35533333333333333,
+      "exec": 0.886,
+      "identity": 0.0
+    },
+    "sft|simple": {
+      "system": "sft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.0033333333333333335,
+      "strict_ci": [
+        0.0006666666666666666,
+        0.006666666666666667
+      ],
+      "paper": 0.07266666666666667,
+      "exec": 0.7433333333333333,
+      "identity": 0.017333333333333333
+    }
+  },
+  "systems": [
+    "base",
+    "cft",
+    "mix10",
+    "mix25",
+    "mix5",
+    "mix50",
+    "sft"
+  ],
+  "strategies": [
+    "simple"
+  ],
+  "headline_contrast": {
+    "cft": {
+      "best_strategy": "simple",
+      "best_strict": 0.0033333333333333335,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.02666666666666667,
+      "below_base_worst": true
+    },
+    "mix10": {
+      "best_strategy": "simple",
+      "best_strict": 0.2813333333333333,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.02666666666666667,
+      "below_base_worst": false
+    },
+    "mix25": {
+      "best_strategy": "simple",
+      "best_strict": 0.2946666666666667,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.02666666666666667,
+      "below_base_worst": false
+    },
+    "mix5": {
+      "best_strategy": "simple",
+      "best_strict": 0.26066666666666666,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.02666666666666667,
+      "below_base_worst": false
+    },
+    "mix50": {
+      "best_strategy": "simple",
+      "best_strict": 0.30533333333333335,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.02666666666666667,
+      "below_base_worst": false
+    },
+    "sft": {
+      "best_strategy": "simple",
+      "best_strict": 0.0033333333333333335,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.02666666666666667,
+      "below_base_worst": true
+    }
+  }
+}

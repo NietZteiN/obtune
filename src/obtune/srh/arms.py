@@ -78,6 +78,36 @@ ARMS: dict[str, ArmSpec] = {
 REUSED = tuple(name for name, spec in ARMS.items() if spec.reuses)
 
 
+#: The dose-response ladder: MIX50 with the reverse share dialled down.
+#:
+#: MIX50 answers "does bidirectional exposure do the work?"; these answer "how little of
+#: it is enough?" — the difference between a refutation and a prescription. Every rung
+#: keeps MIX50's defining property: it REPLACES forward rows rather than adding reverse
+#: ones, so instance count, sequence tokens and optimizer steps stay matched to FWD at
+#: every dose, and the only thing varying along the curve is the share of programs seen
+#: backwards.
+#:
+#: Generated in a loop rather than written out three times. The entries differ in exactly
+#: one number, and three hand-copied dicts are three chances to paste 0.05 into the arm
+#: named mix10 — an error that would silently produce a wrong dose-response curve rather
+#: than an exception.
+for _dose_pct in (5, 10, 25):
+    ARMS[f"mix{_dose_pct}"] = ArmSpec(
+        f"mix{_dose_pct}",
+        ("gen",),
+        direction_mix={
+            "reverse_fraction": _dose_pct / 100.0,
+            "disjoint_programs": True,
+            "seed": 17,
+        },
+        role=(
+            f"dose-response rung: {_dose_pct}% of PROGRAMS seen in reverse instead of "
+            "forward, matched to fwd on instances, sequence tokens and steps"
+        ),
+    )
+del _dose_pct
+
+
 def resolve(name: str) -> ArmSpec:
     if name not in ARMS:
         raise KeyError(f"unknown arm {name!r}; known: {sorted(ARMS)}")

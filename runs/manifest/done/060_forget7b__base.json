@@ -1,0 +1,29 @@
+{
+  "job_id": "forget7b__base",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-7b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "7b_base"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 60,
+  "meta": {
+    "check": "CLAUDE.md 4.7 at 7B \u2014 sft lost 34 pts of HumanEval+ at 1.5B"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 104.6,
+    "log": "runs/logs/forget7b__base.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-10T16:07:32.324633+00:00"
+  }
+}

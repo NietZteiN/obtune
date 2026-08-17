@@ -1,0 +1,102 @@
+# Provenance for every number in `main.tex`
+
+*Last updated: 2026-08-17. Draft v2.*
+
+Rule for this file: every figure that appears in the paper is traceable to a file on disk
+that was produced by a recorded run. Nothing in `main.tex` is quoted from a report or from
+memory — the reports were cross-checked against these files, not the reverse. Where a
+report and a result file disagreed, the file won and the discrepancy is noted below.
+
+## Runs the paper draws on
+
+| tag | model | what | trials | result dir |
+|---|---|---|---|---|
+| `e2_budget_qwen7b` | Qwen2.5-Coder-7B-Instruct | 7 arms × 2 directions × 5 conditions × 300 programs | 21,000 | `results/2026-08-10_cft-bidirectional/qwen25c-7b/python/e2_budget_qwen7b/` |
+| `e2_factorial_qwen1.5b` | Qwen2.5-Coder-1.5B-Instruct | the 2×2 + `base`/`fwd2x` | 18,000 | `results/2026-08-10_cft-bidirectional/qwen25c-1.5b/python/e2_factorial_qwen1.5b/` |
+| `e1_qwen1.5b` | 1.5B | seed-17 arms | 21,000 | `results/2026-08-09_cft-bidirectional/qwen25c-1.5b/python/e1_qwen1.5b/` |
+| `e1_qwen1.5b_s42` | 1.5B | seed-42 replication of `rev`/`flip`/`mix50`/`flipsym` | 21,000 | `results/2026-08-10_cft-bidirectional/qwen25c-1.5b/python/e1_qwen1.5b_s42/` |
+| `bidir_qwen7b` | 7B | `base`/`sft`/`cft` × 4 reverse prompting strategies | 22,500 | `results/2026-08-09_cft-bidirectional/qwen25c-7b/python/bidir_qwen7b/` |
+| `e3_dose_qwen1.5b` | 1.5B | the dose ladder `mix5`/`mix10`/`mix25` + `sft`/`cft`/`mix50`/`base` | 18,000 | `results/2026-08-12_cft-bidirectional/qwen25c-1.5b/python/e3_dose_qwen1.5b/` |
+| `e2_seeds_qwen1.5b` | 1.5B | seed-42 for **all six** arms (adds `sft`/`cft`) | 21,000 | `results/2026-08-12_cft-bidirectional/qwen25c-1.5b/python/e2_seeds_qwen1.5b/` |
+| `e7_strategies_qwen7b` | 7B | **all six** arms × 4 reverse prompting strategies | 30,000 | `results/2026-08-12_cft-bidirectional/qwen25c-7b/python/e7_strategies_qwen7b/` |
+| `e3_javascript_qwen1.5b` | 1.5B | JavaScript replication, `base`/`sft`/`cft`/`mix50`/`flip` | 8,350 | `results/2026-08-12_cft-bidirectional/qwen25c-1.5b/javascript/e3_javascript_qwen1.5b/` |
+| forgetting | both | HumanEval+ pass@1, 164 tasks | — | `results/forgetting/humanevalplus_*.json` |
+| budget accounting | 7B | tokenized-corpus measurement, no GPU | — | `results/srh/budget_qwen7b_python.json` |
+
+## Section by section
+
+| paper location | numbers | source |
+|---|---|---|
+| Abstract, §1, §3 | 2×2 cells 0.3 / 31.4 / 0.3 / 31.1; effects data +30.9 [+29.3,+32.6], objective −0.2 [−0.7,+0.3], interaction −0.3 [−1.3,+0.7] | `e2_factorial_qwen1.5b/contrasts.md` (§"2x2"), and `contrasts.json` |
+| §3 | `cft`−`sft` −0.1 [−0.5,+0.3]; `cftflip`−`flip` −0.3 [−1.2,+0.5]; `fwd2x`−`sft` +0.3 [−0.2,+0.8]; `fwd2x` = 0.6 % | `e2_factorial_qwen1.5b/contrasts.md`, `summary.json` (ALL cells) |
+| §3 seed para, App. D | seed 17 column + seed 42 column + `base` anchor 2.9→2.7 | seed 17 from `e1_qwen1.5b/`, **seed 42 from `e2_seeds_qwen1.5b/`** (supersedes `e1_qwen1.5b_s42`, which lacked `sft`/`cft` at s42). Per-arm CIs recomputed by cluster bootstrap over `trials.jsonl`. |
+| §3 dose para, **Fig. 1** | `mix5` 26.1, `mix10` 28.1, `mix25` 29.5, `mix50` 30.5, `sft` 0.3, `base` 2.7; `mix5`−`sft` +25.7 [+23.9,+27.7], `mix50`−`mix5` +4.5 [+3.2,+5.8], `mix50`−`mix25` +1.1 [+0.0,+2.1] | `e3_dose_qwen1.5b/contrasts.md`. Figure is **generated**, not hand-typed: `scripts/srh/25_fig_dose.py` → `fig_dose.tex`, reading `trials.jsonl` + `contrasts.json`. |
+| §3 JavaScript para, App. E | `base` 3.8, `sft` 0.0, `cft` 0.4, `mix50` 30.3, `flip` 30.4; `flip`−`sft` +30.4 [+28.4,+32.5], `flip`−`mix50` +0.1 [−0.2,+0.5] | `e3_javascript_qwen1.5b/contrasts.md`, `summary.json` ALL/reverse cells |
+| §2 Evaluation para, App. A | cross-pass floor: 6–8 % of generations differ, ≤8 of 1500 trials flip, `base` spans 2.7–2.9 % | measured across the five 1.5B runs' `trials.jsonl` (`output_raw` + `reverse_success_strict`); see log entry 2026-08-17 |
+| §4 Table 2 (main 7B) | all 28 cells | `e2_budget_qwen7b/summary.json`, `condition == "ALL"` cells |
+| §4 | `mix50`−`sft` +32.8 [+31.3,+34.4]; `flip`−`mix50` +0.7 [−0.3,+1.8]; `fwd2x`−`sft` +0.1 [+0.0,+0.2] | `e2_budget_qwen7b/contrasts.md` |
+| §4 Table 3 (budget) | instances/supervised/sequence/steps ratios | `results/srh/budget_qwen7b_python.json` → `ratios_vs_baseline` |
+| §2 fidelity para | pools 7,383 / 5,611 / 5,611; token share .9773 / .01133 / .01133; mean supervised tokens 196.7 vs 3.0 | same file, `arms.cft.by_task`, `.task_token_share`, `.mean_supervised_tokens_by_task` |
+| §5 | `cft`−`base` −12.8 [−14.8,−10.9]; `sft`−`base` −12.9 [−14.9,−10.9] | `e2_budget_qwen7b/contrasts.md` |
+| §6 Table 4 | per-condition strict reverse | `e2_budget_qwen7b/summary.json`, reverse cells by condition |
+| §7 echo | .293 / .182 / .073 / .000 | `e2_budget_qwen7b/summary.json`, `identity_output` on reverse ALL cells |
+| §7 criterion, App. C | paper %, strict %, id-rec passes/all, lift, floor | `e2_budget_qwen7b/metric_tables.md` (§E8), generated by `scripts/srh/23_metric_tables.py` |
+| §7 prompting, App. B | 4-strategy × 6-arm table incl. CIs; ranges 8.7 / 5.3 / 1.4 / 0.4 / 1.1 / 2.5 | **`e7_strategies_qwen7b`** (supersedes `bidir_qwen7b`, which had only 3 arms). CIs recomputed by cluster bootstrap over `trials.jsonl`; whole table from one pass. |
+| §8 Table 5 | HumanEval+ `plus` split | `results/forgetting/humanevalplus_{qwen25c-1.5b_*,qwen25c-7b_7b_*}.json`, key `pass@1_plus` |
+| App. A | forward by condition | `e2_budget_qwen7b/summary.json`, forward cells |
+| §2 stub-run figure (17–25 %) | the unguarded criterion's score on placeholder output | `src/obtune/cft/metrics.py::reverse_success_paper` docstring; measured during harness bring-up |
+
+## Discrepancies resolved while writing
+
+1. **Several `base` numbers for `simple` reverse exist** — at 7B: 12.9 % (`e2_budget_qwen7b`),
+   13.0 % (`bidir_qwen7b`), 13.2 % (`e7_strategies_qwen7b`); at 1.5B: 2.9 % (three runs),
+   2.7 % (`e2_seeds`, `e3_dose`).
+
+   ⚠️ **The v1 explanation of this was wrong and is corrected here.** v1 said "different
+   300-program draws from the same split". That is not what happened: the program-ID sets
+   are **byte-identical** across all five 1.5B runs (verified by set comparison on
+   `trials.jsonl`). The cause is **batch nondeterminism** — greedy decoding is not bitwise
+   reproducible across passes because the engine batches continuously, so which arms share a
+   pass changes reduction order and occasionally an argmax. Evidence: the two passes with the
+   same arm list (`e1_qwen1.5b`, `e1_qwen1.5b_s42`) are identical on **all 1500** base
+   generations, while every other pair differs on 6–8 % of generations and flips 4–8 graded
+   trials; two *same-day* passes also disagree, ruling out a code change.
+
+   Practical rule, unchanged in effect but now correctly justified: one pass per table, named;
+   contrasts only within a pass; **never quote a cross-pass difference finer than 0.5 pp**.
+   Appendix A carries the measurement and Appendix D carries an untuned anchor row so a reader
+   can see the floor directly.
+2. **E8 numbers differ slightly between the two runs** (`base`/`L1r` paper-criterion 19.0 vs
+   19.7). The paper reports the `e2_budget_qwen7b` version so the E8 table and the headline
+   table come from one run. The planning document quoted the `bidir_qwen7b` version.
+3. **Budget ratios**: the paper uses the *measured* ratios from the tokenized corpus
+   (`cft` 2.65× sequence / 1.02× supervised; `mix50` 1.05× / 0.71×). Earlier planning docs
+   carried estimates (2.60× / 1.52× / 0.76×) — superseded, do not reuse.
+
+## Not in the draft, and why
+
+| item | status |
+|---|---|
+| ~~dose–response curve~~ | **landed 2026-08-12**, now Fig. 1 + §3 paragraph. |
+| ~~JavaScript replication~~ | **landed 2026-08-12**, now §3 paragraph + App. E; §9 limitation rewritten. |
+| ~~`flip`/`mix50` × 4 strategies at 7B~~ | **landed 2026-08-12**, now App. B (all six arms, one pass); the §9 limitation is deleted. |
+| ~~seed 42 for `sft`/`cft`~~ | **landed 2026-08-12**, now App. D. |
+| HumanEval+ for the dose arms | **not run.** Would say whether the general-capability cost is dose-dependent while the benefit saturates — the strongest remaining addition. Inference only. |
+| HumanEval+ for 7B `rev` / `fwd2x` | **not run.** Two gaps in Table 5's 7B column. |
+| `mix10` at 7B (dose anchor) | **not trained.** Would confirm the ladder's shape at the headline tier. |
+| approximate-unlearning (shared-representation) results | controls did not land; deliberately **out of scope** for this submission. |
+| `neg`-pool parity sweep | not run; the token-share bound is given instead (App. A), and the gap is stated in §9. |
+| cross-transformation generalisation | not run; out of scope for this submission. |
+
+## Claims deliberately *not* made
+
+- Not "they never ran the obvious baseline." The source paper **names** Bidirectional
+  Fine-Tuning in its evaluation framework (§5.0.2) and reports no result for it. The draft
+  says exactly that.
+- Not "near-zero identifier recall among criterion passes." Measured recall among passes is
+  ~0.43 on `L1r`. The defensible claim, and the one made, is that the criterion has near-zero
+  *lift* over unconditioned output and over the echo floor.
+- Not "the flip is free." Free is scoped to training budget throughout; §8 states the 6–7 pt
+  HumanEval+ cost at 7B in the body, not only in the limitations.
+- Not "CFT does not work." The claim is that it does not reproduce on this corpus at these
+  scales, and that the mechanism it is credited with is available for free.

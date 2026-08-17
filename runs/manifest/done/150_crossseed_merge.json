@@ -1,0 +1,29 @@
+{
+  "job_id": "crossseed__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/crossseed_merge_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.2,
+  "priority": 150,
+  "meta": {
+    "experiment": "rq2/crossseed-merge-control",
+    "stage": "crossseed_eval",
+    "note": "does LoRA merging care about task-vector orthogonality? same 6 conditions, alternating seeds: mean cosine 0.563 -> 0.246. No H1 by design."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 59.3,
+    "log": "runs/logs/crossseed__qwen25c-1.5b.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-16T00:01:25.570128+00:00"
+  }
+}

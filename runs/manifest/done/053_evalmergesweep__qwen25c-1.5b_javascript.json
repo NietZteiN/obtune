@@ -1,0 +1,29 @@
+{
+  "job_id": "evalmergesweep__qwen25c-1.5b_javascript",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_epoch_sweep_qwen25c-1.5b_javascript.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "javascript"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 53,
+  "meta": {
+    "experiment": "rq2/merge-epoch-sweep",
+    "language": "javascript",
+    "note": "uniform-epoch merges; tests Horoi et al. arXiv:2506.14126v2"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 84.8,
+    "log": "runs/logs/evalmergesweep__qwen25c-1.5b_javascript.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-10T15:24:58.092939+00:00"
+  }
+}

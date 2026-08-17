@@ -1,0 +1,44 @@
+{
+  "job_id": "eval-bidir-qwen25c-1.5b-python-e3_dose_qwen1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "srh/eval/e3_dose_qwen1.5b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 59,
+  "meta": {
+    "experiment": "srh/exp1",
+    "config": "srh/eval/e3_dose_qwen1.5b.yaml",
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "systems": [
+      "base",
+      "cft",
+      "mix10",
+      "mix25",
+      "mix5",
+      "mix50",
+      "sft"
+    ],
+    "n_adapters": 6,
+    "reverse_strategies": [
+      "simple"
+    ]
+  },
+  "_progress": {
+    "ticks": 8,
+    "since": 1786542733.0485783,
+    "first_seen": 1786541946.676844
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 864.5,
+    "log": "runs/logs/eval-bidir-qwen25c-1.5b-python-e3_dose_qwen1.5b.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-12T16:11:03.535640+00:00"
+  }
+}

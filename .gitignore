@@ -29,6 +29,11 @@ results/attn/
 results/forgetting/*.parquet
 results/*.parquet
 results/**/*.parquet
+# Raw per-trial generations. One eval pass is 40-95 MB and the whole tree is ~800 MB, which
+# is a large artifact under CLAUDE.md §2. The derived files beside them (summary.json,
+# contrasts.*, metric_tables.md, run_manifest.json) ARE committed and are what a result is
+# read from; trials.jsonl is only needed to recompute them.
+results/**/trials.jsonl
 *.safetensors
 *.bin
 *.npz
@@ -43,3 +48,9 @@ results/**/*.parquet
 # Scratch
 *.log
 .DS_Store
+
+# Vendored tool BINARIES. `env/vendor/` (codebleu) is committed because it is pure Python and
+# small; a compiled platform-specific executable is a different kind of thing and does not
+# belong in history. The dist-info beside it records the exact pin (py_spy 0.4.2), so the tool
+# stays reproducible via pip without carrying a 7.7 MB blob.
+env/vendor_tools/bin/

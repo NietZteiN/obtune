@@ -1,0 +1,136 @@
+{
+  "run": "results/2026-08-10_cft-bidirectional/qwen25c-7b/python/e2_budget_qwen7b",
+  "metric": "reverse_success_strict",
+  "contrasts": [
+    {
+      "a": "cft",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.0006666666666666666,
+      "mean_b": 0.0,
+      "delta": 0.0006666666666666666,
+      "ci": [
+        0.0,
+        0.002
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "flip",
+      "b": "cft",
+      "n_programs": 300,
+      "mean_a": 0.3353333333333333,
+      "mean_b": 0.0006666666666666666,
+      "delta": 0.33466666666666667,
+      "ci": [
+        0.3186666666666667,
+        0.3506666666666667
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.3353333333333333,
+      "mean_b": 0.0,
+      "delta": 0.3353333333333333,
+      "ci": [
+        0.31933333333333336,
+        0.352
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "mix50",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.328,
+      "mean_b": 0.0,
+      "delta": 0.328,
+      "ci": [
+        0.31333333333333335,
+        0.344
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "mix50",
+      "n_programs": 300,
+      "mean_a": 0.3353333333333333,
+      "mean_b": 0.328,
+      "delta": 0.007333333333333303,
+      "ci": [
+        -0.002666666666666706,
+        0.018000000000000016
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "fwd2x",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.0006666666666666666,
+      "mean_b": 0.0,
+      "delta": 0.0006666666666666666,
+      "ci": [
+        0.0,
+        0.002
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "sft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0,
+      "mean_b": 0.12866666666666668,
+      "delta": -0.12866666666666668,
+      "ci": [
+        -0.14866666666666667,
+        -0.10933333333333334
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "cft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0006666666666666666,
+      "mean_b": 0.12866666666666668,
+      "delta": -0.128,
+      "ci": [
+        -0.148,
+        -0.10866666666666666
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "mix50",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.328,
+      "mean_b": 0.12866666666666668,
+      "delta": 0.19933333333333333,
+      "ci": [
+        0.17733333333333337,
+        0.22200000000000003
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.3353333333333333,
+      "mean_b": 0.12866666666666668,
+      "delta": 0.20666666666666664,
+      "ci": [
+        0.184,
+        0.22933333333333333
+      ],
+      "excludes_zero": true
+    }
+  ]
+}

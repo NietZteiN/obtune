@@ -1,0 +1,33 @@
+{
+  "job_id": "forget__flip",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-1.5b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "flip",
+    "--adapter",
+    "runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s17/final"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 58,
+  "meta": {
+    "experiment": "srh/exp1",
+    "check": "CLAUDE.md 4.7 catastrophic forgetting",
+    "note": "results/forgetting was empty - this gate had never been run for any adapter"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 73.0,
+    "log": "runs/logs/forget__flip.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-10T10:51:36.467605+00:00"
+  }
+}

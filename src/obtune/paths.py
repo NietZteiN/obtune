@@ -26,7 +26,7 @@ RAW_ROOT = DATA_DIR / "raw"
 SPLITS_ROOT = DATA_DIR / "splits"
 
 # Conditions a training job may ever see. H1 is deliberately absent.
-TRAINABLE_CONDITIONS = ("L0", "L1b", "L1r", "L2", "S1", "S2")
+TRAINABLE_CONDITIONS = ("L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4")
 ALL_CONDITIONS = TRAINABLE_CONDITIONS + ("H1",)
 LANGUAGES = ("python", "javascript")
 

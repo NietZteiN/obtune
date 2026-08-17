@@ -1,0 +1,30 @@
+{
+  "job_id": "train__qwen25c-1.5b_python_L0_s101__grid_py_L0_s101",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/l0seed_qwen1.5b_py_s101.yaml",
+    "--seed",
+    "101"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s101",
+    "language": "python",
+    "train_conditions": [
+      "L0"
+    ],
+    "seed": 101
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1616.2,
+    "log": "runs/logs/train__qwen25c-1.5b_python_L0_s101__grid_py_L0_s101.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T11:54:07.234128+00:00"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "job_id": "train__overtrain__qwen25c-1.5b_python_S2_s17__overtrain_py_S2",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/overtrain_qwen1.5b_py_S2.yaml",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/S2_r32_s17",
+    "language": "python",
+    "train_conditions": [
+      "S2"
+    ],
+    "seed": 17
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 7919.0,
+    "log": "runs/logs/train__overtrain__qwen25c-1.5b_python_S2_s17__overtrain_py_S2.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-10T15:14:10.154422+00:00"
+  }
+}

@@ -23,10 +23,74 @@ paths:
   node: /home/012/j/jv/jvl210002/miniconda3/bin/node
 
 scheduler_policy:
+  # Cards obtune is allowed to place work on. The supervisor otherwise "follows whatever
+  # is free" within its budget, so lending a card by merely stopping its worker does not
+  # hold: the next poll (300 s) sees an idle GPU and claims it back. This list is the
+  # durable lever — `gpu_alloc.free()`/`claim()` and `launch_workers.sh` both honour it,
+  # which covers every path that can start a worker.
+  #
+  # 2026-08-11: 2 and 3 lent to a neighbour for the duration. They are an NVLink pair
+  # (see nvlink_pairs above), so whoever takes them can still run a TP=2 job; lending
+  # 1 and 2 would have left them only PCIe/SYS.
+  #
+  # 2026-08-12: the borrower MOVED — their `malware_reads` job migrated from 2 onto 0 and
+  # freed 2, which left obtune pinned to a single working card (0 occupied by them, 2 idle
+  # but disallowed). The list is now the *candidate set* rather than a fixed pair: 0, 1 and
+  # 2 are all permitted, and `gpu_budget` still caps us at TWO cards at once. The worker
+  # refuses any GPU with >2 GB used or >5 % util, so widening the candidates cannot collide
+  # with their work — it only lets us follow whichever two are genuinely free. If they move
+  # again, we follow again, with no config edit.
+  #
+  # 3 is still theirs (sglang) and stays out of the list.
+  # To take everything back: restore [0, 1, 2, 3] and raise gpu_budget to 4.
+  # 2026-08-17: GPU 3 ADDED. It had been excluded since 2026-08-11 as the borrower's sglang
+  # card, and that is no longer true — their sglang schedulers exited and their current job
+  # (`codesteer` env, `obfuscation/main.py`, ~14 GB x3) now occupies 0, 1 and 2, leaving 3 at
+  # 1 MiB / 0 %. Excluding 3 therefore had the exact effect CLAUDE.md §1 warns about: obtune
+  # pinned to cards it could not use beside an idle card it was forbidden to touch.
+  # The worker's own idle check (>2 GB / >5 %) is what keeps us off a borrowed card, not this
+  # list, so widening the candidate set cannot collide with them.
+  allowed_gpus: [0, 1, 2, 3]
+  # Maximum cards held at once. NOT equal to len(allowed_gpus): the list above is a
+  # candidate set and this is how many of them we may hold.
+  #
+  # 2026-08-15: reduced 2 -> 1 on the user's instruction. `allowed_gpus` deliberately stays
+  # [0, 1, 2] so we keep FOLLOWING whichever single card is free rather than pinning one —
+  # the 2026-08-12 lesson, when the borrower migrated and a hard-pinned list left obtune on a
+  # busy card beside an idle forbidden one. With a budget of 1 the worker takes exactly one
+  # card, and its own idle check (>2 GB used or >5 % util) still keeps it off the borrower's.
+  #
+  # This is the lever for lending capacity; hand-killing a worker is not, because the
+  # supervisor would reclaim the card within one 300 s poll.
+  #
+  # 2026-08-15 (later, on the user's instruction): raised 1 -> 2. At the time of the change
+  # GPU 0 held our own worker, GPU 1 held the borrower's `nla-mi src.answer_entropy` (99 %
+  # util, 19.7 GB, started 22:36 UTC), and GPUs 2 and 3 were genuinely idle (1 MiB, 0 %).
+  # A budget of 2 therefore adds a second worker on GPU 2 without contesting the borrower;
+  # the worker's own idle check (>2 GB / >5 %) is what enforces that, not this number.
+  # NOTE the raise is inert on its own — nothing polls it while `pipeline.sh` is not
+  # running, so a second worker only appears when `scripts/launch_workers.sh` is invoked.
+  #
+  # 2026-08-17 (on the user's instruction): raised 2 -> 3. At the time of the change GPUs 0, 1 and 2
+  # were genuinely idle (1 MiB / 0 % each) and GPU 3 held a borrowed vLLM engine at 16.7 GB, so a
+  # budget of 3 places workers on exactly the three free cards and the worker's own idle check
+  # (>2 GB / >5 %) declines the fourth. `allowed_gpus` stays [0,1,2,3] so we keep FOLLOWING whichever
+  # cards are free rather than pinning three — the 2026-08-12 lesson.
+  # 2026-08-17 (same day, corrected): 3 -> 4. The budget-3 launch refused gpu2 because THREE workers
+  # were already live — and the third is on GPU 3, whose 16.7 GB vLLM engine turned out to be
+  # obtune's OWN `forget__qwen25c-7b__7b_rev` job started by a concurrent session, not a borrowed
+  # process. With no borrower on the box at all, capping at 3 left an idle card (gpu2) unusable while
+  # our own work occupied the other three. 4 = all four cards, which the note above calls "taking
+  # everything back"; the worker's idle check still refuses any card a borrower later takes.
+  gpu_budget: 4
   # sched/worker.py refuses a GPU that is not idle (shared-box etiquette)
   max_mem_used_mb: 2000
   max_util_pct: 5
-  poll_seconds: 600
+  # 600s left a GPU idle for up to 10 minutes after each job, which is most of the
+  # wall-clock when a queue of short jobs (ckpt-select, merge, eval-cell) is draining.
+  # The idle check above is what protects a neighbour's job, not the poll interval, so
+  # polling more often costs nothing but an nvidia-smi query.
+  poll_seconds: 60
   workers: one_tmux_session_per_gpu
 
 training_defaults:

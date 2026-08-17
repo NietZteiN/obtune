@@ -1,0 +1,30 @@
+{
+  "job_id": "train__qwen25c-1.5b_python_S1_s42",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_qwen1.5b_py_S1.yaml",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42",
+    "language": "python",
+    "train_conditions": [
+      "S1"
+    ],
+    "seed": 42
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 3265.3,
+    "log": "runs/logs/train__qwen25c-1.5b_python_S1_s42.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T14:31:31.263868+00:00"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "job_id": "gridArefill__qwen25c-7b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/baselines_gridA_7b.yaml",
+    "--model",
+    "qwen25c-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.5,
+  "priority": 81,
+  "meta": {
+    "experiment": "baselines/gridA",
+    "stage": "gridA_refill",
+    "note": "7B has NO Grid A base cells at all - the 21 already collected there are uninterpretable without them"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1.0,
+    "log": "runs/logs/gridArefill__qwen25c-7b.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T11:06:55.030625+00:00"
+  }
+}

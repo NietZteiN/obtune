@@ -1,0 +1,32 @@
+{
+  "job_id": "evalrq2__qwen25c-1.5b_python_merge_dare_ties",
+  "kind": "eval-rq2",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/grid_v1.yaml",
+    "--systems",
+    "merge_dare_ties",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 50,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "system": "merge_dare_ties",
+    "depends_on": "merge__qwen25c-1.5b_python__dare_ties"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 0.6,
+    "log": "runs/logs/evalrq2__qwen25c-1.5b_python_merge_dare_ties.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T17:54:22.259098+00:00"
+  }
+}

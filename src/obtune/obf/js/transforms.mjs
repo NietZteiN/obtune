@@ -598,14 +598,20 @@ function deadHelper(rng) {
   return t.functionDeclaration(t.identifier(name), [t.identifier(p)], body);
 }
 
-function transformS2(code, entryPoint, rng) {
+// `mode` splits S2 into its two mechanisms, mirroring obf/py/deadcode.py:
+//   both       -> S2 (unchanged)
+//   predicates -> S4  (opaque guards only; the guard EXECUTES)
+//   helpers    -> S3  (uncalled program-scope helpers only)
+// Both nPred and nDead are still drawn in every mode so the RNG stream stays aligned
+// with the Python implementation's ordering and `both` remains byte-identical.
+function transformS2(code, entryPoint, rng, mode = 'both') {
   const ast = parseCode(code);
   const fnPath = findEntryFunctionPath(ast, entryPoint);
 
   const nPred = randInt(rng, 1, 3);
   const nDead = randInt(rng, 1, 2);
 
-  if (fnPath) {
+  if (fnPath && mode !== 'helpers') {
     const fnNode = fnPath.node;
     if (t.isArrowFunctionExpression(fnNode) && !t.isBlockStatement(fnNode.body)) {
       fnNode.body = t.blockStatement([t.returnStatement(fnNode.body)]);
@@ -620,9 +626,11 @@ function transformS2(code, entryPoint, rng) {
   }
 
   // Dead helpers at program scope, never called.
-  let programBody = null;
-  traverse(ast, { Program(path) { programBody = path.node.body; } });
-  for (let i = 0; i < nDead; i++) programBody.push(deadHelper(rng));
+  if (mode !== 'predicates') {
+    let programBody = null;
+    traverse(ast, { Program(path) { programBody = path.node.body; } });
+    for (let i = 0; i < nDead; i++) programBody.push(deadHelper(rng));
+  }
 
   return { ok: true, code: gen(ast), renameMap: {}, skippedConstructs: [] };
 }
@@ -645,6 +653,10 @@ export function applyTransform(condition, code, entryPoint, seed) {
       return { entryPoint, ...transformS1(code, entryPoint, rng) };
     case 'S2':
       return { entryPoint, ...transformS2(code, entryPoint, rng) };
+    case 'S3':
+      return { entryPoint, ...transformS2(code, entryPoint, rng, 'helpers') };
+    case 'S4':
+      return { entryPoint, ...transformS2(code, entryPoint, rng, 'predicates') };
     default:
       throw new Error(`unknown or non-JS-trainable condition: ${condition}`);
   }

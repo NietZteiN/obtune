@@ -1,0 +1,25 @@
+{
+  "job_id": "evalsrh__qwen25c-1.5b__python__e1s42",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "srh/eval/e1_qwen1.5b_s42.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 56,
+  "meta": {
+    "experiment": "srh/exp1",
+    "seed": 42,
+    "role": "between-seed variance check promised by REPORT \u00a76.4"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1003.1,
+    "log": "runs/logs/evalsrh__qwen25c-1.5b__python__e1s42.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-10T11:01:14.398635+00:00"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "job_id": "residualdecomp__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/residual_decompose_h1_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.2,
+  "priority": 180,
+  "meta": {
+    "experiment": "holdout-final/residual-decompose",
+    "stage": "residual_decompose",
+    "note": "replication + weighting-vs-count decomposition of the +7.0. See ACCESS_LOG 2026-08-17."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 45.2,
+    "log": "runs/logs/residualdecomp__qwen25c-1.5b.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-17T12:35:12.865663+00:00"
+  }
+}

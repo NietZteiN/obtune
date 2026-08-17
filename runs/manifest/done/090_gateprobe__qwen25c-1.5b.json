@@ -1,0 +1,28 @@
+{
+  "job_id": "gateprobe__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "scripts/analysis/23_gate_input_probe.py",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--n-programs",
+    "200"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 90,
+  "meta": {
+    "experiment": "rq2/gate-diagnostic",
+    "stage": "gate_probe",
+    "note": "linear probe on decoder-layer INPUT hidden states; no H1, program-disjoint split"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 50.5,
+    "log": "runs/logs/gateprobe__qwen25c-1.5b.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-14T23:42:21.680056+00:00"
+  }
+}

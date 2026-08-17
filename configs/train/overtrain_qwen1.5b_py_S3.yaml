@@ -1,0 +1,26 @@
+# Overtraining probe: S3 (python) at 9 epochs instead of 3.
+#
+# Completes the 8-expert bank. The overtraining result currently rests on THREE experts
+# (L1b/S1/S2), which is thin for a claim about interference BETWEEN experts — sign conflict is
+# a pairwise statistic, and 3 experts give 3 pairs against 8 experts' 28.
+#
+# Measured on the 3-expert 9-epoch bank (2026-08-11): sign conflict rises 0.336 -> 0.356 and
+# pairwise cosine falls 0.498 -> 0.421 across epochs 1->9, plateauing at ~epoch 6 — the
+# mechanism Horoi et al. describe. It is absent in the 3-epoch bank because training loss is
+# still falling at epoch 2.5, i.e. that bank never reaches the regime.
+#
+# adapter_root is MANDATORY here: adapter_dir encodes (conditions, rank, seed) but NOT
+# training length, so without it this config resolves onto the 3-epoch expert and overwrites
+# the bank the entire RQ1 transfer matrix is built on.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [S3]
+run_tag: overtrain_py_S3
+phase: main
+
+adapter_root: runs/adapters_overtrain
+
+train:
+  epochs: 9

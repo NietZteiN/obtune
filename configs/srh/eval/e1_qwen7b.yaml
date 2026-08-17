@@ -10,18 +10,25 @@ _extends: ../../cft/eval/bidir_v1.yaml
 
 model: qwen25c-7b
 
-# `base` is REQUIRED in every eval job: it is the reference for assert_adapters_effective
-# and the floor for every transfer ratio. `fwd`/`cft` are the REPLICATION's adapters,
-# reused rather than retrained — Experiment 1 needs them as arms and retraining them would
-# risk a seed difference being read as an arm effect.
+# `systems` DEEP-MERGES with the parent, it does not replace it — so `base`, `sft` and
+# `cft` arrive from bidir_v1.yaml, which is the 1.5B config. Every inherited key MUST be
+# overridden here with its 7B path: leaving `sft` alone resolved it to
+# runs/adapters_cft/qwen25c-1.5b/... and would have loaded a 1.5B LoRA onto a 7B base,
+# producing garbage under a real arm's label. `sft` IS Experiment 1's FWD arm; there is
+# deliberately no second `fwd:` key pointing at the same adapter.
+#
+# `flipsym` is NOT listed: its 7B arm is not trained, and naming an adapter that does not
+# exist fails the whole cell. Add it here only once the arm lands.
+# `mix50` and `fwd2x` HAVE since landed at 7B, but they are deliberately not added here —
+# this config's results are already published (MASTER_REPORT §7.5) and re-running it with
+# extra arms would rewrite that table under the same run_tag. They are evaluated by
+# `e2_budget_qwen7b.yaml`, which extends this file and adds only the new arms.
 systems:
   base: null
-  fwd: runs/adapters_cft/qwen25c-7b/python/sft_r32_s17/final
+  sft: runs/adapters_cft/qwen25c-7b/python/sft_r32_s17/final
   cft: runs/adapters_cft/qwen25c-7b/python/cft_r32_s17/final
   rev: runs/adapters_srh/qwen25c-7b/python/all5_rev_r32_s17/final
   flip: runs/adapters_srh/qwen25c-7b/python/all5_flip_r32_s17/final
-  mix50: runs/adapters_srh/qwen25c-7b/python/all5_mix50_r32_s17/final
-  flipsym: runs/adapters_srh/qwen25c-7b/python/all5_flipsym_r32_s17/final
 
 # Only the `simple` reverse strategy at this tier. The four-strategy sweep answers the
 # paper's question (does prompting rescue the reverse direction?), which the replication
@@ -33,7 +40,7 @@ engine:
   dtype: bfloat16
   max_model_len: 4096
   max_lora_rank: 64
-  # 7 systems, so the default max_loras: 4 is not enough for one batched pass.
+  # 5 systems, so the default max_loras: 4 is not enough for one batched pass.
   max_loras: 8
   # A 7B in bf16 plus 6 LoRA slots plus a 4k KV cache leaves less headroom, and vLLM
   # refuses to start rather than shrinking.

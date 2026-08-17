@@ -1,0 +1,30 @@
+{
+  "job_id": "fill22_grid_v1",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_grid_v1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "base,merge_ties,merge_dare_ties,merge_dare_linear"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 101,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 82.7,
+    "log": "runs/logs/fill22_grid_v1.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-15T21:34:17.744531+00:00"
+  }
+}

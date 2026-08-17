@@ -1,0 +1,43 @@
+# Experiment 1 — the dose-response curve, 1.5B.
+# Last updated: 2026-08-10
+#
+#   python scripts/srh/22_enqueue_evals.py srh/eval/e3_dose_qwen1.5b.yaml --write
+#
+# WHY THIS CONFIG EXISTS
+# mix50 established that bidirectional EXPOSURE does the work. This measures how much of
+# it is needed, which is the difference between a refutation and a prescription — and it
+# is the paper's Figure 1.
+#
+# The curve's x-axis is the share of programs seen in reverse; its 0 % point is `sft`
+# (forward-only under the identical recipe, NOT the untuned base) and its 100 % point
+# would be `rev`. Every rung REPLACES forward rows rather than adding reverse ones, so
+# instance count, sequence tokens and optimizer steps are constant along the whole curve
+# and the only thing varying is exposure. Verified before training: 7 384 instances at
+# every dose, 0 programs appearing in both directions.
+#
+# `base`, `sft` and `cft` deep-merge in from bidir_v1.yaml. `cft` is not part of the curve
+# but rides along for free-ish and gives the figure a horizontal reference line for the
+# published method. Pass `--systems` to evaluate.py to drop it if the bill matters.
+_extends: ../../cft/eval/bidir_v1.yaml
+
+model: qwen25c-1.5b
+
+# PRECONDITION: all three rungs must have finished training. 22_enqueue_evals.py refuses
+# to enqueue this config until every adapter path below exists, which is the guard that
+# keeps a queued eval from scoring a half-trained arm.
+systems:
+  mix5: runs/adapters_srh/qwen25c-1.5b/python/all5_mix5_r32_s17/final
+  mix10: runs/adapters_srh/qwen25c-1.5b/python/all5_mix10_r32_s17/final
+  mix25: runs/adapters_srh/qwen25c-1.5b/python/all5_mix25_r32_s17/final
+  mix50: runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17/final
+
+reverse_strategies: [simple]
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  # 6 adapters + base.
+  max_loras: 8
+  gpu_memory_utilization: 0.80
+  seed: 17

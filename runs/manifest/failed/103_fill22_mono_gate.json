@@ -1,0 +1,29 @@
+{
+  "job_id": "fill22_mono_gate",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_mono_gate.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 103,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": -9,
+    "seconds": 2412.6,
+    "log": "runs/logs/fill22_mono_gate.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-15T22:14:30.405020+00:00",
+    "tail": "Processed prompts: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1670/1670 [00:05<00:00, 328.14it/s, est. speed input: 122092.26 toks/s, output: 2244.39 toks/s]\n[engine] returned 1670 completion(s): 1670 distinct prompt(s) -> 902 distinct output(s)\n[eval_vllm] qwen25c-1.5b/python mono_all__S3: n=1670 acc=0.416 format_fail=0.007\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 1080, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 1074, in main\n    summary = run_grid(args)\n              ^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 851, in run_grid\n    res = run_cell(\n          ^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 533, in run_cell\n    _assert_resume_same_grid(cell, meta_base)\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 149, in _assert_resume_same_grid\n    raise GridCollisionError(\nGridCollisionError: refusing to resume /data/jvl210002/my_downloads/obtune/results/cells/main/qwen25c-1.5b/python/tuned_L0__S3: it was evaluated on eval_source='testset' (n_items=176) but this run requests eval_source='heldout'. Two grids are aliasing at one cell path because `cell_dir` keys on `phase` only. Give this run its own `phase:` in its config (and add it to TrialRow.phase), or pass --no-resume with a distinct --out-root.\n"
+  }
+}

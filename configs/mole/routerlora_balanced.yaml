@@ -1,0 +1,50 @@
+# RouterLoRA v2 — the same gate, trained with routing regularisation.
+#
+#   python -m obtune.mole.train_mole --config mole/routerlora_balanced.yaml --dry-run
+#
+# WHY A SECOND ARM RATHER THAN AN EDIT TO routerlora_v1.yaml
+# ----------------------------------------------------------
+# v1 is what produced the §12.8 result and every mixture number in the report. It stays
+# exactly as it was so the comparison v1-vs-v2 is a controlled one: identical bank, identical
+# data, identical prompt, identical seed — the ONLY differences are the two knobs below.
+#
+# WHAT §12.8 FOUND, AND WHY THESE TWO KNOBS
+# -----------------------------------------
+# The v1 gate ignores its input. Total-variation distance between each condition's expert-mass
+# profile and the grand mean is .011-.056: one fixed blend (~.38 L2, ~.24 each S2/S4) on every
+# condition INCLUDING H1, with L1r/S1/S3/L0 near .003 — three of eight experts dead. On the
+# `L1r` cell the `L1r` expert gets .003, which is 38x BELOW uniform. Composites do not
+# decompose: `C_L1r_S1` puts .019 on {L1r, S1} against a chance level of .250.
+#
+# That is the expected optimum of v1's objective, not a bug in it. v1 trains on the task loss
+# alone — no balancing term, no entropy regulariser, no routing supervision — and a constant
+# blend minimises average loss perfectly well. Switch Transformer and GShard both add an
+# auxiliary balancing loss for precisely this reason.
+#
+#   `aux_load_balance`  Switch-style E * sum_i(f_i * P_i). Minimised at uniform assignment,
+#                       grows as mass concentrates, so it penalises the dead-expert pattern
+#                       directly. 0.01 is the standard coefficient; larger values trade task
+#                       loss for balance and should be swept only against the LOTO diagonal,
+#                       never against H1 (§3.2 rule 2).
+#   `min_temperature`   v1 learned tau down to .39-.51 UNIFORMLY across all 28 layers from an
+#                       init of 1.0 — it became more confident about an input-independent
+#                       preference. The floor stops it sharpening before it can discriminate.
+#                       It cannot rescue an already-collapsed gate, so it is a guard, not a fix.
+#
+# WHAT THIS ARM DOES NOT DO
+# -------------------------
+# It does not supervise routing. Adding a cross-entropy toward the correct expert (one-hot per
+# condition, two-hot per composite) is the strongest available fix for compositional
+# decomposition and is deliberately NOT here, because it changes what may be claimed: a gate
+# TAUGHT to decompose is a weaker result than a gate that learned to. Run this first and see
+# whether balance alone is enough; supervision is a separate arm with a separate claim.
+#
+# READ BEFORE TRUSTING ANY NUMBER FROM THIS: `scripts/analysis/22_gate_routing_report.py`.
+# Accuracy cannot tell a routing gate from a fixed blend — that is the whole lesson of §12.8.
+_extends: routerlora_v1.yaml
+
+run_tag: routerlora_balanced
+
+train:
+  aux_load_balance: 0.01
+  min_temperature: 0.5

@@ -1,0 +1,42 @@
+# E3 — the second-language replication (item M of the ATTRIB plan).
+#
+#   python scripts/srh/22_enqueue_evals.py srh/eval/e3_javascript_qwen1.5b.yaml --write
+#
+# WHAT THIS BUYS, PRECISELY
+# -------------------------
+# JavaScript answers **"is the effect Python-specific?"**. It does NOT answer **"is the effect
+# Java-specific?"**, which is the literal form of the reviewer objection, because this host has
+# a JRE but no `javac` — a Java replication needs a JDK, a CodeNet Java subset, Java
+# obfuscators and a compile-and-test harness, none of which is reachable before the Aug 28
+# freeze. The limitations section must say so plainly: we replicate in a second language; the
+# source paper's Java setting remains untested here. That is weaker than a Java replication and
+# much stronger than no second language at all.
+#
+# EVERY SYSTEM PATH IS RESTATED, DELIBERATELY
+# -------------------------------------------
+# `systems` deep-merges with the parent, and the parent (`cft/eval/bidir_v1.yaml`) pins
+# `language: python` with PYTHON adapter paths. Inheriting them under `language: javascript`
+# would evaluate Python-trained LoRAs on JavaScript items and label the cell javascript — the
+# same class of silent cross-scale error that has already occurred in this project (a 1.5B
+# adapter loaded onto a 7B base). So `sft` and `cft` are rebound here even though the parent
+# already names them; do not delete these two lines on the grounds that they look redundant.
+#
+# `base` is untuned and language-independent, and is the consistency anchor for this run. It
+# has no published JavaScript counterpart yet, so record whatever it scores as the anchor for
+# subsequent JS runs rather than comparing it to the Python 2.9 %.
+_extends: ../../cft/eval/bidir_v1.yaml
+
+model: qwen25c-1.5b
+language: javascript
+run_tag: e3_javascript_qwen1.5b
+
+systems:
+  base: null
+  sft: runs/adapters_cft/qwen25c-1.5b/javascript/sft_r32_s17/final
+  cft: runs/adapters_cft/qwen25c-1.5b/javascript/cft_r32_s17/final
+  flip: runs/adapters_srh/qwen25c-1.5b/javascript/all5_flip_r32_s17/final
+  mix50: runs/adapters_srh/qwen25c-1.5b/javascript/all5_mix50_r32_s17/final
+
+# `simple` only: the language question is about whether the data-direction effect transfers,
+# not about prompt sensitivity, and the four-strategy sweep is answered separately at 7B.
+reverse_strategies: [simple]

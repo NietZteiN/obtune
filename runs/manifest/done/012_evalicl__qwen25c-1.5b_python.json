@@ -1,0 +1,28 @@
+{
+  "job_id": "evalicl__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/icl_cross_h1_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 12,
+  "meta": {
+    "experiment": "baseline/icl",
+    "note": "demos from TRAINABLE conditions only; H1 is the query, never the source"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 921.5,
+    "log": "runs/logs/evalicl__qwen25c-1.5b_python.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-13T20:14:46.885240+00:00"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "job_id": "evalgA7b__qwen25c-7b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/baselines_gridA_7b.yaml",
+    "--model",
+    "qwen25c-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 20.0,
+  "priority": 17,
+  "meta": {
+    "experiment": "baseline/gridA_7b",
+    "note": "no RQ1 ladder adapters exist at 7B"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 16024.8,
+    "log": "runs/logs/evalgA7b__qwen25c-7b_python.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T02:34:08.606425+00:00"
+  }
+}

@@ -130,7 +130,7 @@ def extract_features(
 ) -> FeatureSet:
     """Mean-pooled hidden states at `layer` for every row. GPU strongly preferred."""
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoModel, AutoTokenizer
 
     models_cfg = load_config("models.yaml")["models"]
     mcfg = models_cfg[model_key]
@@ -141,7 +141,12 @@ def extract_features(
     tok = AutoTokenizer.from_pretrained(mcfg["hf_id"])
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
-    model = AutoModelForCausalLM.from_pretrained(
+    # AutoModel, NOT AutoModelForCausalLM: we only ever read `hidden_states`, but the
+    # causal-LM head still computes [batch, seq, vocab] logits — 32 x 1536 x 151936 in
+    # bf16 is ~14 GB of pure waste, and it OOM'd the 1.5B feature job on a 48 GB card.
+    # Dropping the head also frees its ~0.6 GB of weights. Hidden-state indexing is
+    # unchanged: index 0 is still the embedding output.
+    model = AutoModel.from_pretrained(
         mcfg["hf_id"], dtype=torch.bfloat16, attn_implementation="sdpa")
     model.eval()
     dev = device or ("cuda" if torch.cuda.is_available() else "cpu")
@@ -204,15 +209,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     help="data/train/pairs/<cond>/<lang>.jsonl (quarantine-guarded read)")
     ap.add_argument("--h1-jsonl", nargs="*", default=[],
                     help="H1 eval rows for the routing-entropy report; labelled -1, never trained on")
+    # Routing happens on EVAL items, but the only non-training read used to be the H1
+    # flag -- so the emitted job had no way to featurize the items it needed to route,
+    # and the router's train set and route set were silently the same rows. Eval rows are
+    # labelled from `condition` exactly as training rows are (H1 still falls to -1), so
+    # `correct_route` stays meaningful; they are simply never passed to train_router.
+    ap.add_argument("--eval-jsonl", nargs="*", default=[],
+                    help="eval items to be ROUTED (data/eval/<src>/items/<cond>/<lang>.jsonl)")
     ap.add_argument("--out", default=str(FEATURE_DIR / "router_features.npz"))
     args = ap.parse_args(argv)
 
     cfg = load_config(args.config)
     rows = _read_rows(args.train_jsonl, allow_h1=False)
     n_train = len(rows)
-    rows += _read_rows(args.h1_jsonl, allow_h1=True)
+    rows += _read_rows(list(args.eval_jsonl) + list(args.h1_jsonl), allow_h1=True)
     if not rows:
-        raise SystemExit("no rows: pass --train-jsonl and/or --h1-jsonl")
+        raise SystemExit("no rows: pass --train-jsonl, --eval-jsonl and/or --h1-jsonl")
 
     fs = extract_features(
         rows, model_key=args.model,

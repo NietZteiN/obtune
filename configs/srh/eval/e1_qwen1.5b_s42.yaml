@@ -1,0 +1,40 @@
+# Experiment 1, seed 42 — the between-seed variance check.
+# Last updated: 2026-08-10
+#
+#   python -m obtune.cft.evaluate --config srh/eval/e1_qwen1.5b_s42.yaml
+#
+# CLAUDE.md §4 is explicit that a single run is a data point, not a conclusion, and
+# REPORT_bidirectional_2026-08-09.md §6.4 promises this replication before publication.
+# The headline differences are 30+ points and the nulls are tight (±0.5), so seed noise is
+# very unlikely to overturn them — but "very unlikely" is not a measurement.
+#
+# Identical to e1_qwen1.5b.yaml in every respect except the adapter seed, so any difference
+# in the numbers is attributable to the seed and nothing else: same harness, same program
+# set, same criteria, same `simple` reverse strategy, same engine settings.
+#
+# `base`, `sft` and `cft` arrive from the parent (bidir_v1.yaml) via the systems deep-merge
+# and are SEED-17 adapters. That is deliberate and is not a confound for the comparison
+# being made here: the seed-42 question is whether rev/flip/mix50/flipsym reproduce, and
+# each is compared against its own seed-17 counterpart in the other run. Re-training the
+# replication arms at seed 42 would answer a different question at four times the cost.
+_extends: ../../cft/eval/bidir_v1.yaml
+
+model: qwen25c-1.5b
+run_tag: e1_qwen1.5b_s42
+
+systems:
+  rev: runs/adapters_srh/qwen25c-1.5b/python/all5_rev_r32_s42/final
+  flip: runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s42/final
+  mix50: runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s42/final
+  flipsym: runs/adapters_srh/qwen25c-1.5b/python/all5_flipsym_r32_s42/final
+
+reverse_strategies: [simple]
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  max_loras: 8
+  gpu_memory_utilization: 0.80
+  seed: 17   # the DECODING seed, held fixed on purpose: varying it too would confound
+             # adapter-seed variance with sampling variance. Decoding is greedy anyway.

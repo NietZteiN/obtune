@@ -1,0 +1,45 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "combination_type": "ties",
+  "density": 0.5,
+  "weights": [
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s17/checkpoint-222",
+      "sha256": "4d098422e9bdea8fa72a4629025aaee7f890ea3a8c2b09555a26da066101f837"
+    },
+    "L1b": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/checkpoint-219",
+      "sha256": "df683952276aa935ffe7a29261075df37d164aa05416a05176a071b5aba22766"
+    },
+    "L1r": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1r_r32_s17/checkpoint-222",
+      "sha256": "f1b4cb80a2de8b79866609adc73f6eda16c11ff681c5cdf325208f134845ff29"
+    },
+    "L2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L2_r32_s17/checkpoint-222",
+      "sha256": "fc4a6065ca2f6ef27592f775cd15175136b065f71e8575366fce1ef03ca1c9de"
+    },
+    "S1": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s17/checkpoint-162",
+      "sha256": "6c4641ad4608d4e30f70e0b76831ba20d8ed323f65d96c48b5db36b25e9e1fdd"
+    },
+    "S2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S2_r32_s17/checkpoint-222",
+      "sha256": "ca2e0a7d8f18ac0ce56d451495e422e571b4d7bac208aed63038fbecd399db6e"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

@@ -1,0 +1,24 @@
+{
+  "job_id": "evalsrh__qwen25c-1.5b__python__e1",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "srh/eval/e1_qwen1.5b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 55,
+  "meta": {
+    "experiment": "srh/exp1",
+    "note": "re-run: original trials.jsonl was overwritten by the 7B run before the output path was model-qualified"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 998.6,
+    "log": "runs/logs/evalsrh__qwen25c-1.5b__python__e1.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T18:12:43.955564+00:00"
+  }
+}

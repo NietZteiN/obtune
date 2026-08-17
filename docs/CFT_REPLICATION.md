@@ -152,9 +152,9 @@ python -m obtune.cft.evaluate --config cft/eval/bidir_v1.yaml --gpu <idle>
 Built 2026-08-08 in `src/obtune/srh/` (ledger:
 [`../log/cft-replication/2026-08-08_srh-exp1-plumbing.md`](../log/cft-replication/2026-08-08_srh-exp1-plumbing.md)).
 
-The paper attributes reverse capability to the contrastive *objective*, but never ran the
-obvious baseline: reverse training data is free here, because every `(original, obfuscated)`
-pair is also an `(obfuscated, original)` pair. The arms:
+The paper attributes reverse capability to the contrastive *objective*, and the paper **names** the bidirectional baseline and reports **no result** for it. §5.0.2 declares the comparison — *"CFT effectiveness is assessed through comparison against Standard Fine-Tuning (SFT) ... and Bidirectional Fine-Tuning (BFT) using forward generation plus reverse deobfuscation tasks"* — and the string "BFT" occurs exactly once in the paper: Figure 4 carries only SFT and CFT columns, and no table, figure or sentence reports a BFT number. BFT *is* the `flip` arm. A declared-but-unreported baseline is a sharper gap than an unnoticed one, and "they never ran it" would be factually wrong.
+Reverse training data is free here, because every `(original, obfuscated)` pair is also an
+`(obfuscated, original)` pair. The arms:
 
 | arm | mixture | role |
 |---|---|---|

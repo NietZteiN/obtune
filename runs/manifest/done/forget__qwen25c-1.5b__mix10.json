@@ -1,0 +1,37 @@
+{
+  "job_id": "forget__qwen25c-1.5b__mix10",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-1.5b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "mix10",
+    "--adapter",
+    "runs/adapters_srh/qwen25c-1.5b/python/all5_mix10_r32_s17/final"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.027,
+  "priority": 59,
+  "meta": {
+    "experiment": "srh/exp1",
+    "check": "CLAUDE.md 4.7 catastrophic forgetting",
+    "model": "qwen25c-1.5b",
+    "tag": "mix10",
+    "adapter": "runs/adapters_srh/qwen25c-1.5b/python/all5_mix10_r32_s17/final",
+    "paper": "paper_bidirectional \u00a78 / Table 5",
+    "question": "does the general-capability COST scale with reverse share, given that the reverse-capability BENEFIT saturates by 5 %? (log/cft-replication/2026-08-17, H-C1)"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 105.1,
+    "log": "runs/logs/forget__qwen25c-1.5b__mix10.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-17T11:24:33.523970+00:00"
+  }
+}

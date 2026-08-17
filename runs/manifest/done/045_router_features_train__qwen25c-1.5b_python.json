@@ -1,0 +1,36 @@
+{
+  "job_id": "router_features_train__qwen25c-1.5b_python",
+  "kind": "router",
+  "argv": [
+    "-m",
+    "obtune.router.features",
+    "--config",
+    "router/router_v1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--train-jsonl",
+    "data/train/pairs/L0/python.jsonl",
+    "data/train/pairs/L1b/python.jsonl",
+    "data/train/pairs/L1r/python.jsonl",
+    "data/train/pairs/L2/python.jsonl",
+    "data/train/pairs/S1/python.jsonl",
+    "data/train/pairs/S2/python.jsonl",
+    "--out",
+    "results/router/qwen25c-1.5b/python/features_train.npz"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 45,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "stage": "features_train"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 927.7,
+    "log": "runs/logs/router_features_train__qwen25c-1.5b_python.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T17:50:26.307252+00:00"
+  }
+}

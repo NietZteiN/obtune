@@ -1,0 +1,32 @@
+{
+  "job_id": "forget__sft",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-1.5b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "sft",
+    "--adapter",
+    "runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s17/final"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 59,
+  "meta": {
+    "experiment": "srh/exp1",
+    "check": "CLAUDE.md 4.7 catastrophic forgetting"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 108.3,
+    "log": "runs/logs/forget__sft.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-10T11:01:14.558209+00:00"
+  }
+}

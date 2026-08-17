@@ -12,6 +12,8 @@
     "javascript",
     "--rank",
     "32",
+    "--combination-type",
+    "dare_ties",
     "--out",
     "runs/adapters/qwen25c-1.5b/javascript/merge_dare_ties_r32_s17"
   ],
@@ -25,9 +27,9 @@
   },
   "result": {
     "returncode": 0,
-    "seconds": 28.9,
+    "seconds": 19.9,
     "log": "runs/logs/merge__qwen25c-1.5b_javascript__dare_ties.log",
     "worker": "gpu0",
-    "finished_utc": "2026-08-09T03:09:40.490804+00:00"
+    "finished_utc": "2026-08-09T17:21:57.592237+00:00"
   }
 }

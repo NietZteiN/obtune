@@ -1,0 +1,28 @@
+{
+  "job_id": "evalrescaled__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/dare_linear_rescaled_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 54,
+  "meta": {
+    "experiment": "rq2/merge-artifact",
+    "note": "is dare_linear's collapse purely a 7.175x scale artifact?"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 50.7,
+    "log": "runs/logs/evalrescaled__qwen25c-1.5b_python.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-12T23:15:07.301534+00:00"
+  }
+}

@@ -210,8 +210,38 @@ def _range_param(ctx: SnippetCtx, key: str, default: tuple[int, int]) -> tuple[i
 # --------------------------------------------------------------------------- #
 
 
+#: The two mechanisms `S2` fuses. Splitting them is not cosmetic: they target different
+#: levels of comprehension (a predicate must be *reasoned about*; a dead helper only has
+#: to be *ignored*), so a single condition that emits both cannot attribute a degradation
+#: to either. `S2` keeps emitting both and is untouched.
+MODES = ("both", "predicates", "helpers")
+
+
 def transform(ctx: SnippetCtx) -> TransformResult:
     """S2 — inject opaque-predicate blocks and dead module-level helpers."""
+    return _run(ctx, mode="both")
+
+
+def transform_opaque(ctx: SnippetCtx) -> TransformResult:
+    """S4 (proposal X3) — opaque predicates only, no dead helpers."""
+    return _run(ctx, mode="predicates")
+
+
+def transform_deadhelpers(ctx: SnippetCtx) -> TransformResult:
+    """S3 (proposal X2) — dead module-level helpers only, no opaque predicates."""
+    return _run(ctx, mode="helpers")
+
+
+def _run(ctx: SnippetCtx, *, mode: str = "both") -> TransformResult:
+    """Shared body. `mode` gates the two sections; everything else is identical.
+
+    S2 byte-identity is preserved by construction: the `both` path runs exactly the
+    original statements in the original order, so it consumes the RNG identically. S3/S4
+    draw a *different* stream anyway — `make_ctx` seeds from the condition code — so they
+    cannot perturb S2 even in principle. `tests/test_transforms_py.py` pins it regardless.
+    """
+    if mode not in MODES:
+        raise ValueError(f"mode must be one of {MODES}; got {mode!r}")
     try:
         tree = ast.parse(ctx.src)
     except SyntaxError as exc:
@@ -257,12 +287,16 @@ def transform(ctx: SnippetCtx) -> TransformResult:
     budget = max(0, int(allowance * 0.85))
     # A third of the budget is held back for the dead helpers, so a short program does
     # not spend its whole allowance on predicate blocks and end up with the half of S2
-    # that is easiest to spot and none of the half that is not.
-    helper_reserve = budget // 3
+    # that is easiest to spot and none of the half that is not. With helpers disabled
+    # there is nothing to starve, so the reserve goes to zero and S4 gets the full budget
+    # — otherwise S4 would emit systematically fewer predicates than S2 does.
+    helper_reserve = budget // 3 if mode == "both" else 0
 
     # --- opaque predicates in the entry function -------------------------- #
-    boundaries = _boundaries(index, data, fn.body)
-    if not boundaries:
+    boundaries = _boundaries(index, data, fn.body) if mode != "helpers" else []
+    if mode == "helpers":
+        pass  # S3 emits no predicates
+    elif not boundaries:
         skipped.append("no_reachable_boundary")
     else:
         lo, hi = _range_param(ctx, "n_predicate_blocks", (1, 3))
@@ -289,9 +323,11 @@ def transform(ctx: SnippetCtx) -> TransformResult:
         budget -= spent
 
     # --- dead module-level helpers ---------------------------------------- #
-    anchor = _helper_anchor(index, data, tree, fn, rng)
+    anchor = _helper_anchor(index, data, tree, fn, rng) if mode != "predicates" else None
     n_helpers = 0
-    if anchor is None:
+    if mode == "predicates":
+        pass  # S4 emits no helpers
+    elif anchor is None:
         skipped.append("no_module_anchor")
     else:
         lo, hi = _range_param(ctx, "n_dead_helpers", (1, 2))
@@ -329,6 +365,7 @@ def transform(ctx: SnippetCtx) -> TransformResult:
         notes=notes,
         skipped_constructs=skipped,
         extra={
+            "mode": mode,
             "n_predicate_blocks": len(styles),
             "predicate_styles": styles,
             "n_dead_helpers": n_helpers,

@@ -1,0 +1,29 @@
+# Generated 2026-08-10 — individual accuracy of the 9-epoch experts.
+#
+# Part V predicts a DISSOCIATION: individual accuracy rises with training while merged
+# accuracy falls. The merge half is measured; without this half the claim is untestable.
+# Systems are namespaced `ot_<cond>_e<epoch>` so they cannot collide with the 3-epoch
+# bank's cells, which key on system name alone.
+_extends: _base_eval.yaml
+
+phase: main
+run_tag: overtrain_individual
+model: qwen25c-1.5b
+language: python
+
+systems:
+  - {name: base, arch: none}
+  - {name: ot_L1b_e1, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/L1b_r32_s17/checkpoint-73, train_cond: L1b}
+  - {name: ot_L1b_e3, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/L1b_r32_s17/checkpoint-219, train_cond: L1b}
+  - {name: ot_L1b_e6, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/L1b_r32_s17/checkpoint-438, train_cond: L1b}
+  - {name: ot_L1b_e9, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/L1b_r32_s17/checkpoint-657, train_cond: L1b}
+  - {name: ot_S1_e1, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S1_r32_s17/checkpoint-54, train_cond: S1}
+  - {name: ot_S1_e3, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S1_r32_s17/checkpoint-162, train_cond: S1}
+  - {name: ot_S1_e6, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S1_r32_s17/checkpoint-324, train_cond: S1}
+  - {name: ot_S1_e9, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S1_r32_s17/checkpoint-486, train_cond: S1}
+  - {name: ot_S2_e1, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S2_r32_s17/checkpoint-74, train_cond: S2}
+  - {name: ot_S2_e3, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S2_r32_s17/checkpoint-222, train_cond: S2}
+  - {name: ot_S2_e6, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S2_r32_s17/checkpoint-444, train_cond: S2}
+  - {name: ot_S2_e9, arch: per_type, adapter: runs/adapters_overtrain/qwen25c-1.5b/python/S2_r32_s17/checkpoint-666, train_cond: S2}
+
+eval_conditions: [L1b, S1, S2]

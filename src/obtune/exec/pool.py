@@ -141,6 +141,12 @@ def _run_one(item: BatchItem, timeout_s: float, mem_mb: int, hash_seed: int) -> 
             r = json.loads(line)
         except json.JSONDecodeError:
             continue
+        # Defence in depth against the program under test writing to the protocol
+        # channel. `json.loads("42")` succeeds and returns an int, so a JSONDecodeError
+        # guard alone is not enough — a printed number used to reach `r["i"]` and raise
+        # AttributeError, killing the whole batch.
+        if not isinstance(r, dict) or "i" not in r:
+            continue
         by_index[r["i"]] = CaseResult(
             status=r.get("status", "error"), output=r.get("output"),
             exc_type=r.get("exc_type"), elapsed_ms=float(r.get("elapsed_ms", 0.0)),

@@ -1,0 +1,62 @@
+# Decomposing the one surviving positive: was it the WEIGHTING or the extra INGREDIENTS?
+#
+# ⚠️ SPENDS QUARANTINE BUDGET. Continuation of the 2026-08-17 declared third pass; see the
+# declaration block in data/quarantine/h1/ACCESS_LOG.md. Also note: `--stub` on this config really
+# loads H1 items and really appends an ACCESS_LOG row (generation is stubbed, `load_eval_items` is
+# not), so smoke it against a non-H1 condition list if you need to check plumbing.
+#
+# THE DEFECT THIS FIXES
+# --------------------
+# The first residual-merge build used EIGHT ingredients (`L0` + L1b, L1r, L2, S1, S2, S3, S4) and was
+# compared against `merge_dare_ties`, which merges SIX (`configs/merge/ties_v1.yaml`:
+# `adapters: [L0, L1b, L1r, L2, S1, S2]`). It scored 41.7 on H1 against that arm's 34.8 — the only
+# contrast in the confirmatory pass to survive BH-FDR (q=0.048, McNemar b/c = 8/0).
+#
+# But two things differed at once, so the +7.0 is not attributable: the residual REWEIGHTING, and two
+# extra experts. This config separates them. All arms are `dare_ties` at d=0.5, the cell where the
+# effect appeared.
+#
+#   A  merge_dare_ties            6 ingredients, uniform    (exists: 34.8)  <- the baseline
+#   B  residual_n6_s17            6 ingredients, residual   NEW            <- isolates WEIGHTING
+#   C  uniform_n8_s17             8 ingredients, uniform    NEW            <- isolates COUNT
+#   D  residual_n8_s17            8 ingredients, residual   (exists: 41.7) <- both, the original arm
+#   E  residual_n6_s42            6 ingredients, residual, SEED-42 bank NEW <- REPLICATION of B
+#   F  merge_dare_ties_s42        6 ingredients, uniform, seed-42 (exists: 38.3) <- E's baseline
+#
+# READINGS, FIXED BEFORE THE RUN:
+#   * B > A and E > F, both outside the 3.61-pt band  -> the reweighting is real and replicates on an
+#     independent expert bank. That is the project's first positive method result on the
+#     discriminator, and it is a claim about merging (a deployment claim), not about invariance.
+#   * C ~ D and B ~ A                                 -> the +7.0 was the two extra experts, not the
+#     weighting. The residual idea is dead and the honest report is that ingredient COUNT mattered.
+#   * B > A but E ~ F                                 -> single-seed fluke; 27 programs did it. Report
+#     as not replicated, which is the most likely outcome given the arm was NULL in-distribution.
+#   * All flat                                        -> the 41.7 was noise on 115 items and the
+#     confirmatory pass's one survivor does not survive its own replication.
+#
+# WHY SEED-42 CANNOT USE EIGHT INGREDIENTS: the s42 bank has only L0/L1b/L1r/L2/S1/S2 — no S3/S4. Six
+# is therefore the largest ladder that exists at BOTH seeds, which is the other reason the matched
+# comparison is done at six.
+#
+# `MERGE_SEED` (DARE's Bernoulli mask) is held at 17 for every arm while the EXPERT-BANK seed varies,
+# so a bank comparison does not also change the mask.
+#
+# Grid B (`testset`, n=115), matching every comparator. H1 only — the trainable-condition readouts for
+# these arms are a separate, non-quarantine question and are not worth 24 more cells here.
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: residual_decompose
+run_tag: residual_decompose
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+h1_access_purpose: final_eval
+
+systems:
+  - {name: residual_n6_s17_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/n6_s17_d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: uniform_n8_s17_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/n8_s17_uniform_d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: residual_n6_s42_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/n6_s42_d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [H1]

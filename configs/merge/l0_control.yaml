@@ -1,0 +1,15 @@
+# The L0-MERGE CONTROL — merge N clean-code adapters instead of N specialists.
+#
+# Same algorithms, same density, same rank, same weighting as the real RQ2 merges
+# (ties_v1.yaml); the ONLY difference is what goes in. `adapters` is ignored when the merge
+# is driven by `--adapter-dir` (which is how three same-condition adapters are supplied —
+# a dict cannot hold `L0` three times, so keys are `L0__s17` / `L0__s42` / `L0__s101` and
+# `merge_adapters.base_condition` strips the suffix before the quarantine guard runs).
+#
+# density 0.5 and combination types ties + dare_ties are copied from ties_v1.yaml on
+# purpose: a control that differed in a hyperparameter would not control for anything.
+combination_type: ties
+density: 0.5
+adapters: [L0] # placeholder; --adapter-dir supplies the real three
+weights: null # null => uniform 1/n, matching the real merges
+seed: 17

@@ -1,0 +1,29 @@
+{
+  "job_id": "evals3s4__qwen25c-1.5b_javascript",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/grid_s3s4_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "javascript"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 52,
+  "meta": {
+    "experiment": "rq1/s2-split",
+    "stage": "gpu_s3s4_eval",
+    "language": "javascript"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1.5,
+    "log": "runs/logs/evals3s4__qwen25c-1.5b_javascript.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-10T15:22:32.090216+00:00"
+  }
+}

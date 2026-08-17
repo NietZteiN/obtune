@@ -28,6 +28,10 @@ from __future__ import annotations
 
 import ast
 import re
+
+from obtune.obf.base import iter_nodes as _obf_iter_nodes
+from obtune.obf.base import node_text as _obf_node_text
+from obtune.obf.base import parse as _obf_parse
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Sequence
 
@@ -39,6 +43,7 @@ from obtune.schema import BaseProgram, Variant
 #: Families whose transform must rename the entry function (conditions.yaml).
 _IDENTIFIER_FAMILY = "identifier"
 _STRUCTURAL_FAMILY = "structural"
+_COMPOSITE_FAMILY = "composite"
 
 _HEX_NAME_RE = re.compile(r"^[vf]_[0-9a-f]{4}$")
 _SEQ_NAME_RE = re.compile(r"^[a-z]+$")
@@ -105,13 +110,21 @@ def _h1_markers(patterns: Sequence[str], code: str) -> list[str]:
     return hits
 
 
-def _purity(gate: _Gate, parent: BaseProgram, variant: Variant, spec: dict[str, Any]) -> bool:
+def _purity(
+    gate: _Gate,
+    parent: BaseProgram,
+    variant: Variant,
+    spec: dict[str, Any],
+    cfg: dict[str, Any] | None = None,
+) -> bool:
     """Family invariants: each condition must be the transform it claims to be.
 
     Without this a builder bug (an S1 module silently falling back to the parent, a
     renamer that skipped the entry point) would produce a corpus whose condition labels
     are wrong — the single failure mode that no downstream analysis can detect.
     """
+    if spec.get("family") == _COMPOSITE_FAMILY:
+        return _purity_composite(gate, parent, variant, spec, cfg or {})
     family = spec.get("family", "none")
     params = spec.get("params", {}) or {}
     cond = variant.condition
@@ -172,13 +185,346 @@ def _purity(gate: _Gate, parent: BaseProgram, variant: Variant, spec: dict[str, 
                 _has_dispatch_loop(variant.language, variant.code, variant.entry_point),
                 "S1: no dispatch loop found in the entry function",
             )
-        if cond == "S2":
+        if cond in ("S2", "S3", "S4", "S5", "S6"):
             ok &= gate.record(
                 "purity_code_added",
                 variant.code.count("\n") > parent.code.count("\n"),
-                "S2: no lines were added",
+                f"{cond}: no lines were added",
+            )
+        # "Lines were added" is satisfied by BOTH halves of S2, so it cannot tell a
+        # mislabelled S3 from an S4 — exactly the mislabelling this function exists to
+        # prevent. Each split condition therefore gets a POSITIVE invariant naming its own
+        # mechanism, verified by parsing the code rather than by trusting transform_meta.
+        if cond == "S3":
+            ok &= gate.record(
+                "purity_dead_helper_added",
+                _added_uncalled_def(variant.language, parent.code, variant.code),
+                "S3: no uncalled module-level def was added (that is S3's whole mechanism)",
+            )
+            ok &= gate.record(
+                "purity_no_opaque_guard",
+                not _added_computed_guard(variant.language, parent.code, variant.code, variant.entry_point),
+                "S3: an opaque predicate was inserted — that is S4's mechanism, not S3's",
+            )
+        if cond == "S4":
+            ok &= gate.record(
+                "purity_opaque_guard_added",
+                _added_computed_guard(variant.language, parent.code, variant.code, variant.entry_point),
+                "S4: no computed opaque guard was added to the entry function",
+            )
+            ok &= gate.record(
+                "purity_no_dead_helper",
+                _module_def_count(variant.language, variant.code)
+                == _module_def_count(variant.language, parent.code),
+                "S4: a module-level def was added — that is S3's mechanism, not S4's",
+            )
+        if cond == "S5":
+            ok &= gate.record(
+                "purity_unreachable_literal_guard",
+                _added_literal_dead_guard(variant.language, parent.code, variant.code, variant.entry_point),
+                "S5: no statically-dead literal guard (`if 0:`) was added",
+            )
+            ok &= gate.record(
+                "purity_no_dead_helper",
+                _module_def_count(variant.language, variant.code)
+                == _module_def_count(variant.language, parent.code),
+                "S5: a module-level def was added — that is S3's mechanism, not S5's",
+            )
+        if cond == "S6":
+            ok &= gate.record(
+                "purity_loop_removed",
+                _entry_loop_count(variant.language, variant.code, variant.entry_point)
+                < _entry_loop_count(variant.language, parent.code, parent.entry_point),
+                "S6: the entry function has no fewer loops — nothing was unrolled",
             )
     return ok
+
+
+def _purity_composite(
+    gate: _Gate,
+    parent: BaseProgram,
+    variant: Variant,
+    spec: dict[str, Any],
+    cfg: dict[str, Any],
+) -> bool:
+    """Every constituent's MECHANISM must be present in the stacked output.
+
+    Composites are semantics-verified for free — `gate()` runs `exec_parity` against the
+    L0 parent's stored cases regardless of how many transforms produced the variant. They
+    are NOT mechanism-verified for free, and without this a composite whose second stage
+    silently no-op'd would be labelled `C_L1r_S1` while being plain `L1r`. That variant
+    would then carry the headline claim of Part III, which is precisely that a stacked
+    variant contains two mechanisms and therefore no single expert can be right.
+
+    WHY THIS IS NOT "run both constituents' `_purity`"
+    -------------------------------------------------
+    That is unsatisfiable, and `C_S4_S3` proves it: S3's invariant set requires that NO
+    opaque guard was added, S4's requires that one WAS. Each condition's exclusion clauses
+    exist to separate it from its siblings *when applied alone*; under composition they
+    contradict each other by construction. Two further invariants are dropped for the same
+    reason, and are named in `purity_composite_relaxed` so the weakening is visible in the
+    gate record rather than inferred from this comment:
+
+      * identifier `purity_line_count` — an identifier transform alone cannot change the
+        line count, but a structural co-stage adds lines;
+      * structural `purity_no_rename` — a structural transform alone renames nothing, but
+        an identifier co-stage populates `rename_map`.
+
+    What remains is each part's POSITIVE mechanism invariant, which is the part that
+    actually carries the label, and every one is parsed out of the emitted code rather
+    than read from `transform_meta` — purity must never trust the transform's self-report.
+    """
+    parts = list(spec.get("parts") or [])
+    ladder = cfg.get("conditions") or {}
+    ok = gate.record(
+        "purity_composite_parts",
+        len(parts) >= 2 and all(p in ladder for p in parts),
+        f"{variant.condition}: parts {parts} are not all declared in the ladder",
+    )
+    if not ok:
+        return False
+
+    # Recorded, not silent: which single-transform invariants composition invalidates.
+    gate.record("purity_composite_relaxed", True,
+                "relaxed under composition: identifier purity_line_count, structural "
+                "purity_no_rename, and the S3/S4/S5 mutual-exclusion clauses")
+
+    lang, code, entry = variant.language, variant.code, variant.entry_point
+    for part in parts:
+        pspec = ladder.get(part, {})
+        fam = pspec.get("family", "none")
+        params = pspec.get("params", {}) or {}
+        tag = f"purity_composite_{part}"
+
+        if fam == _IDENTIFIER_FAMILY:
+            renamed = dict(variant.rename_map)
+            ok &= gate.record(f"{tag}_rename_map", bool(renamed),
+                              f"{variant.condition}: {part} stage left rename_map empty")
+            if params.get("rename_entry", False):
+                ok &= gate.record(f"{tag}_entry_renamed", entry != parent.entry_point,
+                                  f"{variant.condition}: {part} did not rename the entry point")
+            style = params.get("style")
+            if style == "hex":
+                bad = [v for v in renamed.values() if not _HEX_NAME_RE.match(v)]
+                ok &= gate.record(f"{tag}_hex_names", not bad,
+                                  f"{variant.condition}: {part} non-hex names {bad[:5]}")
+            elif style == "seq":
+                bad = [v for v in renamed.values() if not _SEQ_NAME_RE.match(v)]
+                ok &= gate.record(f"{tag}_seq_names", not bad,
+                                  f"{variant.condition}: {part} non-sequential names {bad[:5]}")
+
+        elif fam == _STRUCTURAL_FAMILY:
+            # Lines added is weak on its own — it is the reason S3/S4 needed positive
+            # invariants — but under composition it still catches a stage that no-op'd.
+            ok &= gate.record(f"{tag}_code_added",
+                              code.count("\n") > parent.code.count("\n"),
+                              f"{variant.condition}: {part} added no lines")
+            if part == "S1":
+                ok &= gate.record(f"{tag}_dispatch_loop",
+                                  _has_dispatch_loop(lang, code, entry),
+                                  f"{variant.condition}: {part} left no dispatch loop")
+            elif part == "S3":
+                ok &= gate.record(f"{tag}_dead_helper",
+                                  _added_uncalled_def(lang, parent.code, code),
+                                  f"{variant.condition}: {part} added no uncalled def")
+            elif part == "S4":
+                ok &= gate.record(f"{tag}_opaque_guard",
+                                  _added_computed_guard(lang, parent.code, code, entry),
+                                  f"{variant.condition}: {part} added no computed guard")
+            elif part == "S5":
+                ok &= gate.record(f"{tag}_literal_guard",
+                                  _added_literal_dead_guard(lang, parent.code, code, entry),
+                                  f"{variant.condition}: {part} added no `if 0:` guard")
+    return ok
+
+
+# --------------------------------------------------------------------------- #
+# Mechanism detectors for the split structural conditions (S3/S4/S5/S6).
+#
+# These parse the variant rather than reading `transform_meta`: purity must verify what
+# the transform DID, not what it says it did, or a transform bug is invisible to the gate.
+
+#: Per-language tree-sitter node types for the constructs the detectors below key on.
+#: Using tree-sitter rather than Python's `ast` is not a stylistic choice: `ast.parse` on
+#: a JavaScript variant raises SyntaxError, so an `ast`-based detector silently returns
+#: "mechanism absent" for EVERY JS variant and the whole language fails purity.
+_TS_NODES = {
+    "python": {
+        "func": ("function_definition",),
+        "if": ("if_statement",),
+        "computed": ("binary_operator", "comparison_operator", "boolean_operator"),
+        "loop": ("for_statement", "while_statement"),
+        "falsey": {"0", "False", "None"},
+    },
+    "javascript": {
+        "func": ("function_declaration",),
+        "if": ("if_statement",),
+        "computed": ("binary_expression", "logical_expression"),
+        "loop": ("for_statement", "for_in_statement", "while_statement", "do_statement"),
+        "falsey": {"0", "false", "null"},
+    },
+}
+
+
+def _ts_root(language: str, code: str):
+    try:
+        return _obf_parse(language, code)
+    except Exception:
+        return None
+
+
+def _top_level_funcs(language: str, code: str) -> dict[str, Any]:
+    """Name -> node for functions declared at the top level of the module."""
+    root = _ts_root(language, code)
+    spec = _TS_NODES.get(language)
+    if root is None or spec is None:
+        return {}
+    out = {}
+    for child in root.children:
+        node = child
+        # JS wraps some declarations; walk one level for `export`/`statement` wrappers.
+        if node.type not in spec["func"] and node.child_count == 1:
+            node = node.children[0]
+        if node.type in spec["func"]:
+            name = node.child_by_field_name("name")
+            if name is not None:
+                out[_obf_node_text(code, name)] = node
+    return out
+
+
+def _module_def_count(language: str, code: str) -> int:
+    return len(_top_level_funcs(language, code))
+
+
+def _added_uncalled_def(language: str, parent_code: str, code: str) -> bool:
+    """A top-level function that is new AND never referenced — i.e. genuinely dead.
+
+    Everything is derived from ONE parse of `code`. Node identity in tree-sitter is
+    per-tree, so comparing nodes taken from two separate parses of the same source never
+    matches — which silently left each declaration's own name in the "used" set and made
+    every dead helper look referenced.
+    """
+    parent_funcs = set(_top_level_funcs(language, parent_code))
+    root = _ts_root(language, code)
+    spec = _TS_NODES.get(language)
+    if root is None or spec is None:
+        return False
+
+    funcs: dict[str, Any] = {}
+    for child in root.children:
+        node = child
+        if node.type not in spec["func"] and node.child_count == 1:
+            node = node.children[0]
+        if node.type in spec["func"]:
+            name = node.child_by_field_name("name")
+            if name is not None:
+                funcs[_obf_node_text(code, name)] = name
+
+    added = set(funcs) - parent_funcs
+    if not added:
+        return False
+    # Byte offsets, not node objects: unambiguous within this one tree.
+    declared_at = {n.start_byte for n in funcs.values()}
+    used = {
+        _obf_node_text(code, n)
+        for n in _obf_iter_nodes(root)
+        if n.type == "identifier" and n.start_byte not in declared_at
+    }
+    return bool(added - used)
+
+
+def _entry_fn_node(language: str, code: str, entry_point: str):
+    """The entry function's node, across every form the corpus actually uses.
+
+    A plain `function_declaration` lookup is not enough for JavaScript: the corpus also
+    contains `const f = (x) => {...}` and `const f = function (x) {...}`, which
+    `obf/js/transforms.mjs::findEntryFunctionPath` handles and this must too. Without the
+    extra forms `_added_ifs` found no entry function, returned no guards, and 20 of 30
+    JavaScript S4 variants were rejected for "no opaque guard" that was in fact present.
+    """
+    direct = _top_level_funcs(language, code).get(entry_point)
+    if direct is not None or language != "javascript":
+        return direct
+
+    root = _ts_root(language, code)
+    if root is None:
+        return None
+    for node in _obf_iter_nodes(root):
+        if node.type != "variable_declarator":
+            continue
+        name = node.child_by_field_name("name")
+        value = node.child_by_field_name("value")
+        if name is None or value is None:
+            continue
+        if _obf_node_text(code, name) != entry_point:
+            continue
+        if value.type in ("arrow_function", "function_expression", "function"):
+            return value
+    return None
+
+
+def _added_ifs(language: str, parent_code: str, code: str, entry_point: str) -> list[Any]:
+    """`if` nodes inside the entry function that the parent did not have."""
+    spec = _TS_NODES.get(language)
+    fn = _entry_fn_node(language, code, entry_point)
+    if fn is None or spec is None:
+        return []
+    pfn = _entry_fn_node(language, parent_code, entry_point)
+    n_parent = (
+        len([n for n in _obf_iter_nodes(pfn) if n.type in spec["if"]]) if pfn is not None else 0
+    )
+    ifs = [n for n in _obf_iter_nodes(fn) if n.type in spec["if"]]
+    return ifs if len(ifs) > n_parent else []
+
+
+def _guard_test(node, language: str):
+    """The condition node of an `if`, across both grammars."""
+    for field in ("condition", "test"):
+        t = node.child_by_field_name(field)
+        if t is not None:
+            return t
+    return None
+
+
+def _added_computed_guard(language: str, parent_code: str, code: str, entry_point: str) -> bool:
+    """An added guard whose test is COMPUTED — the S4 mechanism.
+
+    Computed, not literal: the reader must evaluate arithmetic to see the branch is never
+    taken. A literal `if 0:` is S5's mechanism and must not satisfy this.
+    """
+    spec = _TS_NODES.get(language, {})
+    for n in _added_ifs(language, parent_code, code, entry_point):
+        t = _guard_test(n, language)
+        if t is None:
+            continue
+        # JS wraps the condition in parentheses.
+        while t.type == "parenthesized_expression" and t.named_child_count == 1:
+            t = t.named_children[0]
+        if t.type in spec.get("computed", ()):
+            return True
+    return False
+
+
+def _added_literal_dead_guard(language: str, parent_code: str, code: str, entry_point: str) -> bool:
+    """An added guard whose test is a falsey LITERAL — the S5 mechanism (`if 0:`)."""
+    spec = _TS_NODES.get(language, {})
+    for n in _added_ifs(language, parent_code, code, entry_point):
+        t = _guard_test(n, language)
+        if t is None:
+            continue
+        while t.type == "parenthesized_expression" and t.named_child_count == 1:
+            t = t.named_children[0]
+        if _obf_node_text(code, t).strip() in spec.get("falsey", set()):
+            return True
+    return False
+
+
+def _entry_loop_count(language: str, code: str, entry_point: str) -> int:
+    spec = _TS_NODES.get(language)
+    fn = _entry_fn_node(language, code, entry_point)
+    if fn is None or spec is None:
+        return 0
+    return len([n for n in _obf_iter_nodes(fn) if n.type in spec["loop"]])
 
 
 def _has_annotations(code: str) -> bool:
@@ -286,7 +632,12 @@ def gate(
 ) -> Verdict:
     """Full acceptance check for one variant. See the module docstring for the order."""
     cfg = conditions_cfg or load_conditions()
-    spec = (cfg.get("conditions") or {}).get(variant.condition, {})
+    # Composites live under their own top-level key. Looking only in `conditions` would
+    # return {} for them: `_purity` would find family "none" and pass vacuously, and
+    # `spec["trainable"]` would be falsy so the H1 CONTENT SCAN below would be skipped
+    # for exactly the new arm. Both failures are silent.
+    spec = ((cfg.get("conditions") or {}).get(variant.condition)
+            or (cfg.get("composite_conditions") or {}).get(variant.condition, {}))
     gate_cfg = cfg.get("gate") or {}
     g = _Gate()
 
@@ -307,7 +658,7 @@ def gate(
         g.record("non_identity", True)
 
     # -- 3. condition purity + H1 markers ---------------------------------- #
-    if not _purity(g, parent_program, variant, spec):
+    if not _purity(g, parent_program, variant, spec, cfg):
         return g.verdict()
     if spec.get("trainable", False):
         hits = _h1_markers(cfg.get("h1_marker_patterns") or [], variant.code)

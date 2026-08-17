@@ -49,6 +49,13 @@ def main() -> int:
     ap.add_argument("--model", default="qwen1.5b", help="config filename stem infix")
     ap.add_argument("--arms", default=",".join(ARMS))
     ap.add_argument("--priority", type=int, default=DEFAULT_PRIORITY)
+    # Seed replication (E2). The adapter directory and run id both carry the seed
+    # (cft_train.adapter_dir / run_id_for), so a second seed lands beside the first
+    # rather than overwriting it — but ONLY if the override is applied to the config
+    # before those are computed, which is why it is set below rather than passed
+    # through argv alone.
+    ap.add_argument("--seed", type=int, default=17,
+                    help="retrain an arm at a second seed; 17 is the original")
     ap.add_argument("--est-gpu-h", type=float, default=3.0)
     ap.add_argument("--write", action="store_true", help="actually write the job files")
     args = ap.parse_args()
@@ -61,13 +68,16 @@ def main() -> int:
         if not path.exists():
             raise SystemExit(f"missing config: {path}")
         cfg = load_config(rel)
+        if args.seed != 17:
+            cfg.setdefault("train", {})["seed"] = args.seed
         out = cft_train.adapter_dir(cfg)
         job_id = cft_train.run_id_for(cfg)
         jobs.append(
             {
                 "job_id": job_id,
                 "kind": "train",
-                "argv": ["-m", "obtune.cft.train", "--config", rel],
+                "argv": (["-m", "obtune.cft.train", "--config", rel]
+                         + (["--seed", str(args.seed)] if args.seed != 17 else [])),
                 "raw": False,
                 "est_gpu_h": args.est_gpu_h,
                 "priority": args.priority,
@@ -75,6 +85,7 @@ def main() -> int:
                     "experiment": "cft/replication",
                     "paper": "nikiema2025contrastive (arXiv:2509.05553)",
                     "arm": arm,
+                    "seed": args.seed,
                     "tasks": list(cfg["tasks"]),
                     "language": args.language,
                     "adapter_dir": str(out),

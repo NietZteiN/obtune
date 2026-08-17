@@ -58,6 +58,22 @@ def route_features(
     if fs.X.shape[1] != ck.in_dim:
         raise ValueError(f"feature dim {fs.X.shape[1]} != router in_dim {ck.in_dim}")
     amap = adapter_map or {c: c for c in TRAINABLE_CONDITIONS}
+
+    # The router's class space and the set of adapters we can actually route to are two
+    # different things, and they drifted apart the moment the S2 split raised
+    # TRAINABLE_CONDITIONS from 6 to 8: the head now has S3/S4 units, but the feature
+    # jobs enumerate only the six original conditions, so those units are never trained —
+    # and no S3/S4 per-condition adapter exists yet either. An untrained unit can still
+    # win an argmax. `amap.get(cond, cond)` would then have silently emitted the literal
+    # string "S3" as an adapter path, and eval_vllm would have been handed something that
+    # is not a path at all. Refuse instead, naming the gap.
+    if adapter_map is not None:
+        unroutable = [LABEL_TO_CONDITION[k] for k in range(ck.n_classes)
+                      if LABEL_TO_CONDITION.get(k) and LABEL_TO_CONDITION[k] not in amap]
+        if unroutable:
+            print(f"[route] WARNING: router can predict {unroutable} but no adapter is "
+                  f"mapped for them; any item routed there is a hard error", flush=True)
+
     model = build_model(ck)
     X = (fs.X - ck.mean) / ck.std
 
@@ -74,6 +90,12 @@ def route_features(
         p = probs[i]
         k = int(p.argmax())
         cond = LABEL_TO_CONDITION[k]
+        if adapter_map is not None and cond not in amap:
+            raise SystemExit(
+                f"[route] item {fs.item_ids[i]} routed to {cond!r}, which has no adapter in "
+                f"--adapter-map (have: {sorted(amap)}). Train that adapter, or drop the class. "
+                f"Emitting the condition name as an adapter path would fail downstream in "
+                f"eval_vllm with a far less obvious message.")
         ent = float(-(p[p > 0] * np.log(p[p > 0])).sum())
         rows.append({
             "item_id": str(fs.item_ids[i]),
@@ -147,6 +169,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--features", required=True, help="npz from router.features (may include H1)")
     ap.add_argument("--adapter-map", default=None, help="JSON {condition: adapter_id}")
     ap.add_argument("--out", default=str(ROUTER_RESULTS_DIR / "routing.parquet"))
+    # The evaluator consumes a plain {item_id: adapter_path} JSON
+    # (eval_vllm._load_route_map does json.load and rejects anything else). Writing the
+    # parquet to a `.json` path -- which is what the emitted job asked for -- meant the
+    # routed eval could never load its own route map. Two files, two formats, named honestly.
+    ap.add_argument("--route-map", default=None,
+                    help="JSON {item_id: adapter_path} for eval_vllm --route-map")
     ap.add_argument("--report", default=str(ROUTER_RESULTS_DIR / "routing_report.json"))
     args = ap.parse_args(argv)
 
@@ -159,6 +187,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(out, index=False)
+
+    if args.route_map:
+        rm = Path(args.route_map)
+        rm.parent.mkdir(parents=True, exist_ok=True)
+        rm.write_text(json.dumps({r["item_id"]: r["adapter"] for r in rows}, indent=2))
 
     cm = confusion_matrix(rows)
     rep = {
@@ -175,7 +208,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     Path(args.report).parent.mkdir(parents=True, exist_ok=True)
     Path(args.report).write_text(json.dumps(rep, indent=2))
 
-    print(f"wrote {out} ({len(df)} rows) and {args.report}")
+    print(f"wrote {out} ({len(df)} rows) and {args.report}"
+          + (f" and {args.route_map}" if args.route_map else ""))
     print(f"  router val_acc={ck.val_accuracy:.4f}  overall route_acc={rep['overall_route_accuracy']}")
     hdr = "true\\routed".ljust(12) + "".join(c.rjust(7) for c in TRAINABLE_CONDITIONS)
     print("  " + hdr)

@@ -1,0 +1,27 @@
+{
+  "job_id": "gatebal__qwen25c-1.5b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_balanced.yaml",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 91,
+  "meta": {
+    "experiment": "rq2/gate-fix",
+    "stage": "gate_retrain_balanced",
+    "note": "aux_load_balance=0.01, min_temperature=0.5; v1 config untouched"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 22058.5,
+    "log": "runs/logs/gatebal__qwen25c-1.5b.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-15T05:52:30.988331+00:00"
+  }
+}

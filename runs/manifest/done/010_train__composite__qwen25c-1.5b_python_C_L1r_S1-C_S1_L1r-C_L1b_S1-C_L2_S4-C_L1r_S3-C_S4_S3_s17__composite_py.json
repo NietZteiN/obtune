@@ -1,0 +1,35 @@
+{
+  "job_id": "train__composite__qwen25c-1.5b_python_C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_s17__composite_py",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/composite_qwen1.5b_py.yaml",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_composite/qwen25c-1.5b/python/C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_r32_s17",
+    "language": "python",
+    "train_conditions": [
+      "C_L1r_S1",
+      "C_S1_L1r",
+      "C_L1b_S1",
+      "C_L2_S4",
+      "C_L1r_S3",
+      "C_S4_S3"
+    ],
+    "seed": 17
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 19293.3,
+    "log": "runs/logs/train__composite__qwen25c-1.5b_python_C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_s17__composite_py.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-17T01:09:32.977806+00:00"
+  }
+}

@@ -35,6 +35,12 @@ systems:
   # routing entropy is the out-of-distribution result, reported rather than trained on.
   # `--route-map` supplies the item_id -> adapter assignment at eval time.
   - {name: router, arch: router}
-  - {name: merge_ties, arch: merge_ties, adapter: "runs/adapters/qwen25c-1.5b/python/merge_ties_r32_s17"}
-  - {name: merge_dare_ties, arch: merge_dare_ties, adapter: "runs/adapters/qwen25c-1.5b/python/merge_dare_ties_r32_s17"}
-  - {name: merge_dare_linear, arch: merge_dare_linear, adapter: "runs/adapters/qwen25c-1.5b/python/merge_dare_linear_r32_s17"}
+  # NO explicit `adapter:` — expand_systems derives
+  # runs/adapters/<model>/<LANGUAGE>/<name>_r<rank>_s<seed> per language. These rows used to
+  # hard-code the PYTHON paths while this config declares `languages: [python, javascript]`,
+  # and an explicit adapter suppresses that derivation — so a javascript run would have
+  # evaluated the python merge adapter and labelled the cell javascript. Latent only because
+  # grid_v1.yaml (which derives) wrote those cells first and `resume` skipped them.
+  - {name: merge_ties, arch: merge_ties}
+  - {name: merge_dare_ties, arch: merge_dare_ties}
+  - {name: merge_dare_linear, arch: merge_dare_linear}

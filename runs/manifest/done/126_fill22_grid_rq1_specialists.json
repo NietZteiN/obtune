@@ -1,0 +1,31 @@
+{
+  "job_id": "fill22_grid_rq1_specialists",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_grid_rq1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "tuned_L0_s17,tuned_L0_s42,tuned_L1b_s17,tuned_L1b_s42,tuned_L1r_s17,tuned_L1r_s42,tuned_L2_s17,tuned_L2_s42,tuned_S1_s17,tuned_S1_s42,tuned_S2_s17,tuned_S2_s42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.2,
+  "priority": 126,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22",
+    "note": "base/tuned_L0/merge_* excluded: all are Grid B in main, so a heldout cell aliases them"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 173.1,
+    "log": "runs/logs/fill22_grid_rq1_specialists.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T22:28:14.640260+00:00"
+  }
+}

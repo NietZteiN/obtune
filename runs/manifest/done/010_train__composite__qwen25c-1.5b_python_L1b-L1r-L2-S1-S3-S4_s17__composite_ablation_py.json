@@ -1,0 +1,35 @@
+{
+  "job_id": "train__composite__qwen25c-1.5b_python_L1b-L1r-L2-S1-S3-S4_s17__composite_ablation_py",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/composite_ablation_qwen1.5b_py.yaml",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_composite/qwen25c-1.5b/python/L1b-L1r-L2-S1-S3-S4_r32_s17",
+    "language": "python",
+    "train_conditions": [
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S3",
+      "S4"
+    ],
+    "seed": 17
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 13373.4,
+    "log": "runs/logs/train__composite__qwen25c-1.5b_python_L1b-L1r-L2-S1-S3-S4_s17__composite_ablation_py.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-17T04:53:26.583846+00:00"
+  }
+}

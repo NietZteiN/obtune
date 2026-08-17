@@ -27,6 +27,7 @@ torn down the evidence is gone:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -59,13 +60,29 @@ class SystemSpec:
     train_cond: Optional[str] = None
     prompt_oracle: bool = False
     one_shot: bool = False
+    #: ICL baseline: draw `icl_k` in-context demos from these conditions. H1 is refused by
+    #: `icl.demos.pick_demos` — a demo is prompt conditioning, which CLAUDE.md §3.2 rule 2
+    #: forbids for the held-out family. For the OOD arm, H1 is the QUERY, never the source.
+    icl_source: Optional[list] = None
+    icl_k: int = 0
+    #: Oracle routing: the item's TRUE condition selects its adapter, upper-bounding the
+    #: learned router. Declared in configs since the design doc was written but never read
+    #: by any code path until now — an `arch="per_type"` row with no adapter, which
+    #: `expand_systems` rejected outright.
     oracle_route: bool = False
+    #: condition -> adapter path, populated by `expand_systems` for oracle-routed systems.
+    adapter_map: Optional[dict[str, str]] = None
     route_map: Optional[str] = None  # item_id -> adapter path (JSON), for arch="router"
     #: External baseline (e.g. "semcoder"). Such a model is run in ITS OWN prompt and
     #: answer format, not obtune's — measuring a published model through a foreign
     #: template would understate it and make the comparison meaningless.
     baseline: Optional[str] = None
     prompt_style: Optional[str] = None  # baseline-specific, e.g. monologue | cot
+    #: Symbolic-normalization baseline: rewrite the obfuscated program with the static
+    #: passes in `normalize.PROFILES[normalize]` BEFORE prompting. Zero training, zero
+    #: extra GPU — the "what does a compiler-style normalizer already recover?" arm.
+    #: Soundness is gated offline by scripts/analysis/21_validate_normalized.py.
+    normalize: Optional[str] = None
 
     @classmethod
     def from_config(cls, d: Mapping[str, Any]) -> "SystemSpec":
@@ -75,6 +92,10 @@ class SystemSpec:
     @property
     def is_routed(self) -> bool:
         return self.route_map is not None
+
+    @property
+    def is_oracle_routed(self) -> bool:
+        return bool(self.oracle_route)
 
 
 @dataclass
@@ -92,6 +113,46 @@ def cell_dir(
     out_root: Path, phase: str, model: str, language: str, system: str, eval_cond: str
 ) -> Path:
     return Path(out_root) / phase / model / language / f"{system}__{eval_cond}"
+
+
+class GridCollisionError(RuntimeError):
+    """A resume target was evaluated on a different grid than the one now requested."""
+
+
+def _assert_resume_same_grid(cell: Path, meta_base: Mapping[str, Any]) -> None:
+    """Refuse to resume a cell that belongs to the other evaluation grid.
+
+    `cell_dir` keys on `phase` but NOT on `eval_source`, so a `heldout` (Grid A) run and a
+    `testset` (Grid B) run that share a phase and a system name resolve to the SAME path.
+    Under `resume: true` the second run then finds the first's parquet and skips it — the
+    job reports success while writing nothing, and the resulting table mixes n=1670 and
+    n=176 cells in one row. That happened on 2026-08-13/14 and cost 33 cells; the phase-level
+    fix of 2026-08-13 only moved the collision down one level. See MASTER_REPORT §12.1.
+
+    Fail loudly instead. A grid mismatch is never something the operator meant, and the
+    remedy is a one-line config change (give the run its own `phase`), so an error here is
+    strictly better than a silent skip. Cells written before this field existed carry no
+    `eval_source`; those fall back to comparing item counts, which is the same discriminator
+    used to reconstruct the damage after the fact.
+    """
+    want = meta_base.get("eval_source")
+    meta_p = cell / "cell_meta.json"
+    if want is None or not meta_p.exists():
+        return
+    try:
+        have_meta = json.loads(meta_p.read_text())
+    except (OSError, ValueError):
+        return  # unreadable meta is not evidence of a mismatch; leave resume alone
+    have = have_meta.get("eval_source")
+    if have is None or have == want:
+        return
+    raise GridCollisionError(
+        f"refusing to resume {cell}: it was evaluated on eval_source={have!r} "
+        f"(n_items={have_meta.get('n_items')}) but this run requests eval_source={want!r}. "
+        f"Two grids are aliasing at one cell path because `cell_dir` keys on `phase` only. "
+        f"Give this run its own `phase:` in its config (and add it to TrialRow.phase), or "
+        f"pass --no-resume with a distinct --out-root."
+    )
 
 
 def resolve_path(p: str | os.PathLike) -> Path:
@@ -133,6 +194,55 @@ def drop_overlong(
     return keep_i, keep_t, dropped
 
 
+def _icl_demo(system: "SystemSpec", item) -> Optional[object]:
+    """One in-context demo for `item`, or None when the system is not an ICL arm.
+
+    The evaluated program is excluded so it can never be its own demo — in-context split
+    leakage, which would inflate exactly the cells the baseline exists to measure.
+    Deterministic per item so a cell is reproducible.
+    """
+    if not system.icl_k or not system.icl_source:
+        return None
+    from obtune.icl.demos import pick_demos
+
+    demos = _icl_demos(system, item)
+    return demos[0] if demos else None
+
+
+def _icl_demos(system: "SystemSpec", item) -> list:
+    """All `icl_k` demos for `item`, in prompt order (empty when not an ICL arm)."""
+    if not system.icl_k or not system.icl_source:
+        return []
+    from obtune.icl.demos import pick_demos
+
+    pid = getattr(item, "program_id", None) or getattr(item, "snippet_id", None)
+    return pick_demos(item.language, system.icl_k, list(system.icl_source),
+                      exclude_program_ids={pid} if pid else None,
+                      seed=_stable_seed(pid, system.name))
+
+
+def _stable_seed(*parts: Any) -> int:
+    """A per-item seed that is identical across processes.
+
+    NOT `hash()`: Python randomizes string hashing per interpreter, and `seedutil` setting
+    PYTHONHASHSEED in-process is too late to change it. Using `hash()` here would have made
+    every ICL cell pick different demos on re-run — silently unreproducible, which
+    CLAUDE.md's seed rule exists to prevent.
+    """
+    digest = hashlib.sha256("\x00".join(str(p) for p in parts).encode()).digest()
+    return int.from_bytes(digest[:4], "big")
+
+
+def _normalized_code(system: "SystemSpec", item) -> str:
+    """`item.code` after the static normalization passes, or unchanged when not that arm."""
+    if not system.normalize:
+        return item.code
+    from obtune.normalize import normalize
+
+    return normalize(item.code, item.language, entry_point=item.entry_point,
+                     profile=system.normalize).code
+
+
 def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any) -> list[str]:
     if system.baseline == "semcoder":
         from obtune.baselines.semcoder import SemCoderSpec
@@ -141,16 +251,38 @@ def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any
         # Raw completion prompts, not the chat template: this is the form SemCoder was
         # trained and evaluated in upstream.
         return [spec.build(it.code, it.entry_point, it.args_repr) for it in items]
+    if system.icl_k:
+        # k demos need the composing builder. At k=1 it is byte-identical to the frozen
+        # one-shot path (asserted in tests/test_icl_prompts.py), so the k-sweep does not
+        # confound "more demonstrations" with "a different prompt format".
+        from obtune.icl.prompts import build_icl_prompt
+
+        return [
+            prompts.render_chat(
+                build_icl_prompt(
+                    code=_normalized_code(system, it),
+                    entry_point=it.entry_point,
+                    args_repr=it.args_repr,
+                    language=it.language,
+                    condition=it.condition,
+                    oracle=system.prompt_oracle,
+                    demos=_icl_demos(system, it),
+                ),
+                tokenizer,
+            )
+            for it in items
+        ]
     return [
         prompts.render_chat(
             prompts.build_prompt(
-                code=it.code,
+                code=_normalized_code(system, it),
                 entry_point=it.entry_point,
                 args_repr=it.args_repr,
                 language=it.language,
                 condition=it.condition,
                 oracle=system.prompt_oracle,
                 one_shot=system.one_shot,
+                demo=None,
             ),
             tokenizer,
         )
@@ -263,6 +395,10 @@ def _gpu_mem_util(ecfg: dict) -> float:
     return float(ecfg.get("gpu_memory_utilization", 0.90))
 
 
+class _UnroutedCell(RuntimeError):
+    """A routed cell whose condition has no route-map entries at all (i.e. H1)."""
+
+
 class Engine:
     """Thin wrapper over `vllm.LLM` with a per-adapter LoRARequest registry.
 
@@ -345,13 +481,26 @@ class Engine:
         uniform = all(r is None for r in reqs) or (
             len({(r.lora_int_id if r else None) for r in reqs}) == 1
         )
+        # TELEMETRY, not debug cruft. On 2026-08-12 every system in six eval runs produced
+        # output byte-identical to base, and nothing in the logs said how many adapters the
+        # call had actually been given — the failure was only visible after the fact, from
+        # an assertion at the very end of a one-hour run. One line here answers "was a LoRA
+        # applied, and to how many prompts" while the run is still going.
+        n_lora = sum(1 for r in reqs if r is not None)
+        print(f"[engine] {len(texts)} prompt(s), {n_lora} with a LoRA, "
+              f"{len({r.lora_int_id for r in reqs if r})} distinct adapter(s), "
+              f"uniform={uniform}", flush=True)
         outs = self.llm.generate(
             list(texts), params, lora_request=(reqs[0] if uniform else reqs), use_tqdm=True
         )
-        return (
-            [o.outputs[0].text for o in outs],
-            [len(o.outputs[0].token_ids) for o in outs],
-        )
+        gen = [o.outputs[0].text for o in outs]
+        # If N distinct prompts come back as 1 distinct completion, the batch collapsed and
+        # every downstream number is meaningless. Cheap to check, and it is exactly the
+        # symptom that went unnoticed for six runs.
+        print(f"[engine] returned {len(gen)} completion(s): "
+              f"{len(set(texts))} distinct prompt(s) -> {len(set(gen))} distinct output(s)",
+              flush=True)
+        return (gen, [len(o.outputs[0].token_ids) for o in outs])
 
 
 # --------------------------------------------------------------------------- #
@@ -381,6 +530,7 @@ def run_cell(
     if resume and (cell / "trials.parquet").exists():
         import pandas as pd
 
+        _assert_resume_same_grid(cell, meta_base)
         df = pd.read_parquet(cell / "trials.parquet")
         return CellResult(cell, len(df), float(df["correct"].mean()),
                           float(df.get("format_fail", 0).mean()) if "format_fail" in df else 0.0,
@@ -399,12 +549,51 @@ def run_cell(
     if not items:
         raise RuntimeError("every prompt in this cell exceeded the context window")
 
+    n_skipped_h1 = 0
     if system.is_routed:
         route = _load_route_map(system.route_map)
         missing = [it.item_id for it in items if it.item_id not in route]
+        if missing and len(missing) == len(items):
+            # The WHOLE cell is unrouted. Expected for H1: it is the held-out family, has
+            # no adapter, and CLAUDE.md §3.2 forbids it from router training, so it can
+            # never appear in a route map. Its routing behaviour is reported from
+            # routing.parquet (the entropy analysis), which needs no generation pass.
+            # Skipped loudly rather than crashed — and never silently, because a whole
+            # missing cell for a TRAINABLE condition would be a real defect.
+            raise _UnroutedCell(
+                f"no route-map entry for any item in this cell (condition="
+                f"{items[0].condition!r}); expected for H1, a defect for anything else"
+            )
         if missing:
-            raise KeyError(f"route map is missing {len(missing)} item(s), e.g. {missing[:3]}")
+            # A PARTIAL miss is always a bug: the route map and the eval set disagree
+            # about which items exist, usually because they were built from different
+            # eval sources (heldout ids look like `x::L0::0`, testset ids like `A:Py/1::L0::0`).
+            raise KeyError(
+                f"route map is missing {len(missing)} of {len(items)} item(s), e.g. "
+                f"{missing[:3]} — route map and eval set were built from different sources?"
+            )
         adapters = [route[it.item_id] for it in items]
+    elif system.is_oracle_routed:
+        amap = system.adapter_map or {}
+        # H1 has no adapter by construction — it is the held-out family. Rather than
+        # route it to base and label the row "oracle_route" (which would report the base
+        # model as an oracle-routed result), those items are excluded here and the
+        # routing upper bound for H1 is computed in analysis as the per-item best-of-6
+        # over the already-run per-condition cells, at zero extra GPU cost (design doc §4.3).
+        keep = [i for i, it in enumerate(items) if it.condition in amap]
+        n_skipped_h1 = len(items) - len(keep)
+        if n_skipped_h1:
+            print(f"[eval_vllm] oracle_route: skipping {n_skipped_h1} item(s) whose condition "
+                  f"has no adapter (expected for H1); the H1 bound is an analysis-side "
+                  f"best-of-N over the per-condition cells")
+        items = [items[i] for i in keep]
+        texts = [texts[i] for i in keep]
+        if not items:
+            raise RuntimeError(
+                "oracle_route cell has no items with an adapter — every condition in this "
+                "cell is held out, so there is nothing to route"
+            )
+        adapters = [amap[it.condition] for it in items]
     else:
         adapters = [system.adapter] * len(items)
 
@@ -417,6 +606,7 @@ def run_cell(
         **meta_base,
         "system": system.name,
         "adapter_arch": system.arch,
+        "n_skipped_no_adapter": n_skipped_h1,
         "adapter_id": system.adapter or (system.name if adapter_ids else None),
         "adapter_paths": adapter_ids,
         "adapter_sha256": {
@@ -486,21 +676,61 @@ def expand_systems(
                 spec["adapter"] = str(adapter)
                 out.append(SystemSpec.from_config(spec))
 
+    # A merge system's adapter sits at a conventional path written by merge_adapters
+    # (`runs/adapters/<model>/<lang>/<name>_r<rank>_s<seed>`), exactly as a per-condition
+    # adapter does — so derive it rather than making every eval config repeat six paths
+    # that must then be kept in sync with the merge jobs.
+    for spec in out:
+        if spec.arch.startswith("merge") and not spec.adapter:
+            spec.adapter = str(RUNS_DIR / "adapters" / model_key / language
+                               / f"{spec.name}_r{rank}_s{seeds[0]}")
+
+    # Oracle routing needs the same condition -> adapter layout the per-condition
+    # expansion uses, but as a MAP rather than one adapter per system: the dispatch is
+    # per item, on the item's true condition.
+    for spec in out:
+        if spec.arch == "oracle_route":
+            spec.oracle_route = True
+    for spec in out:
+        if spec.oracle_route and not spec.adapter_map:
+            spec.adapter_map = {
+                cond: str(RUNS_DIR / "adapters" / model_key / language
+                          / f"{cond_tag([cond])}_r{rank}_s{seeds[0]}" / "best")
+                for cond in train_conditions
+            }
+
     if route_map:
         for spec in out:
             if spec.arch == "router" and not spec.route_map:
                 spec.route_map = route_map
 
-    # A tuned system with nothing to load is the failure above; refuse it. `router`
-    # carries no adapter of its own — it needs a route map instead, supplied by
-    # --route-map — so it is checked separately rather than exempted.
+    return out
+
+
+def validate_systems(out: Sequence[SystemSpec]) -> list[SystemSpec]:
+    """Refuse systems that would silently evaluate base weights under a tuned label.
+
+    Called AFTER the `--systems` filter, not inside `expand_systems`. Validating every
+    row in the config meant a job asking only for `base` still died on the config's
+    `router` row — 28 eval-cell and 8 eval-rq2 jobs failed that way without ever loading
+    a model. The guards themselves are load-bearing and unchanged; only *when* they run
+    has moved, so a system that is actually about to run is still refused.
+    """
     for spec in out:
         if spec.arch in ("per_type", "mono") or spec.arch.startswith("merge"):
-            if not spec.adapter:
+            # An oracle-routed system legitimately carries no single adapter — it carries
+            # a map and picks per item. Without this exemption the config row declared in
+            # grid_v1.yaml was rejected outright, which is why the feature was dead.
+            if not spec.adapter and not spec.oracle_route:
                 raise ValueError(
                     f"system {spec.name!r} has arch={spec.arch!r} but no adapter path — "
                     "it would evaluate base weights labelled as a tuned system"
                 )
+        if spec.oracle_route and not spec.adapter_map:
+            raise ValueError(
+                f"system {spec.name!r} sets oracle_route but has no adapter_map — it "
+                "would evaluate base weights labelled as oracle-routed"
+            )
         if spec.arch == "router" and not spec.route_map:
             raise ValueError(
                 f"system {spec.name!r} has arch='router' but no route map — it would "
@@ -516,6 +746,14 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     phase = cfg.get("phase", "main")
     languages = cfg.get("languages") or [cfg["language"]]
     models = cfg.get("models") or [cfg["model"]]
+    if getattr(args, "model", None):
+        if args.model not in models:
+            raise ValueError(f"--model {args.model!r} is not in {args.config} ({models})")
+        models = [args.model]
+    if getattr(args, "language", None):
+        if args.language not in languages:
+            raise ValueError(f"--language {args.language!r} is not in {args.config} ({languages})")
+        languages = [args.language]
     eval_conditions = list(cfg["eval_conditions"])
     raw_systems = list(cfg["systems"])
     eval_source = args.source or cfg.get("eval_source", data.DEFAULT_EVAL_SOURCE)
@@ -550,10 +788,17 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
             if args.systems:
                 keep = set(args.systems.split(","))
                 systems = [sy for sy in systems if sy.name in keep]
+                if not systems:
+                    raise ValueError(
+                        f"--systems {args.systems!r} selected nothing from "
+                        f"{args.config}; check the names in its `systems:` block"
+                    )
             if args.route_map:
                 for sy in systems:
                     if sy.arch == "router":
                         sy.route_map = args.route_map
+            # Validate only what will actually run (see validate_systems).
+            validate_systems(systems)
 
             engine = Engine(
                 mcfg["hf_id"],
@@ -582,6 +827,13 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
                         "run_ts": run_ts,
                         "seed": int((cfg.get("engine") or {}).get("seed", GLOBAL_SEED)),
                         "phase": phase,
+                        # The grid this cell was evaluated on. Absent before 2026-08-14, which
+                        # is how two grids came to alias at one path: `cell_dir` keys on
+                        # `phase` but not on `eval_source`, so a `heldout` run resumed
+                        # `testset` cells and skipped them. Recorded here so `_resume_ok`
+                        # can compare, and so the grid of any cell is readable without
+                        # counting rows. See `docs/MASTER_REPORT_2026-08-12.md` §12.1.
+                        "eval_source": eval_source,
                         "experiment_id": cfg.get("experiment_id", Path(args.config).stem),
                         "base_model": mcfg["hf_id"],
                         "model_family": mcfg["family"],
@@ -595,10 +847,22 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
                             oracle=system.prompt_oracle, one_shot=system.one_shot
                         ),
                     }
-                    res = run_cell(
-                        engine, items, system, cell, cfg, meta_base,
-                        resume=resume, limit=args.limit,
-                    )
+                    try:
+                        res = run_cell(
+                            engine, items, system, cell, cfg, meta_base,
+                            resume=resume, limit=args.limit,
+                        )
+                    except _UnroutedCell as exc:
+                        # Recorded as a skipped cell, not a failure: the routed system
+                        # genuinely has nothing to say about a held-out condition.
+                        print(f"[eval_vllm] {model_key}/{language} {system.name}__{cond}: "
+                              f"SKIPPED — {exc}", flush=True)
+                        summary["cells"].append({
+                            "model": model_key, "language": language,
+                            "system": system.name, "eval_cond": cond,
+                            "n": 0, "skipped": True, "skip_reason": "unrouted_condition",
+                        })
+                        continue
                     print(
                         f"[eval_vllm] {model_key}/{language} {system.name}__{cond}: "
                         f"n={res.n_items} acc={res.accuracy:.3f} "
@@ -687,7 +951,16 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
     # The held-in val slice: SAME conditions the adapter was trained on, split=='val'.
     # H1 must never influence checkpoint selection (CLAUDE.md §3.2 rule 2), and neither
     # may the test set — this is the only model-selection signal in the project.
-    val_rows = data.load_pairs(cfg["train_conditions"], cfg["language"], splits=["val"])
+    #
+    # `allow_composites` is forwarded from the SAME config the adapter was trained with,
+    # exactly as `data.build_sft_splits` does it. Without this an adapter trained on the
+    # `C_` ladder trains for hours and then dies here on QuarantineViolation, because the
+    # composite codes are deliberately outside `paths.TRAINABLE_CONDITIONS` — a failure
+    # that costs a full training run and lands only at checkpoint selection. Reading it
+    # from the config rather than defaulting it True keeps the guard doing its job for
+    # every other arm: a config that did not opt in still cannot load composites here.
+    val_rows = data.load_pairs(cfg["train_conditions"], cfg["language"], splits=["val"],
+                               allow_composites=bool(cfg.get("allow_composites", False)))
     if args.limit:
         val_rows = val_rows[: args.limit]
     items = [
@@ -750,6 +1023,12 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--adapter-root", default=None, help="ckpt-select: override the adapter dir")
     ap.add_argument("--route-map", default=None, help="JSON item_id -> adapter path (routed cells)")
     ap.add_argument("--systems", default=None, help="comma-separated subset of system names")
+    # Without these, a job runs the config's FULL model x language cross-product. The RQ2
+    # jobs are emitted one per (model, language) but carried no filter, so each redundantly
+    # re-ran all six combinations — and died on the models that have no adapters
+    # (a 1.5B/javascript job failed loading a 7B/python merge).
+    ap.add_argument("--model", default=None, help="restrict to one model key from the config")
+    ap.add_argument("--language", default=None, help="restrict to one language from the config")
     ap.add_argument("--source", default=None, choices=["testset", "heldout"],
                     help="evaluation set: testset = the human-labelled ICSE programs, "
                          "heldout = corpus programs in the `test` split (higher n)")
@@ -806,5 +1085,33 @@ def main(argv: Optional[list[str]] = None) -> int:
     return 0
 
 
+def _main_fastfail() -> int:
+    """`main()`, but a GridCollisionError exits IMMEDIATELY instead of unwinding.
+
+    THE THIRD WEDGE. `_assert_resume_same_grid` correctly refuses to resume a cell from the
+    other grid — but raising inside a process that has already built a vLLM engine means
+    Python runs `multiprocessing.util._exit_function`, which joins an `EngineCore` child
+    that never terminates. The traceback reaches the job log and the process then sleeps
+    FOREVER holding ~45 GB, with its claim stuck in `running/`. That is the 2026-08-11
+    failure mode, and on 2026-08-15 three fill jobs reproduced it in a row.
+
+    `kill_stalled` does eventually reap this (CPU time is the discriminator and a wedged
+    process accrues none), but only after 30 minutes idle plus grace — during which a GPU is
+    held and the pipeline's drain cannot advance.
+
+    A grid collision is a CONFIG error: nothing has been written, there is no state to flush,
+    and no cleanup is owed. `os._exit` skips the atexit handlers that hang, so the worker
+    sees a fast non-zero exit, records the failure, and frees the card in seconds. Every
+    other exception keeps the normal path, because those may legitimately need cleanup.
+    """
+    try:
+        return main()
+    except GridCollisionError as exc:
+        print(f"[eval_vllm] GRID COLLISION — exiting immediately without vLLM teardown:\n{exc}",
+              file=sys.stderr, flush=True)
+        sys.stderr.flush()
+        os._exit(3)
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(_main_fastfail())

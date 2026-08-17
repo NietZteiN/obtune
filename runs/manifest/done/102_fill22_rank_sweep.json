@@ -1,0 +1,28 @@
+{
+  "job_id": "fill22_rank_sweep",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_rank_sweep.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 102,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 143.8,
+    "log": "runs/logs/fill22_rank_sweep.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T21:36:11.975923+00:00"
+  }
+}

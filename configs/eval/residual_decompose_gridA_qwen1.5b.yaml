@@ -1,0 +1,79 @@
+# Settling the residual-weighting question at 10x the power. Grid A H1.
+#
+# ⚠️ SPENDS QUARANTINE BUDGET. Continuation of the 2026-08-17 declared third pass — see the
+# declaration blocks in data/quarantine/h1/ACCESS_LOG.md. `--stub` on this config really loads H1
+# items and really appends a row; smoke against a non-H1 condition list instead.
+#
+# WHY THIS RUN EXISTS
+# -------------------
+# The Grid B decomposition left the residual-weighting effect DIRECTIONALLY CONSISTENT but
+# STATISTICALLY UNRESOLVED. All four contrasts pointed the same way and three had a b/c asymmetry
+# favouring the residual weights, yet nothing survived BH-FDR:
+#
+#     B-A  weighting, s17 bank            +2.6  CI[-3.6,+8.4]   q=0.677
+#     C-A  ingredient count                +0.9  CI[-1.9,+3.9]   q=1.000
+#     E-F  weighting, s42 bank (replicate) +3.5  CI[-1.7,+9.1]   q=0.578
+#     D-C  weighting at 8 ingredients      +6.1  CI[+0.8,+12.6]  q=0.156
+#
+# The reason is power, not the effect: Grid B `H1` is **115 items over 27 programs**, and the
+# seed band alone is 3.61 points. A 3-point effect cannot be resolved there. Grid A `H1` is
+# **1,214 items over 405 programs** — the same measurement with ~10x the programs — and the merge
+# arms have never been evaluated on it.
+#
+# This is a confirmatory read of an already-specified hypothesis at adequate power, not a new
+# search: the arms, weights, density and ladder are all fixed, computed from safetensors, and were
+# chosen without reference to any H1 number.
+#
+# PHASE: `final`, NOT `main`. This is load-bearing, not cosmetic. `merge_dare_ties__H1` already
+# exists under `main` as a Grid B (`testset`, n=115) cell, and `eval_vllm.cell_dir` keys on `phase`
+# but NOT on `eval_source` — so running these system names under `main` with `eval_source: heldout`
+# resolves to the SAME paths and `_assert_resume_same_grid` would (correctly) hard-fail with
+# GridCollisionError. `final` is already a member of `schema.TrialRow.phase` and unused on disk, so
+# this needs no schema change, and it is the semantically right namespace for a confirmatory
+# held-out read. Cells land at results/cells/final/... and cannot alias the Grid B ones.
+#
+# THE SIX ARMS — the full 2x2x2 (ladder size x weighting x expert-bank seed), minus the two cells
+# the s42 bank cannot express (it has no S3/S4):
+#
+#     A  merge_dare_ties        6 ingr, uniform,  s17
+#     B  residual_n6_s17        6 ingr, RESIDUAL, s17     B-A isolates WEIGHTING
+#     C  uniform_n8_s17         8 ingr, uniform,  s17     C-A isolates COUNT
+#     D  residual_n8_s17        8 ingr, RESIDUAL, s17     the original 41.7 arm
+#     F  merge_dare_ties_s42    6 ingr, uniform,  s42
+#     E  residual_n6_s42        6 ingr, RESIDUAL, s42     E-F REPLICATES B-A on an independent bank
+#
+# READINGS, FIXED BEFORE THE RUN (Grid A, so the 3.61-pt Grid B band is no longer the binding
+# constraint; judge against BH-FDR q<0.05 AND a bootstrap CI excluding zero, the project standard):
+#   * B>A and E>F both significant  -> the residual weighting is real and replicates. First positive
+#     method result on the discriminator. A merging/deployment claim, NOT an invariance claim: it
+#     says a better weighting recovers more of the specialists, not that anything generalizes.
+#   * B~A and E~F                   -> the Grid B +7.0 was small-sample noise. The residual idea is
+#     closed, and §12.10 gains a third independent confirmation.
+#   * C-A large                     -> ingredient COUNT, not weighting, and the honest headline is
+#     "more experts helped a little", which is a much duller claim.
+#   * Directionally positive but still not significant at n=1214/405 -> the effect is below ~1.5 pts
+#     and not worth pursuing further; report it as bounded rather than as promising.
+#
+# `tuned_L0` is deliberately NOT re-run: its Grid A `H1` cell exists (24.5) on the same 1,214-item
+# file, so contrasts against it are computed by joining on `item_id` across phases with an item-set
+# equality assertion, which costs no quarantine read.
+_extends: _base_eval.yaml
+
+phase: final
+experiment_id: residual_decompose_gridA
+run_tag: residual_decompose_gridA
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+h1_access_purpose: final_eval
+
+systems:
+  - {name: merge_dare_ties, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties/dare_ties_d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: residual_n6_s17_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/n6_s17_d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: uniform_n8_s17_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/n8_s17_uniform_d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: residual_n8_s17_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: merge_dare_ties_s42, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties_s42/d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: residual_n6_s42_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/n6_s42_d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [H1]

@@ -547,12 +547,23 @@ def binding_plan(src: str) -> list[tuple[str, str]]:
     return out
 
 
-def rename(ctx: SnippetCtx, style: RenameStyle, *, hints: dict[str, str] | None = None) -> TransformResult:
+def rename(
+    ctx: SnippetCtx,
+    style: RenameStyle,
+    *,
+    hints: dict[str, str] | None = None,
+    preserve: frozenset[str] | set[str] = frozenset(),
+) -> TransformResult:
     """Consistently rename every renamable binding in `ctx.src`.
 
     style="hex"          -> L1r (`v_a3f2` / `f_9c01`)
     style="seq"          -> L2  (a, b, ... aa, ab) plus type-annotation stripping
     style="adversarial"  -> L1b; `hints[original]` supplies the misleading stem.
+
+    `preserve` names keep their identifier and are reserved so nothing else takes them.
+    Empty for every *condition* (L1r/L2/L1b rename the entry point by design and assert
+    they did), and used only by `normalize/` — a canonicalizer applied as PREPROCESSING
+    must not rename the entry point, because the harness calls it by name.
 
     `rename_map` is orig -> new. When one original name has several distinct bindings,
     the first (document order) keeps the plain key and the rest are recorded as
@@ -573,6 +584,18 @@ def rename(ctx: SnippetCtx, style: RenameStyle, *, hints: dict[str, str] | None 
 
     taken = set(RESERVED) | collector.skipped_names
     new_names: dict[tuple[int, str], str] = {}
+
+    # Reserve preserved names FIRST, then map them to themselves. Both halves matter: the
+    # reservation stops a generated name colliding with one we are keeping, and the identity
+    # mapping keeps the occurrence lookup below total (it is keyed on every binding).
+    if preserve:
+        kept = [b for b in bindings if b.name in preserve]
+        taken |= {b.name for b in kept}
+        for b in kept:
+            new_names[(b.scope, b.name)] = b.name
+        bindings = [b for b in bindings if b.name not in preserve]
+        if not bindings:
+            return TransformResult(src, False, notes=["all bindings preserved"])
 
     if style == "adversarial":
         hints = hints or {}

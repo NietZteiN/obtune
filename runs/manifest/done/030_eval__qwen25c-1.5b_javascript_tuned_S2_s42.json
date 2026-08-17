@@ -1,0 +1,30 @@
+{
+  "job_id": "eval__qwen25c-1.5b_javascript_tuned_S2_s42",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/grid_rq1.yaml",
+    "--systems",
+    "tuned_S2_s42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 30,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "javascript",
+    "system": "tuned_S2_s42",
+    "n_eval_conditions": 7,
+    "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/S2_r32_s42/best",
+    "train_cond": "S2"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 0.9,
+    "log": "runs/logs/eval__qwen25c-1.5b_javascript_tuned_S2_s42.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-09T15:28:06.515402+00:00"
+  }
+}

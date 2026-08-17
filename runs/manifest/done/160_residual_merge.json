@@ -1,0 +1,29 @@
+{
+  "job_id": "residualmerge__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/residual_merge_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 160,
+  "meta": {
+    "experiment": "rq2/residual-merge",
+    "stage": "residual_merge_eval",
+    "note": "shared component once at full strength + undiluted residuals; L0 w=+0.045, specialists w=+0.228. No H1 by design."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 147.2,
+    "log": "runs/logs/residualmerge__qwen25c-1.5b.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-17T11:37:35.876563+00:00"
+  }
+}

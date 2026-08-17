@@ -60,7 +60,8 @@
     "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_cft/qwen25c-7b/python/cft_r32_s17",
     "train_cond": "cft:gen+neg+pos",
     "rank": 32,
-    "base_model": "Qwen/Qwen2.5-Coder-7B-Instruct"
+    "base_model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+    "sha256": "0cdc0fec114a8f63e594b4f846aee00f62f5710cd8abace89f94f9940209b8a7"
   },
   "gpu_visible": "1",
   "command": "/data/jvl210002/my_downloads/obtune/src/obtune/cft/train.py --config cft/train/cft_qwen7b_py.yaml",
@@ -73,7 +74,7 @@
     "src/obtune/paths.py": "25ca09233ab3170185c164b064d0140c38f64364a45de19e9edbcb4b120a7a8d"
   },
   "started_utc": "2026-08-09T08:38:04.813180+00:00",
-  "finished_utc": null,
+  "finished_utc": "2026-08-09T15:07:11.353804+00:00",
   "libraries": {
     "python": "3.12.12",
     "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
@@ -217,6 +218,57 @@
       },
       "cft_prompt_version": "cft_v1",
       "cft_prompt_template_sha256": "101309399bb1223a7cb31bba4bfc493ee1c783057d68e944885fbe8526891862"
+    },
+    "training_summary": {
+      "run_id": "cft__qwen25c-7b__python__cft__s17",
+      "arm": "cft",
+      "finished_utc": "2026-08-09T15:07:10.931393+00:00",
+      "train_runtime_s": 23273.9272,
+      "train_loss": 0.347472083254505,
+      "steps": 873,
+      "n_train": 18605,
+      "n_val": 600,
+      "lengths": {
+        "n_examples": 18608,
+        "n_kept": 18605,
+        "n_dropped": 3,
+        "drop_rate": 0.00016122098022355977,
+        "dropped_by_task": {
+          "gen": 1,
+          "neg": 1,
+          "pos": 1
+        },
+        "max_seq_len": 2560,
+        "len_mean": 368.1020528804815,
+        "len_p50": 311,
+        "len_p95": 775,
+        "len_max": 2846,
+        "kept_by_task": {
+          "gen": 7383,
+          "neg": 5611,
+          "pos": 5611
+        },
+        "supervised_tokens_by_task": {
+          "gen": 1452433,
+          "neg": 16833,
+          "pos": 16833
+        },
+        "task_token_share": {
+          "gen": 0.9773460583716159,
+          "neg": 0.011326970814192056,
+          "pos": 0.011326970814192056
+        },
+        "mean_supervised_tokens_by_task": {
+          "gen": 196.72666937559256,
+          "neg": 3.0,
+          "pos": 3.0
+        }
+      },
+      "checkpoints": [
+        "checkpoint-291",
+        "checkpoint-582",
+        "checkpoint-873"
+      ]
     }
   }
 }

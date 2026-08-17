@@ -1,0 +1,34 @@
+{
+  "job_id": "train__loto__qwen25c-1.5b_python_L0-L1b-L1r-L2-S2_s17__loto_py_holdS1",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/loto_qwen1.5b_py_holdS1.yaml",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 10,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L1r-L2-S2_r32_s17",
+    "language": "python",
+    "train_conditions": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S2"
+    ],
+    "seed": 17
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 11231.9,
+    "log": "runs/logs/train__loto__qwen25c-1.5b_python_L0-L1b-L1r-L2-S2_s17__loto_py_holdS1.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-14T15:09:46.348367+00:00"
+  }
+}

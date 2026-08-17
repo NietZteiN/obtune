@@ -1,0 +1,35 @@
+{
+  "job_id": "evalunlearn_revmsft__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "unlearn/negation_rev_minus_sft_qwen25c-1.5b_python.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 57,
+  "meta": {
+    "experiment": "srh/exp3-unlearning",
+    "language": "python",
+    "note": "approximate unlearning by exact task-vector negation"
+  },
+  "_stalled": {
+    "pid": 3916701,
+    "idle_minutes": 30.3,
+    "detected_utc": "2026-08-12T12:05:15.769444+00:00"
+  },
+  "_progress": {
+    "ticks": 136545,
+    "since": 1786548614.7331703,
+    "first_seen": 1786547341.5417356
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1311.0,
+    "log": "runs/logs/evalunlearn_revmsft__qwen25c-1.5b_python.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-12T15:30:42.121589+00:00"
+  }
+}

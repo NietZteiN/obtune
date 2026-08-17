@@ -1,0 +1,30 @@
+{
+  "job_id": "fill22_ot_individual_nobase",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_overtrain_individual.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "ot_L1b_e1,ot_L1b_e3,ot_L1b_e6,ot_L1b_e9,ot_S1_e1,ot_S1_e3,ot_S1_e6,ot_S1_e9,ot_S2_e1,ot_S2_e3,ot_S2_e6,ot_S2_e9"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.2,
+  "priority": 122,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 237.5,
+    "log": "runs/logs/fill22_ot_individual_nobase.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-15T22:22:20.403161+00:00"
+  }
+}

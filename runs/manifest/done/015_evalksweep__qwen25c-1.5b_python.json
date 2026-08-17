@@ -1,0 +1,28 @@
+{
+  "job_id": "evalksweep__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/icl_k_sweep_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 15,
+  "meta": {
+    "experiment": "baseline/icl_ksweep",
+    "note": "k=1 column is checkable against the 2026-08-13 run; k=0 is the matched floor"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 4319.2,
+    "log": "runs/logs/evalksweep__qwen25c-1.5b_python.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-13T22:03:03.295080+00:00"
+  }
+}

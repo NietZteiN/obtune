@@ -1,0 +1,55 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "combination_type": "dare_ties",
+  "density": 0.5,
+  "weights": [
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/L0_r32_s17/checkpoint-592",
+      "sha256": "752a2079de5daa71358084672ab00b5addf4fc40e63daef384206ecb159ee718"
+    },
+    "L1b": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/L1b_r32_s17/checkpoint-146",
+      "sha256": "86392df45295a8ae951a0fd08c9c9b1ec01da9f565d3a18be6b2f640deb0ffae"
+    },
+    "L1r": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/L1r_r32_s17/checkpoint-666",
+      "sha256": "bccce479da57fb2c0235438cd527ddcad93954c520a86ef2c7867866d1f9c8ee"
+    },
+    "L2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/L2_r32_s17/checkpoint-666",
+      "sha256": "4218bcc5f870ba4050d6819a5d4b955278af53b5b73477591e2221951d7bcc68"
+    },
+    "S1": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/S1_r32_s17/checkpoint-486",
+      "sha256": "e89e325ed049f1ba2b3a5f5cd356af9146e9f42fe11138a876c0a4e809622bf8"
+    },
+    "S2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/S2_r32_s17/checkpoint-666",
+      "sha256": "a57372a40f8812145879fcc484a296d201343c1af712ea8158cfd1d685c10d58"
+    },
+    "S3": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/S3_r32_s17/checkpoint-666",
+      "sha256": "3ac65d52a930906e9980ac16226049d336982733df4fa174b6cf05fc70bc27c8"
+    },
+    "S4": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/S4_r32_s17/checkpoint-657",
+      "sha256": "93ac7472d48103163b011fe00df430c01604ab1ff464735388f8f8e09e853762"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

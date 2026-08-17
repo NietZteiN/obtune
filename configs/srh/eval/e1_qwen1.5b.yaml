@@ -14,10 +14,12 @@ model: qwen25c-1.5b
 # and the floor for every transfer ratio. `fwd`/`cft` are the REPLICATION's adapters,
 # reused rather than retrained — Experiment 1 needs them as arms and retraining them would
 # risk a seed difference being read as an arm effect.
+# NOTE: `systems` DEEP-MERGES with the parent's map (config.load_config._deep_merge), it
+# does not replace it — so `base`, `sft` and `cft` arrive from bidir_v1.yaml and only the
+# new arms are listed here. `sft` IS Experiment 1's FWD arm (the same adapter); naming a
+# second `fwd:` key pointing at the same path would silently double that cell's cost for
+# identical results.
 systems:
-  base: null
-  fwd: runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s17/final
-  cft: runs/adapters_cft/qwen25c-1.5b/python/cft_r32_s17/final
   rev: runs/adapters_srh/qwen25c-1.5b/python/all5_rev_r32_s17/final
   flip: runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s17/final
   mix50: runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17/final

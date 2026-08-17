@@ -1,0 +1,19 @@
+# §2.2 FILL — Grid A composites for `base` and `tuned_L0`, in a grid-CLEAN phase.
+#
+# Both systems are split across grids inside `main` (their composite cells there are
+# `testset`), so a heldout composite written to `main` would alias them and
+# `_assert_resume_same_grid` would refuse. `baselines_gridA` is uniformly heldout.
+_extends: _base_eval.yaml
+
+phase: baselines_gridA
+experiment_id: fill22c_base_gridA
+run_tag: fill22c_base_gridA
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+
+eval_conditions: [C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3]

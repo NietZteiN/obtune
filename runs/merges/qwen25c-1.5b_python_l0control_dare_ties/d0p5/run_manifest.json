@@ -1,0 +1,57 @@
+{
+  "experiment": "l0_merge_control",
+  "run_id": "l0control_dare_ties",
+  "seed": 17,
+  "config_path": "/data/jvl210002/my_downloads/obtune/configs/merge/l0_control.yaml",
+  "config_resolved": {
+    "combination_type": "dare_ties",
+    "density": 0.5,
+    "adapters": [
+      "L0"
+    ],
+    "weights": null,
+    "seed": 17,
+    "_config_path": "/data/jvl210002/my_downloads/obtune/configs/merge/l0_control.yaml",
+    "adapter_paths": {
+      "L0__s17": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best",
+      "L0__s42": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s42/best",
+      "L0__s101": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s101/best"
+    },
+    "seeds_merged": [
+      17,
+      42,
+      101
+    ]
+  },
+  "model_hf_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "model_revision_resolved": null,
+  "adapter": null,
+  "gpu_visible": null,
+  "command": "scripts/merge/23_l0_control.py",
+  "git_commit": "469f857ec5e0e019bb5f39e5087de528d8d40f02",
+  "script_sha256": {
+    "src/obtune/merge_adapters.py": "97461aa6a6f2d5c836fc5321254936a920a6aeb5cbb5fbc91fa117fcd79a532f",
+    "scripts/merge/23_l0_control.py": "584d257a9c36bc35a146d928646006293df3dc38adf295d51908f4a2b11415c2"
+  },
+  "started_utc": "2026-08-14T11:57:44.903784+00:00",
+  "finished_utc": "2026-08-14T11:57:52.232517+00:00",
+  "libraries": {
+    "python": "3.12.12",
+    "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "merges": [
+      {
+        "density": 0.5,
+        "path": "/data/jvl210002/my_downloads/obtune/runs/merges/qwen25c-1.5b_python_l0control_dare_ties/d0p5",
+        "combination_type": "dare_ties"
+      }
+    ]
+  }
+}

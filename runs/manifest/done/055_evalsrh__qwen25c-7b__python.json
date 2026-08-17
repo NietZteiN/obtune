@@ -1,0 +1,24 @@
+{
+  "job_id": "evalsrh__qwen25c-7b__python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "srh/eval/e1_qwen7b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 55,
+  "meta": {
+    "experiment": "srh/exp1",
+    "stage": "gpu_srh7b_eval"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1617.8,
+    "log": "runs/logs/evalsrh__qwen25c-7b__python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-09T23:32:17.789998+00:00"
+  }
+}

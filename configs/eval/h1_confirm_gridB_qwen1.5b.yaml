@@ -1,0 +1,90 @@
+# THE CONFIRMATORY H1 PASS — merge arms, Grid B. SPENDS QUARANTINE BUDGET.
+#
+# ==========================================================================================
+# DECLARED THIRD READ OF H1. Companion to `h1_confirm_gridA_qwen1.5b.yaml`; read its header, and
+# CLAUDE.md §3.2 + MASTER_REPORT §8.4, first. Same sitting, same decision point, different grid.
+# ==========================================================================================
+#
+# Two configs rather than one because `cell_dir` keys on `phase` but NOT on `eval_source`, so a
+# `heldout` and a `testset` run sharing a phase and a system name resolve to the same path — the
+# defect behind three separate incidents (§12.1). The training arms' comparators are Grid A; every
+# comparator below is Grid B, so they cannot share a config.
+#
+# WHAT IS BEING CONFIRMED — four owed reads, none of which was ever taken
+# ----------------------------------------------------------------------
+# Each of these was deliberately selected WITHOUT H1, exactly as §3.2 rule 2 requires, and each has
+# been sitting on an unspent confirmatory read:
+#
+#   1. `sweep_dare_ties_d0p3` — the density sweep's winner and the best merge in the project (47.0 on
+#      the six trainable conditions, best on 5 of 6). Density was never swept before 14 Aug and the
+#      long-standing d=0.5 default was NOT optimal. `merge_headroom_qwen1.5b.yaml` states the rule
+#      this honours: choose density on trainable conditions, then take ONE H1 read as confirmation.
+#   2. `merge_{ties,dare_ties}_s42` — the seed-42 replicate. The ~9-point gap between the two merge
+#      algorithms reproduces across independent expert banks (s42−s17 = −0.0 / +0.6 on trainable
+#      conditions), but neither has an H1 cell, so how much of the merge RANKING is seed noise is
+#      unmeasured on the discriminator.
+#   3. `crossseed_{ties,dare_ties}` — the 2026-08-15 finding that `dare_ties` loses 3.6–4.3 pts when
+#      its experts do not share an initialization (mean cosine 0.563 → 0.246) while `ties` is
+#      unaffected. Measured only in-distribution. If the penalty holds on H1 it is a property of
+#      merging; if it vanishes, the shared-init advantage is in-distribution only. This also bears
+#      directly on §12.10: the L0-merge control is NECESSARILY cross-seed, so its H1 number was
+#      ~4 pts handicapped against the same-seed arm it controls for.
+#   4. `residual_dare_ties_d0p5` / `residual_ties_d0p5` — the residual merge, which supplies the
+#      shared component once at full strength and leaves the condition-specific residuals undiluted
+#      (`L0` w=+0.045, specialists w=+0.228). Null at matched density on trainable conditions
+#      (+0.88 [−0.66, +2.47]). d0.3 is excluded: it is significantly WORSE in-distribution
+#      (−4.68 [−8.20, −1.33]) because DARE's 1/density rescale drove ‖ΔW‖ to 1.99× a single expert,
+#      so it has not earned a read.
+#
+# THE BAR — existing Grid B `H1` cells, same 115 items / 27 programs, byte-identical item sets:
+#
+#     base                11.3
+#     norm_full           13.9    zero-training, symbolic
+#     oracle_prompt_1shot 20.9
+#     icl_k2              28.7    best zero-training arm
+#     merge_ties          28.7
+#     mole_router         33.9
+#     l0merge_dare_ties   33.9    three CLEAN-CODE adapters merged — the "merging does nothing" control
+#     tuned_L0_k0         33.9    one adapter, clean code only
+#     merge_dare_ties     34.8    the headline merge, d=0.5, uniform weights
+#
+# PRE-REGISTERED READINGS:
+#   * Nothing here is expected to move H1. Routing is capped by the specialists (+3.5 pts) and no
+#     combination strategy has shifted the held-out obfuscator in this project. The value of the pass
+#     is that four claims currently rest on in-distribution evidence alone.
+#   * `sweep_dare_ties_d0p3` > 34.8 outside the band -> density, an unexamined default, was worth more
+#     than every method change tried. That would be a real if unglamorous positive result.
+#   * `crossseed_dare_ties` << `merge_dare_ties` -> the seed-mixing penalty is not in-distribution
+#     only, and §12.10's control is confirmed to have been handicapped.
+#   * All flat -> the strongest available statement of the negative result: nine systems spanning
+#     zero-training, one adapter, six merged specialists, a router, and two weighting schemes all land
+#     in the same ~29–35 band on the one condition that discriminates invariance from memorization.
+#
+# ⚠️ SMOKE-TESTING THIS CONFIG SPENDS ACCESS_LOG ROWS. `--stub` swaps only GENERATION for a fake
+# echo; `data.load_eval_items` at eval_vllm.py:815 runs unconditionally, so H1 items are really
+# loaded and `record_h1_access` really fires. Verified 2026-08-17: two stub runs appended two rows
+# (n=1215 and n=115) that produced no result. That is not contamination — nothing is trained, no
+# selection is made, and stub cells are refused inside results/cells without an explicit flag — but
+# it does put reads in the audit trail that correspond to no measurement. Smoke the config against a
+# NON-H1 condition list first if you need to check plumbing, and treat any H1 stub as a spent row.
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: h1_confirm
+run_tag: h1_confirm_gridB
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+h1_access_purpose: final_eval
+
+systems:
+  - {name: sweep_dare_ties_d0p3, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties/dare_ties_d0p3", arch: merge_dare_ties, train_cond: mix}
+  - {name: merge_ties_s42, adapter: "runs/merges/qwen25c-1.5b_python_ties_s42/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: merge_dare_ties_s42, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties_s42/d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: crossseed_ties, adapter: "runs/merges/qwen25c-1.5b_python_crossseed_ties/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: crossseed_dare_ties, adapter: "runs/merges/qwen25c-1.5b_python_crossseed_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: residual_ties_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_ties/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: residual_dare_ties_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [H1]

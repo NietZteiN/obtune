@@ -1,0 +1,60 @@
+# The zero-training baselines on GRID A — the grid the adapter headlines live on.
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/baselines_gridA_7b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# WHY THIS RUN EXISTS — IT IS THE ONE THING BLOCKING THE WRITE-UP
+# --------------------------------------------------------------
+# Every baseline collected on 2026-08-13 ran on Grid B (`testset`, n=115-176). Every RQ1/RQ2
+# headline in the master report — `merge_dare_ties` .348 on H1, `mono` .229, `base` .064 —
+# is Grid A (`heldout`, n=1214-1670). CLAUDE.md forbids pooling them, so "ICL +13.9 vs merge
+# +28" is currently NOT a statement anyone can make.
+#
+# The two grids are demonstrably not interchangeable: `base` on H1 reads **6.4 %** on Grid A
+# and **11.3 %** on Grid B. A 5-point difference in the floor alone is larger than several of
+# the effects being compared.
+#
+# So the baselines come to the adapters rather than the reverse — Grid A is where the
+# expensive, already-collected adapter and merge cells are, and re-running those on Grid B
+# would cost far more GPU than re-running these inference-only arms here.
+#
+# H1 ACCESS: EXPLICITLY AUTHORISED
+# -------------------------------
+# This spends a logged `final_eval` quarantine access (CLAUDE.md §3.2 rule 3). It was raised
+# as a blocking decision and authorised by the user on 2026-08-13 rather than taken by
+# default, because the H1 budget is contested and the ACCESS_LOG already over-counts. The
+# demos remain quarantine-safe: `icl.demos.pick_demos` refuses H1 as a SOURCE outright, so
+# H1 is only ever the query.
+_extends: _base_eval.yaml
+
+phase: baselines_gridA
+experiment_id: baselines_gridA_7b
+run_tag: baselines_gridA_7b
+model: qwen25c-7b
+language: python
+
+# The line that defines this config. Everything else mirrors the Grid B runs so the two are
+# comparable arm-for-arm.
+engine:
+  gpu_memory_utilization: 0.85
+
+eval_source: heldout
+
+systems:
+  # Matched floor, regenerated here — never resumed from another grid. That mistake is the
+  # whole reason this file exists; see the `phase` note in normalize_baseline_qwen1.5b.yaml.
+  - {name: base, arch: none}
+  # No `tuned_L0` here: 7B has no RQ1 ladder adapters (only cft/srh ones), and an
+  # absent-adapter row would render as an empty cell that reads like a result.
+  # ICL: the k=1 arm that won on Grid B, plus the k the sweep is testing.
+  - {name: icl_k1_cross, arch: none, icl_k: 1, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: icl_k4_cross, arch: none, icl_k: 4, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: icl_k1_clean, arch: none, icl_k: 1, icl_source: [L0]}
+  # Normalization: the two profiles worth carrying forward. `alpha` and `reformat` are
+  # already characterised on Grid B and are not worth Grid A GPU time.
+  - {name: norm_full, arch: none, normalize: full}
+  - {name: norm_structural, arch: none, normalize: structural}
+
+# S3/S4 are absent: they have no Grid A eval variants (they were built for the testset).
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval

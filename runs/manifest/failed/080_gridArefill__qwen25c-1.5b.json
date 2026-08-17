@@ -1,0 +1,29 @@
+{
+  "job_id": "gridArefill__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/baselines_gridA_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 80,
+  "meta": {
+    "experiment": "baselines/gridA",
+    "stage": "gridA_refill"
+  },
+  "result": {
+    "returncode": -15,
+    "seconds": 2016.8,
+    "log": "runs/logs/gridArefill__qwen25c-1.5b.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-14T11:16:30.985700+00:00",
+    "tail": "Processed prompts:   0%|          | 0/1670 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]\nProcessed prompts:  15%|\u2588\u258c        | 257/1670 [00:00<00:00, 2395.72it/s, est. speed input: 1645731.60 toks/s, output: 5798.40 toks/s]\nProcessed prompts:  33%|\u2588\u2588\u2588\u258e      | 555/1670 [00:00<00:00, 2445.93it/s, est. speed input: 1564234.21 toks/s, output: 7936.24 toks/s]\nProcessed prompts:  48%|\u2588\u2588\u2588\u2588\u258a     | 800/1670 [00:01<00:01, 629.17it/s, est. speed input: 492400.57 toks/s, output: 2989.43 toks/s]  \nProcessed prompts:  57%|\u2588\u2588\u2588\u2588\u2588\u258b    | 948/1670 [00:01<00:01, 496.20it/s, est. speed input: 391674.92 toks/s, output: 2647.42 toks/s]\nProcessed prompts:  63%|\u2588\u2588\u2588\u2588\u2588\u2588\u258e   | 1050/1670 [00:01<00:01, 462.36it/s, est. speed input: 368958.57 toks/s, output: 2505.22 toks/s]\nProcessed prompts:  68%|\u2588\u2588\u2588\u2588\u2588\u2588\u258a   | 1129/1670 [00:01<00:01, 430.32it/s, est. speed input: 347394.03 toks/s, output: 2460.63 toks/s]\nProcessed prompts:  71%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258f  | 1192/1670 [00:02<00:01, 393.01it/s, est. speed input: 327621.53 toks/s, output: 2467.07 toks/s]\nProcessed prompts:  74%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258d  | 1244/1670 [00:02<00:01, 375.52it/s, est. speed input: 316681.49 toks/s, output: 2476.29 toks/s]\nProcessed prompts:  78%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258a  | 1297/1670 [00:02<00:00, 376.32it/s, est. speed input: 309834.46 toks/s, output: 2479.14 toks/s]\nProcessed prompts:  81%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588  | 1346/1670 [00:02<00:00, 364.65it/s, est. speed input: 302511.67 toks/s, output: 2464.89 toks/s]\nProcessed prompts:  83%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258e | 1386/1670 [00:02<00:00, 338.23it/s, est. speed input: 294834.46 toks/s, output: 2432.05 toks/s]\nProcessed prompts:  86%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c | 1437/1670 [00:02<00:00, 334.51it/s, est. speed input: 288139.46 toks/s, output: 2422.96 toks/s]\nProcessed prompts:  94%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258d| 1569/1670 [00:03<00:00, 520.98it/s, est. speed input: 300289.79 toks/s, output: 2761.79 toks/s]\nProcessed prompts:  98%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258a| 1631/1670 [00:03<00:00, 498.64it/s, est. speed input: 297505.38 toks/s, output: 3259.96 toks/s]\nProcessed prompts: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1670/1670 [00:03<00:00, 498.64it/s, est. speed input: 286547.99 toks/s, output: 3757.42 toks/s]\nProcessed prompts: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1670/1670 [00:03<00:00, 484.93it/s, est. speed input: 286547.99 toks/s, output: 3757.42 toks/s]\n[engine] returned 1670 completion(s): 1670 distinct prompt(s) -> 814 distinct output(s)\n[eval_vllm] qwen25c-1.5b/python icl_k1_cross__L1r: n=1670 acc=0.228 format_fail=0.151\n[eval_vllm] qwen25c-1.5b/python icl_k4_cross__L1r: n=1670 acc=0.273 format_fail=0.101 (resumed)\n"
+  }
+}

@@ -126,8 +126,17 @@ def test_demo_ids_are_namespaced_away_from_corpus_programs():
     prompts.assert_demo_disjoint(["apps_122_0"])  # no clash -> no raise
 
 
-def test_technique_names_cover_every_trainable_condition_and_exclude_h1():
+def test_technique_names_cover_the_replication_ladder_and_exclude_h1():
+    """Containment, not equality.
+
+    The replication is frozen on the condition set its pools were built against, and
+    `template_sha256()` — which hashes TECHNIQUE_NAMES — is recorded in every
+    `pool_report.json`. If this asserted equality, adding a condition to obtune's ladder
+    would silently change the replication's prompt hash and orphan its own provenance.
+    """
     from obtune import paths
 
-    assert set(prompts.TECHNIQUE_NAMES) == set(paths.TRAINABLE_CONDITIONS)
+    replication_ladder = {"L0", "L1b", "L1r", "L2", "S1", "S2"}
+    assert set(prompts.TECHNIQUE_NAMES) == replication_ladder
+    assert set(prompts.TECHNIQUE_NAMES) <= set(paths.TRAINABLE_CONDITIONS)
     assert "H1" not in prompts.TECHNIQUE_NAMES

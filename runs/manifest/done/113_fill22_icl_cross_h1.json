@@ -1,0 +1,30 @@
+{
+  "job_id": "fill22_icl_cross_h1",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_icl_cross_h1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "base,icl_k1_cross,icl_k1_clean,icl_k1_matched_struct"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 113,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 76.9,
+    "log": "runs/logs/fill22_icl_cross_h1.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T21:50:54.866817+00:00"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "run": "results/2026-08-10_cft-bidirectional/qwen25c-1.5b/python/unlearn_negation_python",
+  "metric": "reverse_success_strict",
+  "contrasts": [
+    {
+      "a": "cft",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.0013333333333333333,
+      "mean_b": 0.0033333333333333335,
+      "delta": -0.002,
+      "ci": [
+        -0.005333333333333333,
+        0.0013333333333333335
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "flip",
+      "b": "cft",
+      "n_programs": 300,
+      "mean_a": 0.314,
+      "mean_b": 0.0013333333333333333,
+      "delta": 0.31266666666666665,
+      "ci": [
+        0.296,
+        0.3293333333333333
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.314,
+      "mean_b": 0.0033333333333333335,
+      "delta": 0.31066666666666665,
+      "ci": [
+        0.294,
+        0.32799999999999996
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "sft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0033333333333333335,
+      "mean_b": 0.027333333333333334,
+      "delta": -0.024,
+      "ci": [
+        -0.03333333333333333,
+        -0.014666666666666668
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "cft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0013333333333333333,
+      "mean_b": 0.027333333333333334,
+      "delta": -0.026000000000000002,
+      "ci": [
+        -0.034666666666666665,
+        -0.017333333333333333
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.314,
+      "mean_b": 0.027333333333333334,
+      "delta": 0.2866666666666667,
+      "ci": [
+        0.26933333333333337,
+        0.3053333333333333
+      ],
+      "excludes_zero": true
+    }
+  ]
+}

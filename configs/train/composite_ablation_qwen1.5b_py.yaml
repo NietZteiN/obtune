@@ -1,0 +1,44 @@
+# B2's ABLATION — the same mechanisms, unstacked. Without this the composite arm answers nothing.
+#
+# `composite_qwen1.5b_py.yaml` trains on six stacked variants. If it beats the LOTO diagonal, two
+# explanations are indistinguishable:
+#
+#   (a) STACKING taught something — the model learned that transforms compose, which is the
+#       property `H1` actually demands; or
+#   (b) MECHANISM COUNT taught something — the composite mixture happens to expose six single
+#       transforms' worth of mechanisms, and any mixture of those six would do as well.
+#
+# This arm is (b). It trains on exactly the single transforms that appear as PARTS of the six
+# composites — L1b, L1r, L2, S1, S3, S4 — at the same size, same recipe, same seed. The only
+# difference from its partner is whether the two mechanisms arrive in one program or in two.
+#
+# The parts, read off `configs/conditions_composite.yaml`:
+#   C_L1r_S1 -> L1r, S1     C_L2_S4  -> L2, S4
+#   C_S1_L1r -> S1, L1r     C_L1r_S3 -> L1r, S3
+#   C_L1b_S1 -> L1b, S1     C_S4_S3  -> S4, S3
+#   union = {L1b, L1r, L2, S1, S3, S4}  — six, and note `L0` and `S2` are NOT among them.
+#
+# NOT `mono_all`. That arm is [L0, L1b, L1r, L2, S1, S2] — it includes `L0` and `S2` and excludes
+# `S3`/`S4`, so it is a different mixture and 26,841 rows rather than 22,152. Using it as the
+# comparator would confound the stacking question with both a composition change and a 21 % data
+# advantage. Hence a purpose-built ablation. The resulting adapter directory
+# (`L1b-L1r-L2-S1-S3-S4_r32_s17`) is distinct from every existing one, and `adapter_root` is set
+# regardless so the pair lives together and cannot collide with the RQ1 bank.
+#
+# SIZE MATCHING — 22152, as its partner; see s2fam_qwen1.5b_py.yaml for why the nominal 30000
+# never binds.
+#
+# SELECTION on the LOTO diagonal (38.02), never on `H1`.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L1b, L1r, L2, S1, S3, S4]
+run_tag: composite_ablation_py
+phase: main
+
+adapter_root: runs/adapters_composite
+
+train:
+  train_size: 22152
+  seed: 17

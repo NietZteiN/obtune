@@ -1,0 +1,61 @@
+# Residual merge — does preserving the condition-specific component beat diluting it?
+#
+# THE MECHANISM THIS TESTS. The 2026-08-17 decomposition
+# (docs/REPORT_2026-08-17_geometry-and-attempted-repairs.md §3.1) found that 52-70 % of every
+# specialist's task vector points along the clean-code direction dW_L0. A uniform merge averages
+# that shared part (which every expert agrees on, so it survives intact) together with the
+# condition-specific residual (which partially cancels). Measured: ||mean resid|| / mean||resid|| =
+# 0.6255, so a uniform merge discards ~37 % of each specialist-specific update by norm while keeping
+# all of the part `tuned_L0` already had. That is a mechanical explanation for why every merge in
+# this project lands near the clean-code control.
+#
+# The arm asks for the shared component once at full strength and the residuals undiluted, which
+# expands to a plain re-weighting of the SAME ingredients and the SAME merge driver:
+# `L0` = +0.045, each specialist = +0.228 (uniform would be 0.125). Derivation, and why exact task
+# arithmetic cannot be used instead (`cat` sums ranks; 8 experts would need r256 against vLLM's
+# `max_lora_rank: 64`), in `scripts/merge/25_residual_merge.py`.
+#
+# GRID AND BAR. `testset` (Grid B), matching `merge_ties` / `merge_dare_ties` / the density sweep,
+# so the comparison is same-grid and same-item. The bar, on the six trainable conditions:
+#
+#     merge_dare_ties        45.0   the §5.2 headline merge, d=0.5, uniform weights
+#     sweep_dare_ties_d0p3   47.0   the density-sweep winner
+#     merge_ties             36.2
+#     l0merge_dare_ties      ~41    three clean-code adapters merged (the "merging does nothing" control)
+#
+# Both densities are built so this is read against the sweep rather than only against the default:
+# d=0.5 is the headline's density and d=0.3 the sweep winner.
+#
+# REGISTERED BEFORE THE RUN. Beating `merge_dare_ties` outside the 1.32-pt seed band means undiluted
+# residuals are worth keeping, and it is the project's first positive method result — one adapter, no
+# router, closer to specialist accuracy. Flat means the residuals carry no recoverable per-condition
+# value even when preserved, which upgrades §12.10 from an empirical sweep to a claim with a measured
+# mechanism. It is NOT expected to move H1: routing is already capped by the specialists themselves
+# (+3.5 pts) and nothing here has shifted the held-out obfuscator. The claim on offer is about
+# merging without dilution — a deployment claim, not an invariance claim.
+#
+# NO H1. This is method selection, and CLAUDE.md §3.2 rule 2 forbids H1 for merge tuning — the same
+# argument `merge_headroom_qwen1.5b.yaml` makes for the density sweep. A confirmatory read goes in
+# the single batched final pass if the arm earns one.
+#
+# System names are new, so no cell path collides (`cell_dir` keys on `phase`, not `eval_source`).
+#
+# Smoke:
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/residual_merge_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: residual_merge
+run_tag: residual_merge
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+systems:
+  - {name: residual_ties_d0p3, adapter: "runs/merges/qwen25c-1.5b_python_residual_ties/d0p3", arch: merge_ties, train_cond: mix}
+  - {name: residual_ties_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_ties/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: residual_dare_ties_d0p3, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/d0p3", arch: merge_dare_ties, train_cond: mix}
+  - {name: residual_dare_ties_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_residual_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

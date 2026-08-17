@@ -1,0 +1,38 @@
+{
+  "job_id": "eval-bidir-qwen25c-1.5b-python-e2_factorial_qwen1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "srh/eval/e2_factorial_qwen1.5b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 59,
+  "meta": {
+    "experiment": "srh/exp1",
+    "config": "srh/eval/e2_factorial_qwen1.5b.yaml",
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "systems": [
+      "base",
+      "cft",
+      "cftflip",
+      "flip",
+      "fwd2x",
+      "sft"
+    ],
+    "n_adapters": 5,
+    "reverse_strategies": [
+      "simple"
+    ]
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 948.2,
+    "log": "runs/logs/eval-bidir-qwen25c-1.5b-python-e2_factorial_qwen1.5b.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-10T16:05:47.656242+00:00"
+  }
+}

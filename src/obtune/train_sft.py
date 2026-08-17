@@ -60,11 +60,22 @@ def cond_tag(train_conditions) -> str:
 
 def adapter_dir(cfg: Mapping[str, Any]) -> Path:
     """runs/adapters/<model>/<lang>/<cond_tag>_r<rank>_s<seed>/ — the path the eval
-    configs hardcode (see configs/eval/pilot_w1.yaml). Keep the two in sync."""
+    configs hardcode (see configs/eval/pilot_w1.yaml). Keep the two in sync.
+
+    `adapter_root` overrides the `runs/adapters` prefix, mirroring the split that `cft/` and
+    `srh/` already use for their arms. It exists because the directory name encodes only
+    (conditions, rank, seed) — NOT the training length — so a config that varies only
+    `train.epochs` resolves to the SAME directory as the original and silently overwrites it.
+    That would have destroyed the 3-epoch expert bank the whole RQ1 matrix is built on; the
+    9-epoch overtraining probe writes to `runs/adapters_overtrain` instead. Defaulted, so every
+    existing config resolves exactly as before.
+    """
     tag = cond_tag(cfg["train_conditions"])
     r = int(cfg["peft"]["r"])
     seed = int(cfg.get("train", {}).get("seed", GLOBAL_SEED))
-    return RUNS_DIR / "adapters" / cfg["model"] / cfg["language"] / f"{tag}_r{r}_s{seed}"
+    root = cfg.get("adapter_root")
+    base = (PROJECT_ROOT / root) if root else (RUNS_DIR / "adapters")
+    return base / cfg["model"] / cfg["language"] / f"{tag}_r{r}_s{seed}"
 
 
 def run_id_for(cfg: Mapping[str, Any]) -> str:

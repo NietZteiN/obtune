@@ -1,0 +1,34 @@
+# E7 — close the prompting asymmetry at the headline tier.
+#
+#   python scripts/srh/22_enqueue_evals.py srh/eval/e7_strategies_qwen7b.yaml --write
+#
+# THE GAP THIS CLOSES
+# -------------------
+# `bidir_qwen7b` ran base/sft/cft across all four prompting strategies, but `flip` and `mix50`
+# were only ever run under `simple`. A reviewer will reasonably ask why the baseline was given
+# four strategies and the winning arm one. That asymmetry is the last soft spot in the E7
+# paragraph, and one eval pass removes it.
+#
+# The claim it protects: at 7B the fine-tuned forward-only model under its BEST prompt (`sft`,
+# cot, 5.5 % strict) scores less than half the untouched base under its WORST (`simple`,
+# 13.0 %). That sentence only survives if the winning arm has also been given every prompt —
+# otherwise "flip only wins because it was tuned for `simple`" is unanswered.
+#
+# EXTENDS e1_qwen7b.yaml, NOT bidir_v1.yaml
+# -----------------------------------------
+# Extending `cft/eval/bidir_v1.yaml` from a 7B config inherits the 1.5B adapter paths and
+# silently loads a 1.5B LoRA onto a 7B base — an error that has actually happened in this
+# project. Extending the 7B config keeps every inherited path at the right scale.
+#
+# `base` is inherited and is the consistency anchor: expect 13.0 % strict under `simple`.
+_extends: e1_qwen7b.yaml
+
+model: qwen25c-7b
+run_tag: e7_strategies_qwen7b
+
+systems:
+  flip: runs/adapters_srh/qwen25c-7b/python/all5_flip_r32_s17/final
+  mix50: runs/adapters_srh/qwen25c-7b/python/all5_mix50_r32_s17/final
+
+# The whole point of this run — the parent pins `[simple]`.
+reverse_strategies: [simple, few_shot, cot, augmented]

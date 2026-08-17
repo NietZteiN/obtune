@@ -1,0 +1,57 @@
+# Experiment 1 — the budget controls at the headline tier, 7B.
+# Last updated: 2026-08-10
+#
+#   python -m obtune.cft.evaluate --config srh/eval/e2_budget_qwen7b.yaml --gpu <idle>
+#
+# WHY THIS CONFIG EXISTS
+# Two 7B arms are trained and have never been evaluated, and both are load-bearing for
+# claims the workshop paper already intends to make:
+#
+#   mix50  the DECISIVE arm -- matched to sft on instances, sequence tokens and optimiser
+#          steps simultaneously, while receiving strictly LESS supervised signal. The
+#          paper's §3.3 claim ("the entire effect, at no extra cost on any axis") is
+#          currently supported only at 1.5B; at the headline tier there is no number at
+#          all. `e1_qwen7b.yaml` omits it on a comment that was true when written and is
+#          now stale -- runs/adapters_srh/qwen25c-7b/python/all5_mix50_r32_s17/final
+#          landed afterwards.
+#   fwd2x  forward-only at 6 epochs -- flip's compute-matched control. mix50 answers
+#          "flip just saw more data" on instances and steps; fwd2x answers it on FLOPs.
+#          Together they close the budget objection on every axis a reviewer can name.
+#
+# Extends e1_qwen7b.yaml rather than bidir_v1.yaml. This is deliberate and it is the
+# safety-critical choice: bidir_v1.yaml is the 1.5B config, so extending it would inherit
+# `sft`/`cft` paths pointing at runs/adapters_cft/qwen25c-1.5b/... and quietly load a 1.5B
+# LoRA onto a 7B base, producing garbage under a real arm's label. e1_qwen7b.yaml has
+# already done that override work for base/sft/cft/rev/flip; this file only adds arms.
+#
+# The consequence is that all seven arms are re-scored in ONE pass. That is a feature, not
+# waste: §7.5's table was assembled across runs that included the path-collision incident
+# documented in MASTER_REPORT §7.6, and a single clean pass over one program set, one
+# engine build and one set of criteria is a materially stronger artifact to publish from.
+_extends: e1_qwen7b.yaml
+
+model: qwen25c-7b
+
+# base/sft/cft/rev/flip DEEP-MERGE in from e1_qwen7b.yaml with correct 7B paths.
+# PRECONDITION: fwd2x must have finished training. The 6-epoch run writes `final/` only at
+# the end, so if it is still going this eval fails fast on a missing path rather than
+# scoring a mid-training checkpoint -- which is the behaviour we want, but check
+# `ls runs/adapters_srh/qwen25c-7b/python/all5_fwd2x_r32_s17/final` before launching.
+systems:
+  mix50: runs/adapters_srh/qwen25c-7b/python/all5_mix50_r32_s17/final
+  fwd2x: runs/adapters_srh/qwen25c-7b/python/all5_fwd2x_r32_s17/final
+
+reverse_strategies: [simple]
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  # 6 adapters + base. Still inside the limit, but this is the tightest cell in the
+  # project: 7B bf16 weights + 6 LoRA slots + a 4k KV cache on a 48 GB card.
+  max_loras: 8
+  # Lowered from e1_qwen7b.yaml's 0.72 because that config carried four adapters and this
+  # one carries six. vLLM refuses to start rather than shrinking its allocation, so the
+  # failure mode is a clean startup error, not an OOM mid-run.
+  gpu_memory_utilization: 0.70
+  seed: 17

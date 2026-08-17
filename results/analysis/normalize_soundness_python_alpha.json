@@ -1,0 +1,149 @@
+{
+  "language": "python",
+  "profile": "alpha",
+  "source": "testset",
+  "passes": [
+    "alpha"
+  ],
+  "conditions": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "C_L1r_S1",
+    "C_S1_L1r",
+    "C_L1b_S1",
+    "C_L2_S4",
+    "C_L1r_S3",
+    "C_S4_S3"
+  ],
+  "n_items": 2355,
+  "n_validated": 2355,
+  "n_excluded_original_mismatch": 0,
+  "n_sound": 2355,
+  "n_unsound": 0,
+  "rewrite_rate": {
+    "C_L1b_S1": {
+      "changed": 150,
+      "n": 150
+    },
+    "C_L1r_S1": {
+      "changed": 150,
+      "n": 150
+    },
+    "C_L1r_S3": {
+      "changed": 176,
+      "n": 176
+    },
+    "C_L2_S4": {
+      "changed": 176,
+      "n": 176
+    },
+    "C_S1_L1r": {
+      "changed": 150,
+      "n": 150
+    },
+    "C_S4_S3": {
+      "changed": 176,
+      "n": 176
+    },
+    "L0": {
+      "changed": 176,
+      "n": 176
+    },
+    "L1b": {
+      "changed": 176,
+      "n": 176
+    },
+    "L1r": {
+      "changed": 176,
+      "n": 176
+    },
+    "L2": {
+      "changed": 176,
+      "n": 176
+    },
+    "S1": {
+      "changed": 145,
+      "n": 145
+    },
+    "S2": {
+      "changed": 176,
+      "n": 176
+    },
+    "S3": {
+      "changed": 176,
+      "n": 176
+    },
+    "S4": {
+      "changed": 176,
+      "n": 176
+    }
+  },
+  "applied_combinations": {
+    "alpha": 2355
+  },
+  "per_condition": {
+    "C_L1b_S1": {
+      "n": 150,
+      "changed": 150
+    },
+    "C_L1r_S1": {
+      "n": 150,
+      "changed": 150
+    },
+    "C_L1r_S3": {
+      "n": 176,
+      "changed": 176
+    },
+    "C_L2_S4": {
+      "n": 176,
+      "changed": 176
+    },
+    "C_S1_L1r": {
+      "n": 150,
+      "changed": 150
+    },
+    "C_S4_S3": {
+      "n": 176,
+      "changed": 176
+    },
+    "L0": {
+      "n": 176,
+      "changed": 176
+    },
+    "L1b": {
+      "n": 176,
+      "changed": 176
+    },
+    "L1r": {
+      "n": 176,
+      "changed": 176
+    },
+    "L2": {
+      "n": 176,
+      "changed": 176
+    },
+    "S1": {
+      "n": 145,
+      "changed": 145
+    },
+    "S2": {
+      "n": 176,
+      "changed": 176
+    },
+    "S3": {
+      "n": 176,
+      "changed": 176
+    },
+    "S4": {
+      "n": 176,
+      "changed": 176
+    }
+  },
+  "unsound_examples": []
+}

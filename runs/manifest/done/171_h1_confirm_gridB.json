@@ -1,0 +1,29 @@
+{
+  "job_id": "h1confirmB__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/h1_confirm_gridB_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 171,
+  "meta": {
+    "experiment": "holdout-final/h1-confirm",
+    "stage": "h1_confirm",
+    "note": "DECLARED THIRD H1 PASS - merge arms, Grid B. See ACCESS_LOG.md declaration 2026-08-17."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 51.9,
+    "log": "runs/logs/h1confirmB__qwen25c-1.5b.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-17T12:03:29.485908+00:00"
+  }
+}

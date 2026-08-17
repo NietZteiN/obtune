@@ -1,0 +1,32 @@
+{
+  "cft": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "flip": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "flipsym": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "mix50": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "rev": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "sft": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  }
+}

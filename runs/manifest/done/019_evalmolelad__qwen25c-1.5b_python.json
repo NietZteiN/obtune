@@ -1,0 +1,28 @@
+{
+  "job_id": "evalmolelad__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_ladder_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 19,
+  "meta": {
+    "experiment": "part3/hardrouter",
+    "note": "adds mole_hardrouter; other arms resume"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 105.6,
+    "log": "runs/logs/evalmolelad__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-14T02:38:56.002815+00:00"
+  }
+}

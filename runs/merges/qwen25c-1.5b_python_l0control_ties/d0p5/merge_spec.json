@@ -1,0 +1,30 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "combination_type": "ties",
+  "density": 0.5,
+  "weights": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0__s17": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best",
+      "sha256": "82329cdfea8320937dae6d5ffcf93efc97c6e6cf8681a22c09c282c11c14e8d4"
+    },
+    "L0__s42": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s42/best",
+      "sha256": "f32146be21d170ae1ca1b1477a7cbbbb5e316fcd903002be0a003199f1253750"
+    },
+    "L0__s101": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s101/best",
+      "sha256": "21e58bf1fbc133354d54248eb23ce0b066b85c7bf29b67256f9a1801aba2f846"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

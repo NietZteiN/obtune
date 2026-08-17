@@ -1,0 +1,11 @@
+# Grid adapter: S4 (javascript) — opaque predicates only (proposal X3) — the half of S2 that must be REASONED ABOUT
+#
+# S4 is one half of the legacy S2 condition, split out so a degradation can be
+# attributed to one mechanism. S2 itself is unchanged and keeps its own adapter.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: javascript
+train_conditions: [S4]
+run_tag: grid_js_S4
+phase: main

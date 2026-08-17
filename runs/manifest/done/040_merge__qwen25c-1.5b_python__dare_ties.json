@@ -1,0 +1,35 @@
+{
+  "job_id": "merge__qwen25c-1.5b_python__dare_ties",
+  "kind": "merge",
+  "argv": [
+    "-m",
+    "obtune.merge_adapters",
+    "--config",
+    "merge/ties_v1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--rank",
+    "32",
+    "--combination-type",
+    "dare_ties",
+    "--out",
+    "runs/adapters/qwen25c-1.5b/python/merge_dare_ties_r32_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 40,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "combination_type": "dare_ties"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 20.0,
+    "log": "runs/logs/merge__qwen25c-1.5b_python__dare_ties.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T17:26:09.020519+00:00"
+  }
+}

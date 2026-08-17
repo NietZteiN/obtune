@@ -1,0 +1,23 @@
+# MIX10 — dose-response rung: 10 % of programs seen in reverse.
+#
+# One of three rungs (mix5 / mix10 / mix25) that, together with the existing mix50, trace
+# how reverse capability scales with reverse EXPOSURE while every budget axis is held
+# fixed. The question they answer is the prescriptive one: not "does bidirectional data
+# work?" (mix50 settles that) but "how little of it is enough?" — which is what turns the
+# result from a refutation of a published method into a recipe.
+#
+# Like mix50 this REPLACES forward rows rather than adding reverse ones, so instance
+# count, sequence tokens (FLOPs) and optimizer steps stay matched to FWD at every dose.
+# The only quantity that varies along the curve is `reverse_fraction`.
+#
+# Partitioning by PROGRAM, not by row, is load-bearing at every dose: by row, one program
+# could appear in both directions and the arm would quietly become a small FLIP rather
+# than a low-dose MIX.
+#
+# The rung most likely to carry the prescription: large enough to be robust to which programs the seed happens to pick, small enough to be a genuinely cheap intervention.
+_extends: _base_srh.yaml
+arm: mix10
+tasks: [gen]
+train:
+  mixture_kwargs:
+    direction_mix: { reverse_fraction: 0.10, disjoint_programs: true, seed: 17 }

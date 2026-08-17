@@ -1,0 +1,28 @@
+{
+  "job_id": "mergehr__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_headroom_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.2,
+  "priority": 88,
+  "meta": {
+    "experiment": "rq2/merge-headroom",
+    "stage": "merge_headroom_eval"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 107.5,
+    "log": "runs/logs/mergehr__qwen25c-1.5b.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-14T23:38:30.934092+00:00"
+  }
+}

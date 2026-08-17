@@ -47,7 +47,7 @@ from typing import Any, Iterable, Mapping, Optional, Sequence
 import numpy as np
 import pandas as pd
 
-from obtune.config import GLOBAL_SEED, PROJECT_ROOT, RESULTS_DIR
+from obtune.config import GLOBAL_SEED, PROJECT_ROOT, RESULTS_DIR, load_config
 
 N_BOOTSTRAP = 2000
 MIN_DENOMINATOR_PTS = 3.0
@@ -80,7 +80,23 @@ def load_trials(
             raise FileNotFoundError(f"no cell parquets under {cells_root}")
         df = pd.concat(parts, ignore_index=True)
     if model:
-        df = df[df["base_model"].str.contains(model, case=False, regex=False) | (df["base_model"] == model)]
+        # `base_model` stores the HF id ("Qwen/Qwen2.5-Coder-1.5B-Instruct"), but every
+        # other entry point in this project addresses models by their config KEY
+        # ("qwen25c-1.5b"). The key is not a substring of the id, so passing the key —
+        # which is what scripts/pipeline.sh did, and what this CLI's own --help offered as
+        # its first example — matched zero rows and printed "no trials". The analysis stage
+        # then exited 0 with no transfer matrix: RQ1's headline artifact, silently absent.
+        # Resolve the key to its id first, and accept either spelling.
+        needle = model
+        try:
+            models_cfg = load_config("models.yaml")
+            entry = (models_cfg.get("models") or models_cfg).get(model)
+            if isinstance(entry, dict) and entry.get("hf_id"):
+                needle = entry["hf_id"]
+        except Exception:  # noqa: BLE001 — an unresolvable key just falls back to substring
+            pass
+        df = df[df["base_model"].str.contains(needle, case=False, regex=False)
+                | (df["base_model"] == needle)]
     if language:
         df = df[df["language"] == language]
     if phase:
@@ -104,7 +120,31 @@ def core_subset(df: pd.DataFrame) -> pd.DataFrame:
     S1/S2 bail on some programs by design. Comparing a cell built on 900 programs with
     one built on 700 confounds the transform effect with the program set, so the
     headline matrix uses only programs present in EVERY eval condition.
+
+    The intersection is taken WITHIN an experiment, not across everything on disk. Without
+    that scoping the subset is hostage to the sparsest grid present: on 2026-08-10 the S3/S4
+    expansion (40 programs, a testset-sourced grid) landed alongside the main heldout grid
+    (597) and silently cut the common subset from 340 programs to 23 — a 93 % loss that
+    reached the published transfer matrix as `n_programs: 23` and inflated every CI in it.
+    Nothing failed; the matrix simply described a different, much smaller corpus.
+
+    Grouping by `experiment_id` restores the docstring's own words — "present in EVERY eval
+    condition" of *its own grid* — and keeps a sparse supplementary grid from redefining the
+    headline's denominator.
     """
+    if "experiment_id" in df.columns and df["experiment_id"].notna().any():
+        keep = []
+        for _, sub in df.groupby("experiment_id", dropna=False):
+            per_cond = sub.groupby("eval_cond")["snippet_id"].apply(set)
+            if per_cond.empty:
+                continue
+            common = set.intersection(*per_cond.tolist())
+            keep.append(sub[sub["snippet_id"].isin(common)])
+        if keep:
+            out = pd.concat(keep, ignore_index=False).copy()
+            out["is_core"] = 1
+            return out
+
     per_cond = df.groupby("eval_cond")["snippet_id"].apply(set)
     if per_cond.empty:
         return df
@@ -469,7 +509,9 @@ def run(
 
 def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="RQ1 transfer matrix")
-    ap.add_argument("--model", required=True, help="substring of base_model, e.g. qwen25c-1.5b or Qwen2.5-Coder-1.5B")
+    ap.add_argument("--model", required=True,
+                    help="model config key (qwen25c-1.5b) or any substring of the HF id "
+                         "(Qwen2.5-Coder-1.5B); the key is resolved via models.yaml")
     ap.add_argument("--language", default="python")
     ap.add_argument("--source", default=None, help="results/ root, a cells dir, or a trials.parquet")
     ap.add_argument("--out-dir", default=None)

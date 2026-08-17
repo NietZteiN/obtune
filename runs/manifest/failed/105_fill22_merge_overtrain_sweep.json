@@ -1,0 +1,29 @@
+{
+  "job_id": "fill22_merge_overtrain_sweep",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_merge_overtrain_sweep.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 105,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 1,
+    "seconds": 0.6,
+    "log": "runs/logs/fill22_merge_overtrain_sweep.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T21:38:37.269511+00:00",
+    "tail": "# ===== attempt: fill22_merge_overtrain_sweep on gpu0 at 2026-08-15T21:38:36.712103+00:00\n# argv: ['/data/jvl210002/conda_envs/obtune/bin/python', '-m', 'obtune.eval_vllm', '--config', 'eval/fill22_merge_overtrain_sweep.yaml', '--model', 'qwen25c-1.5b', '--language', 'python']\n\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 1080, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 1074, in main\n    summary = run_grid(args)\n              ^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 851, in run_grid\n    res = run_cell(\n          ^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 533, in run_cell\n    _assert_resume_same_grid(cell, meta_base)\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 149, in _assert_resume_same_grid\n    raise GridCollisionError(\nGridCollisionError: refusing to resume /data/jvl210002/my_downloads/obtune/results/cells/main/qwen25c-1.5b/python/base__L0: it was evaluated on eval_source='heldout' (n_items=1670) but this run requests eval_source='testset'. Two grids are aliasing at one cell path because `cell_dir` keys on `phase` only. Give this run its own `phase:` in its config (and add it to TrialRow.phase), or pass --no-resume with a distinct --out-root.\n"
+  }
+}

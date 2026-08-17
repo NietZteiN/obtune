@@ -1,0 +1,31 @@
+{
+  "job_id": "fill22_mono_gate_monoonly",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_mono_gate.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "mono_all"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 125,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22",
+    "note": "base + tuned_L0 excluded: both are split across grids in main (12.1)"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 53.7,
+    "log": "runs/logs/fill22_mono_gate_monoonly.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-15T22:24:33.183953+00:00"
+  }
+}

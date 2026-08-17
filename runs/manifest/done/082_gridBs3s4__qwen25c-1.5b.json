@@ -1,0 +1,28 @@
+{
+  "job_id": "gridBs3s4__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/tuned_L0_gridB_s3s4_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.2,
+  "priority": 82,
+  "meta": {
+    "experiment": "rq2/control",
+    "stage": "gridB_s3s4"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 44.9,
+    "log": "runs/logs/gridBs3s4__qwen25c-1.5b.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T11:24:10.721902+00:00"
+  }
+}

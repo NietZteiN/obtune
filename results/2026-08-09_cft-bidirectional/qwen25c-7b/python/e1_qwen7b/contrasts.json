@@ -1,0 +1,84 @@
+{
+  "run": "results/2026-08-09_cft-bidirectional/qwen25c-7b/python/e1_qwen7b",
+  "metric": "reverse_success_strict",
+  "contrasts": [
+    {
+      "a": "cft",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.0006666666666666666,
+      "mean_b": 0.0,
+      "delta": 0.0006666666666666666,
+      "ci": [
+        0.0,
+        0.002
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "flip",
+      "b": "cft",
+      "n_programs": 300,
+      "mean_a": 0.336,
+      "mean_b": 0.0006666666666666666,
+      "delta": 0.33533333333333337,
+      "ci": [
+        0.32,
+        0.35133333333333333
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.336,
+      "mean_b": 0.0,
+      "delta": 0.336,
+      "ci": [
+        0.32066666666666666,
+        0.3526666666666667
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "sft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0,
+      "mean_b": 0.13066666666666665,
+      "delta": -0.13066666666666665,
+      "ci": [
+        -0.15133333333333332,
+        -0.11133333333333334
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "cft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0006666666666666666,
+      "mean_b": 0.13066666666666665,
+      "delta": -0.12999999999999998,
+      "ci": [
+        -0.15066666666666664,
+        -0.11066666666666666
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.336,
+      "mean_b": 0.13066666666666665,
+      "delta": 0.20533333333333337,
+      "ci": [
+        0.182,
+        0.22799999999999998
+      ],
+      "excludes_zero": true
+    }
+  ]
+}

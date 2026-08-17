@@ -1,0 +1,32 @@
+{
+  "job_id": "fill22_grid_rq1_nobase",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_grid_rq1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "merge_ties,merge_dare_ties,merge_dare_linear,tuned_L0_s17,tuned_L0_s42,tuned_L1b_s17,tuned_L1b_s42,tuned_L1r_s17,tuned_L1r_s42,tuned_L2_s17,tuned_L2_s42,tuned_S1_s17,tuned_S1_s42,tuned_S2_s17,tuned_S2_s42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 120,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22",
+    "note": "base excluded: main/base is split across grids (12.1)"
+  },
+  "result": {
+    "returncode": -9,
+    "seconds": 671.5,
+    "log": "runs/logs/fill22_grid_rq1_nobase.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T22:24:21.439621+00:00",
+    "tail": "Processed prompts: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1670/1670 [00:05<00:00, 309.45it/s, est. speed input: 115138.39 toks/s, output: 2210.69 toks/s]\n[engine] returned 1670 completion(s): 1670 distinct prompt(s) -> 891 distinct output(s)\n[eval_vllm] qwen25c-1.5b/python tuned_S2_s42__S3: n=1670 acc=0.450 format_fail=0.016\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 1080, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 1074, in main\n    summary = run_grid(args)\n              ^^^^^^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 851, in run_grid\n    res = run_cell(\n          ^^^^^^^^^\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 533, in run_cell\n    _assert_resume_same_grid(cell, meta_base)\n  File \"/data/jvl210002/my_downloads/obtune/src/obtune/eval_vllm.py\", line 149, in _assert_resume_same_grid\n    raise GridCollisionError(\nGridCollisionError: refusing to resume /data/jvl210002/my_downloads/obtune/results/cells/main/qwen25c-1.5b/python/merge_ties__S3: it was evaluated on eval_source='testset' (n_items=176) but this run requests eval_source='heldout'. Two grids are aliasing at one cell path because `cell_dir` keys on `phase` only. Give this run its own `phase:` in its config (and add it to TrialRow.phase), or pass --no-resume with a distinct --out-root.\n"
+  }
+}

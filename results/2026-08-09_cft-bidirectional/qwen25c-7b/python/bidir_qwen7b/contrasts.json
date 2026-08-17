@@ -1,0 +1,45 @@
+{
+  "run": "results/2026-08-09_cft-bidirectional/qwen25c-7b/python/bidir_qwen7b",
+  "metric": "reverse_success_strict",
+  "contrasts": [
+    {
+      "a": "cft",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.008333333333333333,
+      "mean_b": 0.030833333333333334,
+      "delta": -0.0225,
+      "ci": [
+        -0.027166666666666665,
+        -0.017833333333333333
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "sft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.030833333333333334,
+      "mean_b": 0.18516666666666667,
+      "delta": -0.15433333333333335,
+      "ci": [
+        -0.17416666666666666,
+        -0.13516666666666668
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "cft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.008333333333333333,
+      "mean_b": 0.18516666666666667,
+      "delta": -0.17683333333333334,
+      "ci": [
+        -0.19666666666666666,
+        -0.15766666666666668
+      ],
+      "excludes_zero": true
+    }
+  ]
+}

@@ -37,12 +37,14 @@ buried here.
 """
 from __future__ import annotations
 
+import contextlib
 import functools
 import re
+import signal
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Optional, Sequence
+from typing import Any, Iterator, Mapping, Optional, Sequence
 
 from obtune.config import PROJECT_ROOT
 from obtune.exec.pool import BatchItem, run_batch
@@ -84,6 +86,62 @@ CODEBLEU_COMPONENTS = (
     "dataflow_match_score",
 )
 
+#: Hard wall-clock bound on ONE CodeBLEU call, and the prediction size past which we do
+#: not attempt one at all.
+#:
+#: WHY. `codebleu/parser/DFG.py::DFG_python` builds the data-flow graph by recursing over
+#: the AST, and on the degenerate output of the high-lambda unlearning arms (deeply
+#: nested, repetitive) that recursion does not come back in any practical time. Observed
+#: 2026-08-11: nine pool workers pegged at 100 % CPU for 71–102 minutes each, on a run
+#: whose entire generation phase took 19 minutes; the preceding attempt at the same four
+#: cells was killed at 3.4 h having never left the scoring stage. py-spy put every one of
+#: them inside `DFG_python` -> `tree_to_variable_index`, ~30 frames deep.
+#:
+#: WHY THIS CANNOT MOVE A RESULT. The bound is ~450x the mean call (72 000 calls in 52
+#: min = 43 ms each, measured in the same profile), so no call that would have completed
+#: gets truncated. And a prediction that defeats the dataflow extractor scores ~0 in
+#: every component when it does finish — the paper's own criterion reads such an output
+#: as "not similar", which `reverse_success_paper` already guards with `parses`. What
+#: changes is only that a hang becomes a 0 plus a `timeout` flag that reaches the trial
+#: rows, rather than a killed run that reports nothing at all.
+#:
+#: The size cap is a cheap pre-filter, not the real guard: `sampling.max_tokens` is 1536,
+#: so predictions rarely approach it and the timeout does the actual work.
+_CODEBLEU_TIMEOUT_S = 20.0
+_CODEBLEU_MAX_CHARS = 50_000
+
+
+class _CodeBleuTimeout(BaseException):
+    """Derived from BaseException, not Exception, deliberately: codebleu's own internal
+    `except Exception` handlers would otherwise swallow the alarm and resume the very
+    recursion we are trying to abandon."""
+
+
+def _on_alarm(signum: int, frame: Any) -> None:
+    raise _CodeBleuTimeout
+
+
+@contextlib.contextmanager
+def _time_limit(seconds: float) -> Iterator[None]:
+    """Bound a pure-Python call with SIGALRM.
+
+    Signal handlers only run on a process's main thread — which is where both the serial
+    path and every `ProcessPoolExecutor` worker call this. Off the main thread we degrade
+    to no limit rather than raising, so an unexpected caller loses the guard but not the
+    result.
+    """
+    try:
+        prev = signal.signal(signal.SIGALRM, _on_alarm)
+    except ValueError:  # not the main thread of this process
+        yield
+        return
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, prev)
+
 
 def codebleu_score(prediction: str, reference: str, language: str) -> dict[str, float]:
     """CodeBLEU of `prediction` against `reference`, plus its four components.
@@ -91,17 +149,30 @@ def codebleu_score(prediction: str, reference: str, language: str) -> dict[str, 
     An empty or whitespace-only prediction scores 0 everywhere rather than raising: a
     model that answered with nothing has a defined score (it failed), and dropping those
     rows would silently improve the arm that fails most often.
+
+    The returned `timeout` component is 1.0 when the call was abandoned under
+    `_CODEBLEU_TIMEOUT_S` (or skipped under `_CODEBLEU_MAX_CHARS`) and 0.0 otherwise. It
+    is always present so the trial rows keep a fixed set of keys, and it is aggregated
+    rather than dropped: a bounded metric that hides how often it hit the bound is a
+    silent cap (CLAUDE.md §4, coverage honesty).
     """
-    zero = {"codebleu": 0.0, **{c: 0.0 for c in CODEBLEU_COMPONENTS}}
+    zero = {"codebleu": 0.0, **{c: 0.0 for c in CODEBLEU_COMPONENTS}, "timeout": 0.0}
     if not prediction.strip() or not reference.strip():
         return zero
+    if len(prediction) > _CODEBLEU_MAX_CHARS or len(reference) > _CODEBLEU_MAX_CHARS:
+        return {**zero, "timeout": 1.0}
     try:
-        res = _calc_codebleu()([reference], [prediction], lang=language)
+        with _time_limit(_CODEBLEU_TIMEOUT_S):
+            res = _calc_codebleu()([reference], [prediction], lang=language)
+    except _CodeBleuTimeout:
+        # Not an error: the prediction defeated the data-flow extractor. Scores 0, and
+        # says so, rather than holding a worker (and four GPUs) forever.
+        return {**zero, "timeout": 1.0}
     except Exception:
         # CodeBLEU's dataflow extractor can fail on badly-malformed code. That is a
         # property of the prediction, not an error in the harness, so it scores 0.
         return zero
-    return {k: float(v) for k, v in res.items()}
+    return {**{k: float(v) for k, v in res.items()}, "timeout": 0.0}
 
 
 # --------------------------------------------------------------------------- #

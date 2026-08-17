@@ -1,0 +1,45 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "combination_type": "dare_ties",
+  "density": 0.5,
+  "weights": [
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L0_r32_s17/checkpoint-23",
+      "sha256": "49ca4ac26d092ee76e0dae283ee5af3df7fdfcc527aeaaaf53ec154b9a85a4f7"
+    },
+    "L1b": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L1b_r32_s17/checkpoint-23",
+      "sha256": "5192ac327b82cd4310a4c34367f12f1a24712512a2d407dae0146a6d16be524d"
+    },
+    "L1r": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L1r_r32_s17/checkpoint-23",
+      "sha256": "6da70368da36b311609c78d86a7c5923b52dad633de7137c03f9aa899cd825c0"
+    },
+    "L2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L2_r32_s17/checkpoint-23",
+      "sha256": "bbcb56d12e9a6ef030147ed3bbb452624c5e8495776e27e1a4294e6a72e0eaff"
+    },
+    "S1": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/S1_r32_s17/checkpoint-22",
+      "sha256": "30755c62f2936decbd57052f75c752d2ee3ea4ddcff9b071fa83ef51242e003b"
+    },
+    "S2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/S2_r32_s17/checkpoint-23",
+      "sha256": "f26e2092daa523fe9a12623b1499c58e69de74b01f4e015ad250a4eb32f3cec4"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

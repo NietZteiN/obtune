@@ -1,0 +1,29 @@
+{
+  "job_id": "l0ctleval__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/l0_merge_control_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 84,
+  "meta": {
+    "experiment": "rq2/l0-merge-control",
+    "stage": "l0ctl_eval",
+    "note": "spends one H1 final_eval access - the control's whole claim is on H1"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 70.4,
+    "log": "runs/logs/l0ctleval__qwen25c-1.5b.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T11:59:06.766030+00:00"
+  }
+}

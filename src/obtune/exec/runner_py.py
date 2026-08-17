@@ -63,7 +63,16 @@ def main() -> int:
     sys.path.insert(0, str(os.path.dirname(os.path.abspath(__file__))))
     from canon import Unserializable, canon  # local import so rlimits are already set
 
-    out = sys.stdout
+    # The program under test shares this process's stdout, and model-generated programs
+    # print. Its output would interleave with the JSON-lines protocol — and a bare
+    # `print(42)` even parses as valid JSON, which crashed the parent with
+    # `'int' object has no attribute 'get'` after 21 000 generations. So the protocol
+    # keeps a PRIVATE dup of the real stdout and fd 1 is pointed at devnull before any
+    # program code runs. fd-level, not sys.stdout-level, so C extensions cannot escape it.
+    out = os.fdopen(os.dup(1), "w")
+    _devnull_fd = os.open(os.devnull, os.O_WRONLY)
+    os.dup2(_devnull_fd, 1)
+    sys.stdout = os.fdopen(os.dup(1), "w")
     glb: dict = {"__name__": "__obtune_program__", "__builtins__": _builtins()}
     try:
         exec(compile(job["code"], "<program>", "exec"), glb)
@@ -72,6 +81,7 @@ def main() -> int:
         for i in range(len(job["cases"])):
             out.write(json.dumps({"i": i, "status": "error", "output": None,
                                   "exc_type": type(e).__name__, "elapsed_ms": 0.0}) + "\n")
+        out.flush()
         return 0
 
     for i, case in enumerate(job["cases"]):
@@ -88,6 +98,7 @@ def main() -> int:
             rec = {"i": i, "status": "raised", "output": None, "exc_type": type(e).__name__}
         rec["elapsed_ms"] = (time.perf_counter() - t0) * 1000.0
         out.write(json.dumps(rec) + "\n")
+    out.flush()
     return 0
 
 

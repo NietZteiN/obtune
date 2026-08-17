@@ -1,0 +1,50 @@
+# ICL baseline — does in-context learning survive a HELD-OUT transformation?
+#
+#   python -m obtune.eval_vllm --config eval/icl_cross_h1_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4
+#
+# THE QUARANTINE POINT, WHICH DEFINES THE ARM
+# -------------------------------------------
+# Matched-condition ICL on H1 is impossible, twice over. It would breach CLAUDE.md §3.2 rule 2
+# (a demo is prompt conditioning, and H1 may not be used for prompt selection), and it is not
+# the real scenario either: a genuinely new obfuscator means you have NO examples of it.
+#
+# So the demos come from TRAINABLE conditions and H1 is only ever the QUERY. That asks the
+# invariance question directly — do examples of transforms the model has seen help on one it
+# has not? — and it is the fair comparator for the adapter and merge arms, which receive the
+# same information as weights rather than as context.
+#
+# `icl.demos.pick_demos` refuses an H1 source outright, so this cannot regress into a leak.
+_extends: _base_eval.yaml
+
+phase: baselines
+# NOT `main`. `main` already holds two never-pooled grids — `base__L0` is n=1670 (Grid A,
+# the 557-program corpus) while `base__S3` is n=176 (Grid B, the testset) — and these
+# zero-training arms run on Grid B. Landing them in `main` produced a table where
+# `norm_full__L0` (n=176) sat next to `base__L0` (n=1670): the delta looked like a result
+# and was computed on different programs. It would also have collapsed
+# `trial_table.compute_is_core`, which intersects programs across a whole
+# (phase, model, language) group.
+#
+# Its own phase means every arm here — INCLUDING `base` — is regenerated on exactly the
+# items the arm is scored on, so every delta in this config is matched by construction.
+experiment_id: icl_cross_h1
+run_tag: icl_cross_h1
+model: qwen25c-1.5b
+language: python
+
+systems:
+  # Floors, on the same items.
+  - {name: base, arch: none}
+  - {name: oracle_prompt_1shot, arch: oracle_prompt, prompt_oracle: true, one_shot: true}
+  # The OOD arm: demos from trainable conditions, query on H1.
+  - {name: icl_k1_cross, arch: none, icl_k: 1, icl_source: [L1b, L1r, L2, S1, S2]}
+  # Isolates "examples of the task" from "examples of a transformation": clean demos only.
+  - {name: icl_k1_clean, arch: none, icl_k: 1, icl_source: [L0]}
+  # In-distribution reference — matched condition is legal for the TRAINABLE conditions.
+  - {name: icl_k1_matched_struct, arch: none, icl_k: 1, icl_source: [S1, S2]}
+
+# H1 carries the question; the trainable conditions are the in-distribution reference.
+# H1 is READ here, which appends to data/quarantine/h1/ACCESS_LOG.md.
+eval_conditions: [H1, L1b, L1r, L2, S1, S2]
+h1_access_purpose: final_eval

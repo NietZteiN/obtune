@@ -9,7 +9,9 @@ model:
   hidden: 512
   activation: gelu
   dropout: 0.1
-  n_classes: 6 # the 6 trainable conditions; H1 is NEVER a class
+  # Must equal len(paths.TRAINABLE_CONDITIONS); train_router hard-exits on a mismatch.
+  # Raised 6 -> 8 when the S2 split added S3/S4. H1 is NEVER a class.
+  n_classes: 8
 
 train:
   lr: 1.0e-3

@@ -1,0 +1,31 @@
+{
+  "job_id": "forget__flip",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-1.5b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "flip",
+    "--adapter",
+    "runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s17/final"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 59,
+  "meta": {
+    "note": "re-run: first result predated the HumanEval+ scorer fix and read 0.0"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 101.5,
+    "log": "runs/logs/forget__flip.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-10T11:26:57.762044+00:00"
+  }
+}

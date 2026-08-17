@@ -1,0 +1,51 @@
+# The BALANCED gate, on exactly the ladder `mole_ladder_v1` was scored on.
+#
+#   PYTHONPATH=src python -m obtune.mole.eval_mole --config eval/mole_balanced_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# WHAT THIS IS FOR
+# ----------------
+# §12.8 showed the v1 gate ignores its input entirely: one fixed blend on every condition
+# (TV distance .011-.056 from the grand mean), three of eight experts at ~.003, and
+# composites 13-60x BELOW chance on the experts whose transforms are present. §12.9 traced
+# that to an objective with no balancing term, no entropy regulariser and no routing
+# supervision — the collapse is the expected optimum of what we asked for.
+#
+# `routerlora_balanced` adds Switch-style load balancing (a=0.01) and a temperature floor
+# (0.5). This config scores it against the SAME conditions, experts, engine seed and prompt
+# as v1, so the comparison isolates those two knobs.
+#
+# THE ACCURACY COLUMN IS NOT THE RESULT HERE.
+# -------------------------------------------
+# The whole lesson of §12.8 is that accuracy cannot tell a routing gate from a fixed blend —
+# `mole_router` beat its controls while being input-independent. The result of this arm is
+# `gate_report.json`, read through `scripts/analysis/22_gate_routing_report.py`:
+#
+#   * does expert mass now VARY by condition (TV distance from the grand mean well above
+#     the .011-.056 band v1 produced)?
+#   * are `L1r`, `S1`, `S3`, `L0` still dead at ~.003, or has balancing revived them?
+#   * do composites decompose — is `C_L1r_S1` mass on {L1r, S1} at or above the .250 chance
+#     level, against v1's .019?
+#
+# Accuracy going UP with routing still flat would mean the balancing term merely found a
+# better constant blend, which is a real finding and must not be reported as routing.
+#
+# The reports are now whole-cell: `MoLEModel._captured` accumulates `RoutingStats` rather
+# than overwriting per forward, so unlike every v1 number these cover every item in the cell
+# (`n_tokens_total` is recorded in the artifact).
+#
+# NO H1, for the same reason mole_ladder_v1 has none: the quarantine budget is spent and this
+# claim lives entirely inside the trainable conditions.
+_extends: mole_ladder_qwen1.5b.yaml
+
+experiment_id: rq2_mole_balanced
+run_tag: mole_balanced
+gate_checkpoint: runs/mole/qwen25c-1.5b/python/routerlora_balanced_s17/gate.pt
+
+systems:
+  # `base` is regenerated here rather than resumed from the v1 ladder: it is the same cells,
+  # but a resumed floor is how two grids came to alias in §12.1 and the habit is not worth
+  # keeping for the sake of four minutes.
+  - {name: base, arch: none}
+  - {name: mole_router_bal, arch: mole_router, train_cond: mix}
+  - {name: mole_hardrouter_bal, arch: mole_hardrouter, train_cond: mix}

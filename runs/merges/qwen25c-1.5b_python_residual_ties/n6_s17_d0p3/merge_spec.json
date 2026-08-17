@@ -1,0 +1,45 @@
+{
+  "base_model_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "combination_type": "ties",
+  "density": 0.3,
+  "weights": [
+    0.10787918719713907,
+    0.3055000188038743,
+    0.3055000188038743,
+    0.3055000188038743,
+    0.3055000188038743,
+    0.3055000188038743
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best",
+      "sha256": "82329cdfea8320937dae6d5ffcf93efc97c6e6cf8681a22c09c282c11c14e8d4"
+    },
+    "L1b": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best",
+      "sha256": "a27f3b8d3f2aff4d650b78b0a06e8abc1e8a870cee3763d39ab451abc56ef146"
+    },
+    "L1r": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1r_r32_s17/best",
+      "sha256": "1f68767ef53b636924fff0a89e1c55db6682f3070493a67dc370e99d1579f62c"
+    },
+    "L2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L2_r32_s17/best",
+      "sha256": "fc4a6065ca2f6ef27592f775cd15175136b065f71e8575366fce1ef03ca1c9de"
+    },
+    "S1": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s17/best",
+      "sha256": "6c4641ad4608d4e30f70e0b76831ba20d8ed323f65d96c48b5db36b25e9e1fdd"
+    },
+    "S2": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best",
+      "sha256": "ca2e0a7d8f18ac0ce56d451495e422e571b4d7bac208aed63038fbecd399db6e"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

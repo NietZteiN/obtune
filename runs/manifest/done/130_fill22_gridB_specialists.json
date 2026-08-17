@@ -1,0 +1,31 @@
+{
+  "job_id": "fill22_gridB_specialists",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_grid_v1.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "tuned_L1b,tuned_L1r,tuned_L2,tuned_S1,tuned_S2,tuned_S3,tuned_S4"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 130,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22",
+    "note": "the Grid B per_type specialists on the six composites; per_type was excluded from the first grid_v1 pass"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 93.3,
+    "log": "runs/logs/fill22_gridB_specialists.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T22:34:48.315266+00:00"
+  }
+}

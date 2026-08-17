@@ -1,0 +1,19 @@
+# §2.2 FILL — the `base` row's Grid B blanks (the six composites), in a grid-CLEAN phase.
+#
+# Same reasoning as fill22_base_gridA.yaml: `main`'s `base` row mixes both grids, so new
+# cells cannot go there. `baselines` is uniformly `testset` (127 cells, all Grid B), which is
+# also where the Grid B `base` row of §2.2 already comes from — so these blanks join the row
+# they belong to rather than starting a third copy of `base`.
+_extends: _base_eval.yaml
+
+phase: baselines
+experiment_id: fill22_base_gridB
+run_tag: fill22_base_gridB
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+systems:
+  - {name: base, arch: none}
+
+eval_conditions: [C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3]

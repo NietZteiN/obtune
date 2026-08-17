@@ -1,0 +1,28 @@
+{
+  "job_id": "ckptsel__overtrain__qwen25c-1.5b_python_L2_s17__overtrain_py_L2",
+  "kind": "ckpt-select",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "train/overtrain_qwen1.5b_py_L2.yaml",
+    "--mode",
+    "ckpt-select",
+    "--adapter-root",
+    "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/L2_r32_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 20,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_overtrain/qwen25c-1.5b/python/L2_r32_s17",
+    "depends_on": "train__overtrain__qwen25c-1.5b_python_L2_s17__overtrain_py_L2"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 57.8,
+    "log": "runs/logs/ckptsel__overtrain__qwen25c-1.5b_python_L2_s17__overtrain_py_L2.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-12T21:26:56.097546+00:00"
+  }
+}

@@ -1,0 +1,82 @@
+# Part III — the mixture ladder, ordered so each term is interpretable.
+#
+#   python -m obtune.mole.eval_mole --config eval/mole_ladder_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4
+#
+# RUN ON THE HF ENGINE, NOT vLLM. `LoRARequest` carries a single `lora_path` and the punica
+# kernels index one `lora_int_id` per token, so vLLM applies exactly ONE adapter per request.
+# A per-token blend is not expressible there at any `max_lora_rank`. Confirmed against
+# vllm 0.26.
+#
+# WHY `mole_uniform` IS THE PRIMARY CONTRAST AND `merge_dare_ties` IS NOT
+# ----------------------------------------------------------------------
+# `merge_dare_ties` differs from the RouterLoRA in THREE ways at once — fixed vs learned
+# weights, weight space vs activation space, and DARE-pruned + TIES-sign-elected vs exact.
+# It is a confounded comparator. `mole_uniform` is the identical module with `a = 1/8`
+# pinned, so it differs in exactly one way: the weights. It carries the primary contrast;
+# `merge_dare_ties` stays the "best existing fixed mixture" reference and is evaluated on
+# the vLLM side of the grid.
+#
+# `mole_random` DECIDES WHAT THE HEADLINE MAY SAY. It is the module with its gate frozen at
+# random init. If `mole_router ~= mole_random`, the gain came from having 8 experts resident
+# at effective rank 256 — NOT from routing — and the honest headline is "rank-256 residency,
+# not routing". This is the most important negative control in the plan; it must never be
+# dropped for budget.
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: rq2_mole_ladder
+run_tag: mole_ladder_v1
+model: qwen25c-1.5b
+language: python
+
+experts:
+  L0:  runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best
+  L1b: runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best
+  L1r: runs/adapters/qwen25c-1.5b/python/L1r_r32_s17/best
+  L2:  runs/adapters/qwen25c-1.5b/python/L2_r32_s17/best
+  S1:  runs/adapters/qwen25c-1.5b/python/S1_r32_s17/best
+  S2:  runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best
+  S3:  runs/adapters/qwen25c-1.5b/python/S3_r32_s17/best
+  S4:  runs/adapters/qwen25c-1.5b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+gate_checkpoint: runs/mole/qwen25c-1.5b/python/routerlora_v1_s17/gate.pt
+
+engine:
+  seed: 17
+  dtype: bfloat16
+  # Batching is what makes this affordable: batched HF greedy at 1.5B is ~10-15 min per
+  # 1500-item cell, versus ~40 min unbatched. The old HF path looped one row at a time,
+  # which is why it was only ever described as usable "on a stratified subset".
+  batch_size: 32
+
+systems:
+  # The floor. Runs through the SAME HF engine with the mixture bypassed, so the engine is
+  # not a confound in the base delta — `clear_routing()` alone would be undone by the
+  # pre-hooks on the next forward.
+  - {name: base, arch: none}
+  - {name: mole_uniform, arch: mole_uniform, train_cond: mix}
+  - {name: mole_random, arch: mole_random, train_cond: mix}
+  - {name: mole_router, arch: mole_router, train_cond: mix}
+  # The TRAINED router argmaxed to one-hot. Same weights as `mole_router`; only the
+  # softmax becomes an argmax, so the pair isolates BLENDING from per-token/per-layer
+  # SELECTION. If hardening costs nothing, "attention-weighted mixture" is an overclaim
+  # and the honest description is a fine-grained hard router — which decides how the
+  # headline may be phrased, so it is not an optional ablation.
+  - {name: mole_hardrouter, arch: mole_hardrouter, train_cond: mix}
+
+# system name -> gate mode. Defaults to the arch string; present so an ablation can be added
+# without a new arch value (e.g. `mole_hardrouter:3` pins expert 3).
+arm_modes: {}
+
+# Composites carry the headline: a stacked variant contains TWO mechanisms, so a hard router
+# must be wrong and a mixture can be right. The single-transform conditions are included
+# because the gate must also not REGRESS where one expert is already correct.
+#
+# NO H1. The quarantine budget is spent (CLAUDE.md §3.2 grants exactly two passes and the
+# ACCESS_LOG already shows both are open). This claim is composite-vs-fixed-mixture, entirely
+# within trainable conditions, and needs no H1 pass.
+eval_conditions: [C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3, L1r, S1]

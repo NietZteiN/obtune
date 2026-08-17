@@ -25,6 +25,11 @@ Before executing any complex command, code modification, or long GPU run, update
 - **GPUs:** **4 × NVIDIA RTX A6000, 48 GB each** (indices 0–3), 96 CPU cores, ~250 GB RAM. Driver 595.71.05 / CUDA 13.2. NVLink pairs are 0↔1 and 2↔3 — for any 2-GPU job use a pair, never `1,2`.
 - **GPU selection (before every run):** check `nvidia-smi` for **idle** GPUs (≈0 % util, near-zero memory), then pin `CUDA_VISIBLE_DEVICES=<id>` **before** importing torch. `src/obtune/gpu.py` and `src/obtune/sched/worker.py` both enforce this; the worker refuses a GPU with >2 GB used or >5 % util.
 - **Shared box, no scheduler to protect you.** Never launch onto a GPU another job is using. If all 4 are busy, wait.
+- **Cards may be LENT OUT.** `scheduler_policy.allowed_gpus` in [`configs/compute.yaml`](configs/compute.yaml) is the authoritative list of cards obtune may place work on, and `gpu_budget` caps how many it holds at once. Both `gpu_alloc.free()/claim()` and `scripts/launch_workers.sh` honour it, so stopping a worker is **not** how you lend a card — the supervisor follows whatever is free and would claim it back within one 300 s poll. Edit the config; do not hand-kill workers. Prefer lending an NVLink pair (0↔1 or 2↔3) so the borrower can still run TP=2.
+
+  **Treat `allowed_gpus` as a CANDIDATE SET, not a fixed assignment.** As of 2026-08-12 it is `[0, 1, 2]` with `gpu_budget: 2` — obtune may consider three cards but never holds more than two. The worker already refuses any GPU with >2 GB used or >5 % util, so a wide candidate set cannot collide with a borrower; it only lets us follow whichever cards are genuinely free. This matters because **the borrower moves**: on 2026-08-12 their job migrated from GPU 2 onto GPU 0 and freed 2, and a hard-pinned `[0, 1]` left obtune on a single working card with an idle GPU it was forbidden to touch. GPU 3 (sglang) is still theirs and stays out of the list.
+
+  **The borrower shares this Unix account.** `uid` is therefore *not* an ownership test — `gpu_alloc._same_uid` returns true for their processes. Anything that kills or reaps must additionally check `ppid == 1` and the process name; see `gpu_alloc.stranded_engines`.
 - **Persistence:** long jobs run in a detached `tmux` session (`scripts/launch_workers.sh` spawns one per GPU, setting `CUDA_VISIBLE_DEVICES` at spawn time).
 - **Project-specific feasibility:**
   - LoRA SFT on 1.5B: ~2–3 h/adapter on one A6000. On 7–8B: bf16 + gradient checkpointing peaks ≈25–28 GB, so **one GPU per adapter**, ~8–11 h each. No DeepSpeed, no model parallelism.
@@ -143,4 +148,20 @@ Every working day, for each thread you advanced: create the entry file from `log
 ---
 
 ## Changelog
+- **2026-08-14** — §1's claim that "`gpu_alloc.free()/claim()` **and** `scripts/launch_workers.sh`
+  honour it" was true of `allowed_gpus` but **false of `gpu_budget`**: `launch_workers.sh`
+  filtered by the allowed list and then started a worker on *every* remaining candidate. With
+  `[0, 1, 2]` and `gpu_budget: 2` that is three workers against a two-card budget, and because
+  `pipeline.sh::ensure_infra` re-runs it on every poll, a hand-stopped worker came straight back.
+  The script now reads `gpu_budget` and caps the number of LIVE workers, counting every
+  `runs/manifest/workers/*.pid` rather than only the candidates it was about to consider — a busy
+  worker's GPU is not idle, so counting within the candidate list saw zero live workers exactly
+  when the budget was already spent. Twelve minutes after the fix the borrower took GPU 2 for an
+  11-hour job, which the cap correctly declined to contest. The doc statement is now accurate;
+  it was aspirational before.
+- **2026-08-12** — §1: `allowed_gpus` is now a candidate set (`[0, 1, 2]`, budget 2) rather than a
+  fixed pair, after the borrower's job moved from GPU 2 onto GPU 0 and left obtune pinned to one
+  working card beside an idle-but-forbidden GPU. Also recorded that the borrower shares this Unix
+  account, so `uid` is not an ownership test for any reaper.
+- **2026-08-11** — §1: recorded that GPUs 2–3 are lent to a neighbour and that `scheduler_policy.allowed_gpus` / `gpu_budget` in `configs/compute.yaml` — not stopping a worker — is how a card is lent.
 - **2026-08-04** — Charter created. Adapted from `../transcoders/CLAUDE.md`: kept §1 compute (same host, no SLURM), §2 storage and the destructive-command rule, and the §6 log-folder protocol. Wrote a new §3 (the fine-tuning/invariance goal, the 7-condition ladder, the dual tier namespace) with §3.2 promoting H1 quarantine to a four-layer hard rule, and replaced the MI silent-failure list in §4 with the tuning-specific one.

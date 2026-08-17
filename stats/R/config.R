@@ -24,14 +24,21 @@ PATHS <- list(
 
 # The condition ladder. Order matters: it sets the factor levels used in every model
 # and figure, and L0 is the reference level (the untransformed control).
-COND_LEVELS <- c("L0", "L1r", "L1b", "L2", "S1", "S2", "H1")
+# S3/S4 are the two halves of S2, split out on 2026-08-09 (paths.TRAINABLE_CONDITIONS
+# went 6 -> 8). This list did not follow, so 01_schema_validate.R would have rejected
+# EVERY S3/S4 trial with "unknown eval_cond" the first time the R stack was run over
+# the new cells. Keep in sync with src/obtune/paths.py::TRAINABLE_CONDITIONS.
+COND_LEVELS <- c("L0", "L1r", "L1b", "L2", "S1", "S2", "S3", "S4", "H1")
 TRAINABLE_CONDITIONS <- setdiff(COND_LEVELS, "H1")
 IDENTIFIER_FAMILY <- c("L1r", "L1b", "L2")
 STRUCTURAL_FAMILY <- c("S1", "S2")
 HELDOUT_CONDITION <- "H1"
 
 LANGUAGES <- c("python", "javascript")
-ARCHS <- c("none", "oracle_prompt", "mono", "per_type", "router",
+# `oracle_route` is deliberately its OWN level, not `per_type`: 03_rq1_transfer.R selects
+# the transfer matrix with `adapter_arch == "per_type"`, so labelling the oracle-routed
+# system per_type would sweep an RQ2 upper-bound system into the RQ1 headline result.
+ARCHS <- c("none", "oracle_prompt", "mono", "per_type", "router", "oracle_route",
            "merge_linear", "merge_ties", "merge_dare_ties", "merge_dare_linear", "knockout")
 
 # Multiplicity policy: BH-FDR *within* each research question, treating the whole

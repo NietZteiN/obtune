@@ -1,0 +1,109 @@
+{
+  "cells": {
+    "base|simple": {
+      "system": "base",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.13066666666666665,
+      "strict_ci": [
+        0.11133333333333334,
+        0.15133333333333332
+      ],
+      "paper": 0.23466666666666666,
+      "exec": 0.8073333333333333,
+      "identity": 0.07066666666666667
+    },
+    "cft|simple": {
+      "system": "cft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.0006666666666666666,
+      "strict_ci": [
+        0.0,
+        0.002
+      ],
+      "paper": 0.0033333333333333335,
+      "exec": 0.912,
+      "identity": 0.288
+    },
+    "flip|simple": {
+      "system": "flip",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.336,
+      "strict_ci": [
+        0.32066666666666666,
+        0.3526666666666667
+      ],
+      "paper": 0.356,
+      "exec": 0.938,
+      "identity": 0.0
+    },
+    "rev|simple": {
+      "system": "rev",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.3293333333333333,
+      "strict_ci": [
+        0.31466666666666665,
+        0.3446666666666667
+      ],
+      "paper": 0.3506666666666667,
+      "exec": 0.9366666666666666,
+      "identity": 0.0
+    },
+    "sft|simple": {
+      "system": "sft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.0,
+      "strict_ci": [
+        0.0,
+        0.0
+      ],
+      "paper": 0.004,
+      "exec": 0.8953333333333333,
+      "identity": 0.18133333333333335
+    }
+  },
+  "systems": [
+    "base",
+    "cft",
+    "flip",
+    "rev",
+    "sft"
+  ],
+  "strategies": [
+    "simple"
+  ],
+  "headline_contrast": {
+    "cft": {
+      "best_strategy": "simple",
+      "best_strict": 0.0006666666666666666,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.13066666666666665,
+      "below_base_worst": true
+    },
+    "flip": {
+      "best_strategy": "simple",
+      "best_strict": 0.336,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.13066666666666665,
+      "below_base_worst": false
+    },
+    "rev": {
+      "best_strategy": "simple",
+      "best_strict": 0.3293333333333333,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.13066666666666665,
+      "below_base_worst": false
+    },
+    "sft": {
+      "best_strategy": "simple",
+      "best_strict": 0.0,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.13066666666666665,
+      "below_base_worst": true
+    }
+  }
+}

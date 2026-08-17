@@ -1,0 +1,21 @@
+# The RQ2 merges rebuilt from the SEED-42 expert bank — the replicate that has never run.
+#
+# Every merge number in §5.2 is n=1: one merge, from one expert bank, at one seed, read
+# against a 3.61-pt p95 seed band (§8.4). Some of the ranking between `ties`, `dare_ties`
+# and the mixture arms is therefore probably noise, and nothing on disk can say which part.
+#
+# `seed` here does double duty in merge_adapters.main, which is exactly what makes this
+# cheap: it selects the `_s42` adapters via resolve_adapter_paths AND seeds DARE's Bernoulli
+# mask. So one config change swaps the entire expert bank for its independent replicate.
+# The six `*_r32_s42` specialists already exist — this arm costs merge time plus one eval
+# pass, no training at all.
+#
+# Output must be written with an explicit --out: the default tag is
+# `{model}_{language}_{combination_type}`, which does NOT encode the seed and would
+# overwrite the seed-17 merges the whole of §5.2 is built on.
+combination_type: ties
+density: 0.5
+adapters: [L0, L1b, L1r, L2, S1, S2]
+weights: null
+density_sweep: [0.3, 0.5, 0.7]
+seed: 42

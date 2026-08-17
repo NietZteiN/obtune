@@ -1,0 +1,28 @@
+{
+  "job_id": "fill22c_base_gridA",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22c_base_gridA.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 144,
+  "meta": {
+    "experiment": "report/fill-2.2-composites",
+    "stage": "fill22c"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 166.4,
+    "log": "runs/logs/fill22c_base_gridA.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T23:14:23.137374+00:00"
+  }
+}

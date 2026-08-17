@@ -11,9 +11,25 @@ systems:
   - {name: mono, arch: mono}
   - {name: merge_ties, arch: merge_ties}
   - {name: merge_dare_ties, arch: merge_dare_ties}
+  # ARTIFACT, NOT A METHOD RESULT — do not report this arm as "DARE-linear performs poorly".
+  # Measured 2026-08-10 against the EXACT uniform mixture sum_i (1/6) dW_i over 196 modules:
+  #   merge_ties        ||dW||/exact 0.243   cosine 0.843
+  #   merge_dare_ties   ||dW||/exact 0.802   cosine 0.871
+  #   merge_dare_linear ||dW||/exact 7.175   cosine 0.832
+  # All three point the SAME way; dare_linear is the right direction at ~7x the right
+  # magnitude, which is why it scores 0.02-0.06 — below the untouched base. Cause: PEFT applies
+  # sqrt(|w*scaling|) to lora_A and lora_B SEPARATELY (peft/tuners/lora/model.py:893-897), so
+  # B_new @ A_new carries 36 terms B_i A_j where only the 6 diagonal ones are wanted, and DARE's
+  # 1/(1-density)=2 rescale hits each factor, multiplying the product by 4. TIES-family variants
+  # survive because sign election removes most of the cross-term mass.
+  # A scale-corrected variant is built and unevaluated at
+  # runs/merges/scale_corrected/qwen25c-1.5b/python/dare_linear_rescaled_r32_s17.
   - {name: merge_dare_linear, arch: merge_dare_linear}
   - {name: router, arch: router}
-  - {name: oracle_routing, arch: per_type, oracle_route: true}
+  # arch is `oracle_route`, NOT `per_type`: stats/R/03_rq1_transfer.R builds the RQ1
+  # transfer matrix by filtering `adapter_arch == "per_type"`, so the old label would
+  # have folded this RQ2 upper-bound system into the RQ1 headline.
+  - {name: oracle_routing, arch: oracle_route, oracle_route: true}
   - {name: oracle_prompt, arch: oracle_prompt, prompt_oracle: true}
   - {name: oracle_prompt_1shot, arch: oracle_prompt, prompt_oracle: true, one_shot: true}
 

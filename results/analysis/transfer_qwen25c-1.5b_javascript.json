@@ -1,0 +1,41 @@
+{
+  "model": "qwen25c-1.5b",
+  "language": "javascript",
+  "core_only": true,
+  "n_trials": 43338,
+  "n_programs": 121,
+  "n_resamples": 2000,
+  "seed": 17,
+  "min_denominator_pts": 3.0,
+  "summary": {
+    "n_cells": 70,
+    "n_offdiagonal": 62,
+    "n_tr_defined": 44,
+    "n_tr_undefined": 18,
+    "mean_tr_offdiagonal": 0.8245543768883785,
+    "mean_self_delta_pts": 25.797523372150238,
+    "n_significant_bh05": 48
+  },
+  "invariance_index": {
+    "held_out": "H1",
+    "n_train_conditions": 6,
+    "raw_delta_pts": 11.294261294261295,
+    "raw_delta_pts_min": 7.6923076923076925,
+    "raw_delta_pts_max": 18.681318681318682,
+    "per_condition_delta_pts": {
+      "L0": 11.3553,
+      "L1b": 12.8205,
+      "L1r": 8.4249,
+      "L2": 8.7912,
+      "S1": 7.6923,
+      "S2": 18.6813
+    },
+    "normalized_defined": false,
+    "n_defined": 0,
+    "normalized": NaN,
+    "normalizer": "mono",
+    "normalizer_pts": NaN
+  },
+  "matrix_parquet": "/data/jvl210002/my_downloads/obtune/results/analysis/transfer_qwen25c-1.5b_javascript.parquet",
+  "accuracy_parquet": "/data/jvl210002/my_downloads/obtune/results/analysis/accuracy_qwen25c-1.5b_javascript.parquet"
+}

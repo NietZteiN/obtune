@@ -1,0 +1,40 @@
+# LOTO fold — train on every trainable condition EXCEPT `L2`, then evaluate ON `L2`.
+#
+# WHY THIS EXISTS — it is the OOD *dev* set the project never had.
+# ------------------------------------------------------------------
+# H1 is the only out-of-distribution condition in the project, and it is the TEST set.
+# That leaves no legitimate signal to tune a method against: any sweep that selects on H1
+# turns every downstream H1 number into training accuracy (CLAUDE.md §3.2 rule 2). So
+# method development has had to proceed blind, and "does this merge/router/loss generalize
+# to an unseen transform?" has been unanswerable without spending the discriminator.
+#
+# Leave-one-transform-out answers exactly that question using only trainable data. Train on
+# 5 conditions, evaluate on the 6th — the held-out condition is unseen by construction, so
+# each fold is an honest OOD measurement, and the 6-fold mean is a tunable proxy for H1
+# that costs no quarantine budget.
+#
+# NOT the same as the §3 transfer matrix. That is train-on-ONE, test-on-others. This is
+# train-on-MANY, test-on-unseen — the regime H1 actually probes, and the one that has never
+# been run. §4 found breadth does not help *within* the trained set; this measures whether
+# breadth buys anything *outside* it.
+#
+# Size is MATCHED, verified rather than assumed: the five-condition unions run 31.7k-33.4k
+# python train pairs and the six-condition union runs 38.3k, so `train_size: 30000` caps
+# every fold AND `mono_all` at the same 30,000 samples. A fold is therefore comparable to
+# `mono_all` directly, and the folds are comparable to each other. Had any fold fallen below
+# 30k the comparison would have carried a data-volume confound; it does not.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0, L1b, L1r, S1, S2]
+run_tag: loto_py_holdL2
+phase: main
+
+# Kept out of runs/adapters/ so a LOTO fold can never be confused with an RQ1 specialist
+# or with `mono_all` — the same reason the overtraining probe writes to adapters_overtrain.
+adapter_root: runs/adapters_loto
+
+train:
+  train_size: 30000
+  seed: 17

@@ -1,0 +1,9 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_flipsym_r32_s17/final",
+  "n_tasks": 164,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.6098,
+  "pass@1_plus": 0.5427,
+  "model_key": "qwen25c-1.5b"
+}

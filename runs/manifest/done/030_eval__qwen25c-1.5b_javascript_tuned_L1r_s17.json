@@ -1,0 +1,30 @@
+{
+  "job_id": "eval__qwen25c-1.5b_javascript_tuned_L1r_s17",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/grid_rq1.yaml",
+    "--systems",
+    "tuned_L1r_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 30,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "javascript",
+    "system": "tuned_L1r_s17",
+    "n_eval_conditions": 7,
+    "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/javascript/L1r_r32_s17/best",
+    "train_cond": "L1r"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 0.9,
+    "log": "runs/logs/eval__qwen25c-1.5b_javascript_tuned_L1r_s17.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T15:20:07.227440+00:00"
+  }
+}

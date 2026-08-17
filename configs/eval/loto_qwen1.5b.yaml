@@ -1,0 +1,55 @@
+# LOTO — the six leave-one-transform-out folds, each evaluated on EVERY condition.
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/loto_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# WHAT THIS PRODUCES
+# ------------------
+# A 6x6 matrix. The DIAGONAL is the result: `loto_holdX` evaluated on `X` is an adapter
+# scored on a transform it has never seen, with five others in its training mixture. The
+# off-diagonal is the in-mixture reference that says how much of the diagonal gap is
+# "unseen transform" rather than "this condition is just harder".
+#
+# The 6-fold diagonal mean is the tunable OOD statistic this project has been missing. Any
+# method sweep — merge density, expert training length, router design, an invariance loss —
+# can be selected against it WITHOUT reading H1, which CLAUDE.md §3.2 rule 2 forbids using
+# for exactly this kind of selection. H1 then stays a one-shot confirmation rather than the
+# thing being optimised.
+#
+# H1 IS DELIBERATELY ABSENT FROM THIS CONFIG.
+# -------------------------------------------
+# Not an oversight and not to be "fixed" later. The whole point of the arm is to provide an
+# OOD signal that costs no quarantine budget; adding H1 here would spend a `final_eval`
+# access on every sweep iteration and re-create the problem the arm exists to solve. The
+# per-fold H1 read happens ONCE, at the end, from a separate config — and only after the
+# method is frozen against the LOTO mean.
+#
+# `phase: main` is safe here: every system name below is new (`loto_*`), so no cell path
+# collides with an existing arm. Grid is `heldout` (Grid A) to match `mono_all` and the RQ1
+# ladder, which are the systems the diagonal must be read against.
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: loto
+run_tag: loto
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  # The references, on the same grid and the same items. `mono_all` is the ceiling the
+  # folds should be compared to: it saw ALL six conditions, so fold-vs-mono on the held-out
+  # condition is exactly the price of never having seen that transform.
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  # The six folds. `train_cond: mix` because each is a multi-condition adapter; the fold
+  # identity lives in the system name, which is what the diagonal is read off.
+  - {name: loto_holdL0,  adapter: "runs/adapters_loto/qwen25c-1.5b/python/L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: loto_holdL1b, adapter: "runs/adapters_loto/qwen25c-1.5b/python/L0-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: loto_holdL1r, adapter: "runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: loto_holdL2,  adapter: "runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L1r-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: loto_holdS1,  adapter: "runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L1r-L2-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: loto_holdS2,  adapter: "runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

@@ -31,7 +31,7 @@ NODE_BIN = os.environ.get("OBTUNE_NODE") or shutil.which("node") or "node"
 
 # JS conditions this driver can produce. H1 is deliberately absent — it is
 # generated only by scripts/gen_h1_quarantined.py via obf/h1/js_h1.mjs.
-JS_TRAINABLE_CONDITIONS = ("L0", "L1b", "L1r", "L2", "S1", "S2")
+JS_TRAINABLE_CONDITIONS = ("L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4")
 
 
 @dataclass

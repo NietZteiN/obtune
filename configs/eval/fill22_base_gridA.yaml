@@ -1,0 +1,30 @@
+# §2.2 FILL — the `base` row's Grid A blanks (S3, S4), in a grid-CLEAN phase.
+#
+# WHY THIS IS NOT PART OF fill22_grid_rq1
+# ---------------------------------------
+# `main`'s own `base` row is split across grids: `base__L0..S2` are `heldout` (n=1247-1670)
+# while `base__S3`/`base__S4` are `testset` (n=176). So ANY new `base` cell written into
+# `main` collides — a heldout run hits the testset S3/S4 cells, a testset run hits the
+# heldout L0 cell. `eval_vllm._assert_resume_same_grid` refused both, correctly, and that is
+# the pre-existing debt recorded in MASTER_REPORT §12.1 rather than anything new.
+#
+# `baselines_gridA` is uniformly `heldout` (51 cells, all Grid A), so the blanks land there
+# without aliasing anything. Writing to a clean namespace is the fix available today; putting
+# `eval_source` in the cell path is the durable one and is still owed.
+_extends: _base_eval.yaml
+
+phase: baselines_gridA
+experiment_id: fill22_base_gridA
+run_tag: fill22_base_gridA
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  # `tuned_L0` is split exactly like `base`: main/tuned_L0__{L0..S2} are heldout (n=1667-1670)
+  # while main/tuned_L0__{S3,S4} are testset (n=176). Its Grid A S3/S4 blanks therefore cannot
+  # be written into `main` either, and land here for the same reason.
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+
+eval_conditions: [S3, S4]

@@ -81,21 +81,61 @@ def h1_path(language: str, source: str = DEFAULT_EVAL_SOURCE) -> Path:
 # Loading
 # --------------------------------------------------------------------------- #
 
+def _trainable_composites() -> set[str]:
+    """Composite codes the composite ladder declares trainable, excluding anything H1.
+
+    Read from the ladder rather than hard-coded, so a composite cannot become trainable by
+    being mentioned in a call site — it has to be declared, gate-validated and non-H1.
+    """
+    from obtune.config import load_config
+
+    try:
+        cfg = load_config("conditions_composite.yaml")
+    except Exception:  # noqa: BLE001 — absent ladder simply means no composites
+        return set()
+    out: set[str] = set()
+    for code, spec in (cfg.get("composite_conditions") or {}).items():
+        if not spec.get("trainable", False):
+            continue
+        parts = [str(x) for x in (spec.get("parts") or [])]
+        if "H1" in code or any("H1" in x for x in parts):
+            continue  # unreachable today; the ladder is data, and this is cheap
+        out.add(code)
+    return out
+
+
 def load_pairs(
     conditions: Sequence[str],
     language: str,
     splits: Optional[Sequence[str]] = None,
     validate: bool = True,
+    allow_composites: bool = False,
 ) -> list[TrainPair]:
     """Load training pairs for `conditions`. The ONLY training-data entry point.
 
     `paths.load_training_jsonl` enforces the quarantine guard (path root + H1 label);
     `TrainPair` re-enforces it in its validator. Both layers are intentional.
+
+    `allow_composites` is an OPT-IN, defaulting to the strict behaviour every existing
+    caller already has. Composite `C_` codes are deliberately outside
+    `TRAINABLE_CONDITIONS` so that adding them cannot shift the RQ1 grid, the transfer
+    matrix, the router's class count, or any other consumer of that tuple — but the
+    RouterLoRA gate genuinely needs them, because a stacked variant is the only case where
+    no single expert is correct. Rather than widening the tuple (which ripples into
+    `merge_adapters`, `transfer`, `cft/` and `router.features`), the narrow allowance is
+    requested explicitly by the one caller that needs it.
+
+    The allowance is NOT a bypass. A composite is accepted only if the composite ladder
+    itself declares it `trainable: true`, and never if H1 appears in the code or in any of
+    its parts. Both other quarantine layers still run unchanged on every row loaded.
     """
-    bad = [c for c in conditions if c not in paths.TRAINABLE_CONDITIONS]
+    allowed = set(paths.TRAINABLE_CONDITIONS)
+    if allow_composites:
+        allowed |= _trainable_composites()
+    bad = [c for c in conditions if c not in allowed]
     if bad:
         raise paths.QuarantineViolation(
-            f"conditions {bad} are not trainable (allowed: {list(paths.TRAINABLE_CONDITIONS)})"
+            f"conditions {bad} are not trainable (allowed: {sorted(allowed)})"
         )
     rows: list[TrainPair] = []
     for cond in conditions:
@@ -393,7 +433,8 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     oracle = bool(pcfg.get("oracle", False))
     one_shot = bool(pcfg.get("one_shot", False))
 
-    rows = load_pairs(train_conditions, language)
+    rows = load_pairs(train_conditions, language,
+                      allow_composites=bool(config.get('allow_composites', False)))
     report = validate_pairs(rows)
 
     train_rows = [r for r in rows if r.split == "train"]

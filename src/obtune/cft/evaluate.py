@@ -31,6 +31,7 @@ import argparse
 import json
 import os
 import sys
+import traceback
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -256,6 +257,48 @@ def build_requests(
 # --------------------------------------------------------------------------- #
 # Scoring
 
+def _codebleu_batch(
+    pairs: "Sequence[tuple[str, str, str]]", workers: int
+) -> list[dict[str, float]]:
+    """CodeBLEU for many (prediction, reference, language) triples, in input order.
+
+    WHY THIS EXISTS. Profiled 2026-08-11 with py-spy on a live run: the scoring tail is
+    `codebleu/parser/DFG.py::DFG_python` building data-flow graphs, single-threaded and holding
+    the GIL. A 36 000-trial evaluation makes 72 000 such calls (a target and an `other`
+    reference per trial), and one run sat in that tail for **52 minutes on one core while 95
+    were idle** — longer than its own generation phase. Every remaining evaluation pays it.
+
+    CodeBLEU is a pure, deterministic function of its inputs, so distributing it across
+    processes cannot change any number — `executor.map` preserves input order, and a
+    determinism test (`tests/test_codebleu_batch.py`) asserts parallel == serial element-wise.
+    Processes rather than threads because the work is GIL-bound Python, not I/O.
+
+    Falls back to serial on any pool failure: a scoring speedup must never be able to take
+    down a run that would otherwise have completed.
+    """
+    if workers <= 1 or len(pairs) < 64:
+        return [metrics.codebleu_score(p, r, lang) for p, r, lang in pairs]
+    try:
+        from concurrent.futures import ProcessPoolExecutor
+
+        with ProcessPoolExecutor(max_workers=workers) as ex:
+            # chunksize 4, not 64: `metrics.codebleu_score` bounds each call at 20 s, so
+            # a chunk is only as slow as its worst members, and a 64-wide chunk let one
+            # pathological prediction hold 63 ordinary ones hostage behind it. At a 43 ms
+            # mean call, 4 still amortises the per-chunk IPC to noise.
+            return list(ex.map(_codebleu_one, pairs, chunksize=4))
+    except Exception as exc:  # noqa: BLE001 — never fail a run over an optimisation
+        print(f"[cft.evaluate] parallel CodeBLEU unavailable ({type(exc).__name__}); "
+              f"falling back to serial", flush=True)
+        return [metrics.codebleu_score(p, r, lang) for p, r, lang in pairs]
+
+
+def _codebleu_one(triple: "tuple[str, str, str]") -> dict[str, float]:
+    """Module-level so it is picklable by ProcessPoolExecutor."""
+    pred, ref, lang = triple
+    return metrics.codebleu_score(pred, ref, lang)
+
+
 def score_trials(
     reqs: Sequence[Request],
     raw_outputs: Sequence[str],
@@ -264,6 +307,7 @@ def score_trials(
     criteria: Mapping[str, Any],
     exec_timeout_s: float = 2.0,
     exec_workers: int = 32,
+    codebleu_workers: int = 32,
 ) -> list[dict[str, Any]]:
     """Turn raw generations into scored trial rows.
 
@@ -274,7 +318,12 @@ def score_trials(
     rows: list[dict[str, Any]] = []
     exec_candidates: list[dict[str, Any]] = []
 
-    for req, raw, ntok in zip(reqs, raw_outputs, n_tokens):
+    # Pre-pass: CodeBLEU is the scoring bottleneck (see _codebleu_batch), so every call is
+    # collected first and computed in one parallel batch. The loop below then consumes the
+    # results positionally, in the same order it would have computed them serially.
+    prepared: list[tuple[Any, str, str, bool, str, str, str]] = []
+    cb_pairs: list[tuple[str, str, str]] = []
+    for req, raw in zip(reqs, raw_outputs):
         prog = programs[req.program_id]
         pred, was_fenced = cft_prompts.extract_code(raw)
         obf_code = prog.variants[req.condition]["code"]
@@ -284,9 +333,21 @@ def score_trials(
             target, other = obf_code, prog.original_code
         else:
             target, other = prog.original_code, obf_code
+        # `raw` MUST travel in the tuple. It used to be read from the enclosing scope in
+        # the second loop, where it silently held the LAST generation of this pre-pass — so
+        # every row stored the same `output_raw`, and `assert_adapters_effective` compared a
+        # constant against itself and reported every system as "identical to base". The
+        # adapters were fine; six runs were failed by the comparison, not by the model.
+        prepared.append((req, raw, pred, was_fenced, obf_code, target, other))
+        cb_pairs.append((pred, target, req.language))
+        cb_pairs.append((pred, other, req.language))
+    cb_all = _codebleu_batch(cb_pairs, codebleu_workers)
 
-        cb_target = metrics.codebleu_score(pred, target, req.language)
-        cb_other = metrics.codebleu_score(pred, other, req.language)
+    for i, ((req, raw, pred, was_fenced, obf_code, target, other), ntok) in enumerate(
+            zip(prepared, n_tokens)):
+        prog = programs[req.program_id]
+        cb_target = cb_all[2 * i]
+        cb_other = cb_all[2 * i + 1]
         read_pred = metrics.readability_proxy(pred, req.language)
 
         # The input the model was shown; `identity` = it echoed its input back, the
@@ -312,6 +373,12 @@ def score_trials(
                 "parse_ok": int(bool(pred.strip()) and metrics.tree_ok(req.language, pred)),
                 "codebleu_target": cb_target["codebleu"],
                 "codebleu_other": cb_other["codebleu"],
+                # Either CodeBLEU call hitting its bound makes BOTH similarity numbers on
+                # this row a floor rather than a measurement. Only the target's components
+                # are spread below, so `cb_other`'s bound would otherwise be invisible.
+                "codebleu_timeout": int(
+                    bool(cb_target.get("timeout")) or bool(cb_other.get("timeout"))
+                ),
                 **{f"cb_target_{k}": v for k, v in cb_target.items() if k != "codebleu"},
                 "readability_pred": read_pred.score,
                 "readability_original": metrics.readability_proxy(
@@ -388,6 +455,7 @@ def _mean(values: Iterable[float]) -> float:
 AGG_FIELDS = (
     "codebleu_target",
     "codebleu_other",
+    "codebleu_timeout",
     "readability_pred",
     "readability_original",
     "readability_obfuscated",
@@ -431,6 +499,28 @@ def summarize(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
                 cell[f] = _mean(present)
         out.append(cell)
     return {"cells": out}
+
+
+def _adapter_effectiveness_report(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """The same comparison as `assert_adapters_effective`, but reporting instead of raising.
+
+    Written beside `trials.jsonl` when the guard trips, so "which system, how identical, on
+    how many trials" survives the failure instead of living only in a traceback.
+    """
+    by_key: dict[tuple, dict[str, str]] = defaultdict(dict)
+    for r in rows:
+        by_key[(r["direction"], r["strategy"], r["program_id"], r["condition"])][r["system"]] = \
+            r["output_raw"]
+    out: dict[str, Any] = {}
+    for sysname in sorted({r["system"] for r in rows} - {"base"}):
+        pairs = [(v["base"], v[sysname]) for v in by_key.values()
+                 if "base" in v and sysname in v]
+        if not pairs:
+            continue
+        identical = sum(1 for a, b in pairs if a == b)
+        out[sysname] = {"n_compared": len(pairs), "identical_to_base": identical,
+                        "identical_rate": identical / len(pairs)}
+    return out
 
 
 def assert_adapters_effective(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
@@ -532,19 +622,79 @@ def main(argv: Optional[list[str]] = None) -> int:
         reqs, raw, ntok, prog_index, criteria,
         exec_timeout_s=float(cfg.get("exec", {}).get("timeout_s", 2.0)),
         exec_workers=int(cfg.get("exec", {}).get("workers", 32)),
+        codebleu_workers=int(cfg.get("scoring", {}).get("codebleu_workers", 32)),
     )
-    effective = assert_adapters_effective(rows) if not args.stub else {}
+    # NOTE THE ORDER. `assert_adapters_effective` RAISES, and it used to run here —
+    # before `trials.jsonl` was written. So a run that tripped the guard discarded an
+    # hour of generation and scoring and left nothing on disk, which made the failure
+    # undiagnosable: on 2026-08-11 two runs tripped it and the only surviving evidence
+    # was the traceback in the job log. The guard must still fail the job (the cells are
+    # not trustworthy), but the evidence has to survive it. Rows are written first now,
+    # and the guard is evaluated below, after `out_dir` exists.
     summary = summarize(rows)
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    out_dir = Path(args.out) if args.out else RESULTS_DIR / f"{stamp}_cft-bidirectional" / language
+    # The MODEL must be in the path. Without it, two models evaluated on the same day in
+    # the same language write to the same directory and the second silently destroys the
+    # first — which is exactly what happened: a 7B run overwrote a completed 1.5B run's
+    # 21 000-row trials.jsonl. Date + language is not a unique key for a result.
+    # Model AND run identity. Model alone is still not unique: the replication's
+    # `bidir_qwen7b.yaml` and Experiment 1's `e1_qwen7b.yaml` are different experiments on
+    # the same model and language, so they collided — and the second would have destroyed
+    # the first's trials.jsonl, which is exactly how the 1.5B kill-gate data was lost.
+    # `run_tag` defaults to the config's filename stem, so every config is self-separating.
+    run_tag = cfg.get("run_tag") or Path(str(cfg.get("_config_path", "eval"))).stem
+    out_dir = (
+        Path(args.out) if args.out
+        else RESULTS_DIR / f"{stamp}_cft-bidirectional" / str(cfg["model"]) / language / run_tag
+    )
     out_dir.mkdir(parents=True, exist_ok=True)
     paths.write_jsonl(out_dir / "trials.jsonl", rows)
+
+    # Now that the rows are safely on disk, apply the adapter-effectiveness guard
+    # (CLAUDE.md §4.2). A failure here still aborts the run and still leaves no summary —
+    # the cells must not be usable — but `trials.jsonl` remains for diagnosis, and the
+    # per-system identical-rate report is written next to it either way.
+    # The results directory is keyed on `run_tag`, so a re-run after a tripped guard writes
+    # into the SAME directory. Without the unlink below, the failure report from the first
+    # attempt survives beside the successful attempt's summary.json and the two disagree
+    # flatly -- on 2026-08-12 `e3_dose`/`e2_seeds`/`unlearn_rev_minus_sft` each ended up
+    # with a FAILED file claiming identical_rate 1.0 for every arm, next to a summary
+    # reporting ~0.0 for the same arms, with nothing but mtime to say which was current.
+    # An auditor cannot be expected to diff timestamps to find out whether a result is
+    # trustworthy, so success must clear the evidence of the superseded failure.
+    failed_marker = out_dir / "adapter_effectiveness.FAILED.json"
+    if not args.stub:
+        try:
+            effective = assert_adapters_effective(rows)
+        except RuntimeError:
+            import json as _json
+
+            failed_marker.write_text(
+                _json.dumps(_adapter_effectiveness_report(rows), indent=2)
+            )
+            print(f"[cft.eval] guard tripped; rows preserved at {out_dir}/trials.jsonl",
+                  flush=True)
+            raise
+        else:
+            failed_marker.unlink(missing_ok=True)
+    else:
+        effective = {}
 
     from obtune.provenance import RunManifest
 
     meta = {
         "language": language,
+        # The config and model belong in the summary because downstream analyses have to
+        # reconstruct THIS run's program set exactly. `scripts/srh/23_metric_tables.py`
+        # recomputes an identifier-recall floor over the evaluated programs, which needs
+        # `limit` and `seed` — neither of which is recoverable from the fields below, so
+        # without this the analysis has to be told the config by hand and can silently be
+        # told the wrong one.
+        "config": args.config,
+        "model": str(cfg["model"]),
+        "limit": cfg.get("limit"),
+        "seed": seed,
         "conditions": conditions,
         "directions": directions,
         "reverse_strategies": strategies,
@@ -586,4 +736,23 @@ def main(argv: Optional[list[str]] = None) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # HARD EXIT, deliberately. vLLM's EngineCore child is not always reaped, and Python's
+    # multiprocessing atexit handler (`multiprocessing.util._exit_function`) then blocks
+    # forever in join(). On 2026-08-11 two runs raised, printed their traceback, and hung
+    # there for 18 HOURS: the worker never recorded the failure, the claim never left
+    # running/, both GPUs sat idle and five jobs queued behind them.
+    #
+    # The traceback is printed first, so nothing is lost; `os._exit` then skips the atexit
+    # machinery that deadlocks. `--kill-stalled` remains the backstop for any OTHER hang,
+    # but this removes the one we have actually observed.
+    _code = 0
+    try:
+        _code = main()
+    except SystemExit as _e:            # argparse and explicit raise SystemExit
+        _code = _e.code if isinstance(_e.code, int) else (0 if _e.code is None else 1)
+    except BaseException:               # noqa: BLE001 — print, then leave; never hang
+        traceback.print_exc()
+        _code = 1
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(int(_code or 0))

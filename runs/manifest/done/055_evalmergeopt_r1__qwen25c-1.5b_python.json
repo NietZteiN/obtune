@@ -1,0 +1,29 @@
+{
+  "job_id": "evalmergeopt_r1__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_optimal_r1_qwen25c-1.5b_python.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 55,
+  "meta": {
+    "experiment": "rq2/merge-optimal",
+    "round": 1,
+    "sweeping": "L0"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 145.9,
+    "log": "runs/logs/evalmergeopt_r1__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-12T23:03:08.525479+00:00"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "job_id": "lotoeval__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/loto_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "base,tuned_L0,mono_all,loto_holdL0,loto_holdL1b,loto_holdL1r,loto_holdL2,loto_holdS1,loto_holdS2"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 86,
+  "meta": {
+    "experiment": "ood/loto",
+    "stage": "loto_eval",
+    "n_folds": 6,
+    "note": "no H1 by design - this arm exists so sweeps need not read it"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 353.5,
+    "log": "runs/logs/lotoeval__qwen25c-1.5b.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-14T23:30:42.929709+00:00"
+  }
+}

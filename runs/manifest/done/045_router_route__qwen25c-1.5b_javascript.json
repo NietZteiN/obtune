@@ -1,0 +1,46 @@
+{
+  "job_id": "router_route__qwen25c-1.5b_javascript",
+  "kind": "router",
+  "argv": [
+    "-m",
+    "obtune.router.route",
+    "--router",
+    "results/router/qwen25c-1.5b/javascript/router.npz",
+    "--features",
+    "results/router/qwen25c-1.5b/javascript/features_eval.npz",
+    "--adapter-map",
+    "results/router/qwen25c-1.5b/javascript/adapter_map.json",
+    "--out",
+    "results/router/qwen25c-1.5b/javascript/routing.parquet",
+    "--route-map",
+    "results/router/qwen25c-1.5b/javascript/route_map.json",
+    "--report",
+    "results/router/qwen25c-1.5b/javascript/routing_report.json"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 45,
+  "meta": {
+    "stage": "route",
+    "depends_on": [
+      "router_train__qwen25c-1.5b_javascript",
+      "router_features_eval__qwen25c-1.5b_javascript"
+    ],
+    "adapter_map": {
+      "L0": "runs/adapters/qwen25c-1.5b/javascript/L0_r32_s17/best",
+      "L1b": "runs/adapters/qwen25c-1.5b/javascript/L1b_r32_s17/best",
+      "L1r": "runs/adapters/qwen25c-1.5b/javascript/L1r_r32_s17/best",
+      "L2": "runs/adapters/qwen25c-1.5b/javascript/L2_r32_s17/best",
+      "S1": "runs/adapters/qwen25c-1.5b/javascript/S1_r32_s17/best",
+      "S2": "runs/adapters/qwen25c-1.5b/javascript/S2_r32_s17/best"
+    },
+    "adapter_map_path": "results/router/qwen25c-1.5b/javascript/adapter_map.json"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 2.8,
+    "log": "runs/logs/router_route__qwen25c-1.5b_javascript.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T17:51:29.247136+00:00"
+  }
+}

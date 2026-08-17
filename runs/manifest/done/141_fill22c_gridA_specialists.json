@@ -1,0 +1,30 @@
+{
+  "job_id": "fill22c_gridA_specialists",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22c_gridA_specialists.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "tuned_L0_s17,tuned_L0_s42,tuned_L1b_s17,tuned_L1b_s42,tuned_L1r_s17,tuned_L1r_s42,tuned_L2_s17,tuned_L2_s42,tuned_S1_s17,tuned_S1_s42,tuned_S2_s17,tuned_S2_s42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 141,
+  "meta": {
+    "experiment": "report/fill-2.2-composites",
+    "stage": "fill22c"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 939.5,
+    "log": "runs/logs/fill22c_gridA_specialists.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T23:04:30.896338+00:00"
+  }
+}

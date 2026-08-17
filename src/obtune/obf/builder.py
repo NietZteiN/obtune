@@ -47,6 +47,9 @@ TRANSFORM_REGISTRY: dict[str, dict[str, tuple[str, str]]] = {
         "L2": ("obtune.obf.py.rename", "transform_seq"),
         "S1": ("obtune.obf.py.flatten", "transform"),
         "S2": ("obtune.obf.py.deadcode", "transform"),
+        # The two halves of S2, emitted as their own conditions. S2 itself is unchanged.
+        "S3": ("obtune.obf.py.deadcode", "transform_deadhelpers"),
+        "S4": ("obtune.obf.py.deadcode", "transform_opaque"),
     },
     # The JS transforms are implemented in Babel (obf/js/transforms.mjs) and reached
     # through a Node subprocess; obf/js/adapters.py presents them as fn(ctx) callables.
@@ -56,6 +59,8 @@ TRANSFORM_REGISTRY: dict[str, dict[str, tuple[str, str]]] = {
         "L2": ("obtune.obf.js.adapters", "transform_seq"),
         "S1": ("obtune.obf.js.adapters", "transform_flatten"),
         "S2": ("obtune.obf.js.adapters", "transform_deadcode"),
+        "S3": ("obtune.obf.js.adapters", "transform_deadhelpers"),
+        "S4": ("obtune.obf.js.adapters", "transform_opaque"),
     },
 }
 
@@ -111,6 +116,75 @@ def load_transform(language: str, condition: str):
         return None
     fn = getattr(module, attr, None)
     return fn if callable(fn) else None
+
+
+def load_composite_transform(language: str, parts: Sequence[str], cfg: dict[str, Any]):
+    """Chain two (or more) single transforms into one composite condition.
+
+    Composites live in their OWN namespace (`C_<first>_<second>`), never in the ladder:
+    CLAUDE.md §3.1 mandates that conditions are single-transform from the L0 parent, and
+    `tier_icse` is the precedent for a parallel namespace. `conditions.yaml` has no
+    `composite_conditions` key, so the single-transform path below is provably untouched —
+    pinned by a byte-identity test.
+
+    THE ENTRY-POINT RETHREAD IS THE WHOLE TRICK. `obf/py/flatten.py` raises
+    `Bail("no module-level def named ...")` if handed a name that is not in the source, so a
+    rename-then-flatten composite fails immediately unless stage 2 is told the name stage 1
+    produced. `rename_map` is old -> new and contains the entry point, so the new name is read
+    from there rather than guessed.
+
+    Each stage gets its own RNG stream (`seed + i * 1_000_003`) so the two halves cannot
+    correlate, and its own `params` from that part's entry in the ladder — a composite must not
+    silently inherit the first part's size cap for the second part's work.
+
+    A `Bail` from either stage propagates to the caller, which records
+    `technique_unavailable` exactly as it does for a single transform.
+    """
+    fns = [(_identity_transform if part == "L0" else load_transform(language, part))
+           for part in parts]
+    if any(fn is None for fn in fns):
+        return None
+    ladder = cfg.get("conditions") or {}
+    if isinstance(ladder, list):
+        ladder = {c["code"]: c for c in ladder}
+
+    def _run(ctx):
+        src, entry = ctx.src, ctx.entry_point
+        rename: dict[str, str] = {}
+        notes: list[str] = []
+        skipped: list[str] = []
+        stages: list[dict[str, Any]] = []
+        for i, (part, fn) in enumerate(zip(parts, fns)):
+            sub = make_ctx(
+                language, ctx.program_id, part, src, entry,
+                attempt=ctx.attempt, seed=ctx.seed + i * 1_000_003,
+                params=_params_for(ladder.get(part, {})),
+            )
+            res = fn(sub)
+            if not res.applied:
+                return TransformResult(
+                    src_out=ctx.src, applied=False,
+                    notes=notes + [f"stage {i} ({part}) did not apply"],
+                    skipped_constructs=skipped, rename_map={}, extra={"parts": list(parts)},
+                )
+            stages.append({
+                "part": part, "entry_in": entry,
+                "entry_out": (res.rename_map or {}).get(entry, entry),
+                "src_in": src, "src_out": res.src_out,
+                "rename_map": dict(res.rename_map or {}),
+            })
+            entry = (res.rename_map or {}).get(entry, entry)
+            src = res.src_out
+            rename.update(res.rename_map or {})
+            notes.extend(res.notes)
+            skipped.extend(res.skipped_constructs)
+        return TransformResult(
+            src_out=src, applied=True, notes=notes, skipped_constructs=skipped,
+            rename_map=rename,
+            extra={"parts": list(parts), "entry_point_new": entry, "stages": stages},
+        )
+
+    return _run
 
 
 def _params_for(spec: dict[str, Any]) -> dict[str, Any]:
@@ -179,7 +253,13 @@ def _build_one(
     }
     rejects: list[dict[str, Any]] = []
 
-    fn = _identity_transform if condition == "L0" else load_transform(language, condition)
+    composites = cfg.get("composite_conditions") or {}
+    if condition in composites:
+        fn = load_composite_transform(language, composites[condition]["parts"], cfg)
+    elif condition == "L0":
+        fn = _identity_transform
+    else:
+        fn = load_transform(language, condition)
     if fn is None:
         record["status"] = STATUS_UNAVAILABLE
         record["notes"].append(f"no importable transform for {language}/{condition}")

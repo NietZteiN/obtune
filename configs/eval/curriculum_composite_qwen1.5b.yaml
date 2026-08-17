@@ -1,0 +1,55 @@
+# B1 + B2 read-out — the three new arms scored against the LOTO diagonal.
+#
+# WHAT THIS ANSWERS. `s2fam` (the inert-material curriculum), `composite` (trained on stacked
+# transforms) and `composite_ablation` (the same mechanisms unstacked) are trained. Their
+# checkpoint-selection numbers are NOT comparable to each other — each was selected on its own
+# training conditions' val slice (composites 33.1 %, single transforms 38.0 %, S2/S3/S4 43.4 %,
+# three different populations). This config puts all three on ONE population.
+#
+# THE BAR, and why it is this one. Grid A / `heldout`, the six trainable conditions — identical
+# items to the LOTO folds, `mono_all` and `tuned_L0`, so the new arms can be read directly against:
+#
+#     LOTO diagonal mean   38.02   (an adapter scored on a transform it never saw)
+#     mono_all             39.15   (saw all six; 26,841 rows)
+#     tuned_L0             39.04   (clean code only; 4,689 rows)
+#
+# `base`, `tuned_L0` and `mono_all` are listed so the panel is self-contained and same-item by
+# construction; their cells already exist on this grid and phase, so `output.resume` skips them
+# rather than re-running — that is deliberate, not an oversight.
+#
+# NO H1. CLAUDE.md §3.2 rule 2 — these arms are still being *selected*, and H1 is the discriminator.
+# One batched confirmatory H1 read comes later, for every arm at once, declared in ACCESS_LOG.md.
+#
+# HOW TO READ IT. The diagonal-relevant comparison is the MEAN over the six conditions, because
+# every arm here trained on a different subset and per-condition wins are partly just "trained on
+# it". Specifically:
+#   - `composite` vs `composite_ablation` is the stacking question, and it is the only clean
+#     head-to-head in this file: same six mechanisms, same 22,152 rows, same recipe, differing
+#     only in whether two mechanisms arrive in one program or two.
+#   - `s2fam` carries a 37 % data deficit (14,037 rows, the realised S2+S3+S4 train pool) so a WIN
+#     is interpretable and a LOSS is not attributable to the curriculum. See its train config.
+#
+# GRID SAFETY. System names are new, so no cell path collides — `cell_dir` keys on `phase` but not
+# on `eval_source`, the defect behind three separate incidents (§12.1).
+#
+# Smoke:
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/curriculum_composite_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: curriculum_composite
+run_tag: curriculum_composite
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: s2fam, adapter: "runs/adapters_curriculum/qwen25c-1.5b/python/S2-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: composite_trained, adapter: "runs/adapters_composite/qwen25c-1.5b/python/C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: composite_ablation, adapter: "runs/adapters_composite/qwen25c-1.5b/python/L1b-L1r-L2-S1-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

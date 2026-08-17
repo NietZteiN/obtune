@@ -1,0 +1,11 @@
+# §2.2 FILL — `tuned_S3` / `tuned_S4` on the six composites.
+#
+# These two specialists come from `grid_s3s4_qwen1.5b.yaml`, not from `grid_v1`'s `per_type`
+# expansion (which covers only the six conditions in its own train list), so the first
+# grid_v1 fill pass could not reach them.
+_extends: grid_s3s4_qwen1.5b.yaml
+
+experiment_id: fill22_grid_s3s4
+run_tag: fill22_grid_s3s4
+
+eval_conditions: [C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3]

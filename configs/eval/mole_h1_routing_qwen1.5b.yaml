@@ -1,0 +1,47 @@
+# Does the gate route a transformation it has never seen?
+#
+# THE QUESTION THAT WAS RESERVED AND NEVER ASKED
+# ----------------------------------------------
+# `results/router/qwen25c-1.5b/python/routing_report.json` records `overall_route_accuracy:
+# 1.0` — and `n_heldout: 0`. The learned router has only ever been scored on conditions it
+# was trained to recognise, so "routing is solved" is a statement about in-distribution
+# routing exclusively. The design doc reserved the out-of-distribution case; nothing has
+# since answered it.
+#
+# That matters for how the whole RQ2 result reads. A router at 100 % on seen conditions and
+# a gate that collapses to noise on an unseen one is a *brittleness* finding, and it is the
+# one an FSE reviewer will go looking for.
+#
+# WHAT IS ACTUALLY MEASURED
+# -------------------------
+# Two things, and the second is the point:
+#   1. accuracy of each mixture arm on H1;
+#   2. the ROUTING DISTRIBUTION itself — per-layer softmax entropy against `log 8` = 2.079
+#      nats, via `mole.gate.gate_entropy`, whose pre-registered read is the mean over the
+#      middle third of layers (the max over 28 layers is a forking path).
+# Entropy is the informative half even if accuracy is flat. A gate that goes uniform on H1
+# has no opinion; a gate that stays confident on a transform it cannot have learned is
+# confidently wrong. Those are different failures and the accuracy column cannot tell them
+# apart.
+#
+# QUARANTINE — WHY THIS IS AN EVALUATION AND NOT A BREACH
+# ------------------------------------------------------
+# CLAUDE.md §3.2 rule 2 forbids H1 for training, hyperparameter selection, prompt selection,
+# ROUTER TRAINING, checkpoint selection and merge tuning. None of that happens here: the gate
+# is loaded frozen from `gate_checkpoint` and H1 is scored, never fitted. This spends a
+# logged `final_eval` access, raised as a blocking decision and authorised by the user on
+# 2026-08-13.
+#
+# The `mole_ladder_qwen1.5b.yaml` comment says "NO H1" and that decision stands FOR THAT
+# CONFIG — its claim is composite-vs-fixed-mixture and needs no H1. This is a separate
+# question with its own authorisation, which is why it is a separate file rather than an
+# edit that would silently invalidate the ladder's stated rationale.
+_extends: mole_ladder_qwen1.5b.yaml
+
+experiment_id: mole_h1_routing
+run_tag: mole_h1_routing
+
+# H1 carries the question. The two single-transform conditions are the in-distribution
+# reference on the same run: without them, a low H1 entropy has nothing to be low against.
+eval_conditions: [H1, L1r, S1]
+h1_access_purpose: final_eval

@@ -1,0 +1,33 @@
+{
+  "job_id": "forget__u7b_lam1p25",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-7b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "u7b_lam1p25",
+    "--adapter",
+    "runs/taskvecs/unlearn/qwen25c-7b/python/flip_minus_sft_lam1p25"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 61,
+  "meta": {
+    "experiment": "srh/exp3-unlearning",
+    "check": "precondition 2 - no collateral collapse",
+    "note": "unlearning over-removal is only interpretable if HumanEval+/L0 are intact"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 183.0,
+    "log": "runs/logs/forget__u7b_lam1p25.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-11T11:10:36.328825+00:00"
+  }
+}

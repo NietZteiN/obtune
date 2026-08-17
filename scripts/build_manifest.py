@@ -29,7 +29,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from obtune.config import GLOBAL_SEED, RUNS_DIR, load_config  # noqa: E402
+from obtune.config import GLOBAL_SEED, PROJECT_ROOT, RUNS_DIR, load_config  # noqa: E402
+from obtune.data import DEFAULT_EVAL_SOURCE  # noqa: E402
 
 QUEUE = RUNS_DIR / "manifest" / "queued"
 
@@ -69,7 +70,24 @@ def job(kind: str, job_id: str, argv: list[str], meta: dict[str, Any]) -> dict[s
 
 
 def train_jobs(configs: list[Path], seeds: list[int]) -> list[dict[str, Any]]:
+    """Standard per-condition SFT jobs.
+
+    SRH arms are NOT trainable through here. They use `obtune.srh.train` (a different
+    mixture builder, honouring `tasks` and `direction_mix`) and write under
+    `runs/adapters_srh/` via `adapter_root`. Emitting a train_sft job for one would
+    silently produce a plain forward adapter under an SRH arm's name, in the wrong
+    directory — indistinguishable from a real REV/FLIP/MIX50 run at eval time. Refuse
+    loudly; `scripts/srh/21_enqueue_e1_arms.py` is the right tool.
+    """
     from obtune.train_sft import adapter_dir
+
+    srh = [c for c in configs if "srh" in Path(c).parts or "/srh/" in str(c)]
+    if srh:
+        raise SystemExit(
+            f"build_manifest --train was given SRH config(s): {[str(c) for c in srh]}.\n"
+            f"These must be enqueued with scripts/srh/21_enqueue_e1_arms.py — train_sft "
+            f"would ignore their `tasks`/`direction_mix` and train plain forward SFT under "
+            f"the arm's name.")
 
     out = []
     for cfg_path in configs:
@@ -78,7 +96,21 @@ def train_jobs(configs: list[Path], seeds: list[int]) -> list[dict[str, Any]]:
         for seed in seeds:
             resolved = {**cfg, "train": {**cfg.get("train", {}), "seed": seed}}
             adir = adapter_dir(resolved)
+            # The job id must distinguish configs that differ ONLY in a training knob.
+            # It was built from (model, language, conditions, seed) alone, so a 9-epoch
+            # overtraining probe on L1b produced the SAME id as the finished 3-epoch job.
+            # Two concrete harms, both observed before this guard: the paired ckpt-select
+            # found that id already in done/, judged its dependency met, and fired before
+            # the new training existed; and on completion the record would have overwritten
+            # the 3-epoch run's provenance. Fold in a non-default adapter_root and any
+            # run_tag that is not simply the condition list.
             tag = f"{cfg['model']}_{cfg['language']}_{'-'.join(cfg['train_conditions'])}_s{seed}"
+            root = cfg.get("adapter_root")
+            if root:
+                tag = f"{Path(str(root)).name.removeprefix('runs/').removeprefix('adapters_')}__{tag}"
+            rt = cfg.get("run_tag")
+            if rt and rt not in tag and rt != '-'.join(cfg['train_conditions']):
+                tag = f"{tag}__{rt}"
             out.append(job(
                 "train", f"train__{tag}",
                 ["-m", "obtune.train_sft", "--config", str(rel), "--seed", str(seed)],
@@ -164,40 +196,75 @@ def rq2_jobs(eval_cfg_path: Path) -> list[dict[str, Any]]:
             rq2_dir = f"results/router/{model}/{language}"
 
             # --- merges: cheap, CPU-ish, no dependency beyond the adapters --------
+            # `--combination-type` is load-bearing: without it every job read the same
+            # `combination_type: ties` out of the config and the three "different" merges
+            # came out byte-identical, so the RQ2 merge comparison measured one method
+            # three times.
             for combo in ("ties", "dare_ties", "dare_linear"):
                 out.append(job(
                     "merge", f"merge__{tag}__{combo}",
                     ["-m", "obtune.merge_adapters", "--config", "merge/ties_v1.yaml",
                      "--model", model, "--language", language, "--rank", str(rank),
+                     "--combination-type", combo,
                      "--out", f"runs/adapters/{model}/{language}/merge_{combo}_r{rank}_s{seed}"],
                     {"model": model, "language": language, "combination_type": combo},
                 ))
 
             # --- router: features -> classifier -> routing map ---------------------
-            feats = f"{rq2_dir}/features.npz"
+            # TWO feature sets, not one. The classifier is fit on TRAIN pairs; the routing
+            # decisions are made on EVAL items. Reusing a single features.npz for both
+            # meant the router was routing the same rows it was trained on, and the
+            # emitted job had no --train-jsonl at all, so it exited "no rows" — the actual
+            # first failure in this chain.
+            feats_train = f"{rq2_dir}/features_train.npz"
+            feats_eval = f"{rq2_dir}/features_eval.npz"
             router = f"{rq2_dir}/router.npz"
+            # MUST match the evaluator's own default or the route map is keyed to a
+            # different item_id namespace and matches nothing: heldout ids look like
+            # `cruxevalx_js_0::L0::0`, testset ids like `A:JavaScript/136::L0::0`.
+            # Imported rather than hardcoded so the two cannot drift apart.
+            eval_source = cfg.get("eval_source", DEFAULT_EVAL_SOURCE)
+            train_inputs = [f"data/train/pairs/{c}/{language}.jsonl" for c in conds]
+            eval_inputs = [
+                f"data/eval/{eval_source}/items/{c}/{language}.jsonl" for c in conds
+            ]
             out.append(job(
-                "router", f"router_features__{tag}",
+                "router", f"router_features_train__{tag}",
                 ["-m", "obtune.router.features", "--config", "router/router_v1.yaml",
-                 "--model", model, "--out", feats],
-                {"model": model, "language": language, "stage": "features"},
+                 "--model", model, "--train-jsonl", *train_inputs, "--out", feats_train],
+                {"model": model, "language": language, "stage": "features_train"},
+            ))
+            out.append(job(
+                "router", f"router_features_eval__{tag}",
+                ["-m", "obtune.router.features", "--config", "router/router_v1.yaml",
+                 "--model", model, "--eval-jsonl", *eval_inputs, "--out", feats_eval],
+                {"model": model, "language": language, "stage": "features_eval"},
             ))
             out.append(job(
                 "router", f"router_train__{tag}",
                 ["-m", "obtune.router.train_router", "--config", "router/router_v1.yaml",
-                 "--features", feats, "--out", router],
-                {"stage": "train", "depends_on": f"router_features__{tag}"},
+                 "--features", feats_train, "--out", router],
+                {"stage": "train", "depends_on": f"router_features_train__{tag}"},
             ))
             adapter_map = {
                 c: f"runs/adapters/{model}/{language}/{c}_r{rank}_s{seed}/best" for c in conds
             }
             map_path = f"{rq2_dir}/adapter_map.json"
+            # The map itself is materialized in main(), from job meta, so that --dry-run
+            # stays side-effect free. It used to be computed into meta, passed as
+            # --adapter-map, and never written by anything.
             out.append(job(
                 "router", f"router_route__{tag}",
-                ["-m", "obtune.router.route", "--router", router, "--features", feats,
-                 "--adapter-map", map_path, "--out", f"{rq2_dir}/route_map.json",
+                ["-m", "obtune.router.route", "--router", router, "--features", feats_eval,
+                 "--adapter-map", map_path,
+                 "--out", f"{rq2_dir}/routing.parquet",
+                 "--route-map", f"{rq2_dir}/route_map.json",
                  "--report", f"{rq2_dir}/routing_report.json"],
-                {"stage": "route", "depends_on": f"router_train__{tag}",
+                # BOTH inputs: the classifier AND the eval-item features it routes.
+                # Declaring only the classifier let route start before features_eval
+                # existed.
+                {"stage": "route",
+                 "depends_on": [f"router_train__{tag}", f"router_features_eval__{tag}"],
                  "adapter_map": adapter_map, "adapter_map_path": map_path},
             ))
 
@@ -205,6 +272,7 @@ def rq2_jobs(eval_cfg_path: Path) -> list[dict[str, Any]]:
             out.append(job(
                 "eval-rq2", f"evalrq2__{tag}_router",
                 ["-m", "obtune.eval_vllm", "--config", rel, "--systems", "router",
+                 "--model", model, "--language", language,
                  "--route-map", f"{rq2_dir}/route_map.json"],
                 {"model": model, "language": language, "system": "router",
                  "depends_on": f"router_route__{tag}"},
@@ -212,11 +280,32 @@ def rq2_jobs(eval_cfg_path: Path) -> list[dict[str, Any]]:
             for combo in ("ties", "dare_ties", "dare_linear"):
                 out.append(job(
                     "eval-rq2", f"evalrq2__{tag}_merge_{combo}",
-                    ["-m", "obtune.eval_vllm", "--config", rel, "--systems", f"merge_{combo}"],
+                    ["-m", "obtune.eval_vllm", "--config", rel, "--systems", f"merge_{combo}",
+                     "--model", model, "--language", language],
                     {"model": model, "language": language, "system": f"merge_{combo}",
                      "depends_on": f"merge__{tag}__{combo}"},
                 ))
     return out
+
+
+def write_adapter_maps(jobs: list[dict[str, Any]]) -> list[Path]:
+    """Materialize every `adapter_map` a router job refers to.
+
+    `rq2_jobs` passes `--adapter-map <path>` and records the map in job meta, but nothing
+    ever created the file, so `router.route` died on a missing path. Done here rather than
+    in `rq2_jobs` so that `--dry-run` writes nothing.
+    """
+    written: list[Path] = []
+    for j in jobs:
+        meta = j.get("meta") or {}
+        amap, path = meta.get("adapter_map"), meta.get("adapter_map_path")
+        if not amap or not path:
+            continue
+        p = PROJECT_ROOT / path
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(amap, indent=2))
+        written.append(p)
+    return written
 
 
 def main() -> int:
@@ -269,6 +358,9 @@ def main() -> int:
         if len(jobs) > 8:
             print(f"    ... and {len(jobs) - 8} more")
         return 0
+
+    for p in write_adapter_maps(jobs):
+        print(f"  wrote {p.relative_to(PROJECT_ROOT)}")
 
     QUEUE.mkdir(parents=True, exist_ok=True)
     if args.clear:

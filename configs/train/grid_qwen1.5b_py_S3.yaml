@@ -1,0 +1,11 @@
+# Grid adapter: S3 (python) — dead-code insertion only (proposal X2) — the half of S2 that must be IGNORED
+#
+# S3 is one half of the legacy S2 condition, split out so a degradation can be
+# attributed to one mechanism. S2 itself is unchanged and keeps its own adapter.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [S3]
+run_tag: grid_py_S3
+phase: main

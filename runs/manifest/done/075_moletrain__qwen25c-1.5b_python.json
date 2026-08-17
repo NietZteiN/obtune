@@ -1,0 +1,24 @@
+{
+  "job_id": "moletrain__qwen25c-1.5b_python",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_v1.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 75,
+  "meta": {
+    "experiment": "rq2/routerlora",
+    "note": "gate only; 8 experts + base frozen"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 21968.8,
+    "log": "runs/logs/moletrain__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-13T17:18:05.795910+00:00"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "job_id": "fill22_grid_s3s4",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_grid_s3s4.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python",
+    "--systems",
+    "tuned_S3,tuned_S4"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 131,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22",
+    "note": "base excluded: split across grids in main"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 62.1,
+    "log": "runs/logs/fill22_grid_s3s4.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T22:36:50.527855+00:00"
+  }
+}

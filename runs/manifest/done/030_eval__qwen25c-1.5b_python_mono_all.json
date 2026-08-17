@@ -1,0 +1,30 @@
+{
+  "job_id": "eval__qwen25c-1.5b_python_mono_all",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/curriculum_composite_qwen1.5b.yaml",
+    "--systems",
+    "mono_all"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 30,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "system": "mono_all",
+    "n_eval_conditions": 6,
+    "adapter": "runs/adapters/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best",
+    "train_cond": "mix"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 1.2,
+    "log": "runs/logs/eval__qwen25c-1.5b_python_mono_all.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-17T09:28:10.886466+00:00"
+  }
+}

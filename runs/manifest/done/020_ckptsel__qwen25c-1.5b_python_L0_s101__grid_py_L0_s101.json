@@ -1,0 +1,28 @@
+{
+  "job_id": "ckptsel__qwen25c-1.5b_python_L0_s101__grid_py_L0_s101",
+  "kind": "ckpt-select",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "train/l0seed_qwen1.5b_py_s101.yaml",
+    "--mode",
+    "ckpt-select",
+    "--adapter-root",
+    "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s101"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 20,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s101",
+    "depends_on": "train__qwen25c-1.5b_python_L0_s101__grid_py_L0_s101"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 48.8,
+    "log": "runs/logs/ckptsel__qwen25c-1.5b_python_L0_s101__grid_py_L0_s101.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T11:54:56.081832+00:00"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "root": "runs/adapters",
+  "model": "qwen25c-1.5b",
+  "language": "python",
+  "conditions": [
+    "L0@s101",
+    "L0@s17",
+    "L0@s42"
+  ],
+  "n_epochs": 3,
+  "sign_layers": [
+    0,
+    7,
+    14,
+    21,
+    27
+  ],
+  "epochs": {
+    "1": {
+      "checkpoints": {
+        "L0@s101": "checkpoint-74",
+        "L0@s17": "checkpoint-74",
+        "L0@s42": "checkpoint-74"
+      },
+      "norm_mean": 0.3005614903634983,
+      "norm_per_condition": {
+        "L0@s101": 0.3026674961010986,
+        "L0@s17": 0.2992995283172242,
+        "L0@s42": 0.29971744667217187
+      },
+      "cosine_mean": 0.03981427964668349,
+      "cosine_min": 0.03966256413169503,
+      "cosine_max": 0.04005569429072671,
+      "cosine_pairs": {
+        "L0@s101|L0@s17": 0.04005569429072671,
+        "L0@s101|L0@s42": 0.03972458051762875,
+        "L0@s17|L0@s42": 0.03966256413169503
+      },
+      "sign_conflict_mean": 0.4903647712298802,
+      "ties_keep_mean": 0.7612665551049369,
+      "sign_conflict_by_projection": {
+        "down_proj": 0.4844172716140747,
+        "gate_proj": 0.49158368110656736,
+        "k_proj": 0.4907792568206787,
+        "o_proj": 0.4901675820350647,
+        "q_proj": 0.49446232318878175,
+        "up_proj": 0.49157521724700926,
+        "v_proj": 0.4895680665969849
+      },
+      "ties_keep_by_projection": {
+        "down_proj": 0.7687829256057739,
+        "gate_proj": 0.7596253037452698,
+        "k_proj": 0.7605342268943787,
+        "o_proj": 0.7615413427352905,
+        "q_proj": 0.7560995817184448,
+        "up_proj": 0.7595123529434205,
+        "v_proj": 0.76277015209198
+      }
+    },
+    "2": {
+      "checkpoints": {
+        "L0@s101": "checkpoint-148",
+        "L0@s17": "checkpoint-148",
+        "L0@s42": "checkpoint-148"
+      },
+      "norm_mean": 0.36493479520787253,
+      "norm_per_condition": {
+        "L0@s101": 0.3668329851428713,
+        "L0@s17": 0.36283287070447096,
+        "L0@s42": 0.3651385297762753
+      },
+      "cosine_mean": 0.049136278162446645,
+      "cosine_min": 0.04860021069386042,
+      "cosine_max": 0.04968820405529499,
+      "cosine_pairs": {
+        "L0@s101|L0@s17": 0.04912041973818455,
+        "L0@s101|L0@s42": 0.04860021069386042,
+        "L0@s17|L0@s42": 0.04968820405529499
+      },
+      "sign_conflict_mean": 0.4880532809666225,
+      "ties_keep_mean": 0.7637627465384347,
+      "sign_conflict_by_projection": {
+        "down_proj": 0.48295440673828127,
+        "gate_proj": 0.4852840662002563,
+        "k_proj": 0.4886498212814331,
+        "o_proj": 0.48871196508407594,
+        "q_proj": 0.4928150296211243,
+        "up_proj": 0.4906079173088074,
+        "v_proj": 0.48734976053237916
+      },
+      "ties_keep_by_projection": {
+        "down_proj": 0.7701383829116821,
+        "gate_proj": 0.767104709148407,
+        "k_proj": 0.7623621344566345,
+        "o_proj": 0.7631810903549194,
+        "q_proj": 0.7579156398773194,
+        "up_proj": 0.7604862689971924,
+        "v_proj": 0.7651510000228882
+      }
+    },
+    "3": {
+      "checkpoints": {
+        "L0@s101": "checkpoint-222",
+        "L0@s17": "checkpoint-222",
+        "L0@s42": "checkpoint-222"
+      },
+      "norm_mean": 0.3744273356082324,
+      "norm_per_condition": {
+        "L0@s101": 0.3762988077136465,
+        "L0@s17": 0.37212611959334707,
+        "L0@s42": 0.37485707951770353
+      },
+      "cosine_mean": 0.053422531023007265,
+      "cosine_min": 0.05307898575660583,
+      "cosine_max": 0.05385966722502081,
+      "cosine_pairs": {
+        "L0@s101|L0@s17": 0.053328940087395166,
+        "L0@s101|L0@s42": 0.05307898575660583,
+        "L0@s17|L0@s42": 0.05385966722502081
+      },
+      "sign_conflict_mean": 0.48710678815841674,
+      "ties_keep_mean": 0.764856845991952,
+      "sign_conflict_by_projection": {
+        "down_proj": 0.4822321057319641,
+        "gate_proj": 0.48256075382232666,
+        "k_proj": 0.4884962201118469,
+        "o_proj": 0.488171660900116,
+        "q_proj": 0.49234833717346194,
+        "up_proj": 0.4899249911308289,
+        "v_proj": 0.4860134482383728
+      },
+      "ties_keep_by_projection": {
+        "down_proj": 0.7708935976028443,
+        "gate_proj": 0.7703010559082031,
+        "k_proj": 0.7626837611198425,
+        "o_proj": 0.76389582157135,
+        "q_proj": 0.7583713531494141,
+        "up_proj": 0.7612546801567077,
+        "v_proj": 0.7665976524353028
+      }
+    }
+  },
+  "verdict": {
+    "delta_sign_conflict": -0.003257983071463466,
+    "delta_cosine": 0.013608251376323773,
+    "interference_grows": false,
+    "note": "Horoi et al. predict sign conflict rises with training. delta<=0.01 means the mechanism is not present in this bank."
+  }
+}

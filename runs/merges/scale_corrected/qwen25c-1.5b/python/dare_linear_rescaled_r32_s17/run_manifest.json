@@ -1,0 +1,55 @@
+{
+  "experiment": "merge_adapters",
+  "run_id": "qwen25c-1.5b_python_dare_linear",
+  "seed": 17,
+  "config_path": "/data/jvl210002/my_downloads/obtune/configs/merge/ties_v1.yaml",
+  "config_resolved": {
+    "combination_type": "dare_linear",
+    "density": 0.5,
+    "adapters": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "weights": null,
+    "density_sweep": [
+      0.3,
+      0.5,
+      0.7
+    ],
+    "seed": 17,
+    "_config_path": "/data/jvl210002/my_downloads/obtune/configs/merge/ties_v1.yaml"
+  },
+  "model_hf_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "model_revision_resolved": null,
+  "adapter": null,
+  "gpu_visible": "0",
+  "command": "/data/jvl210002/my_downloads/obtune/src/obtune/merge_adapters.py --config merge/ties_v1.yaml --model qwen25c-1.5b --language python --rank 32 --combination-type dare_linear --out runs/adapters/qwen25c-1.5b/python/merge_dare_linear_r32_s17",
+  "git_commit": "469f857ec5e0e019bb5f39e5087de528d8d40f02",
+  "script_sha256": {
+    "src/obtune/merge_adapters.py": "c36a8f44a233488470834cc6e0ba2233f5e3378c9ab0fec6b80de9175df49ae9"
+  },
+  "started_utc": "2026-08-09T17:24:29.046114+00:00",
+  "finished_utc": "2026-08-09T17:24:47.516033+00:00",
+  "libraries": {
+    "python": "3.12.12",
+    "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "merges": [
+      {
+        "density": 0.5,
+        "path": "runs/adapters/qwen25c-1.5b/python/merge_dare_linear_r32_s17"
+      }
+    ]
+  }
+}

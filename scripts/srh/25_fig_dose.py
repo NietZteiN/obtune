@@ -1,0 +1,179 @@
+#!/usr/bin/env python
+"""Figure 1 — the reverse-data dose ladder, emitted as a pgfplots fragment.
+
+    python scripts/srh/25_fig_dose.py \
+        --run results/2026-08-12_cft-bidirectional/qwen25c-1.5b/python/e3_dose_qwen1.5b \
+        --out paper_bidirectional/fig_dose.tex
+
+Why a generator rather than a checked-in image. Every number in the figure is read from
+`trials.jsonl` at build time, so the figure cannot drift from the run the way a
+hand-typed table can, and re-running the eval regenerates the plot for free. The output
+is a `.tex` fragment rather than a PNG/PDF because pgfplots sets the labels in the
+document's own font at the document's own size -- a rasterised plot in a 10pt paper
+either has the wrong font or the wrong size, usually both.
+
+Why error bars and not bare points. The claim the figure makes is about the SHAPE of the
+curve (steep, then flat), and a reader cannot judge whether a flattening is real without
+knowing the width of each point. Bars are cluster bootstraps by `program_id` on the same
+convention as `24_contrasts.py` -- same seed, same resample count, same clustering -- so
+the figure and the contrast table cannot disagree about what the uncertainty is.
+
+NOTE the bars are per-arm intervals, which are NOT the interval on a difference: two arms
+whose bars overlap can still differ significantly, because the paired design cancels the
+program-level variance that dominates each individual bar. Differences are quoted from
+`contrasts.json`, never read off this figure. That is why the caption carries the
+`mix50` - `mix5` contrast in text.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import random
+import sys
+from collections import defaultdict
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+
+from obtune.config import GLOBAL_SEED  # noqa: E402
+from obtune.paths import iter_jsonl  # noqa: E402
+
+METRIC = "reverse_success_strict"
+
+#: Reverse share of the training mixture, per arm. `sft` is the zero-dose point -- it is
+#: the same corpus with no reverse rows at all, which is exactly what "0 %" means here,
+#: so it belongs on the curve rather than beside it. `base` is untrained and has no dose,
+#: so it is drawn as a reference line instead.
+DOSE = {"sft": 0.0, "mix5": 5.0, "mix10": 10.0, "mix25": 25.0, "mix50": 50.0}
+
+
+def cluster_ci(trials, system: str, metric: str, n_boot: int, seed: int):
+    """Mean and 95 % CI for one arm, resampling PROGRAMS rather than trials.
+
+    Several test inputs share a program and are correlated; bootstrapping trials would
+    treat them as independent and report an interval that is too narrow.
+    """
+    by_prog: dict[str, list[float]] = defaultdict(list)
+    for t in trials:
+        if t["system"] == system and metric in t:
+            by_prog[t["program_id"]].append(float(t[metric]))
+    progs = sorted(by_prog)
+    if len(progs) < 2:
+        return None
+
+    def stat(sample):
+        vals = [v for p in sample for v in by_prog[p]]
+        return sum(vals) / len(vals)
+
+    point = stat(progs)
+    rng = random.Random(seed)
+    draws = sorted(stat([progs[rng.randrange(len(progs))] for _ in progs])
+                   for _ in range(n_boot))
+    lo = draws[int(0.025 * len(draws))]
+    hi = draws[min(len(draws) - 1, int(0.975 * len(draws)))]
+    return {"mean": point, "lo": lo, "hi": hi, "n_programs": len(progs)}
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--run", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--n-boot", type=int, default=2000)
+    args = ap.parse_args()
+
+    run = Path(args.run)
+    trials = [t for t in iter_jsonl(run / "trials.jsonl")
+              if t["direction"] == "reverse"]
+    if not trials:
+        raise SystemExit(f"no reverse trials in {run}")
+
+    stats: dict[str, Any] = {}
+    for arm in list(DOSE) + ["base"]:
+        s = cluster_ci(trials, arm, METRIC, args.n_boot, GLOBAL_SEED)
+        if s is None:
+            raise SystemExit(f"arm {arm!r} missing from {run}")
+        stats[arm] = s
+
+    # The saturation contrast is quoted in the caption, so read it from the contrast
+    # table rather than recomputing it here -- one number, one source.
+    contrasts = json.loads((run / "contrasts.json").read_text())["contrasts"]
+    by_pair = {(c["a"], c["b"]): c for c in contrasts}
+    sat = by_pair.get(("mix50", "mix5"))
+    top = by_pair.get(("mix50", "mix25"))
+    if sat is None or top is None:
+        raise SystemExit(
+            "contrasts.json lacks mix50-mix5 and/or mix50-mix25; re-run 24_contrasts.py "
+            "with --contrast mix50-mix5 --contrast mix50-mix25"
+        )
+
+    def pct(x: float) -> str:
+        return f"{100 * x:.1f}"
+
+    coords = " ".join(
+        f"({DOSE[a]},{pct(stats[a]['mean'])}) +- (0,{100 * (stats[a]['hi'] - stats[a]['mean']):.2f})"
+        for a in DOSE
+    )
+    n_prog = stats["mix50"]["n_programs"]
+
+    tex = rf"""% GENERATED by scripts/srh/25_fig_dose.py -- do not edit by hand.
+% Source run: {run}
+% Regenerate:
+%   python scripts/srh/25_fig_dose.py --run {run} --out {args.out}
+\begin{{figure}}[t]
+\centering
+\begin{{tikzpicture}}
+\begin{{axis}}[
+  width=0.82\linewidth, height=5.1cm,
+  xlabel={{Reverse share of the training mixture (\%)}},
+  ylabel={{Strict reverse success (\%)}},
+  xmin=-2.5, xmax=52.5, ymin=0, ymax=36,
+  xtick={{0,5,10,25,50}}, ytick={{0,10,20,30}},
+  tick align=outside, tick pos=left,
+  axis line style={{gray!55}}, tick style={{gray!55}},
+  grid=major, grid style={{gray!18, line width=0.3pt}},
+  label style={{font=\small}}, tick label style={{font=\small}},
+  legend style={{font=\small, draw=none, fill=none, at={{(0.97,0.32)}},
+                anchor=south east, cell picture=true}},
+]
+\addplot[mark=*, mark size=1.9pt, line width=1pt, color=black!82,
+         error bars/.cd, y dir=both, y explicit,
+         error bar style={{line width=0.6pt, color=black!45}},
+         error mark options={{rotate=90, mark size=2pt, color=black!45}}]
+  coordinates {{{coords}}};
+\addlegendentry{{bidirectional mixture}}
+\addplot[dashed, line width=0.8pt, color=black!45, mark=none]
+  coordinates {{(-2.5,{pct(stats['base']['mean'])}) (52.5,{pct(stats['base']['mean'])})}};
+\addlegendentry{{untouched base}}
+\end{{axis}}
+\end{{tikzpicture}}
+\caption{{\textbf{{A little reverse data does almost all of the work.}} Strict reverse
+success against the reverse share of the training mixture, Qwen2.5-Coder-1.5B,
+{n_prog} programs, 1\,500 graded trials per point. The zero-dose point is forward-only
+SFT. Replacing just 5\% of the forward pairs with their own reverse recovers
+{pct(stats['mix5']['mean'])}\% against {pct(stats['sft']['mean'])}\% for forward-only ---
+{100 * (stats['mix5']['mean'] - stats['sft']['mean']) / (stats['mix50']['mean'] - stats['sft']['mean']):.0f}\%
+of what a 50\% share recovers. The remaining climb is real but small
+({sat['delta'] * 100:+.1f} pp \ci{{{sat['ci'][0] * 100:+.1f}}}{{{sat['ci'][1] * 100:+.1f}}}
+from 5\% to 50\%) and has flattened by 25\%
+({top['delta'] * 100:+.1f} pp \ci{{{top['ci'][0] * 100:+.1f}}}{{{top['ci'][1] * 100:+.1f}}}
+from 25\% to 50\%). Bars are 95\% cluster bootstraps by program; because the design is
+paired, differences are quoted from the contrast table rather than read off the bars.}}
+\label{{fig:dose}}
+\end{{figure}}
+"""
+
+    out = Path(args.out)
+    out.write_text(tex)
+    print(tex)
+    print(f"[25_fig_dose] wrote {out}")
+    for arm in list(DOSE) + ["base"]:
+        s = stats[arm]
+        print(f"  {arm:>6}  {100*s['mean']:5.1f}  "
+              f"[{100*s['lo']:.1f}, {100*s['hi']:.1f}]  n={s['n_programs']}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

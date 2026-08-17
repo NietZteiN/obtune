@@ -12,6 +12,8 @@
     "javascript",
     "--rank",
     "32",
+    "--combination-type",
+    "dare_linear",
     "--out",
     "runs/adapters/qwen25c-1.5b/javascript/merge_dare_linear_r32_s17"
   ],
@@ -25,9 +27,9 @@
   },
   "result": {
     "returncode": 0,
-    "seconds": 29.5,
+    "seconds": 21.2,
     "log": "runs/logs/merge__qwen25c-1.5b_javascript__dare_linear.log",
-    "worker": "gpu1",
-    "finished_utc": "2026-08-09T03:08:58.862763+00:00"
+    "worker": "gpu0",
+    "finished_utc": "2026-08-09T17:20:37.529926+00:00"
   }
 }

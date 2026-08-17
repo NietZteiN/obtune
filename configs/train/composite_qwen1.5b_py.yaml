@@ -1,0 +1,51 @@
+# B2 — train on STACKED transforms. The closest available proxy for what OOD actually looks like.
+#
+# THE GAP THIS TARGETS. Every trainable condition is single-transform from the `L0` parent by
+# construction (CLAUDE.md §3.1) — and `H1` is not: it is string encoding PLUS guarded MBA
+# rewriting, two mechanisms at once. So every adapter in this project has only ever seen one
+# mechanism per input, and is then asked to generalize to an input carrying two. That mismatch is
+# a candidate explanation for part of the OOD gap, and nothing has tested it.
+#
+# Composites are the test. `C_L1r_S1` (rename then flatten) contains two mechanisms the transfer
+# matrix treats as separate families, so an adapter trained on stacked variants is being asked to
+# learn "transforms compose" rather than "here is one more transform". If unfamiliar COMBINATION
+# of familiar mechanisms is what `H1` really costs us, this is the arm that should move the LOTO
+# diagonal.
+#
+# THE CORPUS ALREADY EXISTS AND IS GATE-VALIDATED. 34,962 Python pairs across the six composites
+# under `data/train/pairs/C_*/python.jsonl`, built by `scripts/05_build_variants.py
+# --conditions-config conditions_composite.yaml` (pipeline stage `p3_composites`), each variant
+# execution-verified against its L0 parent on its own cases plus 20 fuzzed inputs, and each
+# checked for per-part mechanism purity by `validate._purity_composite`. No new data work.
+#
+# `allow_composites` IS THE SANCTIONED DOOR, NOT A BYPASS. The `C_` codes sit deliberately outside
+# `paths.TRAINABLE_CONDITIONS` so that adding them cannot shift the RQ1 grid, the transfer matrix
+# or the router's class count. `data.load_pairs` honours this opt-in (`data.py:437`) and still
+# requires the composite ladder to declare each code `trainable: true`, still refuses H1 in the
+# code or in any part, and still runs both other quarantine layers on every row.
+# `configs/mole/routerlora_v1.yaml` is the existing precedent.
+#
+# READ WITH ITS ABLATION. `composite_ablation_qwen1.5b_py.yaml` trains on the six SINGLE
+# transforms that make up these composites (L1b, L1r, L2, S1, S3, S4), same size, same recipe.
+# Without it, "trained on composites" is confounded with "trained on more mechanisms" and the arm
+# answers nothing. The pair is the experiment; neither half is.
+#
+# SIZE MATCHING — 22152, matching the minimum realised LOTO fold, NOT the nominal 30000 (which
+# never binds; see s2fam_qwen1.5b_py.yaml for the arithmetic). This is what makes the arm
+# comparable to the LOTO diagonal it is selected against.
+#
+# SELECTION on the LOTO diagonal (38.02), never on `H1` — CLAUDE.md §3.2 rule 2.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3]
+allow_composites: true
+run_tag: composite_py
+phase: main
+
+adapter_root: runs/adapters_composite
+
+train:
+  train_size: 22152
+  seed: 17

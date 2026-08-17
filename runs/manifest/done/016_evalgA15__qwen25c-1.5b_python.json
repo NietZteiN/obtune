@@ -1,0 +1,28 @@
+{
+  "job_id": "evalgA15__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/baselines_gridA_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 6.0,
+  "priority": 16,
+  "meta": {
+    "experiment": "baseline/gridA",
+    "note": "unblocks every baseline-vs-adapter claim"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 8057.5,
+    "log": "runs/logs/evalgA15__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-14T00:20:32.197372+00:00"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "job_id": "forget7b__cft",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-7b",
+    "--suite",
+    "both",
+    "--language",
+    "python",
+    "--tag",
+    "7b_cft",
+    "--adapter",
+    "runs/adapters_cft/qwen25c-7b/python/cft_r32_s17/final"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 60,
+  "meta": {
+    "check": "CLAUDE.md 4.7 at 7B. base/sft/flip already run: sft is ABOVE base at 7B (.817 vs .805) while losing all reverse capability, inverting the 1.5B result. cft and mix50 complete the picture \u2014 mix50 is the arm the paper recommends, so its general-capability cost is a claim, not a footnote."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 127.7,
+    "log": "runs/logs/forget7b__cft.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-10T17:02:11.508456+00:00"
+  }
+}

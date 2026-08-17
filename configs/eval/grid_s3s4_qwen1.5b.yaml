@@ -1,0 +1,38 @@
+# Transfer-matrix expansion for the S2 split (S3 = dead code only, S4 = opaque predicates
+# only), qwen25c-1.5b, both languages.
+#
+# WHY A SEPARATE CONFIG RATHER THAN EDITING grid_v1.yaml
+# -----------------------------------------------------
+# grid_v1 declares three models. S3/S4 per-condition adapters are trained at 1.5 B only,
+# so adding the two conditions there would expand the grid into cells whose adapters do
+# not exist for qwen25c-7b and llama31-8b — the run would die partway through a matrix
+# that is otherwise complete. Scoping the expansion to the model that has the adapters
+# keeps grid_v1 a true statement about what can be evaluated.
+#
+# COST IS SMALL DESPITE THE 8x8 SHAPE
+# -----------------------------------
+# `output.resume: true` (from _base_eval.yaml) skips any cell whose trials.parquet exists,
+# and the 6x6 core has already been run. Only the new row/column band is computed: the two
+# new adapters over all eight conditions, and the six existing adapters over the two new
+# conditions. `obtune.transfer` discovers cells by rglob under results/, so these land in
+# the same matrix as the originals with no further wiring.
+#
+# H1 IS DELIBERATELY ABSENT
+# -------------------------
+# CLAUDE.md §3.2 allows H1 exactly two evaluation passes (pilot and final), both already
+# open in data/quarantine/h1/ACCESS_LOG.md. A supplementary transfer run is neither, and
+# adding H1 here would spend a third access and invalidate the Invariance Index. The H1
+# column for S3/S4 belongs to the final pass, not to this config.
+_extends: _base_eval.yaml
+
+phase: main
+run_tag: s3s4_expansion
+models: [qwen25c-1.5b]
+languages: [python, javascript]
+
+systems:
+  - {name: base, arch: none}
+  - {name: per_type, arch: per_type, expand_over: train_conditions}
+
+train_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4]
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4]

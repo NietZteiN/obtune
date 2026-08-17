@@ -1,0 +1,23 @@
+{
+  "n_modules": 196,
+  "n_experts": 8,
+  "experts": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "rank_per_expert": 32,
+  "total_rank": 256,
+  "bank_params": 295436288,
+  "frozen_params": 1543714304,
+  "n_layers": 28,
+  "n_attached": 196,
+  "gate_params": 2766876,
+  "model": "qwen25c-1.5b",
+  "dtype": "bfloat16"
+}

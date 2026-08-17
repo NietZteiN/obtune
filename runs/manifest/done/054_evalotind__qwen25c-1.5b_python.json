@@ -1,0 +1,28 @@
+{
+  "job_id": "evalotind__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/overtrain_individual_qwen25c-1.5b_python.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 54,
+  "meta": {
+    "experiment": "rq2/overtrain-individual",
+    "note": "the other half of the dissociation: does individual accuracy rise as merged falls?"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 99.4,
+    "log": "runs/logs/evalotind__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-10T15:49:59.399659+00:00"
+  }
+}

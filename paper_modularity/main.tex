@@ -1,0 +1,668 @@
+% ---------------------------------------------------------------------------------------
+% obtune RQ2 -- "Combining Obfuscation Specialists" -- FSE research-track draft v0.1
+%
+% 2026-08-13. STATUS: SKELETON WITH A DELIBERATELY EMPTY THESIS.
+%
+% Every number in this file was recomputed from the per-cell parquets under `results/cells/`
+% by the scripts named in NUMBERS.md. Nothing is quoted from docs/MASTER_REPORT_*.md -- the
+% reports are an index of where to look, not a source. Where a report and a result file
+% disagree, NUMBERS.md records the discrepancy and the file wins.
+%
+% TWO MACROS CARRY THE DESIGN OF THIS DRAFT:
+%   \pending  -- a result that does not exist yet. NEVER replace with a plausible value.
+%   \slot     -- a place where the argument needs a claim we have not earned yet.
+% `make audit` (see README) greps for both. The submission checklist is that both reach zero.
+% ---------------------------------------------------------------------------------------
+
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+\acmConference[FSE '27]{Under review}{}{}
+\setcopyright{none}
+
+% acmart already loads booktabs, amsmath and newtxmath; adding amssymb here collides with
+% newtxmath on \Bbbk and halts the engine. Do not re-add it.
+
+% --- the two draft-state macros -------------------------------------------------------
+\newcommand{\pending}{\textcolor{gray}{\textit{--}}}
+\newcommand{\slot}[1]{\textbf{[CLAIM SLOT: #1]}}
+% --- shorthands ------------------------------------------------------------------------
+\newcommand{\arm}[1]{\texttt{#1}}
+\newcommand{\cond}[1]{\texttt{#1}}
+\newcommand{\ci}[2]{{\small[#1,\,#2]}}
+
+\begin{document}
+
+\title{Combining Obfuscation Specialists: What Routing and Merging
+Buy for Models That Read Transformed Code}
+
+\author{Anonymous}
+\affiliation{\institution{Anonymous}\country{}}
+
+\begin{abstract}
+Software engineers routinely read code that has been mechanically transformed: minified and
+bundled JavaScript, packed release artifacts, samples under malware triage. Fine-tuning a code
+model on one such transformation reliably helps on that transformation and almost nowhere else,
+so the natural engineering response is modular --- train one small adapter per transformation
+and combine them. We evaluate that response directly. On a ladder of six semantics-preserving
+transformations in Python and JavaScript, with a seventh obfuscator quarantined behind four
+independent enforcement layers, we build and measure four ways of combining six LoRA
+specialists: a learned type router, three weight-space merges, an activation-space mixture over
+a frozen expert bank, and oracle prompting. We report three results that hold today. A router
+that identifies the transformation with $100.0\%$ accuracy and near-zero predictive entropy is
+statistically indistinguishable from a single adapter trained on clean code on five of six
+conditions --- perfect dispatch is worth almost nothing, because there is almost nothing to
+dispatch to. A greedy search over expert checkpoints, $27$ candidate merges across three
+rounds, moves merged accuracy by at most $0.7$ points. And the one arm previously reported as
+catastrophic was a rescaling defect, not an algorithmic result: repaired, it sits at parity with
+the control. \slot{headline --- see CLAIM\_LADDER.md; the mixture arm's decisive control is
+currently inert (\S\ref{sec:mixture}) and the effect it would adjudicate is $+2.9$ points at
+$p=0.06$.} We release the transformation ladder, the quarantine architecture, and a
+CPU-only task-vector diagnostic that predicts merge interference without a GPU.
+\end{abstract}
+
+\keywords{code obfuscation, program comprehension, model merging, parameter-efficient
+fine-tuning, mixture of experts, negative results}
+
+\maketitle
+
+% =========================================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Reading transformed code is ordinary software engineering work. Front-end engineers debug
+minified bundles; release engineers read stripped binaries and packed artifacts; security
+analysts triage samples that have been deliberately obfuscated. In each case the code still
+means what it meant, and a competent engineer can still say what it computes --- more slowly,
+and less reliably~\cite{nguyen2026obfuscation}. Language models show the same profile, and
+degrade on roughly the same inputs humans do~\cite{le2026machines}.
+
+The obvious remedy is to fine-tune. It works, narrowly. In the study this paper builds on, an
+adapter trained on one transformation improves on that transformation by $1$ to $8$ accuracy
+points and transfers essentially nowhere else: the mean off-diagonal transfer ratio across a
+$42$-cell matrix is $0.073$, several cross-family cells are negative, and an adapter trained on
+all five transformations at once is \emph{worse} than one trained on clean code on a held-out
+obfuscator. Fine-tuning on obfuscated code teaches inversion of the specific transformations
+seen, not invariance to the class.
+
+That leaves a concrete engineering question, and it is the question this paper asks:
+
+\begin{quote}
+\textbf{If each transformation needs its own specialist, can the specialists be combined into
+one deployable system that keeps what each of them knows?}
+\end{quote}
+
+This is not a hypothetical. It is the design decision anyone shipping such a model actually
+faces, and the literature offers two families of answer. \emph{Routing} keeps every adapter and
+picks one per input~\cite{pfeiffer2021adapterfusion,huang2024lorahub}. \emph{Merging} averages
+the adapters into a single set of weights, so nothing has to be picked at inference
+time~\cite{yadav2023ties,yu2024dare,ilharco2023task,wortsman2022soups}. A third option sits
+between them: keep the experts resident and blend them per token in activation space
+\cite{wu2024mole,li2024mixlora}. We build all three, plus the cheap baseline of simply telling
+an untuned model which transformation was applied.
+
+\paragraph{This draft's status.} This is an honest interim report, and the structure reflects
+that. Sections~\ref{sec:routing}--\ref{sec:geometry} carry results we consider settled.
+Section~\ref{sec:mixture} carries an effect of the right sign on every condition that does not
+clear correction, alongside a control we discovered to be inert while preparing this draft.
+Section~\ref{sec:future} specifies the experiments that would resolve it, each with the
+decision gate it feeds. Unmeasured quantities appear as \pending{} throughout and are never
+filled with plausible values; unearned claims appear as \slot{}.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A controlled comparison of four adapter-combination strategies on a program-comprehension
+task, on two languages, against the reference that matters --- an adapter trained on
+\emph{clean} code, not an untuned base model (\S\ref{sec:design}).
+\item The finding that a \emph{saturated} router is a ceiling rather than a success: at
+$100.0\%$ routing accuracy, learned and oracle routing are the same system, and it buys the
+specialists' own gains and nothing more (\S\ref{sec:routing}).
+\item A negative result for merge-objective checkpoint selection: $27$ candidate merges over
+three greedy rounds span $0.7$ accuracy points (\S\ref{sec:merging}).
+\item A CPU-only task-vector diagnostic, exact for vanilla LoRA, that measures inter-expert
+interference from the $r\times r$ factors without materialising a dense $\Delta W$
+(\S\ref{sec:geometry}), and the finding that the interference mechanism reported in prior work
+reproduces while its accuracy consequence does not.
+\item A four-layer quarantine architecture for held-out transformations, and a candid account
+of how its epistemic guarantee degraded in practice (\S\ref{sec:confounds}).
+\item \slot{the mixture result, pending \S\ref{sec:future} item~5}
+\end{enumerate}
+
+% =========================================================================================
+\section{Background and Related Work}
+\label{sec:related}
+
+\paragraph{Obfuscation and comprehension.} Obfuscation applies semantics-preserving
+transformations to make code harder to understand. Its effect on human comprehension is
+measurable and transformation-dependent~\cite{nguyen2026obfuscation}, and large language models
+misread broadly the same inputs~\cite{le2026machines}. Most machine-learning work on obfuscated
+code targets \emph{recovery} --- deobfuscation, decompilation, identifier
+restoration~\cite{roziere2021dobf,tan2024llm4decompile,nikiema2025contrastive}. We do not. Every
+system here is trained and evaluated on code that stays obfuscated, and is scored on whether it
+can say what the code computes. That separation is deliberate: recovery quality and
+comprehension are different questions, and a model can copy its input forward and score well on
+several recovery metrics without having understood anything~\cite{nikiema2025contrastive}.
+
+\paragraph{Parameter-efficient specialists.} LoRA~\cite{hu2022lora} makes per-transformation
+specialists cheap: each is a low-rank patch of about $0.5\%$ of model size beside a frozen base.
+Six specialists are one model and six small files. The question is what to do with the six.
+
+\paragraph{Merging.} Task arithmetic treats a fine-tuned model as base plus a \emph{task
+vector} and adds vectors to compose skills~\cite{ilharco2023task}; model soups average weights
+directly~\cite{wortsman2022soups}. Both degrade when task vectors conflict.
+TIES~\cite{yadav2023ties} prunes low-magnitude coordinates and resolves sign disagreements by
+electing the side with greater total magnitude; DARE~\cite{yu2024dare} randomly drops and
+rescales updates before merging. Recent work attributes merge failure to \emph{over}-training
+the experts: fine-tuning to an individual optimum is dominated late in training by memorisation
+of hard examples, producing negative parameter interference, with aggressive early stopping as
+the recommended fix~\cite{horoi2025less}. \S\ref{sec:geometry} tests that mechanism directly and
+finds it present but inconsequential here.
+
+\paragraph{Routing and mixtures.} AdapterFusion learns to compose trained
+adapters~\cite{pfeiffer2021adapterfusion}; LoRAHub composes them by black-box optimisation for
+an unseen task~\cite{huang2024lorahub}; mixture-of-LoRA architectures gate experts per token
+and per layer~\cite{wu2024mole,li2024mixlora}. These methods are usually evaluated where the
+routing decision is hard. Our setting inverts that: \S\ref{sec:routing} shows the decision is
+trivially easy and therefore uninformative, which is what pushes the interesting question to
+inputs where \emph{no} single expert is correct (\S\ref{sec:mixture}).
+
+\paragraph{Positioning.} What we add is not a new merging algorithm. It is a controlled
+measurement, on a software-engineering task with an execution-verified grader, of what each
+combination strategy is worth against the right reference --- and an account of which of our own
+arms we could not yet trust.
+
+% =========================================================================================
+\section{Study Design}
+\label{sec:design}
+
+\subsection{Task and grader}
+
+The task is \emph{output prediction}: given a self-contained function and one concrete input,
+predict the exact return value, no explanation. Grading runs the original program to obtain
+ground truth and requires strict normalised exact match --- no containment or substring
+matching, which an earlier audit found produces roughly $3\%$ false positives (\texttt{927}
+matching inside \texttt{9273}). There is no grader subjectivity and no LLM judge. We
+additionally report the \emph{format-failure rate}, the fraction of answers that cannot be
+parsed into a candidate value at all, because a system that stops answering and a system that
+answers wrongly are different failures (\S\ref{sec:merging} turns on exactly that distinction).
+
+\subsection{The transformation ladder}
+
+Conditions are \emph{single} transformations from the clean parent, never stacked, with
+identical semantics in Python and JavaScript. Every variant is verified to preserve semantics by
+executing it against its parent's inputs plus roughly $20$ fuzzed ones.
+
+\begin{table}[t]
+\caption{The condition ladder. \cond{H1} is quarantined and never trained on by anything.}
+\label{tab:conditions}
+\small
+\begin{tabular}{@{}llp{4.6cm}@{}}
+\toprule
+code & family & transformation \\
+\midrule
+\cond{L0}  & ---        & clean original (comments/docstrings stripped everywhere) \\
+\cond{L1b} & identifier & adversarial renaming: actively misleading names \\
+\cond{L1r} & identifier & random hex renaming (\texttt{v\_a3f2}) \\
+\cond{L2}  & identifier & sequential minification (\texttt{a}, \texttt{b}, \dots) \\
+\cond{S1}  & structural & control-flow flattening (dispatch loop) \\
+\cond{S2}  & structural & opaque predicates $+$ dead code \\
+\cond{S3}/\cond{S4} & structural & the two halves of \cond{S2} alone \\
+\midrule
+\cond{H1}  & held out   & string encoding $+$ guarded MBA rewriting \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Composite} conditions (\cond{C\_L1r\_S1} = rename then flatten, and five others) stack two
+transformations. They sit outside the trainable ladder by construction and exist for one
+reason: they are the only inputs where no single expert is correct, which is what
+\S\ref{sec:mixture} needs.
+
+\subsection{Quarantine}
+\label{sec:quarantine}
+
+\cond{H1} is the discriminator: a system that handles it learned the \emph{class} of
+meaning-preserving rewrites, one that does not memorised the transformations it saw. If it leaks
+into training, no downstream analysis can recover the claim, so enforcement does not rely on
+discipline. Four independent layers, because any one alone is bypassable: (i) a single
+training-read entry point that raises on any path outside the training tree and rejects
+\cond{H1}-labelled rows wherever found; (ii) a lint test that greps the source for raw file
+reads bypassing that entry point; (iii) a generator that refuses to run without an explicit
+flag and writes its outputs read-only; (iv) a manifest checker that verifies SHAs \emph{and}
+content-scans every training file for \cond{H1} markers, wired as a pre-commit hook --- this
+last catches leakage even when labels are correct. \S\ref{sec:confounds} reports where this
+architecture nonetheless fell short of its own guarantee.
+
+\subsection{Two grids, never pooled}
+
+Results come from two evaluation program sets that are \emph{disjoint} and are never averaged
+together: a \textbf{corpus} grid ($557$ Python / $168$ JavaScript held-out programs) and a
+\textbf{test-set} grid ($40$ Python / $30$ JavaScript). All combination arms live on the
+test-set grid. A number from one grid is never differenced against a number from the other.
+Headline numbers use the subset of programs surviving \emph{every} condition, since the
+structural transformations decline some programs by design.
+
+\subsection{The reference, and why it is not the base model}
+\label{sec:reference}
+
+Almost every delta we report is against an adapter trained \emph{only on clean code}, not
+against the untuned model. This matters more than any individual number. The untuned base has a
+$17.3\%$ format-failure rate in Python; adapters run at $1$--$3\%$. A large part of any
+base-relative gain is the model learning the answer \emph{format}, not the task. On the test-set
+grid the base model sits $14$ to $30$ points below the clean-code control across conditions
+(Table~\ref{tab:rq2}, last row). \textbf{A system that beats the base model has shown nothing.}
+
+\subsection{Statistics}
+
+Confidence intervals come from a cluster bootstrap resampling whole \emph{programs} with
+replacement ($2000$ draws, seed $17$): several evaluation items share a program and are
+correlated, so bootstrapping items would understate the intervals. We apply
+Benjamini--Hochberg FDR within each family of comparisons, and call an effect only when
+$q<0.05$ \emph{and} the bootstrap interval excludes zero --- both, not either. Every comparison
+is restricted to programs present in both arms, so no delta is confounded by a different
+program population. Every kept run records a manifest with its command, resolved config, script
+hashes, commit, GPU and timestamp.
+
+Base model: Qwen2.5-Coder-1.5B-Instruct throughout, seed $17$, greedy decoding.
+\S\ref{sec:threats} treats the single-model and single-seed limitations.
+
+% =========================================================================================
+\section{A Perfect Router Buys Almost Nothing}
+\label{sec:routing}
+
+\subsection{What was built}
+
+The router is a classifier over frozen features: the base model's hidden state at a mid-depth
+layer, mean-pooled over non-special prompt tokens, feeding a one-hidden-layer MLP ($512$ units,
+GELU, dropout $0.1$) with eight classes. \textbf{\cond{H1} is never a class}, by design. At
+inference each item is routed independently and the selected adapter is served through a
+multi-LoRA path.
+
+\subsection{The router is saturated}
+
+It classifies the transformation with $100.0\%$ accuracy on every evaluated item in both
+languages --- $1{,}025$ Python items and $804$ JavaScript items, a completely diagonal confusion
+matrix --- with held-out validation accuracy $0.9969$ (Python) and $1.0000$ (JavaScript). It is
+also extremely confident: mean predictive entropy runs from $3.9\times10^{-7}$ to
+$6.7\times10^{-3}$ nats against a maximum of $\ln 8 = 2.079$, i.e. it places at least $99.9\%$
+of its mass on the chosen class in every condition.
+
+This is unsurprising on inspection. The conditions leave unmistakable surface fingerprints:
+hex identifiers for \cond{L1r}, single letters for \cond{L2}, a state-variable dispatch loop for
+\cond{S1}. A mid-depth hidden state separates them trivially.
+
+\subsection{Why saturation makes the arm uninformative}
+
+Two consequences follow, and the second is the finding.
+
+First, \textbf{learned routing and oracle routing are the same system here}. This arm cannot
+tell us whether a router is \emph{learnable} in a harder setting; it can only tell us what
+perfect dispatch is worth.
+
+Second, perfect dispatch is worth very little. Table~\ref{tab:rq2} gives the answer: against the
+clean-code control the routed system is $+0.6$, $+0.6$, $+0.6$, $+0.0$ and $-1.7$ points on
+\cond{L0}, \cond{L1r}, \cond{L2}, \cond{S1} and \cond{S2} --- five of six conditions
+indistinguishable from a single adapter that never saw an obfuscated program. Only \cond{L1b}
+moves ($+9.1$, \ci{+1.2}{+16.7}), and it does not survive correction ($q=0.056$). The routed
+system's numbers are, cell for cell, the numbers of whichever specialist it dispatched to.
+\textbf{Routing recovers exactly what the specialists already knew and adds nothing on top};
+since the specialists individually transfer nowhere, a perfect router inherits that limitation.
+
+\subsection{What the router does out of distribution is not yet known}
+
+The configuration declares a routing-entropy analysis on \cond{H1} --- the idea being that a
+held-out transformation forces an out-of-distribution decision, and \emph{how} the router fails
+(confidently wrong versus uncertain) is itself informative for anyone deploying one. The routing
+report records zero held-out items. \cond{H1} was never routed, so this analysis does not exist:
+see Table~\ref{tab:future}, item~6.
+
+\begin{table*}[t]
+\caption{Combination strategies against the clean-code control, test-set grid, Python, in
+accuracy points. $^{*}$ = BH-FDR $q<0.05$ \emph{and} cluster-bootstrap CI excludes zero. The
+\cond{H1} column is the held-out obfuscator. \arm{router} was never evaluated on \cond{H1}
+(\S\ref{sec:routing}); \arm{dl\_rescaled} is the repaired arm and postdates the \cond{H1} read
+budget (\S\ref{sec:confounds}). Absolute control accuracies: $.494/.369/.460/.500/.434/.489/.400$.}
+\label{tab:rq2}
+\small
+\begin{tabular}{@{}lrrrrrrrl@{}}
+\toprule
+system & \cond{L0} & \cond{L1b} & \cond{L1r} & \cond{L2} & \cond{S1} & \cond{S2} & \cond{H1} & what it is \\
+\midrule
+\arm{router}            & $+0.6$ & $+9.1$ & $+0.6$ & $+0.6$ & $+0.0$ & $-1.7$ & \pending & six specialists $+$ a $100\%$-accurate classifier \\
+\arm{merge\_dare\_ties} & $+0.0$ & $+2.8$ & $-4.0$ & $+0.0$ & $+0.7$ & $-4.5$ & $-5.2$ & DARE drop-and-rescale, then TIES sign election \\
+\arm{dl\_rescaled}      & $-2.3$ & $+2.8$ & $-1.1$ & $+1.1$ & $+0.7$ & $-2.8$ & \pending & DARE $+$ linear, \emph{after} the scaling repair \\
+\arm{merge\_ties}       & $-8.0$ & $-5.1$ & $-11.9^{*}$ & $-11.4^{*}$ & $-4.8$ & $-16.5^{*}$ & $-11.3^{*}$ & TIES alone, no DARE dropout \\
+\arm{merge\_dare\_linear} & $-45.5^{*}$ & $-33.0^{*}$ & $-43.2^{*}$ & $-47.7^{*}$ & $-38.6^{*}$ & $-42.6^{*}$ & $-33.9^{*}$ & \textbf{a defect, not a result} (\S\ref{sec:merging}) \\
+\arm{oracle\_prompt}    & $-9.7$ & $-10.2^{*}$ & $-19.9^{*}$ & $-21.0^{*}$ & $-16.6^{*}$ & $-21.0^{*}$ & $-18.3^{*}$ & untuned, \emph{told} which transformation applies \\
+\arm{base}              & $-21.0^{*}$ & $-14.2^{*}$ & $-23.3^{*}$ & $-28.4^{*}$ & $-16.6^{*}$ & $-30.1^{*}$ & $-28.7^{*}$ & untouched pretrained model \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% =========================================================================================
+\section{Merging Loses What Routing Preserves}
+\label{sec:merging}
+
+\subsection{What was built}
+
+All merges combine the \emph{same} six ingredients --- the \cond{L0}, \cond{L1b}, \cond{L1r},
+\cond{L2}, \cond{S1} and \cond{S2} specialists, rank $32$, seed $17$ --- into one adapter with
+uniform weights ($1/6$) and density $0.5$, and differ only in the combination algorithm.
+Three implementation details determine whether the numbers mean anything:
+
+\begin{enumerate}
+\item \textbf{Merging happens in LoRA space, not in base weights.} A widely used merging toolkit
+was tried and rejected: its LoRA path merges each adapter into the base model and re-extracts a
+LoRA by SVD, changing the rank and injecting reconstruction error \emph{before} the merge
+algorithm runs. We operate on the adapters directly.
+\item \textbf{Each ingredient's scaling is accounted for.} The specialists are $r{=}32$,
+$\alpha{=}64$ (scaling $2.0$); the merged adapter is written with $\alpha = r$ and the factor
+baked into the weights. This is the classic place where a merge silently halves every
+ingredient.
+\item \textbf{\cond{H1} cannot be an ingredient.} The merge driver rejects any non-trainable
+condition by label and any adapter whose path touches the quarantine tree. A merge containing an
+\cond{H1}-trained adapter would turn every downstream \cond{H1} number into a train-on-test
+result with nothing in the trial table to reveal it.
+\end{enumerate}
+
+\subsection{Results}
+
+Table~\ref{tab:rq2}. \arm{merge\_dare\_ties}, the best of the merges, is statistically
+indistinguishable from the clean-code control on all six trainable conditions and $-5.2$
+\ci{-11.7}{+0.0} on the held-out obfuscator. \arm{merge\_ties}, which omits DARE's stochastic
+dropout, is significantly \emph{below} the control on \cond{L1r}, \cond{L2}, \cond{S2} and
+\cond{H1}. Collapsing six adapters into one destroys most of what they individually knew:
+compare the routed row, which at least recovers its specialists.
+
+\subsection{A catastrophic arm that was a defect}
+
+\arm{merge\_dare\_linear} scored around $5\%$ accuracy with a $53.5\%$ format-failure rate in
+Python --- on half its inputs the model stopped emitting a parseable answer at all, while the
+other merges sat at $1$--$3\%$. A $-33$ to $-48$ point collapse alongside a format-failure rate
+an order of magnitude off every other arm is a bug signature, not an algorithmic result, and we
+flagged it as one rather than reporting it as evidence about DARE.
+
+It was a bug. Repaired, the same algorithm (\arm{dl\_rescaled}) gains $+41.6$ points
+\ci{+33.9}{+49.9} pooled over the six conditions and lands at parity with the clean-code
+control on all of them, with format-failure back to $0.6$--$2.8\%$. We report this at length
+because the failure mode generalises: a merge that produces an incoherent patch degrades the
+\emph{format} channel first, and a pipeline reporting only accuracy would have published a
+$-40$-point ``finding'' about DARE-linear merging.
+
+\subsection{Merge-objective checkpoint selection does not help}
+\label{sec:mergeoptimal}
+
+Our checkpoint selection picks each expert's best epoch by its own held-in validation accuracy
+--- an \emph{individually} optimal choice that has no reason to be jointly optimal. If
+interference is the problem (\S\ref{sec:geometry}), selecting checkpoints \emph{for} the merge
+should beat it. We ran a greedy search: three rounds, each sweeping one expert's checkpoint over
+nine epochs with the others held at the incumbent, $27$ candidate merges evaluated on the full
+condition set.
+
+The search is flat. Candidate means span $0.4434$ to $0.4506$ --- $0.7$ accuracy points end to
+end --- and each round's winner is \emph{below} the status-quo merge by $0.7$ to $1.0$ points
+(all $p>0.4$). Choosing checkpoints for mergeability rather than for individual accuracy buys
+nothing here. We regard this as a genuine negative result about the objective, bounded by
+\S\ref{sec:threats}: greedy coordinate search over epochs is a coarse instrument, and it cannot
+rule out that some jointly-selected assignment outside its path does better.
+
+% =========================================================================================
+\section{Task-Vector Geometry: the Mechanism Without the Consequence}
+\label{sec:geometry}
+
+\subsection{A diagnostic that needs no GPU}
+
+For vanilla LoRA the task vector is exactly $\Delta W = (\alpha/r)\,BA$, which makes inter-expert
+geometry computable from the $r\times r$ factors without ever materialising a dense $\Delta W$:
+\[
+\langle \Delta W_i, \Delta W_j\rangle_F \;=\; s_i s_j \operatorname{tr}\!\big((B_i^{\top} B_j)(A_j A_i^{\top})\big).
+\]
+This turns an otherwise intractable sweep --- eight experts $\times$ nine epochs $\times$ $196$
+modules --- into seconds of CPU, and we verified it against the dense computation to
+$5.6\times10^{-16}$. The identity holds only for vanilla LoRA (no DoRA, no rsLoRA), so the
+implementation refuses ragged or mixed-rank banks rather than trusting it.
+
+We report three quantities. \emph{Sign conflict} is the fraction of weight coordinates where two
+experts' task vectors disagree in sign; TIES deletes exactly those, so a higher rate means more
+of the update is discarded at merge time. \emph{Cosine} is the mean pairwise angle between task
+vectors. $\|\Delta W\|$ is the mean Frobenius norm per module --- how far each expert moved.
+
+\subsection{The interference mechanism is real}
+
+Prior work predicts that training experts to their individual optima raises interference and
+degrades merging~\cite{horoi2025less}. On our eight-expert bank trained to three epochs, the
+mechanism is \emph{absent}: sign conflict \emph{falls} from $0.4016$ to $0.3905$ and TIES
+retention rises from $0.854$ to $0.861$. Our experts are under-trained relative to where
+interference appears. Extended to nine epochs, it reverses exactly as predicted --- the task
+vector doubles in norm ($0.291 \to 0.617$), the experts rotate apart (cosine $0.580 \to 0.514$),
+and sign conflict climbs from $0.4011$ to $0.4254$, plateauing around epoch~$6$
+(Table~\ref{tab:geometry}).
+
+\begin{table}[t]
+\caption{Task-vector geometry, eight experts, Python. Both banks contain the same eight
+conditions; they are separate training runs under different schedules, so a given epoch index is
+not the same point in both.}
+\label{tab:geometry}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+first epoch $\to$ last & 3-epoch bank & 9-epoch bank \\
+\midrule
+$\|\Delta W\|$              & $0.299 \to 0.371$ & $0.291 \to 0.617$ \\
+$\cos(\Delta W_i, \Delta W_j)$ & $0.584 \to 0.592$ & $0.580 \to 0.514$ \\
+\textbf{sign conflict}      & $0.402 \to 0.391$ \emph{(falls)} & $0.401 \to 0.425$ \emph{(rises)} \\
+TIES keep rate              & $0.854 \to 0.861$ & $0.853 \to 0.834$ \\
+\midrule
+verdict                     & no interference growth & interference grows \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The accuracy consequence does not follow}
+
+Mechanism is not consequence. On the same nine-epoch bank, with expert count and epoch held
+uniform across all eight experts, \textbf{training the experts longer made the merge better}:
+pooled over the six conditions, epoch~$9$ beats epoch~$1$ by $+3.1$ points \ci{+0.0}{+6.1} for
+DARE-TIES and $+1.6$ \ci{-0.4}{+3.5} for TIES, improving on eleven of twelve
+method\,$\times$\,condition pairs. In absolute terms the DARE-TIES merge moves from $-2.6$ points
+below the clean-code control at epoch~$1$ to $+0.5$ at epoch~$9$.
+
+So the geometry is real --- the task vectors do diverge and sign conflict does rise --- but at
+LoRA rank $32$ that interference does not cost merged accuracy, and the direction of the effect
+is opposite to the prediction. If anything the extra training buys more than the interference
+costs. Two things bound this: the effects are marginal at $40$ programs, and an unexplained
+residual remains --- the sign election retains $86\%$ of task-vector magnitude, yet the resulting
+\arm{merge\_ties} patch has a norm only $0.19\times$ a single expert's, which sign conflict alone
+does not account for.
+
+% =========================================================================================
+\section{Mixing Experts Where No Single Expert Is Right}
+\label{sec:mixture}
+
+\subsection{The regime the router cannot reach}
+
+A saturated router (\S\ref{sec:routing}) means the choice of expert is solved on
+single-transformation inputs. The remaining headroom is therefore entirely on inputs where
+\emph{no} single expert is correct. Stacked (composite) conditions manufacture exactly that: a
+variant that has been renamed \emph{and} flattened contains two mechanisms, so a hard router must
+be wrong about one of them and a soft mixture can be right about both.
+
+We mix in \textbf{activation space} rather than weight space:
+\[
+h \;=\; Wx \;+\; \sum_{e} a_e(x)\,(\alpha/r)\,B_e A_e x .
+\]
+This is exact, requires no per-item merge rebuild, and does not grow the effective rank of any
+single application. Only a $2.77$M-parameter gate trains, against a frozen $295$M expert bank
+(a ratio of $0.0094$) and a frozen $1.5$B base.
+
+\subsection{The ladder, and why each rung exists}
+
+\arm{mole\_uniform} pins the gate at $1/8$: it is the primary fixed-mixture contrast because it
+differs from the learned gate in \emph{exactly one} way, the weights, running identical code with
+identical numerics. (The best weight-space merge differs in three ways at once --- fixed versus
+learned, weight versus activation space, pruned-and-elected versus exact --- which is why it is a
+reference rather than a comparator.) \arm{mole\_random} freezes the gate at random
+initialisation and is the control that decides what the headline may claim: if the learned gate
+does not beat it, the gain came from having eight experts resident at effective rank $256$, not
+from routing.
+
+\subsection{Result: the right sign everywhere, significance nowhere}
+
+Against the base model through the same engine, every mixture arm gains substantially
+($+8$ to $+28$ points). Against \arm{mole\_uniform} --- the contrast that isolates routing --- the
+learned gate is positive on \textbf{eight of eight} conditions: $+7.4$ on \cond{C\_L2\_S4},
+$+4.0$ on \cond{C\_L1r\_S1}, $+3.4$, $+2.8$, $+2.7$, $+1.7$, $+0.7$, $+0.6$ elsewhere. Pooled,
+that is $+3.3$ points \ci{-0.4}{+7.5} over the six composites and $+2.9$ \ci{-0.0}{+6.2}
+($p=0.059$) over all eight conditions. \textbf{No individual cell survives FDR correction}, and
+the pooled interval touches zero.
+
+Eight-of-eight positive is itself unlikely under a null of no effect, and the per-condition
+effect sizes are of a plausible magnitude. But $40$ programs cannot resolve a $3$-point effect,
+and we decline to claim one on a sign pattern. This is the single largest reason the paper's
+thesis slot is empty.
+
+\subsection{The control that would settle it is inert}
+\label{sec:inert}
+
+While preparing this draft we found that \arm{mole\_random} and \arm{mole\_uniform} produce
+\emph{bit-identical} output on all $1{,}299$ evaluated items --- identical generated strings,
+identical correctness vectors, identical format-failure rates. This is not near-uniform softmax
+at initialisation; it is the same gate.
+
+The cause is an ordering dependency. The ladder runs its arms in sequence, and
+\arm{mole\_uniform} runs first, replacing the learned gate module with a constant-gate module
+whose routing vector is a registered \emph{buffer}. The \arm{mole\_random} arm then re-seeds and
+re-initialises by iterating the gate's \emph{parameters} --- of which a constant gate has none.
+The loop body never executes and the uniform gate survives into the arm meant to randomise it.
+We confirmed this directly: the constant gate exposes zero parameters, and running the
+re-initialisation loop against it leaves the routing vector at $1/8$ for all eight experts. The
+neighbouring learned-gate branch guards against precisely this ordering hazard, with a comment
+saying arms must not depend on the order they run in; the control branch was not given the same
+guard.
+
+Consequently the comparison reported above is \arm{mole\_router} versus \arm{mole\_uniform}
+\emph{twice}, and \textbf{the residency question --- is the gain from routing or merely from
+having eight experts resident? --- is unanswered.} By the pre-registered rule that this control
+decides what the headline may say, no mixture claim is available. Repairing it requires no
+retraining and one evaluation pass (Table~\ref{tab:future}, item~5).
+
+% =========================================================================================
+\section{Confounds in Our Own Design}
+\label{sec:confounds}
+
+We report these because each materially qualifies a number above.
+
+\paragraph{Unequal expert training in the original merges.} Checkpoint selection chose
+\emph{different} epochs per condition (epoch $1$ for two experts, $2$ for two, $3$ for four), so
+every merge in Table~\ref{tab:rq2} combines task vectors of unequal training. The uniform-epoch
+sweep in \S\ref{sec:geometry} removes this confound, and its within-sweep epoch deltas --- not
+the comparison to Table~\ref{tab:rq2} --- are the controlled contrast.
+
+\paragraph{The quarantine budget was spent incrementally.} The protocol grants \cond{H1} exactly
+two evaluation passes, one pilot and one final. The access log records $3$ pilot and $88$ final
+read events spread over four sittings while arms were still being chosen. No \cond{H1} data
+entered training and all four enforcement layers held --- but ``one frozen final pass'' is not
+what happened, and the epistemic guarantee is weaker than the protocol claims. Any further
+\cond{H1} evaluation is a third pass and we will declare it as such. This is why
+Table~\ref{tab:rq2} has \pending{} in the \cond{H1} column for the arms built after the budget
+was exhausted, rather than a number.
+
+\paragraph{Two of our own reports disagreed with the files.} While assembling this draft we
+found an internal report quoting a router training epoch from the wrong language and a composite
+acceptance count off by two programs. Both were resolved in favour of the result files.
+Every figure in this paper is recomputed from per-cell trial records; none is transcribed from a
+prior report.
+
+% =========================================================================================
+\section{Future Experiments}
+\label{sec:future}
+
+The programme below is what the empty thesis slot is waiting on. Each item is built and
+configured; none is speculative. Gates are stated in advance so that a negative outcome is
+reportable rather than merely disappointing.
+
+\begin{table*}[t]
+\caption{The specified programme. ``Decides'' names the claim each run adjudicates.}
+\label{tab:future}
+\small
+\begin{tabular}{@{}rp{4.3cm}p{4.6cm}p{5.0cm}@{}}
+\toprule
+\# & run & isolates & decides \\
+\midrule
+1 & Second seed for every combination arm & run-to-run noise, currently unmeasured for these arms & whether any $\pm3$-point effect in Table~\ref{tab:rq2} is real \\
+2 & Composite grid at corpus scale ($\approx$$550$ programs) & statistical power; $40$ programs cannot resolve $3$ points & the \S\ref{sec:mixture} effect, which is the thesis \\
+3 & \arm{mole\_random} with the ordering hazard repaired & routing versus rank-$256$ residency & \textbf{what the headline may say} (\S\ref{sec:inert}) \\
+4 & Merge density sweep $\{0.3, 0.5, 0.7\}$ & whether ``merging underperforms'' is a claim about density $0.5$ only & the scope of \S\ref{sec:merging} \\
+5 & Hard-router rung of the mixture ladder on composites & mixing versus dispatch, holding the engine fixed & whether composites are \emph{compositional} or merely harder \\
+6 & Router entropy on the held-out obfuscator & how a saturated router fails out of distribution & a deployment-relevant claim; \textbf{counts as a third \cond{H1} pass} \\
+7 & Replication at $7$B & scale dependence of every claim here & whether oracle prompting becomes competitive, i.e.\ ``knows how but not when'' \\
+8 & Undertrained-expert bank, routed \emph{and} merged & the joint prediction below & a mechanism spanning both halves of the paper \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\paragraph{One hypothesis worth stating in advance.} Router saturation and merge failure may be
+two symptoms of one cause. Over-specialised experts are trivially distinguishable --- hence easy
+to route --- \emph{and} mutually interfering --- hence hard to merge. The joint prediction is
+that deliberately \emph{under}-trained experts should be harder to route and easier to merge,
+tracing out a frontier between the two strategies. Neither the routing literature nor the merging
+literature makes this prediction, because each studies one half. We have both systems built on
+one bank, which is what makes item~8 cheap. \slot{this is the most promising route to a thesis;
+it is a hypothesis, not a result}
+
+\paragraph{Two design defects we caught before spending GPU time,} recorded because they are the
+failure mode this kind of study is most exposed to. The mixture gate was initially wired to train
+on a \emph{different task} from the one it is scored on --- code rewriting rather than output
+prediction --- which would have converged cleanly and produced a plausible number answering no
+question. And merge-search candidate names did not encode the other experts' checkpoints, so two
+distinct merges shared a name and a mid-search restart would have silently scored the wrong one.
+Both defects share a shape: an identifier that does not encode what actually varies. Neither the
+test suite nor the manifest checker could catch them, because both check what is declared rather
+than what is meant.
+
+% =========================================================================================
+\section{Threats to Validity}
+\label{sec:threats}
+
+\paragraph{Construct.} Output prediction is one operationalisation of comprehension, chosen
+because it is executable and therefore not gradeable by opinion. It does not measure whether a
+model could \emph{explain} the code.
+
+\paragraph{Internal.} \S\ref{sec:confounds} lists the confounds we know of; \S\ref{sec:inert} is
+an inert control we found only by comparing raw outputs, and its existence is evidence that
+others may remain. Splits partition by program, never by row, so an obfuscated variant of a
+training program cannot appear in the test set.
+
+\paragraph{Statistical.} The combination arms live on $40$ Python and $30$ JavaScript programs.
+Prior seed-stability analysis on this corpus puts run-to-run noise near $0.6$ points in Python
+and $2.0$ in JavaScript at much larger $n$; at this $n$ the bar is higher. The ordering of the
+arms is solid; individual cell values are indicative. Every combination arm is single-seed
+(Table~\ref{tab:future}, item~1).
+
+\paragraph{External.} One base model at one scale ($1.5$B), one task, two languages, one
+held-out obfuscator. Mixture and merging behaviour may be scale-dependent, and the oracle-prompt
+comparison was designed with larger models in mind (item~7).
+
+% =========================================================================================
+\section{Conclusion}
+
+Modularity is the natural engineering answer to a model that needs one specialist per code
+transformation, and we measured what it is worth. A router that identifies the transformation
+perfectly buys only the specialists' own gains; weight-space merging gives most of them back;
+selecting expert checkpoints for mergeability rather than for accuracy changes nothing; and one
+previously catastrophic arm was a scaling defect that a format-failure diagnostic caught and
+accuracy alone would not have. The mechanism prior work blames for merge failure reproduces in
+our task vectors and does not produce the accuracy cost it predicts.
+
+What remains open is the one regime where the question is not already answered: inputs where no
+single expert is correct. There, a learned gate is ahead of a fixed uniform mixture on every
+condition we measured and on none of them significantly --- and the control that would tell us
+whether that is routing or merely capacity does not currently work. \slot{headline}
+Section~\ref{sec:future} says exactly what would settle it.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

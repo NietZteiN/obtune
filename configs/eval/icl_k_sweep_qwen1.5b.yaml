@@ -1,0 +1,72 @@
+# ICL, part 2: how many examples, and does ICL survive fine-tuning?
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/icl_k_sweep_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# TWO QUESTIONS, ONE ENGINE LOAD
+# ------------------------------
+# 1. **k-sweep.** The 2026-08-13 ICL run used k=1 throughout, so every conclusion from it
+#    is about ONE example. k=1 is not a natural operating point — it is just the only one
+#    the frozen `prompts.build_prompt` could express. If the H1 gain keeps climbing to k=4,
+#    the honest comparator for the adapter arms is 4-shot, not 1-shot, and the baseline is
+#    stronger than reported. If it saturates at k=1, the reported number stands.
+#
+# 2. **ICL x fine-tuning.** Every ICL arm so far ran on the UNTUNED base, and every adapter
+#    arm ran zero-shot. Nobody has run both at once, so "adapters beat ICL" is currently a
+#    comparison of two things that were never combined. Three outcomes, all publishable:
+#      * ICL still adds on top of tuned_L0  -> they are COMPLEMENTARY, and the practitioner
+#        should do both; the paper's contribution is additive rather than substitutive.
+#      * ICL adds nothing on top of tuned_L0 -> they OVERLAP; fine-tuning has already
+#        internalised what the demonstration supplies, which is a strong positive claim
+#        for the adapters and the most interesting result of the three.
+#      * ICL HURTS tuned_L0 -> the adapter is prompt-format-sensitive, which is a real
+#        deployment caveat and would otherwise have gone unnoticed.
+#
+# WHY tuned_L0 IS THE RIGHT ADAPTER FOR THIS
+# ------------------------------------------
+# `tuned_L0` is the project's CONTROL adapter — trained on clean code only, so it carries
+# task acquisition WITHOUT any obfuscation-specific training. Stacking ICL on it isolates
+# "does in-context help survive fine-tuning at all" from "does it survive fine-tuning on
+# the matching transform", which would need a per-condition adapter and is a separate run.
+# It is also the arm the 2026-08-05 pilot showed reaches H1 as well as L1b training does.
+#
+# k=0 IS THE MATCHED FLOOR, NOT A DUPLICATE
+# -----------------------------------------
+# `base` and `tuned_L0_k0` re-derive the zero-shot floors inside THIS config so every
+# delta in the sweep is against a floor measured on identical items in the same run. The
+# builder asserts k=0 is byte-identical to the frozen zero-shot prompt.
+_extends: _base_eval.yaml
+
+phase: baselines
+experiment_id: icl_k_sweep
+run_tag: icl_k_sweep
+model: qwen25c-1.5b
+language: python
+
+engine:
+  # Demos multiply prompt length; 4 flattened S1 demos in front of an S1 query is the worst
+  # case. 8192 is inherited from _base_eval.yaml and drop_overlong() records any casualty
+  # rather than raising, so a pathological item costs one row, not the cell.
+  max_loras: 2
+
+systems:
+  # --- floors, on the same items --------------------------------------------- #
+  - {name: base, arch: none}
+  - {name: tuned_L0_k0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+
+  # --- k-sweep on the untuned base ------------------------------------------- #
+  # Source is the trainable ladder: this is the OOD-capable arm (H1 is the query, never a
+  # demo source — `icl.demos.pick_demos` refuses H1 outright, CLAUDE.md §3.2 rule 2).
+  - {name: icl_k1, arch: none, icl_k: 1, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: icl_k2, arch: none, icl_k: 2, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: icl_k4, arch: none, icl_k: 4, icl_source: [L1b, L1r, L2, S1, S2]}
+
+  # --- the same sweep ON TOP OF the L0 adapter ------------------------------- #
+  - {name: tuned_L0_k1, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0, icl_k: 1, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: tuned_L0_k2, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0, icl_k: 2, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: tuned_L0_k4, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0, icl_k: 4, icl_source: [L1b, L1r, L2, S1, S2]}
+
+# Same conditions as the k=1 run so the k=1 column is directly checkable against it, plus
+# L0 as the cost cell — demos of obfuscated code in front of a CLEAN query may well hurt.
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval

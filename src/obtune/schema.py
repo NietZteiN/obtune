@@ -13,11 +13,27 @@ Namespaces (docs/TIER_MAPPING.md):
 """
 from __future__ import annotations
 
-from typing import Any, Literal, Optional
+from typing import Union, Any, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "H1"]
+Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "H1"]
+
+#: Composite (stacked) conditions live in a SEPARATE namespace and are deliberately NOT added
+#: to `Condition`. Keeping that Literal closed is what protects `paths.TRAINABLE_CONDITIONS`,
+#: the router's 8-class head, `ALL_CONDITIONS` and the RQ1 transfer matrix from a namespace
+#: they were never designed for — CLAUDE.md §3.1 mandates single-transform conditions, and
+#: `tier_icse` is the precedent for a parallel namespace that coexists without contaminating
+#: the ladder. Only the four fields that must CARRY a composite accept the union.
+#:
+#: Order matters: composition does not commute, so `C_S1_L1r` is a distinct code from
+#: `C_L1r_S1` rather than a spelling of it.
+CompositeCondition = Literal[
+    "C_L1r_S1", "C_S1_L1r", "C_L1b_S1", "C_L2_S4", "C_L1r_S3", "C_S4_S3",
+]
+
+#: Anything that may appear as a variant/eval label, ladder or composite.
+AnyCondition = Union[Condition, CompositeCondition]
 TierICSE = Literal["L0", "L1", "L1b", "L2", "L3"]
 Language = Literal["python", "javascript"]
 Split = Literal["train", "val", "test"]
@@ -50,7 +66,7 @@ class Variant(BaseModel):
     """One obfuscated variant of a base program (data/*/variants/<cond>/<lang>.jsonl)."""
 
     program_id: str
-    condition: Condition
+    condition: AnyCondition
     language: Language
     code: str
     entry_point: str  # post-transform name (L1b/L1r/L2 rename the entry fn)
@@ -66,7 +82,7 @@ class TrainPair(BaseModel):
     item_id: str  # f"{program_id}::{condition}::{case_idx}"
     program_id: str
     program_group_id: str  # = program_id; split unit (never split by row)
-    condition: Condition
+    condition: AnyCondition
     language: Language
     code: str
     entry_point: str
@@ -89,7 +105,7 @@ class EvalItem(BaseModel):
     item_id: str
     program_id: str
     dataset: Literal["A", "B"]
-    condition: Condition
+    condition: AnyCondition
     language: Language
     code: str
     entry_point: str
@@ -109,17 +125,41 @@ class TrialRow(BaseModel):
     run_id: str
     run_ts: str
     seed: int
-    phase: Literal["pilot", "main", "final"]
+    #: `baselines` added 2026-08-13 for the zero-training comparators (ICL, symbolic
+    #: normalization, 7B zero-shot). They need their own namespace because `main` already
+    #: holds two never-pooled grids — `base__L0` is n=1670 (Grid A) and `base__S3` is n=176
+    #: (Grid B) — so with `resume: true` a Grid B arm landing in `main` silently reuses a
+    #: Grid A `base` cell and the delta is computed across different programs.
+    # `phase` is also the top-level cell-path namespace (`eval_vllm.cell_dir`), so a run
+    # that shares a phase AND a system name with another run shares its cell paths. Two
+    # grids that alias that way silently resume each other's cells — see MASTER_REPORT
+    # §12.1. `baselines_gridA` exists so the Grid A (`heldout`) baselines cannot collide
+    # with the Grid B (`testset`) ones, which are both `baselines`. Adding a phase is a
+    # SCHEMA change, not a config change: naming an unlisted phase in a config fails at
+    # the first row written, i.e. after a full generation pass. `tests/test_baseline_configs.py`
+    # asserts every committed config's phase is one this Literal accepts.
+    phase: Literal["pilot", "main", "final", "baselines", "baselines_gridA"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
     adapter_id: Optional[str]  # None = untuned base
     adapter_arch: Literal[
-        "none", "oracle_prompt", "mono", "per_type", "router", "merge_linear",
-        "merge_ties", "merge_dare_ties", "merge_dare_linear", "knockout",
+        "none", "oracle_prompt", "mono", "per_type", "router", "oracle_route",
+        "merge_linear", "merge_ties", "merge_dare_ties", "merge_dare_linear", "knockout",
+        # Activation-space mixtures (Part III). These get their OWN arch strings and never
+        # reuse "router": stats/R/03_rq1_transfer.R selects the RQ1 matrix with
+        # `adapter_arch == "per_type"`, and grid_v1.yaml records that mislabelling an RQ2
+        # upper-bound system once swept it into the RQ1 headline. All four run on the HF
+        # engine — vLLM applies exactly one adapter per request, so a per-token blend is
+        # not expressible there at any max_lora_rank.
+        "mole_router",       # the experiment: learned attention over experts
+        "mole_uniform",      # the PRIMARY fixed-mixture contrast — differs in weights alone
+        "mole_random",       # gate frozen at random init; if router ~= random, the gain is
+                             # rank-256 residency, not routing
+        "mole_hardrouter",   # the trained router's one-hot, through the mixture module
     ]
     train_cond: Optional[str]  # None | condition | "mix"
-    eval_cond: Condition
+    eval_cond: AnyCondition
     language: Language
     dataset: Literal["A", "B"]
     snippet_id: str  # program_id

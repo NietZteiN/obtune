@@ -1,0 +1,34 @@
+# The remaining two cells of "tuned_L0 on Grid B": S3 and S4.
+#
+# THIS IS THE SMALL REMAINDER OF AN ITEM THAT IS OTHERWISE ALREADY DONE.
+# ---------------------------------------------------------------------
+# "tuned_L0 on Grid B (~1 GPU-h)" was on the pending list to unblock `oracle_bestof8` for
+# L0-S2. It turned out to be already run: `tuned_L0_k0` in the k-sweep IS `tuned_L0` on
+# Grid B — same adapter sha256 (82329cd...), same prompt template sha (c1e8fe2...), zero
+# demonstrations — covering L0, L1b, L1r, L2, S1, S2 and H1 on the matched items. Only S3
+# and S4 were never evaluated, because the k-sweep did not include them.
+#
+# So this config is ~10 GPU-minutes, not ~1 GPU-hour, and it completes the Grid B row for
+# the control adapter across the full S2-split ladder. `oracle_bestof8`'s per-item headroom
+# bound can then run over all eight experts on ONE grid, which is what it needed: the arm
+# previously produced S3/S4-only output because `tuned_L0` sat on Grid A while the other
+# seven experts sat on Grid B, and a silent dropna() hid the mismatch rather than reporting
+# it (log/modularity/2026-08-13, addendum).
+#
+# System name matches the k-sweep's so the two halves of the row join cleanly.
+# No H1 here: it is already evaluated on this grid by the k-sweep, and re-reading it would
+# spend a quarantine access to duplicate a number we already have.
+_extends: _base_eval.yaml
+
+phase: baselines
+experiment_id: icl_k_sweep
+run_tag: tuned_L0_gridB_s3s4
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+systems:
+  - {name: tuned_L0_k0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: base, arch: none}
+
+eval_conditions: [S3, S4]

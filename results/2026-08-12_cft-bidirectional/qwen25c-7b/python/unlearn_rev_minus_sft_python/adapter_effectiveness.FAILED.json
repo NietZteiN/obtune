@@ -1,0 +1,52 @@
+{
+  "flip": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "rev": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "sft": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam0": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam0p25": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam0p5": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam0p75": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam1": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam1p25": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  },
+  "u_lam1p5": {
+    "n_compared": 3000,
+    "identical_to_base": 3000,
+    "identical_rate": 1.0
+  }
+}

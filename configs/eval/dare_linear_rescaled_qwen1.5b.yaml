@@ -1,0 +1,24 @@
+# Is merge_dare_linear's collapse purely a magnitude artifact?
+#
+# Measured 2026-08-11 against the EXACT uniform mixture over 196 modules: merge_dare_linear has
+# ||dW||/exact = 7.175 at cosine 0.832 — the right DIRECTION at ~7x the right magnitude. Cause:
+# PEFT applies sqrt(|w*scaling|) to lora_A and lora_B separately, so B_new @ A_new carries 36
+# terms B_i A_j where only 6 are wanted, and DARE's 1/(1-density)=2 rescale hits each factor.
+#
+# `dare_linear_rescaled` is that adapter with lora_B scaled by 1/7.175, which matches its
+# magnitude to the exact mixture while leaving its direction untouched. If it now scores near
+# merge_dare_ties, the collapse to 0.02-0.06 was a scale artifact and the arm must be reported
+# as an implementation defect rather than a method result.
+_extends: _base_eval.yaml
+
+phase: main
+run_tag: dare_linear_rescaled
+model: qwen25c-1.5b
+language: python
+
+systems:
+  - {name: base, arch: none}
+  - {name: dl_rescaled, arch: merge_dare_linear, train_cond: mix,
+     adapter: runs/merges/scale_corrected/qwen25c-1.5b/python/dare_linear_rescaled_r32_s17}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

@@ -19,7 +19,35 @@ source scripts/env.sh
 # obtune holds at most this many GPUs at once, and follows whatever is FREE rather
 # than being pinned to fixed indices — a neighbour can claim a card at any time, and a
 # worker parked on someone else's GPU does nothing while another card sits idle.
-MAX_GPUS="${MAX_GPUS:-2}"
+# Budget comes from configs/compute.yaml, read HERE rather than passed in by the caller.
+# It used to be computed in pipeline.sh and exported across the exec; that read was wrapped
+# in `2>/dev/null || echo 4`, so any failure to import obtune silently reinstated a 4-GPU
+# budget minutes after a card was lent out. On 2026-08-11 that is exactly what happened:
+# this supervisor announced "claiming free GPU(s): 2 3 (budget 4)" against an
+# allowed_gpus of [0, 1], and only launch_workers.sh's filter stopped it. One reader, one
+# source of truth, and a failure that is LOUD and falls back to the safest value rather
+# than the largest.
+_budget_from_config() {
+  python - <<'PY' 2>/dev/null
+from obtune.config import load_config
+sp = load_config("compute.yaml").get("scheduler_policy", {}) or {}
+allowed = sp.get("allowed_gpus")
+b = sp.get("gpu_budget")
+# Never exceed the number of cards we are allowed to touch.
+if allowed is not None:
+    b = min(int(b), len(allowed)) if b is not None else len(allowed)
+print(int(b) if b is not None else "")
+PY
+}
+if [ -z "${MAX_GPUS:-}" ]; then
+  MAX_GPUS="$(_budget_from_config)"
+  if [ -z "$MAX_GPUS" ]; then
+    MAX_GPUS=1
+    echo "[supervisor] WARNING: could not read scheduler_policy.gpu_budget from" \
+         "configs/compute.yaml — falling back to the SAFEST budget (1), not the largest." \
+         "Fix the config read; do not ignore this." >&2
+  fi
+fi
 SWEEP_GPUS="${SWEEP_GPUS:-0 1}"
 INTERVAL="${INTERVAL:-300}"
 LOG=runs/logs/supervisor.log
@@ -91,8 +119,24 @@ while true; do
 from obtune import gpu_alloc
 print(next((g.owner for g in gpu_alloc.survey() if g.index == $idx), 'free'))" 2>/dev/null)
       if [ "$owner" = "theirs" ]; then
-        say "gpu${idx} was taken by another user — retiring our idle worker there"
-        kill -TERM "$pid" 2>/dev/null; rm -f "$f"
+        # A worker holding a claim is NOT idle, whatever the card looks like. Killing it
+        # strands that claim in running/ forever (nothing else can tell a dead claim from
+        # a live one) and `drain` then waits on it for good. Requeue first, then retire.
+        #
+        # This fired wrongly for weeks: vLLM renames its engine-core process, so our own
+        # evaluation read as "theirs" and the supervisor killed the worker running it.
+        # gpu_alloc now resolves ownership by process ancestry, but the ordering below is
+        # the part that makes a genuine neighbour takeover lossless rather than silent.
+        claims=$(ls "runs/manifest/running/$tag"/*.json 2>/dev/null | wc -l)
+        if [ "$claims" -gt 0 ]; then
+          say "gpu${idx} taken by another user while our worker held $claims job(s) — requeuing them"
+          kill -TERM "$pid" 2>/dev/null; rm -f "$f"
+          sleep 2
+          python -m obtune.sched.worker --requeue-stale --gpu-tag "$tag" 2>&1 | tee -a "$LOG" >/dev/null
+        else
+          say "gpu${idx} was taken by another user — retiring our idle worker there"
+          kill -TERM "$pid" 2>/dev/null; rm -f "$f"
+        fi
       fi
     done
 

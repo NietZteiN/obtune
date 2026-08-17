@@ -1,0 +1,29 @@
+{
+  "job_id": "evalmerge_overtrain_full__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_overtrain_full_qwen25c-1.5b_python.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 53,
+  "meta": {
+    "experiment": "rq2/merge-epoch-sweep",
+    "language": "python",
+    "note": "uniform-epoch merges; tests Horoi et al. arXiv:2506.14126v2"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 110.1,
+    "log": "runs/logs/evalmerge_overtrain_full__qwen25c-1.5b_python.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-12T22:57:54.456208+00:00"
+  }
+}

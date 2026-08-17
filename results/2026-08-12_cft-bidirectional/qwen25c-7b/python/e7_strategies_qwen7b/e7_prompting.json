@@ -1,0 +1,367 @@
+{
+  "cells": {
+    "base|simple": {
+      "system": "base",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.132,
+      "strict_ci": [
+        0.11266666666666666,
+        0.15266666666666667
+      ],
+      "paper": 0.23466666666666666,
+      "exec": 0.8086666666666666,
+      "identity": 0.072
+    },
+    "base|few_shot": {
+      "system": "base",
+      "strategy": "few_shot",
+      "n": 1500,
+      "strict": 0.18133333333333335,
+      "strict_ci": [
+        0.15733333333333333,
+        0.20666666666666667
+      ],
+      "paper": 0.32666666666666666,
+      "exec": 0.7493333333333333,
+      "identity": 0.023333333333333334
+    },
+    "base|cot": {
+      "system": "base",
+      "strategy": "cot",
+      "n": 1500,
+      "strict": 0.21866666666666668,
+      "strict_ci": [
+        0.194,
+        0.24466666666666667
+      ],
+      "paper": 0.3526666666666667,
+      "exec": 0.776,
+      "identity": 0.048
+    },
+    "base|augmented": {
+      "system": "base",
+      "strategy": "augmented",
+      "n": 1500,
+      "strict": 0.214,
+      "strict_ci": [
+        0.188,
+        0.24133333333333334
+      ],
+      "paper": 0.38333333333333336,
+      "exec": 0.734,
+      "identity": 0.019333333333333334
+    },
+    "cft|simple": {
+      "system": "cft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.0006666666666666666,
+      "strict_ci": [
+        0.0,
+        0.002
+      ],
+      "paper": 0.0013333333333333333,
+      "exec": 0.9206666666666666,
+      "identity": 0.29533333333333334
+    },
+    "cft|few_shot": {
+      "system": "cft",
+      "strategy": "few_shot",
+      "n": 1500,
+      "strict": 0.004666666666666667,
+      "strict_ci": [
+        0.0013333333333333333,
+        0.008666666666666666
+      ],
+      "paper": 0.018,
+      "exec": 0.8486666666666667,
+      "identity": 0.13466666666666666
+    },
+    "cft|cot": {
+      "system": "cft",
+      "strategy": "cot",
+      "n": 1500,
+      "strict": 0.014666666666666666,
+      "strict_ci": [
+        0.009333333333333334,
+        0.020666666666666667
+      ],
+      "paper": 0.028666666666666667,
+      "exec": 0.914,
+      "identity": 0.43066666666666664
+    },
+    "cft|augmented": {
+      "system": "cft",
+      "strategy": "augmented",
+      "n": 1500,
+      "strict": 0.012,
+      "strict_ci": [
+        0.006666666666666667,
+        0.017333333333333333
+      ],
+      "paper": 0.024666666666666667,
+      "exec": 0.87,
+      "identity": 0.17866666666666667
+    },
+    "flip|simple": {
+      "system": "flip",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.33666666666666667,
+      "strict_ci": [
+        0.32133333333333336,
+        0.3526666666666667
+      ],
+      "paper": 0.354,
+      "exec": 0.9393333333333334,
+      "identity": 0.0
+    },
+    "flip|few_shot": {
+      "system": "flip",
+      "strategy": "few_shot",
+      "n": 1500,
+      "strict": 0.326,
+      "strict_ci": [
+        0.31066666666666665,
+        0.3406666666666667
+      ],
+      "paper": 0.35333333333333333,
+      "exec": 0.9306666666666666,
+      "identity": 0.0
+    },
+    "flip|cot": {
+      "system": "flip",
+      "strategy": "cot",
+      "n": 1500,
+      "strict": 0.328,
+      "strict_ci": [
+        0.312,
+        0.3446666666666667
+      ],
+      "paper": 0.3486666666666667,
+      "exec": 0.898,
+      "identity": 0.0006666666666666666
+    },
+    "flip|augmented": {
+      "system": "flip",
+      "strategy": "augmented",
+      "n": 1500,
+      "strict": 0.326,
+      "strict_ci": [
+        0.31066666666666665,
+        0.3406666666666667
+      ],
+      "paper": 0.35133333333333333,
+      "exec": 0.932,
+      "identity": 0.0
+    },
+    "mix50|simple": {
+      "system": "mix50",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.328,
+      "strict_ci": [
+        0.31266666666666665,
+        0.344
+      ],
+      "paper": 0.356,
+      "exec": 0.9226666666666666,
+      "identity": 0.0
+    },
+    "mix50|few_shot": {
+      "system": "mix50",
+      "strategy": "few_shot",
+      "n": 1500,
+      "strict": 0.31266666666666665,
+      "strict_ci": [
+        0.296,
+        0.3293333333333333
+      ],
+      "paper": 0.3606666666666667,
+      "exec": 0.8966666666666666,
+      "identity": 0.0
+    },
+    "mix50|cot": {
+      "system": "mix50",
+      "strategy": "cot",
+      "n": 1500,
+      "strict": 0.30333333333333334,
+      "strict_ci": [
+        0.2886666666666667,
+        0.31866666666666665
+      ],
+      "paper": 0.3313333333333333,
+      "exec": 0.662,
+      "identity": 0.0
+    },
+    "mix50|augmented": {
+      "system": "mix50",
+      "strategy": "augmented",
+      "n": 1500,
+      "strict": 0.31666666666666665,
+      "strict_ci": [
+        0.3,
+        0.3333333333333333
+      ],
+      "paper": 0.3606666666666667,
+      "exec": 0.8973333333333333,
+      "identity": 0.0
+    },
+    "rev|simple": {
+      "system": "rev",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.3293333333333333,
+      "strict_ci": [
+        0.31466666666666665,
+        0.3446666666666667
+      ],
+      "paper": 0.352,
+      "exec": 0.9373333333333334,
+      "identity": 0.0
+    },
+    "rev|few_shot": {
+      "system": "rev",
+      "strategy": "few_shot",
+      "n": 1500,
+      "strict": 0.32466666666666666,
+      "strict_ci": [
+        0.31,
+        0.34
+      ],
+      "paper": 0.35733333333333334,
+      "exec": 0.9266666666666666,
+      "identity": 0.0
+    },
+    "rev|cot": {
+      "system": "rev",
+      "strategy": "cot",
+      "n": 1500,
+      "strict": 0.3253333333333333,
+      "strict_ci": [
+        0.31,
+        0.342
+      ],
+      "paper": 0.3466666666666667,
+      "exec": 0.922,
+      "identity": 0.0
+    },
+    "rev|augmented": {
+      "system": "rev",
+      "strategy": "augmented",
+      "n": 1500,
+      "strict": 0.32866666666666666,
+      "strict_ci": [
+        0.31333333333333335,
+        0.344
+      ],
+      "paper": 0.358,
+      "exec": 0.924,
+      "identity": 0.0
+    },
+    "sft|simple": {
+      "system": "sft",
+      "strategy": "simple",
+      "n": 1500,
+      "strict": 0.0,
+      "strict_ci": [
+        0.0,
+        0.0
+      ],
+      "paper": 0.004,
+      "exec": 0.892,
+      "identity": 0.18
+    },
+    "sft|few_shot": {
+      "system": "sft",
+      "strategy": "few_shot",
+      "n": 1500,
+      "strict": 0.016,
+      "strict_ci": [
+        0.01,
+        0.023333333333333334
+      ],
+      "paper": 0.064,
+      "exec": 0.854,
+      "identity": 0.24266666666666667
+    },
+    "sft|cot": {
+      "system": "sft",
+      "strategy": "cot",
+      "n": 1500,
+      "strict": 0.05266666666666667,
+      "strict_ci": [
+        0.042,
+        0.06333333333333334
+      ],
+      "paper": 0.106,
+      "exec": 0.8613333333333333,
+      "identity": 0.264
+    },
+    "sft|augmented": {
+      "system": "sft",
+      "strategy": "augmented",
+      "n": 1500,
+      "strict": 0.050666666666666665,
+      "strict_ci": [
+        0.04066666666666666,
+        0.06133333333333333
+      ],
+      "paper": 0.124,
+      "exec": 0.8366666666666667,
+      "identity": 0.24
+    }
+  },
+  "systems": [
+    "base",
+    "cft",
+    "flip",
+    "mix50",
+    "rev",
+    "sft"
+  ],
+  "strategies": [
+    "simple",
+    "few_shot",
+    "cot",
+    "augmented"
+  ],
+  "headline_contrast": {
+    "cft": {
+      "best_strategy": "cot",
+      "best_strict": 0.014666666666666666,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.132,
+      "below_base_worst": true
+    },
+    "flip": {
+      "best_strategy": "simple",
+      "best_strict": 0.33666666666666667,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.132,
+      "below_base_worst": false
+    },
+    "mix50": {
+      "best_strategy": "simple",
+      "best_strict": 0.328,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.132,
+      "below_base_worst": false
+    },
+    "rev": {
+      "best_strategy": "simple",
+      "best_strict": 0.3293333333333333,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.132,
+      "below_base_worst": false
+    },
+    "sft": {
+      "best_strategy": "cot",
+      "best_strict": 0.05266666666666667,
+      "base_worst_strategy": "simple",
+      "base_worst_strict": 0.132,
+      "below_base_worst": true
+    }
+  }
+}

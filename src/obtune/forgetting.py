@@ -59,6 +59,7 @@ def humaneval_plus(
         os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu)  # before torch/vllm import
 
     from evalplus.data import get_human_eval_plus
+    from evalplus.evaluate import get_groundtruth, get_human_eval_plus_hash
     from vllm import LLM, SamplingParams
     from vllm.lora.request import LoRARequest
 
@@ -99,25 +100,64 @@ def humaneval_plus(
 
     from evalplus.evaluate import check_correctness
 
-    n_base = n_plus = 0
+    # Expected outputs are NOT a field of the problem dict — they are computed by running
+    # the canonical solutions, which is what get_groundtruth does (~17 s, cached by hash).
+    # Indexing problems[tid]["expected_output"] raised KeyError for EVERY task; the bare
+    # `except: continue` below swallowed all 164 of them and reported pass@1 = 0.0. A base
+    # Qwen2.5-Coder-1.5B scores ~0.6 here, so the gate was returning a plausible-looking
+    # constant that would have shown "no forgetting" for every arm while measuring nothing.
+    expected = get_groundtruth(problems, get_human_eval_plus_hash(), [])
+
+    # PER-TASK verdicts are retained, not just the totals. Every arm is scored on the SAME
+    # 164 tasks, so the comparison between two arms is PAIRED and the right test is McNemar
+    # on the discordant tasks. Aggregate counts cannot support that: unpaired Wilson
+    # intervals at n=164 are ~+-7.5 pp wide and overlap for arms that differ by 14 tasks,
+    # so discarding the per-task vector threw away most of the design's power. Measured on
+    # the 2026-08-17 dose cells: `mix10` - `mix50` is 14 of 164 tasks, which unpaired reads
+    # as "not significant" and paired almost certainly does not.
+    #
+    # This is a dict rather than two lists so that a later re-scoring cannot silently
+    # misalign the arms by task order.
+    per_task: dict[str, dict[str, bool]] = {}
+    n_base = n_plus = n_err = 0
     for sol in solutions:
+        tid = sol["task_id"]
         try:
             res = check_correctness(
-                dataset="humaneval", completion_id=0, problem=problems[sol["task_id"]],
-                solution=sol["solution"], expected_output=problems[sol["task_id"]]["expected_output"],
+                dataset="humaneval", completion_id=0, problem=problems[tid],
+                solution=sol["solution"], expected_output=expected[tid],
                 base_only=False, fast_check=True, gt_time_limit_factor=4.0,
             )
-            n_base += int(res["base"][0] == "pass")
-            n_plus += int(res["plus"][0] == "pass")
-        except Exception:  # noqa: BLE001 — a harness error on one task is not a model failure
-            continue
+            ok_base = res["base"][0] == "pass"
+            ok_plus = res["plus"][0] == "pass"
+            per_task[tid] = {"base": ok_base, "plus": ok_plus}
+            n_base += int(ok_base)
+            n_plus += int(ok_plus)
+        except Exception as exc:  # noqa: BLE001 — counted, never silently absorbed
+            n_err += 1
+            # Record the failure rather than omitting the task: a missing key must be
+            # distinguishable from a failed task when two arms are paired up later.
+            per_task[tid] = {"base": None, "plus": None, "error": type(exc).__name__}
+            if n_err <= 3:
+                print(f"[forgetting] scorer error on {tid}: {type(exc).__name__}: {exc}", flush=True)
 
     n = len(solutions)
+    # A gate that cannot score is not a model result. Fail loudly rather than emit 0.0.
+    if n and n_err > n * 0.1:
+        raise RuntimeError(
+            f"HumanEval+ scorer failed on {n_err}/{n} tasks — this is a harness fault, not "
+            f"a model score. Refusing to report pass@1 computed from the remainder.")
+
     return {
         "model": model_id, "adapter": str(adapter) if adapter else None,
         "n_tasks": n,
+        "n_scorer_errors": n_err,
         "pass@1_base": round(n_base / n, 4) if n else None,
         "pass@1_plus": round(n_plus / n, 4) if n else None,
+        # See the comment above the scoring loop: this is what makes arm-vs-arm comparison
+        # a paired test. Cells written before 2026-08-17 lack it and can only be compared
+        # on point estimates.
+        "per_task": per_task,
     }
 
 
@@ -177,7 +217,27 @@ def l0_output_prediction(
         )
         for i in items
     ]
-    sp = SamplingParams(temperature=0.0, max_tokens=64, seed=seed)
+    # vLLM RAISES on an over-long prompt and kills the whole run — the accuracy grid
+    # learned this the hard way (eval_vllm.drop_overlong, whose docstring names the same
+    # 1,671-item L0 set and the single APPS program with a 19,950-character literal that
+    # took it out). This module rebuilt the generation path without that guard, so the
+    # forgetting gate failed on its first ever invocation for exactly that reason.
+    # Reuse the grid's function rather than reimplementing the budget arithmetic.
+    from obtune.eval_vllm import drop_overlong
+
+    max_new = 64
+    items, texts, dropped = drop_overlong(
+        items, texts, tok,
+        max_model_len=int(engine_cfg.get("max_model_len", 4096)),
+        max_new_tokens=max_new,
+    )
+    if dropped:
+        print(f"[forgetting] dropped {len(dropped)} over-long L0 prompt(s); "
+              f"they are unanswerable in this context window either way", flush=True)
+    if not items:
+        raise RuntimeError("every L0 prompt exceeded the context window")
+
+    sp = SamplingParams(temperature=0.0, max_tokens=max_new, seed=seed)
     kw = {}
     if adapter is not None:
         kw["lora_request"] = LoRARequest("forgetting_l0", 1, str(adapter))
@@ -192,6 +252,7 @@ def l0_output_prediction(
         "model": model_id, "adapter": str(adapter) if adapter else None,
         "language": language, "source": source, "condition": "L0",
         "n_items": n,
+        "n_dropped_overlong": len(dropped),
         "n_programs": len({i.program_id for i in items}),
         "accuracy": round(sum(g.correct for g in grades) / n, 4),
         "format_fail_rate": round(sum(g.format_fail for g in grades) / n, 4),

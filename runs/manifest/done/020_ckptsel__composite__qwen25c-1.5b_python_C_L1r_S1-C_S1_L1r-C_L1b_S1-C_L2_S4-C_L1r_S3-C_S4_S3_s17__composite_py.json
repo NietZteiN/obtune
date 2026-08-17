@@ -1,0 +1,28 @@
+{
+  "job_id": "ckptsel__composite__qwen25c-1.5b_python_C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_s17__composite_py",
+  "kind": "ckpt-select",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "train/composite_qwen1.5b_py.yaml",
+    "--mode",
+    "ckpt-select",
+    "--adapter-root",
+    "/data/jvl210002/my_downloads/obtune/runs/adapters_composite/qwen25c-1.5b/python/C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_r32_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 20,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_composite/qwen25c-1.5b/python/C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_r32_s17",
+    "depends_on": "train__composite__qwen25c-1.5b_python_C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_s17__composite_py"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 221.1,
+    "log": "runs/logs/ckptsel__composite__qwen25c-1.5b_python_C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_s17__composite_py.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-17T07:00:44.930599+00:00"
+  }
+}

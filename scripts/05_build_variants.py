@@ -46,6 +46,12 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--target", choices=["testset", "train"], default="testset")
     ap.add_argument("--conditions", nargs="*", default=list(TRAINABLE_CONDITIONS))
+    # Composites live in their own ladder file and are deliberately OUTSIDE
+    # TRAINABLE_CONDITIONS, so they can never be swept into the RQ1 matrix by a default.
+    # `builder.build_variants` already accepts a cfg; it just was never given one here, so
+    # it fell back to conditions.yaml and no composite code could ever resolve.
+    ap.add_argument("--conditions-config", default="conditions.yaml",
+                    help="ladder file; use conditions_composite.yaml for the C_ codes")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -54,14 +60,20 @@ def main() -> int:
         print("refusing: H1 is quarantined — use scripts/gen_h1_quarantined.py")
         return 2
 
-    cfg = load_config("conditions.yaml")
+    cfg = load_config(args.conditions_config)
+    # Per-condition variant files are namespaced by condition code already, but the coverage
+    # matrix and the reject dump are written to FIXED paths — so a second-ladder run would
+    # silently overwrite the RQ1 coverage matrix with a one-condition composite summary.
+    # Suffix both by the ladder file whenever it is not the canonical one.
+    stem = Path(args.conditions_config).stem
+    tag = "" if stem == "conditions" else "_" + stem.replace("conditions_", "")
     out_root = (EVAL_ROOT / "testset" / "variants") if args.target == "testset" else (TRAIN_ROOT / "variants")
     summary: dict[str, dict] = {}
 
     for language, programs in _load_targets(args.target).items():
         report = builder.build_variants(
             programs, args.conditions, language, workers=args.workers,
-            seed=int(cfg.get("global_seed", 17)), write=False,
+            seed=int(cfg.get("global_seed", 17)), write=False, cfg=cfg,
         )
         counts = {c: 0 for c in args.conditions}
         for v in report.variants:
@@ -86,14 +98,14 @@ def main() -> int:
             for cond in args.conditions:
                 rows = [v.model_dump() for v in report.variants if v.condition == cond]
                 write_jsonl(out_root / cond / f"{language}.jsonl", rows)
-            write_jsonl(Path(f"data/rejects/{language}/{args.target}.jsonl"), report.rejects)
+            write_jsonl(Path(f"data/rejects/{language}/{args.target}{tag}.jsonl"), report.rejects)
 
         summary[language] = {"n_programs": n, "coverage": counts,
                              "common_subset": common, "n_common": len(common)}
 
     if not args.dry_run:
         MANIFESTS_ROOT.mkdir(parents=True, exist_ok=True)
-        path = MANIFESTS_ROOT / f"coverage_matrix_{args.target}.json"
+        path = MANIFESTS_ROOT / f"coverage_matrix_{args.target}{tag}.json"
         path.write_text(json.dumps(summary, indent=2))
         print(f"\nwrote {out_root} and {path}")
     return 0

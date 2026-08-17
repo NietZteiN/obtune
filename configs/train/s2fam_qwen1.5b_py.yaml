@@ -1,0 +1,74 @@
+# B1 — the filtering curriculum. Train on the whole INERT-MATERIAL family at once.
+#
+# THE HYPOTHESIS. `S2` (opaque predicates + dead code) is the project's only replicated positive
+# transfer: it is the one arm that beats the clean-code control on the held-out `H1`, at both
+# seeds in both languages (MASTER_REPORT §3.5, +3.5/+3.1 Python, +7.3/+7.7 JS). The proposed
+# mechanism is that `S2` and `H1` both bury the real computation under *inert* material, so what
+# transfers is "ignore the code that cannot affect the result" — a skill, where inverting a
+# renaming is not. That result was found by accident, on an adapter trained on equal footing with
+# everything else. This arm trains for it deliberately.
+#
+# `S3` (dead helpers only) and `S4` (opaque predicates only) are the two halves of `S2`, so
+# [S2, S3, S4] is the whole family and nothing else. Not a broader mixture: §4 established that
+# breadth is actively destructive to this exact transfer — a generalist trained on `S2` AND four
+# other things loses `H1` (−3.1) while the `S2` specialist gains it (+3.5).
+#
+# WHY THE FAMILY SHOULD COMPOSE RATHER THAN INTERFERE (measured, 2026-08-15, zero GPU).
+# The three task vectors are the most mutually aligned cluster in the entire expert bank:
+#
+#     S2|S3  0.698     S2|S4  0.691     L0|S3  0.697        <- this family
+#     L0|S2  0.653     L1b|S2 0.547     S1|S2  0.518        <- everything else
+#     bank mean cosine 0.592
+#
+# They are also the cluster closest to the clean-code direction `dW_L0`, which is the update that
+# best reaches `H1` among single adapters. So this arm has a second, sharper reading available:
+# `S2` may reach `H1` because its update most RESEMBLES clean-code training, not because it
+# teaches a distinct skill. Either way the family should merge rather than fight.
+#
+# WHY 3 EPOCHS AND NOT MORE. That alignment DECAYS with training — the top inert pair falls
+# 0.826 -> 0.723 over nine epochs while the bank mean falls 0.580 -> 0.514. Longer training makes
+# the family less coherent, so the stock 3-epoch recipe is kept and `ckpt_select` records which
+# epoch actually won. Do not "improve" this by training longer without re-measuring the geometry.
+#
+# SIZE — 14037, AND IT CANNOT BE MATCHED TO THE LOTO FOLDS. Measured, not assumed: S2+S3+S4 hold
+# 20,040 pairs across ALL splits, of which the *train* split is **14,037**. A cap of 22,152 (the
+# minimum realised LOTO fold) therefore does not bind, and recording 22152 in the run manifest
+# when 14,037 rows were used would misstate the arm. The number here is the realised size.
+#
+# So this arm sits ~37 % below the LOTO folds (14,037 vs 22,152) and ~48 % below `mono_all`
+# (26,841). That is a data-volume confound and it is stated rather than hidden. Two things make
+# it tolerable:
+#
+#   1. It is CONSERVATIVE. This arm has strictly less data than the comparator it must beat, so a
+#      WIN is interpretable (it won despite the deficit) while a LOSS is ambiguous and must not be
+#      attributed to the curriculum.
+#   2. Data volume demonstrably does not bind in this regime. `tuned_L0` reaches 39.04 on the LOTO
+#      grid from **4,689** train rows; `mono_all` reaches 39.15 from **26,841**. A 5.7x difference
+#      in training data buys 0.11 accuracy points. Whatever limits this task, it is not row count,
+#      so a 14k-vs-22k gap is very unlikely to carry an effect of the size being looked for.
+#
+# The clean fix, if the arm looks promising, is a size-matched partner drawn from a broader inert
+# pool — not padding this one with unrelated conditions, which is precisely what §4 showed
+# destroys the transfer.
+#
+# SELECTION. Against the LOTO 6-fold diagonal mean (38.02, vs `mono_all` 39.15 / `tuned_L0`
+# 39.04), never against `H1` — CLAUDE.md §3.2 rule 2. One batched confirmatory H1 read comes
+# later, for every arm at once.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [S2, S3, S4]
+run_tag: s2fam_py
+phase: main
+
+# Distinct root: the adapter directory name encodes only (conditions, rank, seed), so an arm that
+# varies anything else — here the data mixture's PURPOSE — would silently overwrite a neighbour.
+# Same reason `runs/adapters_loto` and `runs/adapters_overtrain` exist.
+adapter_root: runs/adapters_curriculum
+
+train:
+  # The realised size of the S2+S3+S4 train split. Set explicitly so the resolved config in the
+  # run manifest states the true number rather than a cap that never binds.
+  train_size: 14037
+  seed: 17

@@ -1,0 +1,32 @@
+{
+  "job_id": "srh__qwen25c-1.5b__python__all5-mix5__s17",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.srh.train",
+    "--config",
+    "srh/train/mix5_qwen1.5b_py.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 58,
+  "meta": {
+    "experiment": "srh/exp1",
+    "stage": 1,
+    "arm": "mix5",
+    "role": "dose-response rung: 5% of PROGRAMS seen in reverse instead of forward, matched to fwd on instances, sequence tokens and steps",
+    "tasks": [
+      "gen"
+    ],
+    "language": "python",
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_mix5_r32_s17",
+    "already_trained": false
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 3995.0,
+    "log": "runs/logs/srh__qwen25c-1.5b__python__all5-mix5__s17.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-10T17:53:20.962668+00:00"
+  }
+}

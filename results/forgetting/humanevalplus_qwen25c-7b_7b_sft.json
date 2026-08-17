@@ -1,0 +1,9 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters_cft/qwen25c-7b/python/sft_r32_s17/final",
+  "n_tasks": 164,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.878,
+  "pass@1_plus": 0.8171,
+  "model_key": "qwen25c-7b"
+}

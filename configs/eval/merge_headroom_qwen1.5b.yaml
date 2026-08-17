@@ -1,0 +1,51 @@
+# The two cheapest headroom items on the merge side, in one eval pass.
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/merge_headroom_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# 1. THE DENSITY SWEEP THAT WAS CONFIGURED AND NEVER RUN
+# ------------------------------------------------------
+# `configs/merge/ties_v1.yaml` declares `density_sweep: [0.3, 0.5, 0.7]`. Only 0.5 was ever
+# merged, so density — the one merge hyperparameter that changes the answer to RQ2 (too
+# dense and the conditions overwrite each other, too sparse and the merged adapter is a
+# no-op) — has never been varied. Every merge conclusion in §5.2 rests on an unexamined
+# default.
+#
+# 2. THE SEED-42 REPLICATE
+# ------------------------
+# Every merge number is n=1 against a 3.61-pt p95 seed band. The six `_s42` specialists
+# already exist, so rebuilding the merges from the independent expert bank costs no
+# training. `merge_*_s42` vs `merge_*` is the first direct estimate of how much of the
+# merge ranking is real.
+#
+# H1 IS EXCLUDED, AND THAT IS THE POINT
+# -------------------------------------
+# CLAUDE.md §3.2 rule 2 forbids H1 for merge tuning, and a density sweep IS merge tuning.
+# Selecting a density on H1 would turn every downstream H1 number into training accuracy and
+# kill the discriminator. Density is chosen on the trainable conditions (and, once the folds
+# exist, against the LOTO diagonal mean — see eval/loto_qwen1.5b.yaml, which is the OOD
+# signal built precisely so sweeps like this one need not touch quarantine). The winning
+# configuration gets ONE H1 read afterwards, from a separate config, as confirmation.
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: merge_headroom
+run_tag: merge_headroom
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+systems:
+  # --- density sweep, seed-17 bank (d0.5 already exists as `merge_ties`/`merge_dare_ties`
+  #     and is regenerated here under its sweep name so all three densities are one row) ---
+  - {name: sweep_ties_d0p3, adapter: "runs/merges/qwen25c-1.5b_python_ties/ties_d0p3", arch: merge_ties, train_cond: mix}
+  - {name: sweep_ties_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_ties/ties_d0p5", arch: merge_ties, train_cond: mix}
+  - {name: sweep_ties_d0p7, adapter: "runs/merges/qwen25c-1.5b_python_ties/ties_d0p7", arch: merge_ties, train_cond: mix}
+  - {name: sweep_dare_ties_d0p3, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties/dare_ties_d0p3", arch: merge_dare_ties, train_cond: mix}
+  - {name: sweep_dare_ties_d0p5, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties/dare_ties_d0p5", arch: merge_dare_ties, train_cond: mix}
+  - {name: sweep_dare_ties_d0p7, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties/dare_ties_d0p7", arch: merge_dare_ties, train_cond: mix}
+  # --- seed-42 expert bank, density 0.5, matched to the §5.2 headline merges ---
+  - {name: merge_ties_s42, adapter: "runs/merges/qwen25c-1.5b_python_ties_s42/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: merge_dare_ties_s42, adapter: "runs/merges/qwen25c-1.5b_python_dare_ties_s42/d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

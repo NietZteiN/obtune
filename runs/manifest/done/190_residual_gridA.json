@@ -1,0 +1,29 @@
+{
+  "job_id": "residualgridA__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/residual_decompose_gridA_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 190,
+  "meta": {
+    "experiment": "holdout-final/residual-gridA",
+    "stage": "residual_gridA",
+    "note": "settle the residual weighting at n=1214/405. phase=final to avoid the Grid B alias."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 90.9,
+    "log": "runs/logs/residualgridA__qwen25c-1.5b.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-17T12:44:44.406541+00:00"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "job_id": "evalnorm__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/normalize_baseline_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 13,
+  "meta": {
+    "experiment": "baseline/normalize",
+    "note": "static rewrite then UNTUNED model; L0 cell is the cost, not an oversight"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 74.5,
+    "log": "runs/logs/evalnorm__qwen25c-1.5b_python.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-13T20:19:01.693491+00:00"
+  }
+}

@@ -83,16 +83,30 @@ class MergeSpec:
         return list(self.weights)
 
 
+def base_condition(key: str) -> str:
+    """Strip a `__<tag>` disambiguator from an adapter key: `L0__s101` -> `L0`.
+
+    Adapter keys double as PEFT adapter names AND as the condition the quarantine guard
+    validates, which made it impossible to merge two adapters of the SAME condition — a
+    dict cannot hold `L0` twice. That blocks the L0-merge control (N random-seed L0
+    adapters merged), which is the only arm that can rule out "merging just regresses
+    toward the clean-code model". No real condition contains `__`, so the split is
+    unambiguous and the guard below still validates the real condition.
+    """
+    return key.split("__", 1)[0]
+
+
 def _assert_no_h1(conditions: Sequence[str], paths: Sequence[str]) -> None:
     """Quarantine layer for the merge stage (CLAUDE.md §3.2 item 2).
 
     A merge that included an H1-trained adapter would make every downstream H1 number a
     train-on-test result, and nothing in the trial table would show it.
     """
-    bad = [c for c in conditions if c not in TRAINABLE_CONDITIONS]
+    bad = [c for c in conditions if base_condition(c) not in TRAINABLE_CONDITIONS]
     if bad:
         raise ValueError(f"refusing to merge non-trainable conditions {bad}; "
-                         f"allowed: {list(TRAINABLE_CONDITIONS)}")
+                         f"allowed: {list(TRAINABLE_CONDITIONS)} (optionally suffixed "
+                         f"`__<tag>` to merge several adapters of one condition)")
     for p in paths:
         rp = str(Path(p).resolve())
         if "quarantine" in rp or "/H1" in rp or rp.endswith("H1"):
@@ -229,6 +243,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--out", default=None, help="output adapter dir (single merge)")
     ap.add_argument("--sweep", action="store_true", help="run the density sweep from the config")
     ap.add_argument("--dtype", default="float32")
+    # Without this flag every emitted merge job silently produced the SAME merge: the
+    # combination type lived only in the config (always `ties`), while
+    # scripts/build_manifest.py::rq2_jobs varied it in job["meta"], which nothing read.
+    # The three "different" merges on disk were byte-identical (verified by md5), so the
+    # RQ2 merge comparison was measuring one method three times.
+    ap.add_argument("--combination-type", default=None,
+                    help="override the config's combination_type (ties|dare_ties|dare_linear|"
+                         "linear|magnitude_prune|*_svd|cat)")
+    ap.add_argument("--density", type=float, default=None,
+                    help="override the config's density")
     ap.add_argument("--adapter-dir", default=None,
                     help="JSON {condition: path} overriding the layout convention")
     args = ap.parse_args(argv)
@@ -245,15 +269,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         paths = resolve_adapter_paths(conds, model_key=args.model, language=args.language,
                                       rank=args.rank, seed=seed)
 
+    combination_type = str(args.combination_type or cfg["combination_type"])
+    density = float(args.density if args.density is not None else cfg["density"])
     spec = MergeSpec(
         base_model_id=base_id, adapter_paths=paths,
-        combination_type=str(cfg["combination_type"]), density=float(cfg["density"]),
+        combination_type=combination_type, density=density,
         weights=cfg.get("weights"), seed=seed,
     )
     tag = f"{args.model}_{args.language}_{spec.combination_type}"
     mani = RunManifest(
         experiment="merge_adapters", run_id=tag, seed=seed,
-        config_path=str(cfg["_config_path"]), config_resolved=cfg,
+        config_path=str(cfg["_config_path"]),
+        # The RESOLVED spec, not the raw config — otherwise a CLI override is invisible in
+        # the manifest and two different merges look identically provenanced.
+        config_resolved={**cfg, "combination_type": combination_type, "density": density},
         model_hf_id=base_id,
     ).hash_scripts(["src/obtune/merge_adapters.py"]).capture_git()
 

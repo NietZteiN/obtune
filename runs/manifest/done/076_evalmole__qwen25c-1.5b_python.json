@@ -1,0 +1,28 @@
+{
+  "job_id": "evalmole__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_ladder_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 76,
+  "meta": {
+    "experiment": "rq2/routerlora",
+    "note": "HF engine; batched, left-padded"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 8.5,
+    "log": "runs/logs/evalmole__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-13T19:06:51.288191+00:00"
+  }
+}

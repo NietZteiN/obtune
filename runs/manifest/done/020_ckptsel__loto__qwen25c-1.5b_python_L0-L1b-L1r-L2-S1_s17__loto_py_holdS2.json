@@ -1,0 +1,28 @@
+{
+  "job_id": "ckptsel__loto__qwen25c-1.5b_python_L0-L1b-L1r-L2-S1_s17__loto_py_holdS2",
+  "kind": "ckpt-select",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "train/loto_qwen1.5b_py_holdS2.yaml",
+    "--mode",
+    "ckpt-select",
+    "--adapter-root",
+    "/data/jvl210002/my_downloads/obtune/runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1_r32_s17"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 20,
+  "meta": {
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_loto/qwen25c-1.5b/python/L0-L1b-L1r-L2-S1_r32_s17",
+    "depends_on": "train__loto__qwen25c-1.5b_python_L0-L1b-L1r-L2-S1_s17__loto_py_holdS2"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 68.7,
+    "log": "runs/logs/ckptsel__loto__qwen25c-1.5b_python_L0-L1b-L1r-L2-S1_s17__loto_py_holdS2.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-14T22:52:46.425516+00:00"
+  }
+}

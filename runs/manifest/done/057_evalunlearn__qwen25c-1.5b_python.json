@@ -1,0 +1,25 @@
+{
+  "job_id": "evalunlearn__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "unlearn/negation_qwen25c-1.5b_python.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 57,
+  "meta": {
+    "experiment": "srh/exp3-unlearning",
+    "language": "python",
+    "note": "approximate unlearning by exact task-vector negation"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 4814.2,
+    "log": "runs/logs/evalunlearn__qwen25c-1.5b_python.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-10T16:40:24.858582+00:00"
+  }
+}

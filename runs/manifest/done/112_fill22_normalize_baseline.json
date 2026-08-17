@@ -1,0 +1,28 @@
+{
+  "job_id": "fill22_normalize_baseline",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_normalize_baseline.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 112,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 73.7,
+    "log": "runs/logs/fill22_normalize_baseline.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T21:49:37.876096+00:00"
+  }
+}

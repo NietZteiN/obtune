@@ -1,0 +1,91 @@
+# Composite (stacked) conditions — a SEPARATE namespace, never the ladder.
+#
+# Last updated: 2026-08-11
+#
+# WHY THESE ARE NOT LADDER CONDITIONS
+# -----------------------------------
+# CLAUDE.md §3.1 mandates that conditions are single-transform from the L0 parent, never
+# stacked, with identical semantics in Python and JavaScript. That rule is load-bearing for
+# RQ1: the transfer matrix attributes a degradation to ONE mechanism, and a stacked condition
+# would break the attribution. `tier_icse` is the precedent for a parallel namespace that
+# coexists without contaminating the ladder.
+#
+# These codes therefore live here, are excluded from `paths.TRAINABLE_CONDITIONS`, and cannot
+# reach the RQ1 matrix. `conditions.yaml` has no `composite_conditions:` key at all, which is
+# what makes the single-transform build path provably unchanged (pinned by
+# tests/test_s2_split_snapshot.py's byte-identity check).
+#
+# WHY THEY EXIST
+# --------------
+# For the RouterLoRA experiment (Part III). The learned router is saturated on single
+# conditions — 100 % route accuracy, entropy ~1e-6 — so a mixture-over-experts has no headroom
+# there. A composite input genuinely contains TWO mechanisms, so a hard router must pick one
+# and be wrong, while a soft mixture can blend. That is the condition the hypothesis predicts,
+# and it does not exist anywhere in the current corpus.
+#
+# ORDER MATTERS — composition does not commute, which is why `C_S1_L1r` is a separate code
+# from `C_L1r_S1` rather than a duplicate.
+#
+# SIZE CAPS are roughly multiplicative: the identifier stage does not grow code, so the cap is
+# essentially the structural stage's, with headroom. Calibrate on real programs before a full
+# build — a too-tight cap silently selects for short programs, which is the exact confound
+# `obf/validate.py` was rewritten to avoid.
+_extends: conditions.yaml
+
+composite_conditions:
+  # Canonical identifier ⊗ structural — the two families the transfer matrix treats as
+  # separate. The headline composite.
+  C_L1r_S1:
+    parts: [L1r, S1]
+    family: composite
+    trainable: true
+    size_cap: 8.0
+    size_cap_floor_chars: 1200
+
+  # ORDER CONTROL. S1 emits `_st_` state variables; renaming them second destroys the surface
+  # cue the saturated hard router keys on. If routing accuracy drops here but not on
+  # C_L1r_S1, the router was reading the state-variable names rather than the structure.
+  C_S1_L1r:
+    parts: [S1, L1r]
+    family: composite
+    trainable: true
+    size_cap: 8.0
+    size_cap_floor_chars: 1200
+
+  # L1b is the one condition where a specialist beats the L0 control. Does that survive
+  # stacking, or does the structural stage erase the advantage?
+  C_L1b_S1:
+    parts: [L1b, S1]
+    family: composite
+    trainable: true
+    size_cap: 8.0
+    size_cap_floor_chars: 1200
+
+  # Identifier ⊗ the reason-about-it half of S2.
+  C_L2_S4:
+    parts: [L2, S4]
+    family: composite
+    trainable: true
+    size_cap: 5.0
+    size_cap_floor_chars: 900
+
+  # Identifier ⊗ the ignore-it half of S2. With the row above, decomposes which half of S2
+  # stacking actually hurts.
+  C_L1r_S3:
+    parts: [L1r, S3]
+    family: composite
+    trainable: true
+    size_cap: 5.0
+    size_cap_floor_chars: 900
+
+  # THE POSITIVE CONTROL. Within-family stack: S4 (opaque predicates) then S3 (dead helpers)
+  # reconstructs S2 by composition. If C_S4_S3 satisfies the same purity invariants S2 does
+  # and scores near it on existing adapters, the whole composite machinery is validated
+  # against a condition we already have numbers for. If it does not, the machinery is wrong
+  # and nothing else here is trustworthy.
+  C_S4_S3:
+    parts: [S4, S3]
+    family: composite
+    trainable: true
+    size_cap: 5.0
+    size_cap_floor_chars: 900

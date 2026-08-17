@@ -1,0 +1,45 @@
+{
+  "run": "results/2026-08-12_cft-bidirectional/qwen25c-7b/python/unlearn_mix50_minus_sft_python",
+  "metric": "reverse_success_strict",
+  "contrasts": [
+    {
+      "a": "flip",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.3293333333333333,
+      "mean_b": 0.0,
+      "delta": 0.3293333333333333,
+      "ci": [
+        0.31466666666666665,
+        0.3446666666666667
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "sft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.0,
+      "mean_b": 0.128,
+      "delta": -0.128,
+      "ci": [
+        -0.148,
+        -0.108
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "flip",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.3293333333333333,
+      "mean_b": 0.128,
+      "delta": 0.2013333333333333,
+      "ci": [
+        0.18000000000000002,
+        0.22399999999999998
+      ],
+      "excludes_zero": true
+    }
+  ]
+}

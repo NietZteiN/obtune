@@ -1,0 +1,109 @@
+{
+  "experiment": "residual_merge",
+  "run_id": "residual_dare_ties_n6_s42_d0p3",
+  "seed": 17,
+  "config_path": "/data/jvl210002/my_downloads/obtune/configs/merge/ties_v1.yaml",
+  "config_resolved": {
+    "combination_type": "dare_ties",
+    "density": 0.3,
+    "adapters": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "weights": [
+      0.0776904013334726,
+      0.30336163207589173,
+      0.30336163207589173,
+      0.30336163207589173,
+      0.30336163207589173,
+      0.30336163207589173
+    ],
+    "density_sweep": [
+      0.3,
+      0.5,
+      0.7
+    ],
+    "seed": 17,
+    "_config_path": "/data/jvl210002/my_downloads/obtune/configs/merge/ties_v1.yaml",
+    "adapter_paths": {
+      "L0": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L0_r32_s42/best",
+      "L1b": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1b_r32_s42/best",
+      "L1r": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L1r_r32_s42/best",
+      "L2": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/L2_r32_s42/best",
+      "S1": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S1_r32_s42/best",
+      "S2": "/data/jvl210002/my_downloads/obtune/runs/adapters/qwen25c-1.5b/python/S2_r32_s42/best"
+    },
+    "conditions": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "bank_seed": 42,
+    "uniform_control": false
+  },
+  "model_hf_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "model_revision_resolved": null,
+  "adapter": null,
+  "gpu_visible": null,
+  "command": "scripts/merge/25_residual_merge.py --seed 42",
+  "git_commit": "469f857ec5e0e019bb5f39e5087de528d8d40f02",
+  "script_sha256": {
+    "src/obtune/merge_adapters.py": "97461aa6a6f2d5c836fc5321254936a920a6aeb5cbb5fbc91fa117fcd79a532f",
+    "scripts/merge/25_residual_merge.py": "37467b68e0837a9dd259720987f4d60407486e94778cbf6cb57a08a52416db44"
+  },
+  "started_utc": "2026-08-17T12:30:01.899885+00:00",
+  "finished_utc": "2026-08-17T12:30:11.801436+00:00",
+  "libraries": {
+    "python": "3.12.12",
+    "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "merges": [
+      {
+        "density": 0.3,
+        "path": "/data/jvl210002/my_downloads/obtune/runs/merges/qwen25c-1.5b_python_residual_dare_ties/n6_s42_d0p3",
+        "combination_type": "dare_ties"
+      }
+    ],
+    "residual_decomposition": {
+      "s_c": {
+        "L1b": 0.583764057877362,
+        "L1r": 0.6793655396871112,
+        "L2": 0.6206205127844894,
+        "S1": 0.4637769309085976,
+        "S2": 0.6927704161209459
+      },
+      "sum_s_c": 3.040297457378506,
+      "n_specialists": 5,
+      "mean_resid_norm": 3.1454937192311125,
+      "single_resid_norm": 4.771110541752085,
+      "dilution_ratio_measured": 0.659279153502069,
+      "dilution_ratio_if_orthogonal": 0.447213595499958,
+      "gamma": 1.5168081603794585,
+      "w_L0": 0.0776904013334726,
+      "w_specialist": 0.30336163207589173,
+      "note": "weights order matches the --conditions list; derivation in the module docstring",
+      "conditions": [
+        "L0",
+        "L1b",
+        "L1r",
+        "L2",
+        "S1",
+        "S2"
+      ]
+    }
+  }
+}

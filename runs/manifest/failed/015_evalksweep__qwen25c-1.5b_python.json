@@ -1,0 +1,29 @@
+{
+  "job_id": "evalksweep__qwen25c-1.5b_python",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/icl_k_sweep_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 15,
+  "meta": {
+    "experiment": "baseline/icl_ksweep",
+    "note": "k=1 column is checkable against the 2026-08-13 run; k=0 is the matched floor"
+  },
+  "result": {
+    "returncode": -15,
+    "seconds": 47.0,
+    "log": "runs/logs/evalksweep__qwen25c-1.5b_python.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-13T21:14:09.815225+00:00",
+    "tail": "[eval_vllm] qwen25c-1.5b/python tuned_L0_k2__L1b: n=176 acc=0.375 format_fail=0.006\n\n# ===== attempt: evalksweep__qwen25c-1.5b_python on gpu2 at 2026-08-13T21:13:22.782775+00:00\n# argv: ['/data/jvl210002/conda_envs/obtune/bin/python', '-m', 'obtune.eval_vllm', '--config', 'eval/icl_k_sweep_qwen1.5b.yaml', '--model', 'qwen25c-1.5b', '--language', 'python']\n\n[eval_vllm] qwen25c-1.5b/python base__L0: n=176 acc=0.290 format_fail=0.051 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k0__L0: n=176 acc=0.506 format_fail=0.011 (resumed)\n[eval_vllm] qwen25c-1.5b/python icl_k1__L0: n=176 acc=0.341 format_fail=0.062 (resumed)\n[eval_vllm] qwen25c-1.5b/python icl_k2__L0: n=176 acc=0.364 format_fail=0.045 (resumed)\n[eval_vllm] qwen25c-1.5b/python icl_k4__L0: n=176 acc=0.375 format_fail=0.006 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k1__L0: n=176 acc=0.472 format_fail=0.017 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k2__L0: n=176 acc=0.489 format_fail=0.006 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k4__L0: n=176 acc=0.455 format_fail=0.006 (resumed)\n[eval_vllm] qwen25c-1.5b/python base__L1b: n=176 acc=0.233 format_fail=0.062 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k0__L1b: n=176 acc=0.386 format_fail=0.006 (resumed)\n[eval_vllm] qwen25c-1.5b/python icl_k1__L1b: n=176 acc=0.244 format_fail=0.045 (resumed)\n[eval_vllm] qwen25c-1.5b/python icl_k2__L1b: n=176 acc=0.267 format_fail=0.017 (resumed)\n[eval_vllm] qwen25c-1.5b/python icl_k4__L1b: n=176 acc=0.273 format_fail=0.000 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k1__L1b: n=176 acc=0.392 format_fail=0.006 (resumed)\n[eval_vllm] qwen25c-1.5b/python tuned_L0_k2__L1b: n=176 acc=0.375 format_fail=0.006 (resumed)\n"
+  }
+}

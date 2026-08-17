@@ -1,0 +1,63 @@
+# 7B zero-shot — does the obfuscation penalty survive a 4.7x larger model?
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/zeroshot_7b.yaml \
+#       --model qwen25c-7b --language python --stub --limit 4
+#
+# THE GAP THIS CLOSES
+# -------------------
+# Every headline number in this project is 1.5B. That is a real limitation and a reviewer
+# will name it: "your obfuscation penalty may just be a small-model artifact — a competent
+# model reads through renaming without help." Answering it needs NO training, because the
+# claim under test is about the base model, not about adapters.
+#
+# It is also the cheapest way to find out whether the whole research programme is aimed at
+# a problem that scale dissolves. If the 7B penalty is flat across the ladder, the
+# interesting result moved and we should know that now.
+#
+# WHAT TO READ OFF IT
+# -------------------
+# * The LADDER SHAPE at 7B vs 1.5B. The comparison that matters is not absolute accuracy —
+#   7B is better everywhere — but whether the *relative* drop from L0 narrows. A penalty
+#   that shrinks proportionally with scale is a different finding from one that persists.
+# * `base@7B` vs `tuned@1.5B`. If a 4.7x bigger untuned model matches a small tuned one,
+#   the honest framing of the adapter work becomes "a cheaper route to the same place",
+#   which is a perfectly publishable claim but a DIFFERENT one from "obfuscation needs
+#   specialization".
+# * `norm_full@7B` vs `norm_full@1.5B`. Static normalization and scale are two ways to buy
+#   the same robustness; whether they compose or overlap is not predictable from either
+#   alone. One extra generation pass per condition, on an engine already loaded.
+#
+# NO ADAPTER ARMS HERE, ON PURPOSE. 7B adapters exist only for the cft/srh conditions, not
+# for the RQ1 ladder; mixing a partial adapter set in would produce a table whose empty
+# cells look like results. This config is the base-model panel and nothing else.
+_extends: _base_eval.yaml
+
+phase: baselines
+# NOT `main`. `main` already holds two never-pooled grids — `base__L0` is n=1670 (Grid A,
+# the 557-program corpus) while `base__S3` is n=176 (Grid B, the testset) — and these
+# zero-training arms run on Grid B. Landing them in `main` produced a table where
+# `norm_full__L0` (n=176) sat next to `base__L0` (n=1670): the delta looked like a result
+# and was computed on different programs. It would also have collapsed
+# `trial_table.compute_is_core`, which intersects programs across a whole
+# (phase, model, language) group.
+#
+# Its own phase means every arm here — INCLUDING `base` — is regenerated on exactly the
+# items the arm is scored on, so every delta in this config is matched by construction.
+experiment_id: zeroshot_7b
+run_tag: zeroshot_7b
+model: qwen25c-7b
+language: python
+
+engine:
+  # 7B in bf16 is ~15 GB of weights; the 0.90 default leaves too little KV headroom at
+  # max_model_len 8192 on a card that may be sharing with another job.
+  gpu_memory_utilization: 0.85
+
+# No `oracle_prompt` arm: `prompts.py` is frozen and has no oracle description for S3/S4,
+# so an oracle arm cannot cover this condition list. The full ladder is the point here.
+systems:
+  - {name: base, arch: none}
+  - {name: norm_full, arch: none, normalize: full}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4, H1]
+h1_access_purpose: final_eval

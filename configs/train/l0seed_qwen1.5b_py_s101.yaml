@@ -1,0 +1,28 @@
+# A THIRD random-seed L0 adapter — the missing ingredient for the L0-merge control.
+#
+# Identical to grid_qwen1.5b_py_L0.yaml in every respect except the seed. `L0_r32_s17` and
+# `L0_r32_s42` already exist; this makes three, which is the smallest bank that can be
+# merged with the same algorithms as the real 6-expert merges and still have a majority for
+# TIES sign-election to act on. (Two adapters give a degenerate election: every disagreement
+# is a tie.)
+#
+# WHAT THE CONTROL IT FEEDS IS FOR
+# --------------------------------
+# `merge_dare_ties` scores .348 on H1 — exactly the same as `tuned_L0` alone. Two readings
+# are currently indistinguishable:
+#   1. merging six obfuscation specialists genuinely recovers clean-code-level competence; or
+#   2. merging N adapters of ANY kind regresses toward the clean-code model, and the six
+#      specialists contributed nothing that the L0 control did not already have.
+# Merging three adapters that are ALL clean-code-trained separates them. If the L0-merge
+# lands at ~.348 too, reading 2 holds and no amount of merge tuning will move it — which is
+# why this gates the merge-improvement work rather than following it.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0]
+run_tag: grid_py_L0_s101
+phase: main
+
+train:
+  seed: 101

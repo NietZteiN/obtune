@@ -1,0 +1,59 @@
+# Experiment 1 — the objective x data-direction FACTORIAL, 1.5B.
+# Last updated: 2026-08-10
+#
+#   python -m obtune.cft.evaluate --config srh/eval/e2_factorial_qwen1.5b.yaml --gpu <idle>
+#
+# WHY THIS CONFIG EXISTS
+# `e1_qwen1.5b.yaml` compares arms one at a time against SFT. It cannot separate the two
+# factors that the source paper conflates, because it never evaluates the cell where BOTH
+# are present. `all5_cftflip_r32_s17` was trained on 2026-08-08 and has never been
+# evaluated; adding it closes a 2x2:
+#
+#                      | no reverse data | reverse data
+#   ------------------ | --------------- | ------------
+#   no aux objective   | sft             | flip
+#   contrastive aux    | cft             | cftflip
+#
+# That is the whole thesis in one table: if the objective contributes anything, cftflip
+# beats flip; if the data direction does all the work, the two right-hand cells match and
+# the two left-hand cells match. This is the attribution question ATTRIB is about, and it
+# costs one evaluation pass because every adapter already exists.
+#
+# `fwd2x` (forward-only, 6 epochs) rides along as the compute control: it matches flip's
+# FLOPs and optimiser steps with forward-only data, so "flip just trained longer" is
+# answered on the compute axis rather than only on the instance axis (which mix50 covers).
+# It too is trained and has never been evaluated.
+#
+# Extends the REPLICATION config, not e1_qwen1.5b.yaml. Extending e1 would inherit rev,
+# mix50 and flipsym as well, taking the pass to nine adapters against `max_loras: 8` --
+# and those three arms already have published numbers in this tier. bidir_v1.yaml is the
+# 1.5B config, so its inherited `base`/`sft`/`cft` paths are already correct here; the 7B
+# override hazard documented in e1_qwen7b.yaml does not apply.
+_extends: ../../cft/eval/bidir_v1.yaml
+
+model: qwen25c-1.5b
+
+# `base`, `sft` and `cft` DEEP-MERGE in from bidir_v1.yaml -- do not restate them.
+# `base` is required (assert_adapters_effective needs it) and doubles as the consistency
+# anchor for this run: if base's strict reverse score does not reproduce the 2.9 % in
+# REPORT_bidirectional_2026-08-09.md, the program set drifted and the factorial is not
+# comparable to the published table. Check that first when reading the summary.
+systems:
+  flip: runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s17/final
+  cftflip: runs/adapters_srh/qwen25c-1.5b/python/all5_cftflip_r32_s17/final
+  fwd2x: runs/adapters_srh/qwen25c-1.5b/python/all5_fwd2x_r32_s17/final
+
+# `simple` only, matching e1_qwen1.5b.yaml. The factorial is a comparison BETWEEN arms
+# under one fixed prompt; sweeping strategies here would quadruple the bill without
+# changing which cell wins. The prompting question is answered separately at 7B, where
+# the paper's own headline number lives.
+reverse_strategies: [simple]
+
+engine:
+  dtype: bfloat16
+  max_model_len: 4096
+  max_lora_rank: 64
+  # 5 adapters + base in one batched pass.
+  max_loras: 8
+  gpu_memory_utilization: 0.80
+  seed: 17

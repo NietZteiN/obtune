@@ -1,0 +1,28 @@
+{
+  "job_id": "fill22_mole_ladder",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/fill22_mole_ladder.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 114,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 373.9,
+    "log": "runs/logs/fill22_mole_ladder.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T21:57:08.823657+00:00"
+  }
+}

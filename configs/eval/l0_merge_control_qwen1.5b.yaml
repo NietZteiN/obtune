@@ -1,0 +1,45 @@
+# Evaluate the L0-MERGE CONTROL against the real merges, on identical items.
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/l0_merge_control_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# THE COMPARISON THIS MAKES POSSIBLE
+# ----------------------------------
+# Grid B, the same 176/145/115-item cells the merge and mixture arms already live on, so
+# `l0merge_*` is differenced directly against `merge_ties` (.287 H1) and `merge_dare_ties`
+# (.348 H1) with no grid caveat. `tuned_L0_k0` (.348 H1) is regenerated here as the
+# single-adapter reference rather than quoted across configs.
+#
+# The reading, decided in advance so it cannot be chosen after the fact:
+#   * `l0merge_dare_ties` ~= .348  -> merging regresses toward the clean-code model. The six
+#     specialists added nothing; §5's merge result is an artifact of averaging, and merge
+#     tuning is not worth GPU time.
+#   * `l0merge_dare_ties` << .348  -> the specialists genuinely contribute, and the gap to
+#     `merge_dare_ties` is the size of that contribution.
+#
+# H1 ACCESS — SPENT DELIBERATELY
+# ------------------------------
+# This costs a logged `final_eval` quarantine read (CLAUDE.md §3.2 rule 3). It is included
+# because the control's entire purpose is an H1 claim: the trainable-condition cells alone
+# cannot distinguish the two readings above, since that is where the specialists are
+# *supposed* to win. Flagged rather than taken quietly — the H1 budget is contested and the
+# ACCESS_LOG already over-counts (see log/modularity/2026-08-13_zero-training-baselines.md).
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: l0_merge_control
+run_tag: l0_merge_control
+model: qwen25c-1.5b
+language: python
+eval_source: testset
+
+systems:
+  # The single-adapter reference, regenerated here so no delta crosses a config.
+  - {name: tuned_L0_k0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  # The control itself: three clean-code adapters (seeds 17/42/101), merged with the same
+  # algorithms and density as the real merges.
+  - {name: l0merge_ties, adapter: "runs/merges/qwen25c-1.5b_python_l0control_ties/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: l0merge_dare_ties, adapter: "runs/merges/qwen25c-1.5b_python_l0control_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, H1]
+h1_access_purpose: final_eval

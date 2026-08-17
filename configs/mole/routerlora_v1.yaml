@@ -1,0 +1,56 @@
+# RouterLoRA — attention over the 8 per-condition experts, per token and per layer.
+#
+#   python -m obtune.mole.train_mole --config mole/routerlora_v1.yaml --dry-run
+#
+# Only the GATE trains: 2.77 M parameters against a 295 M expert bank and a 1.5 B base. The
+# experts are the RQ1 per-condition adapters at their `best` checkpoint, exactly as every other
+# RQ2 system uses them, so a difference between arms cannot come from a different bank.
+#
+# `d_router: 64` and per-layer queries are the primary; `shared_query: true` is the ablation
+# that asks whether the routing decision is layer-specific at all (112 k params instead).
+experiment: mole/routerlora
+model: qwen25c-1.5b
+language: python
+run_tag: routerlora_v1
+
+experts:
+  L0:  runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best
+  L1b: runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best
+  L1r: runs/adapters/qwen25c-1.5b/python/L1r_r32_s17/best
+  L2:  runs/adapters/qwen25c-1.5b/python/L2_r32_s17/best
+  S1:  runs/adapters/qwen25c-1.5b/python/S1_r32_s17/best
+  S2:  runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best
+  S3:  runs/adapters/qwen25c-1.5b/python/S3_r32_s17/best
+  S4:  runs/adapters/qwen25c-1.5b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+
+# The gate is trained on OUTPUT PREDICTION — the task it is scored on — via
+# `data.build_sft_splits`, the same path `train_sft.py` uses for the eight experts.
+# `train_conditions` must include the composites: a stacked variant is the only case where
+# no single expert is correct, which is the entire premise of the arm. Training on
+# single-transform conditions alone and evaluating mostly on composites would answer a
+# different question, and nothing in the output would say so.
+allow_composites: true   # narrow opt-in; H1 is still refused by every layer
+train_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4,
+                   C_L1r_S1, C_S1_L1r, C_L1b_S1, C_L2_S4, C_L1r_S3, C_S4_S3]
+prompt:
+  oracle: false      # `build_prompt(oracle=True)` has no description for C_ codes
+  one_shot: false
+
+train:
+  seed: 17
+  # A small head over a frozen network: train_sft's 1e-4 is far too small here.
+  lr: 1.0e-3
+  epochs: 2
+  per_device_batch: 8
+  grad_accum: 8          # effective 64, matching _base_lora.yaml
+  max_seq_len: 2048
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  dtype: bfloat16
+  gradient_checkpointing: true
+  train_size: 0        # 0 = all
+  val_size: 0

@@ -1,0 +1,37 @@
+{
+  "job_id": "eval-bidir-qwen25c-1.5b-javascript-e3_javascript_qwen1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.cft.evaluate",
+    "--config",
+    "srh/eval/e3_javascript_qwen1.5b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 59,
+  "meta": {
+    "experiment": "srh/exp1",
+    "config": "srh/eval/e3_javascript_qwen1.5b.yaml",
+    "model": "qwen25c-1.5b",
+    "language": "javascript",
+    "systems": [
+      "base",
+      "cft",
+      "flip",
+      "mix50",
+      "sft"
+    ],
+    "n_adapters": 4,
+    "reverse_strategies": [
+      "simple"
+    ]
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 271.3,
+    "log": "runs/logs/eval-bidir-qwen25c-1.5b-javascript-e3_javascript_qwen1.5b.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-12T18:45:22.787232+00:00"
+  }
+}

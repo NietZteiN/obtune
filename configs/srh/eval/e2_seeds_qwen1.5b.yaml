@@ -1,0 +1,54 @@
+# E2 — between-seed variance for the load-bearing arms, 1.5B.
+#
+#   python scripts/srh/22_enqueue_evals.py srh/eval/e2_seeds_qwen1.5b.yaml --write
+#
+# WHY A NEW FILE RATHER THAN EDITING e1_qwen1.5b_s42.yaml
+# ------------------------------------------------------
+# `e1_qwen1.5b_s42.yaml` deliberately inherits the SEED-17 `sft`/`cft` from the parent — that
+# was correct when it was written, because the s42 versions of those two arms did not exist
+# yet, and its results are already published. Editing it would silently change a published
+# table AND collide on `run_tag` (which defaults to the config filename stem, so the results
+# directory is keyed on it). A new filename is a new results directory, which is what keeps
+# both runs readable side by side.
+#
+# WHAT THIS OVERRIDES
+# -------------------
+# `systems` DEEP-MERGES with the parent chain rather than replacing it, so naming a key here
+# rebinds just that arm. The four arms that already had s42 twins (`rev`, `flip`, `mix50`,
+# `flipsym`) plus the two that were missing until 2026-08-10 (`sft`, `cft`) are all pinned to
+# their _s42 adapters here; `base` is untuned and carries no seed.
+#
+# `base` is REQUIRED and is the consistency anchor. Read it before anything else — but read
+# it with the right tolerance, which is NOT what an earlier version of this comment said.
+#
+# It said: "if it does not score 2.9 % strict, the program set has drifted." That test is
+# mis-specified in both directions. This run scored 2.73 % and the program set had NOT
+# drifted: the program-ID sets of all five 1.5B passes are byte-identical. What moves is
+# the DECODING — greedy generation is not bitwise reproducible across passes, because the
+# engine batches continuously and the set of arms sharing a pass changes reduction order
+# and occasionally an argmax. Two passes with the same arm list are identical on all 1500
+# base generations; passes with different arm lists differ on 6–8 % of generations and
+# flip 4–8 graded trials, moving `base` over 2.7–2.9 %.
+#
+# So:
+#   * DRIFT TEST (exact, free): compare the `program_id` set against a published run. Any
+#     difference at all is real drift and invalidates the comparison.
+#   * ANCHOR TEST (tolerance): `base` must land in 2.6–3.0 % strict. Outside that band,
+#     something other than batch composition changed — check the corpus and the scorer.
+# Measurement and evidence: log/cft-replication/2026-08-17_attrib-v2-and-determinism.md
+_extends: e1_qwen1.5b.yaml
+
+model: qwen25c-1.5b
+run_tag: e2_seeds_qwen1.5b
+
+systems:
+  sft: runs/adapters_cft/qwen25c-1.5b/python/sft_r32_s42/final
+  cft: runs/adapters_cft/qwen25c-1.5b/python/cft_r32_s42/final
+  rev: runs/adapters_srh/qwen25c-1.5b/python/all5_rev_r32_s42/final
+  flip: runs/adapters_srh/qwen25c-1.5b/python/all5_flip_r32_s42/final
+  mix50: runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s42/final
+  flipsym: runs/adapters_srh/qwen25c-1.5b/python/all5_flipsym_r32_s42/final
+
+# `simple` only, matching e1 — the seed question is about arm variance, not prompt sensitivity,
+# and pairing against e1 requires the same strategy.
+reverse_strategies: [simple]

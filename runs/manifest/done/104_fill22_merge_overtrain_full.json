@@ -1,0 +1,28 @@
+{
+  "job_id": "fill22_merge_overtrain_full",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/fill22_merge_overtrain_full.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.15,
+  "priority": 104,
+  "meta": {
+    "experiment": "report/fill-2.2",
+    "stage": "fill22"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 144.6,
+    "log": "runs/logs/fill22_merge_overtrain_full.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-15T21:38:36.644170+00:00"
+  }
+}

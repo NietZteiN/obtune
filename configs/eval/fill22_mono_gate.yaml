@@ -1,0 +1,20 @@
+# §2.2 FILL — the same systems as `mono_gate.yaml`, on the conditions it never evaluated.
+#
+# WHY A SEPARATE FILE RATHER THAN EDITING THE ORIGINAL
+# ---------------------------------------------------
+# `mono_gate.yaml` produced numbers that are already in the master report. Editing its
+# `eval_conditions` would change the provenance of results that are cited, so this extends it
+# instead: identical systems, identical adapters, identical prompt, identical `eval_source`,
+# and ONLY the condition list differs. Cells that already exist are resumed and skipped; only
+# the blanks are generated.
+#
+# NO `H1`. Every condition below is trainable or a composite. `H1` blanks in §2.2 are left
+# empty on purpose — they would cost ~40 s of GPU and the entire quarantine budget
+# (CLAUDE.md §3.2 rule 3), which is not a trade worth making to square off a table.
+
+_extends: mono_gate.yaml
+
+experiment_id: fill22_mono_gate
+run_tag: fill22_mono_gate
+
+eval_conditions: [S3, S4]

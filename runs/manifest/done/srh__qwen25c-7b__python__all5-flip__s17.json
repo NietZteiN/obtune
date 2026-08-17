@@ -1,0 +1,33 @@
+{
+  "job_id": "srh__qwen25c-7b__python__all5-flip__s17",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.srh.train",
+    "--config",
+    "srh/train/flip_qwen7b_py.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 6.1,
+  "priority": 63,
+  "meta": {
+    "experiment": "srh/exp1",
+    "stage": 2,
+    "arm": "flip",
+    "role": "the missing baseline: reverse data is free, just swap the pair",
+    "tasks": [
+      "gen",
+      "rev"
+    ],
+    "language": "python",
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-7b/python/all5_flip_r32_s17",
+    "already_trained": false
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 18112.2,
+    "log": "runs/logs/srh__qwen25c-7b__python__all5-flip__s17.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T21:19:59.292250+00:00"
+  }
+}

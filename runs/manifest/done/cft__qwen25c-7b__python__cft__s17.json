@@ -1,0 +1,33 @@
+{
+  "job_id": "cft__qwen25c-7b__python__cft__s17",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.cft.train",
+    "--config",
+    "cft/train/cft_qwen7b_py.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 10.0,
+  "priority": 62,
+  "meta": {
+    "experiment": "cft/replication",
+    "paper": "nikiema2025contrastive (arXiv:2509.05553)",
+    "arm": "cft",
+    "tasks": [
+      "gen",
+      "pos",
+      "neg"
+    ],
+    "language": "python",
+    "adapter_dir": "/data/jvl210002/my_downloads/obtune/runs/adapters_cft/qwen25c-7b/python/cft_r32_s17",
+    "already_trained": false
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 23385.6,
+    "log": "runs/logs/cft__qwen25c-7b__python__cft__s17.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-09T15:07:12.751586+00:00"
+  }
+}

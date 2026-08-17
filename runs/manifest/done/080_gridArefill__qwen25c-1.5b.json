@@ -1,0 +1,28 @@
+{
+  "job_id": "gridArefill__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/baselines_gridA_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 80,
+  "meta": {
+    "experiment": "baselines/gridA",
+    "stage": "gridA_refill"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 209.7,
+    "log": "runs/logs/gridArefill__qwen25c-1.5b.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-14T11:20:25.549781+00:00"
+  }
+}

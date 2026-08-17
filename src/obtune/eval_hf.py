@@ -34,7 +34,7 @@ import numpy as np
 
 from obtune.config import RESULTS_DIR, load_config
 from obtune.paths import iter_jsonl
-from obtune.prompts import build_prompt, prompt_id, template_sha256
+from obtune.prompts import build_prompt, prompt_id, render_chat, template_sha256
 from obtune.provenance import RunManifest
 from obtune.seedutil import set_seed
 
@@ -97,13 +97,25 @@ def _load_model(model_key: str, adapter: str | None, dtype: str, device: str):
     return model, tok, spec
 
 
-def _prompt_and_code_span(row: dict[str, Any]) -> tuple[str, tuple[int, int]]:
-    """Render the eval prompt and locate the program text inside it."""
+def _prompt_and_code_span(row: dict[str, Any], tokenizer: Any) -> tuple[str, tuple[int, int]]:
+    """Render the eval prompt and locate the program text inside it.
+
+    MUST match `eval_vllm.render_prompts` byte for byte. It did not: this function omitted
+    `condition` and joined the message contents with newlines instead of applying the chat
+    template, so every HF-path generation ran on a different prompt distribution from the
+    accuracy grid. That is CLAUDE.md §4 silent-failure #3, and §1 states the requirement
+    directly — both paths must import the same builder, or Δ-attention is measured on a
+    different distribution than accuracy and the two cannot be compared at all.
+
+    Nothing was lost by fixing it: `results/attn/` held only a schema and a span-validation
+    file, no dumps produced under the old path.
+    """
     messages = build_prompt(
         code=row["code"], entry_point=row["entry_point"],
         args_repr=row["args_repr"], language=row["language"],
+        condition=row.get("condition"),
     )
-    text = "\n".join(m["content"] for m in messages)
+    text = render_chat(messages, tokenizer)
     start = text.find(row["code"])
     if start < 0:  # the builder reformatted it; fall back to the whole user turn
         start, end = 0, len(text)
@@ -129,7 +141,7 @@ def dump_attention(rows: Iterable[dict[str, Any]], cfg: AttnConfig, system: str,
     for row in rows:
         if cfg.max_items is not None and written >= cfg.max_items:
             break
-        text, code_span = _prompt_and_code_span(row)
+        text, code_span = _prompt_and_code_span(row, tok)
         enc = tok(text, return_offsets_mapping=True, return_tensors="pt")
         offsets = enc.pop("offset_mapping")[0].numpy().astype(np.int32)
         enc = {k: v.to(model.device) for k, v in enc.items()}
@@ -167,55 +179,22 @@ def dump_attention(rows: Iterable[dict[str, Any]], cfg: AttnConfig, system: str,
             "layers": layers, "out_dir": str(out_dir)}
 
 
-def moe_soft_generate(rows: Iterable[dict[str, Any]], model_key: str, adapters: dict[str, str],
-                      routing: dict[str, dict[str, float]], max_new_tokens: int = 64,
-                      seed: int = 17) -> list[dict[str, Any]]:
-    """Soft-routing ablation: per example, blend adapters by the router's softmax.
+def moe_soft_generate(*_args: Any, **_kwargs: Any) -> None:
+    """REMOVED 2026-08-10. It did not compute the blend it claimed to.
 
-    PEFT rebuilds a combined adapter per weight vector, so this is seconds per item —
-    an ablation on a stratified subset, never a headline grid.
+    It called `add_weighted_adapter(..., combination_type="linear")`, which PEFT implements by
+    putting `sqrt(|w*scaling|)` on lora_A and lora_B SEPARATELY — so the reconstruction
+    `B_new @ A_new` carries cross terms `B_i A_j` for i != j and is NOT `sum_i w_i dW_i`
+    (`taskvec.py:24-34`; measured on the merge arms 2026-08-10, the linear-family combination
+    landed 7.175x the exact mixture's magnitude). It was also unwired, ungraded, emitted
+    non-TrialRow dicts, and had no producer for its `--routing` input, so nothing depended on it.
+
+    The replacement mixes in ACTIVATION space — h += sum_e a_e(x) * (alpha/r) * B_e A_e x — which
+    is exact by construction, needs no merging, and permits batching.
     """
-    import torch
-    from peft import PeftModel
-
-    set_seed(seed)
-    models = load_config("models.yaml")["models"]
-    spec = models[model_key]
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-
-    tok = AutoTokenizer.from_pretrained(spec["hf_id"])
-    base = AutoModelForCausalLM.from_pretrained(
-        spec["hf_id"], dtype=torch.bfloat16, device_map="cuda"
-    )
-    names = list(adapters)
-    model = PeftModel.from_pretrained(base, adapters[names[0]], adapter_name=names[0])
-    for name in names[1:]:
-        model.load_adapter(adapters[name], adapter_name=name)
-    model.eval()
-
-    results: list[dict[str, Any]] = []
-    for row in rows:
-        item_id = row.get("item_id") or f"{row['program_id']}::{row['condition']}"
-        weights = routing.get(item_id) or {}
-        used = [(n, float(weights.get(n, 0.0))) for n in names if weights.get(n, 0.0) > 1e-4]
-        if not used:
-            used = [(names[0], 1.0)]
-        blend = f"__soft_{item_id}"[:60]
-        model.add_weighted_adapter([n for n, _ in used], [w for _, w in used],
-                                   adapter_name=blend, combination_type="linear")
-        model.set_adapter(blend)
-
-        text, _ = _prompt_and_code_span(row)
-        enc = tok(text, return_tensors="pt").to(model.device)
-        with torch.no_grad():
-            out = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=False,
-                                 pad_token_id=tok.eos_token_id)
-        completion = tok.decode(out[0][enc["input_ids"].shape[1]:], skip_special_tokens=True)
-        results.append({"item_id": item_id, "program_id": row["program_id"],
-                        "condition": row["condition"], "language": row["language"],
-                        "output_raw": completion, "weights": dict(used)})
-        model.delete_adapter(blend)
-    return results
+    raise NotImplementedError(
+        "moe_soft_generate was removed: combination_type='linear' is not task arithmetic for "
+        ">1 adapter. Use the activation-space mixture (src/obtune/mole/) instead.")
 
 
 def main() -> int:

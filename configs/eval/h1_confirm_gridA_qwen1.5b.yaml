@@ -1,0 +1,90 @@
+# THE CONFIRMATORY H1 PASS — training arms, Grid A. SPENDS QUARANTINE BUDGET.
+#
+# ==========================================================================================
+# THIS IS A DECLARED THIRD READ OF H1. Read CLAUDE.md §3.2 and MASTER_REPORT §8.4 first.
+# ==========================================================================================
+#
+# The protocol says H1 is evaluated exactly twice: one frozen pilot pass and one final pass. §8.4
+# records that the budget was in fact spent incrementally — 3 `pilot_eval` and 88+ `final_eval` rows
+# across 2026-08-07 → 08-14, spread over several sittings while arms were still being chosen. Nothing
+# is provably contaminated (no H1 data entered training; the four enforcement layers held) but the
+# epistemic guarantee is weaker than the protocol claims.
+#
+# This pass is therefore declared as a THIRD pass, in one sitting, after every arm in it was already
+# selected on a signal that is not H1. It is the batched read the 2026-08-15 plan committed to:
+# select on the LOTO 6-fold diagonal, confirm once on H1, never the reverse.
+#
+# WHAT IS BEING CONFIRMED, AND WHY EACH ARM HAS EARNED IT
+# ------------------------------------------------------
+# All three arms were selected on their own held-in val slice and read out on the six TRAINABLE
+# conditions (Grid A, n=1,667), where all three came back flat: `s2fam` +0.02 pts [−0.95, +1.02] on
+# the clean-code control, stacked − unstacked −1.36 [−2.63, +0.04]. See §12.11 / §5 of
+# REPORT_2026-08-17.
+#
+# But those are the wrong conditions for the question `s2fam` was built to answer. §3.5's `S2`→`H1`
+# is a claim about the HELD-OUT obfuscator: the `S2` specialist is the only arm anywhere that beats
+# the clean-code control on `H1`, at both seeds in both languages (+3.5/+3.1 Python, +7.3/+7.7 JS).
+# `s2fam` trains on the whole inert-material family (S2+S3+S4) precisely to widen that. Whether it
+# does is unmeasured, and cannot be measured anywhere except here.
+#
+# THE BAR — existing Grid A `H1` cells, same 1,214 items, no new reads needed for these:
+#
+#     base                 6.4    untrained
+#     oracle_prompt_1shot 15.7    told the transform, no training
+#     mono_all            22.9    all six conditions
+#     ctl_r64             23.1
+#     tuned_L0            24.7    THE CONTROL — clean code only, 4,689 rows
+#     tuned_S2_s17        28.0    the §3.5 result, and the best system on H1 anywhere
+#
+# PRE-REGISTERED READINGS (fixed before the run; the seed band is 1.32 mean / 3.61 p95):
+#   * `s2fam` > 28.0 outside the band  -> the curriculum WIDENS the inert-material transfer. That is
+#     the project's first positive generalization result and it changes the paper's thesis.
+#   * 24.7 < `s2fam` <= ~28.0          -> the curriculum reproduces `tuned_S2` without exceeding it:
+#     the transfer is real but saturated by a single specialist, and training the whole family adds
+#     nothing. §3.5 stands, unwidened.
+#   * `s2fam` ~ 24.7 or below          -> the transfer does not survive being trained for. Combined
+#     with the flat trainable-ladder result, that makes §3.5 look like a property of that one
+#     adapter rather than of the inert-material mechanism — the most deflationary outcome, and it
+#     must be reported as such.
+#   * `composite_trained` vs `composite_ablation` on H1 is the stacking question asked on the only
+#     condition that is genuinely a composite of mechanisms. A win here with a null on the trainable
+#     ladder would be the single most interesting result available, because `H1` is the only place
+#     the hypothesis actually applies.
+#
+# GRID. `heldout` (Grid A, n=1,214) — the grid every comparator above lives on. NOT Grid B: the merge
+# arms are confirmed separately in `h1_confirm_gridB_qwen1.5b.yaml` because their comparators
+# (`merge_dare_ties` .348) are Grid B, and `cell_dir` keys on `phase` but not `eval_source`, so
+# mixing the two would alias cells (§12.1, three incidents).
+#
+# `eval_conditions: [H1]` ONLY. Every trainable condition is already measured for these arms; adding
+# them here would re-run 18 cells for nothing and dilute the point of the pass.
+#
+# Smoke:
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/h1_confirm_gridA_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+# ⚠️ SMOKE-TESTING THIS CONFIG SPENDS ACCESS_LOG ROWS. `--stub` swaps only GENERATION for a fake
+# echo; `data.load_eval_items` at eval_vllm.py:815 runs unconditionally, so H1 items are really
+# loaded and `record_h1_access` really fires. Verified 2026-08-17: two stub runs appended two rows
+# (n=1215 and n=115) that produced no result. That is not contamination — nothing is trained, no
+# selection is made, and stub cells are refused inside results/cells without an explicit flag — but
+# it does put reads in the audit trail that correspond to no measurement. Smoke the config against a
+# NON-H1 condition list first if you need to check plumbing, and treat any H1 stub as a spent row.
+_extends: _base_eval.yaml
+
+phase: main
+experiment_id: h1_confirm
+run_tag: h1_confirm_gridA
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+# Required to load quarantined items at all (`data.load_h1_items` restricts purpose to
+# pilot_eval|final_eval and appends a row to ACCESS_LOG.md for every read).
+h1_access_purpose: final_eval
+
+systems:
+  - {name: s2fam, adapter: "runs/adapters_curriculum/qwen25c-1.5b/python/S2-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: composite_trained, adapter: "runs/adapters_composite/qwen25c-1.5b/python/C_L1r_S1-C_S1_L1r-C_L1b_S1-C_L2_S4-C_L1r_S3-C_S4_S3_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: composite_ablation, adapter: "runs/adapters_composite/qwen25c-1.5b/python/L1b-L1r-L2-S1-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [H1]

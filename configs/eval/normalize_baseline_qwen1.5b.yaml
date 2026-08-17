@@ -1,0 +1,77 @@
+# Symbolic-normalization baseline — what does a compiler-style rewriter recover for FREE?
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/normalize_baseline_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4
+#
+# THE QUESTION
+# ------------
+# Every adapter, merge and mixture arm in this project buys its gain with GPU hours. The
+# first thing an FSE reviewer will ask is what a static normalizer already recovers with no
+# training at all. This arm answers that: rewrite the obfuscated program with deterministic
+# source-to-source passes, then run the UNTUNED base model on the result.
+#
+# It is the baseline most likely to embarrass the fine-tuning story, which is exactly why
+# it is worth running before review rather than after.
+#
+# THE ARMS, AND WHY EACH IS SEPARATE
+# ----------------------------------
+# `base`          floor: the untuned model on the obfuscated program as-is.
+# `norm_alpha`    canonical identifier renaming only, entry point preserved. This is the
+#                 pass aimed squarely at L1b/L1r/L2, and it is FORMATTING-PRESERVING —
+#                 surgical text edits, no re-emission.
+# `norm_reformat` re-emit through `ast.unparse` and nothing else. NOT a deobfuscation: it
+#                 is the CONTROL. `fold` and `dce` must unparse to take effect, so without
+#                 this arm "normalization helped" and "reformatting helped" are confounded.
+# `norm_full`     fold + dce + reformat + alpha. The full practitioner's normalizer.
+#
+# WHAT L0 IS DOING IN THE CONDITION LIST
+# --------------------------------------
+# L0 is clean code with meaningful identifiers, and `alpha` renames them to `a`, `b`, `c`.
+# So normalization is expected to HURT on L0. That is not a defect to hide — it is the
+# price of the method, and reporting it is what separates a baseline from an advertisement.
+# Without the L0 cell the arm would look strictly free, and it is not.
+#
+# SOUNDNESS IS A HARD GATE, NOT AN ASSUMPTION
+# -------------------------------------------
+# The model is shown a REWRITTEN program and graded against the ORIGINAL's stored output.
+# scripts/analysis/21_validate_normalized.py executes every normalized program and refuses
+# the run if any behaviour changed. Run it before enqueuing:
+#   PYTHONPATH=src python scripts/analysis/21_validate_normalized.py --language python
+_extends: _base_eval.yaml
+
+phase: baselines
+# NOT `main`. `main` already holds two never-pooled grids — `base__L0` is n=1670 (Grid A,
+# the 557-program corpus) while `base__S3` is n=176 (Grid B, the testset) — and these
+# zero-training arms run on Grid B. Landing them in `main` produced a table where
+# `norm_full__L0` (n=176) sat next to `base__L0` (n=1670): the delta looked like a result
+# and was computed on different programs. It would also have collapsed
+# `trial_table.compute_is_core`, which intersects programs across a whole
+# (phase, model, language) group.
+#
+# Its own phase means every arm here — INCLUDING `base` — is regenerated on exactly the
+# items the arm is scored on, so every delta in this config is matched by construction.
+experiment_id: normalize_baseline
+run_tag: normalize_baseline
+model: qwen25c-1.5b
+language: python
+
+# NO `oracle_prompt` ARM HERE. `prompts.py` is frozen (its sha256 is pinned in every run
+# manifest) and carries no oracle description for S3/S4, so an oracle arm and the S3/S4
+# conditions are mutually exclusive. S3 is the dead-helper condition — the one place `dce`
+# is predicted to pay — so the conditions win. The oracle reference already exists on
+# [H1, L1b, L1r, L2, S1, S2] in eval/icl_cross_h1_qwen1.5b.yaml, on the same items.
+systems:
+  - {name: base, arch: none}
+  - {name: norm_alpha, arch: none, normalize: alpha}
+  - {name: norm_reformat, arch: none, normalize: reformat}
+  - {name: norm_full, arch: none, normalize: full}
+  # `full` minus `alpha`. The first run showed `alpha` costs 6.8 pts on L0 by renaming
+  # meaningful identifiers, swamping dce's +4.5 on S3. This isolates the structural
+  # passes, which remove injected junk WITHOUT discarding information the model uses.
+  - {name: norm_structural, arch: none, normalize: structural}
+
+# L0 is the cost cell (see above). S3 is where `dce` should pay — it is the dead-helper
+# condition. H1 carries the OOD question, on the SAME items as the ICL baseline so the two
+# zero-training baselines are directly comparable.
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4, H1]
+h1_access_purpose: final_eval
