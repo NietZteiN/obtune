@@ -1,0 +1,13 @@
+# Invariance arm trained on ALL five obfuscations at once (python, 1.5B).
+#
+# The monolithic arm is where the objective has the best shot and the sharpest contrast:
+# vanilla `mono_all` trains on the same five conditions and is WORSE than clean-code-only
+# on H1 (22.90 vs 24.55). If L_align is doing semantic work rather than regularizing, this
+# is the pair where it should show -- same data, same capacity, different objective.
+_extends: _base_align.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L1b, L1r, L2, S1, S2]
+run_tag: align_py_mono
+phase: main

@@ -1,0 +1,30 @@
+# Grid adapter: L0 (python, 7B) — clean original, comments/docstrings stripped — THE CONTROL every other arm is read against
+#
+# 7B replication of the RQ1 per-condition grid. The 1.5B twin is
+# grid_qwen1.5b_py_L0.yaml and every knob below is deliberately identical to it
+# except the model and the batch shape, so the two are comparable arm for arm.
+#
+# WHY 7B IS WORTH THE GPU TIME (master report §12.3): H1 is the only condition whose
+# penalty does NOT shrink with scale — −20.9 at 7B against −17.7 at 1.5B — so the
+# discriminator gets SHARPER at 7B, not blunter. A replication that reproduced the
+# memorization verdict at 1.5B only would leave open that the whole finding is a
+# small-model artifact.
+#
+# Seeds are supplied on the command line (train_sft --seed), not here.
+_extends: _base_lora.yaml
+
+model: qwen25c-7b
+language: python
+train_conditions: [L0]
+run_tag: grid7b_py_L0
+phase: main
+
+train:
+  # configs/models.yaml carries 8 x 8 for this model, chosen for a 48 GB A6000.
+  # On a 141 GB H200 that leaves most of the card idle. Doubled to 16 x 4, which
+  # keeps the EFFECTIVE batch at 64 — the same as the 1.5B grid — because that is
+  # the quantity the two replications have to share. Raising it further is likely
+  # fine and is left until someone has measured peak memory on H200 rather than
+  # guessed at it; an OOM six hours into a queued job costs more than the speedup.
+  per_device_batch: 16
+  grad_accum: 4

@@ -1,0 +1,9 @@
+# Invariance arm trained on S1 (python, 1.5B). Twin of grid_qwen1.5b_py_S1.yaml;
+# identical in every knob except the added L_align term.
+_extends: _base_align.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [S1]
+run_tag: align_py_S1
+phase: main

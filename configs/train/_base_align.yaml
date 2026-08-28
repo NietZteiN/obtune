@@ -1,0 +1,30 @@
+# Weight-space invariance arm (Phase 2): L = L_task(x_obf) + lambda * L_align.
+#
+# Inherits every SFT knob from _base_lora.yaml unchanged, so the ONLY difference from the
+# vanilla per-condition specialist is the added loss term. That is deliberate: lambda = 0
+# must reproduce the vanilla arm exactly, and it is the plumbing check that separates
+# "the objective does nothing" from "the harness is broken".
+_extends: _base_lora.yaml
+
+align:
+  # Frozen teacher. tuned_L0, NOT base: base scores 21.7 on L0, so aligning to it would
+  # teach the student to be as weak as an untuned model. tuned_L0 scores 44.7 and is the
+  # project's control anyway, which makes the ceiling legible -- on H1, 24.5 -> 44.7.
+  teacher_adapter: runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best
+
+  # Layers RQ3 already sweeps. The condition is linearly decodable at 99.4 % by layer 4,
+  # so if "read past the surface" happens anywhere it has to happen by then.
+  layers: [4, 9, 14, 19, 23, 27]
+
+  # Number of answer-position states compared. k=1 is the single state that predicts the
+  # first answer token; k=4 keeps a little of the token structure RQ3 showed carries the
+  # mechanism. Swept, not assumed.
+  k: 4
+
+  # Swept on the LOTO folds, NEVER on H1 (master report §12.10 built leave-one-transform-out
+  # precisely because any sweep selected on H1 destroys it, and this is the first arm that
+  # actually needs an OOD dev signal). Override on the command line with --lam.
+  lam: 1.0
+
+  # The control is a separate ARM, not a flag on this one -- see schema.adapter_arch.
+  mismatch: false

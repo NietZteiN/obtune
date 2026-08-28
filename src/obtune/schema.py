@@ -157,6 +157,19 @@ class TrialRow(BaseModel):
         "mole_random",       # gate frozen at random init; if router ~= random, the gain is
                              # rank-256 residency, not routing
         "mole_hardrouter",   # the trained router's one-hot, through the mixture module
+        # Weight-space invariance (Phase 2). Trained with L_task + lambda * L_align, where
+        # L_align pulls the student's answer-position hidden states on OBFUSCATED code toward
+        # a frozen tuned_L0 teacher's states on the CLEAN parent. Its own arch string for the
+        # same reason the mole_* family got theirs: the RQ1 matrix is selected by
+        # `adapter_arch == "per_type"`, and an invariance arm is not a per-condition
+        # specialist even though it trains on one condition.
+        "invariance",
+        # The control that decides whether a positive `invariance` result means anything:
+        # identical objective, teacher states drawn from a DIFFERENT program. If this matches
+        # the matched teacher, L_align is a regularizer and the interpretation collapses. It
+        # is a separate arch, not a flag, so it can never be pooled with the real arm by a
+        # groupby that forgot about it -- the mole_random lesson.
+        "invariance_mismatch",
     ]
     train_cond: Optional[str]  # None | condition | "mix"
     eval_cond: AnyCondition
