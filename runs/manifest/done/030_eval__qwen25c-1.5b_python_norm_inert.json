@@ -1,0 +1,30 @@
+{
+  "job_id": "eval__qwen25c-1.5b_python_norm_inert",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inert_normalize_qwen1.5b.yaml",
+    "--systems",
+    "norm_inert"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 30,
+  "meta": {
+    "model": "qwen25c-1.5b",
+    "language": "python",
+    "system": "norm_inert",
+    "n_eval_conditions": 6,
+    "adapter": null,
+    "train_cond": null
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 266.2,
+    "log": "runs/logs/eval__qwen25c-1.5b_python_norm_inert.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-26T23:42:01.412699+00:00"
+  }
+}

@@ -82,7 +82,13 @@ scheduler_policy:
   # process. With no borrower on the box at all, capping at 3 left an idle card (gpu2) unusable while
   # our own work occupied the other three. 4 = all four cards, which the note above calls "taking
   # everything back"; the worker's idle check still refuses any card a borrower later takes.
-  gpu_budget: 4
+  # 2026-08-26 (on the user's instruction): 4 -> 3, leaving a card for the neighbour. At the
+  # time of the change GPUs 1, 2 and 3 were carrying someone else's work (two vLLM engines and
+  # `fine-tuning/train_loro.py --model google/gemma-4-E4B-it`, 41-46 GB each) and only GPU 0 was
+  # idle, so this cap costs obtune nothing today; it is what keeps us from taking a fourth card
+  # back the moment one frees. `allowed_gpus` deliberately stays [0,1,2,3] so we keep FOLLOWING
+  # whichever cards are free rather than pinning three — the 2026-08-12 lesson.
+  gpu_budget: 3
   # sched/worker.py refuses a GPU that is not idle (shared-box etiquette)
   max_mem_used_mb: 2000
   max_util_pct: 5

@@ -1,0 +1,43 @@
+{
+  "job_id": "rq3lp__base__ident",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "base",
+    "--condition",
+    "S2",
+    "--max-items",
+    "150",
+    "--mode",
+    "score",
+    "--classes",
+    "identifier",
+    "--tag",
+    "lp_ident",
+    "--layers",
+    "4",
+    "9",
+    "14",
+    "19",
+    "23",
+    "27"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.1,
+  "priority": 600,
+  "meta": {
+    "experiment": "rq3/knockout-logprob",
+    "stage": "rq3_lp",
+    "system": "base",
+    "arm": "ident",
+    "note": "log P(gold) readout. PREDICTION: identifier knockout costs tuned_S2 LESS log-prob than base on S2. all6_L28 is the sensitivity control."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 27.0,
+    "log": "runs/logs/rq3lp__base__ident.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-26T22:13:35.882012+00:00"
+  }
+}

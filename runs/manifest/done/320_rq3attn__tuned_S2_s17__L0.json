@@ -1,0 +1,56 @@
+{
+  "job_id": "rq3attn__tuned_S2_s17__L0",
+  "kind": "attn",
+  "argv": [
+    "-m",
+    "obtune.eval_hf",
+    "--mode",
+    "attn",
+    "--model",
+    "qwen25c-1.5b",
+    "--items",
+    "data/eval/heldout/items/L0/python.jsonl",
+    "--system",
+    "tuned_S2_s17",
+    "--layers",
+    "4",
+    "9",
+    "14",
+    "19",
+    "23",
+    "27",
+    "--max-items",
+    "150",
+    "--out",
+    "results/attn/rq3_sweep/L0",
+    "--adapter",
+    "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 320,
+  "meta": {
+    "experiment": "rq3/attention-sweep",
+    "stage": "rq3_attn",
+    "system": "tuned_S2_s17",
+    "condition": "L0",
+    "layers": [
+      4,
+      9,
+      14,
+      19,
+      23,
+      27
+    ],
+    "max_items": 150,
+    "attempt": 2,
+    "note": "requeued after the over-length OOM fix (eval_hf now skips >2048-token prompts and reports them)"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 26.4,
+    "log": "runs/logs/rq3attn__tuned_S2_s17__L0.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-18T19:15:04.200019+00:00"
+  }
+}

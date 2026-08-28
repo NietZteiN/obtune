@@ -1,0 +1,45 @@
+{
+  "job_id": "rq3lp__tuned_L1b_s17__ident",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "tuned_L1b_s17",
+    "--condition",
+    "S2",
+    "--max-items",
+    "150",
+    "--mode",
+    "score",
+    "--classes",
+    "identifier",
+    "--tag",
+    "lp_ident",
+    "--layers",
+    "4",
+    "9",
+    "14",
+    "19",
+    "23",
+    "27",
+    "--adapter",
+    "runs/adapters/qwen25c-1.5b/python/L1b_r32_s17/best"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.1,
+  "priority": 602,
+  "meta": {
+    "experiment": "rq3/knockout-logprob",
+    "stage": "rq3_lp",
+    "system": "tuned_L1b_s17",
+    "arm": "ident",
+    "note": "log P(gold) readout. PREDICTION: identifier knockout costs tuned_S2 LESS log-prob than base on S2. all6_L28 is the sensitivity control."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 42.0,
+    "log": "runs/logs/rq3lp__tuned_L1b_s17__ident.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-26T22:15:18.047722+00:00"
+  }
+}

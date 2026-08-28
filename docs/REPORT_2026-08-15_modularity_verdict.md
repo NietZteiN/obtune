@@ -2,6 +2,14 @@
 
 *Written 15 August 2026. Self-contained: it assumes no prior knowledge of this project.*
 
+> **Superseded on 2026-08-27** by [`MASTER_REPORT_2026-08-27_router-and-merging.md`](MASTER_REPORT_2026-08-27_router-and-merging.md),
+> the closing report for this thread. Two things below have since been corrected: §4's *"the
+> per-condition experts do not carry distinct, transferable knowledge"* is **retired** — at Grid A
+> power the specialists contribute +2.47 [+1.32, +3.70] to the merge, which is simply cancelled by
+> the ~3.1-pt cost of merging itself; and §1.6's noise floor is the **pooled Python+JavaScript**
+> figure, where the Python-only bar that applies to everything here is 0.63 mean / 1.46 p95. The
+> chain of experiments and every other number below stand.
+
 This report covers one chain of experiments run on 13–15 August 2026 and the conclusion they
 reach together. It is written so that someone who has never seen the codebase can follow it. Every
 number is from a committed cell under `results/cells/`; the master report

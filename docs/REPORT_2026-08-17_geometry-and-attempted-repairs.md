@@ -3,6 +3,13 @@
 *Written 17 August 2026. Covers the 15–17 August chain. Self-contained: it assumes no prior
 knowledge of this project.*
 
+> **Superseded on 2026-08-27** by [`MASTER_REPORT_2026-08-27_router-and-merging.md`](MASTER_REPORT_2026-08-27_router-and-merging.md),
+> the closing report for this thread. Every number below reproduces from cells. Two corrections:
+> the noise floor quoted here is the **pooled Python+JavaScript** figure, where the Python-only bar
+> is 0.63 / 1.46 — which changes how the `mole_hardrouter` ≈ `mole_router` equivalence may be
+> stated; and §8's owed `H1` read of the best merge density has since landed at **32.2** against
+> `merge_dare_ties`' 34.8, i.e. the density headroom does not transfer.
+
 Five experiments and one infrastructure audit. Two of the experiments cost **zero GPU** and one of
 those produced the most consequential finding. Every number is recomputed from committed cells
 under `results/cells/` or from adapter safetensors under `runs/`; the master report
@@ -453,6 +460,55 @@ That is the "bounded rather than promising" reading, registered in advance.
 > **23.9 against the clean-code control's 24.5** — the merge is, if anything, slightly *below* the
 > control rather than level with it. The central negative result now holds at ten times the power it
 > was established on.
+
+### 5.3 The Grid A panel corrects §12.10's gating claim
+
+Completing the panel on Grid A (`merge_ties`, `l0merge_ties`, `l0merge_dare_ties`; `merge_dare_ties`
+was already there) put every `H1` number the RQ2 conclusion rests on onto the 1,214-item grid. It
+changes the reading.
+
+| system | **Grid A** (n=1214) | Grid B (n=115) |
+|---|---|---|
+| `base` | 6.4 | 6.4 |
+| `merge_ties` | 19.5 | 28.7 |
+| `l0merge_ties` | 21.3 | 30.4 |
+| `l0merge_dare_ties` — the control | **21.4** | 33.9 |
+| `mono_all` | 22.9 | 22.9 |
+| `merge_dare_ties` — headline merge | **23.9** | 34.8 |
+| **`tuned_L0` — THE CONTROL** | **24.5** | 24.5 |
+| `residual_n6_s42` — best residual arm | 25.6 | 41.7 |
+| `tuned_S2_s17` | **28.0** | 28.0 |
+
+| contrast | Δ | 95 % CI | q | |
+|---|---|---|---|---|
+| 6-specialist merge vs `tuned_L0` | −0.66 | [−1.89, +0.66] | 0.358 | null |
+| **6 specialists vs 3× clean-code merge** | **+2.47** | [+1.24, +3.71] | **0.0001** | **significant** |
+| **3× clean-code merge vs ONE clean-code adapter** | **−3.13** | [−4.86, −1.57] | **0.0001** | **significant** |
+| `tuned_S2_s17` vs `tuned_L0` (§3.5) | **+3.46** | [+2.06, +4.86] | **0.0000** | **significant** |
+
+**§12.10's gating claim does not survive the power increase.** It read: *"merging three clean-code
+adapters reaches the same `H1` accuracy as merging six specialists"* — 33.9 vs 34.8 on Grid B, a
+0.9-point gap taken as a tie. At n=1,214 the gap is **+2.47 and highly significant**. The specialists
+*do* contribute to the merge.
+
+**What the panel actually shows is two offsetting effects that Grid B could not separate:**
+
+1. **Merging costs ~3 points.** Merging three clean-code adapters scores 21.4 against a single
+   clean-code adapter's 24.5 (−3.13, significant). That is the dilution of §3.1 measured directly on
+   `H1`, in a bank where there is no specialist knowledge to lose — so it isolates the cost of the
+   operation itself.
+2. **Specialists recover ~2.5 of it** (+2.47, significant).
+
+Net, the six-specialist merge lands 0.66 below the clean-code control, null — the same bottom line as
+before, reached for a materially different reason. **"The per-condition experts carry nothing
+distinct" is too strong and should be retired.** They carry something worth +2.5 points into a merge;
+it is simply cancelled by what merging costs. The defensible statement is narrower and more
+interesting: *combination methods pay a dilution cost that is about the size of the specialist
+contribution they are trying to exploit, so the net is a wash.*
+
+**§3.5 is also confirmed at power**: the `S2` specialist beats the clean-code control by **+3.46**
+[+2.06, +4.86], q < 0.0001, on 1,214 items. It remains the only system in the project that beats the
+control on the held-out obfuscator, and `s2fam` (26.6) does not reach it.
 
 ---
 

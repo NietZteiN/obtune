@@ -90,6 +90,20 @@ token changed* — positives and negatives are then equally obfuscated and surfa
 obfuscation-ness carries zero label information. The paper-literal `clean_mutant` style
 is kept as a config option so the confound can be measured rather than argued about.
 
+> **Discharged 2026-08-18.** It was measured. `cftclean` (1.5B, seed 17, `clean_mutant`
+> negatives, identical otherwise) reaches **0.5 %** strict reverse success against `cft`'s
+> **0.2 %** — a difference of +0.3 pp [−0.1, +0.7] that spans zero — and sits **2.3 pp below the
+> untouched model**. It fails on *larger* auxiliary pools than our default arm (6,058 vs 5,611,
+> because `clean_mutant` mutates the L0 parent once and reuses it across conditions) at an
+> essentially identical training loss (0.3537 vs 0.3544). So the shortcut is not the active
+> ingredient and our deviation is not what produced the null.
+> See [`../log/cft-replication/2026-08-18_paper-literal-negatives.md`](../log/cft-replication/2026-08-18_paper-literal-negatives.md)
+> and `paper_bidirectional` Appendix C.
+>
+> Note the pools live in `data/train/cft/python__cleanneg/`. Building them in place would have
+> destroyed the published corpus, since `10_build_cft_data.py` had no output-dir parameter; it now
+> requires `--variant` for any non-default `--negative-style`.
+
 **2. Negatives are executed, not assumed.**
 The paper says only "functionally different code". We generate single-operator mutations
 (AOR / ROR / LCR / ICR, the standard mutation-testing families) and **run** each against

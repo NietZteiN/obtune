@@ -1,0 +1,36 @@
+{
+  "job_id": "rq3mc__tuned_S2_s17__literal",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "tuned_S2_s17",
+    "--condition",
+    "S2",
+    "--max-items",
+    "150",
+    "--classes",
+    "literal",
+    "--tag",
+    "literal",
+    "--adapter",
+    "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.15,
+  "priority": 511,
+  "meta": {
+    "experiment": "rq3/manipulation-check",
+    "stage": "rq3_mc",
+    "system": "tuned_S2_s17",
+    "arm": "literal",
+    "note": "Does the knockout do ANYTHING? all6 must crater accuracy; literal should hurt output prediction. If neither bites, the identifier null is uninformative and no knockout claim is available."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 144.7,
+    "log": "runs/logs/rq3mc__tuned_S2_s17__literal.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-26T21:57:57.513854+00:00"
+  }
+}

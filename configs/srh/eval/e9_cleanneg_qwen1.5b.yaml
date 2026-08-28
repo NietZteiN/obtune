@@ -1,0 +1,22 @@
+# The paper-literal negative construction, scored against the arms it has to be compared to.
+# Last updated: 2026-08-18
+#
+#   python -m obtune.cft.evaluate --config srh/eval/e9_cleanneg_qwen1.5b.yaml --gpu <idle>
+#
+# `cftclean` is `cft` with negatives mutated from the CLEAN parent instead of the obfuscated
+# variant -- nikiema2025contrastive §5.0.2's literal construction, which our main `cft` arm
+# deliberately departs from. See configs/cft/train/cftclean_qwen1.5b_py.yaml.
+#
+# The comparison only means anything against `sft` and `cft` scored in the SAME pass: the
+# determinism floor is +-0.3 pp cross-pass (paper Appendix B), and the contrast we care about
+# is ~0.1 pp wide. `base`, `sft` and `cft` arrive by deep-merge from bidir_v1.yaml, so listing
+# `cftclean` alone puts all four in one pass.
+_extends: ../../cft/eval/bidir_v1.yaml
+
+model: qwen25c-1.5b
+
+systems:
+  cftclean: runs/adapters_cft/qwen25c-1.5b/python/cftclean_r32_s17/final
+
+reverse_strategies: [simple]
+run_tag: e9_cleanneg_qwen1.5b

@@ -57,7 +57,7 @@ from typing import Any, Sequence
 
 from obtune.obf.base import Bail, SnippetCtx
 
-PASSES: tuple[str, ...] = ("alpha", "fold", "dce", "reformat")
+PASSES: tuple[str, ...] = ("alpha", "fold", "dce", "dse", "reformat")
 
 #: The evaluated arms. Ordering inside a profile is the ORDER THE PASSES RUN and is not
 #: arbitrary: `fold` first so that `dce` can see a test that folded to a constant, then the
@@ -72,6 +72,21 @@ PROFILES: dict[str, tuple[str, ...]] = {
     # remove injected junk without discarding information the model was using, so this
     # should dominate `full` everywhere and is the profile a practitioner would ship.
     "structural": ("fold", "dce", "reformat"),
+    # `structural` PLUS dead-store elimination. Added 2026-08-26 after measuring where
+    # `structural` actually bites: it marks 32.3 % of `S3` and 18.9 % of `S2` as removable and
+    # **0.4 % of `S4`** — the condition built entirely of inert material. S4 is opaque predicates
+    # only, and its guards are functions of a VARIABLE (`(n*n + n) % 2 == 0`), so folding cannot
+    # decide them and `dce` never fires. `dse` closes that gap without deciding any predicate: it
+    # removes stores to names that are never read, and branches whose every arm is such a store,
+    # which is inert whichever way the guard goes. Coverage becomes S2 39.2 % / S3 32.3 % /
+    # S4 28.4 %, against 0.2-0.7 % on `L0`, `S1`, `L1r`, `L1b` and `L2` — it fires on the
+    # inert-material family and essentially nowhere else. Execution parity on the real cases was
+    # 358/358 over S2/S3/S4/L0 (`scripts/analysis/25_validate_inert.py`).
+    #
+    # A SEPARATE PROFILE, not an edit to `structural`: `norm_structural` is a published arm with
+    # cells on disk (H1 12.9 vs base 6.3, the strongest zero-training result in the project), and
+    # silently strengthening it would invalidate every existing comparison against it.
+    "inert": ("fold", "dce", "dse", "reformat"),
 }
 
 
@@ -335,6 +350,67 @@ def _drop_redundant_pass(tree: ast.AST) -> None:
             setattr(node, attr, kept if kept else [ast.Pass()])
 
 
+def _pass_dse(tree: ast.Module, entry_point: str) -> tuple[ast.Module, int]:
+    """Delete statements that cannot be observed. See `normalize/inert.py` for the analysis.
+
+    Implemented by unparsing the tree and re-running the span analysis on the text, rather than
+    on the tree in hand, so that the removal and the attention-steering intervention
+    (`attn/31_steer.py`) are driven by exactly the same spans. If they could diverge, the
+    comparison between "delete the tokens" and "stop attending to them" would not be a controlled
+    one, which is the whole point of running both.
+    """
+    from .inert import inert_spans
+
+    # ITERATED TO A FIXPOINT. Removing a dead branch orphans whatever its guard was reading:
+    # `offset_f2f = 160` is live only because the opaque predicate `(offset_f2f * offset_f2f +
+    # offset_f2f) % 2 == 0` reads it, so it becomes dead the moment that branch goes. One pass
+    # leaves the setup line behind, which is exactly the injected scaffolding this is meant to
+    # clear. Bounded at 8 rounds: each round strictly removes at least one statement or stops.
+    total = 0
+    fresh = tree
+    for _ in range(8):
+        fresh, n = _dse_once(fresh, entry_point)
+        total += n
+        if not n:
+            break
+    return fresh, total
+
+
+def _dse_once(tree: ast.Module, entry_point: str) -> tuple[ast.Module, int]:
+    from .inert import inert_spans
+
+    src = _emit(tree)          # guarded: never emit text that does not mean the tree
+    fresh = ast.parse(src)
+    spans = inert_spans(src, entry_point)
+    if not spans:
+        return fresh, 0
+
+    starts, pos = [0], 0
+    for line in src.splitlines(keepends=True):
+        pos += len(line)
+        starts.append(pos)
+
+    def covered(n: ast.AST) -> bool:
+        a = starts[n.lineno - 1] + n.col_offset
+        b = starts[n.end_lineno - 1] + n.end_col_offset
+        return any(lo <= a and b <= hi for lo, hi in spans)
+
+    removed = 0
+    for node in ast.walk(fresh):
+        for attr in ("body", "orelse", "finalbody"):
+            block = getattr(node, attr, None)
+            if not isinstance(block, list) or not block:
+                continue
+            kept = [st for st in block if not covered(st)]
+            removed += len(block) - len(kept)
+            # An empty `body` is a syntax error; an empty `orelse`/`finalbody` is the normal
+            # "clause absent" state, so only `body` gets a filler (same rule as `_pass_dce`).
+            setattr(node, attr, kept if kept else ([ast.Pass()] if attr == "body" else []))
+    if not fresh.body:
+        fresh.body = [ast.Pass()]
+    return fresh, removed
+
+
 def _pass_dce(tree: ast.Module, entry_point: str) -> tuple[ast.Module, int]:
     u = _Unreachable()
     tree = u.visit(tree)
@@ -426,6 +502,13 @@ def normalize_python(src: str, *, entry_point: str = "", passes: Sequence[str] =
                     applied.append("dce")
                     needs_unparse = True
                     notes.append(f"dce: removed {n} constructs")
+            elif name == "dse":
+                t, n = _pass_dse(_tree(), entry_point)
+                tree = t
+                if n:
+                    applied.append("dse")
+                    needs_unparse = True
+                    notes.append(f"dse: removed {n} effect-free statements")
             elif name == "reformat":
                 _tree()
                 needs_unparse = True
@@ -438,7 +521,10 @@ def normalize_python(src: str, *, entry_point: str = "", passes: Sequence[str] =
     if needs_unparse and tree is not None:
         try:
             code = _emit(tree)
-        except (SyntaxError, RecursionError, ValueError, AttributeError) as exc:
+        except (Bail, SyntaxError, RecursionError, ValueError, AttributeError) as exc:
+            # `Bail` covers `UnparseUnfaithful` — an emit whose text does not mean the tree.
+            # Reverting to `src` (not to the partially-rewritten `code`) is the point: the
+            # un-normalized program is always correct, a half-normalized one may not be.
             notes.append(f"unparse: bailed ({type(exc).__name__}: {exc})")
             return NormResult(src, [], notes + ["reverted: unparse failed"])
 
@@ -452,9 +538,71 @@ def normalize_python(src: str, *, entry_point: str = "", passes: Sequence[str] =
     return NormResult(code, applied, notes)
 
 
+class UnparseUnfaithful(Bail):
+    """`ast.unparse` produced source that does not re-parse to the tree it was given."""
+
+
 def _emit(tree: ast.Module) -> str:
+    """Unparse, then PROVE the text means what the tree meant.
+
+    Why this guard exists — a real, silent miscompilation it caught. `_pass_fold` collapses
+    `(-1)` to `Constant(-1)`, and `ast.unparse` renders `BinOp(Constant(-1), Pow, Name('r'))` as
+    `-1 ** r`. In Python `**` binds TIGHTER than unary minus, so that text parses as `-(1 ** r)`
+    — a constant `-1` where the original alternated sign. Two of 200 `L0` programs
+    (`apps_123_0`, `apps_1661_0`) were being handed to the model with a term of the computation
+    silently changed, in `norm_structural`: a PUBLISHED arm, and the strongest zero-training
+    result in the project (`H1` 12.9 against base 6.3). The corpus gate never saw it because
+    normalization happens at eval time, downstream of every execution check, and an accuracy loss
+    from a corrupted program is indistinguishable from "normalization does not help".
+    #
+    The guard is deliberately general rather than a fix to the folder. The failure is a property
+    of `ast.unparse`, not of one pass, so any pass that rewrites an expression can trip the same
+    class of precedence bug. Round-tripping the emitted text and comparing the dumps (which
+    exclude position attributes) is a total check: if the text does not mean the tree, we bail and
+    the caller keeps the last trustworthy source instead of shipping a wrong program.
+    """
     ast.fix_missing_locations(tree)
-    return ast.unparse(tree)
+    out = ast.unparse(tree)
+    try:
+        back = ast.parse(out)
+    except SyntaxError as exc:                       # pragma: no cover — unparse emitted junk
+        raise UnparseUnfaithful(f"emitted source does not parse: {exc}") from exc
+    if ast.dump(_canon_neg(back)) != ast.dump(_canon_neg(tree)):
+        raise UnparseUnfaithful(
+            "ast.unparse round-trip changed the tree (operator-precedence bug); "
+            "keeping the un-normalized source"
+        )
+    return out
+
+
+class _CanonNeg(ast.NodeTransformer):
+    """`UnaryOp(USub, Constant(n))` -> `Constant(-n)`, so the guard compares MEANING not syntax.
+
+    Without this the check fires on every folded negative literal and reverts good work: `fold`
+    turns the slice of `x[-1]` into `Constant(-1)`, which unparses to `-1` and re-parses as
+    `UnaryOp(USub, Constant(1))`. Structurally different, identically meaningful — 78 of 200 `L0`
+    programs tripped on exactly that before this existed.
+
+    It does NOT hide the precedence bug it was built for, because the two differ in shape: in
+    `-1 ** r` the `USub` operand is a `BinOp`, not a `Constant`, so nothing folds and the mismatch
+    against the intended `BinOp(Constant(-1), Pow, ...)` survives.
+    """
+
+    def visit_UnaryOp(self, node: ast.UnaryOp) -> ast.AST:
+        self.generic_visit(node)
+        if (isinstance(node.op, (ast.USub, ast.UAdd))
+                and isinstance(node.operand, ast.Constant)
+                and isinstance(node.operand.value, (int, float, complex))
+                and not isinstance(node.operand.value, bool)):
+            value = node.operand.value
+            return ast.copy_location(
+                ast.Constant(value=-value if isinstance(node.op, ast.USub) else +value), node)
+        return node
+
+
+def _canon_neg(tree: ast.AST) -> ast.AST:
+    import copy as _copy
+    return _CanonNeg().visit(_copy.deepcopy(tree))
 
 
 def normalize(code: str, language: str, *, entry_point: str = "", profile: str = "alpha") -> NormResult:

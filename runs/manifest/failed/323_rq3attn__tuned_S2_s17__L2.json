@@ -1,0 +1,56 @@
+{
+  "job_id": "rq3attn__tuned_S2_s17__L2",
+  "kind": "attn",
+  "argv": [
+    "-m",
+    "obtune.eval_hf",
+    "--mode",
+    "attn",
+    "--model",
+    "qwen25c-1.5b",
+    "--items",
+    "data/eval/heldout/items/L2/python.jsonl",
+    "--system",
+    "tuned_S2_s17",
+    "--layers",
+    "4",
+    "9",
+    "14",
+    "19",
+    "23",
+    "27",
+    "--max-items",
+    "150",
+    "--out",
+    "results/attn/rq3_sweep/L2",
+    "--adapter",
+    "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.08,
+  "priority": 323,
+  "meta": {
+    "experiment": "rq3/attention-sweep",
+    "stage": "rq3_attn",
+    "system": "tuned_S2_s17",
+    "condition": "L2",
+    "layers": [
+      4,
+      9,
+      14,
+      19,
+      23,
+      27
+    ],
+    "max_items": 150,
+    "note": "RQ3 anchoring sweep. NO H1 by design - this is exploratory and H1 reads are reserved for confirmation."
+  },
+  "result": {
+    "returncode": 1,
+    "seconds": 13.2,
+    "log": "runs/logs/rq3attn__tuned_S2_s17__L2.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-18T19:07:19.839865+00:00",
+    "tail": "                       ^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/conda_envs/obtune/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/conda_envs/obtune/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1885, in _call_impl\n    return inner()\n           ^^^^^^^\n  File \"/data/jvl210002/conda_envs/obtune/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 1833, in inner\n    result = forward_call(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/conda_envs/obtune/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py\", line 231, in forward\n    attn_output, attn_weights = attention_interface(\n                                ^^^^^^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/conda_envs/obtune/lib/python3.12/site-packages/transformers/models/qwen2/modeling_qwen2.py\", line 178, in eager_attention_forward\n    attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(query.dtype)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/jvl210002/conda_envs/obtune/lib/python3.12/site-packages/torch/nn/functional.py\", line 2161, in softmax\n    ret = input.softmax(dim, dtype=dtype)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntorch.OutOfMemoryError: CUDA out of memory. Tried to allocate 17.88 GiB. GPU 0 has a total capacity of 47.40 GiB of which 15.27 GiB is free. Including non-PyTorch memory, this process has 32.12 GiB memory in use. Of the allocated memory 31.44 GiB is allocated by PyTorch, and 349.21 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n"
+  }
+}

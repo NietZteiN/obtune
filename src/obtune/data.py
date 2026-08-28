@@ -455,6 +455,34 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     else:
         rng = random.Random(seed)
         rng.shuffle(train_rows)
+
+    # FORMAT-ONLY ABLATION. `train.shuffle_labels` permutes `output_repr` ACROSS the training rows
+    # THAT WERE ACTUALLY SELECTED (it runs after size-matching, so it is a strict permutation of
+    # the arm's own answer multiset), leaving code, prompts, answer distribution and row count
+    # untouched. The model
+    # then sees perfectly well-formed answers that are uncorrelated with their input, so it can
+    # learn the ANSWER FORMAT and the marginal distribution of answers, and nothing about the task.
+    #
+    # Why this arm exists: the project's central finding is that `tuned_L0` — an adapter trained on
+    # 4,689 rows of CLEAN code — matches every obfuscation-trained system on the held-out
+    # obfuscator. MASTER_REPORT §6 notes the untuned base fails the output format 17.3 % of the
+    # time against 2-6 % for adapters, which raises an obvious alternative reading nobody has
+    # tested: that "fine-tuning helps on obfuscated code" is substantially "fine-tuning teaches the
+    # answer format". If a label-shuffled adapter recovers most of `tuned_L0`'s gain, that reading
+    # is right and it reframes the headline. If it recovers little, the gain is real task
+    # acquisition and the finding is safe from the objection.
+    #
+    # The VAL split is deliberately NOT shuffled: checkpoint selection then picks the checkpoint
+    # with the best genuine accuracy, exactly as it does for every other arm. That is a small
+    # asymmetry (this arm cannot improve on the task, so selection is closer to "least damaged"
+    # than "best"), and it is recorded here rather than hidden.
+    if bool(tcfg.get("shuffle_labels", False)):
+        import random as _random
+        _rng = _random.Random(seed)
+        golds = [r.output_repr for r in train_rows]
+        _rng.shuffle(golds)
+        train_rows = [r.model_copy(update={"output_repr": g}) for r, g in zip(train_rows, golds)]
+
     if val_size and val_rows:
         val_rows = _balanced_take(val_rows, val_size, seed + 2)
 

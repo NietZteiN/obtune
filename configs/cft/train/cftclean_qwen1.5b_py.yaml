@@ -1,0 +1,26 @@
+# Arm B' — CFT with the PAPER-LITERAL negative construction.
+#
+# Identical to cft_qwen1.5b_py.yaml in every respect except the negative pool: negatives
+# here are mutated from the CLEAN parent (nikiema2025contrastive §5.0.2, "non-obfuscated--
+# non-obfuscated code pairs with different semantics") rather than from the obfuscated
+# variant. Our main `cft` arm deviates deliberately, because under the paper-literal
+# construction the question "is program B obfuscated?" predicts the label perfectly and a
+# model can score well on the auxiliary terms without comparing semantics at all.
+#
+# This arm exists to settle the obvious objection to that deviation -- that the shortcut IS
+# the active ingredient, since a model forced to represent obfuscated-ness explicitly has
+# done part of the work of undoing it. docs/CFT_REPLICATION.md promised this would be
+# measured rather than argued about; it was not, until now.
+#
+# `variant: cleanneg` reads data/train/cft/python__cleanneg/, a SIBLING of the published
+# pools. It must never point at the default directory -- that one holds the corpus every
+# number in paper_bidirectional was trained on.
+_extends: _base_cft.yaml
+
+arm: cftclean
+language: python
+tasks: [gen, pos, neg]
+
+train:
+  mixture_kwargs:
+    variant: cleanneg

@@ -1,0 +1,40 @@
+# Putting the rest of the RQ2 H1 comparators on Grid A. SPENDS QUARANTINE BUDGET.
+#
+# ⚠️ Continuation of the 2026-08-17 declared third pass; see ACCESS_LOG.md. `--stub` on this config
+# really loads H1 items and appends a row — smoke against a non-H1 condition list instead.
+#
+# WHY. The Grid A settlement showed Grid B `H1` (115 items / 27 programs) overstates merge effects by
+# 3-5x AND reorders the arms. Every number §12.10's conclusion is read against is from that grid:
+# `merge_ties` 28.7, `l0merge_dare_ties` 33.9, `l0merge_ties` 30.4, `tuned_L0_k0` 33.9,
+# `mole_router` 33.9. `merge_dare_ties` has since been measured on Grid A (23.9 against the
+# clean-code control's 24.5). This run moves the remaining weight-space arms onto the same
+# 1,214-item grid so the central negative result rests on one adequately-powered panel rather than a
+# mixture of n=115 and n=1214 numbers.
+#
+# `tuned_L0_k0` is NOT here: it is `tuned_L0` evaluated on Grid B, and `tuned_L0` already has its
+# Grid A `H1` cell (24.5) on exactly these items. `mole_router` is NOT here either: the mixture arms
+# run through `obtune.mole.eval_mole` (HF backend), not this vLLM path, so it needs its own config
+# and is the one remaining gap in the panel.
+#
+# PRE-REGISTERED: no arm is expected to beat `tuned_L0` (24.5). The point is the power of the panel,
+# not a new effect. If `l0merge_dare_ties` lands near `merge_dare_ties` on Grid A as it did on Grid B,
+# §12.10's gating control is confirmed at 10x power.
+#
+# phase `final`, NOT `main` — these system names already hold Grid B cells under `main` and
+# `cell_dir` does not key on `eval_source`.
+_extends: _base_eval.yaml
+
+phase: final
+experiment_id: h1_gridA_merge_floor
+run_tag: h1_gridA_merge_floor
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+h1_access_purpose: final_eval
+
+systems:
+  - {name: merge_ties, adapter: "runs/merges/qwen25c-1.5b_python_ties/ties_d0p5", arch: merge_ties, train_cond: mix}
+  - {name: l0merge_ties, adapter: "runs/merges/qwen25c-1.5b_python_l0control_ties/d0p5", arch: merge_ties, train_cond: mix}
+  - {name: l0merge_dare_ties, adapter: "runs/merges/qwen25c-1.5b_python_l0control_dare_ties/d0p5", arch: merge_dare_ties, train_cond: mix}
+
+eval_conditions: [H1]

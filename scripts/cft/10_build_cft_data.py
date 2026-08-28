@@ -32,8 +32,21 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=None,
                     help="cap the number of source programs (smoke tests)")
     ap.add_argument("--negative-style", default=None, choices=cft_data.NEGATIVE_STYLES)
+    ap.add_argument("--variant", default=None,
+                    help="write to the SIBLING dir data/train/cft/<lang>__<variant>/ instead of "
+                         "the default. REQUIRED with a non-default --negative-style: the default "
+                         "directory holds the pools every published number was trained on, and "
+                         "this script overwrites in place.")
     ap.add_argument("--dry-run", action="store_true", help="build and report, write nothing")
     args = ap.parse_args()
+
+    # Guard, not a convention. Rebuilding the default directory under a different negative
+    # construction would silently replace the corpus behind paper_bidirectional's 2x2 with
+    # one that answers a different question, and nothing downstream would notice.
+    style = args.negative_style or load_config(args.config).get("negative_style", "obfuscated_mutant")
+    if style != "obfuscated_mutant" and not args.variant:
+        ap.error(f"--negative-style {style} without --variant would overwrite the published "
+                 f"pools in data/train/cft/<lang>/. Pass e.g. --variant cleanneg.")
 
     cfg = load_config(args.config)
     languages = [args.language] if args.language else list(cfg["languages"])
@@ -60,7 +73,7 @@ def main() -> int:
         if args.dry_run:
             print("[cft.data] dry run — nothing written")
             continue
-        written = cft_data.write_pools(language, pools, report)
+        written = cft_data.write_pools(language, pools, report, variant=args.variant)
         for task, path in sorted(written.items()):
             print(f"[cft.data] wrote {path}")
     return 0

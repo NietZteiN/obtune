@@ -1,0 +1,49 @@
+# IDEA 3 — how much of "fine-tuning helps" is just "fine-tuning teaches the ANSWER FORMAT"?
+#
+# THE OBJECTION THIS DISARMS. The project's headline is that `tuned_L0` — trained on 4,689 rows of
+# CLEAN code, having never seen an obfuscator — matches every obfuscation-trained specialist on the
+# held-out obfuscator `H1` (24.7 vs 28.0 for the best specialist, Grid A n=1214). The natural
+# reading is "fine-tuning teaches a general skill, not transform inversion". But MASTER_REPORT §6
+# records that the untuned base fails the required output format on 17.3 % of items against 2-6 %
+# for every adapter, and nobody has separated those. If most of `tuned_L0`'s +18.4 over base is the
+# model learning to EMIT A CANONICAL LITERAL rather than learning anything about code, then the
+# headline is measuring the prompt format, and the whole clean-code result is a much smaller claim.
+#
+# THE ABLATION. Train exactly `tuned_L0`'s recipe, on exactly `tuned_L0`'s rows, with the gold
+# answers PERMUTED ACROSS ROWS (`train.shuffle_labels`, see data.py::build_sft_splits). Every
+# answer the model sees is a real, canonical, correctly-formatted answer drawn from the true answer
+# distribution — it is simply attached to the wrong program. So this adapter can learn the format,
+# the answer-token distribution, the response length, and the stop behaviour, and it cannot learn
+# the task. It is the format-acquisition floor.
+#
+# HOW TO READ IT, decided before running:
+#   * If `formatonly` lands near base (~6 %) -> format acquisition is worth almost nothing, the
+#     +18.4 is real task learning, and the clean-code finding survives the objection outright.
+#   * If it lands mid-way (~15 %) -> a substantial share of every "fine-tuning helps" number in
+#     this project is format, and every gain must be reported against THIS floor rather than base.
+#     That would be a genuine correction to the headline, not a footnote.
+#   * If it lands near `tuned_L0` (~25 %) -> the clean-code result is essentially a format effect
+#     and the paper's framing has to change.
+# All three are publishable; the arm cannot come back uninformative, which is why it is worth
+# ~4 GPU-h.
+#
+# WHY THE LABELS ARE SHUFFLED RATHER THAN THE PROMPTS RANDOMIZED. Shuffling preserves the marginal
+# answer distribution exactly, so the arm isolates "format + answer prior" from "input-output
+# mapping". Feeding random text would additionally destroy the code distribution and confound the
+# two.
+#
+# Own `adapter_root` — the adapter directory name encodes only (conditions, rank, seed), so without
+# this it would silently overwrite the real `L0_r32_s17` bank that RQ1 rests on.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0]
+run_tag: formatonly_py
+phase: main
+
+adapter_root: runs/adapters_formatonly
+
+train:
+  seed: 17
+  shuffle_labels: true

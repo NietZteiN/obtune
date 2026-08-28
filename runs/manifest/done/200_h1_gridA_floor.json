@@ -1,0 +1,29 @@
+{
+  "job_id": "h1gridAfloor__qwen25c-1.5b",
+  "kind": "eval-cell",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/h1_gridA_merge_floor_qwen1.5b.yaml",
+    "--model",
+    "qwen25c-1.5b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 200,
+  "meta": {
+    "experiment": "holdout-final/gridA-panel",
+    "stage": "h1_gridA_floor",
+    "note": "move the remaining RQ2 H1 comparators onto the 1214-item grid"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 68.1,
+    "log": "runs/logs/h1gridAfloor__qwen25c-1.5b.log",
+    "worker": "gpu3",
+    "finished_utc": "2026-08-17T15:56:53.125056+00:00"
+  }
+}

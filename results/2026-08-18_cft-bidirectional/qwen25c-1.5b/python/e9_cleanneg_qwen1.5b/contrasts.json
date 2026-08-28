@@ -1,0 +1,84 @@
+{
+  "run": "results/2026-08-18_cft-bidirectional/qwen25c-1.5b/python/e9_cleanneg_qwen1.5b",
+  "metric": "reverse_success_strict",
+  "contrasts": [
+    {
+      "a": "cftclean",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.004666666666666667,
+      "mean_b": 0.002,
+      "delta": 0.002666666666666667,
+      "ci": [
+        -0.0013333333333333335,
+        0.006666666666666668
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "cftclean",
+      "b": "cft",
+      "n_programs": 300,
+      "mean_a": 0.004666666666666667,
+      "mean_b": 0.002,
+      "delta": 0.002666666666666667,
+      "ci": [
+        -0.0013333333333333335,
+        0.006666666666666667
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "cft",
+      "b": "sft",
+      "n_programs": 300,
+      "mean_a": 0.002,
+      "mean_b": 0.002,
+      "delta": 0.0,
+      "ci": [
+        -0.002666666666666667,
+        0.0033333333333333335
+      ],
+      "excludes_zero": false
+    },
+    {
+      "a": "cftclean",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.004666666666666667,
+      "mean_b": 0.028,
+      "delta": -0.023333333333333334,
+      "ci": [
+        -0.03333333333333333,
+        -0.013999999999999999
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "cft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.002,
+      "mean_b": 0.028,
+      "delta": -0.026000000000000002,
+      "ci": [
+        -0.03533333333333333,
+        -0.017333333333333333
+      ],
+      "excludes_zero": true
+    },
+    {
+      "a": "sft",
+      "b": "base",
+      "n_programs": 300,
+      "mean_a": 0.002,
+      "mean_b": 0.028,
+      "delta": -0.026000000000000002,
+      "ci": [
+        -0.035333333333333335,
+        -0.017333333333333333
+      ],
+      "excludes_zero": true
+    }
+  ]
+}

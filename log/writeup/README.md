@@ -1,6 +1,6 @@
 # writeup — Figures, paper draft, artifact packaging
 
-*Last updated: 2026-08-13*
+*Last updated: 2026-08-27*
 **Status:** active
 
 ## Hypotheses — open
@@ -41,6 +41,30 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-08-27_master-report-rev13.md`](2026-08-27_master-report-rev13.md) — the 08-12 master report
+  brought current as [`../../docs/MASTER_REPORT_2026-08-27.md`](../../docs/MASTER_REPORT_2026-08-27.md).
+  §2.2's table **regenerated** — 154 systems in 169 rows, **one row per system per grid** (15 were
+  sharing a row across two grids, which is how the RQ2 conclusion came to rest on 115 items), with a
+  documented source preference for the 41 disagreeing duplicate cells. Verified to reproduce all 74
+  old rows exactly. Three failed regenerations first — dropped `base`'s Grid B row, oldest-first
+  tie-break, double-rounding. New §7.8, §12.12, §12.13, §15, §16; §1/§9/§10 rewritten; §12.4
+  corrected in place.
+- [`2026-08-27_rq2-master-report.md`](2026-08-27_rq2-master-report.md) — **RQ2 routing-and-merging
+  closed** with [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md),
+  written from cells rather than from reports. Verdict reproduces to ≤0.02 pts. Three new findings:
+  the eval stack is 2–15× noisier than recorded on the `tuned_L0` `H1` control (40.0 / 34.8 / 33.9
+  across three passes, two of them identical in every recorded field); the **pooled** 1.32/3.61 seed
+  band has been applied to Python-only contrasts in five documents and three script docstrings where
+  the Python bar is 0.63/1.46; and the best merge density does not transfer to `H1`
+- [`2026-08-18_attrib-reframe-directional-confound.md`](2026-08-18_attrib-reframe-directional-confound.md)
+  — draft v4. The paper now argues for a confound class rather than against one paper; the CFT
+  replication is the worked instance. §1's general test is the contribution and must not be cut
+  for pages. No number changed.
+- [`2026-08-17_attrib-reviewer-hardening.md`](2026-08-17_attrib-reviewer-hardening.md) — ATTRIB
+  draft v3, no number changed. §4's header and scope caveat carry the defence of our CFT
+  reconstruction in the body; abstract middle third tightened. **Build recipe is here** (tectonic,
+  not pdflatex). The first compile in nine days showed the body has zero spare lines, which is why
+  the §2 version of that defence was reverted.
 - [`2026-08-13_fse-modularity-draft-v0.1.md`](2026-08-13_fse-modularity-draft-v0.1.md) — the FSE RQ2
   draft in `paper_modularity/`, written from 897 cells; four sections of the master report are stale,
   and the mixture arm's decisive control turned out to be inert.

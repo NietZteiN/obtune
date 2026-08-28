@@ -1,7 +1,10 @@
 # modularity — RQ2 — router, merges, monolithic, oracle arms
 
-*Last updated: 2026-08-17*
-**Status:** active — router saturated (100% route accuracy); the uniform-epoch sweep, the merge-optimal
+*Last updated: 2026-08-27*
+**Status:** **CLOSED, negative** — no combination of per-transformation specialists beats a
+clean-code adapter on the held-out obfuscator; closing report:
+[`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md).
+Historical status at close: router saturated (100% route accuracy); the uniform-epoch sweep, the merge-optimal
 search, the DARE-linear repair and the mixture ladder have all landed; `mole_random` re-run and no
 longer inert. Blocking now: the Grid A baseline panel is 33 cells short from `eval_source` resume
 aliasing, and 21 already-collected 7B Grid A cells have no matched floor
@@ -89,6 +92,13 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   by-product of the 9-epoch sweep that has already run.
 
 ## Entries
+- [`2026-08-27_geometry-consolidated.md`](2026-08-27_geometry-consolidated.md) — zero-GPU
+  documentation + analysis pass; **does not reopen the thread**. Cross-seed bank's **sign conflict
+  0.565 / TIES keep 0.638** computed for the first time against the same-seed arm's 0.394 / 0.840 —
+  and **TIES loses 0.40 points while DARE-TIES loses 3.62**, i.e. the algorithm the diagnostic is a
+  theory of is the one insensitive to it. The owed geometry→accuracy regression is **resolved as
+  not-runnable** (four geometric regimes, near-constant within each). All of it consolidated into
+  `docs/MASTER_REPORT_2026-08-27.md` §14.
 - [`2026-08-17_attempted-repairs-are-null.md`](2026-08-17_attempted-repairs-are-null.md) —
   both attempted repairs to the negative result are null (+0.02 and −1.36); `allow_composites` was
   missing from `run_ckpt_select` (would have failed after a 5.3 h train) and from `preflight`.
@@ -106,6 +116,11 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   — geometry null + the reason for it; forgetting gate run for the first time; six bugs.
 
 ## Doc / results links
+- [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md)
+  — **the closing master report for this thread.** Supersedes the two chain reports below and
+  `MASTER_REPORT_2026-08-12.md` §5/§12.10 on RQ2. All numbers recomputed from cells; records the
+  eval-stack determinism spread on the `H1` control, the pooled-vs-Python seed band, and the
+  `d=0.3` density's failure to transfer to `H1`
 - [`../../docs/REPORT_2026-08-17_geometry-and-attempted-repairs.md`](../../docs/REPORT_2026-08-17_geometry-and-attempted-repairs.md)
   — self-contained account of the 15–17 Aug chain: item-level redundancy, geometry as an
   initialization artifact, the cross-seed merge control, and the two null repairs

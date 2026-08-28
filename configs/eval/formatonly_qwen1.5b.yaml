@@ -1,0 +1,46 @@
+# IDEA 3 — the FORMAT-ACQUISITION FLOOR for the project's headline claim.
+#
+# THE CLAIM UNDER TEST. `tuned_L0` — trained on 4,689 rows of CLEAN code, having never seen an
+# obfuscator — matches every obfuscation-trained specialist on the held-out obfuscator `H1`
+# (24.7 vs 28.0 for the best, Grid A n=1214), and beats `base` by +18.4 on `L0`. The natural
+# reading is "fine-tuning teaches a general skill". But MASTER_REPORT §6 records that `base` fails
+# the required output format on 17.3 % of items against 2-6 % for every adapter, so an obvious
+# alternative has never been separated out: that much of the gain is the model learning to EMIT A
+# CANONICAL LITERAL, not learning anything about code.
+#
+# THE CONTROL. `formatonly` is `tuned_L0`'s recipe on `tuned_L0`'s rows with the gold answers
+# PERMUTED ACROSS ROWS (`train.shuffle_labels`; a strict permutation applied after size-matching,
+# so same programs, same prompts, same answer multiset, mapping destroyed). It can learn the
+# format, the answer prior, the response length and the stop behaviour; it cannot learn the task.
+#
+# WHAT THE NUMBER TO WATCH IS — and it is NOT accuracy alone. Checkpoint selection already reports
+# 0.0 exact-match at every checkpoint, which on its own is ambiguous between the two outcomes that
+# matter:
+#   * `format_fail_rate` LOW and accuracy ~0  -> it learned the format perfectly and the task not
+#     at all. The floor is zero, format acquisition is worth nothing, and essentially all of
+#     `tuned_L0`'s +18.4 is real task learning. The headline survives the objection outright.
+#   * `format_fail_rate` HIGH -> the adapter is degenerate, and the arm says nothing about format
+#     at all; it would need re-running with a lower LR or fewer epochs before it means anything.
+# So this config exists to read `format_fail_rate` beside accuracy on the real eval grid, which
+# `ckpt_select` does not report.
+#
+# `assert_adapter_effective` is the guard that makes the zero interpretable: an adapter whose
+# outputs matched `base` would fail the eval outright, so 0.0 cannot be a silently-unapplied
+# adapter (and `base` scores 21.8 on `L0`, so they plainly differ).
+#
+# NO H1 — a control's floor is established on the trainable grid.
+_extends: _base_eval.yaml
+
+phase: baselines_gridA
+experiment_id: formatonly
+run_tag: formatonly
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+
+eval_conditions: [L0, L1r, S2]

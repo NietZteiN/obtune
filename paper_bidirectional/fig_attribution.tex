@@ -20,29 +20,29 @@
 
 % ---------------- panel (a): the published intervention ----------------
 \begin{scope}[shift={(0,0)}]
-  \node[box] (ax)  at (0,2.05) {$x$};
+  \node[box] (ax)  at (0,1.62) {$x$};
   \node[box] (axo) at (0,0)    {$\tilde x$};
-  \node[hdr] at (0,3.40) {(a)\; add a contrastive objective};
-  \node[eqn] at (0,2.85)
+  \node[hdr] at (0,2.94) {(a)\; add a contrastive objective};
+  \node[eqn] at (0,2.40)
     {$\mathcal{L}=\mathcal{L}_{\mathrm{gen}}+\mathcal{L}_{\mathrm{pos}}
                  +\mathcal{L}_{\mathrm{neg}}$};
   \draw[fwd]  ([xshift=-7mm]ax.south)  to[bend right=45] ([xshift=-7mm]axo.north);
   \draw[dead] ([xshift=7mm]axo.north) to[bend right=45] ([xshift=7mm]ax.south);
-  \node[side, anchor=east] at (-1.55,1.02) {obfuscate};
-  \node[side, anchor=west, text=black!40] (adl) at (1.55,1.02) {deobfuscate};
+  \node[side, anchor=east] at (-1.55,0.81) {obfuscate};
+  \node[side, anchor=west, text=black!40] (adl) at (1.55,0.81) {deobfuscate};
   \node[vmark, text=failred, anchor=west] at (adl.east) {\,\texttimes};
 \end{scope}
 
 % ---------------- panel (b): reading the same pairs backwards ----------------
 \begin{scope}[shift={(7.6,0)}]
-  \node[box] (bx)  at (0,2.05) {$x$};
+  \node[box] (bx)  at (0,1.62) {$x$};
   \node[box] (bxo) at (0,0)    {$\tilde x$};
-  \node[hdr, text=flipteal] at (0,3.40) {(b)\; flip the training pairs};
-  \node[eqn] at (0,2.85) {$\mathcal{L}=\mathcal{L}_{\mathrm{gen}}$};
+  \node[hdr, text=flipteal] at (0,2.94) {(b)\; flip the training pairs};
+  \node[eqn] at (0,2.40) {$\mathcal{L}=\mathcal{L}_{\mathrm{gen}}$};
   \draw[fwd]  ([xshift=-7mm]bx.south)  to[bend right=45] ([xshift=-7mm]bxo.north);
   \draw[live] ([xshift=7mm]bxo.north) to[bend right=45] ([xshift=7mm]bx.south);
-  \node[side, anchor=east] at (-1.55,1.02) {obfuscate};
-  \node[side, anchor=west] (bdl) at (1.55,1.02) {deobfuscate};
+  \node[side, anchor=east] at (-1.55,0.81) {obfuscate};
+  \node[side, anchor=west] (bdl) at (1.55,0.81) {deobfuscate};
   \node[vmark, text=flipteal, anchor=west] at (bdl.east) {\,\checkmark};
 \end{scope}
 

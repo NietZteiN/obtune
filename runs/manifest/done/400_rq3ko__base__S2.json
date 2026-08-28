@@ -1,0 +1,30 @@
+{
+  "job_id": "rq3ko__base__S2",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "base",
+    "--condition",
+    "S2",
+    "--max-items",
+    "150"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.15,
+  "priority": 400,
+  "meta": {
+    "experiment": "rq3/knockout",
+    "stage": "rq3_knockout",
+    "system": "base",
+    "condition": "S2",
+    "note": "causal step. Predictions registered in the script docstring BEFORE running: smaller damage for tuned_S2 on S2, LARGER damage for adapters on L1r."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 90.0,
+    "log": "runs/logs/rq3ko__base__S2.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-26T21:15:42.770126+00:00"
+  }
+}

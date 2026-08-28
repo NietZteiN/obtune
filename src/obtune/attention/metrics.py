@@ -114,9 +114,57 @@ def save_attention_npz(rec: AttentionRecord, path: str | Path) -> Path:
 
 
 def load_attention_npz(path: str | Path) -> AttentionRecord:
-    z = np.load(path, allow_pickle=True)
-    meta = json.loads(str(z["meta_json"].item()))
-    return AttentionRecord(attn=z["attn"], layers=z["layers"], offsets=z["offsets"], **meta)
+    """Read a dump written by `eval_hf.py --mode attn`, the documented on-disk contract.
+
+    TWO FORMATS EXIST AND THIS READS BOTH. `results/attn/SCHEMA.md` specifies the one the
+    capture path actually writes: an npz of `rows / layers / token_offsets / code_span /
+    input_ids` beside a `.json` sidecar carrying the metadata. `save_attention_npz` above
+    writes a DIFFERENT, older layout (`attn / layers / offsets / meta_json`) that no
+    writer in the project emits.
+
+    Until 2026-08-17 this function only understood the second one, so `metrics_table`,
+    `anchoring_shift` and the `metrics.py` CLI raised `KeyError: meta_json` on the first
+    real dump they were handed. Nothing caught it because no one had run the analysis end
+    to end on captured data. The legacy branch is kept so any old dump still loads.
+    """
+    p = Path(path)
+    z = np.load(p, allow_pickle=True)
+    if "meta_json" in z.files:                      # legacy save_attention_npz layout
+        meta = json.loads(str(z["meta_json"].item()))
+        return AttentionRecord(attn=z["attn"], layers=z["layers"], offsets=z["offsets"], **meta)
+
+    side = p.with_suffix(".json")
+    if not side.exists():
+        raise FileNotFoundError(
+            f"{p.name} is in the SCHEMA.md layout but its .json sidecar is missing; the "
+            "metadata (prompt_text, condition, item_id ...) lives there, not in the npz"
+        )
+    m = json.loads(side.read_text())
+    cs, ce = (int(x) for x in np.asarray(z["code_span"]).reshape(2))
+    text = m["prompt_text"]
+    return AttentionRecord(
+        attn=np.asarray(z["rows"]),
+        layers=np.asarray(z["layers"]),
+        offsets=np.asarray(z["token_offsets"]),
+        code_char_start=cs,
+        code_char_end=ce,
+        text=text,
+        # `code` is not stored separately; that is precisely what `code_span` is for, and
+        # recovering it here keeps the two provably consistent.
+        code=text[cs:ce],
+        language=m["language"],
+        entry_point=m.get("entry_point"),
+        item_id=m["item_id"],
+        program_id=m["program_id"],
+        condition=m["condition"],
+        base_model=m["base_model"],
+        # SCHEMA.md calls this `system` (base | tuned_S2 | ...); AttentionRecord calls the
+        # same thing `model_state`. One concept, two names, mapped in one place.
+        model_state=m.get("system", "base"),
+        adapter_id=m.get("adapter"),
+        seed=int(m.get("seed", 17)),
+        extra={k: m[k] for k in ("prompt_id", "prompt_sha") if k in m},
+    )
 
 
 # ---------------------------------------------------------------------------

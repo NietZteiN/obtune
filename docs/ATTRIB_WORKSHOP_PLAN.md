@@ -323,10 +323,33 @@ Total: ~11 training runs, ~26 GPU-h at 1.5B (+10 optional at 7B). With two free 
 
 ## 4. E3: substitute JavaScript for Java
 
-**Java is not feasible in this window.** The box has a JRE (`/usr/bin/java`) but **no `javac`** —
-a Java replication needs a JDK install, a CodeNet Java subset, obfuscators for Java, and a
-compile-plus-test harness, against ~3 weeks minus a Kyoto presentation and an intercontinental
-move. The plan's own timebox (~Aug 27) would almost certainly expire.
+**Java is not feasible in this window.** ~~The box has a JRE (`/usr/bin/java`) but **no
+`javac`**~~ — a Java replication needs a JDK install, a CodeNet Java subset, obfuscators for
+Java, and a compile-plus-test harness, against ~3 weeks minus a Kyoto presentation and an
+intercontinental move. The plan's own timebox (~Aug 27) would almost certainly expire.
+
+> **⚠️ Corrected 2026-08-17. The toolchain claim above is stale and was never the real blocker.**
+> A JDK is one `conda create -n <env> -c conda-forge openjdk=21` away (conda-forge serves
+> 21.0.6–25.0.2, network verified live) and `tree-sitter-java` is one `pip install` away. The
+> conclusion stands, but for three better reasons:
+>
+> 1. **CodeNet Java is structurally incompatible with this project's execution contract.** Its
+>    submissions are `public static void main(String[])` programs reading stdin and printing to
+>    stdout; `BaseProgram.entry_point` is a *function to call*, `runner_js.mjs` rejects a
+>    non-function, and `canon` serialises a *return value*. A Java arm would have to be built on
+>    CruxEval-X Java + MultiPL-E instead — so it could not claim to replicate the original's
+>    CodeNet setting anyway, which is the whole point of attempting it.
+> 2. **There is no Babel for Java.** The JS transforms are ~790 hand-written Babel passes using
+>    its binding graph. `javascript-obfuscator` produced none of the trainable conditions and is
+>    quarantined to the H1 generator. Java's options are JVM libraries needing a third subprocess
+>    bridge, or tree-sitter-java with no binding graph at all — the approach `obf/base.py`
+>    documents as rejected for Python.
+> 3. **A third canonicaliser would need byte-parity** with `canon.py` and `canon.mjs`. That parity
+>    failed twice on the easier Python↔JS pair, and it fails *silently*, producing plausible
+>    numbers from an invalid cross-language comparison.
+>
+> Estimated ~2,500–3,800 new lines across 12 modules. GPU is not the constraint — the four JS
+> trainings cost 1.85 GPU-h total. Engineering time and a late, all-or-nothing failure point are.
 
 **JavaScript costs almost nothing and answers most of the question.** The JS corpus is fully
 built: 168 programs, all six conditions, semantics-gated, with `javascript-obfuscator` installed

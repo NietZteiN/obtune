@@ -1,0 +1,32 @@
+{
+  "job_id": "rq3ko__tuned_L0__L1r",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "tuned_L0",
+    "--condition",
+    "L1r",
+    "--max-items",
+    "150",
+    "--adapter",
+    "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.15,
+  "priority": 411,
+  "meta": {
+    "experiment": "rq3/knockout",
+    "stage": "rq3_knockout",
+    "system": "tuned_L0",
+    "condition": "L1r",
+    "note": "causal step. Predictions registered in the script docstring BEFORE running: smaller damage for tuned_S2 on S2, LARGER damage for adapters on L1r."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 160.7,
+    "log": "runs/logs/rq3ko__tuned_L0__L1r.log",
+    "worker": "gpu2",
+    "finished_utc": "2026-08-26T21:20:15.056161+00:00"
+  }
+}

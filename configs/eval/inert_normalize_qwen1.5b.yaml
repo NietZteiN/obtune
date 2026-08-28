@@ -1,0 +1,61 @@
+# A STRONGER ZERO-TRAINING BASELINE — `norm_inert` vs the published `norm_structural`.
+#
+# WHERE THIS CAME FROM. Idea 1 (stacking) established a dose-response: symbolic dead-code
+# elimination is worth **+4.74 pts** to `base` on `S2` [+3.12, +6.24], **+1.56** to `tuned_L0`
+# [+0.30, +2.88], and **+0.06** to `tuned_S2` [-0.96, +1.08] — the skill and the symbolic pass are
+# the same thing, and a system that has learned it gains nothing from being handed it. The
+# corollary is the interesting one: **a system that has NOT learned it gains a lot**, so how much
+# a purely symbolic pass can recover is bounded by how much inert material it can actually prove
+# dead. That is a property of the analysis, not of the model, and it is improvable for free.
+#
+# WHAT `norm_structural` WAS MISSING. Measuring its reach over 150 programs per condition:
+# it marks 32.3 % of `S3` and 18.9 % of `S2` as removable, and **0.4 % of `S4`** — the condition
+# built ENTIRELY of inert material. S4 is opaque predicates only, and its guards are functions of
+# a variable (`(off * off + off) % 2 == 0`), so constant folding cannot decide them and `dce`
+# never fires. `norm_structural` was returning S4 programs at 98.7 % of their original size.
+#
+# WHAT `norm_inert` ADDS. A dead-store pass (`normalize/inert.py`) that never decides a predicate
+# — it asks whether the code has any EFFECT. A store to a name nothing reads is inert; a branch
+# whose every arm is such a store is inert whichever way the guard goes. Coverage becomes
+# S2 39.2 % / S3 32.3 % / S4 28.4 %, against 0.2-0.7 % on `L0`, `S1`, `L1r`, `L1b`, `L2`. Programs
+# shrink to 58.4 % (S2) and 67.9 % (S4) of original, from 81.3 % and 98.7 %.
+#
+# SOUNDNESS IS GATED, NOT ASSUMED. `scripts/analysis/25_validate_inert.py` deletes the code and
+# EXECUTES both versions on their real cases: 1200/1200 exec-parity over S2/S3/S4/L0/S1/L1r.
+# That gate also turned up a live bug in the PUBLISHED `norm_structural` arm — `fold` collapsed
+# `(-1)` to `Constant(-1)` and `ast.unparse` re-emitted it as `-1 ** r`, which Python parses as
+# `-(1 ** r)`; 2/200 L0 programs were being scored against a computation that had silently
+# changed. Fixed by a round-trip guard in `_emit`, so THIS RUN'S `norm_structural` cells are not
+# comparable to the ones already on disk and are deliberately re-computed here under a new phase.
+#
+# NAMING. The fixed-emitter re-run is `norm_structural_fixed`, NOT `norm_structural`. `phase` is a
+# pinned Literal and `cell_dir` keys on it, so reusing the published name would overwrite cells
+# that a published number rests on. A new name keeps both on disk and makes the before/after
+# comparison possible instead of destroying it — the log discipline is append-only for results as
+# much as for entries.
+#
+# CONDITIONS. The inert-material family (`S2`, `S3`, `S4`) is where the pass should bite; `L0`,
+# `L1r` and `S1` are the controls where it should do nothing, and a gain there would mean the
+# analysis is firing on live code rather than injected junk.
+#
+# NO H1. The pass is condition-agnostic and its value is established on the trainable grid;
+# reading the discriminator to decide whether an arm is worth keeping is selection on H1
+# (CLAUDE.md §3.2 rule 2). If it wins here it goes into the batched confirmatory pass.
+_extends: _base_eval.yaml
+
+phase: baselines_gridA
+experiment_id: inert_normalize
+run_tag: inert_normalize
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: norm_structural_fixed, arch: none, normalize: structural}
+  - {name: norm_inert, arch: none, normalize: inert}
+  # does the stronger pass close more of the gap for a tuned system that lacks the skill?
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L0_inert, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0, normalize: inert}
+
+eval_conditions: [L0, L1r, S1, S2, S3, S4]

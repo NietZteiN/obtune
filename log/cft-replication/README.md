@@ -1,6 +1,6 @@
 # cft-replication — does `nikiema2025contrastive` reproduce on our corpus?
 
-*Last updated: 2026-08-17*
+*Last updated: 2026-08-18*
 **Status:** active — replication RESOLVED at both scales (C1–C4 below); SRH Experiment 1
 **complete** (dose ladder, seeds, 4-strategy sweep and the JavaScript replication all landed
 2026-08-12); ATTRIB draft at v3 in `paper_bidirectional/`, body fits the 6-page limit
@@ -126,6 +126,15 @@ is their question (forward vs reverse direction) on our data, not ours (held-out
   would turn "their design has a shortcut" from an argument into a measurement.
 
 ## Entries
+- [`2026-08-18_paper-literal-negatives.md`](2026-08-18_paper-literal-negatives.md) — the
+  paper-literal `clean_mutant` negatives, built and trained. **H-N1 refuted:** the construction we
+  deliberately departed from recovers nothing either (0.5 % vs `cft` 0.2 %, and 2.3 pp below base),
+  on larger pools and at the same training loss. Appendix C now carries a number where the paper
+  previously carried only an argument.
+- [`2026-08-17_mbpp-plus-heldout-probe.md`](2026-08-17_mbpp-plus-heldout-probe.md) — MBPP+ as a
+  held-out probe across the seven 7B arms. Confirms **H-M1**: the paper's selectivity claim and its
+  one-direction/both-directions cost grouping were both HumanEval+ contamination artifacts. The
+  prescription comes out stronger, since bidirectional data costs no more than forward-only.
 
 - [`2026-08-17_readability-substitution-sensitivity.md`](2026-08-17_readability-substitution-sensitivity.md)
   — the reverse criterion's readability conjunct uses our proxy rather than the model the

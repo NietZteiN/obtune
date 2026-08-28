@@ -1,0 +1,38 @@
+{
+  "job_id": "forget__qwen25c-7b__7b_fwd2x__mbpp",
+  "kind": "forgetting",
+  "argv": [
+    "-m",
+    "obtune.forgetting",
+    "--model",
+    "qwen25c-7b",
+    "--suite",
+    "mbpp",
+    "--language",
+    "python",
+    "--tag",
+    "7b_fwd2x",
+    "--adapter",
+    "runs/adapters_srh/qwen25c-7b/python/all5_fwd2x_r32_s17/final"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.1,
+  "priority": 59,
+  "meta": {
+    "experiment": "srh/exp1",
+    "check": "CLAUDE.md 4.7 catastrophic forgetting",
+    "model": "qwen25c-7b",
+    "tag": "7b_fwd2x",
+    "adapter": "runs/adapters_srh/qwen25c-7b/python/all5_fwd2x_r32_s17/final",
+    "suite": "mbpp",
+    "paper": "paper_bidirectional \u00a78 / Table 5",
+    "question": "is the general-capability cost real on a HELD-OUT probe? HumanEval is one of the corpus's three sources, so 74/164 HumanEval+ problems are in the train split; MBPP is 0/399. (log/cft-replication/2026-08-17)"
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 142.5,
+    "log": "runs/logs/forget__qwen25c-7b__7b_fwd2x__mbpp.log",
+    "worker": "gpu1",
+    "finished_utc": "2026-08-17T21:04:42.589861+00:00"
+  }
+}

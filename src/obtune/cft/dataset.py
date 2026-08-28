@@ -91,16 +91,26 @@ class PoolReport(BaseModel):
 # --------------------------------------------------------------------------- #
 # Paths and loading
 
-def cft_dir(language: str) -> Path:
-    return paths.TRAIN_ROOT / CFT_SUBDIR / language
+def cft_dir(language: str, variant: Optional[str] = None) -> Path:
+    """Pool directory. `variant` writes to a SIBLING dir, never over the default.
+
+    Added 2026-08-17 so the paper-literal `clean_mutant` negatives could be built without
+    destroying `data/train/cft/<lang>/`, which is the pool every published number in
+    paper_bidirectional was trained on. There is no versioning under `data/train/` and the
+    build script overwrites in place, so a `--negative-style clean_mutant` run without this
+    would have silently replaced the corpus behind Table 2, Table 3 and the whole 2x2 with
+    no way back short of a 40-minute rebuild.
+    """
+    leaf = language if not variant else f"{language}__{variant}"
+    return paths.TRAIN_ROOT / CFT_SUBDIR / leaf
 
 
-def pool_path(language: str, task: str) -> Path:
-    return cft_dir(language) / f"{task}.jsonl"
+def pool_path(language: str, task: str, variant: Optional[str] = None) -> Path:
+    return cft_dir(language, variant) / f"{task}.jsonl"
 
 
-def report_path(language: str) -> Path:
-    return cft_dir(language) / "pool_report.json"
+def report_path(language: str, variant: Optional[str] = None) -> Path:
+    return cft_dir(language, variant) / "pool_report.json"
 
 
 def load_splits(language: str) -> dict[str, str]:
@@ -415,22 +425,26 @@ def validate_pools(
 # Persistence
 
 def write_pools(
-    language: str, pools: Mapping[str, Sequence[CFTInstance]], report: PoolReport
+    language: str,
+    pools: Mapping[str, Sequence[CFTInstance]],
+    report: PoolReport,
+    variant: Optional[str] = None,
 ) -> dict[str, Path]:
     out: dict[str, Path] = {}
     for task, rows in sorted(pools.items()):
-        p = pool_path(language, task)
+        p = pool_path(language, task, variant)
         paths.write_jsonl(p, [r.model_dump() for r in rows])
         out[task] = p
-    rp = report_path(language)
+    rp = report_path(language, variant)
     rp.parent.mkdir(parents=True, exist_ok=True)
     rp.write_text(json.dumps(report.model_dump(), indent=2, sort_keys=True) + "\n")
     out["report"] = rp
     return out
 
 
-def load_pool(language: str, task: str, splits: Optional[Sequence[str]] = None) -> list[CFTInstance]:
-    p = pool_path(language, task)
+def load_pool(language: str, task: str, splits: Optional[Sequence[str]] = None,
+              variant: Optional[str] = None) -> list[CFTInstance]:
+    p = pool_path(language, task, variant)
     if not p.exists():
         raise FileNotFoundError(
             f"missing CFT pool {task}/{language}: {p}. Run scripts/cft/10_build_cft_data.py first."
@@ -487,6 +501,7 @@ def load_mixture(
     tasks: Sequence[str],
     splits: Sequence[str] = ("train",),
     paired: bool = True,
+    variant: Optional[str] = None,
 ) -> list[CFTInstance]:
     """The training mixture. `tasks=["gen"]` is the paper's SFT baseline;
     `tasks=["gen","pos","neg"]` is CFT (L_CFT = L_pos + L_neg + L_gen, §5.0.2).
@@ -499,7 +514,7 @@ def load_mixture(
         raise ValueError(f"unknown task(s) {bad}; trainable tasks are {list(prompts.TASKS)}")
     rows: list[CFTInstance] = []
     for t in tasks:
-        rows.extend(load_pool(language, t, splits))
+        rows.extend(load_pool(language, t, splits, variant=variant))
     if paired:
         rows = pair_pos_neg(rows)
     return rows

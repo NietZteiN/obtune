@@ -1,6 +1,17 @@
 # obtune — master results report
 
 **12 August 2026 · everything run to date, in one frame.**
+
+> **SUPERSEDED 2026-08-27** by [`MASTER_REPORT_2026-08-27.md`](MASTER_REPORT_2026-08-27.md), which
+> is this document brought current: §2.2's master table regenerated from every cell (154 systems,
+> `H1` split by grid), RQ2 closed (§12.12–§12.13), RQ3 run (§15), a new normalization thread (§16),
+> the CFT thread's benchmark corrected (§7.8), and three measurement corrections (§8.9–§8.11).
+> **Kept for provenance — every number below was true when written, but two are now known to be
+> read the wrong way:** §12.10's *"the per-condition experts carry nothing distinct"* is **retired**,
+> and §12.4's use of the pooled 3.61 seed band should be the **Python** row (0.63 / 1.46) that §8.4
+> also reports. RQ2 alone is also covered self-contained in
+> [`MASTER_REPORT_2026-08-27_router-and-merging.md`](MASTER_REPORT_2026-08-27_router-and-merging.md).
+
 *Supersedes [`MASTER_REPORT_2026-08-11.md`](MASTER_REPORT_2026-08-11.md) and
 [`MASTER_REPORT_2026-08-10.md`](MASTER_REPORT_2026-08-10.md), of which this is the direct
 continuation — the Changelog records what each revision added. Since 10 August: §2.1 (how to read

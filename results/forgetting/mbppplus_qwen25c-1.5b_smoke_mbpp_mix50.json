@@ -1,0 +1,151 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "adapter": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17/final",
+  "benchmark": "mbppplus",
+  "n_tasks": 24,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.625,
+  "pass@1_plus": 0.4167,
+  "format_fail_rate": 0.0,
+  "entry_point_mismatch": 0,
+  "per_task": {
+    "Mbpp/100": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/101": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/102": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/103": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/104": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/105": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/106": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/108": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/109": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/11": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/111": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/113": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/115": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/116": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/117": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/118": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/119": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/12": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/120": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/123": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/124": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/125": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/126": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/127": {
+      "base": true,
+      "plus": true
+    }
+  },
+  "model_key": "qwen25c-1.5b",
+  "provenance": {
+    "experiment": "srh/mbpp-plus",
+    "run_id": "mbppplus_qwen25c-1.5b_smoke_mbpp_mix50",
+    "seed": 17,
+    "config_path": "configs/eval/_base_eval.yaml",
+    "config_resolved": {
+      "backend": "vllm",
+      "dtype": "bfloat16",
+      "gpu_memory_utilization": 0.9,
+      "max_lora_rank": 64,
+      "max_loras": 4,
+      "max_cpu_loras": 32,
+      "seed": 17,
+      "max_model_len": 8192
+    },
+    "model_hf_id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+    "model_revision_resolved": null,
+    "adapter": {
+      "path": "/data/jvl210002/my_downloads/obtune/runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17/final",
+      "sha256": "0bf48dca0bca095d427df0ea003b21f88880f92354e51f48962c0cbaaddc9959"
+    },
+    "gpu_visible": "0",
+    "command": "/data/jvl210002/my_downloads/obtune/src/obtune/forgetting.py --model qwen25c-1.5b --suite mbpp --limit 24 --tag smoke_mbpp_mix50 --adapter runs/adapters_srh/qwen25c-1.5b/python/all5_mix50_r32_s17/final",
+    "git_commit": "f1a3247d551aef9fa0572a094f86d3bd600a96bc",
+    "script_sha256": {
+      "src/obtune/forgetting.py": "c46a75ae7ed51c63a3daf5f0dda9ea3a5cdb3aaf823450b92adae27cfb402684"
+    },
+    "started_utc": "2026-08-17T21:01:23.376085+00:00",
+    "finished_utc": "2026-08-17T21:01:23.996616+00:00",
+    "libraries": {
+      "python": "3.12.12",
+      "platform": "Linux-5.14.0-687.5.3.el9_8.x86_64-x86_64-with-glibc2.34",
+      "torch": "2.11.0+cu130",
+      "transformers": "5.14.1",
+      "peft": "0.20.0",
+      "trl": "1.9.2",
+      "vllm": "0.26.0",
+      "numpy": "2.3.5"
+    },
+    "extra": {}
+  }
+}

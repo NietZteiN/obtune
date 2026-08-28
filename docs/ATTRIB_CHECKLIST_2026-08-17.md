@@ -224,8 +224,16 @@ doubled one — the `flip` − `mix50` gap that was +0.7 in Python is +0.1 and n
 
 > **Keep this limitation sentence honest.** JavaScript answers "is this Python-specific?" It does
 > not answer "is this Java-specific?", which is the literal form of the objection, since the source
-> paper's setting is Java. The limitation must say so. No JDK on this host and a Java replication
-> does not fit the window.
+> paper's setting is Java. The limitation must say so. ~~No JDK on this host~~ and a Java
+> replication does not fit the window.
+>
+> **Corrected 2026-08-17:** the JDK claim is false — one `conda create openjdk=21` away. The real
+> reasons are in `ATTRIB_WORKSHOP_PLAN.md` §4: CodeNet Java is stdin/stdout `main` programs and
+> cannot enter this project's `entry_point(args) → value` contract, there is no Babel equivalent
+> for a Java binding graph, and a third canonicaliser would need byte-parity that already failed
+> twice on Python↔JS. Decision unchanged; the reasoning was wrong and would not have survived a
+> reviewer who knows conda. The paper's limitation now also states what a Java-specific rescue of
+> the objective claim would have to look like, which puts the burden on that explanation.
 
 ### 5.4 Second seed for the two load-bearing arms
 
@@ -301,26 +309,55 @@ that never happened. Rewritten to separate the two tests: compare `program_id` s
 Ranked by value. None is a dependency; the paper as drafted is supported end to end by finished
 runs.
 
+> **⚠️ Corrected 2026-08-17, later in the day. The first two rows of this table have run, and
+> the last row has run.** All five `attrib-gaps` cells (`mix5`/`mix10`/`mix25` @ 1.5B,
+> `rev`/`fwd2x` @ 7B) were enqueued at the default priority 59 and completed 11:24–11:33 UTC;
+> results are on disk in `results/forgetting/` and are already folded into the paper's Table 5
+> and Appendix D. MBPP+ then ran across all seven 7B arms the same evening. Do not treat this
+> section as a work list — the rows below marked ✅ are done, and §8's timeline is likewise
+> written against a queue that has since drained.
+>
+> The MBPP+ cost estimate here was also wrong by an order of magnitude: measured forgetting
+> cells run 100–160 s, not the ~2 h guessed below.
+
 | run | cost | what it would buy |
 |---|---|---|
-| **HumanEval+ on the dose arms** (`mix5`/`mix10`/`mix25` @ 1.5B) | ~1 h, inference | **Highest-value run left, and not in the original plan.** §8 says bidirectional data costs 6–7 pts of general coding ability. If that cost is dose-dependent while the benefit is not — and §5.1 says the benefit saturates at 5 % — then a small reverse fraction is a strictly better operating point and the paper gains a *prescription*, not just a finding. If the cost is flat too, that is worth a sentence as well. Either outcome publishes. |
-| HumanEval+ for 7B `rev` and `fwd2x` | ~1 h, inference | `results/forgetting/` covers base/sft/cft/flip/mix50 at 7B and omits these two — the pure-reverse extreme and the compute control. Two holes a reviewer would notice. |
+| ✅ **HumanEval+ on the dose arms** (`mix5`/`mix10`/`mix25` @ 1.5B) | ~1 h, inference | **DONE 2026-08-17 11:24–11:28 UTC.** §8 says bidirectional data costs 6–7 pts of general coding ability. Outcome: the retained capability is **not** monotone in reverse share (`mix5` .537, `mix10` .555, `mix25` .494, `mix50` .469, `rev` .585), so no dose-response conclusion is drawn on this axis at 1.5B. Now Appendix D. |
+| ✅ HumanEval+ for 7B `rev` and `fwd2x` | ~1 h, inference | **DONE 2026-08-17 11:30–11:33 UTC.** Both rows of Table 5's 7B column are filled: `rev` .799, `fwd2x` .805. |
+| ✅ **MBPP+ @ 7B, all seven arms** | measured ~5–6 min/cell | **DONE 2026-08-17 evening; not in any earlier plan and worth more than everything below it.** The abstract's selectivity claim rested on HumanEval+, and HumanEval is one of the corpus's three sources — 74 of its 164 problems are in the train split. MBPP is **0/399**: the corpus was built `tiers: ['tier1']` and MBPP sits only under `tier2`, never built. New `mbpp_plus()` in `src/obtune/forgetting.py`, new `mbpp-7b` preset. |
 | `mix10` @ 7B — dose anchor | ~10 GPU-h + eval | Confirms the ladder's shape is not a small-model artefact. Worth more now that the shape is a step rather than a slope. **Not yet trained.** |
 | `neg`-pool parity sweep | ~3 GPU-h | Insurance against "you starved the contrastive signal" — our `neg` pool is 24 % short of parity. The token-share arithmetic already bounds it: parity moves the auxiliary share from 2.3 % to ~2.6 %, which cannot produce a 30-point swing. Already stated in §9. |
 | Cross-transformation generalisation (train S1-only reverse, test S2) | ~6 GPU-h | Never started; was the plan's designated punt. Punt it. |
-| MBPP | ~2 h | A second general-capability benchmark. HumanEval+ already carries the claim. |
+| ~~MBPP~~ | ~~~2 h~~ | Superseded by the ✅ MBPP+ row above. The "HumanEval+ already carries the claim" reasoning was wrong: HumanEval+ cannot carry it, because it is the contaminated probe. |
 
-> **Compute reality — updated 2026-08-17, later in the day.** **No GPU is free.** GPU 1 runs
+> **⚠️ The compute paragraph below is superseded. As of ~20:00 UTC 2026-08-17 all four A6000s
+> are idle (1 MiB, 0 % each), the queue is empty, four workers are polling it, `allowed_gpus`
+> is `[0, 1, 2, 3]` and `gpu_budget` is 4.** The modularity grid that was gating everything
+> drained by 07:03 UTC, and the borrower's 38 GB sglang holding on GPU 3 turned out to be
+> obtune's *own* `forget__qwen25c-7b__7b_rev` job. Nothing needed `--priority 5`; every cell
+> below ran at the default 59. **Re-read `nvidia-smi` and the queue rather than trusting this
+> block** — that is the recurring lesson of this file.
+>
+> One toolchain trap worth recording, since it cost a failed run: `obtune.forgetting` needs
+> both `PYTHONPATH=src` and the conda env's `bin` on `PATH`. vLLM's flashinfer sampler
+> JIT-compiles on first use and shells out to `ninja`, which lives in
+> `/data/jvl210002/conda_envs/obtune/bin`. Invoking the interpreter by absolute path without
+> that on `PATH` fails deep inside engine startup as
+> `RuntimeError: Engine core initialization failed`, whose root cause is nine frames down.
+> The workers set both, so queued jobs are unaffected — this only bites manual invocation.
+>
+> ~~**Compute reality — updated 2026-08-17, later in the day.** **No GPU is free.** GPU 1 runs
 > obtune's own `composite_qwen1.5b_py` training; GPUs 0, 2 and 3 are held by the borrower's
 > sglang servers and `steer_run`/`transfer_gate` jobs. Note GPU 0 reads 0 % util while holding
 > 38 GB — an idling sglang server is **not** a free card. `gpu_budget: 1` and the shared queue
-> has six modularity jobs pending.
+> has six modularity jobs pending.~~
 >
-> The top two runs are **wired into the pipeline and validated, but not enqueued**:
+> ~~The top two runs are **wired into the pipeline and validated, but not enqueued**~~:
 > [`scripts/srh/26_enqueue_forgetting.py`](../scripts/srh/26_enqueue_forgetting.py)
 > `--preset attrib-gaps` covers all five cells (`mix5`/`mix10`/`mix25` at 1.5B,
-> `rev`/`fwd2x` at 7B). It is a dry run unless you pass `--write`, and nothing has been
-> written. Existing forgetting cells took 105 s each at 1.5B, so the set is ~10–30 min of GPU.
+> `rev`/`fwd2x` at 7B). ~~It is a dry run unless you pass `--write`, and nothing has been
+> written.~~ **All five were written and have completed.** Existing forgetting cells took 105 s
+> each at 1.5B, so the set is ~10–30 min of GPU.
 >
 > ```bash
 > python scripts/srh/26_enqueue_forgetting.py --preset attrib-gaps          # dry run

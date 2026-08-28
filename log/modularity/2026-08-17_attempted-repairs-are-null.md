@@ -240,3 +240,40 @@ Lesson: never filter stderr when checking whether a build ran.
 **Also recorded**: `--stub` on an H1 config really loads quarantined items (generation is stubbed,
 `load_eval_items` is not), so two smoke tests appended two ACCESS_LOG rows corresponding to no
 measurement. Declared in the log; smoke against a non-H1 condition list in future.
+
+---
+
+### ADDENDUM 3 — the Grid A panel corrects §12.10's gating claim
+
+Moved the remaining RQ2 `H1` comparators onto Grid A (`h1_gridA_merge_floor_qwen1.5b.yaml`, phase
+`final`): `merge_ties` 19.5, `l0merge_ties` 21.3, `l0merge_dare_ties` 21.4, against the already-there
+`merge_dare_ties` 23.9, `tuned_L0` 24.5, `mono_all` 22.9, `tuned_S2_s17` 28.0.
+
+| contrast (n=1214 / 405 programs) | Δ | CI | q |
+|---|---|---|---|
+| 6-specialist merge vs `tuned_L0` | −0.66 | [−1.89, +0.66] | 0.358 null |
+| **6 specialists vs 3× clean-code merge** | **+2.47** | [+1.24, +3.71] | **0.0001 SIG** |
+| **3× clean-code merge vs ONE clean-code adapter** | **−3.13** | [−4.86, −1.57] | **0.0001 SIG** |
+| `tuned_S2_s17` vs `tuned_L0` (§3.5) | **+3.46** | [+2.06, +4.86] | **0.0000 SIG** |
+
+**§12.10's gate does not survive.** "Merging three clean-code adapters reaches the same H1 accuracy
+as merging six specialists" was 33.9 vs 34.8 on Grid B (a 0.9-pt gap read as a tie). At n=1,214 it is
+**+2.47, q=0.0001**. The specialists DO contribute.
+
+**Two offsetting effects Grid B could not separate.** Merging itself costs ~3 pts (3× clean-code
+merge 21.4 vs one clean-code adapter 24.5, significant — the §3.1 dilution measured on H1 in a bank
+with no specialist knowledge to lose). Specialists recover ~2.5 of it. Net −0.66, null: the same
+bottom line for a materially different reason.
+
+**"The per-condition experts carry nothing distinct" should be retired.** They carry ~+2.5 pts into a
+merge; it is cancelled by what merging costs. Defensible replacement: *combination methods pay a
+dilution cost about the size of the specialist contribution they are trying to exploit.*
+
+**§3.5 confirmed at power**: `tuned_S2_s17` beats the control by +3.46 [+2.06, +4.86] on 1,214 items,
+still the only system in the project that does, and `s2fam` (26.6) does not reach it.
+
+**Incident.** `runs/manifest/queued/` was deleted by a concurrent session at 09:36 (along with fresh
+mtimes on `done/`, `failed/`, `.pipeline/` and a new nested `runs/manifest/manifest/.progress/`,
+which looks like housekeeping with a wrong relative path). Workers tolerated it — they log "queue
+empty" with no traceback — so an enqueue would have failed silently had `cat >` not errored loudly.
+Recreated the directory only; nothing else of theirs was touched.

@@ -92,6 +92,7 @@ def capture_record(
     seed: int = 17,
     run_id: str = "",
     max_length: int = 1536,
+    allow_prompt_fallback: bool = False,
 ) -> AttentionRecord:
     import torch
 
@@ -99,6 +100,27 @@ def capture_record(
         tokenizer, code=code, entry_point=entry_point, args_repr=args_repr,
         language=language, condition=condition,
     )
+    if not from_prompts and not allow_prompt_fallback:
+        # HARD GATE. `build_prompt_text` falls back to `_FALLBACK_PROMPT` if
+        # `obtune.prompts` cannot be imported, and until 2026-08-17 that fact was only
+        # RECORDED (as `extra["prompt_from_prompts_module"]`) and never acted on. An
+        # import failure would therefore have produced a full attention corpus rendered
+        # from a different template than the accuracy grid uses, flagged in a metadata
+        # field nobody is obliged to read.
+        #
+        # That is CLAUDE.md silent-failure #3 (chat-template mismatch) and the §1 rule
+        # that attention extraction and the vLLM accuracy path must share
+        # `src/obtune/prompts.py`, or delta-attention is measured on a different
+        # distribution than the accuracy it is meant to explain. RQ3's whole claim is a
+        # correlation between those two quantities, so a silent divergence here would not
+        # be a degraded result, it would be a meaningless one.
+        raise RuntimeError(
+            "attention capture fell back to the built-in prompt template because "
+            "`obtune.prompts` did not import. Refusing: the attention corpus must be "
+            "rendered by the SAME frozen builder as the accuracy grid. Fix the import, "
+            "or pass allow_prompt_fallback=True if you are deliberately capturing "
+            "off-distribution and will not compare against accuracy."
+        )
     cs, ce = _locate_code(text, code)
     enc = tokenizer(text, return_offsets_mapping=True, truncation=True,
                     max_length=max_length, return_tensors="pt", add_special_tokens=False)

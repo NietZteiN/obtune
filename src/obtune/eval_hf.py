@@ -66,6 +66,16 @@ class AttnConfig:
     max_items: int | None = None
     device: str = "cuda"
     dtype: str = "bfloat16"
+    #: Prompts longer than this are SKIPPED, not truncated. Eager attention materializes a
+    #: [heads, T, T] fp32 softmax, so cost is quadratic in T: at T=2048 that is ~200 MB per
+    #: layer, at T=20000 it is ~18 GB and the forward dies. On 2026-08-18 a single
+    #: pathological APPS program (~20k tokens, one item in EVERY condition, 0.7% of a
+    #: 150-item slice against a median of 339-750) OOM-killed 19 of 24 sweep jobs.
+    #: Truncating instead would be worse than useless here: `code_span` is a CHARACTER span
+    #: resolved to token indices downstream, so cutting tokens silently drops part of the
+    #: program from the very region the metric is computed over. `eval_vllm` already drops
+    #: this same item ("dropped 1 over-long prompt"); this brings the HF path in line.
+    max_tokens: int = 2048
 
 
 def _default_layers(n_layers: int) -> list[int]:
@@ -138,11 +148,18 @@ def dump_attention(rows: Iterable[dict[str, Any]], cfg: AttnConfig, system: str,
     (out_root / "SCHEMA.md").write_text(SCHEMA_DOC)
 
     written = 0
+    skipped_overlong: list[dict[str, Any]] = []
     for row in rows:
         if cfg.max_items is not None and written >= cfg.max_items:
             break
         text, code_span = _prompt_and_code_span(row, tok)
         enc = tok(text, return_offsets_mapping=True, return_tensors="pt")
+        n_tok = int(enc["input_ids"].shape[-1])
+        if n_tok > cfg.max_tokens:
+            # Skip rather than truncate; see AttnConfig.max_tokens. Counted and reported so
+            # the drop rate is a published number rather than a silent gap in the corpus.
+            skipped_overlong.append({"item_id": row.get("item_id"), "n_tokens": n_tok})
+            continue
         offsets = enc.pop("offset_mapping")[0].numpy().astype(np.int32)
         enc = {k: v.to(model.device) for k, v in enc.items()}
 
@@ -176,7 +193,10 @@ def dump_attention(rows: Iterable[dict[str, Any]], cfg: AttnConfig, system: str,
         written += 1
 
     return {"system": system, "model": cfg.model_key, "items": written,
-            "layers": layers, "out_dir": str(out_dir)}
+            "layers": layers, "out_dir": str(out_dir),
+            "max_tokens": cfg.max_tokens,
+            "n_skipped_overlong": len(skipped_overlong),
+            "skipped_overlong": skipped_overlong[:20]}
 
 
 def moe_soft_generate(*_args: Any, **_kwargs: Any) -> None:

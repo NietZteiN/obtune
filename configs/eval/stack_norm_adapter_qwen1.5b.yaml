@@ -1,0 +1,43 @@
+# IDEA 1 — are the symbolic and learned routes to "ignore inert material" the SAME skill?
+#
+# Two independent things recover accuracy on inert-material obfuscation:
+#   * `norm_structural` — a symbolic dead-code-elimination pass, ZERO training. It doubles base
+#     on the held-out obfuscator (6.3 -> 12.9) and is the strongest zero-training arm anywhere.
+#   * `tuned_S2_s17` — the one adapter that beats the clean-code control on H1 (+3.3), and the
+#     2026-08-26 knockout showed it works by re-anchoring attention OFF inert identifiers, causally.
+#
+# They have never been combined. Two outcomes, both informative:
+#   ADDITIVE  -> the routes are independent implementations of one skill; a symbolic pass and a
+#                learned policy each capture part of it, and stacking is a free improvement.
+#   SATURATED -> they are the same skill twice, which says the learned re-anchoring is doing
+#                (approximately) dead-code elimination and nothing more. That is a sharper
+#                mechanistic claim than either result alone.
+#
+# NO H1 IN THIS CONFIG, deliberately. The interesting claim is about H1, but the question "does
+# stacking do anything at all" is answerable for free on `S2`, which contains the same inert
+# material by construction. Spend the quarantine read only if the trainable-condition answer says
+# there is something to confirm. `L0` and `L1r` are contrasts: `L0` has no dead code to eliminate,
+# and `L1r`'s obfuscation is renaming, which DCE cannot touch.
+#
+# Grid A (`heldout`), phase `baselines_gridA` — where `base` and `norm_structural` already have
+# cells, so `output.resume` reuses them as same-grid comparators at no cost. The two new system
+# names cannot collide.
+_extends: _base_eval.yaml
+
+phase: baselines_gridA
+experiment_id: stack_norm_adapter
+run_tag: stack_norm_adapter
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: norm_structural, arch: none, normalize: structural}
+  - {name: tuned_S2_s17, adapter: "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best", arch: per_type, train_cond: S2}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  # the two new arms: adapter AND symbolic normalizer together
+  - {name: tuned_S2_norm, adapter: "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best", arch: per_type, train_cond: S2, normalize: structural}
+  - {name: tuned_L0_norm, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0, normalize: structural}
+
+eval_conditions: [L0, L1r, S2]

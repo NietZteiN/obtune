@@ -1,0 +1,34 @@
+{
+  "job_id": "rq3mc__base__dataflow",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "base",
+    "--condition",
+    "S2",
+    "--max-items",
+    "150",
+    "--classes",
+    "dataflow_critical",
+    "--tag",
+    "dataflow"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.15,
+  "priority": 502,
+  "meta": {
+    "experiment": "rq3/manipulation-check",
+    "stage": "rq3_mc",
+    "system": "base",
+    "arm": "dataflow",
+    "note": "Does the knockout do ANYTHING? all6 must crater accuracy; literal should hurt output prediction. If neither bites, the identifier null is uninformative and no knockout claim is available."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 94.1,
+    "log": "runs/logs/rq3mc__base__dataflow.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-26T21:51:47.717920+00:00"
+  }
+}

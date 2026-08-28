@@ -1,0 +1,39 @@
+{
+  "job_id": "rq3mc__base__all6",
+  "kind": "attn",
+  "argv": [
+    "scripts/attn/30_knockout.py",
+    "--system",
+    "base",
+    "--condition",
+    "S2",
+    "--max-items",
+    "150",
+    "--classes",
+    "identifier",
+    "control_kw",
+    "operator",
+    "literal",
+    "dataflow_critical",
+    "other",
+    "--tag",
+    "all6"
+  ],
+  "raw": true,
+  "est_gpu_h": 0.15,
+  "priority": 500,
+  "meta": {
+    "experiment": "rq3/manipulation-check",
+    "stage": "rq3_mc",
+    "system": "base",
+    "arm": "all6",
+    "note": "Does the knockout do ANYTHING? all6 must crater accuracy; literal should hurt output prediction. If neither bites, the identifier null is uninformative and no knockout claim is available."
+  },
+  "result": {
+    "returncode": 0,
+    "seconds": 99.1,
+    "log": "runs/logs/rq3mc__base__all6.log",
+    "worker": "gpu0",
+    "finished_utc": "2026-08-26T21:48:50.538493+00:00"
+  }
+}
