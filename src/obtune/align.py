@@ -143,7 +143,11 @@ def build_cache(cfg: Mapping[str, Any], out: Optional[Path] = None, batch_size: 
     tcfg = _effective_train_knobs(cfg, mcfg)
 
     bundle = data.build_sft_splits({**cfg, "train": tcfg})
-    student_rows = bundle["train_rows"]
+    # TRAIN **AND** VAL. The Trainer runs compute_loss on the eval split too, so a
+    # val row with no cached teacher entry raises KeyError at the first evaluation --
+    # or, worse, would have to be silently skipped, which would make eval_loss and
+    # train_loss incomparable (one carrying the alignment term and one not).
+    student_rows = list(bundle["train_rows"]) + list(bundle["val_rows"] or [])
 
     # The clean parents, indexed by the join key. load_pairs is the ONLY read path, so
     # the quarantine guard in paths.load_training_jsonl still applies to this arm.
