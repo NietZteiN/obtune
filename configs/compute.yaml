@@ -1,103 +1,77 @@
-# Host facts and compute policy. Last updated: 2026-08-04.
-# Inherited from the monorepo charter (../CLAUDE.md); no scheduler on this box.
+# Host facts and compute policy. Last updated: 2026-08-28.
+# Inherited from the monorepo charter (../CLAUDE.md).
+#
+# 2026-08-28 — MIGRATED. The project moved from csr-94608.utdallas.edu to juno.
+# Nothing about the old host's compute policy survives the move, and the two
+# differ in the way that matters most: csr-94608 had NO scheduler and was shared,
+# informally, with a borrower on the same Unix account, so obtune carried its own
+# GPU allocator, idle-detector and tmux supervisor. juno has SLURM. All of that
+# machinery is now dead weight — see `legacy_scheduler_policy` at the bottom and
+# log/setup/2026-08-28_juno-migration.md for the decision and its reasoning.
 
-host: csr-94608.utdallas.edu
-gpus:
-  count: 4
-  model: NVIDIA RTX A6000
-  memory_gb: 48
-  nvlink_pairs: [[0, 1], [2, 3]] # cross-pair is PCIe/SYS — never use 1,2 for TP=2
-  driver: 595.71.05
-  cuda: "13.2"
-cpu_cores: 96
-ram_gb: 250
-scheduler: none # check nvidia-smi, pin CUDA_VISIBLE_DEVICES before importing torch, run in tmux
+host: juno-l-02              # LOGIN node. No GPU here; nvidia-smi does not exist.
+                             # Anything touching a GPU goes through SLURM.
+scheduler: slurm             # was: none
+
+slurm:
+  version: "24.11.5"
+  # Partition to use for GPU work unless a job has a reason not to. h200 is both
+  # the largest pool and the fastest card, so it is the default rather than a
+  # premium tier to be rationed.
+  default_partition: h200
+  max_walltime: "2-00:00:00" # every partition; jobs longer than this must checkpoint
+  partitions:
+    h200:
+      nodes: 26              # g-07-[01-13], g-08-[01-13]
+      gpus_per_node: 2       # nvidia_h200_nvl, 141 GB each
+      gpu_total: 52
+      cpus_per_node: 64
+      mem_gb_per_node: 375
+    h100:
+      nodes: 3               # heterogeneous — check the node before assuming
+      note: |
+        g-04-02 = 4 x h100_80gb_hbm3 (512 GB RAM), g-05-01 = 1 x h100_nvl,
+        g-06-01 = 4 x h100_nvl_3g.47gb (MIG slices, 47 GB). Only g-04-02 is a
+        full-fat multi-GPU node.
+    a30:
+      nodes: 2               # g-01-01, g-02-01 — 2 x nvidia_a30 each
+      note: closest analogue to the old A6000s; useful for cheap smoke tests
+    a30-2.12gb:
+      nodes: 1               # g-03-01 — 4 x MIG 2g.12gb
+      note: 12 GB slices; too small for 1.5B bf16 training, fine for CPU-ish probes
+    a30-4.6gb:
+      nodes: 1               # g-04-01 — 8 x MIG 1g.6gb
+    normal:
+      nodes: 90              # CPU only — corpus building, merging, analysis
+    dev:
+      nodes: 8               # CPU only, 2 h limit — interactive debugging
+  # Sensible per-job asks. Not a policy, a starting point: one GPU per job, since
+  # the old feasibility work established that neither 1.5B nor 7B LoRA needs model
+  # parallelism, and a single-GPU ask schedules far sooner than a 2-GPU one.
+  defaults:
+    partition: h200
+    gres: "gpu:1"
+    cpus_per_task: 8
+    mem: "64G"
+    time: "08:00:00"
 
 paths:
-  conda_env: /data/jvl210002/conda_envs/obtune
-  python: /data/jvl210002/conda_envs/obtune/bin/python
-  r_env: /home/012/j/jv/jvl210002/miniconda3/envs/r_analysis
-  rscript: /home/012/j/jv/jvl210002/miniconda3/envs/r_analysis/bin/Rscript
-  hf_home: /data/jvl210002/my_downloads/.cache/huggingface
-  tmpdir: /data/jvl210002/tmp_pip
-  node: /home/012/j/jv/jvl210002/miniconda3/bin/node
-
-scheduler_policy:
-  # Cards obtune is allowed to place work on. The supervisor otherwise "follows whatever
-  # is free" within its budget, so lending a card by merely stopping its worker does not
-  # hold: the next poll (300 s) sees an idle GPU and claims it back. This list is the
-  # durable lever — `gpu_alloc.free()`/`claim()` and `launch_workers.sh` both honour it,
-  # which covers every path that can start a worker.
-  #
-  # 2026-08-11: 2 and 3 lent to a neighbour for the duration. They are an NVLink pair
-  # (see nvlink_pairs above), so whoever takes them can still run a TP=2 job; lending
-  # 1 and 2 would have left them only PCIe/SYS.
-  #
-  # 2026-08-12: the borrower MOVED — their `malware_reads` job migrated from 2 onto 0 and
-  # freed 2, which left obtune pinned to a single working card (0 occupied by them, 2 idle
-  # but disallowed). The list is now the *candidate set* rather than a fixed pair: 0, 1 and
-  # 2 are all permitted, and `gpu_budget` still caps us at TWO cards at once. The worker
-  # refuses any GPU with >2 GB used or >5 % util, so widening the candidates cannot collide
-  # with their work — it only lets us follow whichever two are genuinely free. If they move
-  # again, we follow again, with no config edit.
-  #
-  # 3 is still theirs (sglang) and stays out of the list.
-  # To take everything back: restore [0, 1, 2, 3] and raise gpu_budget to 4.
-  # 2026-08-17: GPU 3 ADDED. It had been excluded since 2026-08-11 as the borrower's sglang
-  # card, and that is no longer true — their sglang schedulers exited and their current job
-  # (`codesteer` env, `obfuscation/main.py`, ~14 GB x3) now occupies 0, 1 and 2, leaving 3 at
-  # 1 MiB / 0 %. Excluding 3 therefore had the exact effect CLAUDE.md §1 warns about: obtune
-  # pinned to cards it could not use beside an idle card it was forbidden to touch.
-  # The worker's own idle check (>2 GB / >5 %) is what keeps us off a borrowed card, not this
-  # list, so widening the candidate set cannot collide with them.
-  allowed_gpus: [0, 1, 2, 3]
-  # Maximum cards held at once. NOT equal to len(allowed_gpus): the list above is a
-  # candidate set and this is how many of them we may hold.
-  #
-  # 2026-08-15: reduced 2 -> 1 on the user's instruction. `allowed_gpus` deliberately stays
-  # [0, 1, 2] so we keep FOLLOWING whichever single card is free rather than pinning one —
-  # the 2026-08-12 lesson, when the borrower migrated and a hard-pinned list left obtune on a
-  # busy card beside an idle forbidden one. With a budget of 1 the worker takes exactly one
-  # card, and its own idle check (>2 GB used or >5 % util) still keeps it off the borrower's.
-  #
-  # This is the lever for lending capacity; hand-killing a worker is not, because the
-  # supervisor would reclaim the card within one 300 s poll.
-  #
-  # 2026-08-15 (later, on the user's instruction): raised 1 -> 2. At the time of the change
-  # GPU 0 held our own worker, GPU 1 held the borrower's `nla-mi src.answer_entropy` (99 %
-  # util, 19.7 GB, started 22:36 UTC), and GPUs 2 and 3 were genuinely idle (1 MiB, 0 %).
-  # A budget of 2 therefore adds a second worker on GPU 2 without contesting the borrower;
-  # the worker's own idle check (>2 GB / >5 %) is what enforces that, not this number.
-  # NOTE the raise is inert on its own — nothing polls it while `pipeline.sh` is not
-  # running, so a second worker only appears when `scripts/launch_workers.sh` is invoked.
-  #
-  # 2026-08-17 (on the user's instruction): raised 2 -> 3. At the time of the change GPUs 0, 1 and 2
-  # were genuinely idle (1 MiB / 0 % each) and GPU 3 held a borrowed vLLM engine at 16.7 GB, so a
-  # budget of 3 places workers on exactly the three free cards and the worker's own idle check
-  # (>2 GB / >5 %) declines the fourth. `allowed_gpus` stays [0,1,2,3] so we keep FOLLOWING whichever
-  # cards are free rather than pinning three — the 2026-08-12 lesson.
-  # 2026-08-17 (same day, corrected): 3 -> 4. The budget-3 launch refused gpu2 because THREE workers
-  # were already live — and the third is on GPU 3, whose 16.7 GB vLLM engine turned out to be
-  # obtune's OWN `forget__qwen25c-7b__7b_rev` job started by a concurrent session, not a borrowed
-  # process. With no borrower on the box at all, capping at 3 left an idle card (gpu2) unusable while
-  # our own work occupied the other three. 4 = all four cards, which the note above calls "taking
-  # everything back"; the worker's idle check still refuses any card a borrower later takes.
-  # 2026-08-26 (on the user's instruction): 4 -> 3, leaving a card for the neighbour. At the
-  # time of the change GPUs 1, 2 and 3 were carrying someone else's work (two vLLM engines and
-  # `fine-tuning/train_loro.py --model google/gemma-4-E4B-it`, 41-46 GB each) and only GPU 0 was
-  # idle, so this cap costs obtune nothing today; it is what keeps us from taking a fourth card
-  # back the moment one frees. `allowed_gpus` deliberately stays [0,1,2,3] so we keep FOLLOWING
-  # whichever cards are free rather than pinning three — the 2026-08-12 lesson.
-  gpu_budget: 3
-  # sched/worker.py refuses a GPU that is not idle (shared-box etiquette)
-  max_mem_used_mb: 2000
-  max_util_pct: 5
-  # 600s left a GPU idle for up to 10 minutes after each job, which is most of the
-  # wall-clock when a queue of short jobs (ckpt-select, merge, eval-cell) is draining.
-  # The idle check above is what protects a neighbour's job, not the poll interval, so
-  # polling more often costs nothing but an nvidia-smi query.
-  poll_seconds: 60
-  workers: one_tmux_session_per_gpu
+  # Kept in sync BY HAND with scripts/env.sh, which is the source of truth for
+  # the same three roots. If you relocate the project, change env.sh first and
+  # then mirror it here; scripts/00_env_check.py compares them.
+  env: /work/jvl210002/migration/envs/obtune
+  python: /work/jvl210002/migration/envs/obtune/bin/python
+  hf_home: /work/jvl210002/migration/hf_home
+  tmpdir: /work/jvl210002/migration/tmp
+  # R is a system module here, not a personal conda env: `module load R/4.5.0`.
+  # The old r_analysis env (lme4, emmeans, the GLMM stack in stats/) did NOT move
+  # and its packages must be reinstalled before anything under stats/ will run.
+  rscript: /opt/ohpc/pub/libs/gnu14/R/4.5.0/bin/Rscript
+  r_module: R/4.5.0
+  # node is NOT installed on juno. js/node_modules transferred intact (814 MB,
+  # javascript-obfuscator included) but has no interpreter to run it, so the H1
+  # generator and anything JavaScript is blocked until a node toolchain is added.
+  node: null
 
 training_defaults:
   attn_implementation: sdpa # flash-attn 2.x has no wheel for torch 2.11; SDPA-flash is enough at ~1.5k ctx
@@ -106,3 +80,24 @@ training_defaults:
 
 exec_pool:
   workers: 32 # subprocess pool for the semantic gate / corpus building
+
+# ---------------------------------------------------------------------------
+# legacy_scheduler_policy — INERT. Retained so the reasoning is not lost, and so
+# any straggler reading `scheduler_policy` fails loudly rather than silently
+# picking up a GPU index that means nothing here.
+#
+# On csr-94608 this block was the durable lever for sharing four A6000s with a
+# borrower who ran under the SAME Unix account (so uid was not an ownership
+# test). `allowed_gpus` was a CANDIDATE set, not an assignment, because the
+# borrower's job migrated between cards on 2026-08-12 and a hard-pinned pair left
+# obtune on one working card beside an idle card it was forbidden to touch. The
+# real protection was never this list but the worker's own idle check (>2 GB used
+# or >5 % util). Full history: git show c72224a:configs/compute.yaml.
+#
+# None of it applies under SLURM: the scheduler owns allocation, cgroups enforce
+# isolation, and CUDA_VISIBLE_DEVICES is set for us. src/obtune/sched/,
+# src/obtune/gpu_alloc.py, scripts/launch_workers.sh and scripts/supervise.sh are
+# superseded by sbatch wrappers.
+legacy_scheduler_policy:
+  retired: 2026-08-28
+  superseded_by: slurm

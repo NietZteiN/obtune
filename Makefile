@@ -1,5 +1,7 @@
 # obtune — common entry points. See README.md and CLAUDE.md.
-PY := /data/jvl210002/conda_envs/obtune/bin/python
+# Override with OBTUNE_ENV, or `source scripts/env.sh` first. Same default as env.sh.
+OBTUNE_ENV ?= /work/jvl210002/migration/envs/obtune
+PY := $(OBTUNE_ENV)/bin/python
 export PYTHONPATH := src
 
 .PHONY: help check test lint hooks testset corpus variants h1 pilot clean-pyc

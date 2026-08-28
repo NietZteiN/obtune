@@ -18,6 +18,7 @@ task_ids to drop outright, and corpus/dedup.py independently catches the rest.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -26,7 +27,15 @@ from obtune.corpus.sources import DatasetNotCached, find_cached, parse_assert_ca
 REPO_ID = "openai_humaneval"
 SOURCE_PY = "humaneval"
 SOURCE_JS = "humaneval_x_js"
-JS_CORPUS_PATH = Path("/data/jvl210002/my_downloads/dataset/humaneval_js/humaneval_x_js_full.json")
+# Single source of truth is configs/sources.yaml; this constant only exists so the
+# loader can be called without threading the config through. OBTUNE_JS_CORPUS wins,
+# which is what makes the module portable across clusters (2026-08-28 migration).
+JS_CORPUS_PATH = Path(
+    os.environ.get(
+        "OBTUNE_JS_CORPUS",
+        "/work/jvl210002/migration/dataset/humaneval_js/humaneval_x_js_full.json",
+    )
+)
 
 
 def load(limit: int | None = None, language: str = "python") -> Iterator[dict[str, Any]]:

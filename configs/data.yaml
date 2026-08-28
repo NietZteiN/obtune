@@ -1,13 +1,18 @@
-# Data-layer policy. Last updated: 2026-08-04.
+# Data-layer policy. Last updated: 2026-08-28.
 
 seed: 17
 
 test_set:
   # 70 L0 parents (40 Python + 30 JavaScript) drawn from the ICSE stimuli.
-  dataset_a: /data/jvl210002/my_downloads/model_understanding/base/data/corpus/experiment_tasks/full_human_experiment_v2.json
-  dataset_b: /data/jvl210002/my_downloads/model_understanding/base/data/corpus/paper_sets/tasks_unified_50.json
-  spans_a: /data/jvl210002/my_downloads/transcoders/data/stimuli/dataset_a/dataset_a.jsonl
-  spans_b: /data/jvl210002/my_downloads/transcoders/data/stimuli/dataset_b/dataset_b.jsonl
+  #
+  # These four live OUTSIDE the repo, in sibling projects. 2026-08-28: only the
+  # two `spans_*` files came across in the juno migration — the `model_understanding`
+  # pair did NOT, and the paths below are where they must be placed. Nothing needs
+  # them while data/eval/testset/ is intact; `make testset` will fail without them.
+  dataset_a: /work/jvl210002/migration/model_understanding/base/data/corpus/experiment_tasks/full_human_experiment_v2.json
+  dataset_b: /work/jvl210002/migration/model_understanding/base/data/corpus/paper_sets/tasks_unified_50.json
+  spans_a: /work/jvl210002/migration/transcoders/data/stimuli/dataset_a/dataset_a.jsonl
+  spans_b: /work/jvl210002/migration/transcoders/data/stimuli/dataset_b/dataset_b.jsonl
   # Legacy rows are copied byte-identical into data/eval/testset/legacy_icse/ and
   # carry `tier_icse`; they are the ONLY rows comparable to the human baselines.
   keep_legacy_tiers: [L0, L1, L1b, L2, L3]

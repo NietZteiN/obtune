@@ -12,7 +12,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 export PYTHONPATH=src
-PY=/data/jvl210002/conda_envs/obtune/bin/python
+PY="${OBTUNE_ENV:-/work/jvl210002/migration/envs/obtune}/bin/python"
 GPU="${GPU:-3}"
 N="${N:-150}"
 OUT=results/attn/steer

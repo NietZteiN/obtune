@@ -1,6 +1,6 @@
 # Claude System Instructions & Workflow Protocol (CLAUDE.md)
 
-*Last updated: 2026-08-04*
+*Last updated: 2026-08-28*
 
 You are executing within a constrained compute environment as an expert AI research engineer. You must strictly adhere to the infrastructure layout, experiment discipline, and cognitive workflow defined below.
 
@@ -19,39 +19,97 @@ Before executing any complex command, code modification, or long GPU run, update
 
 ## 1. Compute & Hardware
 
-> **This project does NOT use SLURM** — there is no scheduler on this host. Jobs run directly; you select GPUs yourself.
+> **This project uses SLURM.** The login node has no GPU at all — `nvidia-smi` does not
+> exist there. Never run a GPU job directly; submit it. This reverses the rule that stood
+> until 2026-08-27, when the project lived on an unscheduled box.
 
-- **Host:** `csr-94608.utdallas.edu`, accessed via SSH.
-- **GPUs:** **4 × NVIDIA RTX A6000, 48 GB each** (indices 0–3), 96 CPU cores, ~250 GB RAM. Driver 595.71.05 / CUDA 13.2. NVLink pairs are 0↔1 and 2↔3 — for any 2-GPU job use a pair, never `1,2`.
-- **GPU selection (before every run):** check `nvidia-smi` for **idle** GPUs (≈0 % util, near-zero memory), then pin `CUDA_VISIBLE_DEVICES=<id>` **before** importing torch. `src/obtune/gpu.py` and `src/obtune/sched/worker.py` both enforce this; the worker refuses a GPU with >2 GB used or >5 % util.
-- **Shared box, no scheduler to protect you.** Never launch onto a GPU another job is using. If all 4 are busy, wait.
-- **Cards may be LENT OUT.** `scheduler_policy.allowed_gpus` in [`configs/compute.yaml`](configs/compute.yaml) is the authoritative list of cards obtune may place work on, and `gpu_budget` caps how many it holds at once. Both `gpu_alloc.free()/claim()` and `scripts/launch_workers.sh` honour it, so stopping a worker is **not** how you lend a card — the supervisor follows whatever is free and would claim it back within one 300 s poll. Edit the config; do not hand-kill workers. Prefer lending an NVLink pair (0↔1 or 2↔3) so the borrower can still run TP=2.
+- **Host:** `juno-l-02` (login), OpenHPC + SLURM 24.11.5, accessed via SSH. Migrated here
+  2026-08-28 from `csr-94608.utdallas.edu`.
+- **GPU partitions** (all capped at 2 days walltime). Full inventory in
+  [`configs/compute.yaml`](configs/compute.yaml):
 
-  **Treat `allowed_gpus` as a CANDIDATE SET, not a fixed assignment.** As of 2026-08-12 it is `[0, 1, 2]` with `gpu_budget: 2` — obtune may consider three cards but never holds more than two. The worker already refuses any GPU with >2 GB used or >5 % util, so a wide candidate set cannot collide with a borrower; it only lets us follow whichever cards are genuinely free. This matters because **the borrower moves**: on 2026-08-12 their job migrated from GPU 2 onto GPU 0 and freed 2, and a hard-pinned `[0, 1]` left obtune on a single working card with an idle GPU it was forbidden to touch. GPU 3 (sglang) is still theirs and stays out of the list.
+  | partition | capacity | note |
+  |---|---|---|
+  | `h200` | 26 nodes × 2 × H200 NVL (141 GB), 64 cores / 375 GB per node | **the default.** 52 GPUs |
+  | `h100` | 3 heterogeneous nodes | only `g-04-02` is full-fat (4 × H100 80 GB) |
+  | `a30` | 2 nodes × 2 × A30 | closest analogue to the old A6000s; cheap smoke tests |
+  | `a30-2.12gb`, `a30-4.6gb` | MIG slices, 12 GB / 6 GB | too small for 1.5B bf16 training |
+  | `normal`, `dev` | 90 / 8 CPU-only nodes | corpus building, merging, analysis, `dev` is 2 h |
 
-  **The borrower shares this Unix account.** `uid` is therefore *not* an ownership test — `gpu_alloc._same_uid` returns true for their processes. Anything that kills or reaps must additionally check `ppid == 1` and the process name; see `gpu_alloc.stranded_engines`.
-- **Persistence:** long jobs run in a detached `tmux` session (`scripts/launch_workers.sh` spawns one per GPU, setting `CUDA_VISIBLE_DEVICES` at spawn time).
-- **Project-specific feasibility:**
-  - LoRA SFT on 1.5B: ~2–3 h/adapter on one A6000. On 7–8B: bf16 + gradient checkpointing peaks ≈25–28 GB, so **one GPU per adapter**, ~8–11 h each. No DeepSpeed, no model parallelism.
-  - Full grid ≈ 54 runs ≈ 360 GPU-h ≈ 7–10 calendar days at 2–3 free GPUs.
+- **Submitting work:** `python scripts/slurm/submit.py --queued` drains
+  `runs/manifest/queued/`, one sbatch job per manifest; `--argv …` submits an ad-hoc
+  command; `--dry-run` prints the script without submitting. The manifest lifecycle
+  (`queued → running → done|failed`) is preserved and now moves **inside** the sbatch
+  script, so a job that never starts stays queued and a job killed at walltime still
+  lands in `failed/`. That last part fixes the old scheduler's headline defect: a worker
+  that died mid-run stranded its claim in `running/` and nothing noticed.
+- **GPU selection is not yours to make.** SLURM allocates and sets `CUDA_VISIBLE_DEVICES`;
+  cgroups enforce it. `gpu.pick_free_gpus()` returns local indices under an allocation and
+  `gpu.pin()` is a deliberate **no-op** there — on a 2-GPU node given `--gres=gpu:1` SLURM
+  may hand you physical device 1 as local index 0, so rewriting the variable selects the
+  wrong device or none, silently.
+- **Queue waits are real, and they are the new planning constraint.** On 2026-08-28 `h200`
+  had 41 running / 35 pending and estimated a 7-hour start for a 5-minute job. On the old
+  box a free card was taken in seconds. **Batch work; do not hold interactive allocations;
+  expect a submit-and-return-tomorrow cadence.** `a30` is usually shorter.
+- **RETIRED, do not use:** `src/obtune/sched/`, `src/obtune/gpu_alloc.py`,
+  `scripts/launch_workers.sh`, `scripts/supervise.sh`, `scripts/pipeline.sh`. These
+  implemented GPU polling, an `allowed_gpus`/`gpu_budget` lending policy, and a tmux
+  supervisor, all because the old host had no scheduler and was shared informally with a
+  borrower **on the same Unix account** (so `uid` was not an ownership test). SLURM solves
+  every one of those problems. The reasoning is preserved in
+  `configs/compute.yaml::legacy_scheduler_policy` and `git show c72224a`.
+- **Project-specific feasibility:** the numbers below were measured on A6000s and are now
+  **upper bounds pending re-measurement on H200** — see the open item in
+  `log/setup/2026-08-28_juno-migration.md`.
+  - LoRA SFT on 1.5B: ~2–3 h/adapter on one A6000. On 7–8B: bf16 + gradient checkpointing
+    peaks ≈25–28 GB, so **one GPU per adapter**, ~8–11 h each. No DeepSpeed, no model
+    parallelism — and with 141 GB per H200 there is even less reason to add either.
   - Evaluation uses **vLLM offline multi-LoRA** (~3–6 min per 1.5k-item cell on 7–8B).
-  - **Attention extraction cannot use vLLM** (it does not expose attentions) — it uses an HF eager forward on a stratified subset. Both paths must import the prompt builder from `src/obtune/prompts.py`, or Δ-attention would be measured on a different distribution than accuracy.
+  - **Attention extraction cannot use vLLM** (it does not expose attentions) — it uses an
+    HF eager forward on a stratified subset. Both paths must import the prompt builder from
+    `src/obtune/prompts.py`, or Δ-attention would be measured on a different distribution
+    than accuracy.
 
 ---
 
 ## 2. Storage Layout & Environment Configuration
 
-- **Project root:** `/data/jvl210002/my_downloads/obtune/`. `$HOME` is small NFS — never write datasets, model caches, adapters, or attention dumps there.
+- **Project root:** `/work/jvl210002/migration/obtune/`. Keep datasets, model caches,
+  adapters and attention dumps out of `$HOME`: on juno both `/home` and `/work` are the
+  same MooseFS cluster, but compute nodes contend on `$HOME`.
+- **The three roots are defined once**, in [`scripts/env.sh`](scripts/env.sh):
+  `OBTUNE_ROOT`, `OBTUNE_ENV`, `OBTUNE_SCRATCH`. Everything else derives from them, and
+  each is overridable from the environment. Relocating the project should be a four-line
+  change, not the 18-site grep the 2026-08-28 move actually required.
 
 ### Partition boundaries
 - **Repo files** (code, configs, docs, logs, manifests) stay lightweight and are committed.
 - **Large artifacts** (adapters, attention caches, generated corpora, cell parquets) live under `data/`, `runs/`, `results/` and are gitignored. Manifests, split files, resolved configs and `run_manifest.json` files ARE committed — they are what makes a result reproducible.
 
 ### Environment
-- Python env: **`/data/jvl210002/conda_envs/obtune`** (built by [`env/setup_env.sh`](env/setup_env.sh); pinned in `env/lock-obtune.txt`). torch 2.11 / transformers 5.14.1 / trl 1.9.2 / peft 0.20.0 / vllm 0.26.0.
-- Node workspace: `js/node_modules` (`npm ci` from the committed lockfile). **`javascript-obfuscator` is installed for the H1 generator only.**
-- R analysis reuses the existing `r_analysis` env: `/home/012/j/jv/jvl210002/miniconda3/envs/r_analysis/bin/Rscript`.
-- `HF_HOME=/data/jvl210002/my_downloads/.cache/huggingface`, `TMPDIR=/data/jvl210002/tmp_pip`.
+- Python env: **`/work/jvl210002/migration/envs/obtune`** — a `uv` venv, not conda
+  (built by [`env/setup_env.sh`](env/setup_env.sh); pinned in `env/lock-obtune.txt`).
+  torch 2.11.0+cu130 / transformers 5.14.1 / trl 1.9.2 / peft 0.20.0 / vllm 0.26.0.
+  **`setup_env.sh` replays the lock by default**; `--upgrade` re-resolves and rewrites it.
+  Rebuilding from the top-level spec instead reproduces all five headline pins and still
+  moves ~42 transitive packages, `scipy` among them — and `scipy` is in the bootstrap
+  path for every published CI.
+- Node workspace: `js/node_modules` (`npm ci` from the committed lockfile). **`javascript-obfuscator`
+  is installed for the H1 generator only.** ⚠️ **`node` is not installed on juno.** The
+  814 MB `node_modules` tree transferred intact but has no interpreter, so the H1/H2/H3
+  generators and everything JavaScript are blocked until a node toolchain is added.
+- R analysis: `module load R/4.5.0` (`/opt/ohpc/pub/libs/gnu14/R/4.5.0/bin/Rscript`). The old
+  personal `r_analysis` env did **not** transfer; its packages (the GLMM stack under
+  `stats/` — lme4, emmeans) must be reinstalled before anything there runs.
+- `HF_HOME=/work/jvl210002/migration/hf_home` (88 GB, moved with the project rather than
+  re-downloaded), `TMPDIR=/work/jvl210002/migration/tmp`, plus `TORCHINDUCTOR_CACHE_DIR`
+  and `TRITON_CACHE_DIR` under `$OBTUNE_SCRATCH/cache/`. All set by `scripts/env.sh`.
+- **Three cross-project stimulus files did not transfer** and are needed only to rebuild
+  the corpus: `full_human_experiment_v2.json`, `tasks_unified_50.json` (both from
+  `model_understanding/`) and `humaneval_x_js_full.json`. `configs/data.yaml` and
+  `configs/sources.yaml` point at where they must be placed. `data/` is intact, so
+  nothing is blocked until something is regenerated.
 
 ### Destructive commands — human-in-the-loop required
 **Never run `rm -rf` — or any recursive/forced/bulk deletion — without first confirming with the human.** State the blast radius, dry-run it (`ls`/`find`), wait for explicit approval, then run the narrowest command that does the job. Trained adapters and gate-validated corpora cost GPU-hours and CPU-days to regenerate; treat their deletion like irreplaceable results.
@@ -165,3 +223,21 @@ Every working day, for each thread you advanced: create the entry file from `log
   account, so `uid` is not an ownership test for any reaper.
 - **2026-08-11** — §1: recorded that GPUs 2–3 are lent to a neighbour and that `scheduler_policy.allowed_gpus` / `gpu_budget` in `configs/compute.yaml` — not stopping a worker — is how a card is lent.
 - **2026-08-04** — Charter created. Adapted from `../transcoders/CLAUDE.md`: kept §1 compute (same host, no SLURM), §2 storage and the destructive-command rule, and the §6 log-folder protocol. Wrote a new §3 (the fine-tuning/invariance goal, the 7-condition ladder, the dual tier namespace) with §3.2 promoting H1 quarantine to a four-layer hard rule, and replaced the MI silent-failure list in §4 with the tuning-specific one.
+
+- **2026-08-28** — **Cluster migration: `csr-94608` → `juno`.** §1 rewritten end to end. The
+  old §1 opened with "This project does NOT use SLURM"; juno has SLURM, the login node has no
+  GPU, and `nvidia-smi` does not exist there, so every operational instruction in it was not
+  merely stale but actively wrong. `src/obtune/sched/`, `gpu_alloc.py`, `launch_workers.sh`,
+  `supervise.sh` and `pipeline.sh` are retired in favour of `scripts/slurm/submit.py`, which
+  keeps the manifest lifecycle (it is the provenance layer, not scheduler scaffolding) and
+  moves the state transitions into the sbatch script so a walltime kill files the job under
+  `failed/` instead of stranding it. `gpu.py` gained a SLURM branch: `pin()` is a no-op inside
+  an allocation, because rewriting `CUDA_VISIBLE_DEVICES` there selects the wrong device
+  silently. §2 rewritten for the new roots, which are now defined once in `scripts/env.sh`
+  rather than at 18 sites. Three facts worth carrying: **queue waits are hours** where a card
+  used to be free in seconds; **node is not installed**, which blocks all JavaScript work; and
+  the **`r_analysis` env did not transfer**, which blocks `stats/`. Migration verified by
+  recomputing published numbers from `results/cells/` — `merge_dare_ties − tuned_L0` on Grid A
+  H1 reproduces at −0.66 [−1.89, +0.66] exactly (`scripts/verify_migration.py`), and the H1
+  quarantine passes all four layers on 207,136 train rows. Full account:
+  `log/setup/2026-08-28_juno-migration.md`.

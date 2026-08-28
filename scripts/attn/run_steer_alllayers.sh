@@ -7,7 +7,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 export PYTHONPATH=src
-PY=/data/jvl210002/conda_envs/obtune/bin/python
+PY="${OBTUNE_ENV:-/work/jvl210002/migration/envs/obtune}/bin/python"
 GPU="${GPU:-3}"
 ALL=$(seq 0 27 | tr '\n' ' ')
 declare -A ADAPTER=( [base]="" [tuned_S2_s17]="runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best" )

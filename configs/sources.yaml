@@ -39,7 +39,9 @@ python:
 javascript:
   tier1:
     - name: humaneval_x_js
-      path: /data/jvl210002/my_downloads/dataset/humaneval_js/humaneval_x_js_full.json
+      # MISSING as of the 2026-08-28 juno migration — this file did not transfer.
+      # Only needed to rebuild the JS corpus; data/ is intact, so nothing is blocked.
+      path: /work/jvl210002/migration/dataset/humaneval_js/humaneval_x_js_full.json
       loader: obtune.corpus.sources.humaneval
       note: 164 programs with structured io_pairs, all <=60 LOC
   tier2:
