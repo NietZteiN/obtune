@@ -1,5 +1,48 @@
 # 01 — Next steps, in execution order
 
+> ## STATUS UPDATE — 2026-08-28, first day on juno
+>
+> The plan below is **unchanged in substance and re-ordered in execution**, on the PI's
+> instruction to run both tracks in parallel. What changed is the cost model it was built on.
+>
+> **The ordering rationale was two arguments, and only one survived the move.** The
+> scientific argument stands: `H1` is one obfuscator, partly burned, and spending more of it
+> on a brand-new objective is the wrong order. The *budget* argument — "only arms worth 7B
+> GPU time get promoted" — does not. The old box was 4 × A6000 shared with a borrower;
+> juno has **52 H200s**, and a 7B adapter measures at **~17–32 minutes**, not the 8–11 hours
+> `CLAUDE.md` §1 still quoted. 7B is no longer the expensive branch, so it is running now
+> rather than waiting behind Phases 0–2.
+>
+> **In flight as of this writing:**
+> - **7B RQ1 grid** — 12 adapters (`L0 L1b L1r L2 S1 S2` × seeds 17/42), new configs
+>   `configs/train/grid_qwen7b_py_*.yaml`. None of this existed: the "7B panel" in the
+>   results is baselines only, so a 7B replication was always new config work.
+> - **Phase 2 alignment arm** — built as `src/obtune/align.py`, validating end to end
+>   (cache → dry-run → λ=0 → λ=1 → mismatch control).
+>
+> **Two departures from the Phase 2 design below, both improvements.** (1) The teacher is
+> frozen, so its states are computed **once and cached** rather than recomputed every step.
+> Training is ~1.0× vanilla instead of the ~2× budgeted here, and — the part that matters —
+> **the mismatched-teacher control becomes a permutation of a cache index, i.e. free.** That
+> control is budgeted below as first-class precisely because it keeps deciding whether an
+> arm is real; making it cost nothing is the surest way to have it actually run. (2) The
+> `n ≠ m` problem is avoided the way this document proposes, but positions are derived from
+> the **loss mask** rather than string lengths, so they cannot drift out of sync with what
+> TRL actually built, and a row whose prompt is shorter than `k` is **dropped** rather than
+> clamped — a clamped row would align different token positions in student and teacher,
+> which is the exact failure the design exists to avoid.
+>
+> **What is blocked, and it is not in this plan.** Phase 1 needs `H2`/`H3` generators, and
+> the JavaScript half cannot be built: **`node` is not installed on juno**. The Python half
+> is unaffected. See `log/setup/2026-08-28_juno-migration.md`.
+>
+> **What nearly went wrong.** The migrated environment was *correct by its lock* and unusable:
+> juno's driver is 550.163.01 (CUDA 12.4) against a lock pinning `torch 2.11.0+cu130`, so
+> `torch.cuda.is_available()` was False on every GPU node **while `nvidia-smi` reported a
+> healthy H200**. Fixed with `envs/obtune-cu129` plus vLLM's GitHub `+cu129` wheel (PyPI
+> carries only the CUDA 13 build). Details in `log/setup/2026-08-28_cuda-driver-and-vllm.md`.
+
+
 Agreed with the PI (Jack Le) on 2026-08-27. The destination is a **7B replication for the paper**;
 everything below is what must happen first so that only arms worth 7B GPU time get promoted.
 
