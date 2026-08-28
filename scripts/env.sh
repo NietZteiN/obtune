@@ -13,7 +13,13 @@
 # 18-site sed. OBTUNE_SCRATCH holds everything that must NOT live in the repo or
 # in $HOME: model cache, temp, compiler caches.
 export OBTUNE_ROOT="${OBTUNE_ROOT:-/work/jvl210002/migration/obtune}"
-export OBTUNE_ENV="${OBTUNE_ENV:-/work/jvl210002/migration/envs/obtune}"
+# NOTE THE SUFFIX. The plain `envs/obtune` build follows the committed lock exactly and
+# is unusable on this cluster's GPUs: the lock pins torch 2.11.0+cu130 and juno runs
+# driver 550.163.01 (CUDA 12.4), so torch.cuda.is_available() is False on every GPU node
+# while nvidia-smi works fine. `envs/obtune-cu129` is the same package set with
+# torch 2.11.0+cu129, which CUDA 12 minor-version compatibility covers on r550, and it
+# reproduces the published numbers identically (scripts/verify_migration.py).
+export OBTUNE_ENV="${OBTUNE_ENV:-/work/jvl210002/migration/envs/obtune-cu129}"
 export OBTUNE_SCRATCH="${OBTUNE_SCRATCH:-/work/jvl210002/migration}"
 
 export PATH="$OBTUNE_ENV/bin:$PATH"

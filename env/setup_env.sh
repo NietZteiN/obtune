@@ -45,6 +45,21 @@ else
     numpy pandas pyarrow scipy pyyaml pydantic tqdm tensorboard pytest
   "$UV" pip freeze > "$LOCK"
 fi
+# THE LOCK IS NOT SUFFICIENT ON juno. It pins torch 2.11.0+cu130 and this cluster's
+# driver is 550.163.01 (CUDA 12.4), which that build refuses -- torch.cuda.is_available()
+# comes back False on every GPU node while nvidia-smi works, so it reads as a code bug.
+# Overlay the cu129 build of the SAME torch version; CUDA 12 minor-version compatibility
+# covers r550, and `==2.11.0` still satisfies vllm's pin because +cu129 is a local version.
+# Skip with OBTUNE_SKIP_CU129=1 on a cluster whose driver is r580 or newer.
+if [[ "${OBTUNE_SKIP_CU129:-0}" != "1" ]]; then
+  echo "overlaying torch 2.11.0+cu129 (juno driver is CUDA 12.4; see CLAUDE.md §2)"
+  "$UV" pip install \
+    --index-url https://download.pytorch.org/whl/cu129 \
+    --extra-index-url https://pypi.org/simple \
+    --index-strategy unsafe-best-match \
+    "torch==2.11.0+cu129" "torchvision==0.26.0+cu129" "torchaudio==2.11.0+cu129"
+fi
+
 python - <<'EOF'
 import torch, transformers, trl, peft, vllm
 print("torch", torch.__version__)

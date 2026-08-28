@@ -59,8 +59,10 @@ paths:
   # Kept in sync BY HAND with scripts/env.sh, which is the source of truth for
   # the same three roots. If you relocate the project, change env.sh first and
   # then mirror it here; scripts/00_env_check.py compares them.
-  env: /work/jvl210002/migration/envs/obtune
-  python: /work/jvl210002/migration/envs/obtune/bin/python
+  env: /work/jvl210002/migration/envs/obtune-cu129
+  python: /work/jvl210002/migration/envs/obtune-cu129/bin/python
+  # cu129, not the lock's cu130: juno's driver is 550.163.01 (CUDA 12.4).
+  # See CLAUDE.md §2 and log/setup/2026-08-28_cuda-driver-and-vllm.md.
   hf_home: /work/jvl210002/migration/hf_home
   tmpdir: /work/jvl210002/migration/tmp
   # R is a system module here, not a personal conda env: `module load R/4.5.0`.

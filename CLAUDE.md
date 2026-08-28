@@ -95,6 +95,19 @@ Before executing any complex command, code modification, or long GPU run, update
   Rebuilding from the top-level spec instead reproduces all five headline pins and still
   moves ~42 transitive packages, `scipy` among them — and `scipy` is in the bootstrap
   path for every published CI.
+- ⚠️ **CUDA: the GPU nodes run driver `550.163.01` (CUDA 12.4), not CUDA 13.** The lock's
+  `torch==2.11.0+cu130` therefore reports `torch.cuda.is_available() == False` on **every**
+  GPU node — a30 and h200 alike — while `nvidia-smi` works fine, so the failure looks like a
+  code bug and is not. The working env is
+  **`/work/jvl210002/migration/envs/obtune-cu129`**: identical package versions, with
+  `torch 2.11.0+cu129` installed from `https://download.pytorch.org/whl/cu129`. CUDA 12
+  minor-version compatibility covers an r550 driver, and it is verified on an H200 —
+  `cuda available: True`, sm_90, 150 GB, 161.7 TFLOP/s bf16.
+  **vLLM is a separate, unsolved problem:** every PyPI `vllm` wheel back to 0.23 is built
+  against CUDA 13 (`vllm._C_stable_libtorch` links `libcudart.so.13`), and the `rhel9`
+  repo publishes no `cuda-compat-13-x` forward-compatibility package. Training and the HF
+  eval path work; the vLLM eval path does not. Fixing this properly means the cluster
+  driver moving to r580+.
 - Node workspace: `js/node_modules` (`npm ci` from the committed lockfile). **`javascript-obfuscator`
   is installed for the H1 generator only.** ⚠️ **`node` is not installed on juno.** The
   814 MB `node_modules` tree transferred intact but has no interpreter, so the H1/H2/H3
