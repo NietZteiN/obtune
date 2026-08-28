@@ -59,12 +59,24 @@ Before executing any complex command, code modification, or long GPU run, update
   borrower **on the same Unix account** (so `uid` was not an ownership test). SLURM solves
   every one of those problems. The reasoning is preserved in
   `configs/compute.yaml::legacy_scheduler_policy` and `git show c72224a`.
-- **Project-specific feasibility:** the numbers below were measured on A6000s and are now
-  **upper bounds pending re-measurement on H200** — see the open item in
-  `log/setup/2026-08-28_juno-migration.md`.
-  - LoRA SFT on 1.5B: ~2–3 h/adapter on one A6000. On 7–8B: bf16 + gradient checkpointing
-    peaks ≈25–28 GB, so **one GPU per adapter**, ~8–11 h each. No DeepSpeed, no model
-    parallelism — and with 141 GB per H200 there is even less reason to add either.
+- **Project-specific feasibility — RE-MEASURED ON H200, 2026-08-28.** The old A6000 numbers
+  were wrong by more than an order of magnitude, and stale estimates cost more than accuracy
+  here: the first 7B batch asked SLURM for 12 hours to do 18 minutes of work, which buys a
+  much worse backfill slot on a busy partition.
+  - **LoRA SFT on 7B: ~18 min/adapter** on one H200 — measured, not projected
+    (`grid7b_py_L0 s17`: 222 optimizer steps, 4,689 rows, batch 16 × accum 4, 17.9 min,
+    train_loss 0.309, three epoch checkpoints). The old charter said **8–11 h**. Step time is
+    4.2–4.5 s on `L0` and 8.6 s on `S2`, which is length, not model: `S2`'s prompts mean 526
+    tokens against `L0`'s 303.
+  - The full 12-adapter 7B RQ1 grid (6 conditions × 2 seeds) is therefore **~4–6 GPU-hours
+    total**, not the multi-day job the plan was ordered around. `continuation/01_NEXT_STEPS.md`
+    gated 7B behind Phases 0–2 on a budget argument that no longer holds.
+  - LoRA SFT on 1.5B was ~2–3 h/adapter on one A6000; expect the same ~20–30× improvement,
+    unmeasured as of this writing.
+  - bf16 + gradient checkpointing peaked well inside one card, so **one GPU per adapter**
+    stands. No DeepSpeed, no model parallelism — with 141 GB per H200 there is even less
+    reason to add either. `configs/models.yaml` still carries the A6000-sized 8 × 8 batch
+    shape for 7B; the 7B grid configs override to 16 × 4 and there is headroom for more.
   - Evaluation uses **vLLM offline multi-LoRA** (~3–6 min per 1.5k-item cell on 7–8B).
   - **Attention extraction cannot use vLLM** (it does not expose attentions) — it uses an
     HF eager forward on a stratified subset. Both paths must import the prompt builder from
