@@ -33,6 +33,40 @@ models:
     grad_accum: 8
     role: main
 
+  # --- CodeLlama panel (2026-08-31) --------------------------------------------
+  # Replaces the Qwen panel, which cannot be used on this cluster. Same family at two
+  # scales, mirroring the old 1.5B/7B design: one chat template to validate, both ungated.
+  # CodeLlama uses the Llama-2 [INST] <<SYS>> template and DOES accept a system role, so
+  # prompts.py needs no change -- verified 2026-08-31 before any weights were pulled.
+  # CAVEAT: CodeLlama is a 2023 model and is materially weaker at output prediction than
+  # Qwen2.5-Coder. If base accuracy is low and format_fail high, the format floor eats the
+  # gains (log/transfer/2026-08-30_format-floor-and-a-collapsed-control.md), so the base
+  # sanity read is a GO/NO-GO, not a formality.
+  codellama-7b:
+    hf_id: codellama/CodeLlama-7b-Instruct-hf
+    family: coder
+    n_layers: 32
+    router_layer: 16
+    hidden_size: 4096
+    # RE-GATED on this tokenizer 2026-08-31 (1500 train rows, prompt+answer as training
+    # sees it): mean 458, p95 813, p99 1128, max 2260 -- against Qwen-7B's 393/709/1006/2134.
+    # CodeLlama tokenizes ~17 % longer, so the value is NOT inherited blindly: at 2048 the
+    # truncation rate is 0.07 %, matching Qwen; at 1536 it would be 0.20 %.
+    max_seq_len: 2048
+    per_device_batch: 16
+    grad_accum: 4
+    role: pilot_and_ablation
+  codellama-13b:
+    hf_id: codellama/CodeLlama-13b-Instruct-hf
+    family: coder
+    n_layers: 40
+    router_layer: 20
+    hidden_size: 5120
+    max_seq_len: 2048 # same tokenizer as codellama-7b; see the re-gate note above
+    per_device_batch: 8
+    grad_accum: 8
+    role: main
+
   # --- external baselines ------------------------------------------------------
   # SemCoder (NeurIPS'24, arXiv:2406.01006) — trained for execution-semantics
   # reasoning; output prediction is its NATIVE task (SemCoder-S beats GPT-3.5 on

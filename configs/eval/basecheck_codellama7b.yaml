@@ -1,0 +1,31 @@
+# GO/NO-GO: is CodeLlama-7b-Instruct strong enough to carry this study?
+#
+# The Qwen panel is unusable on this cluster, so the whole corpus must be rebuilt on a new
+# base. Before spending ~40 GPU-hours per tier and a config refactor on that decision, read
+# the untuned base on the real grid.
+#
+# WHAT DECIDES IT. Qwen2.5-Coder-7B reads acc 0.397 / format_fail 0.179 on L0 (Grid A).
+# CodeLlama is a 2023 model and will be weaker. The risk is not "lower accuracy" -- it is
+# that a weak, badly-formatted base puts the study in the regime where a label-shuffled
+# control recovers most of any apparent gain (see log/transfer/2026-08-30_format-floor-and-
+# a-collapsed-control.md: 62-67 % at Qwen-1.5B vs 2-14 % at Qwen-7B). A base with low
+# accuracy AND high format_fail would make every effect a formatting artifact.
+#
+# Three trained conditions only: clean, one renaming, one structural. That is enough to see
+# the level and the spread, and it costs minutes. NO H1 -- a go/no-go never touches it.
+_extends: _base_eval.yaml
+
+phase: basecheck
+experiment_id: basecheck_codellama7b
+run_tag: basecheck_codellama7b
+model: codellama-7b
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+
+eval_conditions: [L0, L1r, S2]

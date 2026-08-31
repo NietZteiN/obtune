@@ -1,0 +1,24 @@
+# Monolithic 7B adapter — all six trainable conditions in one bank.
+#
+# The RQ2 reference the merges and the router must beat. Twin of mono_qwen1.5b_py.yaml,
+# identical in every knob except the model and the batch shape (the 7B grid configs override
+# configs/models.yaml's A6000-sized 8x8 to 16x4; see configs/train/grid_qwen7b_py_L0.yaml).
+#
+# WHY 7B, NOW. The whole RQ2 story -- merging, routing, MoLE -- is measured at 1.5B, where a
+# label-shuffled control recovers 62-67 % of every gain (log/transfer/2026-08-30_format-floor-
+# and-a-collapsed-control.md). At 7B that floor takes only 2-14 %, so the same comparisons
+# there actually mean what they appear to mean. Training is ~30 min on one H200, against the
+# 8-11 h the old A6000 charter assumed.
+_extends: _base_lora.yaml
+
+model: qwen25c-7b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono7b_py_all
+phase: main
+
+train:
+  train_size: 30000 # >= the union of all train-split pairs, so nothing is subsampled away
+  seed: 17
+  per_device_batch: 16
+  grad_accum: 4
