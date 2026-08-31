@@ -1,0 +1,60 @@
+# Phase 2 alignment arm — the lambda sweep, matched vs mismatched teacher.
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/align_lam_sweep_qwen1.5b.yaml \
+#       --model qwen25c-1.5b --language python --stub --limit 4 --out-root /tmp/x
+#
+# WHAT THIS MEASURES
+# ------------------
+# L = L_task(x_obf) + lambda * L_align, where L_align pulls the student's answer-position
+# hidden states on OBFUSCATED code toward a frozen tuned_L0 teacher's states on the CLEAN
+# parent. All arms are trained on S2 only (configs/train/align_qwen1.5b_py_S2.yaml).
+#
+# THE CONTROL IS THE POINT. Every matched arm has a  twin aligned to a DIFFERENT
+# program's clean states. If the mismatched arm matches the matched one, L_align is a
+# regularizer and not semantic alignment -- the interpretation collapses. 01_NEXT_STEPS.md
+# budgets this as first-class because the project has been burned by exactly this shape
+# three times (mole_random, l0merge, oracle-of-k).
+#
+# THE OOD SIGNAL, AND ITS LIMIT
+# -----------------------------
+# Every arm is trained on S2, so L0/L1b/L1r/L2/S1 are all unseen transforms for it: transfer
+# off the S2 diagonal IS the OOD read, and it costs no quarantine budget. This is NOT the
+# "6-fold LOTO diagonal mean" that 01_NEXT_STEPS.md names as the tunable statistic -- that
+# statistic needs the alignment objective trained on each LOTO fold, which has not been run.
+# Selecting lambda on the numbers here is therefore selection on S2-transfer, which is
+# legitimate and H1-free but is a WEAKER signal than the LOTO mean, and any lambda chosen
+# here should be re-confirmed against LOTO before an H1 read is spent on it.
+#
+# H1 IS ABSENT BY DESIGN -- see configs/eval/loto_qwen1.5b.yaml on why a sweep must never
+# read it (CLAUDE.md 3.2 rule 2: no hyperparameter selection on H1).
+_extends: _base_eval.yaml
+
+phase: align_lam_sweep
+experiment_id: align_lam_sweep
+run_tag: align_lam_sweep
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  # References. tuned_L0 is the frozen TEACHER (the arm's ceiling); tuned_S2 is the vanilla
+  # specialist twin -- the arm differs from it ONLY by the added loss term, so it, not base,
+  # is what "the objective did something" has to beat.
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_S2, adapter: "runs/adapters/qwen25c-1.5b/python/S2_r32_s17/best", arch: per_type, train_cond: S2}
+  # lambda = 0: the plumbing check. MUST reproduce tuned_S2; if it does not, the harness is
+  # broken and no other row on this grid means anything.
+  - {name: align_lam0, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam0_k4_L4-9-14-19-23-27_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam0.1, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam0.1_k4_L4-9-14-19-23-27_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam0.1_mm, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam0.1_k4_L4-9-14-19-23-27_mismatch_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam0.3, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam0.3_k4_L4-9-14-19-23-27_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam0.3_mm, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam0.3_k4_L4-9-14-19-23-27_mismatch_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam1, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam1_k4_L4-9-14-19-23-27_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam1_mm, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam1_k4_L4-9-14-19-23-27_mismatch_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam3, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam3_k4_L4-9-14-19-23-27_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam3_mm, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam3_k4_L4-9-14-19-23-27_mismatch_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam10, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam10_k4_L4-9-14-19-23-27_s17/best", arch: per_type, train_cond: S2}
+  - {name: align_lam10_mm, adapter: "runs/adapters_align/qwen25c-1.5b/python/S2_r32_lam10_k4_L4-9-14-19-23-27_mismatch_s17/best", arch: per_type, train_cond: S2}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

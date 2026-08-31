@@ -1,6 +1,6 @@
 # modularity — RQ2 — router, merges, monolithic, oracle arms
 
-*Last updated: 2026-08-27*
+*Last updated: 2026-08-30*
 **Status:** **CLOSED, negative** — no combination of per-transformation specialists beats a
 clean-code adapter on the held-out obfuscator; closing report:
 [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md).
@@ -92,6 +92,7 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   by-product of the 9-epoch sweep that has already run.
 
 ## Entries
+- [`2026-08-30_alignment-arm-lambda-sweep.md`](2026-08-30_alignment-arm-lambda-sweep.md) — H-align refuted (flat, not collapsed); both controls fired correctly; H-teacher opened
 - [`2026-08-27_geometry-consolidated.md`](2026-08-27_geometry-consolidated.md) — zero-GPU
   documentation + analysis pass; **does not reopen the thread**. Cross-seed bank's **sign conflict
   0.565 / TIES keep 0.638** computed for the first time against the same-seed arm's 0.394 / 0.840 —

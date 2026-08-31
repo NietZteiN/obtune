@@ -1,0 +1,77 @@
+# RQ1 control-relative transfer matrix at 7B — the memorization test, replicated.
+#
+#   PYTHONPATH=src python -m obtune.eval_vllm --config eval/grid_rq1_7b.yaml \
+#       --model qwen25c-7b --language python --stub --limit 4 --out-root /tmp/x
+#
+# WHAT THIS IS
+# ------------
+# The 7B twin of grid_rq1.yaml, restricted to Python. Every per-condition adapter on every
+# condition, so the shape of the gradient can be read: memorization predicts a strong
+# diagonal (each adapter helps only on its own condition) and a flat off-diagonal.
+#
+# The 12 adapters (6 conditions x seeds 17/42) were trained 2026-08-28 on h200 in ~5 GPU-hours
+# total, from configs/train/grid_qwen7b_py_*.yaml. `expand_over: train_conditions` resolves
+# each to <cond>_r32_s<seed>/best, so every adapter must have been through
+# `--mode ckpt-select` first; that ran 2026-08-30 (jobs 359067, 359069-359079).
+#
+# H1 IS DELIBERATELY ABSENT, AND THIS IS NOT AN OVERSIGHT TO BE FIXED
+# ------------------------------------------------------------------
+# grid_rq1.yaml (1.5B) carries `eval_conditions: [..., H1]` and `h1_access_purpose:
+# final_eval`. Copying that here would spend one of H1's two permitted reads
+# (CLAUDE.md §3.2 rule 3) on a 7B replication that has had no pilot pass — buying the
+# headline row before knowing whether the 7B gradient reproduces the 1.5B shape at all.
+#
+# The six trainable conditions answer the memorization question on their own: the diagonal
+# vs off-diagonal contrast IS the test, and H1 is the confirmation of a result the trained
+# conditions already establish. So H1 stays banked until the shape here is known, and adding
+# it to this file is a decision for a human, not a tidy-up. If it is authorised later, it
+# belongs in a SEPARATE config with its own ACCESS_LOG entry, exactly as
+# baselines_gridA_7b.yaml documents its own authorised read.
+_extends: _base_eval.yaml
+
+# NOT `main`. `phase` is the top-level cell-path namespace (eval_vllm.cell_dir), and
+# results/cells/main/qwen25c-7b/python/ already holds Grid B (`testset`, n=176) cells under
+# the same system names -- so `main` + `eval_source: heldout` aliases Grid A onto Grid B
+# cells and resume would silently pool two grids CLAUDE.md forbids pooling. Caught by the
+# collision guard, job 359113. Listed in TrialRow.phase, which is a schema change by design.
+phase: grid_rq1_7b
+experiment_id: grid_rq1_7b
+run_tag: grid_rq1_7b
+model: qwen25c-7b
+language: python
+
+# Mirrors baselines_gridA_7b.yaml: 0.90 is tight for a 7B engine plus multi-LoRA slots.
+engine:
+  gpu_memory_utilization: 0.85
+
+# Held-out PROGRAMS (Grid A), not the 70 ICSE stimuli — the same grid the 1.5B ladder and
+# every adapter headline live on. CLAUDE.md forbids pooling Grid A and Grid B.
+eval_source: heldout
+
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+seeds: [17, 42]
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]
+
+peft:
+  r: 32 # only used to resolve adapter directory names
+
+systems:
+  - {name: base, arch: none}
+  - {name: per_type, arch: per_type, expand_over: train_conditions}
+  # THE FORMAT-ACQUISITION FLOOR (added 2026-08-30, after the matrix was read).
+  # Same recipe as the specialists but with gold answers PERMUTED across training rows, so
+  # the input->output mapping is destroyed and only format, answer prior, response length and
+  # stop behaviour can be learned (train_loss 2.168 vs 0.309 for the real 7B L0 adapter).
+  # At 1.5B this control recovers 62-67 % of tuned_L0's gain over base, and ~62 % of it even
+  # among items where BOTH systems are format-clean. If that holds here, the matrix's diagonal
+  # AND off-diagonal both sit on a large shared non-task floor, and TR = 0.885 is measuring
+  # that floor rather than invariance. Added to THIS phase deliberately: it must be scored on
+  # the same items and the same engine as the matrix it reinterprets, and `resume: true`
+  # leaves the existing 78 cells untouched.
+  - {name: formatonly, adapter: "runs/adapters_formatonly_lr2e5/qwen25c-7b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  # Lower-LR retries: `formatonly` above COLLAPSED (16 distinct outputs / 1670, 91 % the single
+  # string "1234567890"), which mimics the target signature while meaning the opposite. These
+  # two are accepted only if output diversity looks like an answer marginal -- see
+  # configs/train/formatonly_lr50e6_qwen7b_py.yaml for the pre-registered criterion.
+  - {name: formatonly_lr50e6, adapter: "runs/adapters_formatonly_lr50e6/qwen25c-7b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: formatonly_lr20e6, adapter: "runs/adapters_formatonly_lr20e6/qwen25c-7b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}

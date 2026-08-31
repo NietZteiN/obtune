@@ -1,0 +1,58 @@
+# formatonly at 7B, LR 2.0e-6 -- fixing a MODE-COLLAPSED control.
+#
+# The lr 2.0e-5 variant collapsed at 7B: 16 distinct outputs across 1670 items, 91% of them the
+# single string "1234567890", giving format_fail 0.013 and accuracy 0.001. That LOOKS like the
+# target signature and is not. The arm's pre-registered rule -- 'format_fail LOW and accuracy ~0
+# -> the floor is zero, essentially all the gain is real task learning' -- cannot distinguish
+# 'learned format + answer prior but not the task' from 'emits one well-formed constant'. Both
+# give low format_fail and ~0 accuracy. OUTPUT DIVERSITY is the missing diagnostic.
+#
+# ACCEPTANCE CRITERION, decided before running: valid only if outputs look like an answer
+# MARGINAL rather than a constant. At 1.5B the good variant gave 808 distinct outputs, top one
+# at 9.7% ('1','0','false','10','true'). Require hundreds of distinct outputs and most-common
+# share well under ~0.25, WITH format_fail low. Shuffled labels give no learnable signal, so
+# collapse onto the most generic literal is the degenerate optimum; lower LR is the lever.
+#
+# formatonly at 7B — the format-acquisition floor for the 7B RQ1 transfer matrix.
+#
+# WHY 7B. grid_rq1_7b reports mean off-diagonal TR = 0.885 [0.855, 0.916], which reads as
+# strong invariance. But at 1.5B this recipe — labels PERMUTED across rows, so the
+# input->output mapping is destroyed (train_loss 2.145 vs 0.448 for the real adapter) —
+# recovers 62-67 % of tuned_L0's gain over base, and does so EVEN on items where both
+# systems are format-clean (L0: base .274 -> formatonly .393 -> tuned_L0 .467). If that
+# holds at 7B, most of every adapter's +15 points is a shared non-task component, the
+# diagonal and off-diagonal both sit on it, and TR = 0.885 is measuring a shared floor.
+#
+# RECIPE: lr 2.0e-5, 3 epochs — the variant that produced a NON-degenerate control at 1.5B
+# (format_fail 0.041-0.059, comparable to a real adapter's 0.019-0.026). The original recipe
+# (lr 1.0e-4) is degenerate at 1.5B: format_fail 0.505 and 52 % of its generations are not
+# even reproducible across a host change, so it cannot be used at any scale.
+#
+# WHY THIS EXISTS. The original arm (formatonly_qwen1.5b_py.yaml, lr 1.0e-4, 3 epochs) is
+# DEGENERATE: on Grid A it reads acc=0.0000 with **format_fail=0.9994** on L0/L1r/S2. Its own
+# eval config pre-registered that outcome as uninformative -- "the adapter is degenerate, and
+# the arm says nothing about format at all; it would need re-running with a lower LR or fewer
+# epochs before it means anything". This is that re-run, on the two axes it names.
+#
+# The arm can only speak if it learns the FORMAT while failing the TASK. The target signature
+# is format_fail LOW (comparable to a real adapter, ~0.01-0.06) with accuracy ~0. Shuffled
+# labels mean there is no learnable mapping, so any accuracy above the answer-prior floor would
+# itself be a bug.
+#
+# Own adapter_root: the adapter directory name encodes only (conditions, rank, seed), so every
+# variant would otherwise overwrite the same L0_r32_s17 path -- and the original arm's.
+_extends: _base_lora.yaml
+
+model: qwen25c-7b
+language: python
+train_conditions: [L0]
+run_tag: formatonly_lr20e6_7b_py
+phase: main
+
+adapter_root: runs/adapters_formatonly_lr20e6
+
+train:
+  seed: 17
+  shuffle_labels: true
+  lr: 2.0e-6
+  epochs: 3

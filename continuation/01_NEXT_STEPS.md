@@ -42,6 +42,50 @@
 > healthy H200**. Fixed with `envs/obtune-cu129` plus vLLM's GitHub `+cu129` wheel (PyPI
 > carries only the CUDA 13 build). Details in `log/setup/2026-08-28_cuda-driver-and-vllm.md`.
 
+> ## STATUS UPDATE — 2026-08-30
+>
+> **vLLM is unblocked, and the 08-28 entry's "NOT fixed for vLLM" is superseded.** That
+> verdict was reached on contaminated evidence: the script testing it built `LLM(...)` at
+> module top level with no `__main__` guard, so vLLM's `spawn`ed engine core re-imported the
+> main module and tripped `_check_not_importing_main` — a traceback that mentions CUDA
+> nowhere and reads as an environment failure. The single real fault was **flashinfer
+> JIT-compiling its sampling kernel against an absent `nvcc`**, now fixed for every job by
+> `VLLM_USE_FLASHINFER_SAMPLER=0` in `scripts/env.sh`. Engine verified generating on `a30`
+> (job 359040) and `eval_vllm` verified end to end (job 359041).
+> See `log/setup/2026-08-30_vllm-unblocked.md`. **Evaluation is no longer gated.**
+>
+> **The 7B RQ1 transfer matrix is complete and H1 was not spent.**
+> `configs/eval/grid_rq1_7b.yaml`, 78 cells, job 359114, 11:45 on one H200. On the
+> 412-program common subset, mean off-diagonal **TR = 0.885 [0.855, 0.916]** — an adapter
+> delivers ~89 % of its own-condition benefit on transforms it never saw, so the
+> memorization hypothesis is refuted at 7B. The specialization advantage is real but small
+> (+0.0199 [+0.0147, +0.0252], cluster bootstrap by program, B=2000).
+> See `log/transfer/2026-08-30_7b-rq1-matrix.md`.
+>
+> **The format-floor question is now settled, and the matrix survives it.** `base`
+> format_fail is 0.179 and collapses to ~0.010 under every adapter, which raised the
+> possibility that most of the +15 points is output-format competence rather than invariance.
+> Measured with a label-shuffled control: at 7B the floor takes only **2-14 %** of the
+> diagonal gain (negative on `S1`), and recomputing the matrix against it moves mean
+> off-diagonal **TR from 0.8842 to 0.8810**. **`TR = 0.885` stands.** The 7B RQ1 result is
+> interpretable and an H1 read is defensible when wanted.
+>
+> **But the 1.5B headlines are measured against the wrong reference.** The same control
+> recovers **62-67 %** of `tuned_L0`'s gain at 1.5B — and ~62 % of it even among items where
+> both systems are format-clean, so it is not mere format repair. `base` overstates every
+> 1.5B gain by roughly two thirds. **Re-reporting the 1.5B numbers against the floor is now
+> the highest-value analysis task**, and it is CPU-only.
+>
+> **A control faked the answer once already, so read the new criterion.** The first 7B
+> control read acc 0.001 / format_fail 0.013 — exactly the arm's pre-registered "the floor is
+> zero" signature — while emitting the single string `"1234567890"` on 91 % of items. Any
+> shuffled-label arm must be checked for OUTPUT DIVERSITY (hundreds of distinct outputs,
+> most-common share well under 0.25) alongside low format_fail, or it can confirm the wrong
+> conclusion. Note also that the pre-existing `formatonly_qwen1.5b_py.yaml` (lr 1.0e-4) is
+> degenerate at every scale and must not be used; the working recipes are
+> `formatonly_lr2e5_qwen1.5b_py.yaml` and `formatonly_lr20e6_qwen7b_py.yaml`.
+> See `log/transfer/2026-08-30_format-floor-and-a-collapsed-control.md`.
+
 
 Agreed with the PI (Jack Le) on 2026-08-27. The destination is a **7B replication for the paper**;
 everything below is what must happen first so that only arms worth 7B GPU time get promoted.

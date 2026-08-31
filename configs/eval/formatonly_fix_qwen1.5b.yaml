@@ -1,0 +1,45 @@
+# formatonly, RECIPE FIX — reading format_fail, which is the only number that decides this arm.
+#
+# THE ORIGINAL ARM IS DEGENERATE. formatonly_qwen1.5b.yaml's adapter (lr 1.0e-4, 3 epochs) reads
+# acc=0.0000 with **format_fail=0.9994** on L0/L1r/S2, Grid A. That config pre-registered the
+# reading: "format_fail_rate HIGH -> the adapter is degenerate, and the arm says nothing about
+# format at all; it would need re-running with a lower LR or fewer epochs before it means
+# anything." So the format-acquisition floor is currently UNMEASURED, and every "fine-tuning
+# helps" number in the project is still reported against `base` rather than against a floor.
+#
+# THE TWO VARIANTS, on the axes that comment names:
+#   formatonly_lr2e5 — lr 2.0e-5, 3 epochs
+#   formatonly_ep1   — lr 1.0e-4, 1 epoch
+#
+# HOW TO READ IT, decided before running. exact_match is ~0 for both by construction (shuffled
+# labels destroy the mapping), and ckpt-select already confirms 0.0000 at every checkpoint for
+# both. That is NOT the result; it is ambiguous on its own. The discriminator is format_fail:
+#   * format_fail LOW (~0.01-0.06, comparable to a real adapter) with acc ~0 -> the adapter
+#     learned the FORMAT and not the TASK. That is a valid format-acquisition floor, and the
+#     arm can finally answer whether the project's gains are task learning or format learning.
+#   * format_fail still ~1.0 -> shuffled-label training does not yield a clean format-only
+#     adapter at this scale, on either axis. The arm needs a different CONTROL DESIGN, not a
+#     tuned learning rate, and that is a real finding about the ablation rather than a knob.
+#
+# Same three eval conditions as the original arm, so the comparison is like-for-like.
+# Distinct `phase`: `baselines_gridA` already holds the degenerate arm's cells under the system
+# name `formatonly`, and cell paths key on (phase, system, condition) -- see job 359113, where
+# reusing a phase would have pooled two grids. NO H1: a control's floor is established on the
+# trainable grid.
+_extends: _base_eval.yaml
+
+phase: formatonly_fix
+experiment_id: formatonly_fix
+run_tag: formatonly_fix
+model: qwen25c-1.5b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: formatonly_orig, adapter: "runs/adapters_formatonly/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: formatonly_lr2e5, adapter: "runs/adapters_formatonly_lr2e5/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: formatonly_ep1, adapter: "runs/adapters_formatonly_ep1/qwen25c-1.5b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+
+eval_conditions: [L0, L1r, S2]

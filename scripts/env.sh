@@ -36,3 +36,13 @@ export TRITON_CACHE_DIR="${TRITON_CACHE_DIR:-$OBTUNE_SCRATCH/cache/triton}"
 # Quieter vLLM startup; the engine's real errors still reach stderr.
 export VLLM_LOGGING_LEVEL="${VLLM_LOGGING_LEVEL:-WARNING}"
 export TOKENIZERS_PARALLELISM=false
+
+# flashinfer JIT-compiles its sampling kernel on first use and needs nvcc/CUDA_HOME. juno's
+# compute nodes have neither ("Could not find nvcc and default cuda_home='/usr/local/cuda'
+# doesn't exist", job 359038), so the vLLM engine dies during startup -- AFTER reporting a
+# healthy GPU, which makes it read as an environment failure rather than a missing compiler.
+# vLLM's native sampler needs no compiler and every eval here is greedy (temperature=0), so
+# nothing is given up. With this set, the engine starts and generates on an A30 (job 359040).
+# Do NOT "fix" this by pointing CUDA_HOME at the env's nvidia/cuda_nvcc: that is a CUDA 13
+# toolkit against a 12.4 driver, the same mismatch that made this environment unusable once.
+export VLLM_USE_FLASHINFER_SAMPLER="${VLLM_USE_FLASHINFER_SAMPLER:-0}"

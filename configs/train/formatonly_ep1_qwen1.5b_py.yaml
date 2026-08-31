@@ -1,0 +1,30 @@
+# formatonly, RECIPE FIX ATTEMPT: ep1 (lr=1.0e-4, epochs=1).
+#
+# WHY THIS EXISTS. The original arm (formatonly_qwen1.5b_py.yaml, lr 1.0e-4, 3 epochs) is
+# DEGENERATE: on Grid A it reads acc=0.0000 with **format_fail=0.9994** on L0/L1r/S2. Its own
+# eval config pre-registered that outcome as uninformative -- "the adapter is degenerate, and
+# the arm says nothing about format at all; it would need re-running with a lower LR or fewer
+# epochs before it means anything". This is that re-run, on the two axes it names.
+#
+# The arm can only speak if it learns the FORMAT while failing the TASK. The target signature
+# is format_fail LOW (comparable to a real adapter, ~0.01-0.06) with accuracy ~0. Shuffled
+# labels mean there is no learnable mapping, so any accuracy above the answer-prior floor would
+# itself be a bug.
+#
+# Own adapter_root: the adapter directory name encodes only (conditions, rank, seed), so every
+# variant would otherwise overwrite the same L0_r32_s17 path -- and the original arm's.
+_extends: _base_lora.yaml
+
+model: qwen25c-1.5b
+language: python
+train_conditions: [L0]
+run_tag: formatonly_ep1_py
+phase: main
+
+adapter_root: runs/adapters_formatonly_ep1
+
+train:
+  seed: 17
+  shuffle_labels: true
+  lr: 1.0e-4
+  epochs: 1

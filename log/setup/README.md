@@ -1,6 +1,6 @@
 # setup — scaffold, environment, data layer, obfuscation pipeline
 
-*Last updated: 2026-08-05*
+*Last updated: 2026-08-30*
 **Status:** active
 
 ## Hypotheses — open
@@ -27,6 +27,7 @@
 - Consider recording per-condition transform wall-time in the coverage manifest; a condition that is slow to generate is usually one that is bailing and retrying.
 
 ## Entries
+- [`2026-08-30_vllm-unblocked.md`](2026-08-30_vllm-unblocked.md) — vLLM was never blocked by CUDA; corrects the 08-28 verdict. Real fault was flashinfer needing `nvcc`; the rest was a harness with no `__main__` guard and node-local `/tmp`
 - [`2026-08-05_register-deobfuscation-literature.md`](2026-08-05_register-deobfuscation-literature.md) — 20 papers registered; the DOBF-separation claim holds, and the pilot's memorization finding has prior measurement
 - [`2026-08-04_scaffold-and-pipeline.md`](2026-08-04_scaffold-and-pipeline.md) — project created; contracts verified in both languages; RQ1–RQ3 stack built
 

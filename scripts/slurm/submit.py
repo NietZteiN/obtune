@@ -60,7 +60,7 @@ TEMPLATE = """#!/bin/bash
 #SBATCH --cpus-per-task={cpus}
 #SBATCH --mem={mem}
 #SBATCH --time={time}
-#SBATCH --output={log_dir}/%j_{job_name}.out
+{extra_sbatch}#SBATCH --output={log_dir}/%j_{job_name}.out
 #SBATCH --error={log_dir}/%j_{job_name}.out
 set -uo pipefail
 
@@ -141,8 +141,19 @@ def _walltime(job: Job | None, override: str | None, default: str) -> str:
 
 
 def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
-                 partition: str, gres: str, cpus: int, mem: str, time: str) -> str:
+                 partition: str, gres: str, cpus: int, mem: str, time: str,
+                 nodelist: str | None = None, exclude: str | None = None) -> str:
     command = "python " + " ".join(shlex.quote(a) for a in argv)
+    # Node selection is not cosmetic on juno: `h100` is heterogeneous and g-06-01
+    # advertises 3g.47gb MIG slices, not whole cards. On 2026-08-28 the alignment
+    # lambda-sweep's mismatch control ran 2.03 s/it on g-04-02 and 5.7 s/it on
+    # g-06-01, and the lambda=10 cell died at 217/222 steps on walltime -- a result
+    # lost to node assignment, which read as a lambda effect. Pin or exclude.
+    extra = ""
+    if nodelist:
+        extra += f"#SBATCH --nodelist={nodelist}\n"
+    if exclude:
+        extra += f"#SBATCH --exclude={exclude}\n"
     return TEMPLATE.format(
         job_name=job_name,
         partition=partition,
@@ -150,6 +161,7 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
         cpus=cpus,
         mem=mem,
         time=time,
+        extra_sbatch=extra,
         log_dir=shlex.quote(str(SLURM_LOGS)),
         root=shlex.quote(str(PROJECT_ROOT)),
         manifest_src=shlex.quote(str(manifest_src) if manifest_src else ""),
@@ -192,6 +204,10 @@ def main() -> int:
     ap.add_argument("--cpus", type=int, default=d["cpus_per_task"])
     ap.add_argument("--mem", default=d["mem"])
     ap.add_argument("--time", default=None, help=f"walltime (default: 2x est_gpu_h, else {d['time']})")
+    ap.add_argument("--nodelist", default=None,
+                    help="restrict to these nodes (e.g. g-04-02, the only full-fat h100)")
+    ap.add_argument("--exclude", default=None,
+                    help="never place on these nodes (e.g. g-06-01, which is MIG slices)")
     ap.add_argument("--limit", type=int, default=None, help="submit at most N queued jobs")
     ap.add_argument("--name", default="adhoc", help="job name for --argv submissions")
     ap.add_argument("--dry-run", action="store_true")
@@ -200,7 +216,8 @@ def main() -> int:
     if a.argv:
         script = build_script(a.argv, job_name=a.name, manifest_src=None,
                               partition=a.partition, gres=a.gres, cpus=a.cpus,
-                              mem=a.mem, time=a.time or d["time"])
+                              mem=a.mem, time=a.time or d["time"],
+                              nodelist=a.nodelist, exclude=a.exclude)
         return 0 if submit(script, a.name, a.dry_run) or a.dry_run else 1
 
     paths = [a.job] if a.job else sorted(QUEUED.glob("*.json")) if QUEUED.exists() else []
@@ -220,7 +237,8 @@ def main() -> int:
             continue
         script = build_script(job.argv, job_name=job.job_id[:60], manifest_src=path,
                               partition=a.partition, gres=a.gres, cpus=a.cpus, mem=a.mem,
-                              time=_walltime(job, a.time, d["time"]))
+                              time=_walltime(job, a.time, d["time"]),
+                              nodelist=a.nodelist, exclude=a.exclude)
         if submit(script, job.job_id, a.dry_run):
             n += 1
     print(f"{n}/{len(jobs)} submitted")
