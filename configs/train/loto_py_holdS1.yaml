@@ -1,0 +1,19 @@
+# LOTO fold — trains on the five conditions that are NOT S1.
+#
+# The DIAGONAL cell (this adapter scored on S1) is an adapter meeting a transform it has
+# never seen, with five others in its training mixture. That is the project's tunable OOD
+# statistic and it costs NO quarantine budget, which is the whole reason the arm exists:
+# any method sweep can be selected against the LOTO diagonal instead of reading H1.
+# MODEL-NEUTRAL: no `model:` line. The base model is supplied with `--model <key>`;
+# adapter paths already namespace by it, so one config serves the whole panel.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S2]
+run_tag: loto_py_holdS1
+phase: main
+adapter_root: runs/adapters_loto
+
+train:
+  train_size: 30000
+  seed: 17

@@ -26,7 +26,14 @@ def main() -> int:
     print("device:", torch.cuda.get_device_name(0), flush=True)
 
     from vllm import LLM, SamplingParams
-    llm = LLM(model="Qwen/Qwen2.5-Coder-1.5B-Instruct", max_model_len=1024,
+    # Resolved from models.yaml::default_model rather than pinned: a smoke test that
+    # certifies the engine on a model the project no longer uses certifies nothing.
+    import sys as _sys, pathlib as _pl
+    _sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[1] / "src"))
+    from obtune.config import load_config
+    _cfg = load_config("models.yaml")
+    _hf = _cfg["models"][_cfg["default_model"]]["hf_id"]
+    llm = LLM(model=_hf, max_model_len=1024,
               gpu_memory_utilization=0.35, enforce_eager=True)
     out = llm.generate(["def f(x): return x*2\nf(21) = "],
                        SamplingParams(temperature=0, max_tokens=8))

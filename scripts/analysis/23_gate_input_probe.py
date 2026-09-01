@@ -99,7 +99,7 @@ def fit_probe(X, y, n_classes, *, epochs=300, lr=0.05, wd=1e-3, seed=17):
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--language", default="python")
     ap.add_argument("--n-programs", type=int, default=200)
     ap.add_argument("--batch", type=int, default=8)

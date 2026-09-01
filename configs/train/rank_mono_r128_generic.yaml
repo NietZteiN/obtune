@@ -1,0 +1,16 @@
+# TRANCHE C — rank sweep, r=128. MODEL-NEUTRAL.
+# §4 asks whether "breadth does not help" is a CAPACITY limit. If a wider adapter closes the
+# gap, the answer is capacity; if it does not, breadth genuinely hurts for another reason.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: rank_mono_r128
+phase: main
+
+peft:
+  r: 128
+
+train:
+  train_size: 30000
+  seed: 17

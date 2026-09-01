@@ -56,7 +56,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--root", default="runs/adapters",
                     help="adapter bank root (use runs/adapters_overtrain for the 9-epoch probe)")
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--language", default="python")
     ap.add_argument("--conditions", nargs="*",
                     default=["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4"])

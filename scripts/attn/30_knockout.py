@@ -44,13 +44,16 @@ sys.path.insert(0, str(ROOT / "src"))
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    # No default: a forgotten --model must fail, not silently probe another model.
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
     ap.add_argument("--language", default="python")
     ap.add_argument("--system", required=True)
     ap.add_argument("--condition", required=True)
     ap.add_argument("--adapter", default=None)
     ap.add_argument("--max-items", type=int, default=150)
-    ap.add_argument("--layers", type=int, nargs="*", default=[4, 9, 14, 19, 23, 27])
+    # Resolved from the model's depth when omitted; the old literal was Qwen's 28
+    # layers and means different relative depths on any other model.
+    ap.add_argument("--layers", type=int, nargs="*", default=None)
     # MANIPULATION CHECK. The identifier knockout produced ~0 damage for EVERY system including
     # `base` (-0.7 to +2.7 across 8 cells, all inside the 3.61-pt seed band). A manipulation that
     # moves no one's accuracy has not been shown to be a manipulation, so the null is uninformative
@@ -67,6 +70,12 @@ def main(argv=None) -> int:
     ap.add_argument("--out", default="results/attn/knockout")
     ap.add_argument("--seed", type=int, default=17)
     args = ap.parse_args(argv)
+    # Depth-fraction layers for whatever model was asked for; the old literal default
+    # was Qwen's 28 layers and probes different relative depths on any other model.
+    if not args.layers:
+        from obtune.config import layer_indices_for
+        args.layers = layer_indices_for(args.model)
+        print(f"[layers] resolved for {args.model}: {args.layers}", flush=True)
 
     from obtune.attention.knockout import (KnockoutSpec, evaluate_with_knockout,
                                            score_with_knockout)

@@ -99,7 +99,7 @@ def main() -> int:
     from obtune.transfer import mcnemar_exact
 
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--language", default="python")
     ap.add_argument("--phase", default="main")
     ap.add_argument("--condition", default="H1")

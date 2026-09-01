@@ -26,7 +26,7 @@ def main() -> int:
     import pandas as pd
 
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--language", default="python")
     ap.add_argument("--grid", default="main")
     args = ap.parse_args()

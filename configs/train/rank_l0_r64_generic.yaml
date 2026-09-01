@@ -1,0 +1,14 @@
+# TRANCHE C — the capacity CONTROL: a single-condition adapter at the wider rank.
+# Without it, a monolithic r64 gain cannot be told apart from "more rank helps everything".
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0]
+run_tag: rank_l0_r64
+phase: main
+
+peft:
+  r: 64
+
+train:
+  seed: 17

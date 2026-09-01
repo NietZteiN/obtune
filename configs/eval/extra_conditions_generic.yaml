@@ -1,0 +1,24 @@
+# TRANCHE I eval — the S2-family conditions (S3, S4) and the joint s2fam arm.
+# MODEL-NEUTRAL. S3/S4 are trainable structural conditions and MoLE experts; §16.3 wants
+# them against the held-out family because S4 is where symbolic normalization bites hardest.
+# Read against the format floor, like every arm here. NO H1.
+_extends: _base_eval.yaml
+
+phase: extra_generic
+experiment_id: extra_generic
+run_tag: extra_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
+  - {name: tuned_S3, adapter: "runs/adapters/{model}/{language}/S3_r32_s17/best", arch: per_type, train_cond: S3}
+  - {name: tuned_S4, adapter: "runs/adapters/{model}/{language}/S4_r32_s17/best", arch: per_type, train_cond: S4}
+  - {name: s2fam, adapter: "runs/adapters/{model}/{language}/S2-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4]

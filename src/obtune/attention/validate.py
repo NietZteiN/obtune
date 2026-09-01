@@ -17,7 +17,7 @@ Two numbers are reported per (language, condition):
 
 Run (tokenizer only, no GPU):
     PYTHONPATH=src python -m obtune.attention.validate
-    PYTHONPATH=src python -m obtune.attention.validate --model Qwen/Qwen2.5-Coder-7B-Instruct
+    PYTHONPATH=src python -m obtune.attention.validate --model codellama-7b
 """
 from __future__ import annotations
 
@@ -34,7 +34,30 @@ from obtune.attention.token_classes import CLASSES, classify_code
 from obtune.config import load_config
 from obtune.paths import EVAL_ROOT, iter_jsonl
 
-DEFAULT_MODEL = "Qwen/Qwen2.5-Coder-1.5B-Instruct"
+# Resolved from configs/models.yaml rather than pinned: span->token resolution is
+# TOKENIZER-dependent, so validating it against a model the study no longer uses would
+# certify the wrong thing. `default_model` in models.yaml is the single place that moves
+# when the panel changes.
+def resolve_model_id(value: str) -> str:
+    """Accept EITHER a configs/models.yaml key or a raw HF id.
+
+    Every other entry point in this project takes `--model <key>`; this one historically
+    took an HF id, so `--model codellama-7b` died with "not a local folder and is not a
+    valid model identifier" -- a message that looks like a missing download rather than a
+    units mismatch. Accepting both removes the trap instead of documenting it.
+    """
+    models = load_config("models.yaml")["models"]
+    if value in models:
+        return models[value]["hf_id"]
+    return value
+
+
+def _default_model_id() -> str:
+    cfg = load_config("models.yaml")
+    key = cfg.get("default_model")
+    if not key:
+        raise KeyError("configs/models.yaml must declare `default_model`")
+    return cfg["models"][key]["hf_id"]
 MIN_RATE = 0.98
 
 
@@ -92,7 +115,7 @@ EVAL_MAX_MODEL_LEN = _eval_max_model_len()
 
 def validate(
     programs: Sequence[FixtureProgram],
-    model_id: str = DEFAULT_MODEL,
+    model_id: str = _default_model_id(),
     *,
     min_rate: float = MIN_RATE,
     max_length: int = EVAL_MAX_MODEL_LEN,
@@ -197,12 +220,14 @@ def validate(
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="Validate token classification + span resolution")
-    ap.add_argument("--model", default=DEFAULT_MODEL)
+    ap.add_argument("--model", default=_default_model_id(),
+                    help="configs/models.yaml key OR a raw HF id")
     ap.add_argument("--min-rate", type=float, default=MIN_RATE)
     ap.add_argument("--out", default=str(ATTN_DIR / "span_validation.json"))
     ap.add_argument("--fixtures-only", action="store_true",
                     help="ignore data/eval/testset even if it exists")
     args = ap.parse_args(argv)
+    args.model = resolve_model_id(args.model)
 
     rows = [] if args.fixtures_only else _testset_rows()
     source = "data/eval/testset/variants"

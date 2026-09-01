@@ -1,0 +1,18 @@
+# The S2-family arm (S2+S3+S4 together) — MODEL-NEUTRAL.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [S2, S3, S4]
+run_tag: s2fam_py
+phase: main
+
+# Distinct root: the adapter directory name encodes only (conditions, rank, seed), so an arm that
+# varies anything else — here the data mixture's PURPOSE — would silently overwrite a neighbour.
+# Same reason `runs/adapters_loto` and `runs/adapters_overtrain` exist.
+adapter_root: runs/adapters_curriculum
+
+train:
+  # The realised size of the S2+S3+S4 train split. Set explicitly so the resolved config in the
+  # run manifest states the true number rather than a cap that never binds.
+  train_size: 14037
+  seed: 17

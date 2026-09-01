@@ -97,3 +97,28 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any],
 def conditions() -> dict[str, Any]:
     """The condition ladder — single source of truth is configs/conditions.yaml."""
     return load_config("conditions.yaml")
+
+
+DEFAULT_LAYER_FRACS = (0.14, 0.32, 0.50, 0.68, 0.82, 0.96)
+
+
+def layer_indices_for(model_key: str, fracs=None) -> list[int]:
+    """Probe depths as FRACTIONS of a model's depth, not absolute indices.
+
+    `[4, 9, 14, 19, 23, 27]` is Qwen's 28 layers. Reusing those integers on CodeLlama-7b
+    (32) or -13b (40) silently probes different RELATIVE depths, so RQ3, the alignment arm
+    and the knockout/steering scripts would stop measuring the same thing across models
+    while still producing plausible numbers. Everything that needs a layer set resolves it
+    here so there is one definition rather than a copy per call site.
+    """
+    models = load_config("models.yaml")["models"]
+    if model_key not in models:
+        raise KeyError(f"unknown model key {model_key!r}")
+    n = int(models[model_key]["n_layers"])
+    out, seen = [], set()
+    for f in (fracs or DEFAULT_LAYER_FRACS):
+        i = min(n - 1, max(0, round(f * (n - 1))))
+        if i not in seen:
+            seen.add(i)
+            out.append(i)
+    return out

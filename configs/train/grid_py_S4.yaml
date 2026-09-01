@@ -1,0 +1,9 @@
+# RQ1 specialist — S4, python. MODEL-NEUTRAL (see grid_py_L0.yaml).
+# S4 is a trainable structural condition and an EXPERT the 8-way MoLE gate needs; without it
+# the routing arm cannot be reproduced against the Qwen setup.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [S4]
+run_tag: grid_py_S4
+phase: main

@@ -14,7 +14,11 @@ align:
 
   # Layers RQ3 already sweeps. The condition is linearly decodable at 99.4 % by layer 4,
   # so if "read past the surface" happens anywhere it has to happen by then.
-  layers: [4, 9, 14, 19, 23, 27]
+  # FRACTIONS of n_layers, not absolute indices. [4,9,14,19,23,27] was Qwen's 28 layers;
+  # on CodeLlama-7b (32) or -13b (40) those same integers probe different relative depths,
+  # so RQ3 and this arm would silently stop measuring the same thing across models.
+  # Resolved against configs/models.yaml::n_layers at load time.
+  layer_fracs: [0.14, 0.32, 0.50, 0.68, 0.82, 0.96]
 
   # Number of answer-position states compared. k=1 is the single state that predicts the
   # first answer token; k=4 keeps a little of the token structure RQ3 showed carries the

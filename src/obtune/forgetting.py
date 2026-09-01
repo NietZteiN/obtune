@@ -420,7 +420,8 @@ def l0_output_prediction(
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="qwen25c-1.5b", help="key in configs/models.yaml")
+    # No default: a forgotten --model must fail loudly, not silently run the wrong base.
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
     ap.add_argument("--adapter", default=None, help="adapter dir; omit for the base model")
     ap.add_argument("--gpu", type=int, default=None)
     ap.add_argument("--limit", type=int, default=None)

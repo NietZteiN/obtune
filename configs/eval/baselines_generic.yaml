@@ -1,0 +1,39 @@
+# TRANCHE A — the zero-training baselines. MODEL-NEUTRAL, inference only, no training.
+#
+# These are the report's §12 comparisons and they are the cheapest thing in the whole
+# replication: every row here runs on the untuned base. §9 calls the matched-condition ICL
+# baseline "the comparison a reviewer will ask for", and it has never been run at all.
+#
+# Read against the FORMAT FLOOR, not `base`. An ICL or normalization arm that merely fixes
+# output formatting would otherwise look like a reasoning gain -- the same trap the
+# label-shuffled control exists to catch (log/transfer/2026-08-30_format-floor-*).
+#
+# ICL demo sourcing is quarantine-safe by construction: `icl.demos.pick_demos` refuses H1 as
+# a SOURCE outright, so H1 could only ever be the query -- and it is absent here anyway.
+_extends: _base_eval.yaml
+
+phase: baselines_generic
+experiment_id: baselines_generic
+run_tag: baselines_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  # ICL: demos drawn from the obfuscated conditions (cross) or from clean code.
+  - {name: icl_k1_cross, arch: none, icl_k: 1, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: icl_k4_cross, arch: none, icl_k: 4, icl_source: [L1b, L1r, L2, S1, S2]}
+  - {name: icl_k1_clean, arch: none, icl_k: 1, icl_source: [L0]}
+  # Oracle prompt conditioning: tells the model WHICH transform it is looking at. If this
+  # matches a tuned system, the finding becomes "models know how but not when" (CLAUDE.md §3).
+  - {name: oracle_prompt_1shot, arch: oracle_prompt, prompt_oracle: true, one_shot: true}
+  # Symbolic normalization — the second, independent instrument (§16).
+  - {name: norm_full, arch: none, normalize: full}
+  - {name: norm_structural, arch: none, normalize: structural}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

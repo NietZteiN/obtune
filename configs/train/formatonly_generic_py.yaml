@@ -1,0 +1,24 @@
+# FORMAT-ACQUISITION FLOOR — `tuned_L0`'s recipe on `tuned_L0`'s rows with the gold answers
+# PERMUTED across rows (`train.shuffle_labels`). The model can learn the answer format, the
+# answer prior, the response length and the stop behaviour; it cannot learn the task.
+#
+# LEARNING RATE IS NOT INHERITED. This arm collapses easily and the collapse LOOKS like the
+# target signature: at Qwen-7B, lr 2.0e-5 gave format_fail 0.013 and accuracy 0.001 while
+# emitting one constant string on 91 % of items. The working values were 2.0e-5 at 1.5B and
+# 2.0e-6 at 7B -- an order of magnitude apart on the same family. Re-tune per base model and
+# CHECK OUTPUT DIVERSITY (hundreds of distinct outputs, most-common share well under 0.25)
+# alongside low format_fail, or this arm will confirm the wrong conclusion.
+# MODEL-NEUTRAL: no `model:` line. The base model is supplied with `--model <key>`;
+# adapter paths already namespace by it, so one config serves the whole panel.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0]
+run_tag: formatonly_py
+phase: main
+adapter_root: runs/adapters_formatonly
+
+train:
+  seed: 17
+  shuffle_labels: true
+  lr: 2.0e-6 # starting point for a ~7B base; re-tune and check diversity

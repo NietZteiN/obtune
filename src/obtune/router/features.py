@@ -204,7 +204,8 @@ def _read_rows(paths: Iterable[str | Path], *, allow_h1: bool) -> list[dict[str,
 def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="Cache frozen-base router features")
     ap.add_argument("--config", default="router/router_v1.yaml")
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    # No default: a forgotten --model must fail loudly, not silently run the wrong base.
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
     ap.add_argument("--train-jsonl", nargs="*", default=[],
                     help="data/train/pairs/<cond>/<lang>.jsonl (quarantine-guarded read)")
     ap.add_argument("--h1-jsonl", nargs="*", default=[],

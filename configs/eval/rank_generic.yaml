@@ -1,0 +1,30 @@
+# TRANCHE C — the rank sweep. MODEL-NEUTRAL.
+#
+# §4's question: is "breadth does not help" a CAPACITY limit? A monolithic adapter trained on
+# all six conditions at r32 does not beat the specialists; if widening it to r64/r128/r192
+# closes the gap, capacity was the constraint. `ctl_r64` is the control that makes a positive
+# reading interpretable -- a SINGLE-condition adapter at the wider rank. Without it, a
+# monolithic r64 gain cannot be distinguished from "more rank helps everything".
+#
+# Read against the format floor, like every other arm here.
+_extends: _base_eval.yaml
+
+phase: rank_generic
+experiment_id: rank_generic
+run_tag: rank_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: mono_r64, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r64_s17/best", arch: per_type, train_cond: mix}
+  - {name: mono_r128, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r128_s17/best", arch: per_type, train_cond: mix}
+  - {name: mono_r192, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r192_s17/best", arch: per_type, train_cond: mix}
+  - {name: ctl_r64, adapter: "runs/adapters/{model}/{language}/L0_r64_s17/best", arch: per_type, train_cond: L0}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

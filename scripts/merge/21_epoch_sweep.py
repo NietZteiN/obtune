@@ -60,7 +60,7 @@ def epoch_checkpoint(adapter: Path, epoch: int) -> str | None:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--languages", nargs="*", default=["python", "javascript"])
     ap.add_argument("--conditions", nargs="*",
                     default=["L0", "L1b", "L1r", "L2", "S1", "S2"])

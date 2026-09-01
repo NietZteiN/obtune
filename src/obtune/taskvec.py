@@ -242,7 +242,8 @@ def combine(
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="LoRA task-vector arithmetic (RQ2)")
-    ap.add_argument("--model", default="qwen25c-1.5b", help="key in configs/models.yaml")
+    # No default: a forgotten --model must fail loudly, not silently run the wrong base.
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
     ap.add_argument("--ingredient", action="append", default=[], metavar="PATH=COEF",
                     help="adapter dir and its coefficient, e.g. runs/.../S1_r32_s17/best=-1.0")
     ap.add_argument("--out", required=True)

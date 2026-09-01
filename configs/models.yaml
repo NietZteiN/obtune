@@ -1,6 +1,11 @@
 # Base-model panel. Last updated: 2026-08-04.
 # All three are in $HF_HOME already (Coder-1.5B downloaded 2026-08-04).
 
+# The panel's default. One place to change when the base model changes; code that needs a
+# concrete model without being told one (e.g. attention/validate.py, whose span->token
+# resolution is tokenizer-dependent) resolves it from here rather than pinning an HF id.
+default_model: codellama-7b
+
 models:
   qwen25c-1.5b:
     hf_id: Qwen/Qwen2.5-Coder-1.5B-Instruct

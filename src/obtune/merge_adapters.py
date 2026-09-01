@@ -237,7 +237,8 @@ def density_sweep(
 def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="Merge per-condition LoRA adapters (RQ2)")
     ap.add_argument("--config", default="merge/ties_v1.yaml")
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    # No default: a forgotten --model must fail loudly, not silently run the wrong base.
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
     ap.add_argument("--language", default="python")
     ap.add_argument("--rank", type=int, default=32)
     ap.add_argument("--out", default=None, help="output adapter dir (single merge)")

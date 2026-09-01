@@ -5,6 +5,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=200G
 #SBATCH --time=01:00:00
+#SBATCH --dependency=afterok:360783
 #SBATCH --output=/work/jvl210002/migration/obtune/runs/logs/slurm/%j_mrgl0_dare_ties.out
 #SBATCH --error=/work/jvl210002/migration/obtune/runs/logs/slurm/%j_mrgl0_dare_ties.out
 set -uo pipefail
@@ -55,7 +56,7 @@ trap finish EXIT
 echo "# obtune slurm job $SLURM_JOB_ID on $SLURMD_NODENAME ($SLURM_JOB_PARTITION)"
 echo "# started $(date -u +%FT%TZ)"
 nvidia-smi --query-gpu=index,name,memory.total,driver_version --format=csv,noheader || true
-echo "# argv: -m obtune.merge_adapters --config merge/l0_control.yaml --model qwen25c-7b --language python --rank 32 --combination-type dare_ties --adapter-dir configs/merge/l0_control_7b_adapters.json --out runs/adapters/qwen25c-7b/python/l0merge_dare_ties_r32_s17"
+echo "# argv: -m obtune.merge_adapters --config merge/l0_control.yaml --model codellama-7b --language python --rank 32 --combination-type dare_ties --adapter-dir configs/merge/l0_control_codellama-7b_adapters.json --out runs/adapters/codellama-7b/python/l0merge_dare_ties_r32_s17"
 echo
 
-python -m obtune.merge_adapters --config merge/l0_control.yaml --model qwen25c-7b --language python --rank 32 --combination-type dare_ties --adapter-dir configs/merge/l0_control_7b_adapters.json --out runs/adapters/qwen25c-7b/python/l0merge_dare_ties_r32_s17
+python -m obtune.merge_adapters --config merge/l0_control.yaml --model codellama-7b --language python --rank 32 --combination-type dare_ties --adapter-dir configs/merge/l0_control_codellama-7b_adapters.json --out runs/adapters/codellama-7b/python/l0merge_dare_ties_r32_s17

@@ -1,0 +1,22 @@
+# RQ1 per-condition specialist — L2, python. MODEL-NEUTRAL.
+#
+# No `model:` line by design: the base model is supplied with `--model <key>`, and adapter
+# paths already namespace by it (runs/adapters/<model>/<lang>/...), so one config serves the
+# whole panel. This replaced the per-model config families after the Qwen panel became
+# unusable and every config that named a model had to be rewritten.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L2]
+run_tag: grid_py_L2
+phase: main
+
+train:
+  # configs/models.yaml carries 8 x 8 for this model, chosen for a 48 GB A6000.
+  # On a 141 GB H200 that leaves most of the card idle. Doubled to 16 x 4, which
+  # keeps the EFFECTIVE batch at 64 — the same as the 1.5B grid — because that is
+  # the quantity the two replications have to share. Raising it further is likely
+  # fine and is left until someone has measured peak memory on H200 rather than
+  # guessed at it; an OOM six hours into a queued job costs more than the speedup.
+  per_device_batch: 16
+  grad_accum: 4

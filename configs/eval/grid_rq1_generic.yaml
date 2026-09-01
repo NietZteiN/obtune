@@ -1,0 +1,33 @@
+# RQ1 control-relative transfer matrix — the memorization test. MODEL-NEUTRAL.
+#
+# Every per-condition adapter on every condition: memorization predicts a strong diagonal
+# and a flat off-diagonal. `formatonly` is included as the FLOOR -- the diagonal and the
+# off-diagonal must both be read against it, not against `base`, or a shared non-task
+# component inflates every number (at Qwen-1.5B that component was 62-67 % of the gain).
+#
+# H1 IS ABSENT BY DESIGN. Adding it here would spend a quarantine access on every run of
+# this grid. The confirmatory H1 read happens ONCE, by hand, from a separate config.
+_extends: _base_eval.yaml
+
+phase: rq1_generic
+experiment_id: rq1_generic
+run_tag: rq1_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+seeds: [17, 42]
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: per_type, arch: per_type, expand_over: train_conditions}
+  # `{model}`/`{language}` are substituted at load time — this bank lives outside
+  # runs/adapters/ so its path cannot be derived the way per_type and merges are.
+  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}

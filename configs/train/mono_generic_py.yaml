@@ -1,0 +1,14 @@
+# Monolithic adapter — all six trainable conditions in one bank.
+# The RQ2 reference the merges and the router must beat.
+# MODEL-NEUTRAL: no `model:` line. The base model is supplied with `--model <key>`;
+# adapter paths already namespace by it, so one config serves the whole panel.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono_py_all
+phase: main
+
+train:
+  train_size: 30000 # >= the union of all train-split pairs, so nothing is subsampled away
+  seed: 17

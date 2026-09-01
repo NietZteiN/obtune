@@ -676,6 +676,22 @@ def expand_systems(
                 spec["adapter"] = str(adapter)
                 out.append(SystemSpec.from_config(spec))
 
+    # `{model}` / `{language}` in an explicit `adapter:` path. A model-neutral eval config
+    # cannot hard-code `runs/adapters_formatonly/qwen25c-7b/python/...` and still serve the
+    # panel, and deriving the path is not an option for banks that live OUTSIDE
+    # runs/adapters/ (the format floor has its own adapter_root precisely so it cannot
+    # overwrite the real L0 bank). Substitution keeps one config per experiment instead of
+    # one per (experiment x model).
+    for spec in out:
+        if spec.adapter and ("{model}" in spec.adapter or "{language}" in spec.adapter):
+            spec.adapter = spec.adapter.format(model=model_key, language=language)
+        if spec.adapter_map:
+            spec.adapter_map = {
+                k: v.format(model=model_key, language=language)
+                if ("{model}" in v or "{language}" in v) else v
+                for k, v in spec.adapter_map.items()
+            }
+
     # A merge system's adapter sits at a conventional path written by merge_adapters
     # (`runs/adapters/<model>/<lang>/<name>_r<rank>_s<seed>`), exactly as a per-condition
     # adapter does — so derive it rather than making every eval config repeat six paths
@@ -745,11 +761,22 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     cfg = load_config(args.config)
     phase = cfg.get("phase", "main")
     languages = cfg.get("languages") or [cfg["language"]]
-    models = cfg.get("models") or [cfg["model"]]
+    # A model-neutral eval config pins no model at all, so `--model` SUPPLIES it rather than
+    # restricting an existing list. When the config does pin models the old semantics hold:
+    # asking for one it does not declare is still an error, which is what stops a job
+    # evaluating a model the config was never written for.
+    declared = cfg.get("models") or ([cfg["model"]] if "model" in cfg else None)
     if getattr(args, "model", None):
-        if args.model not in models:
-            raise ValueError(f"--model {args.model!r} is not in {args.config} ({models})")
+        if declared is not None and args.model not in declared:
+            raise ValueError(f"--model {args.model!r} is not in {args.config} ({declared})")
         models = [args.model]
+    elif declared is None:
+        raise ValueError(
+            f"{args.config} declares no `model:` and no --model was given. A model-neutral "
+            "config REQUIRES --model; guessing one would evaluate the wrong base."
+        )
+    else:
+        models = declared
     if getattr(args, "language", None):
         if args.language not in languages:
             raise ValueError(f"--language {args.language!r} is not in {args.config} ({languages})")
@@ -941,6 +968,13 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
     from obtune.train_sft import _effective_train_knobs, adapter_dir, resolve_model_cfg
 
     cfg = load_config(args.config)
+    # `--model` is an OVERRIDE here, exactly as in train_sft. Without this, a model-neutral
+    # train config silently inherits `model: qwen25c-1.5b` from _base_lora.yaml and this
+    # path builds the WRONG base model, then fails deep inside vLLM with a tensor-shape
+    # mismatch (1536 vs 4096 -- Qwen-1.5B's hidden size against CodeLlama-7b's) that names
+    # neither model. Training was unaffected only because train_sft applies the override.
+    if getattr(args, "model", None):
+        cfg["model"] = args.model
     mcfg = resolve_model_cfg(cfg)
     tcfg = _effective_train_knobs(cfg, mcfg)
     root = resolve_path(args.adapter_root) if args.adapter_root else adapter_dir(cfg)

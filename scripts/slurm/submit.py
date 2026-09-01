@@ -60,7 +60,7 @@ TEMPLATE = """#!/bin/bash
 #SBATCH --cpus-per-task={cpus}
 #SBATCH --mem={mem}
 #SBATCH --time={time}
-{extra_sbatch}#SBATCH --output={log_dir}/%j_{job_name}.out
+{qos}{extra_sbatch}{dependency}#SBATCH --output={log_dir}/%j_{job_name}.out
 #SBATCH --error={log_dir}/%j_{job_name}.out
 set -uo pipefail
 
@@ -142,13 +142,29 @@ def _walltime(job: Job | None, override: str | None, default: str) -> str:
 
 def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
                  partition: str, gres: str, cpus: int, mem: str, time: str,
-                 nodelist: str | None = None, exclude: str | None = None) -> str:
+                 nodelist: str | None = None, exclude: str | None = None,
+                 dependency: str | None = None, qos: str | None = None) -> str:
     command = "python " + " ".join(shlex.quote(a) for a in argv)
     # Node selection is not cosmetic on juno: `h100` is heterogeneous and g-06-01
     # advertises 3g.47gb MIG slices, not whole cards. On 2026-08-28 the alignment
     # lambda-sweep's mismatch control ran 2.03 s/it on g-04-02 and 5.7 s/it on
     # g-06-01, and the lambda=10 cell died at 217/222 steps on walltime -- a result
     # lost to node assignment, which read as a lambda effect. Pin or exclude.
+    # Dependencies are what make an unattended pipeline possible: a stage that must not
+    # start until its inputs exist (train -> ckpt-select -> eval) is expressed to SLURM
+    # rather than by a process sitting in a loop waiting. `afterok` means a failed stage
+    # leaves everything downstream PENDING with DependencyNeverSatisfied instead of running
+    # on missing inputs -- which is the behaviour we want, since an eval whose adapter never
+    # trained would otherwise silently score the base model.
+    # The h200 partition carries QoS=juno, whose MaxJobsPU=4 is what caps concurrency --
+    # NOT our account, which is on `normal` with no limit. `high-throughput` has the
+    # OverPartQOS flag and MaxJobsPU=8, so it overrides the partition cap and doubles the
+    # number of jobs we can hold. `large` (150) looks better but lacks OverPartQOS, so the
+    # partition's 4 still binds. `juno-pri` is also 8 but carries Priority=200000 against
+    # the default 1 -- it would jump every other user on a shared cluster for the same
+    # throughput, so it is deliberately not the default.
+    q = f"#SBATCH --qos={qos}\n" if qos else ""
+    dep = f"#SBATCH --dependency={dependency}\n" if dependency else ""
     extra = ""
     if nodelist:
         extra += f"#SBATCH --nodelist={nodelist}\n"
@@ -161,7 +177,9 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
         cpus=cpus,
         mem=mem,
         time=time,
+        qos=q,
         extra_sbatch=extra,
+        dependency=dep,
         log_dir=shlex.quote(str(SLURM_LOGS)),
         root=shlex.quote(str(PROJECT_ROOT)),
         manifest_src=shlex.quote(str(manifest_src) if manifest_src else ""),
@@ -174,7 +192,19 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
 def submit(script: str, name: str, dry_run: bool) -> str | None:
     SLURM_DIR.mkdir(parents=True, exist_ok=True)
     SLURM_LOGS.mkdir(parents=True, exist_ok=True)
+    # The sbatch files ARE the provenance record (they carry the exact argv, and they are
+    # committed). Two jobs sharing a --name would otherwise have the second silently
+    # overwrite the first's script on disk, leaving a committed record that describes the
+    # wrong run -- SLURM itself is unaffected, since it stores the script at submit time, so
+    # the corruption is invisible until someone reads runs/slurm/ to find out what ran.
     path = SLURM_DIR / f"{name}.sbatch"
+    if path.exists() and path.read_text() != script:
+        n = 2
+        while (SLURM_DIR / f"{name}.{n}.sbatch").exists():
+            n += 1
+        path = SLURM_DIR / f"{name}.{n}.sbatch"
+        print(f"note: {name}.sbatch exists with different content; wrote {path.name}",
+              file=sys.stderr)
     path.write_text(script)
     path.chmod(0o755)
     if dry_run:
@@ -204,6 +234,11 @@ def main() -> int:
     ap.add_argument("--cpus", type=int, default=d["cpus_per_task"])
     ap.add_argument("--mem", default=d["mem"])
     ap.add_argument("--time", default=None, help=f"walltime (default: 2x est_gpu_h, else {d['time']})")
+    ap.add_argument("--qos", default="high-throughput",
+                    help="SLURM QOS. Default high-throughput (MaxJobsPU=8, OverPartQOS, "
+                         "priority 0). Pass '' to take the partition default (juno, cap 4).")
+    ap.add_argument("--dependency", default=None,
+                    help="SLURM dependency spec, e.g. afterok:12345 or afterok:12345:12346")
     ap.add_argument("--nodelist", default=None,
                     help="restrict to these nodes (e.g. g-04-02, the only full-fat h100)")
     ap.add_argument("--exclude", default=None,
@@ -217,7 +252,8 @@ def main() -> int:
         script = build_script(a.argv, job_name=a.name, manifest_src=None,
                               partition=a.partition, gres=a.gres, cpus=a.cpus,
                               mem=a.mem, time=a.time or d["time"],
-                              nodelist=a.nodelist, exclude=a.exclude)
+                              nodelist=a.nodelist, exclude=a.exclude,
+                              dependency=a.dependency, qos=a.qos or None)
         return 0 if submit(script, a.name, a.dry_run) or a.dry_run else 1
 
     paths = [a.job] if a.job else sorted(QUEUED.glob("*.json")) if QUEUED.exists() else []
@@ -238,7 +274,8 @@ def main() -> int:
         script = build_script(job.argv, job_name=job.job_id[:60], manifest_src=path,
                               partition=a.partition, gres=a.gres, cpus=a.cpus, mem=a.mem,
                               time=_walltime(job, a.time, d["time"]),
-                              nodelist=a.nodelist, exclude=a.exclude)
+                              nodelist=a.nodelist, exclude=a.exclude,
+                              dependency=a.dependency, qos=a.qos or None)
         if submit(script, job.job_id, a.dry_run):
             n += 1
     print(f"{n}/{len(jobs)} submitted")

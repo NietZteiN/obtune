@@ -213,7 +213,8 @@ def capture_many(
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="Capture attention records (GPU)")
-    ap.add_argument("--model", default="qwen25c-1.5b")
+    # No default: a forgotten --model must fail loudly, not silently run the wrong base.
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
     ap.add_argument("--state", required=True, help="pre | post | <adapter tag>")
     ap.add_argument("--adapter", default=None)
     ap.add_argument("--items", required=True, help="JSONL of eval items")

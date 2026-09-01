@@ -1,7 +1,7 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
-*Last updated: 2026-08-30*
-**Status:** 7B RQ1 matrix complete and INTERPRETABLE — H-format refuted at 7B, TR = 0.885 survives floor correction (shift 0.003). H1 still unspent. Open: the 1.5B headlines need re-reporting against the floor.
+*Last updated: 2026-09-01*
+**Status:** REPLICATED on CodeLlama-7b after the Qwen panel became unusable. TR = 0.906 vs floor, LOTO price of an unseen transform −0.0108 (94.5 %). H1 unspent on both panels.
 
 ## Hypotheses — open
 - **H-scale-floor** — the format floor shrinks with model scale because format failures migrate
@@ -45,6 +45,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-01_codellama-replication.md`](2026-09-01_codellama-replication.md) — every RQ1/RQ2 finding reproduces on CodeLlama; TR 0.906, LOTO price −0.0108
 - [`2026-08-30_format-floor-and-a-collapsed-control.md`](2026-08-30_format-floor-and-a-collapsed-control.md) — H-format refuted at 7B / supported at 1.5B; a mode-collapsed control faked the target signature
 - [`2026-08-30_7b-rq1-matrix.md`](2026-08-30_7b-rq1-matrix.md) — 7B RQ1 transfer matrix; TR = 0.885; H-mem refuted, H-format opened.
 

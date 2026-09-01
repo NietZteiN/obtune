@@ -142,6 +142,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--config", required=True, help="path under configs/ (or absolute)")
     ap.add_argument("--gpu", type=int, default=None, help="force a GPU index; default = pick an idle one")
     ap.add_argument("--out", default=None, help="override the adapter output directory")
+    ap.add_argument("--model", default=None,
+                    help="override cfg['model'] with a key from configs/models.yaml. This is what\n                         makes one config serve every base model: adapter paths already namespace\n                         by model (runs/adapters/<model>/<lang>/...), so nothing collides.")
     ap.add_argument("--seed", type=int, default=None, help="override train.seed (seed-variance runs)")
     ap.add_argument("--train-size", type=int, default=None, help="override train.train_size (scaling arm)")
     ap.add_argument(
@@ -159,6 +161,11 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     cfg = load_config(args.config)
     cfg.setdefault("train", {})
+    # Applied BEFORE resolve_model_cfg and before adapter_dir(), both of which read
+    # cfg["model"]: the model key is part of the adapter path, so overriding it later
+    # would train one model and write it under another's name.
+    if args.model is not None:
+        cfg["model"] = args.model
     if args.seed is not None:
         cfg["train"]["seed"] = args.seed
     if args.train_size is not None:

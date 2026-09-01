@@ -57,7 +57,8 @@ from obtune.config import GLOBAL_SEED, PROJECT_ROOT, RUNS_DIR, load_config
 
 # Layers RQ3 already sweeps. Chosen because the condition is linearly decodable at 99.4 %
 # by layer 4, so if "read past the surface" happens anywhere, it has to happen by then.
-DEFAULT_LAYERS = (4, 9, 14, 19, 23, 27)
+# (DEFAULT_LAYERS removed: superseded by resolve_align_layers(), which turns depth
+# fractions into indices per model. A literal set here meant Qwen's 28 layers.)
 DEFAULT_K = 4
 CACHE_ROOT = RUNS_DIR / "align_cache"
 
@@ -116,6 +117,28 @@ def gather_states(hidden_states: Sequence["Any"], layers: Sequence[int], idx: "A
     return torch.stack(out, dim=1)
 
 
+
+def resolve_align_layers(acfg, mcfg) -> list[int]:
+    """Layer indices for L_align, model-agnostically.
+
+    `layer_fracs` (fractions of depth) is the model-agnostic form and wins when present:
+    [4,9,14,19,23,27] was Qwen's 28 layers, and reusing those integers on CodeLlama-7b (32)
+    or -13b (40) would silently probe different RELATIVE depths, so the arm would stop
+    measuring the same thing across models. `layers` is still honoured for reproducing an
+    existing Qwen run exactly.
+    """
+    if acfg.get("layers"):
+        return list(acfg["layers"])
+    n = int(mcfg["n_layers"])
+    fracs = acfg.get("layer_fracs") or [0.14, 0.32, 0.50, 0.68, 0.82, 0.96]
+    # round to distinct in-range indices, preserving order
+    out, seen = [], set()
+    for f in fracs:
+        i = min(n - 1, max(0, round(f * (n - 1))))
+        if i not in seen:
+            seen.add(i); out.append(i)
+    return out
+
 # --------------------------------------------------------------------------- #
 # Teacher cache
 # --------------------------------------------------------------------------- #
@@ -137,7 +160,7 @@ def build_cache(cfg: Mapping[str, Any], out: Optional[Path] = None, batch_size: 
     from obtune.train_sft import resolve_model_cfg, _effective_train_knobs
 
     acfg = cfg.get("align", {}) or {}
-    layers = list(acfg.get("layers", DEFAULT_LAYERS))
+    layers = resolve_align_layers(acfg, resolve_model_cfg(cfg))
     k = int(acfg.get("k", DEFAULT_K))
     mcfg = resolve_model_cfg(cfg)
     tcfg = _effective_train_knobs(cfg, mcfg)
@@ -359,7 +382,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
     if args.lam is not None:
         acfg["lam"] = args.lam
     lam = float(acfg.get("lam", 1.0))
-    layers = list(acfg.get("layers", DEFAULT_LAYERS))
+    layers = resolve_align_layers(acfg, resolve_model_cfg(cfg))
     k = int(acfg.get("k", DEFAULT_K))
     mismatch = bool(args.mismatch or acfg.get("mismatch", False))
 
