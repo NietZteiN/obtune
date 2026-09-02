@@ -17,6 +17,11 @@ eval_source: heldout
 
 engine:
   gpu_memory_utilization: 0.85
+  # The sweep loads r64/r128/r192 adapters; _base_eval.yaml's cap of 64 would make vLLM
+  # refuse the two widest with 'LoRA rank 192 is greater than max_lora_rank 64'.
+  # 256, not 192: vLLM validates this against a literal set (1, 8, 16, 32, 64, 128,
+  # 256, 320, 512). The cap only needs to be >= the widest adapter's rank.
+  max_lora_rank: 256
 
 systems:
   - {name: base, arch: none}

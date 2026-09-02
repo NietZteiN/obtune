@@ -964,6 +964,21 @@ def select_checkpoint(
     return best_name, best_acc
 
 
+# vLLM validates max_lora_rank against a LITERAL set, so a perfectly good PEFT rank is not
+# necessarily a legal cap: r=192 trains fine and then fails engine construction with
+# "Input should be 1, 8, 16, 32, 64, 128, 256, 320 or 512". The cap only has to be >= the
+# adapter's rank, so snap UP to the next allowed value rather than passing the rank through.
+VLLM_LORA_RANKS = (1, 8, 16, 32, 64, 128, 256, 320, 512)
+
+
+def snap_max_lora_rank(rank: int) -> int:
+    for r in VLLM_LORA_RANKS:
+        if r >= rank:
+            return r
+    raise ValueError(f"LoRA rank {rank} exceeds the largest vLLM max_lora_rank "
+                     f"({VLLM_LORA_RANKS[-1]})")
+
+
 def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
     from obtune.train_sft import _effective_train_knobs, adapter_dir, resolve_model_cfg
 
@@ -1006,9 +1021,18 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
         for r in val_rows
     ]
     ecfg = load_config("eval/_base_eval.yaml")
+    # Checkpoint selection must be able to LOAD the adapter it is selecting. _base_eval.yaml
+    # caps max_lora_rank at 64, which is right for the r32 grid but silently refuses the rank
+    # sweep: vLLM raises "LoRA rank 192 is greater than max_lora_rank 64" and the whole select
+    # dies. The rank being selected is known from the train config, so raise the cap to it
+    # rather than making every rank-sweep config remember to override an engine knob.
+    eng = dict(ecfg["engine"])
+    want_rank = int((cfg.get("peft") or {}).get("r", 32))
+    eng["max_lora_rank"] = snap_max_lora_rank(
+        max(int(eng.get("max_lora_rank", 64)), want_rank))
     engine = Engine(
         mcfg["hf_id"],
-        {**ecfg["engine"], "max_model_len": int(tcfg["max_seq_len"]) + 128},
+        {**eng, "max_model_len": int(tcfg["max_seq_len"]) + 128},
         stub=args.stub,
     )
     texts = render_prompts(items, SystemSpec(name="ckpt"), engine.tokenizer)

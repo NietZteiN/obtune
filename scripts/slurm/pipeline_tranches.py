@@ -95,9 +95,14 @@ def main() -> int:
         t = sub("tI_tr_s2fam", ["-m", "obtune.train_sft", "--config",
                 "train/s2fam_generic_py.yaml", "--model", M, "--seed", "17"],
                 partition=p, time="04:00:00", dry=d)
+        # s2fam declares `adapter_root: runs/adapters_curriculum` (inherited from the Qwen
+        # config), so its adapter is NOT under runs/adapters/. Verifying adapter_dir(cfg).name
+        # alone is not enough -- that checks the leaf and silently accepts the wrong root,
+        # which is exactly how this select failed with "no checkpoints under ...".
         sel.append(sub("tI_ck_s2fam", ["-m", "obtune.eval_vllm", "--config",
                 "train/s2fam_generic_py.yaml", "--model", M, "--mode", "ckpt-select",
-                "--adapter-root", f"{root}/S2-S3-S4_r32_s17"],
+                "--adapter-root",
+                f"runs/adapters_curriculum/{M}/{L}/S2-S3-S4_r32_s17"],
                 partition=p, time="01:00:00", dep=t, dry=d))
         jid["I"] = [x for x in sel if x]
 

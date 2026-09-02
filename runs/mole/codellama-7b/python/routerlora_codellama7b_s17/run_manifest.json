@@ -1,0 +1,107 @@
+{
+  "experiment": "mole/routerlora",
+  "run_id": "mole__codellama-7b__python__s17",
+  "seed": 17,
+  "config_path": "mole/routerlora_codellama7b.yaml",
+  "config_resolved": {
+    "experiment": "mole/routerlora",
+    "model": "codellama-7b",
+    "language": "python",
+    "run_tag": "routerlora_codellama7b",
+    "experts": {
+      "L0": "runs/adapters/codellama-7b/python/L0_r32_s17/best",
+      "L1b": "runs/adapters/codellama-7b/python/L1b_r32_s17/best",
+      "L1r": "runs/adapters/codellama-7b/python/L1r_r32_s17/best",
+      "L2": "runs/adapters/codellama-7b/python/L2_r32_s17/best",
+      "S1": "runs/adapters/codellama-7b/python/S1_r32_s17/best",
+      "S2": "runs/adapters/codellama-7b/python/S2_r32_s17/best",
+      "S3": "runs/adapters/codellama-7b/python/S3_r32_s17/best",
+      "S4": "runs/adapters/codellama-7b/python/S4_r32_s17/best"
+    },
+    "gate": {
+      "d_router": 64,
+      "shared_query": false
+    },
+    "allow_composites": true,
+    "train_conditions": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "C_L1r_S1",
+      "C_S1_L1r",
+      "C_L1b_S1",
+      "C_L2_S4",
+      "C_L1r_S3",
+      "C_S4_S3"
+    ],
+    "prompt": {
+      "oracle": false,
+      "one_shot": false
+    },
+    "train": {
+      "seed": 17,
+      "lr": 0.001,
+      "epochs": 2,
+      "per_device_batch": 8,
+      "grad_accum": 8,
+      "max_seq_len": 2048,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0,
+      "dtype": "bfloat16",
+      "gradient_checkpointing": true,
+      "train_size": 0,
+      "val_size": 0
+    },
+    "_config_path": "/work/jvl210002/migration/obtune/configs/mole/routerlora_codellama7b.yaml"
+  },
+  "model_hf_id": "codellama/CodeLlama-7b-Instruct-hf",
+  "model_revision_resolved": null,
+  "adapter": null,
+  "gpu_visible": "0",
+  "command": "/work/jvl210002/migration/obtune/src/obtune/mole/train_mole.py --config mole/routerlora_codellama7b.yaml",
+  "git_commit": null,
+  "script_sha256": {},
+  "started_utc": "2026-09-02T05:05:05.851593+00:00",
+  "finished_utc": null,
+  "libraries": {
+    "python": "3.12.14",
+    "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu129",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "summary": {
+      "n_modules": 224,
+      "n_experts": 8,
+      "experts": [
+        "L0",
+        "L1b",
+        "L1r",
+        "L2",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "rank_per_expert": 32,
+      "total_rank": 256,
+      "bank_params": 639631360,
+      "frozen_params": 6738546688,
+      "n_layers": 32,
+      "n_attached": 224,
+      "gate_params": 8405024,
+      "model": "codellama-7b",
+      "dtype": "bfloat16"
+    },
+    "steps": 1894
+  }
+}

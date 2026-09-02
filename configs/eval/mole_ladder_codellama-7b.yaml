@@ -1,0 +1,55 @@
+# MoLE ladder on the CodeLlama panel — the RQ2 routing arm. Ported from
+# mole_ladder_qwen1.5b.yaml with expert paths and the gate checkpoint repointed; the ladder
+# and its two CONTROLS are unchanged so the arm stays comparable to the Qwen run.
+#
+# THE CONTROLS ARE THE POINT. `mole_uniform` mixes the experts with a fixed uniform gate and
+# `mole_random` with a random one. On Qwen the learned router beat uniform by 0.032 on the
+# trained conditions but only 0.009 on the held-out obfuscator, and `mole_random` tied
+# uniform exactly -- i.e. dispatch accuracy of 1.000 bought almost nothing where it mattered.
+# A router number reported without these two beside it is not interpretable.
+#
+# Separate `phase` so these cells cannot alias the RQ1/RQ2 grids. NO H1.
+_extends: _base_eval.yaml
+
+phase: mole_generic
+experiment_id: rq2_mole_ladder
+run_tag: mole_ladder_codellama-7b
+model: codellama-7b
+language: python
+
+# GRID A, EXPLICITLY. `_base_eval.yaml` leaves eval_source unset and data.DEFAULT_EVAL_SOURCE
+# is `testset` (Grid B, n=145-176) -- the Qwen mole configs inherited that, which is why the
+# published mole_* numbers sit on a different program set from every RQ1/RQ2 headline.
+# CLAUDE.md forbids pooling the two grids, and cell paths key on (phase, system, condition)
+# rather than on grid, so the mistake is invisible until someone compares sample sizes.
+eval_source: heldout
+
+experts:
+  L0:   runs/adapters/codellama-7b/python/L0_r32_s17/best
+  L1b:  runs/adapters/codellama-7b/python/L1b_r32_s17/best
+  L1r:  runs/adapters/codellama-7b/python/L1r_r32_s17/best
+  L2:   runs/adapters/codellama-7b/python/L2_r32_s17/best
+  S1:   runs/adapters/codellama-7b/python/S1_r32_s17/best
+  S2:   runs/adapters/codellama-7b/python/S2_r32_s17/best
+  S3:   runs/adapters/codellama-7b/python/S3_r32_s17/best
+  S4:   runs/adapters/codellama-7b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+gate_checkpoint: runs/mole/codellama-7b/python/routerlora_codellama7b_s17/gate.pt
+
+engine:
+  seed: 17
+  dtype: bfloat16
+  batch_size: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: mole_uniform, arch: mole_uniform, train_cond: mix}
+  - {name: mole_random, arch: mole_random, train_cond: mix}
+  - {name: mole_router, arch: mole_router, train_cond: mix}
+  - {name: mole_hardrouter, arch: mole_hardrouter, train_cond: mix}
+
+arm_modes: {}
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

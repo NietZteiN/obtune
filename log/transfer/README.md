@@ -1,9 +1,10 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
-*Last updated: 2026-09-01*
-**Status:** REPLICATED on CodeLlama-7b after the Qwen panel became unusable. TR = 0.906 vs floor, LOTO price of an unseen transform −0.0108 (94.5 %). H1 unspent on both panels.
+*Last updated: 2026-09-02*
+**Status:** master report reproduced on CodeLlama-7b — RQ1 (TR 0.906), LOTO (−0.0108), RQ2 merges + controls, routing ladder, rank sweep, RQ3 knockout, baselines, forgetting. H1 unspent on both panels.
 
 ## Hypotheses — open
+- **H-mixture** — the gain from an expert mixture is a capacity/ensembling effect, not a dispatch effect. Predicts that mixing N experts with a fixed uniform gate tracks mixing N adapters of any kind, including clean-code ones. The `l0merge` control says this for merging; the uniform/random tie says it for routing.
 - **H-scale-floor** — the format floor shrinks with model scale because format failures migrate
   onto items the model cannot solve anyway. Base format_fail is near-identical at the two scales
   (0.179 at 7B, 0.192 at 1.5B) yet repairing it is worth 2-14 % of the gain at 7B and 62-67 % at
@@ -45,6 +46,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-02_codellama-master-report-tranches.md`](2026-09-02_codellama-master-report-tranches.md) — routing worth nothing (router == random); capacity not the cause of breadth failure; RQ3 mechanism reproduces; a Grid B/Grid A mixup caught by sample size
 - [`2026-09-01_codellama-replication.md`](2026-09-01_codellama-replication.md) — every RQ1/RQ2 finding reproduces on CodeLlama; TR 0.906, LOTO price −0.0108
 - [`2026-08-30_format-floor-and-a-collapsed-control.md`](2026-08-30_format-floor-and-a-collapsed-control.md) — H-format refuted at 7B / supported at 1.5B; a mode-collapsed control faked the target signature
 - [`2026-08-30_7b-rq1-matrix.md`](2026-08-30_7b-rq1-matrix.md) — 7B RQ1 transfer matrix; TR = 0.885; H-mem refuted, H-format opened.

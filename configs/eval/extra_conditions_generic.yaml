@@ -19,6 +19,6 @@ systems:
   - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
   - {name: tuned_S3, adapter: "runs/adapters/{model}/{language}/S3_r32_s17/best", arch: per_type, train_cond: S3}
   - {name: tuned_S4, adapter: "runs/adapters/{model}/{language}/S4_r32_s17/best", arch: per_type, train_cond: S4}
-  - {name: s2fam, adapter: "runs/adapters/{model}/{language}/S2-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: s2fam, adapter: "runs/adapters_curriculum/{model}/{language}/S2-S3-S4_r32_s17/best", arch: per_type, train_cond: mix}
 
 eval_conditions: [L0, L1b, L1r, L2, S1, S2, S3, S4]

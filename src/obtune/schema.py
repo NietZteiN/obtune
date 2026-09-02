@@ -138,7 +138,7 @@ class TrialRow(BaseModel):
     # SCHEMA change, not a config change: naming an unlisted phase in a config fails at
     # the first row written, i.e. after a full generation pass. `tests/test_baseline_configs.py`
     # asserts every committed config's phase is one this Literal accepts.
-    phase: Literal["pilot", "main", "final", "baselines", "baselines_gridA", "grid_rq1_7b", "align_lam_sweep", "formatonly_fix", "basecheck", "rq1_generic", "loto_generic", "rq2_generic", "baselines_generic", "rank_generic", "extra_generic", "merge_sweep_generic"]
+    phase: Literal["pilot", "main", "final", "baselines", "baselines_gridA", "grid_rq1_7b", "align_lam_sweep", "formatonly_fix", "basecheck", "rq1_generic", "loto_generic", "rq2_generic", "baselines_generic", "rank_generic", "extra_generic", "merge_sweep_generic", "mole_generic"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
