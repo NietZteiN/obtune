@@ -1,9 +1,10 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
 *Last updated: 2026-09-02*
-**Status:** master report reproduced on CodeLlama-7b — RQ1 (TR 0.906), LOTO (−0.0108), RQ2 merges + controls, routing ladder, rank sweep, RQ3 knockout, baselines, forgetting. H1 unspent on both panels.
+**Status:** master report reproduced on CodeLlama-7b including ONE H1 read (`pilot_eval`; final pass unspent). tuned_L0 > mono_all on H1 reproduces; the merge-leads-the-panel result does not.
 
 ## Hypotheses — open
+- **H-closest-specialist** — on a weaker base the best held-out-obfuscator system is the specialist whose transform is most similar to the held-out one, not a merge. `tuned_S2` (0.283) beat `merge_dare_ties` (0.277) on CodeLlama where the merge led on Qwen. Answerable from existing LOTO cells at ZERO quarantine cost.
 - **H-mixture** — the gain from an expert mixture is a capacity/ensembling effect, not a dispatch effect. Predicts that mixing N experts with a fixed uniform gate tracks mixing N adapters of any kind, including clean-code ones. The `l0merge` control says this for merging; the uniform/random tie says it for routing.
 - **H-scale-floor** — the format floor shrinks with model scale because format failures migrate
   onto items the model cannot solve anyway. Base format_fail is near-identical at the two scales
@@ -46,6 +47,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-02_h1-codellama-pilot.md`](2026-09-02_h1-codellama-pilot.md) — H1 pilot: clean-code result reproduces, merge result inverts; the format floor is worth nothing on H1
 - [`2026-09-02_codellama-master-report-tranches.md`](2026-09-02_codellama-master-report-tranches.md) — routing worth nothing (router == random); capacity not the cause of breadth failure; RQ3 mechanism reproduces; a Grid B/Grid A mixup caught by sample size
 - [`2026-09-01_codellama-replication.md`](2026-09-01_codellama-replication.md) — every RQ1/RQ2 finding reproduces on CodeLlama; TR 0.906, LOTO price −0.0108
 - [`2026-08-30_format-floor-and-a-collapsed-control.md`](2026-08-30_format-floor-and-a-collapsed-control.md) — H-format refuted at 7B / supported at 1.5B; a mode-collapsed control faked the target signature

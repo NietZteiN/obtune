@@ -1,0 +1,53 @@
+# H1 CONFIRMATORY READ — CodeLlama panel. QUARANTINE ACCESS.
+#
+# AUTHORISED BY THE USER 2026-09-02, as an explicit yes to a direct question, not inferred
+# from a general go-ahead. CLAUDE.md §3.2 rule 3 allows H1 exactly twice per project: one
+# pilot pass and one final pass. THIS IS THE PILOT (`pilot_eval`), deliberately -- it is the
+# CodeLlama panel's FIRST read and leaves the final pass unspent.
+#
+# THE HYPOTHESIS IS FIXED BEFORE ANY H1 NUMBER IS SEEN. Every arm below was trained, selected
+# and measured on the trainable grid and on LOTO; nothing here was chosen with H1 in view.
+# The pre-registered readings, from the Grid A trainable-condition results already recorded in
+# log/transfer/2026-09-01 and 2026-09-02:
+#
+#   * `tuned_L0` (clean code only, never saw an obfuscator) should be COMPETITIVE with the
+#     obfuscation specialists on H1. On Qwen it beat `mono_all` 0.245 vs 0.229.
+#   * `merge_dare_ties` should be the best system, and `l0merge_dare_ties` -- six CLEAN-CODE
+#     adapters -- should come within ~1 point of it. That gap IS the RQ2 result.
+#   * `formatonly` bounds how much of any H1 gain is format acquisition rather than task
+#     learning. No H1 number here is interpretable without it, which is why a control that
+#     cannot answer the question is included in a read this scarce.
+#
+# H1 IS NEVER TRAINED ON, and no arm here was selected against it. Grid A, matching every
+# other CodeLlama measurement (`CLAUDE.md` forbids pooling Grid A and Grid B).
+_extends: _base_eval.yaml
+
+phase: h1_codellama
+experiment_id: h1_confirm_codellama
+run_tag: h1_confirm_codellama
+model: codellama-7b
+language: python
+eval_source: heldout
+h1_access_purpose: pilot_eval
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/codellama-7b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L0, adapter: "runs/adapters/codellama-7b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L1b, adapter: "runs/adapters/codellama-7b/python/L1b_r32_s17/best", arch: per_type, train_cond: L1b}
+  - {name: tuned_L1r, adapter: "runs/adapters/codellama-7b/python/L1r_r32_s17/best", arch: per_type, train_cond: L1r}
+  - {name: tuned_L2, adapter: "runs/adapters/codellama-7b/python/L2_r32_s17/best", arch: per_type, train_cond: L2}
+  - {name: tuned_S1, adapter: "runs/adapters/codellama-7b/python/S1_r32_s17/best", arch: per_type, train_cond: S1}
+  - {name: tuned_S2, adapter: "runs/adapters/codellama-7b/python/S2_r32_s17/best", arch: per_type, train_cond: S2}
+  - {name: mono_all, adapter: "runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: merge_ties, arch: merge_ties}
+  - {name: merge_dare_ties, arch: merge_dare_ties}
+  - {name: l0merge_dare_ties, adapter: "runs/adapters/codellama-7b/python/l0merge_dare_ties_r32_s17", arch: per_type, train_cond: L0}
+
+eval_conditions: [H1]
