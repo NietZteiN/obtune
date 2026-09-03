@@ -1,0 +1,18 @@
+# OVERTRAIN BANK — L0, 9 epochs. MODEL-NEUTRAL.
+#
+# §14's task-vector geometry rests on these: an adapter checkpointed at every epoch from 1 to
+# 9 gives a bank where training LENGTH is the only thing that varies, which is what makes
+# "does interference grow with training?" answerable. Horoi et al. predict sign conflict rises
+# with training; on Qwen the measured delta was -0.011 and the verdict was that the mechanism
+# is not present in that bank. Reproducing that needs the bank, not just the merges.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0]
+run_tag: overtrain_py_L0
+phase: main
+adapter_root: runs/adapters_overtrain
+
+train:
+  epochs: 9
+  seed: 17

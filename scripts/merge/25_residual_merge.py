@@ -76,7 +76,12 @@ from obtune.merge_adapters import MERGE_ROOT, MergeSpec, merge_adapters  # noqa:
 from obtune.merge_geometry import _inner, load_expert  # noqa: E402
 from obtune.provenance import RunManifest  # noqa: E402
 
-MODEL, LANG, RANK = "qwen25c-1.5b", "python", 32
+# Set from --model/--language at startup. These were module-level constants pinned to
+# qwen25c-1.5b, which is the DANGEROUS form of the pin: the Qwen adapters still exist on
+# disk, so this script would have silently merged THEM and written the result under the
+# current panel's name -- no error, wrong ingredients. A lint that checks argparse defaults
+# and HF ids cannot see a constant holding a model key.
+MODEL, LANG, RANK = None, None, 32
 #: The MERGE algorithm's seed — it fixes DARE's Bernoulli drop mask and must stay constant while
 #: the EXPERT-BANK seed (`--seed`) varies, or a bank comparison would also change the mask and the
 #: two effects could not be separated. Deliberately NOT the same knob as `--seed`.
@@ -141,6 +146,8 @@ def residual_weights(paths: dict[str, str], conds: list[str]) -> tuple[list[floa
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
+    ap.add_argument("--language", default="python")
     ap.add_argument("--plan", action="store_true", help="print weights + ingredients, build nothing")
     ap.add_argument("--dtype", default="float32")
     ap.add_argument("--seed", type=int, default=17, help="expert-bank seed (42 for the replication)")
@@ -152,6 +159,9 @@ def main(argv=None) -> int:
                          "ingredient count from the residual reweighting")
     ap.add_argument("--tag", default=None, help="output name suffix; defaults to n<k>_s<seed>")
     args = ap.parse_args(argv)
+    global MODEL, LANG, RANK
+    MODEL, LANG = args.model, getattr(args, 'language', 'python')
+    RANK = getattr(args, 'rank', 32)
 
     conds = args.conditions or list(CONDS_DEFAULT)
     if conds[0] != "L0":

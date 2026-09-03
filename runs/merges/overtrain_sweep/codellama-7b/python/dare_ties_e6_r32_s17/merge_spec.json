@@ -1,0 +1,45 @@
+{
+  "base_model_id": "codellama/CodeLlama-7b-Instruct-hf",
+  "combination_type": "dare_ties",
+  "density": 0.5,
+  "weights": [
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666,
+    0.16666666666666666
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_overtrain/codellama-7b/python/L0_r32_s17/checkpoint-444",
+      "sha256": "c89c6124363f591df71cd5d87d7172225da36dc4ab55cf723ee48f7972db3a69"
+    },
+    "L1b": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_overtrain/codellama-7b/python/L1b_r32_s17/checkpoint-438",
+      "sha256": "1b74db8c7452dc1b11042ac8ac84f098ac7585fc6a90012959d2a1ac4bc0f74d"
+    },
+    "L1r": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_overtrain/codellama-7b/python/L1r_r32_s17/checkpoint-444",
+      "sha256": "130172ffc64e514ee21ad5bbca55a67a842de36629c79af410885cdc3f821e08"
+    },
+    "L2": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_overtrain/codellama-7b/python/L2_r32_s17/checkpoint-444",
+      "sha256": "409ea40c2d606671dfbe5015fc83beb66a27165b40bfa35f4e42740b560275d7"
+    },
+    "S1": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_overtrain/codellama-7b/python/S1_r32_s17/checkpoint-324",
+      "sha256": "37122a7712eab6b74a29b71709a3c1139f58354fa3537d6337d63514121a2831"
+    },
+    "S2": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_overtrain/codellama-7b/python/S2_r32_s17/checkpoint-444",
+      "sha256": "8c5efbc2eee0ef9478b199e37b98f3b92d07253d1577d1eff2e46de99bc73ef9"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

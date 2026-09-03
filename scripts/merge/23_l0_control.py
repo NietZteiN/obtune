@@ -51,7 +51,10 @@ from obtune.merge_adapters import MERGE_ROOT, MergeSpec, merge_adapters  # noqa:
 from obtune.provenance import RunManifest  # noqa: E402
 
 SEEDS = [17, 42, 101]
-MODEL, LANG, RANK = "qwen25c-1.5b", "python", 32
+# Set from --model/--language at startup; see 24_crossseed_control.py for why a constant
+# here is the dangerous form (the old panel's adapters still exist, so it merges the wrong
+# ingredients silently rather than failing).
+MODEL, LANG, RANK = None, None, 32
 # Same two the real RQ2 comparison reports. `dare_linear` is excluded: it is the arm that
 # collapsed to a magnitude artifact (§5.2) and its repaired form `dl_rescaled` is a
 # separate question from this control.
@@ -71,9 +74,14 @@ def adapter_paths() -> dict[str, str]:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
+    ap.add_argument("--language", default="python")
     ap.add_argument("--plan", action="store_true", help="print what would be merged and exit")
     ap.add_argument("--dtype", default="float32")
     args = ap.parse_args(argv)
+    global MODEL, LANG, RANK
+    MODEL, LANG = args.model, getattr(args,'language','python')
+    RANK = getattr(args,'rank',32)
 
     paths = adapter_paths()
     missing = {k: p for k, p in paths.items() if not Path(p).exists()}

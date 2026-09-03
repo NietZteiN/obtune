@@ -119,3 +119,33 @@ def test_no_absolute_layer_sets() -> None:
                 offenders.append(f"{py.relative_to(ROOT)}:{i}")
     assert not offenders, (
         "absolute Qwen layer indices outside the resolver:\n  " + "\n  ".join(offenders))
+
+
+def test_no_model_key_constants() -> None:
+    """No module-level constant holding a configs/models.yaml key.
+
+    This is the most dangerous form of the pin and the last one found: two merge scripts
+    carried `MODEL, LANG, RANK = "qwen25c-1.5b", "python", 32` at module level. Because the
+    old panel's adapters still exist on disk, such a script does not fail -- it silently
+    merges the WRONG model's adapters and writes the result under the current panel's name.
+    Neither the HF-id check nor the argparse-default check can see it.
+    """
+    keys, _ = _model_keys_and_ids()
+    assign = re.compile(r'^\s*[A-Z_][A-Z0-9_]*(?:\s*,\s*[A-Z_][A-Z0-9_]*)*\s*=.*?"([^"]+)"')
+    offenders = []
+    for py in list(SRC.rglob("*.py")) + list(SCRIPTS.rglob("*.py")):
+        if py.name in ALLOWED:
+            continue
+        for i, line in enumerate(py.read_text().splitlines(), 1):
+            if line.strip().startswith("#"):
+                continue
+            # A dict literal keyed by model (e.g. EST_GPU_H = {"a": 1, "b": 2}) is a
+            # per-model lookup TABLE, which is the correct way to hold per-model values --
+            # the opposite of a pin. Only scalar/tuple assignments are flagged.
+            if "= {" in line.replace(" ", "= {").replace("={", "= {"):
+                continue
+            m = assign.match(line)
+            if m and m.group(1) in keys:
+                offenders.append(f"{py.relative_to(ROOT)}:{i}: {m.group(1)}")
+    assert not offenders, (
+        "module-level constants pinning a model key:\n  " + "\n  ".join(offenders))

@@ -1,0 +1,109 @@
+{
+  "experiment": "residual_merge",
+  "run_id": "residual_dare_ties_n6_s17_d0p5",
+  "seed": 17,
+  "config_path": "/work/jvl210002/migration/obtune/configs/merge/ties_v1.yaml",
+  "config_resolved": {
+    "combination_type": "dare_ties",
+    "density": 0.5,
+    "adapters": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "weights": [
+      -0.022507330881932353,
+      0.29314777815304865,
+      0.29314777815304865,
+      0.29314777815304865,
+      0.29314777815304865,
+      0.29314777815304865
+    ],
+    "density_sweep": [
+      0.3,
+      0.5,
+      0.7
+    ],
+    "seed": 17,
+    "_config_path": "/work/jvl210002/migration/obtune/configs/merge/ties_v1.yaml",
+    "adapter_paths": {
+      "L0": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L0_r32_s17/best",
+      "L1b": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L1b_r32_s17/best",
+      "L1r": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L1r_r32_s17/best",
+      "L2": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L2_r32_s17/best",
+      "S1": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/S1_r32_s17/best",
+      "S2": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/S2_r32_s17/best"
+    },
+    "conditions": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "bank_seed": 17,
+    "uniform_control": false
+  },
+  "model_hf_id": "codellama/CodeLlama-7b-Instruct-hf",
+  "model_revision_resolved": null,
+  "adapter": null,
+  "gpu_visible": null,
+  "command": "scripts/merge/25_residual_merge.py --model codellama-7b --language python",
+  "git_commit": "aecb5d86c4c7e834420dbb4e9b0fdef42f48dbd3",
+  "script_sha256": {
+    "src/obtune/merge_adapters.py": "d52bf9b7ec128130209aabbd38ee399368c5e4ec545b2aeb61068c6c5048be23",
+    "scripts/merge/25_residual_merge.py": "4a6060d617ddba6ec6dbb8d66f1f6252a610257c31ff07c5f774137b8421a3f6"
+  },
+  "started_utc": "2026-09-03T00:53:29.598815+00:00",
+  "finished_utc": "2026-09-03T00:53:46.569031+00:00",
+  "libraries": {
+    "python": "3.12.14",
+    "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu129",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "merges": [
+      {
+        "density": 0.5,
+        "path": "/work/jvl210002/migration/obtune/runs/merges/codellama-7b_python_residual_dare_ties/n6_s17_d0p5",
+        "combination_type": "dare_ties"
+      }
+    ],
+    "residual_decomposition": {
+      "s_c": {
+        "L1b": 0.7091070425973397,
+        "L1r": 0.791755947132129,
+        "L2": 0.7367882578326564,
+        "S1": 0.5224934344265066,
+        "S2": 0.7278822009853695
+      },
+      "sum_s_c": 3.488026882974001,
+      "n_specialists": 5,
+      "mean_resid_norm": 4.987531695642358,
+      "single_resid_norm": 7.310419175227322,
+      "dilution_ratio_measured": 0.6822497556013629,
+      "dilution_ratio_if_orthogonal": 0.447213595499958,
+      "gamma": 1.4657388907652433,
+      "w_L0": -0.022507330881932353,
+      "w_specialist": 0.29314777815304865,
+      "note": "weights order matches the --conditions list; derivation in the module docstring",
+      "conditions": [
+        "L0",
+        "L1b",
+        "L1r",
+        "L2",
+        "S1",
+        "S2"
+      ]
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "base_model_id": "codellama/CodeLlama-7b-Instruct-hf",
+  "combination_type": "dare_ties",
+  "density": 0.5,
+  "weights": [
+    -0.022507330881932353,
+    0.29314777815304865,
+    0.29314777815304865,
+    0.29314777815304865,
+    0.29314777815304865,
+    0.29314777815304865
+  ],
+  "majority_sign_method": "total",
+  "adapters": {
+    "L0": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L0_r32_s17/best",
+      "sha256": "50c7a7548e36dc03ada4818c2029a415dec20241feb07760c7d667b022e92884"
+    },
+    "L1b": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L1b_r32_s17/best",
+      "sha256": "e86e0add0847261cad9d7e853ac14692bff056892f7acee5be4841f2569d9648"
+    },
+    "L1r": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L1r_r32_s17/best",
+      "sha256": "9c30d65e11b2febf2b65a5c4427925ed562c73745b9dd7784ecc11ecc7568946"
+    },
+    "L2": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L2_r32_s17/best",
+      "sha256": "b09e3c2b366187b3fea28989e6d5e2ce3362dd82f41e2ca8f724c13b41ce7091"
+    },
+    "S1": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/S1_r32_s17/best",
+      "sha256": "011a17619bfe246cc5cdee697cb956f5769ad7b6796fde37beede35031b57c5a"
+    },
+    "S2": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/S2_r32_s17/best",
+      "sha256": "c11a60ee4ad3fbcdb7974d4b1a1df2af709a9627ebbcefff5739c81be84a0fbd"
+    }
+  },
+  "merged_r": 32,
+  "merged_lora_alpha": 32,
+  "seed": 17,
+  "dtype": "float32",
+  "peft_call": "LoraModel.add_weighted_adapter(adapters, weights, adapter_name, combination_type, density=, majority_sign_method=)"
+}

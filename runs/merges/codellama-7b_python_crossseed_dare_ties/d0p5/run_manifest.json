@@ -1,0 +1,80 @@
+{
+  "experiment": "crossseed_merge_control",
+  "run_id": "crossseed_dare_ties",
+  "seed": 17,
+  "config_path": "/work/jvl210002/migration/obtune/configs/merge/ties_v1.yaml",
+  "config_resolved": {
+    "combination_type": "dare_ties",
+    "density": 0.5,
+    "adapters": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "weights": null,
+    "density_sweep": [
+      0.3,
+      0.5,
+      0.7
+    ],
+    "seed": 17,
+    "_config_path": "/work/jvl210002/migration/obtune/configs/merge/ties_v1.yaml",
+    "adapter_paths": {
+      "L0": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L0_r32_s17/best",
+      "L1b": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L1b_r32_s42/best",
+      "L1r": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L1r_r32_s17/best",
+      "L2": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/L2_r32_s42/best",
+      "S1": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/S1_r32_s17/best",
+      "S2": "/work/jvl210002/migration/obtune/runs/adapters/codellama-7b/python/S2_r32_s42/best"
+    },
+    "condition_seed_map": {
+      "L0": 17,
+      "L1b": 42,
+      "L1r": 17,
+      "L2": 42,
+      "S1": 17,
+      "S2": 42
+    }
+  },
+  "model_hf_id": "codellama/CodeLlama-7b-Instruct-hf",
+  "model_revision_resolved": null,
+  "adapter": null,
+  "gpu_visible": null,
+  "command": "scripts/merge/24_crossseed_control.py --model codellama-7b --language python",
+  "git_commit": "aecb5d86c4c7e834420dbb4e9b0fdef42f48dbd3",
+  "script_sha256": {
+    "src/obtune/merge_adapters.py": "d52bf9b7ec128130209aabbd38ee399368c5e4ec545b2aeb61068c6c5048be23",
+    "scripts/merge/24_crossseed_control.py": "5b2a964f52f835cee071bfa2ac5a88b8e143d349636983cb76e82c4f661ba21a"
+  },
+  "started_utc": "2026-09-03T00:52:49.210482+00:00",
+  "finished_utc": "2026-09-03T00:53:11.132654+00:00",
+  "libraries": {
+    "python": "3.12.14",
+    "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu129",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "merges": [
+      {
+        "density": 0.5,
+        "path": "/work/jvl210002/migration/obtune/runs/merges/codellama-7b_python_crossseed_dare_ties/d0p5",
+        "combination_type": "dare_ties"
+      }
+    ],
+    "bank_geometry": {
+      "mean_cosine_this_bank": 0.2458,
+      "mean_cosine_same_seed_bank": 0.5633,
+      "n_cross_seed_pairs": 9,
+      "n_pairs": 15,
+      "note": "measured with merge_geometry.cosine before building; see the module docstring"
+    }
+  }
+}

@@ -54,7 +54,12 @@ from obtune.config import RUNS_DIR, load_config  # noqa: E402
 from obtune.merge_adapters import MERGE_ROOT, MergeSpec, merge_adapters  # noqa: E402
 from obtune.provenance import RunManifest  # noqa: E402
 
-MODEL, LANG, RANK = "qwen25c-1.5b", "python", 32
+# Set from --model/--language at startup. These were module-level constants pinned to
+# qwen25c-1.5b, which is the DANGEROUS form of the pin: the Qwen adapters still exist on
+# disk, so this script would have silently merged THEM and written the result under the
+# current panel's name -- no error, wrong ingredients. A lint that checks argparse defaults
+# and HF ids cannot see a constant holding a model key.
+MODEL, LANG, RANK = None, None, 32
 #: Condition -> seed. Alternating so that 9 of the 15 pairs are cross-seed. The assignment is
 #: fixed here rather than randomized: a random assignment would make the arm irreproducible
 #: without recording it, and there is nothing to gain from varying it at n=1.
@@ -74,9 +79,14 @@ def adapter_paths() -> dict[str, str]:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--model", required=True, help="key in configs/models.yaml")
+    ap.add_argument("--language", default="python")
     ap.add_argument("--plan", action="store_true", help="print what would be merged and exit")
     ap.add_argument("--dtype", default="float32")
     args = ap.parse_args(argv)
+    global MODEL, LANG, RANK
+    MODEL, LANG = args.model, getattr(args, 'language', 'python')
+    RANK = getattr(args, 'rank', 32)
 
     paths = adapter_paths()
     missing = {k: p for k, p in paths.items() if not Path(p).exists()}
