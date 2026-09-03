@@ -1,10 +1,9 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
-*Last updated: 2026-09-02*
-**Status:** master report reproduced on CodeLlama-7b including ONE H1 read (`pilot_eval`; final pass unspent). tuned_L0 > mono_all on H1 reproduces; the merge-leads-the-panel result does not.
+*Last updated: 2026-09-03*
+**Status:** master report reproduced on CodeLlama-7b including ONE H1 read (`pilot_eval`; final pass unspent), now with cluster-bootstrap CIs on every contrast. tuned_L0 MATCHES mono_all on H1 (+0.006 [−0.017, +0.029]); the merge-vs-specialist ordering on H1 is inside noise; LOTO fold indistinguishable from mono_all. Surviving: RQ1 TR 0.906 [0.878, 0.932]; router==random [−0.008, +0.008]; obfuscation merge beats clean-code merge on H1 [+0.003, +0.028].
 
 ## Hypotheses — open
-- **H-closest-specialist** — on a weaker base the best held-out-obfuscator system is the specialist whose transform is most similar to the held-out one, not a merge. `tuned_S2` (0.283) beat `merge_dare_ties` (0.277) on CodeLlama where the merge led on Qwen. Answerable from existing LOTO cells at ZERO quarantine cost.
 - **H-mixture** — the gain from an expert mixture is a capacity/ensembling effect, not a dispatch effect. Predicts that mixing N experts with a fixed uniform gate tracks mixing N adapters of any kind, including clean-code ones. The `l0merge` control says this for merging; the uniform/random tie says it for routing.
 - **H-scale-floor** — the format floor shrinks with model scale because format failures migrate
   onto items the model cannot solve anyway. Base format_fail is near-identical at the two scales
@@ -14,6 +13,7 @@
 - (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
+- **H-closest-specialist — WITHDRAWN (unmotivated), 2026-09-03.** Opened on the `tuned_S2` (0.283) > `merge_dare_ties` (0.277) ordering on H1; the program-bootstrap CI on that gap is +0.0066 [−0.0107, +0.0247]. There is no ordering to explain. See `2026-09-03_cis-and-three-corrections.md`.
 - **H-format — REFUTED at 7B, SUPPORTED at 1.5B, 2026-08-30.** Label-shuffled control takes only
   2-14 % of the 7B diagonal gain (negative on S1); recomputing the matrix against the floor moves
   mean off-diagonal TR from 0.8842 to 0.8810. At 1.5B the same control recovers 62-67 %, so the
@@ -47,6 +47,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-03_cis-and-three-corrections.md`](2026-09-03_cis-and-three-corrections.md) — cluster-bootstrap CIs on every CodeLlama contrast; three stated findings fail (tuned_L0 "beats"→matches; merge "departure"→noise; LOTO "costs 1.1 pts"→indistinguishable from mono_all); RQ1, routing null and merge-vs-l0merge survive
 - [`2026-09-02_h1-codellama-pilot.md`](2026-09-02_h1-codellama-pilot.md) — H1 pilot: clean-code result reproduces, merge result inverts; the format floor is worth nothing on H1
 - [`2026-09-02_codellama-master-report-tranches.md`](2026-09-02_codellama-master-report-tranches.md) — routing worth nothing (router == random); capacity not the cause of breadth failure; RQ3 mechanism reproduces; a Grid B/Grid A mixup caught by sample size
 - [`2026-09-01_codellama-replication.md`](2026-09-01_codellama-replication.md) — every RQ1/RQ2 finding reproduces on CodeLlama; TR 0.906, LOTO price −0.0108
