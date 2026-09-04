@@ -1,6 +1,6 @@
 # modularity — RQ2 — router, merges, monolithic, oracle arms
 
-*Last updated: 2026-08-30*
+*Last updated: 2026-09-04*
 **Status:** **CLOSED, negative** — no combination of per-transformation specialists beats a
 clean-code adapter on the held-out obfuscator; closing report:
 [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md).
@@ -13,6 +13,15 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
+- **H-align — REFUTED at 7B, 2026-09-04, with the 08-30 loophole closed.** `L = L_task(x̃) + λ·L_align`
+  to a frozen `tuned_L0` teacher, six-condition mixture, five arms. λ = 0 passes the plumbing gate
+  (+0.28 [−0.71, +1.22] vs `mono_all`); **matched − mismatched teacher is +0.18 [−0.82, +1.16]**, null on
+  every condition, both ~1 pt below the vanilla twin. The grid dose-response is monotone and negative
+  (+0.28 → +0.00 → −0.78 → −2.11 for λ = 0 → 0.3 → 1 → 3) while the term's own fit is flat in λ — its
+  magnitude matters and its target does not, so it is a hidden-state perturbation and not semantic
+  alignment. **H-teacher (the 08-30 loophole: the teacher was weaker than the vanilla student) is
+  resolved by construction** — on this panel `tuned_L0` is the strongest system and the result is
+  unchanged. [`2026-09-04_invariance-arm-at-7b.md`](2026-09-04_invariance-arm-at-7b.md).
 - **Does training deliberately for the inert-material family (`S2`+`S3`+`S4`) widen the one transfer
   that works?** ✗ refuted. `s2fam` lands **+0.02 pts** [−0.95, +1.02] on the clean-code control and
   −0.07 on `mono_all` — flat, with an unusually tight interval. It still tops the `S2` (43.8) and
@@ -92,6 +101,7 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   by-product of the 9-epoch sweep that has already run.
 
 ## Entries
+- [`2026-09-04_invariance-arm-at-7b.md`](2026-09-04_invariance-arm-at-7b.md) — **H-align refuted at 7B**, with the 08-30 weak-teacher loophole closed (`tuned_L0` is the strongest system on this panel) and on the six-condition mixture the objective had never been tried on. λ = 0 passes the plumbing gate (+0.28 [−0.71, +1.22] vs `mono_all`); matched − mismatched is **+0.18 [−0.82, +1.16]**; the grid dose-response is monotone and negative while the term's own fit is flat in λ. The alignment target does not matter, so the term is a perturbation, not semantic alignment. Also: the grad-accum defect that made every alignment arm ever run train on 4× gradients (`7ad5353`).
 - [`2026-08-30_alignment-arm-lambda-sweep.md`](2026-08-30_alignment-arm-lambda-sweep.md) — H-align refuted (flat, not collapsed); both controls fired correctly; H-teacher opened
 - [`2026-08-27_geometry-consolidated.md`](2026-08-27_geometry-consolidated.md) — zero-GPU
   documentation + analysis pass; **does not reopen the thread**. Cross-seed bank's **sign conflict

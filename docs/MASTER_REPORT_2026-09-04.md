@@ -4277,26 +4277,38 @@ settled that empirically**, which is what the gate is for.
 | contrast (pooled, pts, 557 programs) | Δ [95 % CI] | reading |
 |---|---|---|
 | `align_lam0 − mono_all` | **+0.28 [−0.71, +1.22]** | plumbing gate **passes** — null on all six conditions, largest \|Δ\| 0.96 |
-| `align_lam1 − mono_all` | −0.78 [−2.09, +0.38] | the objective does not help |
-| `align_lam1_mm − mono_all` | −0.96 [−2.17, +0.21] | neither does aligning to the *wrong* program |
+| `align_lam0.3 − mono_all` | +0.00 [−1.16, +1.10] | the objective does not help |
+| `align_lam1 − mono_all` | −0.78 [−2.09, +0.38] | …and starts to cost |
+| `align_lam1_mm − mono_all` | −0.96 [−2.17, +0.21] | aligning to the **wrong** program costs the same |
+| `align_lam3 − mono_all` | **−2.11 [−3.44, −0.87]** | excludes zero on **all six** conditions |
 | **`align_lam1 − align_lam1_mm`** | **+0.18 [−0.82, +1.16]** | **the control: matched ≈ mismatched, null on all six** |
 | `align_lam0 − tuned_L0` | +0.85 [−0.58, +2.34] | the §22.5 fingerprint (L0 −1.80, L1b +1.93, S2 +2.16 [+0.36, +4.15]) |
+| `align_lam0.3 − tuned_L0` | +0.56 [−0.82, +1.91] | fingerprint intact (L0 −2.22 [−4.13, −0.30], L1b +2.90 [+0.78, +4.89]) |
 | `align_lam1 − tuned_L0` | −0.22 [−1.69, +1.17] | L0 **−3.35 [−5.39, −1.44]**, L1b +2.47 [+0.42, +4.40] |
 | `align_lam1_mm − tuned_L0` | −0.40 [−1.96, +1.02] | L0 **−3.59 [−5.63, −1.62]**, L1b +1.69 [−0.36, +3.80] |
+| `align_lam3 − tuned_L0` | **−1.54 [−2.85, −0.28]** | L0 **−4.97 [−6.94, −3.11]**, and L1b collapses to +0.60 [−1.45, +2.53] |
 
-Held-in validation agrees and is worth stating because it is where the objective *should* look best:
-λ = 0 selects `checkpoint-838` at 0.3589, λ = 1 selects `final` at 0.3615, and the **mismatched**
-arm selects 0.3652 — the highest of the three — all inside the `mono_all` seed band
-(0.3672 / 0.3505 / 0.3573). The alignment term itself fits as expected (final `align_loss` 3.42
-matched vs 5.24 mismatched); it is only the accuracy that is indifferent to which teacher it fits.
+**The dose-response is monotone and it points down**: +0.28 → +0.00 → −0.78 → −2.11 as λ goes
+0 → 0.3 → 1 → 3. At λ = 3 the term has also erased the one thing breadth was buying, taking L1b
+against the control from +1.93 at λ = 0 to +0.60. And it buys no extra alignment for the damage —
+the final `align_loss` is 3.475 at λ = 0.3, 3.415 at λ = 1 and 3.374 at λ = 3, so tripling the
+weight twice over moves the term's own fit by 3 %.
+
+Held-in validation is worth stating because it is where the objective *should* look best, and
+because it does **not** reproduce the grid's monotonicity: λ = 0 selects `checkpoint-838` at 0.3589,
+λ = 0.3 selects 0.3563, λ = 1 selects `final` at 0.3615, λ = 3 selects 0.3537, and the **mismatched**
+arm selects **0.3652 — the highest of all five**. Every one sits inside the `mono_all` seed band
+(0.3672 / 0.3505 / 0.3573), which is the honest summary: on 1,917 held-in items these five arms are
+one system, and the ranking among them is noise. The alignment term itself fits as expected (final
+`align_loss` 3.42 matched vs 5.24 mismatched); it is only the *accuracy* that is indifferent to
+which teacher it fits.
 
 **Verdict: the target does not matter, so the term is not doing semantic work.** An arm aligned to a
 different program's clean states is indistinguishable from one aligned to its own, and both sit
 slightly below the vanilla twin. This is the same shape as the Qwen sweep with the weak-teacher
 loophole closed and on the mixture where the effect had its best chance. The L0 tax that breadth
-imposes does not close under the objective — it **deepens**, from −1.80 at λ = 0 to −3.35 matched.
-λ = 3 and λ = 0.3 are still training and will say whether the degradation is monotone in λ; they
-cannot change the control's answer.
+imposes does not close under the objective — it **deepens**, from −1.80 at λ = 0 to −3.35 at λ = 1
+and −4.97 at λ = 3.
 
 The project has now been burned by exactly this shape four times — `mole_random`, `l0merge`,
 oracle-of-k, and now the invariance arm — and in every case **only the control separated "the
