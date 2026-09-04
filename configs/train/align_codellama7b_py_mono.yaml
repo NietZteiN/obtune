@@ -1,0 +1,35 @@
+# Invariance arm on CodeLlama-7b, six-condition monolithic mix (W5 of the 2026-09 accuracy
+# campaign; log/transfer/2026-09-04_accuracy-campaign-closes.md).
+#
+# EXACT TWIN OF mono_generic_py.yaml at 7B -- same six conditions (L0 included), train_size,
+# seed, rank, batch shape -- plus the alignment term. So lambda = 0 must reproduce `mono_all`
+# (runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17) to within the seed band
+# (mono_all - tuned_L0 across s17/s42/s101: +0.01 ... +0.77), and that is the plumbing gate.
+#
+# WHY RERUN WHAT 2026-08-30 ALREADY REFUTED. The Qwen-1.5B/S2 sweep was flat-not-collapsed,
+# but its teacher (tuned_L0, 0.390 on the grid) was WEAKER than the vanilla student it was
+# trying to beat (tuned_S2, 0.404) -- a student pulled toward a worse model has nothing to gain.
+# On CodeLlama-7b tuned_L0 is the strongest system (+19.9 pts over base, >= every breadth
+# adapter), so the loophole closes here. And the six-condition mix is where the campaign's
+# fingerprint lives (breadth = L0 -2, L1b +3 vs tuned_L0): if L_align does semantic work it
+# should remove the L0 tax without giving back L1b. If matched == mismatched == mono_all the
+# objective is a regularizer at 7B too and the arm closes for good.
+#
+# L0 rows align to the teacher on the identical input, i.e. the term is ~0 for them by
+# construction. They are kept anyway so the data mix is identical to mono_all.
+_extends: _base_align.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: align_py_mono
+phase: main
+
+train:
+  train_size: 30000 # >= the union of all train-split pairs, so nothing is subsampled away
+  seed: 17
+
+align:
+  # tuned_L0 at THIS model, not Qwen's. layer_fracs from _base_align resolve to
+  # L4-10-16-21-25-30 on CodeLlama's 32 layers.
+  teacher_adapter: runs/adapters/codellama-7b/python/L0_r32_s17/best

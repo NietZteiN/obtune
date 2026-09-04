@@ -95,6 +95,32 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   recommendation: hold `final_eval` (13B on H1 would only show "bigger is better").
   Open, unscheduled: H-L1b-L0-trade (existing cells, CPU), H-saturation (downward train_size sweep).
 
+### 2026-09-04 — W5: hidden-state alignment (user: "if this doesn't work, train the hidden states to match the clean code")
+- **Prior art in-repo:** `src/obtune/align.py` already implements exactly this objective —
+  L = L_task(x̃) + λ·L_align, frozen `tuned_L0` teacher on the clean parent, n≠m solved by
+  comparing only the last k=4 answer-position prompt states (the prompt suffix tokenizes
+  identically), mismatched-teacher permutation control. Ran ONCE: Qwen-1.5B, S2-only, λ∈{0,0.1,…,10}
+  (`log/modularity/2026-08-30_alignment-arm-lambda-sweep.md`) → flat-not-collapsed (matched−vanilla
+  −0.004…−0.008 at every λ; mismatched degrades monotonically, so the harness works). Loophole
+  recorded there: teacher tuned_L0 (0.390) was *weaker* than the vanilla student tuned_S2 (0.404).
+- **Why rerun on CodeLlama-7b mono mix:** closes the loophole (tuned_L0 is the strongest 7B system,
+  +19.9 over base and ≥ every breadth adapter), and the six-condition mix is where the fingerprint
+  lives (L0 −2, L1b +3). If L_align is semantic it should erase the L0 tax without losing L1b.
+- **Config:** `configs/train/align_codellama7b_py_mono.yaml` = exact twin of `mono_generic_py.yaml`
+  @7B (six conditions incl. L0, train_size 30000, seed 17, r32, 16×4) + `align.teacher_adapter =
+  runs/adapters/codellama-7b/python/L0_r32_s17/best`, layer_fracs → L4-10-16-21-25-30 on 32 layers.
+  L0 rows align to the teacher on the identical input (trivial term) — kept so λ=0 is a mono_all twin.
+- **Arms:** cache (1 job) → λ=0 (plumbing; must reproduce mono_all ±seed band), λ=1 matched,
+  λ=1 mismatched, λ=3 matched. ~3.5 h each on H200 (mono_all was 12,460 s). Then ckpt-select
+  (held-in val, H1-free) → eval on the trainable grid (`configs/eval/align_codellama7b.yaml`, arch
+  invariance / invariance_mismatch) → contrast vs `mono_all` **and** `tuned_L0`, program bootstrap.
+- **Untried n≠m answers, pending user's candidate list (cut off in message):** mean-pooled per-layer
+  states + InfoNCE over the batch; `Variant.rename_map` token-aligned matching for L1b/L1r/L2
+  (no map for S1/S2 → pooled fallback). Not built; answer-position first because it exists.
+- **Decision rule:** matched > mismatched AND matched−mono_all excl 0 on ≥1 non-L0 condition
+  without an L0 tax → H-align supported, then and only then consider the alt L_align forms.
+  Matched ≈ mismatched ≈ mono_all → objective is a regularizer at 7B too; close the arm.
+
 ## Current state
 
 Phase 0–1 complete and verified; the RQ1–RQ3 implementation is being built out.
