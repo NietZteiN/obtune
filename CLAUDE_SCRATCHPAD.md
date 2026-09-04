@@ -51,6 +51,16 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   routes the new programs' variants through the aug path at the canonical seed. Configs:
   `mono_scale_generic_py.yaml`, `L0_scale_generic_py.yaml` (`adapter_root: runs/adapters_scale`, epochs 3).
 
+- **Seed band landed** (376083, 4.6 min): `mono_all − tuned_L0` pooled s17 +0.56 [−0.89, +2.01],
+  s42 +0.77 [−0.50, +2.07], s101 +0.01 [−1.30, +1.34]. Same shape every seed: L0 cost
+  (−1.4…−2.3, s101 excludes 0), L1b gain (+1.4…+2.8, s17/s42 exclude 0), rest null.
+  `scripts/analysis/26_campaign_arms.py` → `results/analysis/campaign_2026-09-03.json`.
+- W3 corpus: first build had 16 CSN `program_id` collisions (path-only id) → loader now
+  appends the function name; `02_build_corpus` refuses collisions; rebuilt as 376118.
+  Yield: mbpp 959 raw → ~750, CSN 161k loaded → 4,921 seeded → ~160. ≈ +900 programs
+  (+58 % over 1,563 train programs). Modest — say so; it is what the sources give.
+- Chain submitted: 376114 tr_aug7b → 376115 ck_aug7b → 376116 ev_aug7b (`--systems mono_aug`).
+
 ## Current state
 
 Phase 0–1 complete and verified; the RQ1–RQ3 implementation is being built out.

@@ -54,6 +54,14 @@ def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str]
         return 0, Counter({"missing_input": 1})
 
     bases = {r["program_id"]: r for r in load_training_jsonl(base_path)}
+    if aug_tag:
+        # Split-frozen extension corpora (02_build_corpus.py --extend-frozen <tag>) put
+        # NEW parents under data/train/base_<tag>/; a re-seed build has none and every
+        # variant resolves to the canonical parent above. Still under TRAIN_ROOT.
+        ext = TRAIN_ROOT / f"base_{aug_tag}" / f"{language}.jsonl"
+        if ext.exists():
+            for r in load_training_jsonl(ext):
+                bases.setdefault(r["program_id"], r)
     stats: Counter = Counter()
     rows: list[dict] = []
 

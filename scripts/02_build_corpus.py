@@ -295,6 +295,11 @@ def main() -> int:
     # transfer matrix (the cell where each adapter is evaluated on its own condition).
     rng = random.Random(int(data_cfg["splits"]["seed"]))
     ids = sorted({p["program_id"] for p in unique})
+    if len(ids) != len(unique):
+        # program_id is the split unit AND the item_id prefix; a collision would let two
+        # programs share a split slot and hand 06_emit_pairs duplicate item_ids.
+        dup = Counter(p["program_id"] for p in unique)
+        raise SystemExit(f"program_id collisions: {[k for k, v in dup.items() if v > 1][:5]}")
     rng.shuffle(ids)
     n = len(ids)
     if args.extend_frozen:

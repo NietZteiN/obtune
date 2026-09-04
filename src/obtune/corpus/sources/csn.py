@@ -66,8 +66,12 @@ def _iter(max_loc: int) -> Iterator[dict[str, Any]]:
                 continue
             seeds = _signature_seeds(fn)
             yield {
-                "program_id": "csn_" + str(row.get("func_path_in_repository") or row.get("func_name") or "")
-                              .replace("/", "_").replace(".", "_")[:80],
+                # Path AND function name: a file contributes several functions
+                # (aiohttp/cookiejar.py gave `_is_domain_match` and `_is_path_match` the
+                # same id in the 2026-09-03 scale build, 16 collisions in 909 programs).
+                "program_id": "csn_" + (str(row.get("func_path_in_repository") or "")
+                                        .replace("/", "_").replace(".", "_")[:60]
+                                        + "_" + fn.name[:40]),
                 "language": "python",
                 "source": SOURCE,
                 "code": code,
