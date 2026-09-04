@@ -121,6 +121,14 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   runs ~5 at epoch 0.4 vs the task loss ~1.5 (Qwen-1.5B started at 0.9 and ended at 0.03), so λ=1 here
   weights the term harder than λ=1 did there. Added λ=0.3 (train/ckpt/eval chained) so the sweep
   brackets it: 0, 0.3, 1, 1 mm, 3. Cache 377002 done in <1 h: 5,016/5,019 parents valid.
+- **Plumbing defect found while λ=0 trained (2026-09-04, fixed in `7ad5353`, NOT in the running arms):**
+  `AlignTrainer.compute_loss` dropped `num_items_in_batch`, so transformers skipped the /grad_accum
+  division → losses and gradients 4× mono_all's at every logged step (9.42 vs 2.27 at epoch 0.05,
+  0.0129 vs 0.0040 at 2.86; grad_norm ~4.6 vs ~1.0, so the 1.0 clip engaged nearly every step).
+  Same defect in the 08-30 Qwen sweep. Within-sweep contrasts (matched vs mismatched, vs λ=0) are
+  unaffected — all five arms share it; only "λ=0 == mono_all exactly" is weakened to "near-twin".
+  λ=0 eval_loss 1.372 vs mono_all 1.306. **The λ=0 − mono_all read decides whether W5 must rerun
+  under the fix** (inside the seed band → keep; outside → rerun all five, ~17 GPU-h).
 - **Decision rule:** matched > mismatched AND matched−mono_all excl 0 on ≥1 non-L0 condition
   without an L0 tax → H-align supported, then and only then consider the alt L_align forms.
   Matched ≈ mismatched ≈ mono_all → objective is a regularizer at 7B too; close the arm.
