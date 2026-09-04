@@ -129,6 +129,10 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   unaffected — all five arms share it; only "λ=0 == mono_all exactly" is weakened to "near-twin".
   λ=0 eval_loss 1.372 vs mono_all 1.306. **The λ=0 − mono_all read decides whether W5 must rerun
   under the fix** (inside the seed band → keep; outside → rerun all five, ~17 GPU-h).
+- **Plumbing PASSED (377010):** `align_lam0 − mono_all` **+0.28 [−0.71, +1.22]**, null on all six
+  (|Δ| ≤ 0.96); vs tuned_L0 +0.85 [−0.58, +2.34] with the fingerprint (L0 −1.80, L1b +1.93, S2 +2.16
+  excl 0). Val 0.3589 inside the s17/s42/s101 band (0.3672/0.3505/0.3573), best ckpt-838 like mono_all.
+  → the 4× gradient scale is absorbed; the sweep stands, no rerun. `results/analysis/align_2026-09-04.json`.
 - **Decision rule:** matched > mismatched AND matched−mono_all excl 0 on ≥1 non-L0 condition
   without an L0 tax → H-align supported, then and only then consider the alt L_align forms.
   Matched ≈ mismatched ≈ mono_all → objective is a regularizer at 7B too; close the arm.
