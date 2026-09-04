@@ -1,9 +1,10 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
-*Last updated: 2026-09-03*
-**Status:** master report reproduced on CodeLlama-7b with cluster-bootstrap CIs on every contrast, and one human-authorized H1 repair read (`pilot_eval`; `final_eval` unspent). **`tuned_L0` BEATS `mono_all` on H1: +0.041 [+0.018, +0.064]** — stronger than Qwen's "matches". `tuned_L0` ties the best specialist and best merge on H1, and ties `mono_all` / beats every merge on the trainable grid. RQ1 TR 0.906 [0.878, 0.932]; router == random [−0.008, +0.008]; LOTO fold indistinguishable from `mono_all`. Prefix-cache collision (2026-09-03) fixed, 28 cells quarantined, 13 re-run.
+*Last updated: 2026-09-04*
+**Status:** master report reproduced on CodeLlama-7b with cluster-bootstrap CIs on every contrast, and one human-authorized H1 repair read (`pilot_eval`; `final_eval` unspent). **`tuned_L0` BEATS `mono_all` on H1: +0.041 [+0.018, +0.064]** — stronger than Qwen's "matches". `tuned_L0` ties the best specialist and best merge on H1, and ties `mono_all` / beats every merge on the trainable grid. RQ1 TR 0.906 [0.878, 0.932]; router == random [−0.008, +0.008]; LOTO fold indistinguishable from `mono_all`. Prefix-cache collision (2026-09-03) fixed, 28 cells quarantined, 13 re-run. **Accuracy campaign (2026-09-04): self-consistency voting is not a lever for the tuned systems (`tuned_L0` −0.99 [−1.70, −0.31], `mono_all` +0.05); the `mono_all` = `tuned_L0` tie holds at s17/s42/s101.** Variant augmentation, split-frozen data scale and CodeLlama-13b in flight.
 
 ## Hypotheses — open
+- **H-peaked-breadth** — `mono_all`'s sample distribution is more peaked than `tuned_L0`'s (agreement 0.82 vs 0.60; any-of-8 0.46 vs 0.56 at equal greedy), so mixtures and merges built on breadth-trained adapters have less to ensemble. CONFIRM if any-of-8 − greedy for `merge_dare_ties` / the uniform MoLE mixture is smaller than for `tuned_L0`; REFUTE otherwise. Not scheduled.
 - **H-mixture** — the gain from an expert mixture is a capacity/ensembling effect, not a dispatch effect. Predicts that mixing N experts with a fixed uniform gate tracks mixing N adapters of any kind, including clean-code ones. The `l0merge` control says this for merging; the uniform/random tie says it for routing.
 - **H-scale-floor** — the format floor shrinks with model scale because format failures migrate
   onto items the model cannot solve anyway. Base format_fail is near-identical at the two scales
@@ -13,6 +14,8 @@
 - (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
+- **H-selfcons — SUPPORTED for tuned systems / REFUTED for `base`, 2026-09-04.** Predicted the 8-sample plurality vote sits within ~1 pt of greedy. `mono_all` +0.05 [−0.27, +0.37] (agreement 0.82), `tuned_L0` −0.99 [−1.70, −0.31] (a T=0.7 sample costs 3.5 pts; the vote recovers ~2.5), `base` +2.11 [+1.45, +2.81] of which 39 % is format repair. Any-of-8 ceilings (0.37/0.56/0.46) are headroom, not results. See `2026-09-04_self-consistency-and-seed-band.md`.
+- **H-seed-band — REFUTED, 2026-09-04.** The `mono_all` = `tuned_L0` tie is not a seed accident: pooled +0.56 / +0.77 / +0.01 pts at s17 / s42 / s101, every interval spanning zero; L0 cost and L1b gain stable across seeds.
 - **H-breadth-transfers — REFUTED with an interval on CodeLlama, 2026-09-03.** The adapter trained on all six obfuscations is 4.1 pts BELOW the clean-code-only adapter on the unseen obfuscator (+0.0412 [+0.0181, +0.0643] for `tuned_L0 − mono_all`) and ties it on the trainable grid. Breadth bought format, not transfer.
 - **H-closest-specialist — WITHDRAWN (unmotivated), 2026-09-03.** Opened on the `tuned_S2` (0.283) > `merge_dare_ties` (0.277) ordering on H1; the program-bootstrap CI on that gap is +0.0066 [−0.0107, +0.0247]. There is no ordering to explain. See `2026-09-03_cis-and-three-corrections.md`.
 - **H-format — REFUTED at 7B, SUPPORTED at 1.5B, 2026-08-30.** Label-shuffled control takes only
@@ -49,6 +52,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-04_self-consistency-and-seed-band.md`](2026-09-04_self-consistency-and-seed-band.md) — vote8 vs greedy: base +2.11 (format repair), tuned_L0 −0.99, mono_all +0.05; any-of-8 ceilings 0.37/0.56/0.46 as headroom only; mono_all seed band ties tuned_L0 at all three seeds
 - [`2026-09-03_h1-repair-clean-code-beats-breadth.md`](2026-09-03_h1-repair-clean-code-beats-breadth.md) — H1 repair read: `tuned_L0` beats `mono_all` +0.041 [+0.018, +0.064], ties best specialist and merge; on the trainable grid the RQ2 ladder collapses onto the clean control; ICL recovers 0.37 of tuning's gain
 - [`2026-09-03_prefix-cache-collision.md`](2026-09-03_prefix-cache-collision.md) — vLLM prefix cache keyed on a non-unique `lora_name`; 28 cells contaminated incl. the H1 pilot's `tuned_L0`; RQ2 control column and ICL fractions re-running; Qwen floor fractions unverifiable
 - [`2026-09-03_cis-and-three-corrections.md`](2026-09-03_cis-and-three-corrections.md) — cluster-bootstrap CIs on every CodeLlama contrast; three stated findings fail (tuned_L0 "beats"→matches; merge "departure"→noise; LOTO "costs 1.1 pts"→indistinguishable from mono_all); RQ1, routing null and merge-vs-l0merge survive

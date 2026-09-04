@@ -3,7 +3,7 @@
 *Protocol: [`CLAUDE.md`](CLAUDE.md) §0. Update before and after any complex task; this is
 working memory, not a log. The durable record lives in [`log/`](log/).*
 
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-04
 
 ---
 
@@ -59,7 +59,19 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   appends the function name; `02_build_corpus` refuses collisions; rebuilt as 376118.
   Yield: mbpp 959 raw → ~750, CSN 161k loaded → 4,921 seeded → ~160. ≈ +900 programs
   (+58 % over 1,563 train programs). Modest — say so; it is what the sources give.
-- Chain submitted: 376114 tr_aug7b → 376115 ck_aug7b → 376116 ev_aug7b (`--systems mono_aug`).
+- Chains (resubmitted after `train_size: null` crashed `int(None)` in build_sft_splits, fixed in data.py): aug 376282→376283→376284; mono_scale 376285→376286→376287; L0_scale 376288→376289→376290.
+
+### 2026-09-04 — W1 landed (376113, 11 min); log entry `log/transfer/2026-09-04_self-consistency-and-seed-band.md`
+- vote8 − greedy pooled: **base +2.11 [+1.45, +2.81]** (39 % of flips are format repairs, ff 0.136→0.013),
+  **tuned_L0 −0.99 [−1.70, −0.31]** (a T=0.7 sample costs 3.5 pts, vote recovers ~2.5),
+  **mono_all +0.05 [−0.27, +0.37]** (agreement 0.82 → vote ≈ greedy). H-selfcons held for tuned
+  systems; **W1 is dropped as a lever.** Any-of-8 ceilings 0.37 / 0.56 / 0.46 — headroom only,
+  no verifier exists at test time. Note `tuned_L0` has the MOST headroom and `mono_all` the least
+  at equal greedy → H-peaked-breadth (open, unscheduled).
+- Seed band: H-seed-band refuted, the tie is real at s17/s42/s101.
+- Still in flight: aug 376282→83→84 · mono_scale 376285→86→87 · L0_scale 376288→89→90 ·
+  13B 376097→99→100. Next: rerun `26_campaign_arms.py` (+ 13B control-relative), second entry,
+  master artifact update.
 
 ## Current state
 
