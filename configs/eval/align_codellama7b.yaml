@@ -23,6 +23,7 @@ peft:
 
 systems:
   - {name: align_lam0, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam0_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix}
+  - {name: align_lam0.3, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam0.3_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix}
   - {name: align_lam1, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam1_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix}
   - {name: align_lam1_mm, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam1_k4_L4-10-16-21-25-30_mismatch_s17/best", arch: invariance_mismatch, train_cond: mix}
   - {name: align_lam3, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam3_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix}

@@ -117,6 +117,10 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
 - **Untried n≠m answers, pending user's candidate list (cut off in message):** mean-pooled per-layer
   states + InfoNCE over the batch; `Variant.rename_map` token-aligned matching for L1b/L1r/L2
   (no map for S1/S2 → pooled fallback). Not built; answer-position first because it exists.
+- **Loss scale note (from the first log lines):** L_align is raw MSE on unnormalized states; at 7B it
+  runs ~5 at epoch 0.4 vs the task loss ~1.5 (Qwen-1.5B started at 0.9 and ended at 0.03), so λ=1 here
+  weights the term harder than λ=1 did there. Added λ=0.3 (train/ckpt/eval chained) so the sweep
+  brackets it: 0, 0.3, 1, 1 mm, 3. Cache 377002 done in <1 h: 5,016/5,019 parents valid.
 - **Decision rule:** matched > mismatched AND matched−mono_all excl 0 on ≥1 non-L0 condition
   without an L0 tax → H-align supported, then and only then consider the alt L_align forms.
   Matched ≈ mismatched ≈ mono_all → objective is a regularizer at 7B too; close the arm.
