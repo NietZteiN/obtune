@@ -292,6 +292,20 @@ def make_trainer_class():
             self.lam = float(lam)
             self._align_running = 0.0
             self._align_steps = 0
+            # GRADIENT-ACCUMULATION SCALING (found 2026-09-04 on the CodeLlama-7b W5 arms).
+            # transformers' training_step only divides the loss by the accumulation count
+            # when the model does NOT accept loss kwargs; otherwise it trusts compute_loss
+            # to have passed `num_items_in_batch` through so the model returns a loss
+            # already normalized over the whole accumulated batch. This override computes
+            # per-microbatch means and never forwards that kwarg, so every arm trained
+            # before this line -- the 2026-08-30 Qwen sweep and W5 -- ran on gradients
+            # grad_accum (4x) too large. Adam absorbs a constant scale, but max_grad_norm
+            # 1.0 then clips almost every step (grad_norm ~4.6 vs ~1.0 on mono_all), so
+            # lambda = 0 was a near-twin of the vanilla arm, not the exact twin the design
+            # promises. Declaring the truth here makes training_step apply the /accum to
+            # task and alignment terms alike. Residual difference from vanilla: mean of
+            # per-microbatch means instead of one mean over all supervised tokens.
+            self.model_accepts_loss_kwargs = False
 
         def compute_loss(self, model, inputs, return_outputs=False, **kw):
             align_idx = inputs.pop("align_idx", None)
