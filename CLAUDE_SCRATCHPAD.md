@@ -133,6 +133,20 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   (|Δ| ≤ 0.96); vs tuned_L0 +0.85 [−0.58, +2.34] with the fingerprint (L0 −1.80, L1b +1.93, S2 +2.16
   excl 0). Val 0.3589 inside the s17/s42/s101 band (0.3672/0.3505/0.3573), best ckpt-838 like mono_all.
   → the 4× gradient scale is absorbed; the sweep stands, no rerun. `results/analysis/align_2026-09-04.json`.
+- **W5 CLOSED (2026-09-04).** All five arms landed. Plumbing gate passed (λ=0 − mono_all +0.28
+  [−0.71, +1.22], null on six). **Control decides it: matched − mismatched +0.18 [−0.82, +1.16]**,
+  null on every condition, both ~1 pt under the vanilla twin. Grid dose-response monotone negative
+  (+0.28 → +0.00 → −0.78 → −2.11 for λ 0/0.3/1/3; λ=3 excludes 0 on all six) while align_loss is flat
+  (3.475/3.415/3.374 matched vs 5.239 mismatched) — magnitude matters, target does not. L0 tax deepens
+  −1.80 → −3.35 → −4.97; λ=3 erases the L1b gain. Val non-monotone, mismatched arm highest (0.3652).
+  Entry `log/modularity/2026-09-04_invariance-arm-at-7b.md`; report §23.3. B/C (InfoNCE, rename_map)
+  NOT motivated — the answer-position variant already has exact correspondence and it was the teacher
+  that did not matter.
+- **H-L1b-L0-trade RESOLVED same day** (`log/transfer/2026-09-04_l1b-l0-trade-is-two-effects.md`,
+  report §22.6): L1b gain located + dose-dependent (0.17 zero-dose → 0.408 matched specialist → 0.44–0.54
+  breadth); L0 cost NOT localized (pay ratio flat across the ladder; tuned_S2 2.49 vs mono_all 3.10).
+  Naive correlation and raw pay-gap both falsely confirmed it — base posts the largest correlation of any
+  arm. Opens H-L0-cost-source. `tuned_S2` is the only tuned system with no L0 cost (−0.06).
 - **Decision rule:** matched > mismatched AND matched−mono_all excl 0 on ≥1 non-L0 condition
   without an L0 tax → H-align supported, then and only then consider the alt L_align forms.
   Matched ≈ mismatched ≈ mono_all → objective is a regularizer at 7B too; close the arm.
