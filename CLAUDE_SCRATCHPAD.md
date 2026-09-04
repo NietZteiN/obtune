@@ -69,6 +69,23 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   no verifier exists at test time. Note `tuned_L0` has the MOST headroom and `mono_all` the least
   at equal greedy → H-peaked-breadth (open, unscheduled).
 - Seed band: H-seed-band refuted, the tie is real at s17/s42/s101.
+- **W3 (L0 half) landed** (376288 train 33 min / 376289 ck best `checkpoint-348` val 0.402 / 376365 eval —
+  376290 died on my `arch: single` typo, fixed b21525b): `tuned_L0_scale − tuned_L0` pooled
+  **−0.20 [−1.00, +0.61]**, every condition null (L0 −0.66, L1b +0.48, L1r −0.06, L2 −0.78,
+  S1 +0.56, S2 −0.54). +58 % programs (4,689 → 7,425 L0 rows, mbpp+CSN) buys nothing. Consistent
+  with the mono_all "5.7× data → +0.11 pt" result: the corpus is not the bottleneck.
+- **W4 (13B) landed** (376097 tr13_mono 5 h 10 m, loss 0.134; 376099 ck best `checkpoint-838` val 0.412;
+  376100 ev13_grid). `results/analysis/campaign_13b_2026-09-04.json`. **13B − 7B (same items):
+  tuned_L0 +3.39 [+1.93, +4.89], mono_all +3.60 [+1.83, +5.23], base +1.54 [+0.10, +2.99].** Positive
+  on every condition for both adapters. The biggest absolute win of the campaign, and the only
+  lever that moved anything. At 13B `mono_all − tuned_L0` = +0.77 [−0.71, +2.20] — the same tie,
+  same shape as every 7B seed (L0 −2.34 [−4.31, −0.30]; L1b +2.71 [+0.60, +4.83]; rest null).
+  format_fail base 0.102 / tuned_L0 0.016 / mono_all 0.011.
+- **W3 (mono half) landed** (376285 5 h 16 m, loss 0.121; 376286 best `checkpoint-662` = epoch 1, val 0.363;
+  376287 eval): `mono_scale − mono_all` **+0.73 [−0.66, +2.10]**, null everywhere (L1b +1.51, L1r +1.26,
+  L2 +1.08 the largest, all spanning 0). `mono_scale − tuned_L0` +1.29 [−0.14, +2.69] with the usual
+  fingerprint (L0 −1.98 [−3.90, −0.24]; L1b +3.92 [+1.75, +6.03]; S2 +2.34 [+0.48, +4.26]). +58 %
+  programs is inside the seed band (s42 was +0.77 over tuned_L0). W3 is closed: null on both halves.
 - Still in flight: aug 376282→83→84 · mono_scale 376285→86→87 · L0_scale 376288→89→90 ·
   13B 376097→99→100. Next: rerun `26_campaign_arms.py` (+ 13B control-relative), second entry,
   master artifact update.
