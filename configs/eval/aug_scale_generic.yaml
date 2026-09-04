@@ -22,6 +22,6 @@ peft:
 systems:
   - {name: mono_aug, adapter: "runs/adapters_aug/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
   - {name: mono_scale, adapter: "runs/adapters_scale/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
-  - {name: tuned_L0_scale, adapter: "runs/adapters_scale/{model}/{language}/L0_r32_s17/best", arch: single, train_cond: L0}
+  - {name: tuned_L0_scale, adapter: "runs/adapters_scale/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
 
 eval_conditions: [L0, L1b, L1r, L2, S1, S2]
