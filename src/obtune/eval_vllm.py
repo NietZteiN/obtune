@@ -450,8 +450,18 @@ class Engine:
         p = str(resolve_path(adapter_path))
         if p not in self._lora_ids:
             self._lora_ids[p] = len(self._lora_ids) + 1  # vLLM requires lora_int_id >= 1
-        return LoRARequest(lora_name=Path(p).parent.name + "/" + Path(p).name,
-                           lora_int_id=self._lora_ids[p], lora_path=p)
+        # lora_name MUST be unique per adapter path, not merely descriptive. vLLM's prefix
+        # cache keys KV blocks on `lora_name` (v1/core/kv_cache_utils.py::
+        # _gen_lora_extra_hash_keys), NOT on lora_int_id. Until 2026-09-03 this was
+        # `<parent>/<leaf>`, so `runs/adapters/.../L0_r32_s17/best` and
+        # `runs/adapters_formatonly/.../L0_r32_s17/best` were both named "L0_r32_s17/best":
+        # whichever ran second in an engine silently reused the first one's cached prompt
+        # KV, decoding tuned_L0 on top of the label-shuffled control's prefill. It cost
+        # tuned_L0 3-6 points in every job where formatonly preceded it -- including the
+        # CodeLlama H1 pilot -- and the only tells were a halved elapsed_s and ~60 %
+        # output agreement with the same adapter in another job. The full path is unique
+        # by construction and stays readable in vLLM's logs.
+        return LoRARequest(lora_name=p, lora_int_id=self._lora_ids[p], lora_path=p)
 
     def version(self) -> str:
         if self.stub:

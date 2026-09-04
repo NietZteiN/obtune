@@ -1,7 +1,7 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
 *Last updated: 2026-09-03*
-**Status:** master report reproduced on CodeLlama-7b including ONE H1 read (`pilot_eval`; final pass unspent), now with cluster-bootstrap CIs on every contrast. tuned_L0 MATCHES mono_all on H1 (+0.006 [−0.017, +0.029]); the merge-vs-specialist ordering on H1 is inside noise; LOTO fold indistinguishable from mono_all. Surviving: RQ1 TR 0.906 [0.878, 0.932]; router==random [−0.008, +0.008]; obfuscation merge beats clean-code merge on H1 [+0.003, +0.028].
+**Status:** master report reproduced on CodeLlama-7b including ONE H1 read (`pilot_eval`; final pass unspent), with cluster-bootstrap CIs on every contrast. **The H1 `tuned_L0` row is CONTAMINATED (prefix-cache collision, 2026-09-03) and its comparison to `mono_all` is withdrawn pending a human decision on a re-read;** the merge-vs-specialist ordering on H1 is inside noise; LOTO fold indistinguishable from mono_all. Surviving: RQ1 TR 0.906 [0.878, 0.932]; router==random [−0.008, +0.008]; obfuscation merge beats clean-code merge on H1 [+0.003, +0.028].
 
 ## Hypotheses — open
 - **H-mixture** — the gain from an expert mixture is a capacity/ensembling effect, not a dispatch effect. Predicts that mixing N experts with a fixed uniform gate tracks mixing N adapters of any kind, including clean-code ones. The `l0merge` control says this for merging; the uniform/random tie says it for routing.
@@ -44,9 +44,11 @@
   test plumbing, not correctness.
 
 ## Open ideas
+- **Canary re-eval per job** (2026-09-03): re-evaluate one adapter at the END of every eval job and assert ≥95 % raw-output agreement with its first cell. The only guard that compares an adapter against itself across engine state; would have caught the prefix-cache collision on day one.
 - (none yet)
 
 ## Entries
+- [`2026-09-03_prefix-cache-collision.md`](2026-09-03_prefix-cache-collision.md) — vLLM prefix cache keyed on a non-unique `lora_name`; 28 cells contaminated incl. the H1 pilot's `tuned_L0`; RQ2 control column and ICL fractions re-running; Qwen floor fractions unverifiable
 - [`2026-09-03_cis-and-three-corrections.md`](2026-09-03_cis-and-three-corrections.md) — cluster-bootstrap CIs on every CodeLlama contrast; three stated findings fail (tuned_L0 "beats"→matches; merge "departure"→noise; LOTO "costs 1.1 pts"→indistinguishable from mono_all); RQ1, routing null and merge-vs-l0merge survive
 - [`2026-09-02_h1-codellama-pilot.md`](2026-09-02_h1-codellama-pilot.md) — H1 pilot: clean-code result reproduces, merge result inverts; the format floor is worth nothing on H1
 - [`2026-09-02_codellama-master-report-tranches.md`](2026-09-02_codellama-master-report-tranches.md) — routing worth nothing (router == random); capacity not the cause of breadth failure; RQ3 mechanism reproduces; a Grid B/Grid A mixup caught by sample size
