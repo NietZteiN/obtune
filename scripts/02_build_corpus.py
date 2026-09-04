@@ -104,7 +104,18 @@ def main() -> int:
     ap.add_argument("--target", type=int, default=None, help="stop once this many programs survive")
     ap.add_argument("--workers", type=int, default=32)
     ap.add_argument("--out", default=None)
+    # DATA-SCALE EXTENSION (2026-09-03). A plain re-run with more tiers would re-shuffle
+    # `data/splits/<lang>.json` and move programs between train and the frozen test set,
+    # invalidating every cell in results/. `--extend-frozen` instead treats the existing
+    # base corpus AND the testset as the dedup exclusion set, assigns every survivor to
+    # `train` (val stays the original 111 so checkpoint selection is unchanged across the
+    # scale sweep), writes to data/train/base_<tag>/<lang>.jsonl, and records the
+    # assignment in data/splits/<lang>_<tag>.json WITHOUT touching the canonical file.
+    ap.add_argument("--extend-frozen", default=None, metavar="TAG",
+                    help="add train-only programs under a tag; never rewrites the canonical split")
     args = ap.parse_args()
+    if args.extend_frozen and args.out:
+        ap.error("--extend-frozen chooses its own --out (data/train/base_<tag>/)")
 
     lang = args.language
     data_cfg = load_config("data.yaml")
@@ -123,6 +134,12 @@ def main() -> int:
         for spec in (src_cfg.get(lang) or {}).get(tier, []) or []:
             module = spec.get("loader")
             loader = spec["name"] if spec["name"] in SOURCE_LOADERS else None
+            if spec["name"] == "mbppplus":
+                # Not a program source: the mbpp loader already folds MBPP+ inputs into the
+                # MBPP programs (`_plus_cases`). Loading it again yields the same 974
+                # programs under the same ids, doubling the screening cost for nothing.
+                print("  skip mbppplus: its inputs are merged by the mbpp loader")
+                continue
             if not module and not loader:
                 print(f"  skip {spec['name']}: no loader registered and no `loader:` key")
                 continue
@@ -137,6 +154,16 @@ def main() -> int:
                 reasons[f"source_unavailable:{spec['name']}"] += 1
                 continue
             print(f"  loaded {len(got):>6} from {spec['name']}")
+            # A synthesis-only source (CSN) yields every parseable function, seeded or not;
+            # the unseeded ones (~97% of CSN) cannot pass build_cases and would only burn
+            # normalize/filter time. Drop them here and count them as attrition.
+            unseeded = [r for r in got if r.get("meta", {}).get("needs_input_synthesis")
+                        and not r.get("seed_cases")]
+            if unseeded:
+                reasons["load:no_signature_seeds"] += len(unseeded)
+                got = [r for r in got if r.get("seed_cases")
+                       or not r.get("meta", {}).get("needs_input_synthesis")]
+                print(f"    {spec['name']}: {len(unseeded)} unseeded functions dropped at load")
             raw.extend(got)
     stage["raw"] = len(raw)
     if not raw:
@@ -241,6 +268,19 @@ def main() -> int:
     for v in (ex_cfg.get("dataset_a") or {}).values():
         exclude.update(v or [])
     test_progs = _test_programs(lang)
+    if args.extend_frozen:
+        # The existing corpus is a hard exclusion set: a new program that near-duplicates
+        # an old train program is redundant, and one that near-duplicates an old VAL
+        # program would leak selection signal into training. Both go into the same slot
+        # the test set occupies, so `dedup` treats them identically.
+        canon = TRAIN_ROOT / "base" / f"{lang}.jsonl"
+        existing = list(iter_jsonl(canon)) if canon.exists() else []
+        seen_ids = {r["program_id"] for r in existing}
+        programs = [p for p in programs if p["program_id"] not in seen_ids]
+        stage["new_ids"] = len(programs)
+        print(f"  extend-frozen[{args.extend_frozen}]: {len(existing)} existing programs "
+              f"excluded by id and by content; {len(programs)} candidates remain")
+        test_progs = list(test_progs) + existing
     res = dedup_mod.dedup(programs, test_progs, exclude_ids=exclude,
                           threshold=float(data_cfg["dedup"]["jaccard_threshold"]))
     unique = res.kept if hasattr(res, "kept") else res
@@ -257,6 +297,8 @@ def main() -> int:
     ids = sorted({p["program_id"] for p in unique})
     rng.shuffle(ids)
     n = len(ids)
+    if args.extend_frozen:
+        n = 0  # every extension program trains; nothing is carved off for val/test
     n_val = int(n * float(data_cfg["splits"]["val_fraction"])) if n else 0
     n_test = int(n * float(data_cfg["splits"].get("test_fraction", 0.0))) if n else 0
     if n:  # never let rounding empty a split that was asked for
@@ -284,10 +326,15 @@ def main() -> int:
             loc=int(p.get("loc", 0)), meta=p.get("meta", {}),
         ).model_dump())
 
-    out = Path(args.out) if args.out else (TRAIN_ROOT / "base" / f"{lang}.jsonl")
+    if args.extend_frozen:
+        out = TRAIN_ROOT / f"base_{args.extend_frozen}" / f"{lang}.jsonl"
+        split_file = SPLITS_ROOT / f"{lang}_{args.extend_frozen}.json"
+    else:
+        out = Path(args.out) if args.out else (TRAIN_ROOT / "base" / f"{lang}.jsonl")
+        split_file = SPLITS_ROOT / f"{lang}.json"
     write_jsonl(out, rows)
     SPLITS_ROOT.mkdir(parents=True, exist_ok=True)
-    (SPLITS_ROOT / f"{lang}.json").write_text(json.dumps(
+    split_file.write_text(json.dumps(
         {"seed": int(data_cfg["splits"]["seed"]), "by": "program_id",
          "n_train": sum(1 for v in assignment.values() if v == "train"),
          "n_val": sum(1 for v in assignment.values() if v == "val"),
@@ -304,7 +351,9 @@ def main() -> int:
         "out": str(out),
     }
     MANIFESTS_ROOT.mkdir(parents=True, exist_ok=True)
-    (MANIFESTS_ROOT / f"corpus_{lang}.json").write_text(json.dumps(report, indent=1))
+    report_name = f"corpus_{lang}" + (f"_{args.extend_frozen}" if args.extend_frozen else "")
+    report["extend_frozen"] = args.extend_frozen
+    (MANIFESTS_ROOT / f"{report_name}.json").write_text(json.dumps(report, indent=1))
 
     print(f"\n  wrote {len(rows)} programs -> {out}")
     print("  stages: " + " -> ".join(f"{k}={v}" for k, v in stage.items()))

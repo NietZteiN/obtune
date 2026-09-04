@@ -1,0 +1,44 @@
+# Self-consistency at inference — the first non-greedy cells in the project. MODEL-NEUTRAL.
+#
+# WHAT IS NEW. Every cell under results/cells/ so far is greedy (temperature 0). Here each
+# prompt is sampled n=8 times at T=0.7 and the answer is a plurality vote over the PARSED
+# literal (eval_vllm.self_consistency_vote); rows also carry `sc_any_correct`, the pass@8-style
+# ceiling a perfect reranker would reach. That ceiling is reported as headroom, never as a
+# result: the model does not know which sample is right.
+#
+# EXPECTATION, WRITTEN BEFORE RUNNING. The prompt is no-CoT and the answer is a short literal,
+# so the plurality of 8 samples is mostly the mode of the output distribution — i.e. the greedy
+# answer. Self-consistency earns its keep by marginalising over reasoning paths, which this
+# format has none of. A vote within ~1 pt of greedy is the predicted outcome; the informative
+# number is any-of-8 minus greedy.
+#
+# NO H1 (CLAUDE.md §3.2): n and T are read on the trainable grid; H1's single final read stays
+# unspent. Own `phase` so these cells can never be confused with the greedy grids.
+_extends: _base_eval.yaml
+
+phase: selfcons_generic
+experiment_id: selfcons_generic
+run_tag: selfcons_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+sampling:
+  temperature: 0.7
+  top_p: 0.95
+  n: 8
+  max_tokens: 64
+  stop: ["\n\n", "```"]
+  seed: 17
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

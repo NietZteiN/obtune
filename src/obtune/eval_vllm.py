@@ -353,7 +353,11 @@ def write_cell(cell: Path, rows: list[dict[str, Any]], meta: Mapping[str, Any]) 
     cell.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame(rows)
     out = cell / "trials.parquet"
-    df.to_parquet(out, index=False)
+    # Write-then-rename: a resume skips a cell whose parquet exists, so a crash mid-write
+    # must not leave a truncated file that looks finished (see _main_fastfail).
+    tmp = cell / "trials.parquet.tmp"
+    df.to_parquet(tmp, index=False)
+    os.replace(tmp, out)
     (cell / "cell_meta.json").write_text(json.dumps(dict(meta), indent=2, default=str))
     return out
 
@@ -414,6 +418,9 @@ class Engine:
         self._llm = None
         self._tokenizer = None
         self._lora_ids: dict[str, int] = {}
+        #: per-prompt [(text, n_tokens), ...] from the last generate() call when
+        #: sampling.n > 1; None otherwise. run_cell votes over it.
+        self.last_samples: Optional[list[list[tuple[str, int]]]] = None
 
     @property
     def tokenizer(self):
@@ -478,12 +485,17 @@ class Engine:
             return [f"<stub:{sha256_text(t)[:8]}>" for t in texts], [4] * len(texts)
         from vllm import SamplingParams
 
+        n = int(sampling.get("n", 1) or 1)
+        if n > 1 and float(sampling.get("temperature", 0.0)) <= 0.0:
+            # n identical greedy completions is a wasted n-fold pass, not a vote.
+            raise ValueError("sampling.n > 1 requires temperature > 0")
         params = SamplingParams(
             temperature=float(sampling.get("temperature", 0.0)),
             top_p=float(sampling.get("top_p", 1.0)),
             max_tokens=int(sampling.get("max_tokens", 64)),
             stop=list(sampling.get("stop", []) or []),
             seed=int(sampling.get("seed", GLOBAL_SEED)),
+            n=n,
         )
         # One LoRARequest per prompt: this is what makes a routed cell (a different
         # adapter per item) a single batched call instead of one call per adapter.
@@ -510,12 +522,72 @@ class Engine:
         print(f"[engine] returned {len(gen)} completion(s): "
               f"{len(set(texts))} distinct prompt(s) -> {len(set(gen))} distinct output(s)",
               flush=True)
+        if n > 1:
+            # Self-consistency: hand back EVERY sample per prompt; run_cell votes. Kept on
+            # the same method so the LoRA batching / collapse telemetry above is shared.
+            self.last_samples = [
+                [(c.text, len(c.token_ids)) for c in o.outputs] for o in outs
+            ]
+        else:
+            self.last_samples = None
         return (gen, [len(o.outputs[0].token_ids) for o in outs])
 
 
 # --------------------------------------------------------------------------- #
 # Grid mode
 # --------------------------------------------------------------------------- #
+
+def self_consistency_vote(
+    samples: Sequence[Sequence[tuple[str, int]]],
+    items: Sequence[EvalItem],
+    float_tol: float = scoring.DEFAULT_FLOAT_TOL,
+) -> tuple[list[str], list[int], list[dict[str, Any]]]:
+    """Plurality vote over the NORMALISED literal of n sampled completions per item.
+
+    Design notes, because the obvious alternatives are wrong here:
+      * The vote key is the repr of the PARSED literal, not the raw text — `'abc'` and
+        `"abc"` are one answer. Samples that fail to parse do not vote (a format failure is not an opinion),
+        but if every sample fails, sample 0 is returned so the row still grades as a
+        format failure rather than vanishing.
+      * Ties break toward the EARLIEST sample holding the winning key. Sampling is seeded,
+        so this is deterministic; it is also the only tie rule that does not peek at gold.
+      * `sc_any_correct` (was ANY of the n samples right?) is the pass@n-style ceiling a
+        perfect reranker would reach. It is reported, never used for selection, and must
+        not be mistaken for an accuracy: the model does not know which sample it is.
+    Grading a sample here uses gold only to compute `sc_any_correct`; the vote itself is
+    gold-blind.
+    """
+    from collections import Counter
+
+    outs: list[str] = []
+    ntoks: list[int] = []
+    extras: list[dict[str, Any]] = []
+    for it, cands in zip(items, samples):
+        grades = [scoring.grade(t, it.output_repr, it.language, float_tol) for t, _ in cands]
+        # Key = repr of the PARSED value, so 'abc' and "abc" (or [1,2] and [1, 2]) are one
+        # vote. `pred_norm` alone only strips whitespace and fences.
+        keys = [
+            repr(scoring.parse_literal(g.pred_norm, it.language)[1]) if g.parse_ok else None
+            for g in grades
+        ]
+        voting = [k for k in keys if k is not None]
+        if voting:
+            win, n_win = Counter(voting).most_common(1)[0]
+            idx = keys.index(win)
+        else:
+            win, n_win, idx = None, 0, 0
+        outs.append(cands[idx][0])
+        ntoks.append(cands[idx][1])
+        extras.append({
+            "sc_n": len(cands),
+            "sc_n_parsed": len(voting),
+            "sc_n_distinct": len(set(voting)),
+            "sc_agree": (n_win / len(cands)) if cands else 0.0,
+            "sc_any_correct": int(any(g.correct for g in grades)),
+            "sc_first_correct": int(grades[0].correct) if grades else 0,
+        })
+    return outs, ntoks, extras
+
 
 def _load_route_map(path: str) -> dict[str, str]:
     with open(resolve_path(path)) as f:
@@ -610,6 +682,14 @@ def run_cell(
     t0 = time.time()
     outs, ntoks = engine.generate(texts, cfg.get("sampling", {}), adapters)
     elapsed = time.time() - t0
+    float_tol = float((cfg.get("scoring") or {}).get("float_tol", scoring.DEFAULT_FLOAT_TOL))
+    extras: Optional[list[dict[str, Any]]] = None
+    if getattr(engine, "last_samples", None):
+        outs, ntoks, extras = self_consistency_vote(engine.last_samples, items, float_tol)
+        n_any = sum(e["sc_any_correct"] for e in extras)
+        print(f"[eval_vllm] self-consistency n={extras[0]['sc_n']}: mean agreement "
+              f"{sum(e['sc_agree'] for e in extras) / len(extras):.3f}, "
+              f"any-of-n correct {n_any}/{len(extras)}", flush=True)
 
     adapter_ids = sorted({a for a in adapters if a})
     meta = {
@@ -635,8 +715,13 @@ def run_cell(
     rows = build_trial_rows(
         items, outs, ntoks, system, {**meta, **prompts.provenance_block(
             oracle=system.prompt_oracle, one_shot=system.one_shot)},
-        float_tol=float((cfg.get("scoring") or {}).get("float_tol", scoring.DEFAULT_FLOAT_TOL)),
+        float_tol=float_tol,
     )
+    if extras:
+        for r, e in zip(rows, extras):
+            r.update(e)
+        meta["sc_any_correct_rate"] = round(sum(e["sc_any_correct"] for e in extras) / len(extras), 6)
+        meta["sc_mean_agree"] = round(sum(e["sc_agree"] for e in extras) / len(extras), 6)
     acc = sum(r["correct"] for r in rows) / len(rows) if rows else 0.0
     ff = sum(r["format_fail"] for r in rows) / len(rows) if rows else 0.0
     meta["accuracy"] = round(acc, 6)
@@ -1131,7 +1216,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         from transformers import AutoTokenizer
         from obtune.train_sft import resolve_model_cfg
 
-        mcfg = resolve_model_cfg({"model": (cfg.get("models") or [cfg["model"]])[0]})
+        # Model-neutral configs carry no `model:`; --model supplies it, as in run_grid.
+        model_key = getattr(args, "model", None) or (cfg.get("models") or [cfg["model"]])[0]
+        mcfg = resolve_model_cfg({"model": model_key})
         tok = AutoTokenizer.from_pretrained(mcfg["hf_id"])
         texts = render_prompts(items[:1], systems[0], tok)
         print(json.dumps({
@@ -1179,6 +1266,19 @@ def _main_fastfail() -> int:
               file=sys.stderr, flush=True)
         sys.stderr.flush()
         os._exit(3)
+    except BaseException:  # noqa: BLE001
+        # 2026-09-03: the same wedge, reached from a different door. A TrialRow validation
+        # error in cell 1 of `selfcons_cl7b` (job 376082) printed its traceback and then the
+        # process sat on an H200 for 14 minutes until it was cancelled by hand — under SLURM
+        # nothing reaps it before walltime, so the "may legitimately need cleanup" argument
+        # above costs a 3-hour allocation per crash. Cells are written atomically per cell
+        # and the grid summary is only produced on success, so there is nothing a crashed
+        # run can lose to a skipped atexit. Print, flush, and leave without vLLM teardown.
+        import traceback
+        traceback.print_exc()
+        sys.stderr.flush()
+        sys.stdout.flush()
+        os._exit(1)
 
 
 if __name__ == "__main__":

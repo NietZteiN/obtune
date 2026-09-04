@@ -30,8 +30,10 @@ from obtune.paths import (  # noqa: E402
 from obtune.schema import BaseProgram  # noqa: E402
 
 
-def _load_targets(target: str) -> dict[str, list[BaseProgram]]:
+def _load_targets(target: str, base_root: Path | None = None) -> dict[str, list[BaseProgram]]:
     root = (EVAL_ROOT / "testset" / "base") if target == "testset" else (TRAIN_ROOT / "base")
+    if base_root is not None:
+        root = base_root
     by_lang: dict[str, list[BaseProgram]] = {lang: [] for lang in LANGUAGES}
     if not root.exists():
         raise SystemExit(f"no base programs at {root} — run the ingest/corpus step first")
@@ -54,7 +56,36 @@ def main() -> int:
                     help="ladder file; use conditions_composite.yaml for the C_ codes")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--dry-run", action="store_true")
+    # VARIANT AUGMENTATION (2026-09-03). The canonical build gives every program exactly ONE
+    # variant per condition, drawn at `global_seed`. For the randomised transforms (L1b's
+    # name pool, L1r's hex names, S1's state ids and case order, S2's predicates) a second
+    # seed is a genuinely different surface over the same semantics -- the textbook
+    # augmentation for invariance, and untried here. `--aug-tag` writes such a build to
+    # data/train/variants_aug/<tag>/ so it can never overwrite the canonical variants, the
+    # coverage matrix or the reject dump; `06_emit_pairs.py --aug-tag` materialises it.
+    ap.add_argument("--seed", type=int, default=None,
+                    help="override conditions.yaml global_seed (use with --aug-tag)")
+    ap.add_argument("--aug-tag", default=None,
+                    help="write to data/train/variants_aug/<tag>/ instead of variants/")
+    # DATA-SCALE EXTENSION (2026-09-03): `02_build_corpus.py --extend-frozen <tag>` writes
+    # NEW train-only programs to data/train/base_<tag>/. Their variants go through the same
+    # aug-tag route (so 06_emit_pairs / data.load_pairs pick them up via augment_tags)
+    # but at the canonical seed — these are different programs, not re-seeds.
+    ap.add_argument("--base-root", default=None,
+                    help="read base programs from this directory instead of data/train/base/ "
+                         "(requires --aug-tag; --seed optional)")
     args = ap.parse_args()
+    if args.aug_tag and args.target != "train":
+        print("refusing: --aug-tag is a TRAINING-side augmentation; the eval variants are frozen")
+        return 2
+    if args.base_root and not args.aug_tag:
+        print("refusing: --base-root output must be tagged (--aug-tag) so it cannot land on "
+              "the canonical variants/")
+        return 2
+    if not args.base_root and (args.seed is not None) != (args.aug_tag is not None):
+        print("refusing: --seed and --aug-tag go together (a re-seeded build must not land "
+              "on the canonical paths, and a tagged build at the canonical seed is a duplicate)")
+        return 2
 
     if "H1" in args.conditions:
         print("refusing: H1 is quarantined — use scripts/gen_h1_quarantined.py")
@@ -67,13 +98,19 @@ def main() -> int:
     # Suffix both by the ladder file whenever it is not the canonical one.
     stem = Path(args.conditions_config).stem
     tag = "" if stem == "conditions" else "_" + stem.replace("conditions_", "")
+    if args.aug_tag:
+        tag += f"_aug_{args.aug_tag}"
     out_root = (EVAL_ROOT / "testset" / "variants") if args.target == "testset" else (TRAIN_ROOT / "variants")
+    if args.aug_tag:
+        out_root = TRAIN_ROOT / "variants_aug" / args.aug_tag
+    build_seed = int(cfg.get("global_seed", 17)) if args.seed is None else int(args.seed)
     summary: dict[str, dict] = {}
 
-    for language, programs in _load_targets(args.target).items():
+    base_root = Path(args.base_root) if args.base_root else None
+    for language, programs in _load_targets(args.target, base_root).items():
         report = builder.build_variants(
             programs, args.conditions, language, workers=args.workers,
-            seed=int(cfg.get("global_seed", 17)), write=False, cfg=cfg,
+            seed=build_seed, write=False, cfg=cfg,
         )
         counts = {c: 0 for c in args.conditions}
         for v in report.variants:
@@ -101,7 +138,8 @@ def main() -> int:
             write_jsonl(Path(f"data/rejects/{language}/{args.target}{tag}.jsonl"), report.rejects)
 
         summary[language] = {"n_programs": n, "coverage": counts,
-                             "common_subset": common, "n_common": len(common)}
+                             "common_subset": common, "n_common": len(common),
+                             "seed": build_seed, "aug_tag": args.aug_tag, "base_root": args.base_root}
 
     if not args.dry_run:
         MANIFESTS_ROOT.mkdir(parents=True, exist_ok=True)

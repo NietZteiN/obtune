@@ -58,7 +58,9 @@ class DataContractError(RuntimeError):
 # Paths
 # --------------------------------------------------------------------------- #
 
-def pairs_path(condition: str, language: str) -> Path:
+def pairs_path(condition: str, language: str, aug_tag: Optional[str] = None) -> Path:
+    if aug_tag:
+        return paths.TRAIN_ROOT / "pairs_aug" / aug_tag / condition / f"{language}.jsonl"
     return paths.TRAIN_ROOT / PAIRS_SUBDIR / condition / f"{language}.jsonl"
 
 
@@ -110,8 +112,15 @@ def load_pairs(
     splits: Optional[Sequence[str]] = None,
     validate: bool = True,
     allow_composites: bool = False,
+    augment_tags: Optional[Sequence[str]] = None,
 ) -> list[TrainPair]:
     """Load training pairs for `conditions`. The ONLY training-data entry point.
+
+    `augment_tags` adds the re-seeded variant builds under data/train/pairs_aug/<tag>/ for
+    the SAME conditions (scripts/05_build_variants.py --aug-tag). A condition whose
+    transform is deterministic (L0, L2) has no augmented file and is silently taken once;
+    everything else is loaded K+1 times with distinct item_ids. Still under TRAIN_ROOT,
+    so every quarantine layer applies unchanged.
 
     `paths.load_training_jsonl` enforces the quarantine guard (path root + H1 label);
     `TrainPair` re-enforces it in its validator. Both layers are intentional.
@@ -144,6 +153,12 @@ def load_pairs(
             raise FileNotFoundError(f"missing training pairs for {cond}/{language}: {p}")
         for raw in paths.load_training_jsonl(p):
             rows.append(TrainPair(**raw))
+        for tag in (augment_tags or []):
+            pa = pairs_path(cond, language, aug_tag=tag)
+            if not pa.exists():
+                continue  # deterministic transform: nothing to augment with
+            for raw in paths.load_training_jsonl(pa):
+                rows.append(TrainPair(**raw))
     if splits is not None:
         keep = set(splits)
         rows = [r for r in rows if r.split in keep]
@@ -433,8 +448,10 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     oracle = bool(pcfg.get("oracle", False))
     one_shot = bool(pcfg.get("one_shot", False))
 
+    augment_tags = [str(t) for t in (tcfg.get("augment_tags") or [])]
     rows = load_pairs(train_conditions, language,
-                      allow_composites=bool(config.get('allow_composites', False)))
+                      allow_composites=bool(config.get('allow_composites', False)),
+                      augment_tags=augment_tags)
     report = validate_pairs(rows)
 
     train_rows = [r for r in rows if r.split == "train"]
@@ -495,6 +512,7 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
             "n_train": len(train_rows),
             "n_val": len(val_rows),
             "n_train_programs": len({r.program_id for r in train_rows}),
+            "augment_tags": augment_tags,
             "l0_replay_fraction": replay,
             "corpus": report.as_dict(),
             **prompts.provenance_block(oracle=oracle, one_shot=one_shot),

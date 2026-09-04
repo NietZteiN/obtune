@@ -40,9 +40,16 @@ def _split_of(program_id: str, splits: dict[str, str]) -> str:
     return splits.get(program_id, "train")
 
 
-def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str]) -> tuple[int, Counter]:
+def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str],
+             aug_tag: str | None = None) -> tuple[int, Counter]:
     base_path = TRAIN_ROOT / "base" / f"{language}.jsonl"
     var_path = TRAIN_ROOT / "variants" / condition / f"{language}.jsonl"
+    if aug_tag:
+        # Augmentation build (05_build_variants.py --aug-tag): same parents, same gold, a
+        # re-seeded surface. Rows get a 4th item_id part so they can coexist with the
+        # canonical rows in one training set without tripping validate_pairs' duplicate
+        # check; the split is still the PARENT's, so no augmented row can cross into test.
+        var_path = TRAIN_ROOT / "variants_aug" / aug_tag / condition / f"{language}.jsonl"
     if not base_path.exists() or not var_path.exists():
         return 0, Counter({"missing_input": 1})
 
@@ -65,7 +72,8 @@ def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str]
                 stats["no_gold"] += 1
                 continue
             pair = TrainPair(
-                item_id=f"{var['program_id']}::{condition}::{i}",
+                item_id=f"{var['program_id']}::{condition}::{i}"
+                        + (f"::aug-{aug_tag}" if aug_tag else ""),
                 program_id=var["program_id"],
                 program_group_id=var["program_id"],  # split unit — never split by row
                 condition=condition,
@@ -81,6 +89,8 @@ def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str]
             stats[f"split_{pair.split}"] += 1
 
     out = TRAIN_ROOT / "pairs" / condition / f"{language}.jsonl"
+    if aug_tag:
+        out = TRAIN_ROOT / "pairs_aug" / aug_tag / condition / f"{language}.jsonl"
     write_jsonl(out, rows)
     return len(rows), stats
 
@@ -89,6 +99,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--conditions", nargs="*", default=list(TRAINABLE_CONDITIONS))
     ap.add_argument("--languages", nargs="*", default=list(LANGUAGES))
+    ap.add_argument("--aug-tag", default=None,
+                    help="materialise data/train/variants_aug/<tag>/ into pairs_aug/<tag>/")
     args = ap.parse_args()
 
     if any(c == "H1" for c in args.conditions):
@@ -110,7 +122,7 @@ def main() -> int:
             print(f"  note: no split file at {splits_file} — everything defaults to train")
 
         for condition in args.conditions:
-            n, stats = emit_for(condition, language, n_cases, splits)
+            n, stats = emit_for(condition, language, n_cases, splits, aug_tag=args.aug_tag)
             total += n
             detail = ", ".join(f"{k}={v}" for k, v in sorted(stats.items())) or "-"
             print(f"  {language:<11} {condition:<4} {n:>7} pairs   {detail}")

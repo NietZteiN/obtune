@@ -1,0 +1,16 @@
+# L0-only control at LARGER DATA SCALE (data-scale arm, 2026-09-03). The scale counterpart
+# of grid_py_L0.yaml / tuned_L0: if mono_scale beats mono, this arm says whether the gain is
+# "more obfuscated programs" or just "more programs". See mono_scale_generic_py.yaml.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0]
+run_tag: L0_scale_py
+phase: main
+adapter_root: runs/adapters_scale
+
+train:
+  augment_tags: [scale]
+  train_size: null
+  epochs: 3
+  seed: 17

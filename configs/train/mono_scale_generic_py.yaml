@@ -1,0 +1,26 @@
+# Monolithic adapter at LARGER DATA SCALE (data-scale arm, 2026-09-03).
+# Same six conditions as mono_generic_py.yaml, canonical seed-17 surfaces only (no
+# re-seeds — this arm varies PROGRAM count, not surface count; mono_aug varies the other),
+# plus the split-frozen extension corpus built by
+#   02_build_corpus.py --tiers tier2 tier3 --extend-frozen scale
+#   05_build_variants.py --target train --aug-tag scale --base-root data/train/base_scale
+#   06_emit_pairs.py --aug-tag scale
+# Every extension program is train-only; val and test are the original programs, so
+# checkpoint selection and every cell in results/ are comparable with mono/tuned_L0.
+# Read on the trainable grid and LOTO only; H1 is NOT read for this arm.
+#
+# epochs: 3, matching mono — this arm asks whether more PROGRAMS help at the same
+# epoch schedule. The overtrain probe already showed extra epochs alone are null.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono_scale_py_all
+phase: main
+adapter_root: runs/adapters_scale
+
+train:
+  augment_tags: [scale]
+  train_size: null
+  epochs: 3
+  seed: 17

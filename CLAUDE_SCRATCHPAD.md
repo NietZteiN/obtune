@@ -3,9 +3,53 @@
 *Protocol: [`CLAUDE.md`](CLAUDE.md) §0. Update before and after any complex task; this is
 working memory, not a log. The durable record lives in [`log/`](log/).*
 
-**Last updated:** 2026-08-04
+**Last updated:** 2026-09-03
 
 ---
+
+## 2026-09-03 — accuracy-improvement campaign (H1 / held-out / overall), CodeLlama-7b
+
+User chose four untried levers; explicitly rejected CoT/trace-SFT and RL (keep the no-CoT format).
+Corrections to my own earlier "untried" list, found on re-reading `log/modularity/2026-08-17`:
+training on composites WAS run (Qwen-1.5B, −1.36 [−2.63, +0.04] vs unstacked) and the
+S2-family curriculum WAS run (+0.02). Both refuted. Not repeated here.
+
+Selection discipline: every arm is read on the trainable grid (`heldout`, Grid A) and LOTO;
+**H1 is not read** — the single `final_eval` stays unspent until the campaign has a winner.
+
+| W | lever | what is new | code / data | GPU |
+|---|---|---|---|---|
+| W1 | self-consistency | every cell so far is greedy; sample n=8 @ T=0.7, plurality vote on the normalised literal; also report any-of-n (oracle) as the headroom bound | `eval_vllm.py`: `sampling.n`, vote in `run_cell`, extra cols `sc_*`; `configs/eval/selfcons_generic.yaml` (phase `selfcons_generic`) | ~1 job, <1 h |
+| W2 | variant augmentation | each program has ONE variant per condition; build K=3 extra seeds (101/202/303) for the randomised transforms L1b/L1r/S1/S2 (L0/L2 deterministic), train `mono_aug` on same programs × 4 variants; compare to `mono` s17/42/101 | `05_build_variants.py --seed/--out-tag`, `06_emit_pairs.py` → `data/train/pairs_aug/s<seed>/`, `data.py` `train.augment_seeds` | build on `normal`; 1 train ≈ 4×3.5 h? (mono took 3.5 h; 4× rows → cap epochs) |
+| W3 | data scale | corpus is tier1 only (apps/cruxeval/humaneval → 2,231 programs, 1,563 train). Ingest tier2 (mbpp) + tier3 (CSN) as NEW TRAIN-ONLY programs with the existing test/val assignment frozen; train `tuned_L0_scale` / `mono_scale` | `02_build_corpus.py --tiers`, split-freeze step, dedup vs existing test | CPU days for CSN; then 2 trains |
+| W4 | bigger student | `codellama-13b` is in `models.yaml`, never downloaded; train L0 + mono s17, eval base/L0/mono on the grid | download 26 GB; `grid_py_L0` / `mono_generic_py` with `--model codellama-13b` | 2 × ~45 min + evals |
+
+Also folded in: `mono` s42/s101 adapters finished (ck_mono_s42 best 0.3495) — eval on `rq2_generic`-style grid for the seed band on the `mono_all` tie.
+
+Expectation, stated before running: W1 without CoT mostly re-derives the greedy mode of a short
+literal — the vote is expected to be within ~1 pt of greedy; the any-of-n number is what tells
+us whether a reranker could ever help. W2 is the most principled invariance lever untried.
+W3 is bounded by the 5.7×-data-buys-0.11-pt result from mono_all. W4 is the cheapest absolute
+win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
+
+---
+
+### 2026-09-03 progress (W2/W3 plumbing)
+- **Fix:** `schema.TrialRow.phase` literal lacked `selfcons_generic` → job 376082 crashed on cell 1 and then wedged (vLLM EngineCore never exits after a parent exception); cancelled, `_main_fastfail` now `os._exit(1)`s on ANY exception, cell writes are rename-atomic, resubmitted as 376113.
+- W2 builds: 376093/4/5 done in ~2 min each; surfaces verified distinct per seed
+  (canon≠s101≠s202 for L1b/L1r/S1/S2). Pairs emitted to `data/train/pairs_aug/{s101,s202,s303}/`;
+  `load_pairs(..., augment_tags=[s101,s202,s303])` → **79,167 train rows** (mono: 26,841).
+  Mix is skewed to randomised conditions (L0 = 4,689 = 6 %) — a confound to name in the log.
+  Manifests rebuilt + verified (H1 scan OK). Config `configs/train/mono_aug_generic_py.yaml`
+  (`adapter_root: runs/adapters_aug`, epochs 2). Loss-mask gate: job 376106 on `dev`
+  (login node has an 8 GB `ulimit -v`; `inspect_batch.py` dumps core there).
+- W3 plumbing: datasets were NOT in the juno HF cache (only models transferred) — fetched
+  mbpp, mbppplus, CSN python (416 MB). `02_build_corpus.py --extend-frozen <tag>`: dedups
+  vs testset + the existing base by id and content, assigns every survivor to train, writes
+  `data/train/base_<tag>/`, `data/splits/python_<tag>.json`, `data/manifests/corpus_python_<tag>.json`
+  and never touches `data/splits/python.json`. `05_build_variants.py --base-root … --aug-tag scale`
+  routes the new programs' variants through the aug path at the canonical seed. Configs:
+  `mono_scale_generic_py.yaml`, `L0_scale_generic_py.yaml` (`adapter_root: runs/adapters_scale`, epochs 3).
 
 ## Current state
 

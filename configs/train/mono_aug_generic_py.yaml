@@ -1,0 +1,30 @@
+# Monolithic adapter trained with VARIANT AUGMENTATION (transform-diversity arm, 2026-09-03).
+# Same six conditions and the same train-split PROGRAMS as mono_generic_py.yaml, but every
+# randomised transform (L1b, L1r, S1, S2) is seen under four independent surfaces
+# (canonical seed 17 + re-seeds 101/202/303, built by 05_build_variants.py --aug-tag).
+# L0 and L2 are deterministic and appear once. 79,167 train rows vs mono's 26,841.
+#
+# The hypothesis is the textbook one: invariance is learned from *variation over the same
+# semantics*, and one surface per program gives the adapter nothing to be invariant across.
+# Read on the trainable grid and LOTO only; H1 is NOT read for this arm (final_eval unspent).
+#
+# epochs: 2 — ~2x mono's optimizer steps (mono: 3 x 26.8k). The 9-epoch overtrain probe
+# already showed more steps over the same rows are null, so any gain here is attributable
+# to the surfaces, not the compute. Checkpoint selection over the epoch checkpoints on val.
+#
+# adapter_root: the adapter directory name encodes only (conditions, rank, seed), so without
+# this the arm would overwrite the canonical mono bank. Eval configs must point here.
+# MODEL-NEUTRAL: pass --model <key>.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono_aug_py_all
+phase: main
+adapter_root: runs/adapters_aug
+
+train:
+  augment_tags: [s101, s202, s303]
+  train_size: null   # all rows; the union is ~79k and nothing may be subsampled away
+  epochs: 2
+  seed: 17
