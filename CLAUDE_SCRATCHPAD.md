@@ -86,9 +86,14 @@ win if the scale trend from Qwen (1.5B → 7B) holds for CodeLlama.
   L2 +1.08 the largest, all spanning 0). `mono_scale − tuned_L0` +1.29 [−0.14, +2.69] with the usual
   fingerprint (L0 −1.98 [−3.90, −0.24]; L1b +3.92 [+1.75, +6.03]; S2 +2.34 [+0.48, +4.26]). +58 %
   programs is inside the seed band (s42 was +0.77 over tuned_L0). W3 is closed: null on both halves.
-- Still in flight: aug 376282→83→84 · mono_scale 376285→86→87 · L0_scale 376288→89→90 ·
-  13B 376097→99→100. Next: rerun `26_campaign_arms.py` (+ 13B control-relative), second entry,
-  master artifact update.
+- **W2 landed** (376282 7 h 16 m, loss 0.085; 376283 best `checkpoint-1236` = epoch 1, val 0.368 flat;
+  376284 eval): `mono_aug − mono_all` **+0.17 [−1.14, +1.38]**, null on all six; format_fail 0.0058
+  (corpus minimum). Mix-skew confound would have hurt L0 and L0 is null (−0.84) → not an artefact.
+- **CAMPAIGN CLOSED.** W1 ✗ W2 ✗ W3 ✗ W4 ✓ (+3.4). Six breadth adapters (s17/s42/s101, aug, scale, 13B)
+  share one fingerprint vs the clean control: L0 −1.4…−2.6, L1b +1.4…+3.9, rest null, pooled tie.
+  Entry `log/transfer/2026-09-04_accuracy-campaign-closes.md`; artifact updated. H1 unread;
+  recommendation: hold `final_eval` (13B on H1 would only show "bigger is better").
+  Open, unscheduled: H-L1b-L0-trade (existing cells, CPU), H-saturation (downward train_size sweep).
 
 ## Current state
 
