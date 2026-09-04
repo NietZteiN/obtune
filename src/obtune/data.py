@@ -441,7 +441,7 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     train_conditions = list(config["train_conditions"])
     tcfg = config.get("train", {})
     seed = int(tcfg.get("seed", GLOBAL_SEED))
-    train_size = int(tcfg.get("train_size", 0)) or None
+    train_size = int(tcfg.get("train_size") or 0) or None  # null = take everything
     val_size = int(tcfg.get("val_size", 0)) or None
     replay = float(tcfg.get("l0_replay_fraction", 0.0) or 0.0)
     pcfg = config.get("prompt", {}) or {}
