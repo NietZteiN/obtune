@@ -1,7 +1,7 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
 *Last updated: 2026-09-03*
-**Status:** master report reproduced on CodeLlama-7b including ONE H1 read (`pilot_eval`; final pass unspent), with cluster-bootstrap CIs on every contrast. **The H1 `tuned_L0` row is CONTAMINATED (prefix-cache collision, 2026-09-03) and its comparison to `mono_all` is withdrawn pending a human decision on a re-read;** the merge-vs-specialist ordering on H1 is inside noise; LOTO fold indistinguishable from mono_all. Surviving: RQ1 TR 0.906 [0.878, 0.932]; router==random [−0.008, +0.008]; obfuscation merge beats clean-code merge on H1 [+0.003, +0.028].
+**Status:** master report reproduced on CodeLlama-7b with cluster-bootstrap CIs on every contrast, and one human-authorized H1 repair read (`pilot_eval`; `final_eval` unspent). **`tuned_L0` BEATS `mono_all` on H1: +0.041 [+0.018, +0.064]** — stronger than Qwen's "matches". `tuned_L0` ties the best specialist and best merge on H1, and ties `mono_all` / beats every merge on the trainable grid. RQ1 TR 0.906 [0.878, 0.932]; router == random [−0.008, +0.008]; LOTO fold indistinguishable from `mono_all`. Prefix-cache collision (2026-09-03) fixed, 28 cells quarantined, 13 re-run.
 
 ## Hypotheses — open
 - **H-mixture** — the gain from an expert mixture is a capacity/ensembling effect, not a dispatch effect. Predicts that mixing N experts with a fixed uniform gate tracks mixing N adapters of any kind, including clean-code ones. The `l0merge` control says this for merging; the uniform/random tie says it for routing.
@@ -13,6 +13,7 @@
 - (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
+- **H-breadth-transfers — REFUTED with an interval on CodeLlama, 2026-09-03.** The adapter trained on all six obfuscations is 4.1 pts BELOW the clean-code-only adapter on the unseen obfuscator (+0.0412 [+0.0181, +0.0643] for `tuned_L0 − mono_all`) and ties it on the trainable grid. Breadth bought format, not transfer.
 - **H-closest-specialist — WITHDRAWN (unmotivated), 2026-09-03.** Opened on the `tuned_S2` (0.283) > `merge_dare_ties` (0.277) ordering on H1; the program-bootstrap CI on that gap is +0.0066 [−0.0107, +0.0247]. There is no ordering to explain. See `2026-09-03_cis-and-three-corrections.md`.
 - **H-format — REFUTED at 7B, SUPPORTED at 1.5B, 2026-08-30.** Label-shuffled control takes only
   2-14 % of the 7B diagonal gain (negative on S1); recomputing the matrix against the floor moves
@@ -48,6 +49,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-03_h1-repair-clean-code-beats-breadth.md`](2026-09-03_h1-repair-clean-code-beats-breadth.md) — H1 repair read: `tuned_L0` beats `mono_all` +0.041 [+0.018, +0.064], ties best specialist and merge; on the trainable grid the RQ2 ladder collapses onto the clean control; ICL recovers 0.37 of tuning's gain
 - [`2026-09-03_prefix-cache-collision.md`](2026-09-03_prefix-cache-collision.md) — vLLM prefix cache keyed on a non-unique `lora_name`; 28 cells contaminated incl. the H1 pilot's `tuned_L0`; RQ2 control column and ICL fractions re-running; Qwen floor fractions unverifiable
 - [`2026-09-03_cis-and-three-corrections.md`](2026-09-03_cis-and-three-corrections.md) — cluster-bootstrap CIs on every CodeLlama contrast; three stated findings fail (tuned_L0 "beats"→matches; merge "departure"→noise; LOTO "costs 1.1 pts"→indistinguishable from mono_all); RQ1, routing null and merge-vs-l0merge survive
 - [`2026-09-02_h1-codellama-pilot.md`](2026-09-02_h1-codellama-pilot.md) — H1 pilot: clean-code result reproduces, merge result inverts; the format floor is worth nothing on H1
