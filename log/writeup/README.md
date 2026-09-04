@@ -1,6 +1,6 @@
 # writeup — Figures, paper draft, artifact packaging
 
-*Last updated: 2026-08-27*
+*Last updated: 2026-09-04*
 **Status:** active
 
 ## Hypotheses — open
@@ -41,6 +41,16 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-04_master-report-rev14.md`](2026-09-04_master-report-rev14.md) — **rev 14**,
+  [`../../docs/MASTER_REPORT_2026-09-04.md`](../../docs/MASTER_REPORT_2026-09-04.md). The report
+  rebuilt **additively** on the CodeLlama panel: §1–§17 kept and labelled the frozen Qwen panel
+  (those cells cannot be re-evaluated on this cluster, so a rewrite would have had to drop them or
+  restate them without provenance), §17 retitled to name its panel, **§18–§25 new** — migration and
+  model swap, the full replication, the H1 headline restored as "beats" with an interval, the three
+  measurement defects, the accuracy campaign, and the weight-space invariance arm with its control.
+  Corpus recounted at **2,966 cells / 2,200,119 trials**; the recompute agreed with every log entry —
+  a first — and the only new fact it produced is the common-subset-vs-unrestricted gap, which moves
+  one ordering (`merge_dare_ties` vs `tuned_L0`) inside its own interval.
 - [`2026-08-27_master-report-rev13.md`](2026-08-27_master-report-rev13.md) — the 08-12 master report
   brought current as [`../../docs/MASTER_REPORT_2026-08-27.md`](../../docs/MASTER_REPORT_2026-08-27.md).
   §2.2's table **regenerated** — 154 systems in 169 rows, **one row per system per grid** (15 were
