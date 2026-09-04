@@ -151,6 +151,7 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [22.3 Neither data lever moves anything](#223-neither-data-lever-moves-anything)
   - [22.4 Model scale is the only lever that pays](#224-model-scale-is-the-only-lever-that-pays)
   - [22.5 The fingerprint](#225-the-fingerprint)
+  - [22.6 The fingerprint is one located effect plus one unlocated one, not a trade](#226-the-fingerprint-is-one-located-effect-plus-one-unlocated-one-not-a-trade)
 - [23. Weight-space invariance — training the hidden states to match the clean code](#23-weight-space-invariance--training-the-hidden-states-to-match-the-clean-code)
   - [23.1 The prior run, and the loophole that justified rerunning it](#231-the-prior-run-and-the-loophole-that-justified-rerunning-it)
   - [23.2 The arms, and a scaling defect found while they ran](#232-the-arms-and-a-scaling-defect-found-while-they-ran)
@@ -4174,12 +4175,62 @@ every time:
 > **L0 costs 1.4–2.6 pts** (five of six exclude zero) · **L1b gains 1.4–3.9 pts** (five of six
 > exclude zero) · **L1r / L2 / S1 null** · **S2 +1–2 and usually null** · **pooled, a tie.**
 
-Six looks, one shape, at three seeds, two data regimes and two model sizes. This is not a null
-result about breadth; it is a **trade** that happens to sum to zero, and it opens
-**H-L1b-L0-trade**: breadth teaches the model to distrust identifiers, which is exactly what
-`L1b` (adversarial renaming) rewards and what `L0` (meaningful names) punishes. It is testable
-from existing cells at the item level with no GPU time, and is the most promising unresolved
-question in the campaign.
+Six looks, one shape, at three seeds, two data regimes and two model sizes.
+
+### 22.6 The fingerprint is one located effect plus one unlocated one, not a trade
+
+§22.5 opened **H-L1b-L0-trade**: that the shape is *one* mechanism seen twice — breadth teaches
+the model to distrust identifiers, which `L1b` (adversarial renaming) rewards and `L0` (meaningful
+names) punishes. It has now been tested at the item level from existing cells
+([`29_l1b_l0_trade.py`](../scripts/analysis/29_l1b_l0_trade.py)), and it is **half right**.
+
+The pairing is exact rather than matched-sample: `<program>::L0::<i>` and `<program>::L1b::<i>` are
+the same program on the same input with the same correct answer. Two strata are defined **only by
+the control**, so the treatment cannot move them — **sensitive** (`tuned_L0` right on `L0`, wrong on
+`L1b`: renaming alone broke it, n≈200) and **robust** (right on both, n≈520). The arms are then
+ordered by how much renaming each adapter saw.
+
+| system | renaming dose | recovers `L1b` on sensitive | pay ratio (L0 failure, sensitive ÷ robust) |
+|---|---|---|---|
+| `base` | untuned | 0.107 [0.066, 0.154] | 1.43 [1.22, 1.68] |
+| `tuned_S2` | none | 0.179 [0.125, 0.234] | 2.49 [1.53, 4.07] |
+| `tuned_S1` | none | 0.184 [0.132, 0.237] | 2.15 [1.41, 3.27] |
+| `tuned_L2` | partial | 0.169 [0.117, 0.227] | 3.24 [2.03, 5.34] |
+| `tuned_L1r` | partial | 0.229 [0.173, 0.295] | 3.01 [1.94, 4.78] |
+| `tuned_L1b` | **matched** | **0.408 [0.336, 0.480]** | 3.62 [2.43, 5.60] |
+| `mono_all` s17 / s42 / s101 | six | 0.487 / 0.502 / 0.497 | 3.10 / 3.24 / 2.45 |
+| `mono_aug` / `mono_scale` | six | 0.502 / **0.543 [0.472, 0.614]** | 2.41 / 2.39 |
+| `mono_all` 13B | six | 0.439 [0.373, 0.513] | 3.81 [2.83, 5.14] |
+
+**The `L1b` gain is real and located.** Recovery on the items renaming broke is a strict
+dose-response: 0.169–0.184 with no renaming exposure, 0.229 with a different renaming, **0.408
+[0.336, 0.480]** for the specialist trained on this one — disjoint from every partial-dose interval
+— and 0.439–0.543 for breadth. Breadth recovers those items **at least as well as the specialist
+trained on that exact transform**, so on this axis it is not a diluted `L1b` adapter.
+
+**The `L0` cost is not the price of it.** The pay ratio is flat across the whole ladder:
+`tuned_S2`, which never saw a renaming, posts 2.49 [1.53, 4.07] against `mono_all`'s 3.10
+[2.28, 4.24], and every tuned interval overlaps every other. The cost does not concentrate on
+identifier-sensitive items at all — it is what any adapter pays on the harder half of the corpus.
+The conditional runs the wrong way too: **P(win `L1b` | lose `L0`) is 0.032–0.061 against an
+unconditional 0.095–0.114**, so an item breadth loses on `L0` is *less* likely, not more, to be one
+it wins on `L1b`. **H-L1b-L0-trade is refuted as stated; its first half stands.**
+
+Two warnings travel with this. The naive item-level correlation `corr(d_L0, d_L1b)` is **positive**
+for every arm (+0.32…+0.42) — the opposite of the trade's prediction — and the largest value of all
+belongs to `base` (+0.4677 [+0.4178, +0.5202]), which is no kind of breadth adapter: that
+correlation measures shared item difficulty between any two systems and cannot answer the question.
+The raw pay gap in points "confirms" the hypothesis just as misleadingly, at +19 to +31 points for
+every breadth adapter and +19.4 for `base`. Both statistics collapse the moment a zero-dose arm and
+an untuned floor are placed beside them — the fourth time in this project that only a negative
+control separated "the mechanism works" from "something changed".
+
+One by-product is worth recording: **`tuned_S2` is the only tuned system with no `L0` cost at all**
+(−0.06 pts against −1.15…−2.59 for everything else, `tuned_S1` included). The project's one
+positive-transfer arm is also the only one whose skill does not trade against reading clean code —
+which the dead-code-elimination account of §15–§16 predicts and the trade hypothesis did not. What
+the `L0` cost *is* remains open (**H-L0-cost-source**, §24): it appears for every specialist except
+`S2`, at roughly constant size, and tracks neither renaming exposure nor condition family.
 
 ---
 
@@ -4263,7 +4314,11 @@ is the teacher, not the correspondence, that turned out not to matter.
   named candidate is the 13B `tuned_L0`-vs-`mono_all` ordering; the trainable grid already shows
   that ordering as a tie at both scales, so the read would most likely buy "a bigger model does
   better". No `mono_aug`, `mono_scale`, 13B or alignment system has been read on H1.
-- **H-L1b-L0-trade** (§22.5) — item-level, existing cells, no GPU. The most promising open question.
+- **H-L0-cost-source** (§22.6) — the `L1b` gain is now located and the `L0` cost is not; what the
+  cost *is* is open. It appears for every specialist except `S2`, at roughly constant size, so it
+  points at something generic about training on a transformed distribution rather than anything
+  condition-specific. Testable from existing cells: does it concentrate on unusual answer formats,
+  or on long programs? (**H-L1b-L0-trade**, which this replaces, was resolved on 2026-09-04.)
 - **H-saturation** (§22.3) — a downward `train_size` sweep at 50 % / 25 %.
 - **H-peaked-breadth** (§22.1) — any-of-8 for `merge_dare_ties` and the uniform MoLE mixture.
 - **H-mixture** (§19.4) — is the +0.205 mixture gain capacity or ensembling?
