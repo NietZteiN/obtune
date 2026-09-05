@@ -410,6 +410,12 @@ Levers, in the order they are queued, each with the decision it exists to make:
    **Length audit read (377856): X1 train pairs p50 688 / p95 1150 / max 5736 tokens, 24/3468
    over 2048 = 0.69 % — under the 1 % train guard, so `max_seq_len 2048` stands (S1 is 0.49 %,
    L0 0.06 % on the same tokenizer). No config change; the `tr_X1`/`tr_monoX` chains run as queued.**
+   **`tr_X1` 377841 DONE (38 min, 162 steps, 3468 rows, truncation 24/3468 = 0.69 % as audited).
+   train_loss 0.763 — every other specialist sits at 0.50–0.54 (L0 0.503, S1 0.533 on the same
+   162-step schedule). X1 is the hardest condition to fit by a wide margin: the answer requires
+   evaluating XOR-decoded strings and MBA helper calls, which a direct-answer model cannot do
+   in one token. Expect `tuned_X1` on X1 to sit well under the other specialists' own-condition
+   ~0.40; `ck_X1` 377842 → `ev_X1` 377845 report.**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**
