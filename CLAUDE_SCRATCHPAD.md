@@ -430,7 +430,13 @@ Levers, in the order they are queued, each with the decision it exists to make:
    generalises to held-out programs. But the task term overfits hard — task loss ≈ 0.005 by
    epoch 3 while eval_loss climbs monotonically 0.711 → 1.326, so for THIS arm the checkpoint
    choice carries real weight and `ck_span_lam1` 377868 (val exact_match, not loss) is doing
-   the work. `al_span_lam1_mm` 377866 / `al_span_lam3` 377867 queued behind the job cap.**
+   the work.**
+   **`al_span_lam1_mm` 377866 DONE (3.5 h) — THE CONTROL WORKS, which is what makes the matched
+   arm interpretable: with mismatched targets align_loss plateaus at **0.214** against the matched
+   arm's **0.066** (3.3×) and never descends, so the matched arm is fitting the CORRECT clean-code
+   states, not just any low-rank projection that shrinks a pooled MSE. Total loss 0.388 vs 0.236;
+   eval_loss 1.615 vs 1.326. `ck_span_lam1` 377868 best ckpt-838 (val 0.359). `al_span_lam3` 377867
+   running; `ck_span_*` 377869/70 → `ev_span` 377871 to follow.**
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
    if a source is available; H-saturation is still open.
    **SUBMITTED 2026-09-05.** The parent's `gate_inputs` (5–20 per program; ran on the parent,
