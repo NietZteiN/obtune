@@ -346,6 +346,20 @@ Levers, in the order they are queued, each with the decision it exists to make:
    truncation 16/26,832 = 0.06 % at 4096, len p95 1620 / max 5706). The tiny loss is the long,
    near-deterministic trace completion dominating the token count, not an accuracy signal —
    `ck_tr_mono` 377805 → `ev_tr_mono` 377807 pending.**
+   **`ev_tr_L0` 377806 read (2026-09-05): trace_L0 vs tuned_L0 vs mono_all, item-for-item on
+   rq2_generic — L0 0.361 / 0.429 / 0.412; L1b 0.319 / 0.362 / 0.387; L1r 0.319 / 0.375 / 0.384;
+   L2 0.335 / 0.380 / 0.378; S1 0.085 / 0.379 / 0.383; S2 0.241 / 0.389 / 0.405. NEGATIVE, two
+   mechanisms: (1) runaway traces — format_fail 12–22 % (S1 74 %) and it equals the fraction
+   hitting the 2048-token cap to three decimals; the model NEVER emits the `...` budget cut
+   (0/9.6k outputs) although 11 % of training traces end in one — it has no counter, so
+   "stop after 64 events" was not learnable from the cut alone; (2) even conditional on a
+   parsed answer it trails tuned_L0 on the same items (L0 0.411 vs 0.452, S1 0.327 vs 0.451).
+   A trace→tuned_L0-on-cap hybrid is still −3.7 [−6.0, −1.4] on L0 and −7.7 [−10.0, −5.4] on
+   S2 (program-cluster bootstrap). Complementarity exists (trace ✓ & tuned_L0 ✗ ≈ 9 % of items)
+   but tuned_L0 ✓ & trace ✗ is 14–31 %. base_trace (untuned, trace prompt) 0.05–0.15, ff 49–80 %.
+   Verdict pending `ev_tr_mono` 377807 (S1/S2 traces in training may fix the structural cells;
+   the cap failure is format-level and will not). If the mono arm also loses, lever 3 closes
+   on 7B; a v2 format with explicit event numbering (`12:L7 r=3`) is the only cheap retry.**
    **`ck_tr_L0` 377804 read (2026-09-05): held-in L0 val exact_match 0.294 / 0.330 / 0.339 / 0.336
    (ckpt 74 / 148 / 222 / final), best ckpt-222 at 0.339 — against `tuned_L0`'s 0.408 (ckpt-148)
    on the SAME 333 val items. −7 pts on clean code held-in. Still rising at the last epoch (the
