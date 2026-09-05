@@ -689,3 +689,21 @@ Budget: 8 adapters (~3.5–6 h each on h200) + 8 ckpt-selects + 1 eval (7 conds)
 - Order of operations from here: commit (this) → smoke job (all six arms, `--max-steps 4`, h200)
   → full chains train → ckpt-select → eval (afterok) → `34_objectives.py` → log entry.
   **Decision rules above are frozen at this commit. Nothing is tuned on X1 after the read.**
+
+### 2026-09-05 — objectives campaign: chains submitted (smoke 378765 green, fix in `04d349a`)
+
+| arm | train | ckpt-select | adapter dir (`runs/adapters_objectives/codellama-7b/python/`) |
+|---|---|---|---|
+| cons_lam1 | 378779 | 378780 | `L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam1_s17` |
+| cons_lam3 | 378781 | 378782 | `…_cons_parent_lam3_s17` |
+| cons_same_lam1 | 378783 | 378784 | `…_cons_same_lam1_s17` |
+| neg_ul | 378785 | 378786 | `…_neg_ul_lam1_s17` |
+| neg_data | 378787 | 378788 | `…_neg_data_lam1_s17` |
+| x1_resample | 378789 | 378790 | `X1_r32_s17` |
+| curr_sft | 378791 | 378792 | `L1b-L1r-L2-S1-S2_r32_curr_sft_s17` |
+| curr_kl | 378793 | 378794 | `…_curr_cons_parent_lam1_s17` |
+
+Eval `ev_objectives` = **378795**, `afterok` on all eight ckpt-selects, config
+`configs/eval/objectives_codellama7b.yaml`, phase `objectives_generic`. Nothing is
+tuned after this point; analysis is `scripts/analysis/34_objectives.py` with the
+decision rules frozen at `447ecdb`.
