@@ -231,6 +231,15 @@ Every working day, for each thread you advanced: create the entry file from `log
 ---
 
 ## Changelog
+- **2026-09-05** — **§3.2's H1 budget is now FULLY SPENT.** The pilot went 2026-09-02 (repaired
+  2026-09-04) and the final pass 2026-09-05 (jobs 378518/378519, authorised by the user against a
+  concrete five-arm manifest, hypotheses committed as `361d354` before submission). Rule 3 permits
+  no further read: **no H1 number may now be used to select, tune, rank or choose anything**, and
+  any future work on the held-out obfuscator must run on **X1** instead. X1 is the trainable
+  sibling built for exactly this — it reproduces H1's level at r = 0.9992 (mean |Δ| 0.48 pts) on
+  arms trained on neither, and X1→H1 transfer proved lossless (0.08 pts) for arms trained on X1.
+  §3.1's ladder is unchanged; H1 remains `never` trainable and all four enforcement layers stand.
+  Results: `log/transfer/2026-09-05_h1-final-read.md`.
 - **2026-08-14** — §1's claim that "`gpu_alloc.free()/claim()` **and** `scripts/launch_workers.sh`
   honour it" was true of `allowed_gpus` but **false of `gpu_budget`**: `launch_workers.sh`
   filtered by the allowed list and then started a worker on *every* remaining candidate. With

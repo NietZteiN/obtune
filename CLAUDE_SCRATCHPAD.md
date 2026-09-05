@@ -609,3 +609,33 @@ Chosen on the trainable grid alone (H1 unread), per CLAUDE.md §3.2:
    378459**: if X1's own-condition diagonal is as weak on heldout as on val (0.264), the arm may
    not be worth the read, and that judgement must be made BEFORE the batch is submitted.
 7b `tuned_L0`/`mono_all`/merges on H1 already exist from the spent pilot, so no re-read is needed.
+
+## 2026-09-05 — H1 FINAL READ SPENT. CAMPAIGN CLOSED.
+
+Jobs 378518 (34b: base/tuned_L0/mono_all) + 378519 (7b: tuned_X1/mono_allX), ONE batch, both
+submitted before either was looked at. Pre-registration `361d354` predates submission.
+**THE H1 BUDGET IS GONE — no H1 number may select, tune or rank anything from here.**
+
+Panel (7b non-X1 rows = spent pilot): base 7b 0.1285 / 34b 0.1433; mono_all 7b 0.2323;
+tuned_L0 7b 0.2735; tuned_S1 0.2776; tuned_S2 0.2834 (old leader); **mono_all 34b 0.2965;
+mono_allX 7b 0.3089; tuned_X1 7b 0.3180; tuned_L0 34b 0.3213 (NEW LEADER)**.
+
+ALL pre-registered tests confirm:
+- H-34b-h1: 34b tuned_L0 vs 7B leader **+3.79 [+1.56, +6.10]***
+- **H-rq2-at-scale (DECISIVE): tuned_L0 − mono_all @34b +2.47 [+0.41, +4.78]*** (7B: +4.12*).
+  The 7B H1 finding is NOT a small-model artefact. Clean-code-only training beats breadth on the
+  unseen obfuscator at BOTH scales. This is the paper's RQ2 headline.
+- H-X1-family 2nd conjunct: tuned_X1 vs tuned_S2 **+3.46 [+1.32, +5.51]***
+- H-mono-X on H1: **+7.66 [+5.35, +10.04]***
+- 34b tuning gap on H1 **+17.79 [+14.81, +20.94]***
+- **tuned_X1 (7B) vs tuned_L0 (34B): −0.33 [−2.88, +2.06] — INDISTINGUISHABLE.** Family training
+  at 7B = scale at 34B. Opens H-family-beats-scale.
+
+Honest surprise: I pre-registered that the X1 diagonal carries NO info about H1 for X1-trained
+arms. Right stance, and empirically the transfer is LOSSLESS — tuned_X1 0.3188→0.3180,
+mono_allX 0.3097→0.3089 (0.08 pts each). X1 and H1 are the same problem to this model.
+
+Integrity verified before interpretation (pilot had a prefix-cache collision): base shares
+**0.0000** identical outputs with every tuned arm; no pair >0.44; ff 0.014–0.026 tuned.
+
+Entry `log/transfer/2026-09-05_h1-final-read.md`. CLAUDE.md changelog updated.
