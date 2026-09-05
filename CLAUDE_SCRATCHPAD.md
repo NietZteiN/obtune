@@ -291,6 +291,25 @@ Levers, in the order they are queued, each with the decision it exists to make:
    NULL for tuned adapters, as the config predicted. BUT any-of-8 for `tuned_L0` is
    0.53–0.59 vs 0.43 greedy → **2b: trained verifier / best-of-n reranker** (not RL) is the
    lever that headroom points at. Queued after 3.
+   **2b SUBMITTED 2026-09-05.** Pipeline: `scripts/28_sample_candidates.py` (vLLM, `tuned_L0`
+   adapter, n=8 T=0.7 top_p 0.95 seed 17 + one greedy row as `sample_idx −1`, every row
+   graded and carrying `cum_logprob`) → `runs/candidates/codellama-7b/tuned_L0/{heldout,val,
+   train}.parquet`, jobs `cand_heldout` 377858 / `cand_val` 377859 / `cand_train` 377860
+   (train = the six-condition train split, 26.8k items; trainable conditions only — the
+   script refuses H1). `src/obtune/verifier.py`: the generator's own prompt + candidate as the
+   assistant turn + "Is the return value above exactly correct? Answer yes or no." → one-token
+   completion; `scripts/29_train_verifier.py` (`train/verifier_generic_py.yaml`: r32, 2 epochs,
+   dedup on (item, pred_norm), class-balanced, cap 40k) → `runs/adapters_verifier/codellama-7b/
+   python/tuned_L0_r32_s17/`, job `tr_verif` 377861 (after 377859+377860). `scripts/30_rerank.py`
+   scores every distinct candidate (logsumexp yes − logsumexp no at the first token, vLLM
+   max_tokens 1 logprobs 20) under each checkpoint AND the untuned base ("zero-shot
+   self-verifier"), then compares greedy / vote / logprob / logprob_norm (zero-training
+   controls) / verifier / any_of_n with a program-cluster bootstrap vs greedy; checkpoint is
+   chosen on VAL rerank accuracy, heldout reported for all. Job `rerank` 377862 (after
+   377858+377861) → `results/analysis/rerank/codellama-7b/tuned_L0/rerank_report.json`.
+   Decision rule: the verifier is a real lever if verifier−greedy on heldout is > 0 with a CI
+   excluding zero AND beats the logprob controls; if base-as-verifier ≈ trained verifier, the
+   finding is "the model can already judge, it just cannot pick" (models-know-how-not-when).
 3. **Execution-trace SFT** (`src/obtune/trace.py`, `prompt.trace: true`): the completion becomes
    a per-line trace of the *obfuscated* program (`L<line> name=value …`, changed locals only,
    ≤40 events then `...`), then `=> <literal>`. Teaches execution, invariant by construction;
@@ -307,6 +326,8 @@ Levers, in the order they are queued, each with the decision it exists to make:
    answer, and the trace arm's *greedy* answer compared to `tuned_L0` on the same items.
    **Status: loss-mask gate PASS (dev 377801); chains `tr_L0` 377802→`ck_tr_L0` 377804→`ev_tr_L0` 377806,
    `tr_mono` 377803→377805→377807, all pending. Entry: `log/transfer/2026-09-04_trace-sft-and-34b-submitted.md`.**
+   **`tr_L0` 377802 DONE (43 min, 222 steps, train_loss 0.173, truncation 0/4688 at 4096,
+   len p95 1077 / max 3933); `ck_tr_L0` 377804 pending; `tr_mono` 377803 running on g-08-06.**
 3b. **Span-aligned alignment variant** — the one L_align candidate W5 did not test (per-token
    pairing of clean/obfuscated spans via `rename_map`, not the answer slot). Cheap; after 3.
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
@@ -357,6 +378,9 @@ Levers, in the order they are queued, each with the decision it exists to make:
    call), 49 % have ≥1 encoded string; size ratio median 4.14× (p95 7.24× — the 4-helper
    prelude dominates short programs; token-length audit vs max_seq_len 2048 is job `x1_len`
    377856, `scripts/x1_lengths.py`); 0 H1-marker hits over all 1,649 variants.
+   **Length audit read (377856): X1 train pairs p50 688 / p95 1150 / max 5736 tokens, 24/3468
+   over 2048 = 0.69 % — under the 1 % train guard, so `max_seq_len 2048` stands (S1 is 0.49 %,
+   L0 0.06 % on the same tokenizer). No config change; the `tr_X1`/`tr_monoX` chains run as queued.**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**

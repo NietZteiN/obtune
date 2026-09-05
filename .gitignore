@@ -22,6 +22,7 @@ env/build.log
 runs/adapters/
 runs/adapters_*/
 runs/trace_cache/
+runs/candidates/
 runs/logs/
 runs/manifest/running/
 runs/manifest/.supervisor.lock

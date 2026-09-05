@@ -1,0 +1,17 @@
+# Lever 2b: yes/no verifier LoRA trained on tuned_L0's own samples (scripts/28) over the
+# six trainable conditions. Model-neutral; pass --model. Adapter path:
+#   runs/adapters_verifier/<model>/python/<candidate_tag>_r32_s17/
+_extends: _base_lora.yaml
+language: python
+run_tag: verifier_py
+phase: rq2_generic
+candidates_tag: tuned_L0      # runs/candidates/<model>/<tag>/{train,val}.parquet
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  epochs: 2
+  lr: 1.0e-4
+  train_size: 40000           # distinct (item, candidate) rows after dedup, class-balanced
+  val_size: 1000
+  max_seq_len: 2048
+  seed: 17
