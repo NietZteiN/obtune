@@ -1,0 +1,51 @@
+# H1 FINAL READ, panel 1 of 2 (CodeLlama-34B). QUARANTINE ACCESS — THE LAST ONE.
+#
+# AUTHORISED BY THE USER 2026-09-05, as an explicit yes to the concrete five-arm manifest
+# presented to them, not inferred from a general go-ahead. CLAUDE.md §3.2 rule 3 allows H1
+# exactly twice: the pilot is spent (2026-09-02, repaired 2026-09-04) and THIS IS THE FINAL
+# PASS. There is no third read. Submitted together with `h1_final_x1_codellama7b.yaml` as ONE
+# batch: both panels are fixed here, both are submitted before either is looked at, and
+# nothing in panel 2 depends on panel 1. Splitting into two files is a `model:` field
+# limitation, not two reads.
+#
+# THE HYPOTHESES ARE FIXED BEFORE ANY H1 NUMBER IS SEEN. Every arm was trained and selected
+# on the trainable grid; nothing here was chosen with H1 in view. Pre-registered readings,
+# from log/transfer/2026-09-05_scale-is-the-only-lever-that-works.md:
+#
+#   * H-34b-h1: `tuned_L0(34b)` beats the 7B H1 leader `tuned_S2` (0.2834, spent pilot)
+#     outside its interval. The trainable grid gave +8.56 [+7.00, +10.15] for 34b over 7b;
+#     if H1 is a different kind of hard, that gain will not carry and this is where it shows.
+#   * H-rq2-at-scale (THE decisive cell): at 7B, `tuned_L0` BEAT `mono_all` on H1 by +0.041
+#     [+0.018, +0.064] — clean-code-only training generalised to the unseen obfuscator better
+#     than breadth. On the 34b trainable grid the two are tied (+0.14 [−1.23, +1.47]).
+#     CONFIRM the 7B finding if `tuned_L0 − mono_all` > 0 with the interval excluding zero;
+#     REFUTE if it inverts. Either way it is the paper's RQ2 headline at the top of the ladder.
+#   * `base(34b)` is the anchor. Without it the 34b H1 tuning gap and every TR denominator on
+#     this panel are uncomputable, and it CANNOT be added later — that is the whole reason a
+#     control consumes a slot in a read this scarce. On the trainable grid the 34b base is
+#     level with 7b (+1.47 [−0.24, +3.27]) while tuned is +8.56, so the prediction is a base
+#     near 7b's 0.1285 and a gap far wider than 7b's.
+#
+# H1 IS NEVER TRAINED ON. Grid A, matching every other CodeLlama measurement.
+_extends: _base_eval.yaml
+
+phase: h1_codellama
+experiment_id: h1_final_codellama34b
+run_tag: h1_final_codellama34b
+model: codellama-34b
+language: python
+eval_source: heldout
+h1_access_purpose: final_eval
+
+engine:
+  gpu_memory_utilization: 0.90
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/codellama-34b/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/codellama-34b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [H1]
