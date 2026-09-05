@@ -166,6 +166,7 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [23.3 Results](#233-results)
 - [24. What has not been run, in the CodeLlama era](#24-what-has-not-been-run-in-the-codellama-era)
 - [25. Provenance — the CodeLlama panel](#25-provenance--the-codellama-panel)
+- [26. What actually works — best system per condition, and on H1](#26-what-actually-works--best-system-per-condition-and-on-h1)
 
 ---
 
@@ -4389,6 +4390,52 @@ every table in this report.
 
 - Lab notes for this era: [`log/setup/`](log/setup/) 2026-08-28 → 09-01 and
   [`log/transfer/`](log/transfer/) 2026-09-01 → 09-04, indexed in [`log/README.md`](log/README.md).
+
+---
+
+## 26. What actually works — best system per condition, and on H1
+
+*Added 2026-09-04.* Every ranking table in this project has invited the same misreading (§21.3),
+so this one ranks and then immediately tests each ranking against its own column leader **and**
+against the `tuned_L0` control. Recomputed by
+[`scripts/analysis/30_best_per_condition.py`](scripts/analysis/30_best_per_condition.py) →
+`results/analysis/best_per_condition_2026-09-04.json`: **59 CodeLlama-7b systems**, Grid A, greedy,
+items intersected within each column (Grid B and the T=0.7 sampling phase excluded; a system present
+in several phases contributes its largest cell and the cross-phase spread is recorded).
+
+**Read the leaders as a band, not a winner.** A column leader is the maximum of 59 draws and is
+biased upward by that alone; in **every** column the top six are within each other's intervals. The
+column below that carries information is "vs `tuned_L0`", because that comparison was specified in
+advance.
+
+| condition | leader (acc) | is the leader separable from #2? | what genuinely beats `tuned_L0` |
+|---|---|---|---|
+| `L0` | `mole_random` 0.4329 | no (−0.06 [−1.26, +1.14]) | **nothing** — best margin +0.36, no interval clears zero |
+| `L1b` | `mono_scale` 0.4017 | no (−0.60 [−2.35, +1.21]) | **all six of the top six**: +2.90…**+3.92** |
+| `L1r` | `mono_scale` 0.3964 | no | `mono_scale` +2.16, `mole_random` +1.62 |
+| `L2` | `mono_aug` 0.3934 | no (a tie at 0.3934) | `mole_random` +1.32 only |
+| `S1` | `s2fam` 0.3978 | no | `mole_uniform` +1.60, `mole_random` +1.52 |
+| `S2` | `mole_router` 0.4211 | no (−0.06 [−0.60, +0.48]) | **all six of the top six**: +2.52…**+3.18** |
+| **`H1`** | `tuned_S2` 0.2834 | no (−0.58 [−2.31, +1.24]) | — (`tuned_L0` is itself 4th, inside the band) |
+
+**Two conditions carry the whole of what obfuscation training buys.** On `L1b` and `S2` a broad
+spread of arms beats the clean-code control by ~3 points with intervals clearing zero; on `L1r`,
+`L2` and `S1` the best real margin is 1.3–2.2 points; on `L0` **nothing beats `tuned_L0` at all**.
+Those two conditions are exactly the two mechanisms this report identifies independently —
+identifier-distrust (§22.6) and dead-code elimination (§15–§16, §19.6). The ladder's other four
+conditions have no mechanism attached to them and no reliable winner.
+
+**On H1 the top four are one band**: `tuned_S2` 0.2834, `tuned_S1` 0.2776, `merge_dare_ties` 0.2768,
+**`tuned_L0` 0.2735** — no pair separable. The first real gap is to `l0merge_dare_ties` at −2.14
+[−4.12, −0.33] below the leader. So the honest answer to "what is best on the held-out obfuscator"
+is *a specialist in an inert-material transform, a merge, or the clean-code adapter — pick on other
+grounds*, and the one thing the data does say is what is **worst**: `mono_all`, the adapter trained
+on all six obfuscations, at 0.2323 (§20).
+
+**If accuracy is the only goal, the answer is not on this table.** CodeLlama-13b `mono_all` reaches
+0.4455 / 0.4228 / 0.4192 / 0.4192 / 0.4122 / 0.4439 on `L0`…`S2` and 13B `tuned_L0` reaches
+**0.4689** on `L0` — 2–4 points above every 7B system in every column (§22.4). Scale is the only
+lever in this report that moves a column by more than its own noise.
 
 ---
 
