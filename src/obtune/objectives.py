@@ -451,6 +451,10 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         max_steps=args.max_steps if args.max_steps is not None else -1,
         dataloader_num_workers=2,
         remove_unused_columns=False,
+        # TRL 1.9 defaults to loss_type="chunked_nll", which patches the model forward to skip
+        # lm_head on ignored tokens and returns logits=None -- exactly the tensor both objectives
+        # read. "nll" is the same CE with the logits materialised (smoke 378694 found this).
+        loss_type="nll",
     )
 
     Trainer = make_trainer_class()
