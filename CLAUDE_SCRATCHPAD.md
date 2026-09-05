@@ -307,7 +307,11 @@ Levers, in the order they are queued, each with the decision it exists to make:
    greedy 0.369, sample 0.344, any-of-8 0.534, all-of-8 0.189 — the 16-pt any-of-8 gap is
    the headroom the verifier is chasing. `cand_train` 377860 DONE (11.5 min): 26,841 items, greedy 0.482 (train split — the L0 sixth
    is memorised), sample 0.427, any-of-8 0.666, no drops. 43 % positives among 215k samples
-   → `tr_verif` 377861 balances and caps at 40k. Now eligible. `src/obtune/verifier.py`: the generator's own prompt + candidate as the
+   → `tr_verif` 377861 balances and caps at 40k. Now eligible.
+   **`cand_heldout` 377945 DONE: 9,582 items (6 dropped, all `apps_1615_0` — the 20,055-token
+   literal program `drop_overlong` was written for), greedy 0.385 pooled over six conditions,
+   sample 0.353, any-of-8 0.559, all-of-8 0.189. Held-out headroom is 17 pts. `rerank` 377946
+   now waits only on `tr_verif` 377861.** `src/obtune/verifier.py`: the generator's own prompt + candidate as the
    assistant turn + "Is the return value above exactly correct? Answer yes or no." → one-token
    completion; `scripts/29_train_verifier.py` (`train/verifier_generic_py.yaml`: r32, 2 epochs,
    dedup on (item, pred_norm), class-balanced, cap 40k) → `runs/adapters_verifier/codellama-7b/
