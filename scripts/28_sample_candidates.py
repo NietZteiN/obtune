@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from obtune import data, scoring  # noqa: E402
 from obtune.config import GLOBAL_SEED, RUNS_DIR, load_config  # noqa: E402
-from obtune.eval_vllm import Engine, SystemSpec, render_prompts  # noqa: E402
+from obtune.eval_vllm import Engine, SystemSpec, drop_overlong, render_prompts  # noqa: E402
 from obtune.paths import TRAINABLE_CONDITIONS  # noqa: E402
 from obtune.schema import EvalItem  # noqa: E402
 
@@ -91,6 +91,14 @@ def main() -> int:
     system = SystemSpec(name=args.tag, arch="per_type" if args.adapter else "none",
                         adapter=args.adapter)
     texts = render_prompts(items, system, engine.tokenizer)
+    # Same rule as eval_vllm: one over-long prompt raises inside vLLM and kills the
+    # whole job (heldout job 377858 died on an 8,193-token item). Drop and record.
+    items, texts, dropped = drop_overlong(
+        items, texts, engine.tokenizer,
+        max_model_len=int(ecfg.get("max_model_len", 8192)), max_new_tokens=args.max_tokens)
+    if dropped:
+        print(f"[28] dropped {len(dropped)} over-long prompts: "
+              f"{[d['item_id'] for d in dropped]}", flush=True)
     lora = engine.lora_request(args.adapter)
     stop = ["\n\n", "```"]
     t0 = time.time()
@@ -135,6 +143,7 @@ def main() -> int:
         "any_of_n": float(per.max().mean()),
         "all_of_n": float(per.min().mean()),
         "pos_rate_among_samples": float(s["correct"].mean()),
+        "dropped_overlong": dropped,
         "elapsed_s": round(time.time() - t0, 1),
         "out": str(out),
     }

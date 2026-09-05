@@ -299,7 +299,13 @@ Levers, in the order they are queued, each with the decision it exists to make:
    graded and carrying `cum_logprob`) → `runs/candidates/codellama-7b/tuned_L0/{heldout,val,
    train}.parquet`, jobs `cand_heldout` 377858 / `cand_val` 377859 / `cand_train` 377860
    (train = the six-condition train split, 26.8k items; trainable conditions only — the
-   script refuses H1). `src/obtune/verifier.py`: the generator's own prompt + candidate as the
+   script refuses H1).
+   **Fix 09-05:** `cand_heldout` 377858 FAILED — one held-out prompt is 8,193 tokens and vLLM
+   raises rather than truncates; script 28 now calls `eval_vllm.drop_overlong` (same rule as
+   the eval path, dropped ids recorded in the summary json). Resubmitted as 377945, `rerank`
+   re-chained as 377946 (afterok 377945:377861). `cand_val` 377859 done clean: 1,917 items,
+   greedy 0.369, sample 0.344, any-of-8 0.534, all-of-8 0.189 — the 16-pt any-of-8 gap is
+   the headroom the verifier is chasing. `cand_train` 377860 started after the fix. `src/obtune/verifier.py`: the generator's own prompt + candidate as the
    assistant turn + "Is the return value above exactly correct? Answer yes or no." → one-token
    completion; `scripts/29_train_verifier.py` (`train/verifier_generic_py.yaml`: r32, 2 epochs,
    dedup on (item, pred_norm), class-balanced, cap 40k) → `runs/adapters_verifier/codellama-7b/
