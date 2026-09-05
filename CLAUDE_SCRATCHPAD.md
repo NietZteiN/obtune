@@ -288,7 +288,9 @@ Levers, in the order they are queued, each with the decision it exists to make:
    Promote to the full grid only if `tuned_L0` beats CodeLlama-7b's 0.430 outside the seed band.
    **`tr_ll8_L0` 377846 DONE (20 min, train_loss 0.492); `tr_ll8_mono` 377848 DONE (3.0 h, 1260 steps,
    train_loss 0.141, truncation 18/26,841 at 2048). `ck_ll8_L0` 377847 / `ck_ll8_mono` 377849 →
-   `ev_ll8` 377850 pending.**
+   `ck_ll8_L0` 377847 done: 0.435 / 0.435 / 0.420 / 0.417 (ckpt 74/148/222/final), best 0.435 —
+   against CodeLlama-7b `tuned_L0`'s 0.408 on its own val, +2.7 pts. `ck_ll8_mono` 377849: 0.371 /
+   0.386 / 0.388 / 0.386, best 0.388. Promotion still rides on `ev_ll8` 377850 held-out.**
 2. **Self-consistency (maj@8)** — ALREADY RUN (`selfcons_generic`, 09-04 05:36) and never
    analysed: vote−greedy is −1…−2 pts for `tuned_L0`, ±0 for `mono_all`, +2…+3 for `base`.
    NULL for tuned adapters, as the config predicted. BUT any-of-8 for `tuned_L0` is
@@ -358,7 +360,8 @@ Levers, in the order they are queued, each with the decision it exists to make:
    S2 (program-cluster bootstrap). Complementarity exists (trace ✓ & tuned_L0 ✗ ≈ 9 % of items)
    but tuned_L0 ✓ & trace ✗ is 14–31 %. base_trace (untuned, trace prompt) 0.05–0.15, ff 49–80 %.
    Verdict pending `ev_tr_mono` 377807 (S1/S2 traces in training may fix the structural cells;
-   the cap failure is format-level and will not). If the mono arm also loses, lever 3 closes
+   the cap failure is format-level and will not). `ck_tr_mono` 377805 done: val 0.350 / 0.359 /
+   0.350 / 0.350, best 0.359 — below `mono_all`'s direct-answer val, consistent with the L0 arm. If the mono arm also loses, lever 3 closes
    on 7B; a v2 format with explicit event numbering (`12:L7 r=3`) is the only cheap retry.**
    **`ck_tr_L0` 377804 read (2026-09-05): held-in L0 val exact_match 0.294 / 0.330 / 0.339 / 0.336
    (ckpt 74 / 148 / 222 / final), best ckpt-222 at 0.339 — against `tuned_L0`'s 0.408 (ckpt-148)
@@ -400,7 +403,10 @@ Levers, in the order they are queued, each with the decision it exists to make:
    `ev_cases` 377855. Question: is the corpus saturated in programs (H-scale ✗) but not in
    labelled behaviour per program?
    **`tr_cs_L0` 377851 DONE (44 min, 441 steps, 9,378 rows, train_loss 0.490 vs `tuned_L0`'s
-   0.503 on 4,689 rows, truncation 5/9,378 at 2048); `ck_cs_L0` 377852 next, `tr_cs_mono` 377853 pending.**
+   0.503 on 4,689 rows, truncation 5/9,378 at 2048). `ck_cs_L0` 377852 done: val exact_match
+   0.411 / 0.396 / 0.405 / 0.409 (ckpt 147/294/441/final) — best 0.411 vs `tuned_L0`'s 0.408 on the
+   same 333 items, i.e. 3× the labelled cases per program buys +0.3 pts on val. `tr_cs_mono` 377853
+   running (3.9 h in).**
 6. **CodeLlama-34B-Instruct** — first download died on the login node's 8 GB vmem cap
    (`memory allocation of 67021731 bytes failed`, hf_transfer); resubmitted as CPU job 377794
    on `normal` (`submit.py --gres none`, new option; 377794 hit the same `python python` argv slip, 377795 died because /tmp is node-local; the script now lives at `scripts/hf_snapshot.py`, job 377810), then
@@ -453,6 +459,13 @@ Levers, in the order they are queued, each with the decision it exists to make:
    **`tr_monoX` 377843 DONE (4.2 h, 1419 steps, 30,309 rows = the six-condition 26.8k + X1's
    3.5k, train_loss 0.153, truncation 56/30,309 = 0.18 % at 2048, all of it X1 rows). `ck_monoX`
    377844 → `ev_X1` 377845 next.**
+   **`ck_X1` 377842 / `ck_monoX` 377844 FAILED (2026-09-05), `ev_X1` 377845 DependencyNeverSatisfied.
+   Cause: the ckpt-select path never called `drop_overlong` — only the scoring path did — so a
+   single 2,177-token X1 val prompt against the `max_seq_len + 128 = 2176` window killed the
+   selection. This is the same defect as `cand_heldout` 377858 in a third code path. Fixed in
+   `eval_vllm.py` (drop once BEFORE the checkpoint loop so every checkpoint is scored on an
+   identical item set; `n_val_dropped_overlong` recorded in `ckpt_select.json`). Resubmitted:
+   `ck_X1` 377997, `ck_monoX` 377998, `ev_X1` 377999 (afterok both).**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**

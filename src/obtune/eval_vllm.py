@@ -1163,6 +1163,19 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
         if sampling["max_tokens"] + 128 >= int(tcfg["max_seq_len"]):
             raise SystemExit("ckpt_select.max_tokens leaves no room for the prompt")
     texts = render_prompts(items, sys_spec, engine.tokenizer)
+    # Same guard the scoring path has had since the 19,950-character APPS literal: one
+    # over-long val prompt raises inside vLLM and kills the whole selection (X1's job
+    # 377842 died on a 2,177-token prompt against a 2,176-token window). Dropping once,
+    # before the checkpoint loop, keeps every checkpoint scored on the identical item set.
+    items, texts, overlong = drop_overlong(
+        items, texts, engine.tokenizer,
+        max_model_len=int(engine.ecfg["max_model_len"]),
+        max_new_tokens=int(sampling.get("max_tokens", 64)))
+    if overlong:
+        print(f"[ckpt-select] dropped {len(overlong)} over-long prompt(s): "
+              f"{[d['item_id'] for d in overlong]}", flush=True)
+    if not items:
+        raise SystemExit("ckpt-select: every val prompt exceeds the context window")
     extract = None
     if trace:
         from obtune.trace import extract_answer as extract
@@ -1188,6 +1201,7 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
         "metric": (cfg.get("ckpt_select") or {}).get("metric", "exact_match"),
         "tolerance_pts": tol,
         "n_val_items": len(items),
+        "n_val_dropped_overlong": len(overlong),
         "val_conditions": list(cfg["train_conditions"]),
         "prompt_id": prompts.prompt_id(trace=trace),
         "max_tokens": int(sampling.get("max_tokens", 64)),
