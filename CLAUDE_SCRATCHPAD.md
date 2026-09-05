@@ -454,6 +454,12 @@ Levers, in the order they are queued, each with the decision it exists to make:
    well-formed answer it is 0.340 vs 7b 0.295 / 13b 0.280, so the scale signal in the base is
    entirely masked by format. Not a gate for the tuned arms (already queued, tuning removes the
    format failures); it does say the untuned 34B is not a free win.
+   **`tr34_mono` 377814 DONE (9.8 h, 1257 steps, train_loss 0.108, truncation 32/26,841 at 2048).
+   `ck34_L0` 377815 DONE: val exact_match 0.4985 / 0.4895 / 0.4985 / 0.4985 (ckpt 74/148/222/final)
+   — against CodeLlama-7b's 0.408 and Llama-3.1-8B's 0.435 on the SAME 333 val items, i.e. **+9.0
+   pts over 7B on val**, by far the largest move any lever has produced. If it holds on heldout
+   (`ev34_grid` 377817) scale is the one lever that works. `ck34_mono` 377816 pending.**
+
 7. **H1-adjacent trainable transforms ("X1")** — a *sibling* mechanism family (different string
    encoding scheme, different MBA identities than H1's) as a trainable condition. This is the
    one lever that touches the held-out claim: report it in a separate namespace, never pool
@@ -500,6 +506,12 @@ Levers, in the order they are queued, each with the decision it exists to make:
    `eval_vllm.py` (drop once BEFORE the checkpoint loop so every checkpoint is scored on an
    identical item set; `n_val_dropped_overlong` recorded in `ckpt_select.json`). Resubmitted:
    `ck_X1` 377997, `ck_monoX` 377998, `ev_X1` 377999 (afterok both).**
+   **Both resubmits COMPLETED (2026-09-05), fix confirmed: each dropped exactly 3 over-long
+   prompts (`apps_3529_0::X1::{0,1,2}`) and ran to completion. `ck_X1` val on X1 0.245 / 0.264 /
+   0.249 / 0.257 (ckpt 54/108/162/final), best 0.264 — against the six specialists' ~0.40 on
+   their own conditions, so X1's own-condition diagonal is ~14 pts below every other
+   specialist's, exactly as `tr_X1`'s 0.763 train loss predicted. `ck_monoX` best 0.343 over the
+   seven-condition val. `ev_X1` 377999 queued behind the job cap.**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**
