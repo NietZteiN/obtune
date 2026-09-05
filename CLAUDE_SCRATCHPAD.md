@@ -305,7 +305,9 @@ Levers, in the order they are queued, each with the decision it exists to make:
    the eval path, dropped ids recorded in the summary json). Resubmitted as 377945, `rerank`
    re-chained as 377946 (afterok 377945:377861). `cand_val` 377859 done clean: 1,917 items,
    greedy 0.369, sample 0.344, any-of-8 0.534, all-of-8 0.189 — the 16-pt any-of-8 gap is
-   the headroom the verifier is chasing. `cand_train` 377860 started after the fix. `src/obtune/verifier.py`: the generator's own prompt + candidate as the
+   the headroom the verifier is chasing. `cand_train` 377860 DONE (11.5 min): 26,841 items, greedy 0.482 (train split — the L0 sixth
+   is memorised), sample 0.427, any-of-8 0.666, no drops. 43 % positives among 215k samples
+   → `tr_verif` 377861 balances and caps at 40k. Now eligible. `src/obtune/verifier.py`: the generator's own prompt + candidate as the
    assistant turn + "Is the return value above exactly correct? Answer yes or no." → one-token
    completion; `scripts/29_train_verifier.py` (`train/verifier_generic_py.yaml`: r32, 2 epochs,
    dedup on (item, pred_norm), class-balanced, cap 40k) → `runs/adapters_verifier/codellama-7b/
