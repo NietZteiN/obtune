@@ -286,6 +286,9 @@ Levers, in the order they are queued, each with the decision it exists to make:
    runs instead of the 8-adapter grid: `tr_ll8_L0` 377846 → `ck_ll8_L0` 377847, `tr_ll8_mono`
    377848 → `ck_ll8_mono` 377849 → `ev_ll8` 377850 (`rq2_generic --systems base,tuned_L0,mono_all`).
    Promote to the full grid only if `tuned_L0` beats CodeLlama-7b's 0.430 outside the seed band.
+   **`tr_ll8_L0` 377846 DONE (20 min, train_loss 0.492); `tr_ll8_mono` 377848 DONE (3.0 h, 1260 steps,
+   train_loss 0.141, truncation 18/26,841 at 2048). `ck_ll8_L0` 377847 / `ck_ll8_mono` 377849 →
+   `ev_ll8` 377850 pending.**
 2. **Self-consistency (maj@8)** — ALREADY RUN (`selfcons_generic`, 09-04 05:36) and never
    analysed: vote−greedy is −1…−2 pts for `tuned_L0`, ±0 for `mono_all`, +2…+3 for `base`.
    NULL for tuned adapters, as the config predicted. BUT any-of-8 for `tuned_L0` is
