@@ -436,7 +436,16 @@ Levers, in the order they are queued, each with the decision it exists to make:
    arm's **0.066** (3.3×) and never descends, so the matched arm is fitting the CORRECT clean-code
    states, not just any low-rank projection that shrinks a pooled MSE. Total loss 0.388 vs 0.236;
    eval_loss 1.615 vs 1.326. `ck_span_lam1` 377868 best ckpt-838 (val 0.359). `al_span_lam3` 377867
-   running; `ck_span_*` 377869/70 → `ev_span` 377871 to follow.**
+   running; `ck_span_*` 377869/70 done (mismatched best ckpt-419 val 0.3505; λ=3 best ckpt-838 val 0.3745).**
+   **`ev_span` 377871 read (2026-09-05) — LEVER 3b CLOSED, PASSES ITS RULE MARGINALLY.**
+   λ=3 − mismatched **+1.38 [+0.19, +2.58]*** (S1 +2.65 [+0.80, +4.57]*) and the mismatched control
+   sits below mono_all (−0.56) — the alignment signal is REAL and SPECIFIC, corroborated by the
+   training-side separation (align_loss 0.066 matched vs 0.214 mismatched). But λ=3 − mono_all is
+   **+0.81 [−0.15, +1.89]** pooled and the W5 rule's second clause is carried by ONE cell of six
+   (L2 +1.50 [+0.12, +2.99]) that BH-FDR would not keep. Reported as marginal, NOT a win.
+   Monotone in λ (val 0.3745 > 0.3594 > 0.3505) → ceiling not found; λ ∈ {6,10} is the obvious
+   follow-up, NOT queued (1–2 pts upside vs 34B's +8.56 for the same GPU time). Entry
+   `log/modularity/2026-09-05_span-alignment-is-real-but-marginal.md`.**
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
    if a source is available; H-saturation is still open.
    **SUBMITTED 2026-09-05.** The parent's `gate_inputs` (5–20 per program; ran on the parent,
