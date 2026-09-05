@@ -1,6 +1,6 @@
 # modularity — RQ2 — router, merges, monolithic, oracle arms
 
-*Last updated: 2026-09-04*
+*Last updated: 2026-09-05*
 **Status:** **CLOSED, negative** — no combination of per-transformation specialists beats a
 clean-code adapter on the held-out obfuscator; closing report:
 [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md).
@@ -10,6 +10,7 @@ longer inert. Blocking now: the Grid A baseline panel is 33 cells short from `ev
 aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 
 ## Hypotheses — open
+- **H-align-span:** pooling L_align over the CODE SPAN (not the answer slot) beats the mismatched control and `mono_all` on ≥ 1 non-L0 condition without an L0 tax. Opened 2026-09-05 after H-align (answer-position) was refuted; chain 377864–377871.
 - (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
@@ -101,6 +102,7 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   by-product of the 9-epoch sweep that has already run.
 
 ## Entries
+- [`2026-09-05_span-pooled-alignment-submitted.md`](2026-09-05_span-pooled-alignment-submitted.md) — lever 3b submitted: `align.mode: span`, span-mask gate 1.000/1.000, λ 1 / 1-mismatched / 3
 - [`2026-09-04_invariance-arm-at-7b.md`](2026-09-04_invariance-arm-at-7b.md) — **H-align refuted at 7B**, with the 08-30 weak-teacher loophole closed (`tuned_L0` is the strongest system on this panel) and on the six-condition mixture the objective had never been tried on. λ = 0 passes the plumbing gate (+0.28 [−0.71, +1.22] vs `mono_all`); matched − mismatched is **+0.18 [−0.82, +1.16]**; the grid dose-response is monotone and negative while the term's own fit is flat in λ. The alignment target does not matter, so the term is a perturbation, not semantic alignment. Also: the grad-accum defect that made every alignment arm ever run train on 4× gradients (`7ad5353`).
 - [`2026-08-30_alignment-arm-lambda-sweep.md`](2026-08-30_alignment-arm-lambda-sweep.md) — H-align refuted (flat, not collapsed); both controls fired correctly; H-teacher opened
 - [`2026-08-27_geometry-consolidated.md`](2026-08-27_geometry-consolidated.md) — zero-GPU
