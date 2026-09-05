@@ -368,6 +368,17 @@ Levers, in the order they are queued, each with the decision it exists to make:
    the cap failure is format-level and will not). `ck_tr_mono` 377805 done: val 0.350 / 0.359 /
    0.350 / 0.350, best 0.359 — below `mono_all`'s direct-answer val, consistent with the L0 arm. If the mono arm also loses, lever 3 closes
    on 7B; a v2 format with explicit event numbering (`12:L7 r=3`) is the only cheap retry.**
+   **`ev_tr_mono` 377807 read (2026-09-05) — LEVER 3 CLOSED, null but complementary.**
+   `trace_mono` fixes the format by DISTRIBUTION (training on long S1/S2 traces), not by format:
+   format_fail 0.011–0.032 (from 0.121–0.740), S1 0.085 → 0.356, trace-v1 unchanged. It then lands
+   on `mono_all` exactly: L0 0.392/0.412, L1b 0.382/0.387, L1r 0.384/0.384, L2 0.377/0.378,
+   S1 0.356/0.383, S2 0.389/0.405; pooled −1.06 [−3.14, +0.75], every per-condition interval
+   covering zero. **But the two are equal AND disagree**: both✓ 0.274, both✗ 0.501, trace-only
+   0.107, mono-only 0.118 → oracle union +10.75 [+9.51, +11.98] over `mono_all`, uniform across
+   conditions. Second ~10-pt headroom beside any-of-8's, and it is two differently-trained systems
+   rather than eight draws from one. Opens H-trace-complement, gated on `rerank` 377946: if 2b
+   clears, add `trace_mono` as a second candidate source and re-rank the union. Entry
+   `log/transfer/2026-09-05_trace-sft-is-null-but-complementary.md`.**
    **`ck_tr_L0` 377804 read (2026-09-05): held-in L0 val exact_match 0.294 / 0.330 / 0.339 / 0.336
    (ckpt 74 / 148 / 222 / final), best ckpt-222 at 0.339 — against `tuned_L0`'s 0.408 (ckpt-148)
    on the SAME 333 val items. −7 pts on clean code held-in. Still rising at the last epoch (the
