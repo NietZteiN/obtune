@@ -556,3 +556,36 @@ Levers, in the order they are queued, each with the decision it exists to make:
 Rules that hold throughout: no H1 read without the human; every new arm is compared to
 `tuned_L0` on the six trainable conditions first; `final_eval` stays unspent until the
 campaign's winner is chosen on the trainable grid.
+
+## 2026-09-05 — CAMPAIGN RANKING (all W6 arms, trainable grid, H1 NOT read)
+
+`scripts/analysis/31_campaign_ranking.py` → `results/analysis/campaign_ranking_2026-09-05.json`.
+64 CodeLlama-7b systems on 9,582 common items, plus the three-system probes at 13b/34b/llama31-8b.
+Every arm vs **its own model's** `tuned_L0`; program-clustered bootstrap, 2,000 resamples.
+
+**The whole 7B search space is 1.8 points wide.** Best arm `mono_cases` 0.4043 (+1.82
+[+0.41, +3.33]); then `mole_random` +1.36, `mole_router` +1.31, `mole_hardrouter` +1.25,
+`mole_uniform` +1.22 — the MoLE cluster, all ~+1.3 and mutually indistinguishable, which is the
+routing-is-random finding again. `tuned_L0` itself sits 30th of 64. Nothing on 7B clears +2.
+
+**One scale step is worth 8.6.** 34b `tuned_L0` 0.4717 (+8.56 vs 7b), `mono_all` 0.4731
+(+0.14 [−1.23, +1.47] vs its own tuned_L0 — the tie holds); 13b +3.39/+4.16; llama31-8b +1.21
+(n.s.). Stated plainly: **every algorithmic lever this campaign tried at 7B fits inside a 1.8-pt
+band; capacity alone is worth 8.6 pts.**
+
+Bottom of the table is the sanity check that the ranking is measuring something real:
+`base` −18.04, `base_trace` −28.24, `merge_dare_linear` −24.97, `formatonly` −16.37 — all
+excluding zero and all in the expected order.
+
+### Proposed H1 `final_eval` batch — ONE submission, needs human authorisation
+Chosen on the trainable grid alone (H1 unread), per CLAUDE.md §3.2:
+1. `codellama-34b tuned_L0` — campaign winner.
+2. `codellama-34b mono_all` — the RQ2 tie at the top of the ladder. H1 is precisely where
+   `tuned_L0` BEAT `mono_all` at 7B (+0.041 [+0.018, +0.064]); whether that inverts at 34b is
+   the single most valuable unread cell in the project.
+3. `codellama-34b base` — the base anchor; without it the 34b TR denominators and the H1
+   tuning gap cannot be computed, and it cannot be added later.
+4. `tuned_X1`, `mono_allX` (7b) — the pre-registered H-X1-family test. **Gated on `ev_X1`
+   378459**: if X1's own-condition diagonal is as weak on heldout as on val (0.264), the arm may
+   not be worth the read, and that judgement must be made BEFORE the batch is submitted.
+7b `tuned_L0`/`mono_all`/merges on H1 already exist from the spent pilot, so no re-read is needed.
