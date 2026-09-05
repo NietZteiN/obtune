@@ -118,6 +118,69 @@ def gather_states(hidden_states: Sequence["Any"], layers: Sequence[int], idx: "A
 
 
 
+CODE_OPEN = "Program:\n"
+CODE_CLOSE = "\n\nCall:"
+
+
+def resolve_span_mask(input_ids: "Any", tokenizer: Any) -> "Any":
+    """[B, T] float mask over the CODE-SPAN tokens of each prompt (lever 3b, `mode: span`).
+
+    The answer-position mode (W5) compares only the k states that predict the answer and
+    found the teacher does not matter. This mode aligns the representation of the CODE
+    itself -- the user's literal request, "make the hidden states match the unobfuscated
+    code" -- which n != m forbids token-by-token, so each side is MEAN-POOLED over its
+    own code span per layer. The span is recovered from the token ids by re-assembling
+    the sentencepiece pieces (`▁` -> space, `<0x0A>` -> newline) and locating the frozen
+    prompt markers `Program:\n` … `\n\nCall:` from prompts.USER_TEMPLATE, so it needs no
+    offsets from TRL's tokenization and cannot drift from what the batch really holds.
+    A row with no recoverable span gets an all-zero mask (dropped from the term).
+    """
+    import torch
+
+    mask = torch.zeros(input_ids.shape, dtype=torch.float32, device=input_ids.device)
+    for b in range(input_ids.size(0)):
+        ids = input_ids[b].tolist()
+        pieces = []
+        for t in tokenizer.convert_ids_to_tokens(ids):
+            if t is None:
+                pieces.append("")
+            elif t == "<0x0A>":
+                pieces.append("\n")
+            elif t.startswith("<0x") and t.endswith(">") and len(t) == 6:
+                pieces.append("?")
+            elif t.startswith("<") and t.endswith(">"):  # special tokens
+                pieces.append("")
+            else:
+                pieces.append(t.replace("\u2581", " "))
+        text = "".join(pieces)
+        s = text.find(CODE_OPEN)
+        e = text.rfind(CODE_CLOSE)
+        if s < 0 or e < 0 or e <= s:
+            continue
+        s += len(CODE_OPEN)
+        pos = 0
+        for j, piece in enumerate(pieces):
+            a, z = pos, pos + len(piece)
+            pos = z
+            if z > s and a < e and piece:
+                mask[b, j] = 1.0
+    return mask
+
+
+def pool_states(hidden_states: Sequence["Any"], layers: Sequence[int], mask: "Any") -> tuple["Any", "Any"]:
+    """Mean over masked positions per layer: ([B, len(layers), d], valid [B])."""
+    import torch
+
+    cnt = mask.sum(dim=1)                                   # [B]
+    valid = cnt > 0
+    denom = cnt.clamp(min=1.0).unsqueeze(-1)
+    out = []
+    for layer in layers:
+        h = hidden_states[layer]                            # [B, T, d]
+        out.append((h.float() * mask.unsqueeze(-1)).sum(dim=1) / denom)
+    return torch.stack(out, dim=1), valid
+
+
 def resolve_align_layers(acfg, mcfg) -> list[int]:
     """Layer indices for L_align, model-agnostically.
 
@@ -148,7 +211,9 @@ def cache_path(cfg: Mapping[str, Any]) -> Path:
     teacher = Path(acfg["teacher_adapter"]).name or "teacher"
     conds = "-".join(cfg["train_conditions"])
     seed = int(cfg.get("train", {}).get("seed", GLOBAL_SEED))
-    return CACHE_ROOT / cfg["model"] / cfg["language"] / f"{conds}_s{seed}__{teacher}.npz"
+    mode = str(acfg.get("mode", "answer"))
+    suffix = "" if mode == "answer" else f"__{mode}"
+    return CACHE_ROOT / cfg["model"] / cfg["language"] / f"{conds}_s{seed}__{teacher}{suffix}.npz"
 
 
 def build_cache(cfg: Mapping[str, Any], out: Optional[Path] = None, batch_size: int = 16) -> Path:
@@ -203,7 +268,11 @@ def build_cache(cfg: Mapping[str, Any], out: Optional[Path] = None, batch_size: 
         model.cuda()
 
     d = int(mcfg["hidden_size"])
-    states = np.zeros((len(records), len(layers), k, d), dtype=np.float16)
+    mode = str(acfg.get("mode", "answer"))
+    if mode == "span":
+        states = np.zeros((len(records), len(layers), d), dtype=np.float16)
+    else:
+        states = np.zeros((len(records), len(layers), k, d), dtype=np.float16)
     kept = np.zeros(len(records), dtype=bool)
 
     for start in range(0, len(records), batch_size):
@@ -225,10 +294,19 @@ def build_cache(cfg: Mapping[str, Any], out: Optional[Path] = None, batch_size: 
         if torch.cuda.is_available():
             enc = {kk: v.cuda() for kk, v in enc.items()}
             labels = labels.cuda()
-        idx, valid = resolve_answer_positions(labels, k)
         with torch.no_grad():
             out_hs = model(**enc, output_hidden_states=True).hidden_states
-        got = gather_states(out_hs, layers, idx).float().cpu().numpy()
+        if mode == "span":
+            span = resolve_span_mask(enc["input_ids"], tok)
+            pooled, valid = pool_states(out_hs, layers, span)
+            got = pooled.float().cpu().numpy()
+            if start == 0:
+                n_span = int(span[0].sum())
+                shown = tok.decode([i for i, m in zip(enc["input_ids"][0].tolist(), span[0].tolist()) if m > 0])
+                print(f"[align.cache] span check row0: {n_span} tokens -> {shown[:160]!r}", flush=True)
+        else:
+            idx, valid = resolve_answer_positions(labels, k)
+            got = gather_states(out_hs, layers, idx).float().cpu().numpy()
         sl = slice(start, start + len(chunk))
         states[sl] = got.astype(np.float16)
         kept[sl] = valid.cpu().numpy()
@@ -238,7 +316,7 @@ def build_cache(cfg: Mapping[str, Any], out: Optional[Path] = None, batch_size: 
     dest.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         dest, states=states, keys=np.array(keys), valid=kept,
-        layers=np.array(layers), k=k, teacher=str(acfg["teacher_adapter"]),
+        layers=np.array(layers), k=k, mode=mode, teacher=str(acfg["teacher_adapter"]),
         hf_id=mcfg["hf_id"], prompt_sha=prompts.provenance_block()["prompt_template_sha256"],
     )
     print(f"[align.cache] wrote {dest}  states={states.shape}  valid={int(kept.sum())}/{len(kept)}")
@@ -283,8 +361,9 @@ def make_trainer_class():
 
     class AlignTrainer(SFTTrainer):
         def __init__(self, *a, teacher_states=None, teacher_valid=None, layers=(), k=4,
-                     lam=0.0, **kw):
+                     lam=0.0, mode="answer", **kw):
             super().__init__(*a, **kw)
+            self.align_mode = mode
             self.teacher_states = teacher_states   # [N, L, k, d] float32 on device
             self.teacher_valid = teacher_valid     # [N] bool
             self.align_layers = list(layers)
@@ -320,8 +399,12 @@ def make_trainer_class():
             if self.lam <= 0.0 or align_idx is None:
                 return (task_loss, outputs) if return_outputs else task_loss
 
-            idx, valid = resolve_answer_positions(labels, self.align_k)
-            student = gather_states(outputs.hidden_states, self.align_layers, idx)  # [B,L,k,d]
+            if self.align_mode == "span":
+                span = resolve_span_mask(inputs["input_ids"], self.processing_class)
+                student, valid = pool_states(outputs.hidden_states, self.align_layers, span)  # [B,L,d]
+            else:
+                idx, valid = resolve_answer_positions(labels, self.align_k)
+                student = gather_states(outputs.hidden_states, self.align_layers, idx)  # [B,L,k,d]
             teacher = self.teacher_states[align_idx].to(student.dtype)
             valid = valid & self.teacher_valid[align_idx]
 
@@ -399,6 +482,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
     layers = resolve_align_layers(acfg, resolve_model_cfg(cfg))
     k = int(acfg.get("k", DEFAULT_K))
     mismatch = bool(args.mismatch or acfg.get("mismatch", False))
+    mode = str(acfg.get("mode", "answer"))
 
     mcfg = resolve_model_cfg(cfg)
     tcfg = _effective_train_knobs(cfg, mcfg)
@@ -416,6 +500,9 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
             "answer-position correspondence rests on the suffix tokenizing identically; "
             "rebuild the cache."
         )
+    cache_mode = str(blob["mode"]) if "mode" in blob.files else "answer"
+    if cache_mode != mode:
+        raise SystemExit(f"teacher cache is mode={cache_mode!r} but config asks for {mode!r}")
     key_to_row = {kk: i for i, kk in enumerate(keys)}
     if mismatch:
         perm = _mismatch_permutation(keys, seed + 991)
@@ -437,7 +524,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
     out_dir = Path(args.out) if args.out else (
         RUNS_DIR / "adapters_align" / cfg["model"] / cfg["language"] /
         f"{cond_tag(cfg['train_conditions'])}_r{int(cfg['peft']['r'])}"
-        f"_lam{lam:g}_k{k}_L{'-'.join(map(str, layers))}"
+        f"_lam{lam:g}_{'span' if mode == 'span' else f'k{k}'}_L{'-'.join(map(str, layers))}"
         f"{'_mismatch' if mismatch else ''}_s{seed}"
     )
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -500,7 +587,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         model=model, args=sft_args, train_dataset=train_ds, eval_dataset=val_ds,
         processing_class=tokenizer, peft_config=peft_cfg,
         teacher_states=teacher_states, teacher_valid=teacher_valid,
-        layers=layers, k=k, lam=lam,
+        layers=layers, k=k, lam=lam, mode=mode,
     )
     trainer.data_collator = AlignCollator(trainer.data_collator)
 
@@ -514,7 +601,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
                  "arch": "invariance_mismatch" if mismatch else "invariance"},
         gpu_visible=os.environ.get("CUDA_VISIBLE_DEVICES", ""),
         extra={"dataset": bundle["meta"], "truncation": trunc,
-               "align": {"lam": lam, "layers": layers, "k": k, "mismatch": mismatch,
+               "align": {"lam": lam, "layers": layers, "k": k, "mode": mode, "mismatch": mismatch,
                          "teacher_adapter": acfg.get("teacher_adapter"),
                          "cache": str(args.cache or cache_path(cfg)),
                          "n_teacher_rows": len(keys),
@@ -528,6 +615,13 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         print(f"[align] DRY RUN keys={sorted(batch)} shape={tuple(batch['input_ids'].shape)} "
               f"supervised={int((batch['labels'] != -100).sum())} "
               f"align_idx={batch['align_idx'][:4].tolist()}", flush=True)
+        if mode == "span":
+            span = resolve_span_mask(batch["input_ids"], tokenizer)
+            for b in range(min(2, span.size(0))):
+                ids = [i for i, m in zip(batch["input_ids"][b].tolist(), span[b].tolist()) if m > 0]
+                print(f"[align] span row{b}: {len(ids)} tokens; head={tokenizer.decode(ids[:40])!r} "
+                      f"tail={tokenizer.decode(ids[-20:])!r}", flush=True)
+            print(f"[align] span counts: {span.sum(dim=1).tolist()}", flush=True)
         return 0
 
     result = trainer.train()
@@ -535,7 +629,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
     tokenizer.save_pretrained(str(out_dir / "final"))
     summary = {"train_runtime_s": result.metrics.get("train_runtime"),
                "train_loss": result.metrics.get("train_loss"), "steps": result.global_step,
-               "lam": lam, "layers": layers, "k": k, "mismatch": mismatch}
+               "lam": lam, "layers": layers, "k": k, "mode": mode, "mismatch": mismatch}
     (out_dir / "training_summary.json").write_text(json.dumps(summary, indent=2))
     manifest.extra["training_summary"] = summary
     manifest.adapter["sha256"] = sha256_dir(out_dir / "final")

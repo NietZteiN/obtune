@@ -330,6 +330,23 @@ Levers, in the order they are queued, each with the decision it exists to make:
    len p95 1077 / max 3933); `ck_tr_L0` 377804 pending; `tr_mono` 377803 running on g-08-06.**
 3b. **Span-aligned alignment variant** — the one L_align candidate W5 did not test (per-token
    pairing of clean/obfuscated spans via `rename_map`, not the answer slot). Cheap; after 3.
+   **SUBMITTED 2026-09-05 as `align.mode: span`.** Per-token pairing via `rename_map` was
+   dropped: it exists only for the identifier family and L2 also strips annotations, so
+   the correspondence is not 1:1 even there. Instead each side is MEAN-POOLED over its own
+   code span per layer (student on obfuscated code, frozen tuned_L0 on the clean parent),
+   which covers S1/S2 too and is the literal reading of "make the hidden states match the
+   unobfuscated code". `align.resolve_span_mask` recovers the span from token ids by
+   re-assembling sentencepiece pieces and locating the frozen `Program:\n` … `\n\nCall:`
+   markers; gate `scripts/check_span_mask.py` (dev 377863): recall = precision = 1.000 on
+   40 rows × six conditions (span 125–701 tokens). Configs `train/align_span_codellama7b_py_mono.yaml`
+   (twin of the W5 config + `mode: span`), `eval/align_span_codellama7b.yaml` (rq2_generic,
+   systems `align_span_lam1`, `align_span_lam1_mm`, `align_span_lam3`). Cache stores
+   `[N, 6, 4096]` pooled states (`…__best__span.npz`). Chain: `al_span_cache` 377864 →
+   `al_span_lam1` 377865 / `al_span_lam1_mm` 377866 / `al_span_lam3` 377867 → `ck_span_*`
+   377868/377869/377870 → `ev_span` 377871. Decision rule unchanged from W5 (matched >
+   mismatched AND matched − mono_all excl 0 on ≥1 non-L0 condition, no L0 tax); the pooled
+   MSE has a different raw scale from the k=4 variant, so λ is not comparable across modes —
+   λ=3 is there to bracket, and align_loss is logged separately as before.
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
    if a source is available; H-saturation is still open.
    **SUBMITTED 2026-09-05.** The parent's `gate_inputs` (5–20 per program; ran on the parent,

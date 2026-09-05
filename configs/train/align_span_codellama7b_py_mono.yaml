@@ -1,0 +1,15 @@
+# Lever 3b (2026-09-05): span-pooled hidden-state alignment. Exact twin of
+# align_codellama7b_py_mono.yaml (same data, knobs, teacher, layers) with ONE change:
+# `align.mode: span` -- L_align compares the mean-pooled representation of the CODE SPAN
+# (student on obfuscated code vs frozen tuned_L0 on the clean parent, per layer) instead of
+# the k=4 answer-position states. W5 found the answer-position variant is a regularizer
+# (matched == mismatched). This is the user's literal ask -- "make the hidden states match
+# the unobfuscated code" -- applied to the code tokens themselves, which n != m forbids
+# token-by-token, hence the pooling. Same decision rule as W5: matched > mismatched AND
+# matched - mono_all excludes 0 on >= 1 non-L0 condition without an L0 tax.
+_extends: align_codellama7b_py_mono.yaml
+
+run_tag: align_span_py_mono
+
+align:
+  mode: span

@@ -1,0 +1,26 @@
+# Lever 3b (2026-09-05): SPAN-POOLED alignment arms, CodeLlama-7b.
+# Trained by configs/train/align_span_codellama7b_py_mono.yaml. Cells land in rq2_generic so each
+# arm sits beside `tuned_L0` (the teacher and the control) and the `mono_all` seed band
+# (s17/s42/s101) it is read against. No H1; `final_eval` stays unspent.
+# The plumbing gate (align_lam0 == mono_all) was already passed by W5 on the shared code path;
+# lambda = 0 is identical in both modes. The mismatched twin (`invariance_mismatch`) is the control.
+_extends: _base_eval.yaml
+
+phase: rq2_generic
+experiment_id: rq2_generic
+run_tag: rq2_generic_align_span
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: align_span_lam1, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam1_span_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix}
+  - {name: align_span_lam1_mm, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam1_span_L4-10-16-21-25-30_mismatch_s17/best", arch: invariance_mismatch, train_cond: mix}
+  - {name: align_span_lam3, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam3_span_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]
