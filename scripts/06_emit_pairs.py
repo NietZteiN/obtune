@@ -40,11 +40,50 @@ def _split_of(program_id: str, splits: dict[str, str]) -> str:
     return splits.get(program_id, "train")
 
 
+def _extra_cases(parent: dict, n_cases: int, k: int) -> list[dict]:
+    """Promote up to `k` of the parent's gate inputs to training cases (lever 5, 2026-09-05).
+
+    Gate inputs are already execution-gated in the strongest sense the project has: they
+    ran on the parent (output 1..200 chars), passed the determinism check across hash
+    seeds, and every kept variant of this program was verified output-identical on them
+    by the semantic gate. So they are free labelled cases. What they are NOT is
+    output-diverse -- fuzzing hits degenerate paths often (three gate inputs returning
+    `0` for the same program is typical), so a naive "take the first k" would teach the
+    modal answer. Preference order: outputs not already among the training cases, one
+    per distinct output; then anything left, still one per distinct output; duplicates
+    only if the program cannot supply k distinct answers at all.
+    """
+    seen = {c.get("output_canon") for c in (parent.get("cases") or [])[:n_cases]}
+    pool = [g for g in (parent.get("gate_inputs") or []) if g.get("output_canon") is not None]
+    chosen: list[dict] = []
+    for pass_no in (0, 1, 2):
+        for g in pool:
+            if len(chosen) >= k:
+                return chosen
+            if g in chosen:
+                continue
+            o = g["output_canon"]
+            if pass_no == 0 and o in seen:
+                continue
+            if pass_no < 2 and o in {c["output_canon"] for c in chosen}:
+                continue
+            chosen.append(g)
+    return chosen
+
+
 def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str],
-             aug_tag: str | None = None) -> tuple[int, Counter]:
+             aug_tag: str | None = None, extra_cases: int = 0) -> tuple[int, Counter]:
     base_path = TRAIN_ROOT / "base" / f"{language}.jsonl"
     var_path = TRAIN_ROOT / "variants" / condition / f"{language}.jsonl"
-    if aug_tag:
+    if extra_cases:
+        # Lever 5: SAME variants, SAME parents, MORE cases. Rows carry indices >= n_cases
+        # and the `::aug-<tag>` suffix so they coexist with the canonical rows in one
+        # training set; the split is the parent's, so nothing crosses into test. The
+        # canonical eval items read `cases[:n_train_cases]` from the base file, which this
+        # does not touch -- the evaluation inputs are unchanged.
+        if not aug_tag:
+            raise SystemExit("--extra-cases needs --aug-tag to name the pairs_aug/<tag>/ output")
+    elif aug_tag:
         # Augmentation build (05_build_variants.py --aug-tag): same parents, same gold, a
         # re-seeded surface. Rows get a 4th item_id part so they can coexist with the
         # canonical rows in one training set without tripping validate_pairs' duplicate
@@ -74,7 +113,13 @@ def emit_for(condition: str, language: str, n_cases: int, splits: dict[str, str]
         if not cases:
             stats["no_cases"] += 1
             continue
-        for i, case in enumerate(cases):
+        if extra_cases:
+            extra = _extra_cases(parent, n_cases, extra_cases)
+            stats[f"extra_{len(extra)}"] += 1
+            cases = [(n_cases + j, c) for j, c in enumerate(extra)]
+        else:
+            cases = list(enumerate(cases))
+        for i, case in cases:
             gold = case.get("output_canon")
             if gold is None:
                 stats["no_gold"] += 1
@@ -109,6 +154,9 @@ def main() -> int:
     ap.add_argument("--languages", nargs="*", default=list(LANGUAGES))
     ap.add_argument("--aug-tag", default=None,
                     help="materialise data/train/variants_aug/<tag>/ into pairs_aug/<tag>/")
+    ap.add_argument("--extra-cases", type=int, default=0,
+                    help="lever 5: emit up to K additional cases per program from the parent's "
+                         "execution-gated gate_inputs (canonical variants) into pairs_aug/<tag>/")
     args = ap.parse_args()
 
     if any(c == "H1" for c in args.conditions):
@@ -130,7 +178,8 @@ def main() -> int:
             print(f"  note: no split file at {splits_file} — everything defaults to train")
 
         for condition in args.conditions:
-            n, stats = emit_for(condition, language, n_cases, splits, aug_tag=args.aug_tag)
+            n, stats = emit_for(condition, language, n_cases, splits, aug_tag=args.aug_tag,
+                                extra_cases=args.extra_cases)
             total += n
             detail = ", ".join(f"{k}={v}" for k, v in sorted(stats.items())) or "-"
             print(f"  {language:<11} {condition:<4} {n:>7} pairs   {detail}")

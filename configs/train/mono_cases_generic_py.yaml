@@ -1,0 +1,15 @@
+# Lever 5 (2026-09-05) — `mono_all` recipe with the +3-case bank. See L0_cases_generic_py.yaml.
+# MODEL-NEUTRAL: pass --model.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono_cases_py_all
+phase: main
+adapter_root: runs/adapters_cases
+
+train:
+  augment_tags: [cases3]
+  train_size: null
+  epochs: 3
+  seed: 17

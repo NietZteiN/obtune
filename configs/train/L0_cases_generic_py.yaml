@@ -1,0 +1,21 @@
+# Lever 5 (2026-09-05) — `tuned_L0` recipe with the +3-case bank (`pairs_aug/cases3/`,
+# scripts/06_emit_pairs.py --extra-cases 3). Same programs, same variants, twice the
+# labelled (input, output) pairs per program: the parent's execution-gated gate inputs
+# promoted to training cases, output-diverse first. Contrast with `tuned_L0` isolates
+# "more cases per program" from "more programs" (H-scale, refuted) and "more surfaces per
+# program" (H-aug, refuted). Epochs kept at 3 so the recipe matches the control; the
+# step count doubles with the data, which the flat-from-epoch-1 val curves of both
+# earlier arms say is not itself a lever. MODEL-NEUTRAL: pass --model.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0]
+run_tag: L0_cases_py
+phase: main
+adapter_root: runs/adapters_cases
+
+train:
+  augment_tags: [cases3]
+  train_size: null
+  epochs: 3
+  seed: 17
