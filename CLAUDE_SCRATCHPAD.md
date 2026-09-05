@@ -432,6 +432,9 @@ Levers, in the order they are queued, each with the decision it exists to make:
    evaluating XOR-decoded strings and MBA helper calls, which a direct-answer model cannot do
    in one token. Expect `tuned_X1` on X1 to sit well under the other specialists' own-condition
    ~0.40; `ck_X1` 377842 → `ev_X1` 377845 report.**
+   **`tr_monoX` 377843 DONE (4.2 h, 1419 steps, 30,309 rows = the six-condition 26.8k + X1's
+   3.5k, train_loss 0.153, truncation 56/30,309 = 0.18 % at 2048, all of it X1 rows). `ck_monoX`
+   377844 → `ev_X1` 377845 next.**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**
