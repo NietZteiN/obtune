@@ -549,6 +549,17 @@ Levers, in the order they are queued, each with the decision it exists to make:
    Literal, so vLLM generated all 1,670 completions and THEN pydantic rejected the first row.
    Added `x1_generic` and `align_span_generic`, and audited every config in `configs/**` against
    the literal (0 remaining mismatches) so this cannot recur silently. Resubmitted as 378459.**
+   **`ev_X1` 378459 read (2026-09-05) — H-X1-family first conjunct CONFIRMED, H-mono-X CONFIRMED,
+   and a NEW result: X1 IS A TRAINABLE PROXY FOR H1.** X1 heldout (1,214 items / 405 programs):
+   base 0.119, formatonly 0.125, mono_all 0.232, tuned_L0 0.270, tuned_S1 0.272, tuned_S2 0.286,
+   **mono_allX 0.310, tuned_X1 0.319**. `tuned_X1 − tuned_L0` +4.86 [+2.80, +6.92]*;
+   `− tuned_S2` +3.29 [+1.23, +5.52]*; `mono_allX − mono_all` +7.74 [+5.45, +10.21]*;
+   `mono_allX − tuned_X1` −0.91 [−2.96, +1.15] (the tie AGAIN, on a 7th condition).
+   **Across the six arms measured on BOTH X1 and the spent H1 pilot — same 405 programs —
+   r = 0.9992, ρ = 1.000, mean |Δ| = 0.48 pts.** X1 is a free development surface for held-out
+   family work. LIMIT: holds only for arms trained on neither column, so tuned_X1/mono_allX X1
+   numbers are DIAGONAL and must not predict their H1 numbers. Gate resolved — the X1 arms have
+   earned the read. Entry `log/transfer/2026-09-05_x1-is-a-trainable-proxy-for-h1.md`.**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**
