@@ -537,7 +537,12 @@ Levers, in the order they are queued, each with the decision it exists to make:
    0.249 / 0.257 (ckpt 54/108/162/final), best 0.264 — against the six specialists' ~0.40 on
    their own conditions, so X1's own-condition diagonal is ~14 pts below every other
    specialist's, exactly as `tr_X1`'s 0.763 train loss predicted. `ck_monoX` best 0.343 over the
-   seven-condition val. `ev_X1` 377999 queued behind the job cap.**
+   seven-condition val.**
+   **`ev_X1` 377999 FAILED (2026-09-05) — third distinct infrastructure defect on this arm, and
+   the most avoidable: `phase: x1_generic` was never added to `schema.py::TrialRow`'s phase
+   Literal, so vLLM generated all 1,670 completions and THEN pydantic rejected the first row.
+   Added `x1_generic` and `align_span_generic`, and audited every config in `configs/**` against
+   the literal (0 remaining mismatches) so this cannot recur silently. Resubmitted as 378459.**
    **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**
