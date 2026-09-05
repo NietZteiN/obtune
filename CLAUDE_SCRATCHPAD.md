@@ -393,6 +393,14 @@ Levers, in the order they are queued, each with the decision it exists to make:
    mismatched AND matched − mono_all excl 0 on ≥1 non-L0 condition, no L0 tax); the pooled
    MSE has a different raw scale from the k=4 variant, so λ is not comparable across modes —
    λ=3 is there to bracket, and align_loss is logged separately as before.
+   **`al_span_cache` 377864 DONE: 5,019 × 6 layers × 4096, valid 5019/5019, row-0 span decodes to
+   exactly the program text (gate `check_span_mask.py` had already passed 1.000/1.000 on dev
+   377863). `al_span_lam1` 377865 DONE (3.5 h, 1257 steps, total 0.236). The span objective is
+   REAL, not a no-op: align_loss 0.262 → 0.066 train and 0.090 → 0.069 on val, i.e. it
+   generalises to held-out programs. But the task term overfits hard — task loss ≈ 0.005 by
+   epoch 3 while eval_loss climbs monotonically 0.711 → 1.326, so for THIS arm the checkpoint
+   choice carries real weight and `ck_span_lam1` 377868 (val exact_match, not loss) is doing
+   the work. `al_span_lam1_mm` 377866 / `al_span_lam3` 377867 queued behind the job cap.**
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
    if a source is available; H-saturation is still open.
    **SUBMITTED 2026-09-05.** The parent's `gate_inputs` (5–20 per program; ran on the parent,
