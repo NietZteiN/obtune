@@ -327,7 +327,10 @@ Levers, in the order they are queued, each with the decision it exists to make:
    **Status: loss-mask gate PASS (dev 377801); chains `tr_L0` 377802→`ck_tr_L0` 377804→`ev_tr_L0` 377806,
    `tr_mono` 377803→377805→377807, all pending. Entry: `log/transfer/2026-09-04_trace-sft-and-34b-submitted.md`.**
    **`tr_L0` 377802 DONE (43 min, 222 steps, train_loss 0.173, truncation 0/4688 at 4096,
-   len p95 1077 / max 3933); `tr_mono` 377803 running on g-08-06.**
+   len p95 1077 / max 3933); `tr_mono` 377803 DONE (6.3 h, 1260 steps, train_loss 0.0505,
+   truncation 16/26,832 = 0.06 % at 4096, len p95 1620 / max 5706). The tiny loss is the long,
+   near-deterministic trace completion dominating the token count, not an accuracy signal —
+   `ck_tr_mono` 377805 → `ev_tr_mono` 377807 pending.**
    **`ck_tr_L0` 377804 read (2026-09-05): held-in L0 val exact_match 0.294 / 0.330 / 0.339 / 0.336
    (ckpt 74 / 148 / 222 / final), best ckpt-222 at 0.339 — against `tuned_L0`'s 0.408 (ckpt-148)
    on the SAME 333 val items. −7 pts on clean code held-in. Still rising at the last epoch (the
@@ -367,6 +370,8 @@ Levers, in the order they are queued, each with the decision it exists to make:
    `tr_cs_L0` 377851 → `ck_cs_L0` 377852; `tr_cs_mono` 377853 → `ck_cs_mono` 377854 →
    `ev_cases` 377855. Question: is the corpus saturated in programs (H-scale ✗) but not in
    labelled behaviour per program?
+   **`tr_cs_L0` 377851 DONE (44 min, 441 steps, 9,378 rows, train_loss 0.490 vs `tuned_L0`'s
+   0.503 on 4,689 rows, truncation 5/9,378 at 2048); `ck_cs_L0` 377852 next, `tr_cs_mono` 377853 pending.**
 6. **CodeLlama-34B-Instruct** — first download died on the login node's 8 GB vmem cap
    (`memory allocation of 67021731 bytes failed`, hf_transfer); resubmitted as CPU job 377794
    on `normal` (`submit.py --gres none`, new option; 377794 hit the same `python python` argv slip, 377795 died because /tmp is node-local; the script now lives at `scripts/hf_snapshot.py`, job 377810), then
