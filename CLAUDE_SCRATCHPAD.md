@@ -313,7 +313,12 @@ Levers, in the order they are queued, each with the decision it exists to make:
    **`cand_heldout` 377945 DONE: 9,582 items (6 dropped, all `apps_1615_0` — the 20,055-token
    literal program `drop_overlong` was written for), greedy 0.385 pooled over six conditions,
    sample 0.353, any-of-8 0.559, all-of-8 0.189. Held-out headroom is 17 pts. `rerank` 377946
-   now waits only on `tr_verif` 377861.** `src/obtune/verifier.py`: the generator's own prompt + candidate as the
+   now waits only on `tr_verif` 377861.**
+   **`tr_verif` 377861 DONE (3.2 h, 1132 steps, train_loss 0.203). Pool: 241,569 sampled rows →
+   99,523 distinct (item, answer) pairs, 18,134 pos / 81,389 neg → balanced to 36,268 at 50 % pos
+   (the 40k cap never bound; the positives did). Val 1,000 at 51.3 % pos. Truncation 49/36,268.
+   Two checkpoints (566, 1132) — `rerank` 377946 scores both plus the zero-training logprob
+   controls and picks on val only.** `src/obtune/verifier.py`: the generator's own prompt + candidate as the
    assistant turn + "Is the return value above exactly correct? Answer yes or no." → one-token
    completion; `scripts/29_train_verifier.py` (`train/verifier_generic_py.yaml`: r32, 2 epochs,
    dedup on (item, pred_norm), class-balanced, cap 40k) → `runs/adapters_verifier/codellama-7b/
