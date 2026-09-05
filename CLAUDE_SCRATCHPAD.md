@@ -327,7 +327,13 @@ Levers, in the order they are queued, each with the decision it exists to make:
    **Status: loss-mask gate PASS (dev 377801); chains `tr_L0` 377802→`ck_tr_L0` 377804→`ev_tr_L0` 377806,
    `tr_mono` 377803→377805→377807, all pending. Entry: `log/transfer/2026-09-04_trace-sft-and-34b-submitted.md`.**
    **`tr_L0` 377802 DONE (43 min, 222 steps, train_loss 0.173, truncation 0/4688 at 4096,
-   len p95 1077 / max 3933); `ck_tr_L0` 377804 pending; `tr_mono` 377803 running on g-08-06.**
+   len p95 1077 / max 3933); `tr_mono` 377803 running on g-08-06.**
+   **`ck_tr_L0` 377804 read (2026-09-05): held-in L0 val exact_match 0.294 / 0.330 / 0.339 / 0.336
+   (ckpt 74 / 148 / 222 / final), best ckpt-222 at 0.339 — against `tuned_L0`'s 0.408 (ckpt-148)
+   on the SAME 333 val items. −7 pts on clean code held-in. Still rising at the last epoch (the
+   direct-answer arm plateaued at epoch 2), and the extracted-answer format_fail / trace
+   truncation are not in the ckpt-select output — `ev_tr_L0` 377806 reports them. Early read:
+   trace SFT is not a free lift on L0; the question it exists for is the obfuscated columns.**
 3b. **Span-aligned alignment variant** — the one L_align candidate W5 did not test (per-token
    pairing of clean/obfuscated spans via `rename_map`, not the answer slot). Cheap; after 3.
    **SUBMITTED 2026-09-05 as `align.mode: span`.** Per-token pairing via `rename_map` was
