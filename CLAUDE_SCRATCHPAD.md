@@ -439,7 +439,8 @@ Levers, in the order they are queued, each with the decision it exists to make:
    0.503 on 4,689 rows, truncation 5/9,378 at 2048). `ck_cs_L0` 377852 done: val exact_match
    0.411 / 0.396 / 0.405 / 0.409 (ckpt 147/294/441/final) — best 0.411 vs `tuned_L0`'s 0.408 on the
    same 333 items, i.e. 3× the labelled cases per program buys +0.3 pts on val. `tr_cs_mono` 377853
-   running (3.9 h in).**
+   DONE (6.8 h, 2514 steps, 53,682 rows = 2× the canonical 26.8k, train_loss 0.143 vs `mono_all`'s
+   comparable schedule, truncation 58/53,682). `ck_cs_mono` 377854 → `ev_cases` 377855 next.**
 6. **CodeLlama-34B-Instruct** — first download died on the login node's 8 GB vmem cap
    (`memory allocation of 67021731 bytes failed`, hf_transfer); resubmitted as CPU job 377794
    on `normal` (`submit.py --gres none`, new option; 377794 hit the same `python python` argv slip, 377795 died because /tmp is node-local; the script now lives at `scripts/hf_snapshot.py`, job 377810), then
