@@ -290,7 +290,16 @@ Levers, in the order they are queued, each with the decision it exists to make:
    train_loss 0.141, truncation 18/26,841 at 2048). `ck_ll8_L0` 377847 / `ck_ll8_mono` 377849 →
    `ck_ll8_L0` 377847 done: 0.435 / 0.435 / 0.420 / 0.417 (ckpt 74/148/222/final), best 0.435 —
    against CodeLlama-7b `tuned_L0`'s 0.408 on its own val, +2.7 pts. `ck_ll8_mono` 377849: 0.371 /
-   0.386 / 0.388 / 0.386, best 0.388. Promotion still rides on `ev_ll8` 377850 held-out.**
+   0.386 / 0.388 / 0.386, best 0.388.**
+   **`ev_ll8` 377850 read (2026-09-05) — LEVER 1 CLOSED, not promoted.** L0 0.447 clears the
+   literal 0.430 gate, but paired on the identical items it is +1.80 [−0.42, +4.07] on L0 and
+   +1.21 [−0.29, +2.64] pooled — both cover zero, and the threshold predates paired intervals for
+   cross-model contrasts. Decisive: `base` is +2.08 [+0.19, +3.92] ahead while the tuning gaps tie
+   (+17.18 vs +18.04) — the advantage is INHERITED, not produced by tuning; the newer base even
+   converts tuning slightly worse. **Keeper: the RQ2 fingerprint replicates cross-family** —
+   `mono_all − tuned_L0` pooled +0.16 [−1.26, +1.61], with the L0 cost (−2.22 [−4.13, −0.24]) and
+   L1b gain (+2.83 [+0.90, +4.76]) the only intervals excluding zero, same signs as CodeLlama.
+   Entry `log/transfer/2026-09-05_llama31-probe-fingerprint-replicates.md`.**
 2. **Self-consistency (maj@8)** — ALREADY RUN (`selfcons_generic`, 09-04 05:36) and never
    analysed: vote−greedy is −1…−2 pts for `tuned_L0`, ±0 for `mono_all`, +2…+3 for `base`.
    NULL for tuned adapters, as the config predicted. BUT any-of-8 for `tuned_L0` is
