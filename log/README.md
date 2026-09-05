@@ -14,7 +14,7 @@ Update both tables below on every new entry.
 | [`setup/`](setup/) | Scaffold, environment, data layer, obfuscation pipeline | active — **migrated to juno/SLURM 2026-08-28**; data layer verified, vLLM eval blocked on a CUDA-12 driver | 6 |
 | [`pilot/`](pilot/) | Week-1 kill-switch pilot and its gate decision | done — gate passed; H1 gain shown to be task acquisition | 2 |
 | [`transfer/`](transfer/) | RQ1 — per-condition adapters, transfer matrix, GLMMs | active — CodeLlama-7b master report with CIs; accuracy campaign closed (self-consistency ✗, augmentation ✗, data scale ✗, 13B +3.4 ✓; the breadth-vs-clean tie holds at six looks); W6 open: trace SFT, 34b, X1 family arm, Llama-3.1 probe, verifier rerank (2b) | 14 |
-| [`modularity/`](modularity/) | RQ2 — router, merges, monolithic, oracle arms | **closed, negative** — [`MASTER_REPORT_2026-08-27_router-and-merging.md`](../docs/MASTER_REPORT_2026-08-27_router-and-merging.md); one open arm: span-pooled L_align (3b, 377864–71) | 12 |
+| [`modularity/`](modularity/) | RQ2 — router, merges, monolithic, oracle arms | **closed, negative** — [`MASTER_REPORT_2026-08-27_router-and-merging.md`](../docs/MASTER_REPORT_2026-08-27_router-and-merging.md); one open arm: span-pooled L_align (3b, 377864–71) | 13 |
 | [`attention/`](attention/) | RQ3 — token classes, slicers, anchoring metrics, regression | active | 3 |
 | [`human-align/`](human-align/) | Secondary — Δρ vs human difficulty orderings | not started | 0 |
 | [`holdout-final/`](holdout-final/) | The second and final H1 evaluation pass | not started | 0 |
