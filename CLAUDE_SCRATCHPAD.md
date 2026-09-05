@@ -476,6 +476,15 @@ Levers, in the order they are queued, each with the decision it exists to make:
    — against CodeLlama-7b's 0.408 and Llama-3.1-8B's 0.435 on the SAME 333 val items, i.e. **+9.0
    pts over 7B on val**, by far the largest move any lever has produced. If it holds on heldout
    (`ev34_grid` 377817) scale is the one lever that works. `ck34_mono` 377816 pending.**
+   **`ev34_grid` 377817 read (2026-09-05) — H-34b CONFIRMED, CAMPAIGN WINNER.** Heldout:
+   L0 0.522, L1b 0.419, L1r 0.468, L2 0.465, S1 0.472, S2 0.484. `tuned_L0` 34b − 7b pooled
+   **+8.56 [+7.00, +10.15]**, − 13b +5.17 [+3.78, +6.64]. **The gain is ALL tuning**: 34b−7b base
+   is null +1.47 [−0.24, +3.27] while the tuning gap widens +18.04 → +25.13. Exact opposite of the
+   Llama-3.1 swap (inherited +2.08, gap flat). RQ2 tie survives at 34B (+0.14 [−1.24, +1.53]) and
+   the fingerprint holds on four models; but the L1b gain DOUBLES (+2.41 7b → +5.19 34b) while the
+   L0 cost barely moves (−1.74 → −2.63) → new H-breadth-scales. **34B `tuned_L0` is the arm to
+   carry into the single H1 `final_eval` batch with the X1 arms.** Entry
+   `log/transfer/2026-09-05_scale-is-the-only-lever-that-works.md`.**
 
 7. **H1-adjacent trainable transforms ("X1")** — a *sibling* mechanism family (different string
    encoding scheme, different MBA identities than H1's) as a trainable condition. This is the
