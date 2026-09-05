@@ -368,6 +368,12 @@ Levers, in the order they are queued, each with the decision it exists to make:
    **DONE 377810 → registered `codellama-34b` (48 × 8192, GQA, 4×16 batch); submitted `bc34` 377812,
    `tr34_L0` 377813 → `ck34_L0` 377815, `tr34_mono` 377814 (30 h wall) → `ck34_mono` 377816 →
    `ev34_grid` 377817 (`rq2_generic --systems base,tuned_L0,mono_all`, `--mem 128G`).**
+   **`bc34` read (377812, 2026-09-05):** untuned 34B on heldout L0 0.254 / L1r 0.220 / S2 0.191,
+   format_fail 0.254 / 0.209 / 0.137. Base accuracy is flat across scale (7b 0.257, 13b 0.252,
+   34b 0.254 on L0) and 34B's L0 format_fail is *double* 7b's (0.129); conditional on a
+   well-formed answer it is 0.340 vs 7b 0.295 / 13b 0.280, so the scale signal in the base is
+   entirely masked by format. Not a gate for the tuned arms (already queued, tuning removes the
+   format failures); it does say the untuned 34B is not a free win.
 7. **H1-adjacent trainable transforms ("X1")** — a *sibling* mechanism family (different string
    encoding scheme, different MBA identities than H1's) as a trainable condition. This is the
    one lever that touches the held-out claim: report it in a separate namespace, never pool
