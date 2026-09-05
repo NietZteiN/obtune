@@ -311,6 +311,18 @@ Levers, in the order they are queued, each with the decision it exists to make:
    pairing of clean/obfuscated spans via `rename_map`, not the answer slot). Cheap; after 3.
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
    if a source is available; H-saturation is still open.
+   **SUBMITTED 2026-09-05.** The parent's `gate_inputs` (5–20 per program; ran on the parent,
+   determinism-checked, and verified output-identical on every kept variant by the gate) are
+   promoted to training cases: `06_emit_pairs.py --extra-cases 3 --aug-tag cases3` picks up
+   to 3 per program, output-diverse first (91 % distinct within the extra set, 77 % new vs
+   the canonical three). Bank `data/train/pairs_aug/cases3/` = 38,346 rows, exactly mirroring
+   the canonical six (L0 6,693 …). Eval inputs unchanged (`cases[:3]` from base). Configs
+   `train/L0_cases_generic_py.yaml`, `train/mono_cases_generic_py.yaml` (`augment_tags:
+   [cases3]`, `adapter_root runs/adapters_cases`, epochs 3), `eval/cases_generic.yaml`
+   (`rq2_generic` phase → ranks item-for-item against `tuned_L0`/`mono_all`). Chains:
+   `tr_cs_L0` 377851 → `ck_cs_L0` 377852; `tr_cs_mono` 377853 → `ck_cs_mono` 377854 →
+   `ev_cases` 377855. Question: is the corpus saturated in programs (H-scale ✗) but not in
+   labelled behaviour per program?
 6. **CodeLlama-34B-Instruct** — first download died on the login node's 8 GB vmem cap
    (`memory allocation of 67021731 bytes failed`, hf_transfer); resubmitted as CPU job 377794
    on `normal` (`submit.py --gres none`, new option; 377794 hit the same `python python` argv slip, 377795 died because /tmp is node-local; the script now lives at `scripts/hf_snapshot.py`, job 377810), then
@@ -339,7 +351,13 @@ Levers, in the order they are queued, each with the decision it exists to make:
    `tr_monoX` 377843 (`mono_allX_generic_py.yaml`, seven conditions, train_size 40000) →
    `ck_monoX` 377844; `ev_X1` 377845 (`eval/x1_generic.yaml`: base, formatonly, tuned_L0/S1/S2,
    tuned_X1, mono_all, mono_allX on six + X1, heldout, NO H1). Adapter dirs
-   `X1_r32_s17` and `L0-L1b-L1r-L2-S1-S2-X1_r32_s17`. **The H1 read of the X1 arms is the
+   `X1_r32_s17` and `L0-L1b-L1r-L2-S1-S2-X1_r32_s17`. Train build (377836, 4 min): **X1 =
+   1649/2231 programs (74 %)**, 4,947 pairs (3,468 train / 264 val / 1,215 heldout eval items);
+   per variant median 6 MBA sites (4 literal expansions + 2 helper calls; 80 % have ≥1 helper
+   call), 49 % have ≥1 encoded string; size ratio median 4.14× (p95 7.24× — the 4-helper
+   prelude dominates short programs; token-length audit vs max_seq_len 2048 is job `x1_len`
+   377856, `scripts/x1_lengths.py`); 0 H1-marker hits over all 1,649 variants.
+   **The H1 read of the X1 arms is the
    campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
    the user.**
 
