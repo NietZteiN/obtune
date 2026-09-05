@@ -323,6 +323,16 @@ Levers, in the order they are queued, each with the decision it exists to make:
    literal program `drop_overlong` was written for), greedy 0.385 pooled over six conditions,
    sample 0.353, any-of-8 0.559, all-of-8 0.189. Held-out headroom is 17 pts. `rerank` 377946
    now waits only on `tr_verif` 377861.**
+   **`rerank` 377946 read (2026-09-05) — LEVER 2b CLOSED, BOTH HYPOTHESES REFUTED.**
+   Heldout pooled: greedy 0.3854, any-of-8 0.5628 (+17.74), vote 0.3756 (−0.98), cum_logprob
+   0.3907 (+0.53 [−0.09, 1.15]), verifier ckpt-1132 0.3963 (**+1.09 [0.00, 2.17]** — bound touches
+   zero) and **+0.38 [−0.58, +1.38] over the logprob control**: both conjuncts fail. base-as-judge
+   **AUC 0.347, BELOW CHANCE**, −5.52 [−6.75, −4.28] — anti-informative, not merely uninformative.
+   Mechanism: AUC 0.887 buys +1.1 pts because 43.7 % of items have NO correct candidate (any-of-n
+   is not headroom) and on the rest rescues 0.131 ≈ breakages 0.112. H-trace-complement was gated
+   on this clearing → does NOT inherit a pass; needs its own registration (two-way break-even is
+   52 %, but 2b failed on conversion not ranking power). Entry
+   `log/transfer/2026-09-05_verifier-is-a-good-classifier-and-a-bad-selector.md`.**
    **`tr_verif` 377861 DONE (3.2 h, 1132 steps, train_loss 0.203). Pool: 241,569 sampled rows →
    99,523 distinct (item, answer) pairs, 18,134 pos / 81,389 neg → balanced to 36,268 at 50 % pos
    (the 40k cap never bound; the positives did). Val 1,000 at 51.3 % pos. Truncation 49/36,268.
