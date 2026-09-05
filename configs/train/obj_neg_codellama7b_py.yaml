@@ -1,0 +1,27 @@
+# OBJECTIVE O2 — verified semantic negatives with unlikelihood (2026-09-05; objectives.py).
+# Rows = mono_all's 26.8k + one verified single-operator MUTANT per (program, condition) train
+# group (data/train/negatives/, built by scripts/32_build_negatives.py), each contributing
+#   kind 0: mutant code + its TRUE output            (ordinary CE)
+#   kind 1: mutant code + the ORIGINAL output        (unlikelihood at the first divergent token)
+# The negative teaches "this surface-similar program does NOT map to that answer" — the one
+# signal plain CE never carries. lam scales the unlikelihood term.
+# Arms:  default (neg_ul)      --no-ul (neg_data: the mutant positives only = data-only control)
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_neg_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: negatives
+  lam: 1.0
+  use_ul: true
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17

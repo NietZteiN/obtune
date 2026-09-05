@@ -1,0 +1,28 @@
+# OBJECTIVE O1 — paired consistency (2026-09-05, objectives campaign; src/obtune/objectives.py).
+#   L = CE(y | x_obf) + lam * KL( p_teacher(. | x_L0parent) || p_student(. | x_obf) )  at answer tokens
+# Teacher = FROZEN tuned_L0/best (checkpoint-148) on the CLEAN parent of the same program+case.
+# Same six conditions, same rows, same shape (16x4, 3 epochs, lr 1e-4, r32) as mono_all, so
+# mono_all is the exact same-data control and tuned_L0 the same-teacher control.
+# Arms:  --lam 1  (cons_lam1)   --lam 3  (cons_lam3)
+#        --teacher-view same --lam 1  (cons_same_lam1: teacher sees the obfuscated input =
+#        plain KD; separates "distil from a stronger model" from "match the clean view").
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 1.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-7b/python/L0_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17

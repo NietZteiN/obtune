@@ -286,6 +286,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         bf16=use_cuda and dtype is torch.bfloat16,
         gradient_checkpointing=bool(tcfg.get("gradient_checkpointing", True)) and use_cuda,
         save_strategy=tcfg.get("save_strategy", "epoch"),
+        save_steps=int(tcfg.get("save_steps", 500)),  # only read when save_strategy == "steps" (resample arm)
         save_total_limit=None,  # every epoch checkpoint is a ckpt-select candidate
         eval_strategy="steps" if val_ds is not None else "no",
         eval_steps=int(tcfg.get("eval_steps", 200)),

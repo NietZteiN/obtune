@@ -1,0 +1,30 @@
+# OBJECTIVES campaign eval (2026-09-05) — CodeLlama-7b, trainable grid + X1. NO H1: the
+# quarantine budget is spent (CLAUDE.md changelog 2026-09-05); X1 is the held-out-family read.
+# Every arm is read item-for-item against mono_all / tuned_L0 / tuned_X1 in x1_generic
+# (configs/eval/x1_generic.yaml), which share these eval rows. Decision rules are pre-registered
+# in CLAUDE_SCRATCHPAD.md ("OBJECTIVES CAMPAIGN") and committed before any job was submitted.
+_extends: _base_eval.yaml
+
+phase: objectives_generic
+experiment_id: objectives_generic
+run_tag: objectives_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: cons_lam1,      adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam1_s17/best", arch: obj_consistency, train_cond: mix}
+  - {name: cons_lam3,      adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: obj_consistency, train_cond: mix}
+  - {name: cons_same_lam1, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_same_lam1_s17/best", arch: obj_consistency_same, train_cond: mix}
+  - {name: neg_ul,         adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_neg_ul_lam1_s17/best", arch: obj_negatives, train_cond: mix}
+  - {name: neg_data,       adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_neg_data_lam1_s17/best", arch: obj_negatives_data, train_cond: mix}
+  - {name: x1_resample,    adapter: "runs/adapters_objectives/{model}/{language}/X1_r32_s17/best", arch: obj_resample, train_cond: X1}
+  - {name: curr_sft,       adapter: "runs/adapters_objectives/{model}/{language}/L1b-L1r-L2-S1-S2_r32_curr_sft_s17/best", arch: obj_curriculum, train_cond: mix}
+  - {name: curr_kl,        adapter: "runs/adapters_objectives/{model}/{language}/L1b-L1r-L2-S1-S2_r32_curr_cons_parent_lam1_s17/best", arch: obj_curriculum_kl, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

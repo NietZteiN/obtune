@@ -1,0 +1,24 @@
+# OBJECTIVE O3 — resampled surfaces on X1 (2026-09-05). Same programs and gold as
+# grid_py_X1.yaml, but X1's randomised transform (XOR keys, helper names, literal splits) is
+# seen under THREE independent surfaces (canonical + aug tags s101/s202) for ONE epoch each,
+# i.e. the same 162 optimizer steps as tuned_X1's three epochs over one surface.
+# Compute-matched: any gain is the surfaces, not the steps. Checkpoints every 54 steps so
+# ckpt-select sees the same three candidates tuned_X1 had (54/108/162).
+# Prior LOW: mono_aug (four surfaces of L1b/L1r/S1/S2, 2026-09-03) was null on the grid.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [X1]
+run_tag: resample_py_X1
+phase: main
+adapter_root: runs/adapters_objectives
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  augment_tags: [s101, s202]
+  train_size: null
+  epochs: 1
+  save_strategy: steps
+  save_steps: 54
+  seed: 17

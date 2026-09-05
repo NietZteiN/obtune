@@ -1,0 +1,30 @@
+# OBJECTIVE O4 — curriculum: continue from tuned_L0/best on the five transformed conditions
+# (2026-09-05; objectives.py `init_adapter`). ONE epoch, lr 5e-5 (half), so the exposure to
+# transforms is short and the L0 solution is the starting point rather than a co-equal mixture
+# member. tuned_L0 is the strongest single arm on the held-out family (X1/H1); mono_all, which
+# sees the same rows from scratch, is BELOW it there. This asks whether order is the reason.
+# Arms:  --objective sft          (curr_sft: plain CE from the L0 init)
+#        --objective consistency  (curr_kl: + the O1 consistency term, teacher = the init itself)
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L1b, L1r, L2, S1, S2]
+run_tag: obj_curr_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: sft
+  lam: 1.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-7b/python/L0_r32_s17/best
+  init_adapter: runs/adapters/codellama-7b/python/L0_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  epochs: 1
+  lr: 5.0e-5
+  seed: 17

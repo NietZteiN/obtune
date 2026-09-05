@@ -138,7 +138,7 @@ class TrialRow(BaseModel):
     # SCHEMA change, not a config change: naming an unlisted phase in a config fails at
     # the first row written, i.e. after a full generation pass. `tests/test_baseline_configs.py`
     # asserts every committed config's phase is one this Literal accepts.
-    phase: Literal["pilot", "main", "final", "baselines", "baselines_gridA", "grid_rq1_7b", "align_lam_sweep", "formatonly_fix", "basecheck", "rq1_generic", "loto_generic", "rq2_generic", "baselines_generic", "rank_generic", "extra_generic", "merge_sweep_generic", "mole_generic", "h1_codellama", "selfcons_generic", "trace_generic", "x1_generic", "align_span_generic"]
+    phase: Literal["pilot", "main", "final", "baselines", "baselines_gridA", "grid_rq1_7b", "align_lam_sweep", "formatonly_fix", "basecheck", "rq1_generic", "loto_generic", "rq2_generic", "baselines_generic", "rank_generic", "extra_generic", "merge_sweep_generic", "mole_generic", "h1_codellama", "selfcons_generic", "trace_generic", "x1_generic", "align_span_generic", "objectives_generic"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
@@ -170,6 +170,15 @@ class TrialRow(BaseModel):
         # is a separate arch, not a flag, so it can never be pooled with the real arm by a
         # groupby that forgot about it -- the mole_random lesson.
         "invariance_mismatch",
+        # Alternative fine-tuning OBJECTIVES (2026-09-05, src/obtune/objectives.py). Each gets
+        # its own string for the same RQ1-selection reason: none is a per-condition specialist.
+        "obj_consistency",       # CE + lam * KL(teacher on clean parent || student on obfuscated)
+        "obj_consistency_same",  # control: teacher sees the same obfuscated input (plain KD)
+        "obj_negatives",         # CE + unlikelihood on verified semantic mutants
+        "obj_negatives_data",    # control: the mutant positives with no unlikelihood term
+        "obj_resample",          # X1 under three independent surfaces, compute-matched to tuned_X1
+        "obj_curriculum",        # continued from tuned_L0 on the transformed conditions (CE)
+        "obj_curriculum_kl",     # same, with the consistency term
     ]
     train_cond: Optional[str]  # None | condition | "mix"
     eval_cond: AnyCondition

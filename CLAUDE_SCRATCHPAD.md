@@ -639,3 +639,53 @@ Integrity verified before interpretation (pilot had a prefix-cache collision): b
 **0.0000** identical outputs with every tuned arm; no pair >0.44; ff 0.014–0.026 tuned.
 
 Entry `log/transfer/2026-09-05_h1-final-read.md`. CLAUDE.md changelog updated.
+
+## 2026-09-05 — OBJECTIVES CAMPAIGN (user: "try all" four new fine-tuning objectives)
+
+Honest framing first: every arm so far shared ONE objective (next-token CE on the answer span);
+only 3b changed the loss. The four below change the OBJECTIVE, not the data or the model. H1 is
+spent, so the held-out-family read is **X1** everywhere (lossless proxy: 0.08 pts).
+
+| # | objective | mechanism | arms | control |
+|---|---|---|---|---|
+| O1 | **paired consistency** | L = CE(x_obf) + λ·KL(p_T(·\|x_L0parent) ‖ p_S(·\|x_obf)) at answer tokens; T = frozen tuned_L0 loaded as a 2nd PEFT adapter, no_grad | `cons_lam1`, `cons_lam3` | `cons_same_lam1`: T sees the SAME obfuscated input (plain KD) — separates "consistency across surfaces" from "distillation from a stronger teacher" |
+| O2 | **semantic negatives** | verified single-operator mutants (reuses `cft/mutate.py` propose + exec) of the obfuscated rows; mutant + true output = extra CE row; mutant + ORIGINAL output = NEGATIVE row, loss = unlikelihood −log(1−p) at the FIRST token where y_orig diverges from y_mut | `neg_ul` | `neg_data`: same mutant positives, no negative rows (isolates the UL term from the data) |
+| O3 | **resampled surfaces** | X1 re-built at seeds 101/202 (`--aug-tag`), 3 surfaces × 1 epoch = same steps as `tuned_X1` (1 surface × 3 epochs) | `x1_resample` | `tuned_X1` itself. Prior LOW: `mono_aug` (4 surfaces, six conds) was null |
+| O4 | **curriculum** | init LoRA from `tuned_L0/best`, 1 epoch on the five non-L0 conds at lr 5e-5 | `curr_kl` (O1 loss) | `curr_sft` (plain CE) — order vs objective |
+
+Code: `src/obtune/objectives.py` (one trainer, modes consistency/negatives; `init_adapter`),
+`scripts/32_build_negatives.py` → `data/train/negatives/<cond>/python.jsonl` (under TRAIN_ROOT,
+read through `paths.load_training_jsonl`, so all quarantine layers apply), `train_sft.py` gains
+`train.save_steps` (O3 needs step checkpoints inside its single epoch).
+
+Pre-registered decision rules (commit BEFORE submission; all CIs program-clustered, 2000 resamples):
+- H-cons: `cons_lam1 − mono_all` on X1 excludes 0 (>0) AND `cons_lam1 − cons_same_lam1` > 0.
+  Read also vs `tuned_L0` on X1 (the standing 7B non-X1 best on the held-out family).
+- H-neg: `neg_ul − neg_data` > 0 on X1 excl 0; `neg_data − mono_all` is the data-only read
+  (expected null per lever 5).
+- H-resample: `x1_resample − tuned_X1` on X1 excl 0.
+- H-curr: `curr_kl − tuned_L0` ≥ 0 on L0 (no tax) AND `curr_kl − mono_all` > 0 pooled non-L0;
+  `curr_kl − curr_sft` separates the objective from the order.
+Anything that fails its rule is reported as null; nothing is tuned on X1 after this read.
+
+Budget: 8 adapters (~3.5–6 h each on h200) + 8 ckpt-selects + 1 eval (7 conds). Smoke
+(`--max-steps 4`) on h200 before the full chain.
+
+### 2026-09-05 — objectives campaign: implementation landed, pre-registration commit
+- Code: `src/obtune/objectives.py` (consistency / negatives / curriculum-init trainer, TRL-mirrored
+  tokenisation, answer-token correspondence assert, dry-run), `scripts/32_build_negatives.py`
+  (propose → run_batch → first verified differing mutant per (program, condition) train group,
+  one NegativePair each: mutant code + true output + orig output), `scripts/33_smoke_objectives.py`,
+  `scripts/analysis/34_objectives.py`. `train_sft.py` gained `save_steps`; `schema.py` gained phase
+  `objectives_generic` and arch strings `obj_*`.
+- Login-node checks: quarantine lint green; 40/40 student↔teacher answer-token correspondence on
+  S1/L2 rows; S1 negatives smoke on 30 groups → 13 kept (AOR 5 / ROR 5 / ICR 3), yield raised with
+  `--n-mutants 8`; analysis script runs against the x1_generic controls.
+- CPU builds submitted BEFORE this commit (data only, no hypothesis touched): 378683 negatives
+  (L0..S2, normal, 32 cpu), 378684→378685 X1 s101 build→pairs, 378686→378687 X1 s202.
+- Adapter names (runs/adapters_objectives/codellama-7b/python/): `L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam{1,3}_s17`,
+  `…_cons_same_lam1_s17`, `…_neg_ul_lam1_s17`, `…_neg_data_lam1_s17`, `X1_r32_s17` (resample),
+  `L1b-L1r-L2-S1-S2_r32_curr_sft_s17`, `…_curr_cons_parent_lam1_s17`.
+- Order of operations from here: commit (this) → smoke job (all six arms, `--max-steps 4`, h200)
+  → full chains train → ckpt-select → eval (afterok) → `34_objectives.py` → log entry.
+  **Decision rules above are frozen at this commit. Nothing is tuned on X1 after the read.**
