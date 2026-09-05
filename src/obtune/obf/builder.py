@@ -50,6 +50,9 @@ TRANSFORM_REGISTRY: dict[str, dict[str, tuple[str, str]]] = {
         # The two halves of S2, emitted as their own conditions. S2 itself is unchanged.
         "S3": ("obtune.obf.py.deadcode", "transform_deadhelpers"),
         "S4": ("obtune.obf.py.deadcode", "transform_opaque"),
+        # X1: trainable SIBLING of the held-out H1 family (different encoding, different
+        # identities, different helper names). Python only; reported in its own namespace.
+        "X1": ("obtune.obf.py.x1", "transform"),
     },
     # The JS transforms are implemented in Babel (obf/js/transforms.mjs) and reached
     # through a Node subprocess; obf/js/adapters.py presents them as fn(ctx) callables.

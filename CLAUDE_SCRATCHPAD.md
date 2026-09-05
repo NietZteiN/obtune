@@ -277,6 +277,15 @@ Levers, in the order they are queued, each with the decision it exists to make:
    re-gated max_seq_len 2048 (mean 404, p95 685, 0.00 % truncation). GO if untuned base ≥
    tuned CodeLlama-7B on L0 (~0.43) or clears CodeLlama base widely with format_fail ≪ 0.13.
    On GO: 6-adapter grid + mono_all + tuned_L0, then §26-style ranking.
+   **GATE READ 2026-09-05 (377796, 4 min): NO-GO on the pre-declared rule.** Llama-3.1-8B base
+   on heldout: L0 0.257 / L1b 0.222 / L1r 0.242 / L2 0.215 / S1 0.213 / S2 0.205, format_fail
+   0.04–0.06. CodeLlama-7b base is L0 0.257 / L1r 0.207 / S2 0.193 at format_fail 0.13–0.16 —
+   i.e. identical on L0, +1…+3.5 on the obfuscated columns, and *conditional on a well-formed
+   answer* it is weaker (0.270 vs 0.295 on L0). Not ≥0.43, not a wide clear. Because the
+   question the lever exists to answer is the TUNED ceiling, not the base one, a reduced probe
+   runs instead of the 8-adapter grid: `tr_ll8_L0` 377846 → `ck_ll8_L0` 377847, `tr_ll8_mono`
+   377848 → `ck_ll8_mono` 377849 → `ev_ll8` 377850 (`rq2_generic --systems base,tuned_L0,mono_all`).
+   Promote to the full grid only if `tuned_L0` beats CodeLlama-7b's 0.430 outside the seed band.
 2. **Self-consistency (maj@8)** — ALREADY RUN (`selfcons_generic`, 09-04 05:36) and never
    analysed: vote−greedy is −1…−2 pts for `tuned_L0`, ±0 for `mono_all`, +2…+3 for `base`.
    NULL for tuned adapters, as the config predicted. BUT any-of-8 for `tuned_L0` is
@@ -314,6 +323,25 @@ Levers, in the order they are queued, each with the decision it exists to make:
    one lever that touches the held-out claim: report it in a separate namespace, never pool
    with the headline systems, and any H1 read of an X1-trained adapter is a human decision
    that spends the final pass. Design goes to the user before generation.
+   **APPROVED 2026-09-05 ("ok proceed"); IMPLEMENTED AND SUBMITTED.** `src/obtune/obf/py/x1.py`:
+   strings → `_rs([cp ^ k, …], k)` (XOR key 1..255, per-program), arithmetic → `_ar_p/_ar_m/_ar_x`
+   helpers (`a+b=(a|b)+(a&b)`, `a−b=(a^b)−2(~a&b)`, `a^b=(a+b)−2(a&b)`, int-guarded, bool
+   excluded), int literals → `(n−k)+k` / `k−(k−n)` (≤24 sites); bar `min_total_sites: 3`;
+   family `encoding`; Python only; emits none of `h1_marker_patterns` (tested). Registered in
+   builder/paths/schema/conditions.yaml; `validate.py` gained an encoding-family purity branch
+   (no renaming, helpers defined, mechanism present); 15 tests in `tests/test_transform_x1.py`.
+   `05_build_variants.py` now suffixes `coverage_matrix_*` with the condition list when a
+   partial build runs (the S3/S4 build had overwritten the six-condition matrix).
+   Testset build (377838): X1 = 27/40 python programs; the 13 declines are `too few X1 sites`
+   (≤2 arithmetic/literal sites, no strings) — coverage honesty, not a bug. Train build 377836
+   (32 workers, `normal`) → `x1_pairs` 377837 → `x1_evitems` 377839 (+ testset items 377840).
+   GPU chains (h200, dependent on the pairs job): `tr_X1` 377841 → `ck_X1` 377842;
+   `tr_monoX` 377843 (`mono_allX_generic_py.yaml`, seven conditions, train_size 40000) →
+   `ck_monoX` 377844; `ev_X1` 377845 (`eval/x1_generic.yaml`: base, formatonly, tuned_L0/S1/S2,
+   tuned_X1, mono_all, mono_allX on six + X1, heldout, NO H1). Adapter dirs
+   `X1_r32_s17` and `L0-L1b-L1r-L2-S1-S2-X1_r32_s17`. **The H1 read of the X1 arms is the
+   campaign-end final batch, together with the winner — one `final_eval` spend, agreed with
+   the user.**
 
 Rules that hold throughout: no H1 read without the human; every new arm is compared to
 `tuned_L0` on the six trainable conditions first; `final_eval` stays unspent until the

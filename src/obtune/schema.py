@@ -17,7 +17,7 @@ from typing import Union, Any, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "H1"]
+Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "H1"]
 
 #: Composite (stacked) conditions live in a SEPARATE namespace and are deliberately NOT added
 #: to `Condition`. Keeping that Literal closed is what protects `paths.TRAINABLE_CONDITIONS`,

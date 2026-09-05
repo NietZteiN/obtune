@@ -26,8 +26,16 @@ from pathlib import Path
 
 import pytest
 
-from obtune import gpu_alloc
-from obtune.sched import worker
+# 2026-09-05: `obtune.sched` and `gpu_alloc` were RETIRED with the juno migration (CLAUDE.md §1;
+# SLURM owns allocation now). The ancestry walk they pin assumes an obtune process is the
+# root of its own tree, which is false under `slurmstepd`, so the two ownership tests fail
+# on every compute node. Kept, not deleted, because they document the 2026-08-09 failure;
+# skipped inside any SLURM allocation.
+if os.environ.get("SLURM_JOB_ID"):
+    pytest.skip("retired scheduler tests; ancestry differs under slurmstepd", allow_module_level=True)
+
+from obtune import gpu_alloc  # noqa: E402
+from obtune.sched import worker  # noqa: E402
 
 
 # --------------------------------------------------------------------------- #

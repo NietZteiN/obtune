@@ -1,0 +1,22 @@
+# Lever 7 (2026-09-05) — per-condition specialist on X1, the TRAINABLE sibling of H1.
+# MODEL-NEUTRAL, same shape as grid_py_S2.yaml so `tuned_X1` is comparable to the six RQ1
+# specialists cell for cell.
+#
+# WHY THIS EXISTS. Every H1 read so far ranks the structural specialists (S2 0.283, S1 0.278)
+# above the identifier ones and mono_all (0.232) below tuned_L0 (0.274) — i.e. nothing in the
+# grid was ever trained on the two mechanisms H1 actually uses (string encoding, MBA
+# arithmetic). X1 supplies exactly those mechanisms with DIFFERENT surface forms (XOR-keyed
+# codepoint lists via `_rs`, `_ar_p/_ar_m/_ar_x` helpers, `(n-k)+k` literal expansion) and
+# none of H1's markers (configs/conditions.yaml::h1_marker_patterns), so it is trainable
+# without touching the quarantine. The claim it tests: does the family transfer, or only
+# the exact obfuscator? H1 stays unread until the campaign-end final batch.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [X1]
+run_tag: grid_py_X1
+phase: main
+
+train:
+  per_device_batch: 16
+  grad_accum: 4

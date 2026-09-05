@@ -1,0 +1,16 @@
+# Lever 7 (2026-09-05) — monolithic mix of the six RQ1 conditions PLUS X1, the trainable
+# H1 sibling. EXACT TWIN of mono_generic_py.yaml except for the seventh condition and a
+# larger train_size (the six-condition union is 26,832 pairs; X1 adds its own bank, so
+# 30,000 would subsample). Compared against mono_all (six) and tuned_X1 (X1 alone) on the
+# trainable grid; the H1 read is deferred to the campaign-end final batch.
+# MODEL-NEUTRAL: pass --model.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2, X1]
+run_tag: mono_py_allX
+phase: main
+
+train:
+  train_size: 40000 # >= the union of all seven train-split banks, so nothing is subsampled away
+  seed: 17

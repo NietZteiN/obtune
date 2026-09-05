@@ -100,6 +100,12 @@ def main() -> int:
     tag = "" if stem == "conditions" else "_" + stem.replace("conditions_", "")
     if args.aug_tag:
         tag += f"_aug_{args.aug_tag}"
+    # A partial `--conditions` build must not overwrite the full ladder's coverage matrix
+    # and reject dump with a one-condition summary. That is exactly what the S3/S4 build
+    # did to coverage_matrix_{train,testset}.json (found 2026-09-04 while adding X1), so a
+    # strict subset now gets its own suffix; a full-ladder build keeps the canonical path.
+    if set(args.conditions) != set(TRAINABLE_CONDITIONS):
+        tag += "_" + "-".join(args.conditions)
     out_root = (EVAL_ROOT / "testset" / "variants") if args.target == "testset" else (TRAIN_ROOT / "variants")
     if args.aug_tag:
         out_root = TRAIN_ROOT / "variants_aug" / args.aug_tag

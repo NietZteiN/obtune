@@ -44,6 +44,7 @@ from obtune.schema import BaseProgram, Variant
 _IDENTIFIER_FAMILY = "identifier"
 _STRUCTURAL_FAMILY = "structural"
 _COMPOSITE_FAMILY = "composite"
+_ENCODING_FAMILY = "encoding"  # X1: the trainable sibling of H1
 
 _HEX_NAME_RE = re.compile(r"^[vf]_[0-9a-f]{4}$")
 _SEQ_NAME_RE = re.compile(r"^[a-z]+$")
@@ -237,6 +238,37 @@ def _purity(
                 < _entry_loop_count(variant.language, parent.code, parent.entry_point),
                 "S6: the entry function has no fewer loops — nothing was unrolled",
             )
+    elif family == _ENCODING_FAMILY:
+        # X1 rewrites the whole module through ast.unparse and prepends its helpers, so
+        # neither line count nor "lines added" is informative. The positive invariant is
+        # its mechanism: the helper prelude is present AND is actually called at least
+        # `min_total_sites` times (helper calls are a lower bound on sites — literal
+        # expansions are plain arithmetic and do not count here). Names are frozen in
+        # obf/py/x1.py; a variant that used other names would be some other transform.
+        from obtune.obf.py.x1 import HELPER_NAMES, count_helper_calls, count_literal_expansions
+
+        ok &= gate.record(
+            "purity_no_rename",
+            not variant.rename_map and variant.entry_point == parent.entry_point,
+            f"{cond}: an encoding condition must not rename anything",
+        )
+        ok &= gate.record(
+            "purity_x1_helpers_defined",
+            all(f"def {h}(" in variant.code for h in HELPER_NAMES),
+            f"{cond}: X1 helper prelude missing",
+        )
+        # Literal expansion is the third mechanism (a program with no binary arithmetic and
+        # no strings still crosses the bar on it, as in H1), so a variant with no helper
+        # call must at least have added constant-only arithmetic over the parent.
+        n_calls = count_helper_calls(variant.code)
+        n_lit = count_literal_expansions(variant.code) - count_literal_expansions(parent.code)
+        ok &= gate.record(
+            "purity_x1_mechanism_present",
+            n_calls >= 1 or n_lit >= 1,
+            f"{cond}: no helper call and no literal expansion — degenerated to the identity",
+        )
+        gate.metrics["x1_helper_calls"] = n_calls
+        gate.metrics["x1_literal_expansions"] = max(0, n_lit)
     return ok
 
 

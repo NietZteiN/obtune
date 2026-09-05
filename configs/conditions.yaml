@@ -105,6 +105,23 @@ conditions:
     params:
       mode: predicates
       n_predicate_blocks: [1, 3]
+  X1:
+    family: encoding
+    trainable: true
+    description: >
+      TRAINABLE SIBLING OF H1 (W6 lever 7, 2026-09-04). Same two mechanisms as H1 —
+      every str literal through an inline decoder, every + - ^ through a type-guarded
+      algebraic helper, int literals expanded — built from a DIFFERENT scheme: XOR'd
+      codepoint lists decoded by `_rs`, and the complementary identities
+      a+b=(a|b)+(a&b), a-b=(a^b)-2(~a&b), a^b=(a+b)-2(a&b) in `_ar_p/_ar_m/_ar_x`.
+      Emits nothing on h1_marker_patterns, so the gate scan and check_manifest apply
+      unchanged. Python only. REPORTED IN ITS OWN NAMESPACE: an adapter that saw X1 has
+      seen the H1 family, so it is never pooled with the headline systems and any H1
+      read of it is a human decision that spends the final pass.
+    size_cap: 12.0
+    size_cap_floor_chars: 1400
+    params:
+      min_total_sites: 3 # combined bar, H1's rule for H1's reason
   H1:
     family: heldout
     trainable: false

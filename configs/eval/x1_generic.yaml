@@ -1,0 +1,29 @@
+# Lever 7 eval — the X1 arm on the trainable grid plus X1 itself. MODEL-NEUTRAL. NO H1.
+#
+# X1 is reported in its own namespace: it is H1's mechanism family with a different surface,
+# so `tuned_X1` on X1 is a diagonal cell (does the model learn the family at all?), and the
+# six RQ1 specialists on X1 are the cross-family read that the H1 rows will later be compared
+# against. `tuned_S2` is here because it is the standing H1 leader (0.283 on the pilot read),
+# `mono_all` because it is the six-condition twin of `mono_allX`.
+_extends: _base_eval.yaml
+
+phase: x1_generic
+experiment_id: x1_generic
+run_tag: x1_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_S1, adapter: "runs/adapters/{model}/{language}/S1_r32_s17/best", arch: per_type, train_cond: S1}
+  - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: mono_allX, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2-X1_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]
