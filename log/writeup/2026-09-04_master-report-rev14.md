@@ -11,7 +11,8 @@
   whose model is ambiguous, or a number that exists only in a log entry.
 
 - **Setup:**
-  - `docs/MASTER_REPORT_2026-09-04.md` = `cp` of `MASTER_REPORT_2026-08-27.md` (3,827 lines), then
+  - `MASTER_REPORT.md` (written as `docs/MASTER_REPORT_2026-09-04.md`, moved to the repo root under
+    a stable filename later the same day) = `cp` of `docs/MASTER_REPORT_2026-08-27.md` (3,827 lines), then
     front matter rewritten, §1 given a *Rewritten 4 Sep* block, §17 retitled
     "Provenance — the Qwen panel", **§18–§25 added** (529 new lines), Contents and Changelog updated.
     Final: 4,482 lines.

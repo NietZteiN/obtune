@@ -42,7 +42,7 @@
 
 ## Entries
 - [`2026-09-04_master-report-rev14.md`](2026-09-04_master-report-rev14.md) — **rev 14**,
-  [`../../docs/MASTER_REPORT_2026-09-04.md`](../../docs/MASTER_REPORT_2026-09-04.md). The report
+  [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). The report
   rebuilt **additively** on the CodeLlama panel: §1–§17 kept and labelled the frozen Qwen panel
   (those cells cannot be re-evaluated on this cluster, so a rewrite would have had to drop them or
   restate them without provenance), §17 retitled to name its panel, **§18–§25 new** — migration and

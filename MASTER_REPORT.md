@@ -1,8 +1,16 @@
 # obtune — master results report
 
-**4 September 2026 · everything run to date, in one frame.**
+*Last updated: 2026-09-04*
 
-*Supersedes [`MASTER_REPORT_2026-08-27.md`](MASTER_REPORT_2026-08-27.md), of which this is the
+**Everything run to date, in one frame.**
+
+*This is the project's living master report and lives at the repository root under the stable name
+`MASTER_REPORT.md` — CLAUDE.md §6's convention for a document that is kept current rather than
+re-dated. The dated revisions it grew out of stay in [`docs/`](docs/) as the archive; each one is
+frozen at the state of the project on its date and is superseded by this file. Rev history is in
+the Changelog at the end.*
+
+*Supersedes [`docs/MASTER_REPORT_2026-08-27.md`](docs/MASTER_REPORT_2026-08-27.md), of which this is the
 direct continuation, and through it the 08-12, 08-11 and 08-10 revisions — the Changelog records
 what each revision added. **Since 27 August the panel itself changed.** The project moved from an
 unscheduled 4 × A6000 box to a SLURM cluster and, because Qwen and DeepSeek are unusable there,
@@ -19,9 +27,9 @@ Scope: all **2,966** evaluation cells / **2,200,119** graded trials under `resul
 the **CodeLlama panel is 543 cells / 820,864 trials** and the rest is the Qwen era that §1–§17
 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
 attention corpora on both models, and the zero-training normalization arms. Every number below was
-recomputed from raw per-trial data — by [`scripts/make_master_report.py`](../scripts/make_master_report.py)
+recomputed from raw per-trial data — by [`scripts/make_master_report.py`](scripts/make_master_report.py)
 → `results/analysis/master_report.json` for the tables inherited from the 08-12 revision, by
-[`scripts/analysis/28_master_panel.py`](../scripts/analysis/28_master_panel.py) →
+[`scripts/analysis/28_master_panel.py`](scripts/analysis/28_master_panel.py) →
 `results/analysis/master_panel_2026-09-04.json` for the CodeLlama panel, and directly from the
 per-cell parquets for everything else. **None are copied from earlier documents.** Where a number
 here disagrees with an earlier report, **this document is the one to trust**; §8 says why for the
@@ -35,11 +43,11 @@ panels do not even share a format floor (§19.1). **The Qwen panel is frozen** �
 re-evaluated on this cluster, which is why §21.1 has to record one Qwen number as permanently
 unverifiable rather than re-run it.
 
-**Companion documents.** [`MASTER_REPORT_2026-08-27_router-and-merging.md`](MASTER_REPORT_2026-08-27_router-and-merging.md)
+**Companion documents.** [`MASTER_REPORT_2026-08-27_router-and-merging.md`](docs/MASTER_REPORT_2026-08-27_router-and-merging.md)
 is the closing report for RQ2 alone, written self-contained for a reader who has never seen the
 project; §5 and §12 here are the same content in its project context, and §19.3–§19.4 are its
-CodeLlama replication. [`REPORT_2026-08-26_rq3-attention-mechanism.md`](REPORT_2026-08-26_rq3-attention-mechanism.md)
-does the same for RQ3. [`RESULTS_BOOK_2026-08-11.md`](RESULTS_BOOK_2026-08-11.md) is the
+CodeLlama replication. [`REPORT_2026-08-26_rq3-attention-mechanism.md`](docs/REPORT_2026-08-26_rq3-attention-mechanism.md)
+does the same for RQ3. [`RESULTS_BOOK_2026-08-11.md`](docs/RESULTS_BOOK_2026-08-11.md) is the
 tables-first sibling of this document and is **stale after 11 August**.
 
 Grid: **Grid B** (`testset`) for §12's baselines, **Grid A** (`heldout`) for the RQ1/RQ2
@@ -211,7 +219,7 @@ one shape every time — **L0 −1.4…−2.6, L1b +1.4…+3.9, everything else 
 exception.** Three things changed since 12 August.
 
 **RQ2 is closed, negatively, and by elimination rather than assumption** (§12.10–§12.13; full
-account in [`MASTER_REPORT_2026-08-27_router-and-merging.md`](MASTER_REPORT_2026-08-27_router-and-merging.md)).
+account in [`MASTER_REPORT_2026-08-27_router-and-merging.md`](docs/MASTER_REPORT_2026-08-27_router-and-merging.md)).
 Every combination strategy was built and measured — perfect hard dispatch, three merge algorithms
 across three densities and two seed banks, an eight-expert learned mixture, monolithic training,
 leave-one-transform-out, and three pre-registered repairs. None beats the clean-code control on
@@ -254,7 +262,7 @@ adapter failure** (§8.7); it corrupted two reported fields but no accuracy metr
 
 ## 1.5 Where this sits in the literature — and what routing does *not* show
 
-*Added 13 August 2026. Companion to [`papers/RELATED_WORK.md`](../papers/RELATED_WORK.md) §3.5.*
+*Added 13 August 2026. Companion to [`papers/RELATED_WORK.md`](papers/RELATED_WORK.md) §3.5.*
 
 ### 1.5.1 The gap this work occupies
 
@@ -334,7 +342,7 @@ from "suggestive" to "publishable".
 
 *Added 13 August 2026.* Every paper below measures comprehension of transformed code. The point of
 the table is what they **report**, so our numbers can be read against something rather than in
-isolation. Full annotations in [`papers/RELATED_WORK.md`](../papers/RELATED_WORK.md).
+isolation. Full annotations in [`papers/RELATED_WORK.md`](papers/RELATED_WORK.md).
 
 **Read the last two columns first.** Almost none of this work trains on obfuscated code, and none
 of it evaluates on a transformation held out from training — which is the gap §1.5.1 describes.
@@ -1020,7 +1028,7 @@ to six r=32 specialists — is the worst arm on `H1`**. Raising the *control's* 
 (bottom row), which rules out "capacity helps everything uniformly". Training was not the limit either:
 the monolithic adapter's validation exact-match is flat across three epochs (0.3698 → 0.3704 → 0.3678)
 while its train loss collapses to 0.004 and eval loss nearly doubles — see
-[`RESULTS_2026-08-09.md`](RESULTS_2026-08-09.md) §2 for the curves, which this report does not supersede.
+[`RESULTS_2026-08-09.md`](docs/RESULTS_2026-08-09.md) §2 for the curves, which this report does not supersede.
 
 Note the contrast that the full matrix makes visible and the monolithic result alone did not:
 **a single `S2` specialist reaches `H1` (+3.5) while a generalist trained on `S2` *and* four other
@@ -1280,7 +1288,7 @@ Arrows are first epoch → last.
 > "the mechanism reproduces but the consequence does not": the diagnostic's premise fails.
 > The controlled test — same six conditions, same recipe, only the seed assignment altered so
 > mean cosine drops 0.563 → 0.246 — is `scripts/merge/24_crossseed_control.py`, built and awaiting
-> one eval pass. Detail: [`../log/modularity/2026-08-15_item-agreement-and-seed-geometry.md`](../log/modularity/2026-08-15_item-agreement-and-seed-geometry.md).
+> one eval pass. Detail: [`../log/modularity/2026-08-15_item-agreement-and-seed-geometry.md`](log/modularity/2026-08-15_item-agreement-and-seed-geometry.md).
 
 **The mechanism is real but does not reach our bank.** At 3 epochs sign conflict is still *falling*
 — our experts are **under**-trained relative to where interference appears. Extend to 9 epochs and
@@ -1388,7 +1396,7 @@ number in this report is control-relative. Any base-relative number anywhere in 
 
 This thread answers a *different* question from RQ1–RQ3, on the same corpus and infrastructure. It
 is the most finished work in the project, and it is a clean refutation of a published method. Full
-detail: [`REPORT_bidirectional_2026-08-09.md`](REPORT_bidirectional_2026-08-09.md).
+detail: [`REPORT_bidirectional_2026-08-09.md`](docs/REPORT_bidirectional_2026-08-09.md).
 
 ### 7.0 The question and why it exists
 
@@ -1775,7 +1783,7 @@ Re-run for all seven CFT-thread arms at 1.5B and for `base`/`sft`/`flip` at 7B. 
 31.7 points of HumanEval+ — general damage. At 7B it loses nothing (it is 1.2 points *above* base)
 while its reverse capability goes 12.9 % → 0.0 %, i.e. the damage is purely directional at the
 tier the headline claims live at. No capability-cost claim should be generalized from the 1.5B
-tier. Detail: [`../log/cft-replication/2026-08-10_factorial-and-objective-verdict.md`](../log/cft-replication/2026-08-10_factorial-and-objective-verdict.md).
+tier. Detail: [`../log/cft-replication/2026-08-10_factorial-and-objective-verdict.md`](log/cft-replication/2026-08-10_factorial-and-objective-verdict.md).
 
 **8.4 The `H1` read budget is spent, and was spent incrementally.** `ACCESS_LOG.md` records 3
 `pilot_eval` and **88** `final_eval` read events across 2026-08-07 → 08-09. Per-cell logging is fine
@@ -2972,7 +2980,7 @@ untouched — the "bounded rather than promising" reading, registered in advance
 
 *Added 27 August 2026.* The thread ran 2026-08-05 → 2026-08-17: **110 combination systems, 1,208
 cells, 393,997 graded trials.** Full self-contained account in
-[`MASTER_REPORT_2026-08-27_router-and-merging.md`](MASTER_REPORT_2026-08-27_router-and-merging.md);
+[`MASTER_REPORT_2026-08-27_router-and-merging.md`](docs/MASTER_REPORT_2026-08-27_router-and-merging.md);
 this is the summary in project context.
 
 Each candidate explanation for the failure was eliminated by a purpose-built experiment rather than
@@ -3398,15 +3406,15 @@ loto}_qwen25c-1.5b_python.json`; the cross-seed row computed 2026-08-27 via
 `src/obtune/merge_geometry.py` against the `24_crossseed_control.py` bank map
 (`L0`:17, `L1b`:42, `L1r`:17, `L2`:42, `S1`:17, `S2`:42). Accuracy points are Grid B means over the
 six trainable conditions, from `results/cells/`. Lab notes:
-[`../log/modularity/2026-08-10_overtraining-and-merge-geometry.md`](../log/modularity/2026-08-10_overtraining-and-merge-geometry.md)
-and [`../log/modularity/2026-08-15_item-agreement-and-seed-geometry.md`](../log/modularity/2026-08-15_item-agreement-and-seed-geometry.md).
+[`../log/modularity/2026-08-10_overtraining-and-merge-geometry.md`](log/modularity/2026-08-10_overtraining-and-merge-geometry.md)
+and [`../log/modularity/2026-08-15_item-agreement-and-seed-geometry.md`](log/modularity/2026-08-15_item-agreement-and-seed-geometry.md).
 
 ---
 
 ## 15. RQ3 — attention, and the mechanism for the one transfer that works
 
 *Added 27 August 2026. Full self-contained account:
-[`REPORT_2026-08-26_rq3-attention-mechanism.md`](REPORT_2026-08-26_rq3-attention-mechanism.md);
+[`REPORT_2026-08-26_rq3-attention-mechanism.md`](docs/REPORT_2026-08-26_rq3-attention-mechanism.md);
 lab notes `log/attention/2026-08-{17,18,26}_*.md`.*
 
 Every earlier revision of this document said **"RQ3 (attention) has not been run."** It has now run,
@@ -3759,10 +3767,10 @@ the missing arm that would identify how the +4.74 divides.
 - Evaluation git commit for the main grid: `469f857`. Engine: vLLM 0.26.0, greedy decoding.
 - Document current as of **2026-08-27**; queue state at that time: 332 done, 0 new failures
   (the 31 in `runs/manifest/failed/` are the 18 Aug attention-dump OOM batch, diagnosed and fixed).
-- Lab notes: [`log/`](../log/). Earlier reports, superseded only where §8 says so:
-  [`PILOT_REPORT_2026-08-05.md`](PILOT_REPORT_2026-08-05.md),
-  [`RESULTS_2026-08-09.md`](RESULTS_2026-08-09.md),
-  [`REPORT_bidirectional_2026-08-09.md`](REPORT_bidirectional_2026-08-09.md).
+- Lab notes: [`log/`](log/). Earlier reports, superseded only where §8 says so:
+  [`PILOT_REPORT_2026-08-05.md`](docs/PILOT_REPORT_2026-08-05.md),
+  [`RESULTS_2026-08-09.md`](docs/RESULTS_2026-08-09.md),
+  [`REPORT_bidirectional_2026-08-09.md`](docs/REPORT_bidirectional_2026-08-09.md).
 
 ## 18. The panel changed — Qwen-1.5B is gone, CodeLlama is the live model
 
@@ -4182,7 +4190,7 @@ Six looks, one shape, at three seeds, two data regimes and two model sizes.
 §22.5 opened **H-L1b-L0-trade**: that the shape is *one* mechanism seen twice — breadth teaches
 the model to distrust identifiers, which `L1b` (adversarial renaming) rewards and `L0` (meaningful
 names) punishes. It has now been tested at the item level from existing cells
-([`29_l1b_l0_trade.py`](../scripts/analysis/29_l1b_l0_trade.py)), and it is **half right**.
+([`29_l1b_l0_trade.py`](scripts/analysis/29_l1b_l0_trade.py)), and it is **half right**.
 
 The pairing is exact rather than matched-sample: `<program>::L0::<i>` and `<program>::L1b::<i>` are
 the same program on the same input with the same correct answer. Two strata are defined **only by
@@ -4348,11 +4356,11 @@ is the teacher, not the correspondence, that turned out not to matter.
 ## 25. Provenance — the CodeLlama panel
 
 - Numbers in §19–§23 were recomputed from the per-cell parquets by
-  [`scripts/analysis/28_master_panel.py`](../scripts/analysis/28_master_panel.py) →
+  [`scripts/analysis/28_master_panel.py`](scripts/analysis/28_master_panel.py) →
   `results/analysis/master_panel_2026-09-04.json`,
-  [`26_campaign_arms.py`](../scripts/analysis/26_campaign_arms.py) →
+  [`26_campaign_arms.py`](scripts/analysis/26_campaign_arms.py) →
   `campaign_2026-09-03.json` and `campaign_13b_2026-09-04.json`, and
-  [`27_align_arms.py`](../scripts/analysis/27_align_arms.py) → `align_2026-09-04.json`.
+  [`27_align_arms.py`](scripts/analysis/27_align_arms.py) → `align_2026-09-04.json`.
   Job-level facts (runtimes, step counts, checkpoint selections) come from each adapter's
   `training_summary.json` / `ckpt_select.json` and the SLURM logs named in the log entries.
 - Statistics: cluster bootstrap by program (`snippet_id`), 2000 resamples, seed 17, on the items
@@ -4379,15 +4387,18 @@ every table in this report.
 | [quarantined] `_misplaced_2026-08-13` | 45 | 7,368 |
 | **total** | **2,966** | **2,200,119** |
 
-- Lab notes for this era: [`log/setup/`](../log/setup/) 2026-08-28 → 09-01 and
-  [`log/transfer/`](../log/transfer/) 2026-09-01 → 09-04, indexed in [`log/README.md`](../log/README.md).
+- Lab notes for this era: [`log/setup/`](log/setup/) 2026-08-28 → 09-01 and
+  [`log/transfer/`](log/transfer/) 2026-09-01 → 09-04, indexed in [`log/README.md`](log/README.md).
 
 ---
 
 ## Changelog
 
-- **2026-09-04 (rev 14)** — **The panel changed, and the report was rebuilt on top of it rather than
-  replaced.** §1–§17 stand as written and are now explicitly labelled as the **frozen Qwen panel**;
+- **2026-09-04 (rev 14)** — **Moved to the repository root under the stable name `MASTER_REPORT.md`**
+  (written as `docs/MASTER_REPORT_2026-09-04.md`), so the living report is the first thing in the
+  repo rather than the newest file in a folder of dated predecessors; the dated revisions stay in
+  [`docs/`](docs/) as the archive and every relative link in this file was repointed accordingly.
+  **The panel changed, and the report was rebuilt on top of it rather than replaced.** §1–§17 stand as written and are now explicitly labelled as the **frozen Qwen panel**;
   §18–§25 are new and are the **CodeLlama-7b/13b** era. **§18** — the juno migration (verified by
   recomputing two published `H1` contrasts to the digit, CI bounds included), the CUDA-13-wheel /
   CUDA-12-driver trap, vLLM convicted for two days on a bug in its own smoke test, feasibility

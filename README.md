@@ -1,7 +1,7 @@
 # obtune — Does fine-tuning teach semantic invariance?
 
 *Generalization, Modularity, and Attention Under Code Obfuscation.*
-*Last updated: 2026-08-08*
+*Last updated: 2026-09-04*
 
 LLMs degrade sharply on obfuscated code. Prior fine-tuning work targets **deobfuscation** —
 recovering the original source. This project asks a different question: does fine-tuning on
@@ -19,8 +19,14 @@ The discriminator is a **held-out obfuscator (H1)** that never appears in any tr
 
 Secondary: does tuning move models toward or away from **human** difficulty orderings (Papers 2–3)?
 
+**Results: [`MASTER_REPORT.md`](MASTER_REPORT.md)** — every number the project has produced, in one
+frame, recomputed from the per-cell parquets (2,966 cells / 2,200,119 graded trials). It is the
+living document; the dated revisions it grew out of are archived in [`docs/`](docs/). Two panels:
+§1–§17 are the frozen Qwen2.5-Coder-1.5B era, §18–§25 the current CodeLlama-7b/13b one.
+
 Full design: [`docs/design_doc_v0.1.md`](docs/design_doc_v0.1.md). Hypothesis ledger and phase
 tracker: [`docs/CHECKLIST.md`](docs/CHECKLIST.md). Operating rules: [`CLAUDE.md`](CLAUDE.md).
+Lab notes: [`log/`](log/).
 
 ## The condition ladder
 
