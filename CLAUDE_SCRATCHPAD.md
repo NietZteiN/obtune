@@ -264,3 +264,44 @@ paper's recipe worth reporting rather than silently correcting.
 2. Run the data layer end to end: test-set ingest → corpus → variants → H1 (quarantined), then `make check`.
 3. Pre-register H1a–H3 before the main grid (the pilot is exploratory and labeled `phase=pilot`).
 4. Week-1 kill-switch pilot on one idle GPU; fill in the verdict box in `docs/CHECKLIST.md` §5.
+
+## 2026-09-04 — W6: "I want more" — every lever except RL, in one campaign
+
+User asked what else raises H1 and accuracy in general, then said "everything except 4" (RL).
+Levers, in the order they are queued, each with the decision it exists to make:
+
+1. **Newer base model — `llama31-8b`** (go/no-go job 377787, `eval/basecheck_llama31_8b.yaml`,
+   six trainable conditions, no H1). Evidence: Qwen2.5-Coder-7B *untuned* + 4-shot ICL reads
+   L0 0.487 / H1 0.291, above every tuned CodeLlama-7B system. Qwen is barred here; Llama-3.1
+   is the newest ungated instruct model already in HF_HOME. Template accepts system role;
+   re-gated max_seq_len 2048 (mean 404, p95 685, 0.00 % truncation). GO if untuned base ≥
+   tuned CodeLlama-7B on L0 (~0.43) or clears CodeLlama base widely with format_fail ≪ 0.13.
+   On GO: 6-adapter grid + mono_all + tuned_L0, then §26-style ranking.
+2. **Self-consistency (maj@8)** — ALREADY RUN (`selfcons_generic`, 09-04 05:36) and never
+   analysed: vote−greedy is −1…−2 pts for `tuned_L0`, ±0 for `mono_all`, +2…+3 for `base`.
+   NULL for tuned adapters, as the config predicted. BUT any-of-8 for `tuned_L0` is
+   0.53–0.59 vs 0.43 greedy → **2b: trained verifier / best-of-n reranker** (not RL) is the
+   lever that headroom points at. Queued after 3.
+3. **Execution-trace SFT** (`src/obtune/trace.py`, `prompt.trace: true`): the completion becomes
+   a per-line trace of the *obfuscated* program (`L<line> name=value …`, changed locals only,
+   ≤40 events then `...`), then `=> <literal>`. Teaches execution, invariant by construction;
+   H1's MBA/string-encoding needs intermediate computation a direct-answer model cannot do.
+   Arms: `trace_L0` (clean only — the `tuned_L0` analogue) and `trace_mono` (six conditions).
+   max_seq_len 3072, eval max_tokens 768, answer extracted after the last `=> `.
+   Silent-failure guards: truncation rate on prompt+trace, format_fail on the extracted
+   answer, and the trace arm's *greedy* answer compared to `tuned_L0` on the same items.
+3b. **Span-aligned alignment variant** — the one L_align candidate W5 did not test (per-token
+   pairing of clean/obfuscated spans via `rename_map`, not the answer slot). Cheap; after 3.
+5. **More data** — extra input cases per program (execution-gated, free) and more programs
+   if a source is available; H-saturation is still open.
+6. **CodeLlama-34B-Instruct** — download running (pid 681347, `$SCRATCH/dl34b.log`), then
+   register + go/no-go + `tuned_L0`/`mono_all`. 13B beat 7B by 2–4 pts in every column.
+7. **H1-adjacent trainable transforms ("X1")** — a *sibling* mechanism family (different string
+   encoding scheme, different MBA identities than H1's) as a trainable condition. This is the
+   one lever that touches the held-out claim: report it in a separate namespace, never pool
+   with the headline systems, and any H1 read of an X1-trained adapter is a human decision
+   that spends the final pass. Design goes to the user before generation.
+
+Rules that hold throughout: no H1 read without the human; every new arm is compared to
+`tuned_L0` on the six trainable conditions first; `final_eval` stays unspent until the
+campaign's winner is chosen on the trainable grid.

@@ -27,16 +27,24 @@ models:
     per_device_batch: 8
     grad_accum: 8
     role: main
+  # Candidate third base (2026-09-04, W6 lever 1). A 2024 model: Qwen2.5-Coder-7B UNTUNED
+  # with 4-shot ICL reads L0 0.487 / H1 0.291, above every tuned CodeLlama-7B system, and
+  # Qwen is barred here -- so the base model, not the tuning, is the lever. Llama-3.1 is the
+  # newest ungated instruct model already in HF_HOME. Template renders a system role
+  # (<|start_header_id|>system) and the date line is the template's fixed default, so the
+  # prompt is still deterministic. RE-GATED 2026-09-04 on 1500 mono training rows:
+  # mean 404, p95 685, p99 1050, max 1690 -- ~13 % SHORTER than CodeLlama (463/812/1278/2078);
+  # 0.00 % truncation at 2048 (0.20 % at 1536). Batch shape copied from codellama-7b (H200).
   llama31-8b:
     hf_id: meta-llama/Llama-3.1-8B-Instruct
     family: instruct
     n_layers: 32
     router_layer: 16
     hidden_size: 4096
-    max_seq_len: 1536
-    per_device_batch: 8
-    grad_accum: 8
-    role: main
+    max_seq_len: 2048
+    per_device_batch: 16
+    grad_accum: 4
+    role: candidate_main
 
   # --- CodeLlama panel (2026-08-31) --------------------------------------------
   # Replaces the Qwen panel, which cannot be used on this cluster. Same family at two
