@@ -36,6 +36,7 @@ class CaseResult:
     output: str | None = None
     exc_type: str | None = None
     elapsed_ms: float = 0.0
+    trace: list[str] | None = None  # only when BatchItem.trace was set (trace-SFT arm)
 
     @property
     def ok(self) -> bool:
@@ -80,6 +81,9 @@ class BatchItem:
     code: str
     entry_point: str
     args_reprs: Sequence[str]
+    #: {"max_events": int, "max_repr": int} to ask the Python runner for an execution
+    #: trace per case (see runner_py.py, trace mode). None = plain execution.
+    trace: dict | None = None
 
 
 def _run_one(item: BatchItem, timeout_s: float, mem_mb: int, hash_seed: int) -> ProgramResult:
@@ -92,6 +96,10 @@ def _run_one(item: BatchItem, timeout_s: float, mem_mb: int, hash_seed: int) -> 
         "cpu_s": max(1, int(timeout_s * n) + 1),
         "timeout_ms": int(timeout_s * 1000),
     }
+    if item.trace:
+        if item.language != "python":
+            raise ValueError("trace mode is implemented for python only")
+        job["trace"] = dict(item.trace)
     if item.language == "python":
         cmd = [sys.executable, "-I", "-S", str(RUNNER_PY)]
     elif item.language == "javascript":
@@ -150,6 +158,7 @@ def _run_one(item: BatchItem, timeout_s: float, mem_mb: int, hash_seed: int) -> 
         by_index[r["i"]] = CaseResult(
             status=r.get("status", "error"), output=r.get("output"),
             exc_type=r.get("exc_type"), elapsed_ms=float(r.get("elapsed_ms", 0.0)),
+            trace=r.get("trace"),
         )
     if len(by_index) != n:
         # Child died mid-run. A negative returncode means it was killed by a signal;

@@ -270,7 +270,7 @@ paper's recipe worth reporting rather than silently correcting.
 User asked what else raises H1 and accuracy in general, then said "everything except 4" (RL).
 Levers, in the order they are queued, each with the decision it exists to make:
 
-1. **Newer base model — `llama31-8b`** (go/no-go job 377787, `eval/basecheck_llama31_8b.yaml`,
+1. **Newer base model — `llama31-8b`** (go/no-go job 377796 — 377787 was cancelled unstarted: `submit.py --argv` prepends `python`, so `--argv python -m …` rendered `python python -m …`; `eval/basecheck_llama31_8b.yaml`,
    six trainable conditions, no H1). Evidence: Qwen2.5-Coder-7B *untuned* + 4-shot ICL reads
    L0 0.487 / H1 0.291, above every tuned CodeLlama-7B system. Qwen is barred here; Llama-3.1
    is the newest ungated instruct model already in HF_HOME. Template accepts system role;
@@ -287,15 +287,28 @@ Levers, in the order they are queued, each with the decision it exists to make:
    ≤40 events then `...`), then `=> <literal>`. Teaches execution, invariant by construction;
    H1's MBA/string-encoding needs intermediate computation a direct-answer model cannot do.
    Arms: `trace_L0` (clean only — the `tuned_L0` analogue) and `trace_mono` (six conditions).
-   max_seq_len 3072, eval max_tokens 768, answer extracted after the last `=> `.
+   Frozen 2026-09-04 after calibration: `max_events 64, max_repr 48`; 200-row prompt+trace
+   lengths were L0 max 1966 / S2 2265 / S1 3399 tokens (S1 prompts alone p95 1520), so
+   **max_seq_len 4096** (3072 truncates 3.5 % of S1 — the >1 % guard would abort), batch 8×8,
+   eval `max_tokens 2048`, `ckpt_select.max_tokens 2048`. Adapters under `runs/adapters_trace/`
+   (the dir name encodes only conds/rank/seed and would overwrite the greedy bank). Eval
+   config `eval/trace_generic.yaml` adds `base_trace` (untuned base, trace prompt) so the
+   format effect and the training effect separate. Trace cache `runs/trace_cache/python/`.
    Silent-failure guards: truncation rate on prompt+trace, format_fail on the extracted
    answer, and the trace arm's *greedy* answer compared to `tuned_L0` on the same items.
+   **Status: loss-mask gate PASS (dev 377801); chains `tr_L0` 377802→`ck_tr_L0` 377804→`ev_tr_L0` 377806,
+   `tr_mono` 377803→377805→377807, all pending. Entry: `log/transfer/2026-09-04_trace-sft-and-34b-submitted.md`.**
 3b. **Span-aligned alignment variant** — the one L_align candidate W5 did not test (per-token
    pairing of clean/obfuscated spans via `rename_map`, not the answer slot). Cheap; after 3.
 5. **More data** — extra input cases per program (execution-gated, free) and more programs
    if a source is available; H-saturation is still open.
-6. **CodeLlama-34B-Instruct** — download running (pid 681347, `$SCRATCH/dl34b.log`), then
+6. **CodeLlama-34B-Instruct** — first download died on the login node's 8 GB vmem cap
+   (`memory allocation of 67021731 bytes failed`, hf_transfer); resubmitted as CPU job 377794
+   on `normal` (`submit.py --gres none`, new option; 377794 hit the same `python python` argv slip, 377795 died because /tmp is node-local; the script now lives at `scripts/hf_snapshot.py`, job 377810), then
    register + go/no-go + `tuned_L0`/`mono_all`. 13B beat 7B by 2–4 pts in every column.
+   **DONE 377810 → registered `codellama-34b` (48 × 8192, GQA, 4×16 batch); submitted `bc34` 377812,
+   `tr34_L0` 377813 → `ck34_L0` 377815, `tr34_mono` 377814 (30 h wall) → `ck34_mono` 377816 →
+   `ev34_grid` 377817 (`rq2_generic --systems base,tuned_L0,mono_all`, `--mem 128G`).**
 7. **H1-adjacent trainable transforms ("X1")** — a *sibling* mechanism family (different string
    encoding scheme, different MBA identities than H1's) as a trainable condition. This is the
    one lever that touches the held-out claim: report it in a separate namespace, never pool

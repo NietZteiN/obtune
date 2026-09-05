@@ -36,7 +36,7 @@ ARMS = ["align_lam0", "align_lam0.3", "align_lam1", "align_lam1_mm", "align_lam3
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="codellama-7b")
+    ap.add_argument("--model", required=True, help="model key from configs/models.yaml")
     ap.add_argument("--language", default="python")
     ap.add_argument("--n-boot", type=int, default=2000)
     ap.add_argument("--out", default=str(RESULTS_DIR / "analysis" / "align_2026-09-04.json"))

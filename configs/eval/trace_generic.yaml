@@ -1,0 +1,36 @@
+# Execution-trace arm on the trainable grid. MODEL-NEUTRAL. No H1 (CLAUDE.md §3.2).
+#
+# Two trace adapters (configs/train/trace_generic_py_{L0,mono}.yaml), evaluated with the
+# trace prompt: the model writes its per-line trace and the grader reads the literal after
+# the last `=> ` (trace.extract_answer). Cells land in their own phase directory; the
+# comparison rows (tuned_L0, mono_all, base) already exist in rq1_generic / rq2_generic on
+# the same items and are joined at analysis time.
+#
+# `sampling.max_tokens` is the whole difference from the greedy configs: S1 traces reach
+# 1.7k tokens at max_events=64 and the answer comes last. `stop` keeps "\n\n" because the
+# trace format has no blank lines — a blank line means the model left the format.
+_extends: _base_eval.yaml
+
+phase: trace_generic
+experiment_id: trace_generic
+run_tag: trace_generic
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+sampling:
+  max_tokens: 2048
+
+peft:
+  r: 32
+
+systems:
+  - {name: trace_L0,   adapter: "runs/adapters_trace/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0, trace: true}
+  - {name: trace_mono, adapter: "runs/adapters_trace/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix, trace: true}
+  # Untuned base under the trace prompt: separates "the trace format helps" from "training
+  # on traces helps". Expect it to fail the format often; format_fail is reported.
+  - {name: base_trace, arch: none, trace: true}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

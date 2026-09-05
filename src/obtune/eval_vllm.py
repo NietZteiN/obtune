@@ -83,6 +83,11 @@ class SystemSpec:
     #: extra GPU — the "what does a compiler-style normalizer already recover?" arm.
     #: Soundness is gated offline by scripts/analysis/21_validate_normalized.py.
     normalize: Optional[str] = None
+    #: Execution-trace arm (src/obtune/trace.py): prompt with the trace template, let the
+    #: model write its per-line trace, grade only the literal after the last `=> `. The
+    #: eval config must raise `sampling.max_tokens` (the trace is hundreds of tokens; the
+    #: greedy default of 64 would cut every answer off) — `expand_systems` checks it.
+    trace: bool = False
 
     @classmethod
     def from_config(cls, d: Mapping[str, Any]) -> "SystemSpec":
@@ -243,7 +248,16 @@ def _normalized_code(system: "SystemSpec", item) -> str:
                      profile=system.normalize).code
 
 
+def _prov(system: SystemSpec) -> dict[str, str]:
+    """prompt provenance for `system` — one call site for the three flags."""
+    return prompts.provenance_block(
+        oracle=system.prompt_oracle, one_shot=system.one_shot, trace=system.trace
+    )
+
+
 def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any) -> list[str]:
+    if system.trace and (system.icl_k or system.one_shot or system.baseline or system.normalize):
+        raise ValueError(f"system {system.name!r}: trace cannot combine with icl/one_shot/baseline")
     if system.baseline == "semcoder":
         from obtune.baselines.semcoder import SemCoderSpec
 
@@ -283,6 +297,7 @@ def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any
                 oracle=system.prompt_oracle,
                 one_shot=system.one_shot,
                 demo=None,
+                trace=system.trace,
             ),
             tokenizer,
         )
@@ -304,6 +319,10 @@ def build_trial_rows(
     extract = None
     if system.baseline == "semcoder":
         from obtune.baselines.semcoder import extract_answer as extract
+    elif system.trace:
+        # The literal is the last `=> ` line; the trace above it is scratch work. A
+        # generation that never reaches `=> ` grades as an empty answer (format_fail).
+        from obtune.trace import extract_answer as extract
 
     for it, out, ntok in zip(items, outputs, n_tokens):
         # A baseline answers in its own format; recover the literal before grading, or
@@ -710,11 +729,10 @@ def run_cell(
         "elapsed_s": round(elapsed, 2),
         "gen_tokens": int(sum(ntoks)),
         "tokens_per_sec": round(sum(ntoks) / elapsed, 2) if elapsed > 0 else 0.0,
-        **prompts.provenance_block(oracle=system.prompt_oracle, one_shot=system.one_shot),
+        **_prov(system),
     }
     rows = build_trial_rows(
-        items, outs, ntoks, system, {**meta, **prompts.provenance_block(
-            oracle=system.prompt_oracle, one_shot=system.one_shot)},
+        items, outs, ntoks, system, {**meta, **_prov(system)},
         float_tol=float_tol,
     )
     if extras:
@@ -921,6 +939,11 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
                         sy.route_map = args.route_map
             # Validate only what will actually run (see validate_systems).
             validate_systems(systems)
+            if any(sy.trace for sy in systems) and int(cfg.get("sampling", {}).get("max_tokens", 64)) < 512:
+                raise ValueError(
+                    "a trace system needs sampling.max_tokens >= 512 (the answer follows "
+                    "the trace); this config inherits the 64-token greedy budget"
+                )
 
             engine = Engine(
                 mcfg["hf_id"],
@@ -965,9 +988,7 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
                         "config_sha": config_sha,
                         "script_sha": script_sha,
                         "git_commit": _git_commit(),
-                        **prompts.provenance_block(
-                            oracle=system.prompt_oracle, one_shot=system.one_shot
-                        ),
+                        **_prov(system),
                     }
                     try:
                         res = run_cell(
@@ -1130,12 +1151,27 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
         {**eng, "max_model_len": int(tcfg["max_seq_len"]) + 128},
         stub=args.stub,
     )
-    texts = render_prompts(items, SystemSpec(name="ckpt"), engine.tokenizer)
+    # The trace arm selects on the SAME prompt it trained on, with a generation budget
+    # that reaches the answer line: `_base_eval.yaml`'s 64 tokens would truncate every
+    # trace before `=> ` and select on noise. `ckpt_select.max_tokens` in the train
+    # config overrides the default.
+    trace = bool((cfg.get("prompt") or {}).get("trace", False))
+    sys_spec = SystemSpec(name="ckpt", trace=trace)
+    sampling = dict(ecfg["sampling"])
+    if trace:
+        sampling["max_tokens"] = int((cfg.get("ckpt_select") or {}).get("max_tokens", 1800))
+        if sampling["max_tokens"] + 128 >= int(tcfg["max_seq_len"]):
+            raise SystemExit("ckpt_select.max_tokens leaves no room for the prompt")
+    texts = render_prompts(items, sys_spec, engine.tokenizer)
+    extract = None
+    if trace:
+        from obtune.trace import extract_answer as extract
 
     accs: list[tuple[str, float]] = []
     for name, path in cks:
-        outs, _ = engine.generate(texts, ecfg["sampling"], [str(path)] * len(texts))
-        gs = [scoring.grade(o, it.output_repr, it.language) for o, it in zip(outs, items)]
+        outs, _ = engine.generate(texts, sampling, [str(path)] * len(texts))
+        gs = [scoring.grade(extract(o) if extract else o, it.output_repr, it.language)
+              for o, it in zip(outs, items)]
         acc = sum(g.correct for g in gs) / len(gs)
         accs.append((name, acc))
         print(f"[ckpt-select] {name}: exact_match={acc:.4f} (n={len(gs)})", flush=True)
@@ -1153,6 +1189,8 @@ def run_ckpt_select(args: argparse.Namespace) -> dict[str, Any]:
         "tolerance_pts": tol,
         "n_val_items": len(items),
         "val_conditions": list(cfg["train_conditions"]),
+        "prompt_id": prompts.prompt_id(trace=trace),
+        "max_tokens": int(sampling.get("max_tokens", 64)),
         "accuracies": dict(accs),
         "best": best_name,
         "best_accuracy": best_acc,
@@ -1225,8 +1263,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             "systems": [s.name for s in systems],
             "eval_conditions": cfg["eval_conditions"],
             "n_items_first_cell": len(items),
-            "prompt_id": prompts.prompt_id(systems[0].prompt_oracle, systems[0].one_shot),
-            "prompt_template_sha256": prompts.template_sha256(),
+            "prompt_id": prompts.prompt_id(systems[0].prompt_oracle, systems[0].one_shot,
+                                           trace=systems[0].trace),
+            "prompt_template_sha256": prompts.template_sha256(trace=systems[0].trace),
         }, indent=2))
         print("--- rendered prompt (first item) ---")
         print(texts[0])

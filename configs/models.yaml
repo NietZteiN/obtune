@@ -80,6 +80,22 @@ models:
     grad_accum: 8
     role: main
 
+  # CodeLlama-34b (lever 6, 2026-09-04): 48 layers × 8192, GQA (8 kv heads), 67 GB
+  # bf16 — fits one H200 with LoRA + grad checkpointing but the activations at
+  # 2048 tokens do not leave room for the 13b batch shape; halve per-device batch
+  # and double accumulation so the effective batch (64) is unchanged across the
+  # 7b/13b/34b ladder. Same tokenizer as 7b/13b (max_seq_len 2048 re-gate holds).
+  codellama-34b:
+    hf_id: codellama/CodeLlama-34b-Instruct-hf
+    family: coder
+    n_layers: 48
+    router_layer: 24
+    hidden_size: 8192
+    max_seq_len: 2048
+    per_device_batch: 4
+    grad_accum: 16
+    role: main
+
   # --- external baselines ------------------------------------------------------
   # SemCoder (NeurIPS'24, arXiv:2406.01006) — trained for execution-semantics
   # reasoning; output prediction is its NATIVE task (SemCoder-S beats GPT-3.5 on

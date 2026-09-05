@@ -233,6 +233,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 **prompts.provenance_block(
                     oracle=bool((cfg.get("prompt") or {}).get("oracle", False)),
                     one_shot=bool((cfg.get("prompt") or {}).get("one_shot", False)),
+                    trace=bool((cfg.get("prompt") or {}).get("trace", False)),
                 ),
             },
         )

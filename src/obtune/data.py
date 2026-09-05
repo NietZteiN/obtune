@@ -422,11 +422,40 @@ def _balanced_take(rows: Sequence[TrainPair], n: int, seed: int) -> list[TrainPa
 # --------------------------------------------------------------------------- #
 
 def to_sft_records(
-    rows: Sequence[TrainPair], oracle: bool = False, one_shot: bool = False
+    rows: Sequence[TrainPair], oracle: bool = False, one_shot: bool = False,
+    completions: Optional[Sequence[str]] = None,
 ) -> list[dict[str, Any]]:
+    """`completions` (trace arm) supplies one assistant turn per row in order; None keeps
+    the plain `output_repr` completion."""
+    if completions is None:
+        return [
+            prompts.build_example(r.model_dump(), oracle=oracle, one_shot=one_shot) for r in rows
+        ]
+    if len(completions) != len(rows):
+        raise DataContractError("completions must be parallel to rows")
     return [
-        prompts.build_example(r.model_dump(), oracle=oracle, one_shot=one_shot) for r in rows
+        prompts.build_example(r.model_dump(), oracle=oracle, one_shot=one_shot, completion=c)
+        for r, c in zip(rows, completions)
     ]
+
+
+def _attach_trace_completions(
+    rows: list[TrainPair], language: str, pcfg: Mapping[str, Any], seed: int
+) -> tuple[list[TrainPair], list[str], dict[str, Any]]:
+    """Trace arm: replace each row's completion with its execution trace (trace.py).
+
+    Rows whose trace fails or whose traced answer disagrees with the gold are DROPPED,
+    not kept with a plain completion — a mixed dataset would teach the model that the
+    trace is optional. The drop counts land in meta so the size loss is visible next to
+    n_train. Order is preserved, so the shuffle above still governs batch order.
+    """
+    from obtune import trace as _trace
+
+    kept, report = _trace.attach_traces(
+        rows, language, cfg=pcfg.get("trace_cfg"),
+        workers=int(pcfg.get("trace_workers", 8)),
+    )
+    return [r for r, _ in kept], [c for _, c in kept], report
 
 
 def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
@@ -447,6 +476,9 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     pcfg = config.get("prompt", {}) or {}
     oracle = bool(pcfg.get("oracle", False))
     one_shot = bool(pcfg.get("one_shot", False))
+    trace = bool(pcfg.get("trace", False))
+    if trace and bool(tcfg.get("shuffle_labels", False)):
+        raise DataContractError("prompt.trace and train.shuffle_labels are incompatible")
 
     augment_tags = [str(t) for t in (tcfg.get("augment_tags") or [])]
     rows = load_pairs(train_conditions, language,
@@ -503,8 +535,23 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     if val_size and val_rows:
         val_rows = _balanced_take(val_rows, val_size, seed + 2)
 
+    train_completions = val_completions = None
+    trace_meta: dict[str, Any] = {}
+    if trace:
+        train_rows, train_completions, trace_meta["train"] = _attach_trace_completions(
+            train_rows, language, pcfg, seed
+        )
+        if val_rows:
+            val_rows, val_completions, trace_meta["val"] = _attach_trace_completions(
+                val_rows, language, pcfg, seed
+            )
+        if not train_rows:
+            raise DataContractError("trace arm: every training row was dropped")
+
     out = {
-        "train": Dataset.from_list(to_sft_records(train_rows, oracle, one_shot)),
+        "train": Dataset.from_list(
+            to_sft_records(train_rows, oracle, one_shot, completions=train_completions)
+        ),
         "meta": {
             "language": language,
             "train_conditions": train_conditions,
@@ -515,13 +562,17 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
             "augment_tags": augment_tags,
             "l0_replay_fraction": replay,
             "corpus": report.as_dict(),
-            **prompts.provenance_block(oracle=oracle, one_shot=one_shot),
+            "trace": trace_meta if trace else None,
+            **prompts.provenance_block(oracle=oracle, one_shot=one_shot, trace=trace),
         },
         "train_rows": train_rows,
         "val_rows": val_rows,
     }
     out["val"] = (
-        Dataset.from_list(to_sft_records(val_rows, oracle, one_shot)) if val_rows else None
+        Dataset.from_list(
+            to_sft_records(val_rows, oracle, one_shot, completions=val_completions)
+        )
+        if val_rows else None
     )
     return out
 

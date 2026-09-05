@@ -1,0 +1,23 @@
+# Load/format check for CodeLlama-34b-Instruct as the top of the scale ladder (W6 lever
+# 6, 2026-09-04). Not a go/no-go on accuracy: the 13b result already showed scale pays
+# (`tuned_L0` +3.39 [+1.93, +4.89] over 7b), so the question is only whether the 67 GB
+# bf16 checkpoint serves under vLLM on one H200 with the shared CodeLlama tokenizer and
+# template, and what the untuned base reads on the three conditions the 7b basecheck
+# used. Training is submitted in parallel; the full base row is re-read in the grid
+# eval alongside tuned_L0 / mono_all. NO H1 -- a basecheck never touches it.
+_extends: _base_eval.yaml
+
+phase: basecheck
+experiment_id: basecheck_codellama34b
+run_tag: basecheck_codellama34b
+model: codellama-34b
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+
+eval_conditions: [L0, L1r, S2]

@@ -21,6 +21,7 @@ env/build.log
 # rule was stated but not enforced.
 runs/adapters/
 runs/adapters_*/
+runs/trace_cache/
 runs/logs/
 runs/manifest/running/
 runs/manifest/.supervisor.lock

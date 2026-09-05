@@ -46,6 +46,8 @@ N_ROWS = 4
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="train/pilot_qwen1.5b_l1b.yaml")
+    ap.add_argument("--model", required=True, help="model key from configs/models.yaml "
+                    "(the tokenizer/template under test; model-neutral configs carry none)")
     ap.add_argument("--rows", type=int, default=N_ROWS)
     ap.add_argument("--show", action="store_true", help="print the decoded batch")
     args = ap.parse_args()
@@ -55,6 +57,7 @@ def main() -> int:
     from trl import SFTConfig, SFTTrainer
 
     cfg = load_config(args.config)
+    cfg["model"] = args.model
     mcfg = resolve_model_cfg(cfg)
     tcfg = _effective_train_knobs(cfg, mcfg)
     if _USING_FIXTURES:

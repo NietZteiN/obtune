@@ -1,0 +1,38 @@
+# Execution-trace SFT, all six trainable conditions — the `mono_all` analogue of the trace arm. MODEL-NEUTRAL.
+#
+# Same rows, same prompt program/call block, same LoRA shape and schedule as mono_generic_py;
+# the ONLY change is the completion: instead of the bare literal the model is trained to
+# write the interpreter's per-line variable trace and then `=> <literal>`
+# (src/obtune/trace.py). The hypothesis (CLAUDE_SCRATCHPAD W6 lever 3): the greedy arm
+# saturates at ~0.43 on the trainable grid and ~0.27 on H1 because a single forward pass
+# cannot simulate a loop; a supervised trace gives the model the scratch space and a
+# ground-truth teacher for how to use it. Compared against mono_all AND tuned_L0 on every condition; the six-condition arm is the one
+# that gets a trace through flattened S1 code.
+#
+# Sequence length: with the trace the S1 rows (flattened code, 1.5k-token prompts) reach
+# 3.4k tokens at max_events=64, so 2048 would truncate 3.5 % of S1 (guard aborts >1 %).
+# 4096 clears every measured row (200-row calibration, 2026-09-04: L0 max 1966, S2 2265,
+# S1 3399). Batch 8 x 8 keeps the effective batch at 64 like every other arm.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: trace_py_mono
+phase: main
+adapter_root: runs/adapters_trace # the name encodes (conds, rank, seed) only; keep off the greedy bank
+
+prompt:
+  trace: true
+  trace_cfg: {max_events: 64, max_repr: 48}
+  trace_workers: 8
+
+train:
+  train_size: 30000 # everything, as mono_generic_py
+  max_seq_len: 4096
+  per_device_batch: 8
+  grad_accum: 8
+
+ckpt_select:
+  metric: exact_match
+  tolerance_pts: 0.2
+  max_tokens: 2048 # S1 traces reach 1.7k tokens at max_events=64; must cover the `=> ` line

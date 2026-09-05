@@ -56,8 +56,7 @@ SLURM_LOGS = RUNS_DIR / "logs" / "slurm"
 TEMPLATE = """#!/bin/bash
 #SBATCH --job-name={job_name}
 #SBATCH --partition={partition}
-#SBATCH --gres={gres}
-#SBATCH --cpus-per-task={cpus}
+{gres_line}#SBATCH --cpus-per-task={cpus}
 #SBATCH --mem={mem}
 #SBATCH --time={time}
 {qos}{extra_sbatch}{dependency}#SBATCH --output={log_dir}/%j_{job_name}.out
@@ -173,7 +172,9 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
     return TEMPLATE.format(
         job_name=job_name,
         partition=partition,
-        gres=gres,
+        # `--gres none` (or empty) drops the line: the CPU partitions (`normal`, `dev`)
+        # reject any --gres=gpu request with "Requested node configuration is not available".
+        gres_line=("" if gres in ("", "none", "0") else f"#SBATCH --gres={gres}\n"),
         cpus=cpus,
         mem=mem,
         time=time,
