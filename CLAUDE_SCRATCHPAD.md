@@ -707,3 +707,21 @@ Eval `ev_objectives` = **378795**, `afterok` on all eight ckpt-selects, config
 `configs/eval/objectives_codellama7b.yaml`, phase `objectives_generic`. Nothing is
 tuned after this point; analysis is `scripts/analysis/34_objectives.py` with the
 decision rules frozen at `447ecdb`.
+
+### 2026-09-06 — quota incident during the objectives chains
+
+`/work/jvl210002` reached its **1100 GB hard quota** (1099.83 GB) at 00:27 UTC, while five
+objective trainers were running. `tr_curr_sft` (378791) finished its single epoch but the
+redundant `final/` save died with `Disk quota exceeded`; `checkpoint-346` was already
+complete (adapter 320 MB + optimizer + trainer_state), so the arm is intact. Actions taken:
+- Deleted only my own smoke output: the twelve `checkpoint-4`/`final` dirs under
+  `/work/jvl210002/migration/smoke_objectives/` (7.3 GB of 4-step runs from job 378765).
+  The `training_summary.json`/`run_manifest.json` files there were kept. Quota now 99.3 %.
+- Removed the README-only stub `…curr_sft_s17/final/` (a 5 KB directory the failed save left
+  behind) because `discover_checkpoints` would have enumerated it as a checkpoint.
+- Cancelled `ck_curr_sft` 378792 (DependencyNeverSatisfied) and `ev_objectives` 378795;
+  resubmitted as **ck_curr_sft 379318** and **ev_objectives 379319** (afterok on
+  378782, 378784, 378786, 378788, 378790, 378794, 379318).
+- Nothing else was deleted. Candidates for the human to approve: `tmp/uv-cache` (25 GB,
+  package cache) and the `optimizer.pt` files inside old checkpoint dirs (see below), which
+  are resume state, not results.
