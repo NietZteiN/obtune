@@ -1,9 +1,11 @@
 # transfer — RQ1 — per-condition adapters, transfer matrix, GLMMs
 
-*Last updated: 2026-09-05*
+*Last updated: 2026-09-06*
 **Status:** **H1 BUDGET FULLY SPENT (final read 2026-09-05; no third read is permitted).** New H1 leader `tuned_L0` (34b) 0.3213; **RQ2's headline survives scale** — `tuned_L0 − mono_all` +2.47 [+0.41, +4.78] at 34B against +4.12 at 7B; `tuned_X1` (7B) ties `tuned_L0` (34B) at −0.33 [−2.88, +2.06]. master report reproduced on CodeLlama-7b with cluster-bootstrap CIs on every contrast, and one human-authorized H1 repair read (`pilot_eval`; `final_eval` unspent). **`tuned_L0` BEATS `mono_all` on H1: +0.041 [+0.018, +0.064]** — stronger than Qwen's "matches". `tuned_L0` ties the best specialist and best merge on H1, and ties `mono_all` / beats every merge on the trainable grid. RQ1 TR 0.906 [0.878, 0.932]; router == random [−0.008, +0.008]; LOTO fold indistinguishable from `mono_all`. Prefix-cache collision (2026-09-03) fixed, 28 cells quarantined, 13 re-run. **Accuracy campaign (2026-09-04): self-consistency voting is not a lever for the tuned systems (`tuned_L0` −0.99 [−1.70, −0.31], `mono_all` +0.05); the `mono_all` = `tuned_L0` tie holds at s17/s42/s101.** Variant augmentation +0.17 [−1.14, +1.38] and +58 % data −0.20 / +0.73 are null; CodeLlama-13b lifts `tuned_L0` +3.39 [+1.93, +4.89] and keeps the tie (+0.77 [−0.71, +2.20]). Six breadth adapters, one fingerprint: L0 cost, L1b gain, pooled tie.
 
 ## Hypotheses — open
+- **H-cons-scale / H-cons-seed / H-cons-lam / H-cons-teacher** (opened 09-06): the consistency term is the only algorithmic lever above 1 pt at 7B (X1 +5.11 over `mono_all`, single seed). CONFIRM H-cons-seed if `cons_lam3 − mono_all` on X1 excludes zero at s42 and s101; H-cons-lam if λ ∈ {5, 10} keeps improving on the *trainable* grid (X1 is not for tuning); H-cons-scale if the X1 gain survives at 13B/34B; H-cons-teacher if a 34B `tuned_L0` teacher lifts a 7B student past its own 0.32 on X1. Not scheduled.
+- **H-curr-kl-from-mono** (opened 09-06): the KL term is worth ~1.3 pts from either `tuned_L0` (`curr_kl − curr_sft` +1.32 [+0.66, +1.98]) or scratch (`cons_lam1 − cons_same` +0.94). CONFIRM if one epoch of KL-continued training from `mono_all/best` removes its X1 penalty (−3.79 vs `tuned_L0`); REFUTE if not. Not scheduled; 1 h.
 - **H-family-beats-scale** (opened 09-05): training on a sibling of the held-out family is worth as much as 5× the parameters. On H1, `tuned_X1` (7B) vs `tuned_L0` (34B) is **−0.33 [−2.88, +2.06]** — indistinguishable. CONFIRM on a *new* held-out family (H1 is spent; X1 is the surface); REFUTE if the equivalence does not reproduce. Not scheduled.
 - **H-breadth-scales** (opened 09-05): breadth training's `L1b` benefit scales with capacity while its `L0` price does not — the gain roughly doubles from 7B (+2.41) to 34B (+5.19) while the cost moves −1.74 → −2.63. Predicts the `mono_all` = `tuned_L0` tie breaks *upward* above 34B. CONFIRM if the `L1b` gain keeps growing and the pooled contrast excludes zero at a larger scale; REFUTE if flat. Not scheduled — no model above 34B is available on this cluster.
 - **H-trace-complement** (opened 09-05, **NOT RUN — its gate failed**): `trace_mono` and `mono_all` are equal in accuracy but disagree on ~22 % of items (oracle union +10.75 [+9.51, +11.98]). It was pre-registered gated on the lever-2b verifier clearing its rule; it did not (see below), so this does **not** inherit a pass. Needs its own registration — the two-way break-even is 52 % on the binary discrimination against top-1-of-3.71, but 2b failed on conversion, not ranking power, so the analogy is not automatic.
@@ -20,6 +22,10 @@
 - (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
+- **H-cons** ✓ supported (2026-09-06): `cons_lam1 − mono_all` X1 +3.05 [+1.24, +4.78], `cons_lam1 − cons_same` +0.94 [+0.10, +1.79]. Repairs breadth's held-out penalty; ties `tuned_L0` on X1 (+1.32 [−0.58, +3.13] at λ=3). Single seed.
+- **H-neg** ✗ refuted, wrong direction (2026-09-06): `neg_ul − neg_data` X1 −2.72 [−4.20, −1.15]; `neg_data − mono_all` X1 −3.38 [−5.28, −1.40].
+- **H-resample** ✗ refuted (2026-09-06): `x1_resample − tuned_X1` X1 +0.49 [−1.07, +1.90].
+- **H-curr** ✗ not confirmed by its rule (2026-09-06): `curr_kl − mono_all` non-L0 +1.06 [−0.12, +2.28]; no-tax clause holds (L0 −0.24 [−1.68, +1.14]); `curr_kl − curr_sft` +1.32 [+0.66, +1.98].
 - **H-X1-family** (opened 09-05, **BOTH CONJUNCTS CONFIRMED** 09-05): on X1, `tuned_X1 − tuned_L0` +4.86 [+2.80, +6.92]; on H1 (final read), `tuned_X1` 0.3180 beats the old leader `tuned_S2` by **+3.46 [+1.32, +5.51]**. H1's difficulty is its mechanism family, not its surface. Entry `2026-09-05_h1-final-read.md`.
 - **H-34b-h1** (opened + **CONFIRMED** 09-05): 34b `tuned_L0` 0.3213 on H1, **+3.79 [+1.56, +6.10]** over the 7B leader; tuning gap +17.79 [+14.81, +20.94]. Same entry.
 - **H-rq2-at-scale** (opened + **CONFIRMED** 09-05): the 7B H1 finding is not a small-model artefact — at 34B `tuned_L0 − mono_all` is **+2.47 [+0.41, +4.78]** (7B: +4.12). Clean-code-only training beats breadth on the unseen obfuscator at both scales. Same entry.
@@ -52,12 +58,16 @@
   Interpretation is gated on **H-format**.
 
 ## What worked
+- **Paired-consistency objective** (2026-09-06): CE + λ·KL(teacher on L0 parent ‖ student on obfuscated) — the only algorithmic lever above 1 pt at 7B; +5.11 on X1 over `mono_all` at λ=3, no L0 tax. Same-input distillation is most of the X1 gain; the parent view is the rest and all of the L1b gain.
 - Checkpoint selection before evaluation, on the held-in val slice: selections ranged from
   `checkpoint-73` to `final`, so several conditions peak well before the end of training.
 - Reporting on the all-conditions-succeeded common subset (412 of 557 programs; S1 binds at
   416) rather than per-condition full sets.
 
 ## What didn't
+- **Semantic negatives / unlikelihood** (2026-09-06): near-identical mutant surfaces with different labels are anti-invariance data; −3.38 on X1 from the positives alone, −2 more from the UL term. Closed.
+- **Resampled X1 surfaces** (2026-09-06): 3 surfaces × 1 epoch = 1 surface × 3 epochs on X1 (+0.49 [−1.07, +1.90]); the third "more surfaces" null.
+- **Curriculum order** (2026-09-06): `tuned_L0 → non-L0` continued SFT lands on `mono_all` (−0.22) with the same L0 tax (−1.86); only the KL term moves it.
 - Reading a shuffled-label control on `format_fail` and accuracy alone. The first 7B attempt read
   acc 0.001 / format_fail 0.013 — the pre-registered "floor is zero" signature — while emitting one
   constant string on 91 % of items. Output diversity is required alongside both.
@@ -74,6 +84,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-06_consistency-objective-repairs-breadth.md`](2026-09-06_consistency-objective-repairs-breadth.md) — **Four new fine-tuning objectives on X1 (H1 is spent). H-cons SUPPORTED: paired consistency (CE + λ·KL to the frozen `tuned_L0` teacher on the clean parent) is the first arm that keeps breadth's in-distribution gain and pays neither of its taxes** — `cons_lam3 − mono_all` X1 **+5.11 [+3.05, +7.08]**, pooled +1.70 [+0.50, +2.97]; vs `tuned_L0` non-L0 +2.24 [+1.24, +3.26] with L0 −0.30 and X1 +1.32 [−0.58, +3.13] — it repairs the held-out penalty but does not beat the clean specialist there. Plain same-input distillation already gives +2.80 on X1; the parent view adds +0.94/+1.31 pooled (L1b +2.29) and +2.31 on X1 at λ=3. **H-neg refuted in the wrong direction** (unlikelihood −2.72 on X1 vs its data control; mutant positives alone −3.38 on X1). **H-resample null** (+0.49 [−1.07, +1.90]). **H-curr misses its rule** (+1.06 [−0.12, +2.28]) but `curr_kl − curr_sft` +1.32 [+0.66, +1.98] on every condition: order is worth nothing, the KL term is worth ~1.3 pts from either start. Single seed
 - [`2026-09-05_h1-final-read.md`](2026-09-05_h1-final-read.md) — **THE FINAL H1 READ; budget fully spent.** Every pre-registered test confirms. New leader `tuned_L0` (34b) **0.3213** vs the pilot's 0.2834. **RQ2's headline survives scale**: `tuned_L0 − mono_all` = +2.47 [+0.41, +4.78] at 34B (7B: +4.12) — clean-code-only training beats breadth on the unseen obfuscator, not a small-model artefact. **`tuned_X1` (7B) ties `tuned_L0` (34B)**: −0.33 [−2.88, +2.06]. X1→H1 transfer is lossless (0.3188→0.3180)
 - [`2026-09-05_x1-is-a-trainable-proxy-for-h1.md`](2026-09-05_x1-is-a-trainable-proxy-for-h1.md) — **X1 diagonal is real (+4.86 over `tuned_L0`, +3.29 over the best transfer arm) and X1 predicts H1 to r = 0.9992 / ρ = 1.000 / mean |Δ| 0.48 pts** across six arms on the same 405 programs — a *trainable* stand-in for the quarantined column. Breadth-vs-specialist tie reappears on X1. The X1 arms have earned their place in the final H1 batch
 - [`2026-09-05_scale-is-the-only-lever-that-works.md`](2026-09-05_scale-is-the-only-lever-that-works.md) — **H-34b CONFIRMED: +8.56 [+7.00, +10.15] over 7B, +5.17 over 13B.** The gain is produced *entirely* by tuning — the base gap is null (+1.47 [−0.24, +3.27]) while the tuning gap widens +18.04 → +25.13. Every algorithmic lever tried at 7B is worth ≤ 1 pt; capacity is worth 8.6. RQ2 tie survives (+0.14 [−1.24, +1.53]) and the fingerprint sharpens — `L1b` gain doubles to +5.19, opening H-breadth-scales

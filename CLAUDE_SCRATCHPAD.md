@@ -725,3 +725,25 @@ complete (adapter 320 MB + optimizer + trainer_state), so the arm is intact. Act
 - Nothing else was deleted. Candidates for the human to approve: `tmp/uv-cache` (25 GB,
   package cache) and the `optimizer.pt` files inside old checkpoint dirs (see below), which
   are resume state, not results.
+
+## 2026-09-06 — objectives campaign: CLOSED OUT
+
+All 8 arms trained → ckpt-selected → evaluated (56 cells, adapter-applied assertion passed,
+format_fail ≤ 0.017) → `34_objectives.py` (18 contrasts, n_boot 2000, clustered by snippet_id)
+→ `results/analysis/objectives_2026-09-05.json`. Read against the frozen rules of `447ecdb`;
+nothing was tuned on X1 after the read.
+
+| hypothesis | rule | verdict |
+|---|---|---|
+| H-cons | `cons_lam1 − mono_all` X1 > 0 AND `cons_lam1 − cons_same` > 0 | ✓ +3.05 [+1.24, +4.78]; +0.94 [+0.10, +1.79] (pooled; X1 +0.25 null, +2.31* at λ=3) |
+| H-neg | `neg_ul − neg_data` X1 > 0 | ✗ wrong direction: −2.72 [−4.20, −1.15]; data control itself −3.38 on X1 |
+| H-resample | `x1_resample − tuned_X1` X1 > 0 | ✗ +0.49 [−1.07, +1.90]; pooled −0.74* |
+| H-curr | `curr_kl − tuned_L0` L0 ≥ 0 AND `curr_kl − mono_all` non-L0 > 0 | ✗ second clause +1.06 [−0.12, +2.28]; `curr_kl − curr_sft` +1.32* on all 7 conds |
+
+Headline: `cons_lam3` pooled 0.3919 (highest of the 15 7B systems on the seven-condition set),
+X1 0.2834, `cons_lam3 − mono_all` X1 +5.11 [+3.05, +7.08]; vs `tuned_L0` X1 +1.32 [−0.58, +3.13].
+Entry: `log/transfer/2026-09-06_consistency-objective-repairs-breadth.md`; ledgers updated.
+
+Still pending, needs human approval (none given yet): quota cleanup. /work is at ~99.7 % of the
+1100 GB hard cap. Candidates listed in the quota-incident section above (optimizer.pt 681 files /
+343 GB; tmp/uv-cache 25 GB; runs/adapters_overtrain 103 GB). Nothing further deleted.
