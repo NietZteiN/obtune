@@ -747,3 +747,8 @@ Entry: `log/transfer/2026-09-06_consistency-objective-repairs-breadth.md`; ledge
 Still pending, needs human approval (none given yet): quota cleanup. /work is at ~99.7 % of the
 1100 GB hard cap. Candidates listed in the quota-incident section above (optimizer.pt 681 files /
 343 GB; tmp/uv-cache 25 GB; runs/adapters_overtrain 103 GB). Nothing further deleted.
+
+## 2026-09-06 — quota cleanup DONE (user: "I trust you to make space")
+Removed 685 `runs/**/optimizer.pt` (~346 GB) and `tmp/uv-cache` (25 GB). `/work` 99.72 % → 66.24 %.
+Weights/results/hf_home untouched; verify_migration OK. Runs are no longer resumable.
+`runs/adapters_overtrain` (was 103 GB) kept — its weights are results. Entry: `log/setup/2026-09-06_quota-cleanup.md`.
