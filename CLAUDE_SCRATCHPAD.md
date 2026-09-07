@@ -830,3 +830,18 @@ log entry `log/transfer/2026-09-0X_objectives-round2.md`.
 - E7: do the GLMM+FDR in Python (statsmodels) rather than waiting on the R env — no multiplicity
   correction currently exists anywhere in the paper.
 - E10: human alignment must be RUN or CUT before the framing is written.
+
+### 2026-09-07 — E1/E2 PRE-REGISTRATION (frozen before submission)
+Eval-only; all six adapters already exist. Configs `eval/x1_scale.yaml` (13B, 34B) and
+`eval/x1_seedband_codellama7b.yaml` (7B). Contrasts: `bootstrap_delta` clustered by `snippet_id`,
+n_boot 2000, seed 17, on the 1,214 X1 heldout items / 405 programs the existing X1 cells use.
+
+- **E1 / H-C1-scale-X1** — CONFIRM if `tuned_L0 − mono_all` on X1 excludes zero ABOVE at BOTH 13B
+  and 34B; PARTIAL if one; REFUTE if neither. This is the scale replication of C1 on a readable
+  column. Reference values: the same contrast is +3.79 pts on X1 at 7B (0.2702 vs 0.2323) and
+  +2.47 [+0.41, +4.78] on H1 at 34B.
+- **E2 / H-C1-seed-X1** — CONFIRM if `tuned_L0_sN − mono_all_sN` on X1 excludes zero above for BOTH
+  N ∈ {42, 101}; PARTIAL if one; REFUTE if neither. Secondary: report the `tuned_L0` X1 seed range
+  alongside `cons_lam3`'s 0.91 pts and `mono_all`'s (0.2323/0.2348/0.2331, range 0.25 pts).
+- Format-fail is REPORTED, not used as a gate — H-format-gate is open and un-respecified (09-07).
+- No H1 cell is read by either job. Neither result may be used to select or tune anything.
