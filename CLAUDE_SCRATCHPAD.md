@@ -807,3 +807,14 @@ log entry `log/transfer/2026-09-0X_objectives-round2.md`.
   `results/analysis/corpus_inventory_2026-09-06.json`), rev 15 changelog. Entry `log/writeup/2026-09-06_master-report-rev15.md`.
 - NOTE: `28_master_panel.py` hard-codes `master_panel_2026-09-04.json` as output — do not rerun it without adding `--out`.
 - Rev 16 trigger: objectives round 2 (380166–380176) → fold §27.7 into §27.5.
+
+## 2026-09-07 — objectives round 2: READ AND CLOSED
+- **H-cons-seed CONFIRMED** (X1 +4.53 s42 / +4.12 s101, three-seed +4.59 [+3.16, +5.99], seed range 0.91 pts).
+- **H-cons-lam REFUTED downward** (`cons_lam10 − cons_lam3` grid −0.65 [−1.20, −0.14]); λ=3 stands. ckpt-select
+  validation ranked λ=10 first and the held-out grid reversed it — do not promote on the val column.
+- **H-curr-kl-from-mono CONFIRMED by 0.16 pts**; `currmono_kl − curr_kl` null on grid, −2.47 [−4.12, −0.91] on X1.
+- **OPEN FOR THE HUMAN — H-format-gate:** the pre-registered "format_fail > 2 % voids the cell" rule voids the
+  `tuned_L0` control on all 7 conditions and 6 published round-1 cells. Deliberately NOT re-specified after seeing
+  the reads. Every verdict reproduces on the format-clean subset. Needs a differential or panel-calibrated rule.
+- `34_objectives.py --out` defaults to the 09-05 filename — always pass `--out` explicitly (same as 28_master_panel.py).
+- Rev 16 pending: fold MASTER_REPORT §27.7 into §27.5, drop the "single seed" caveat.
