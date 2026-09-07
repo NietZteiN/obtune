@@ -821,3 +821,12 @@ log entry `log/transfer/2026-09-0X_objectives-round2.md`.
 - **rev 16 DONE (09-07):** §27.7 = round-2 result; §27.5/§1/§20 cautions retired with replacements;
   format gate published in §27.7 + §24, NOT re-specified; corpus 3,237 / 2,622,398.
   Structural note for next revision: promote §27.5+§27.7 to their own "objectives campaign" section.
+
+## 2026-09-07 — paper experiment plan
+- `docs/PAPER_EXPERIMENTS.md`: claims C1–C8 mapped to evidence; Tier 1 = E1/E2 (X1 at 13B/34B +
+  tuned_L0 seed band on X1, EVAL ONLY, <1 GPU-h), E3 H-cons-scale, E4 H-cons-teacher, E5 second
+  family pair X2/Y2, E6 X1 str-vs-mba ablation. Tier 1 total ~33 GPU-h.
+- Scope decision recorded: **Python-only paper**, JS declared as a limitation (node still missing).
+- E7: do the GLMM+FDR in Python (statsmodels) rather than waiting on the R env — no multiplicity
+  correction currently exists anywhere in the paper.
+- E10: human alignment must be RUN or CUT before the framing is written.
