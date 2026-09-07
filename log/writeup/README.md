@@ -1,6 +1,6 @@
 # writeup — Figures, paper draft, artifact packaging
 
-*Last updated: 2026-09-04*
+*Last updated: 2026-09-06*
 **Status:** active
 
 ## Hypotheses — open
@@ -41,6 +41,12 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-06_master-report-rev15.md`](2026-09-06_master-report-rev15.md) — **rev 15**,
+  [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). Two days appended as **§27** (the spent H1
+  read and its four confirmations, X1 as the r = 0.999 proxy, 34B/Llama scale, three more null
+  levers, the objectives campaign with paired consistency +5.11 on X1, the quota incident, round 2
+  in flight) plus a §1 addendum; §24/§26's "hold the final pass" and "`tuned_S2` leads H1" advice
+  superseded in place; corpus recounted to **3,188 cells / 2,546,826 trials**.
 - [`2026-09-04_master-report-rev14.md`](2026-09-04_master-report-rev14.md) — **rev 14**,
   [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). The report
   rebuilt **additively** on the CodeLlama panel: §1–§17 kept and labelled the frozen Qwen panel

@@ -1,6 +1,6 @@
 # obtune — master results report
 
-*Last updated: 2026-09-04*
+*Last updated: 2026-09-06*
 
 **Everything run to date, in one frame.**
 
@@ -21,24 +21,33 @@ back **stronger than it was ever stated on Qwen**: the clean-code-only adapter *
 adapter on an unseen obfuscator by 4.1 points with an interval clearing zero (§20). Three
 measurement defects were found, one of which silently contaminated 28 evaluation cells and was
 invisible to every existing guard (§21). A four-arm campaign to raise accuracy closed with one arm
-moving (§22), and the weight-space invariance objective was built, run and controlled (§23).*
+moving (§22), and the weight-space invariance objective was built, run and controlled (§23).
+**Since 4 September (§27):** the H1 budget was spent on a five-arm final read and every pre-registered
+test confirmed — the clean-code adapter beats breadth on the unseen obfuscator *at 34B too*
+(+2.47 [+0.41, +4.78]); a trainable sibling of H1's mechanism family, **X1**, predicts H1 to
+r = 0.999 and is now the project's held-out read; scale is the only conventional lever that pays
+(34B +8.56 pooled, entirely through tuning); trace SFT, best-of-n reranking and more input cases
+joined the null column; and a new training objective — **paired consistency**, a KL to the frozen
+clean-code adapter on each row's L0 parent — is the first arm that keeps breadth's gain and pays
+neither of its taxes (+5.11 [+3.05, +7.08] over `mono_all` on X1, single seed, seed band in flight).*
 
-Scope: all **2,966** evaluation cells / **2,200,119** graded trials under `results/cells/`, of which
-the **CodeLlama panel is 543 cells / 820,864 trials** and the rest is the Qwen era that §1–§17
-describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
+Scope: all **3,188** evaluation cells / **2,546,826** graded trials under `results/cells/`, of which
+the **CodeLlama/Llama panel is 765 cells / 1,167,571 trials** (7B 699, 13B 18, 34B 24,
+Llama-3.1-8B 24; §25.1) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
 attention corpora on both models, and the zero-training normalization arms. Every number below was
 recomputed from raw per-trial data — by [`scripts/make_master_report.py`](scripts/make_master_report.py)
 → `results/analysis/master_report.json` for the tables inherited from the 08-12 revision, by
 [`scripts/analysis/28_master_panel.py`](scripts/analysis/28_master_panel.py) →
-`results/analysis/master_panel_2026-09-04.json` for the CodeLlama panel, and directly from the
-per-cell parquets for everything else. **None are copied from earlier documents.** Where a number
+`results/analysis/master_panel_2026-09-04.json` for the CodeLlama panel (inventory recounted
+2026-09-06 → `corpus_inventory_2026-09-06.json`), by the dated `results/analysis/*_2026-09-0[56].json`
+outputs named in §27, and directly from the per-cell parquets for everything else. **None are copied from earlier documents.** Where a number
 here disagrees with an earlier report, **this document is the one to trust**; §8 says why for the
 Qwen era and §21 for the CodeLlama era.
 
 **Which model a table is about.** §1–§17 are **Qwen2.5-Coder-1.5B-Instruct** except where a row or
 section says otherwise (the two documented exceptions are both 7B: the CFT side thread in §7 and the
-zero-shot panel in §9.3). §18–§25 are **CodeLlama-7b-Instruct**, with CodeLlama-13b where a row says
-13B. Never mix them in one table: 7B roughly doubles 1.5B accuracy on every condition, and the two
+zero-shot panel in §9.3). §18–§27 are **CodeLlama-7b-Instruct**, with CodeLlama-13b/34b and
+Llama-3.1-8B where a row says so. Never mix them in one table: 7B roughly doubles 1.5B accuracy on every condition, and the two
 panels do not even share a format floor (§19.1). **The Qwen panel is frozen** — it cannot be
 re-evaluated on this cluster, which is why §21.1 has to record one Qwen number as permanently
 unverifiable rather than re-run it.
@@ -51,7 +60,7 @@ does the same for RQ3. [`RESULTS_BOOK_2026-08-11.md`](docs/RESULTS_BOOK_2026-08-
 tables-first sibling of this document and is **stale after 11 August**.
 
 Grid: **Grid B** (`testset`) for §12's baselines, **Grid A** (`heldout`) for the RQ1/RQ2
-headlines and for **everything in §18–§23**. These are different program sets and CLAUDE.md forbids
+headlines and for **everything in §18–§27**. These are different program sets and CLAUDE.md forbids
 pooling them — `base` on H1 reads 6.4 % on Grid A and 11.3 % on Grid B. Every table states its grid.
 **Grid B `H1` is 115 items over 27 programs and cannot support merge comparisons** — see §8.10, and
 §21.2 for the day a Grid B/Grid A mixup nearly bought a routing claim.
@@ -167,6 +176,14 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
 - [24. What has not been run, in the CodeLlama era](#24-what-has-not-been-run-in-the-codellama-era)
 - [25. Provenance — the CodeLlama panel](#25-provenance--the-codellama-panel)
 - [26. What actually works — best system per condition, and on H1](#26-what-actually-works--best-system-per-condition-and-on-h1)
+- [27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works](#27-since-rev-14--the-final-h1-read-its-trainable-proxy-scale-three-more-null-levers-and-the-objective-that-works)
+  - [27.1 The final H1 read — the budget is spent, and every pre-registered test confirms](#271-the-final-h1-read--the-budget-is-spent-and-every-pre-registered-test-confirms)
+  - [27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999](#272-x1--a-trainable-proxy-for-h1-that-predicts-it-to-r--0999)
+  - [27.3 Scale — 34B, and the fingerprint replicating across model families](#273-scale--34b-and-the-fingerprint-replicating-across-model-families)
+  - [27.4 Three more levers that do not move accuracy](#274-three-more-levers-that-do-not-move-accuracy)
+  - [27.5 The objectives campaign — paired consistency is the first objective that repairs breadth](#275-the-objectives-campaign--paired-consistency-is-the-first-objective-that-repairs-breadth)
+  - [27.6 The quota incident, and what is no longer resumable](#276-the-quota-incident-and-what-is-no-longer-resumable)
+  - [27.7 In flight — objectives round 2 (pre-registered 2026-09-06)](#277-in-flight--objectives-round-2-pre-registered-2026-09-06)
 
 ---
 
@@ -184,6 +201,23 @@ JavaScript; confirmed at full power on 1,214 items at **+3.46** [+2.06, +4.94]).
 does not rescue the picture: a router that classifies the obfuscation type with 100 % accuracy buys
 exactly the specialists' own gains and nothing more, merges are at or below the control, and simply
 *telling* the untuned model the obfuscation type is ~9 points *worse* than the clean-code adapter.
+
+*Added 6 Sep.* **Three things changed the answer's edges, not its centre** (§27). (1) The
+held-out read is done: the H1 budget was spent on a pre-registered five-arm final pass and
+**every test confirmed** — the clean-code adapter beats the all-six adapter on H1 at **34B as
+well** (+2.47 [+0.41, +4.78]), so "breadth costs on an unseen transform" now holds at two scales.
+(2) The negative result got its positive twin: a 7B adapter trained on **X1**, a *sibling* of H1's
+mechanism family with a different surface, recovers on H1 exactly what a 5× larger clean-code
+adapter recovers (0.3180 vs 0.3213; −0.33 [−2.88, +2.06]) and beats every same-size arm that never
+saw the family (+3.46 [+1.32, +5.51] over `tuned_S2`). What transfers is the **family**, not the
+transform and not "invariance" — and X1 predicts H1 to r = 0.999, so it replaces H1 for every
+further read. (3) One training objective finally beats the seed band: **paired consistency** — CE
+on the obfuscated row plus a KL to the frozen clean-code adapter's distribution *on that row's L0
+parent* — keeps breadth's trained-condition gain (+2.24 [+1.24, +3.26] over `tuned_L0`) and pays
+neither its `L0` tax (−0.30 [−1.80, +1.32]) nor its held-out-family tax (**+5.11 [+3.05, +7.08]**
+over `mono_all` on X1). It is one seed; the seed band and a λ sweep are in flight (§27.7).
+Meanwhile trace SFT, best-of-n reranking and 3× input cases joined the null column, and scale
+stayed the only conventional lever (34B **+8.56 [+7.00, +10.15]** pooled, all of it through tuning).
 
 *Rewritten 4 Sep.* **The result now stands on two model families, and on the second one it is
 stated more strongly than it ever was on the first.** Everything above was measured on
@@ -4331,10 +4365,14 @@ is the teacher, not the correspondence, that turned out not to matter.
 
 ## 24. What has not been run, in the CodeLlama era
 
-- **The `final_eval` H1 pass is unspent, and the standing recommendation is to hold it.** The one
-  named candidate is the 13B `tuned_L0`-vs-`mono_all` ordering; the trainable grid already shows
-  that ordering as a tie at both scales, so the read would most likely buy "a bigger model does
-  better". No `mono_aug`, `mono_scale`, 13B or alignment system has been read on H1.
+- ~~The `final_eval` H1 pass is unspent~~ — **spent on 2026-09-05 (§27.1).** No H1 number may now
+  be used to select, tune, rank or choose anything; every held-out-family read runs on **X1**
+  (§27.2). `mono_aug`, `mono_scale`, 13B and the alignment systems were never read on H1 and now
+  never will be — their X1 columns are the available substitute.
+- **Objectives round 2 is in flight (§27.7):** H-cons-seed, H-cons-lam and H-curr-kl-from-mono,
+  jobs 380166–380176. §27.5 is single-seed until it lands. Open after it: **H-cons-teacher**
+  (does the consistency gain depend on the teacher being `tuned_L0`, or would `base` do?) and
+  **H-cons-scale** (does it survive at 13B/34B, where breadth's `L0` tax is larger?).
 - **H-L0-cost-source** (§22.6) — the `L1b` gain is now located and the `L0` cost is not; what the
   cost *is* is open. It appears for every specialist except `S2`, at roughly constant size, so it
   points at something generic about training on a transformed distribution rather than anything
@@ -4351,6 +4389,8 @@ is the teacher, not the correspondence, that turned out not to matter.
   migration, so cluster bootstraps are the whole inferential story in §18–§23.
 - **All JavaScript work is blocked** — `node` is not installed on juno, which stops the H1 generator
   and every JS arm; the cross-language columns of §3.6 cannot currently be extended.
+- **Nothing under `runs/` is resumable** since the 2026-09-06 quota cleanup (§27.6): an interrupted
+  training run is a re-train, not a resume.
 
 ---
 
@@ -4374,22 +4414,26 @@ is the teacher, not the correspondence, that turned out not to matter.
 ### 25.1 The corpus, recounted
 
 Recomputed cell and trial counts over every directory under `results/cells/`
-(`28_master_panel.py`, 2026-09-04). Quarantined directories are listed and are excluded from
-every table in this report.
+(`28_master_panel.py` on 2026-09-04; recounted **2026-09-06** from parquet metadata →
+`results/analysis/corpus_inventory_2026-09-06.json`, which is the table below). Quarantined
+directories are listed and are excluded from every table in this report. Rev 14's count was
+2,966 cells / 2,200,119 trials; the 222 new cells are all §27.
 
 | group | cells | trials |
 |---|---:|---:|
 | `main/qwen25c-1.5b/python` (the Qwen era, §1–§17) | 1,515 | 709,518 |
 | `main/qwen25c-1.5b/javascript` | 227 | 63,324 |
 | Qwen side grids — `baselines*`, `baselines_gridA`, `grid_rq1_7b`, `align_lam_sweep`, `pilot`, `final`, `formatonly_fix`, `main/qwen25c-7b` | 608 | 554,064 |
-| **CodeLlama-7b** — `rq1_generic` 84, `rq2_generic` 102, `loto_generic` 54, `baselines_generic` 54, `extra_generic` 48, `merge_sweep_generic` 48, `rank_generic` 42, `mole_generic` 30 (+30 Grid B, §21.2), `selfcons_generic` 18, `h1_codellama` 12, `basecheck` 3 | **525** | **792,118** |
+| **CodeLlama-7b** — `rq2_generic` 144, `rq1_generic` 84, `objectives_generic` 56, `x1_generic` 56, `loto_generic` 54, `baselines_generic` 54, `extra_generic` 48, `merge_sweep_generic` 48, `rank_generic` 42, `mole_generic` 30 (+30 Grid B, §21.2), `selfcons_generic` 18, `trace_generic` 18, `h1_codellama` 14, `basecheck` 3 | **699** | **1,063,102** |
 | **CodeLlama-13b** — `rq2_generic` | **18** | **28,746** |
+| **CodeLlama-34b** — `rq2_generic` 18, `h1_codellama` 3, `basecheck` 3 | **24** | **37,395** |
+| **Llama-3.1-8B** — `rq2_generic` 18, `basecheck` 6 | **24** | **38,328** |
 | [quarantined] `_contaminated_2026-09-03` (§21.1) | 28 | 44,981 |
 | [quarantined] `_misplaced_2026-08-13` | 45 | 7,368 |
-| **total** | **2,966** | **2,200,119** |
+| **total** | **3,188** | **2,546,826** |
 
-- Lab notes for this era: [`log/setup/`](log/setup/) 2026-08-28 → 09-01 and
-  [`log/transfer/`](log/transfer/) 2026-09-01 → 09-04, indexed in [`log/README.md`](log/README.md).
+- Lab notes for this era: [`log/setup/`](log/setup/) 2026-08-28 → 09-01 and 09-06, and
+  [`log/transfer/`](log/transfer/) 2026-09-01 → 09-06, indexed in [`log/README.md`](log/README.md).
 
 ---
 
@@ -4432,15 +4476,269 @@ is *a specialist in an inert-material transform, a merge, or the clean-code adap
 grounds*, and the one thing the data does say is what is **worst**: `mono_all`, the adapter trained
 on all six obfuscations, at 0.2323 (§20).
 
+> **Superseded on 2026-09-05 (§27.1).** The final H1 read added five arms and the column is now
+> frozen: the leader is **CodeLlama-34B `tuned_L0` at 0.3213**, tied by 7B **`tuned_X1` 0.3180**
+> (−0.33 [−2.88, +2.06]) and 7B `mono_allX` 0.3089 — every one of them beats the band above
+> (`tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51]). "Pick on other grounds" therefore no longer
+> applies: on H1, an adapter that has seen the *family* (X1) or a 5× larger clean-code adapter
+> wins outright. On the seven-condition set (`L0`…`S2` + X1) the best pooled **7B** system is
+> **`cons_lam3` at 0.3919** (§27.5), single seed; it was never read on H1 and cannot be.
+
 **If accuracy is the only goal, the answer is not on this table.** CodeLlama-13b `mono_all` reaches
 0.4455 / 0.4228 / 0.4192 / 0.4192 / 0.4122 / 0.4439 on `L0`…`S2` and 13B `tuned_L0` reaches
-**0.4689** on `L0` — 2–4 points above every 7B system in every column (§22.4). Scale is the only
-lever in this report that moves a column by more than its own noise.
+**0.4689** on `L0` — 2–4 points above every 7B system in every column (§22.4) — and CodeLlama-34b
+`tuned_L0` reaches **0.522 / 0.419 / 0.468 / 0.465 / 0.472 / 0.484** (§27.3), +8.56 [+7.00, +10.15]
+pooled over 7B. Scale is the only lever in this report that moves a column by more than its own
+noise.
+
+---
+
+## 27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works
+
+*Added 2026-09-06.* Two working days (09-05, 09-06) that closed the accuracy campaign and opened
+the objectives campaign. Grid A (`heldout`) throughout, CodeLlama-7b unless a row says 13B, 34B or
+Llama-3.1-8B; deltas in **percentage points**, program-clustered bootstraps (2000 resamples, seed
+17) on the items each pair shares. Lab notes: the nine [`log/transfer/`](log/transfer/) entries of
+2026-09-05 and [`2026-09-06_consistency-objective-repairs-breadth.md`](log/transfer/2026-09-06_consistency-objective-repairs-breadth.md).
+
+### 27.1 The final H1 read — the budget is spent, and every pre-registered test confirms
+
+The second and last H1 access CLAUDE.md §3.2 permits went on 2026-09-05 (jobs 378518/378519;
+hypotheses committed as `361d354` before submission; 1,214 items / 405 programs, the same rows as
+§20). Five arms were read — `base`, `tuned_L0` and `mono_all` on **CodeLlama-34B**, and the two
+7B systems that had seen X1 (§27.2) — and are shown against the seven §20 arms they join.
+
+| arm | model | H1 acc |
+|---|---|---:|
+| `base` | 7B | 0.1285 |
+| `base` | 34B | 0.1433 |
+| `mono_all` | 7B | 0.2323 |
+| `tuned_L0` | 7B | 0.2735 |
+| `tuned_S1` | 7B | 0.2776 |
+| `tuned_S2` | 7B | 0.2834 |
+| `mono_all` | 34B | 0.2965 |
+| `mono_allX` (the six banks + X1) | 7B | 0.3089 |
+| `tuned_X1` | 7B | 0.3180 |
+| **`tuned_L0`** | **34B** | **0.3213** |
+
+| pre-registered contrast | Δ pts [95 % CI] | verdict |
+|---|---:|---|
+| **H-34b-h1:** `tuned_L0` 34B − `tuned_L0` 7B | **+3.79 [+1.56, +6.10]** | confirmed — scale transfers to the unseen obfuscator |
+| `tuned_L0 − mono_all` at 34B | **+2.47 [+0.41, +4.78]** | confirmed — §20's headline **replicates at 5× the parameters** (7B: +4.12 [+1.81, +6.75]) |
+| `tuned_X1` (7B) − `tuned_S2` (the §26 7B leader) | **+3.46 [+1.32, +5.51]** | confirmed — a *sibling-family* specialist beats every same-size arm that never saw the family |
+| `mono_allX − mono_all` (7B) | **+7.66 [+5.35, +10.04]** | confirmed — adding the seventh bank repairs breadth on H1 |
+| tuning gap at 34B, `tuned_L0 − base` | +17.79 [+14.81, +20.94] | — |
+| `tuned_X1` (7B) − `tuned_L0` (34B) | −0.33 [−2.88, +2.06] | a 7B adapter that has seen the *family* ties the 34B adapter that has not |
+
+**X1 → H1 was lossless.** The two X1-trained arms scored 0.3188 / 0.3097 on X1 and 0.3180 / 0.3089
+on H1 — 0.08 pts apart. That is the fact §27.2 rests on. **Consequences for the rest of this
+report:** the H1 column of §26 is now frozen at these values; no H1 number may be used to select,
+tune, rank or choose anything (CLAUDE.md §3.2, changelog 2026-09-05); every further held-out-family
+read in this project runs on X1. §24's standing recommendation to hold the final read is retired —
+it was spent against a concrete five-arm manifest and bought four confirmations, not "a bigger
+model does better".
+
+### 27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999
+
+X1 (`src/obtune/obf/py/x1.py`, `configs/conditions.yaml`; family `encoding`, `trainable: true`,
+its own namespace) applies H1's *mechanism family* — string encoding plus MBA arithmetic — with a
+different surface: strings become `_rs([cp ^ k, …], k)` with a per-program XOR key, and `+ − ^` on
+ints become `_ar_p/_ar_m/_ar_x` MBA identities behind a guard. It was built so that the family
+could be *trained on* without touching H1. Column read by `ev_X1` (job 378459), 1,214 items / 405
+programs:
+
+| arm | X1 acc | | contrast | Δ pts [95 % CI] |
+|---|---:|---|---|---:|
+| `base` | 0.1194 | | **`tuned_X1 − tuned_L0`** (the diagonal) | **+4.86 [+2.80, +6.92]** |
+| `formatonly` | 0.1252 | | `tuned_X1 − tuned_S2` | +3.29 [+1.23, +5.52] |
+| `mono_all` | 0.2323 | | `mono_allX − mono_all` | +7.74 [+5.45, +10.21] |
+| `tuned_L0` | 0.2702 | | `mono_allX − tuned_X1` | −0.91 [−2.96, +1.15] |
+| `tuned_S1` | 0.2718 | | | |
+| `tuned_S2` | 0.2858 | | | |
+| `mono_allX` | 0.3097 | | | |
+| **`tuned_X1`** | **0.3188** | | | |
+
+**Proxy quality.** On the six arms trained on *neither* X1 nor H1, X1 and H1 accuracies agree to
+**r = 0.9992, ρ = 1.000, mean |Δ| = 0.48 pts** (X1 vs H1: `base` 0.1194 vs 0.1285, `formatonly`
+0.1252 vs 0.1334, `mono_all` 0.2323 vs 0.2323, `tuned_L0` 0.2702 vs 0.2735, `tuned_S1` 0.2718 vs
+0.2776, `tuned_S2` 0.2858 vs 0.2834), and
+the two X1-trained arms then reproduced on H1 to 0.08 pts (§27.1). **H-X1-family is therefore
+confirmed at the family level:** what the specialists lack on H1 is exposure to the *mechanism
+family*, not to the exact obfuscator — a 7B adapter trained on the sibling surface recovers
+everything the 34B clean-code adapter recovers. That is also the sharpest form of the project's
+"transform memorisation" reading: the model learns the family it is shown and nothing broader.
+**H-mono-X** confirmed too: `mono_allX` ties `mono_all` on the six trainable conditions and adds
++7.7 on the family.
+
+### 27.3 Scale — 34B, and the fingerprint replicating across model families
+
+`base` / `tuned_L0` / `mono_all` on CodeLlama-34B-Instruct (`ev34_grid` 377817), six trainable
+conditions, 9,582 items:
+
+| 34B | `L0` | `L1b` | `L1r` | `L2` | `S1` | `S2` |
+|---|---:|---:|---:|---:|---:|---:|
+| `base` | 0.254 | 0.205 | 0.220 | 0.231 | 0.222 | 0.191 |
+| `tuned_L0` | **0.522** | 0.419 | 0.468 | 0.465 | 0.472 | 0.484 |
+| `mono_all` | 0.496 | **0.470** | 0.458 | 0.463 | 0.467 | 0.483 |
+
+- **H-34b confirmed:** `tuned_L0` 34B − 7B pooled **+8.56 [+7.00, +10.15]**; 34B − 13B
+  +5.17 [+3.78, +6.64]. **The gain arrives entirely through tuning**: `base` 34B − 7B is
+  +1.47 [−0.24, +3.27], while the tuning gap grows from +18.04 (7B) to **+25.13 [+22.73, +27.64]**
+  (34B). A bigger untuned model does not read obfuscated code better; a bigger *tuned* one does.
+- **`mono_all − tuned_L0` at 34B: +0.14 [−1.24, +1.53]** — the breadth tie of §19/§22 holds at the
+  third scale, and on H1 the ordering is *clean beats breadth* at both (§27.1).
+- **Llama-3.1-8B-Instruct was not promoted.** The untuned gate was a NO-GO (it equals CodeLlama-7b
+  on `L0` to three decimals; its +1…+3.5 on the obfuscated columns is all format, `base` +2.08
+  [+0.19, +3.92] pooled), so a reduced two-adapter probe ran. `tuned_L0` posts **0.447** on `L0`
+  against the pre-declared 0.430 promotion gate — a literal pass by 1.7 pts — but the *paired*
+  contrast with CodeLlama-7b on the same items is +1.80 [−0.42, +4.07] on `L0` and +1.21 [−0.29,
+  +2.64] pooled, inside noise, so the full grid was not promoted (`mono_all − tuned_L0` there:
+  +0.16 [−1.26, +1.61]; tuning gap +17.18).
+- **The breadth fingerprint (§22.5) replicates across scales and families.** `mono_all − tuned_L0`
+  on `L0` (the cost) / `L1b` (the gain): 7B −1.74 / +2.41; 13B −2.34 / +2.71; **34B −2.63
+  [−4.49, −0.78] / +5.19 [+3.02, +7.36]**; Llama-3.1-8B **−2.22 [−4.13, −0.24] / +2.83 [+0.90,
+  +4.76]**. Four independent bases, the same two-sided shape; at 34B both sides clear zero.
+
+### 27.4 Three more levers that do not move accuracy
+
+- **Execution-trace SFT (H-trace refuted).** Training the model to emit an execution trace before
+  the answer: `trace_L0` reads 0.361 on `L0` against `tuned_L0`'s 0.429 and **0.085 on `S1`**, with
+  `format_fail` 0.740 — the trace hits the generation cap on flattened code, so the arm cannot be
+  read there at all. `trace_mono − mono_all` −1.06 [−3.14, +0.75]. The arm is a **near-perfect
+  complement**, though: the oracle union of trace and plain answers is **+10.75 [+9.51, +11.98]**
+  over the plain arm — the two objectives get different items right, and nothing yet chooses
+  between them.
+- **Best-of-n rerank (H-verifier refuted; H-self-judge refuted backwards).** Pooled heldout,
+  9,582 items: greedy 0.3854; **any-of-8 0.5628 (+17.74 [+16.38, +19.09])** is the ceiling, but no
+  selector reaches it — majority vote **−0.98 [−1.67, −0.33]**, cumulative log-prob +0.53 [−0.09,
+  +1.15], the untuned model as its own judge **−5.52 [−6.75, −4.28]** (AUC 0.347, i.e. it prefers
+  the wrong candidate), and a *trained* verifier +1.09 [0.00, +2.17] despite AUC 0.887. A good
+  classifier is a bad selector because **43.7 % of items have no correct candidate** and, on the
+  rest, rescues (0.131) and breakages (0.112) nearly cancel.
+- **More labelled input cases per program (lever 5, null).** 3× cases: `tuned_L0_cases −
+  tuned_L0` +0.31 [−0.55, +1.17]; `mono_cases − mono_all` +1.25 [−0.01, +2.54], carried by `L2`
+  alone (+2.22 [+0.54, +3.84]). The third form of "more data" (after more programs, §22.3, and
+  more surfaces, §22.2) to come back null.
+
+The campaign ledger therefore closes at: **scale** (§22.4, §27.3) and **family exposure** (§27.2)
+move accuracy; self-consistency, augmentation, data scale, more cases, trace SFT, rerankers and
+weight-space alignment (§23) do not.
+
+### 27.5 The objectives campaign — paired consistency is the first objective that repairs breadth
+
+Every arm above shared one objective — next-token CE on the answer span — and varied data, model
+or rank. Four arms change the objective (pre-registered at `447ecdb`, before any GPU job; read on
+X1 because H1 is spent). Trainer `src/obtune/objectives.py`; CodeLlama-7b, LoRA r = 32, seed 17,
+one H200 per adapter; `objectives_generic` (56 cells) against the `x1_generic` controls, 7
+conditions × 1,214–1,670 items.
+
+- **O1 paired consistency (`cons_*`):** `L = CE(x_obf) + λ·KL(p_T(·|x_L0 parent) ‖ p_S(·|x_obf))`
+  at the answer tokens, teacher = frozen `tuned_L0/best` loaded as a second adapter. `cons_same`
+  is the control where the teacher sees the *same* obfuscated input (plain distillation).
+- **O2 semantic negatives (`neg_ul`):** 6,621 verified single-operator mutants; mutant + true
+  output as extra CE rows, mutant + *original* output as an unlikelihood row. `neg_data` is the
+  same rows without the unlikelihood term.
+- **O3 resampled surfaces (`x1_resample`):** X1 rebuilt at three seeds, 3 surfaces × 1 epoch,
+  step-matched to `tuned_X1`.
+- **O4 curriculum (`curr_kl`, `curr_sft`):** init from `tuned_L0/best`, one epoch on the five
+  non-L0 conditions, with and without the consistency term.
+
+| system | `L0` | `L1b` | `L1r` | `L2` | `S1` | `S2` | **`X1`** | **pooled** |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `tuned_L0` (control) | 0.4281 | 0.3589 | 0.3790 | 0.3826 | 0.3801 | 0.3887 | 0.2702 | 0.3735 |
+| `mono_all` | 0.4126 | 0.3878 | 0.3856 | 0.3802 | 0.3857 | 0.4043 | 0.2323 | 0.3750 |
+| `tuned_X1` | | | | | | | 0.3188 | 0.3640 |
+| `cons_lam1` | 0.4251 | 0.4041 | 0.3940 | 0.3874 | 0.3986 | 0.4139 | 0.2628 | 0.3882 |
+| **`cons_lam3`** | 0.4251 | **0.4047** | 0.3940 | **0.3934** | **0.3994** | **0.4157** | 0.2834 | **0.3919** |
+| `cons_same_lam1` | 0.4174 | 0.3812 | 0.3868 | 0.3874 | 0.3889 | 0.4001 | 0.2603 | 0.3788 |
+| `curr_kl` | 0.4257 | 0.3926 | 0.3856 | 0.3904 | 0.3873 | 0.4127 | 0.2784 | 0.3860 |
+| `curr_sft` | | | | | | | 0.2578 | 0.3727 |
+| `neg_ul` | | | | | | | 0.1713 | 0.3505 |
+| `neg_data` | | | | | | | 0.1985 | 0.3701 |
+| `x1_resample` | | | | | | | 0.3237 | 0.3566 |
+
+| hypothesis | decisive contrast | Δ pts [95 % CI] | verdict |
+|---|---|---:|---|
+| **H-cons** | `cons_lam3 − mono_all` on X1 | **+5.11 [+3.05, +7.08]** | **CONFIRMED** |
+| | `cons_lam3 − mono_all` pooled | +1.70 [+0.50, +2.97] | |
+| | `cons_lam1 − mono_all` on X1 | +3.05 [+1.24, +4.78] | |
+| | `cons_lam1 − cons_same_lam1` pooled | +0.94 [+0.10, +1.79] | the *parent* view is worth something beyond distillation |
+| | `cons_lam3 − cons_same_lam1` on X1 | +2.31 [+0.82, +3.87] | |
+| | `cons_same_lam1 − mono_all` on X1 | +2.80 [+0.99, +4.62] | …but distillation from `tuned_L0` alone already repairs half of it |
+| | `cons_lam3 − tuned_L0` non-L0 / `L0` / X1 | +2.24 [+1.24, +3.26] / −0.30 [−1.80, +1.32] / +1.32 [−0.58, +3.13] | keeps breadth's trained-condition gain, pays neither tax |
+| **H-neg** | `neg_ul − neg_data` on X1 | **−2.72 [−4.20, −1.15]** | **REFUTED, wrong direction** |
+| | `neg_data − mono_all` on X1 | −3.38 [−5.28, −1.40] | near-identical surfaces with different labels are *anti*-invariance data |
+| **H-resample** | `x1_resample − tuned_X1` on X1 / pooled | +0.49 [−1.07, +1.90] / −0.74 [−1.42, −0.03] | **REFUTED** — the third more-surfaces null |
+| **H-curr** | `curr_kl − tuned_L0` on `L0` / pooled | −0.24 [−1.68, +1.14] / +1.25 [+0.39, +2.14] | no `L0` tax… |
+| | `curr_kl − mono_all` non-L0 | +1.06 [−0.12, +2.28] | …but misses its rule: **REFUTED by rule** |
+| | `curr_kl − curr_sft` | **+1.32 [+0.66, +1.98]**, positive on all seven conditions | the KL term, not the order, is what works |
+| | `curr_sft − tuned_L0` on `L0` | −1.86 [−3.35, −0.30] | plain curriculum re-creates the breadth tax |
+
+**Reading.** `mono_all` has always paid two taxes for its trained-condition gain — ~1.7 pts on `L0`
+and ~4 pts on the held-out family (§20, §22.5). `cons_lam3` keeps the gain (+2.24 over `tuned_L0`
+on the five trained non-L0 conditions), pays neither (−0.30 on `L0`, +1.32 on X1, both inside
+noise), and at **0.3919 pooled is the highest of the fifteen 7B systems on this seven-condition
+set**. The mechanism separates into two parts: distilling from the clean-code teacher on the same
+input already recovers +2.80 on X1, and showing the teacher the *L0 parent* instead adds a further
++0.94 pooled / +2.31 on X1 at λ = 3 — a consistency signal across surfaces, which is the closest
+thing to "semantic invariance" any training arm in this report has produced. Two cautions stand:
+this is **one seed**, and λ was read at two values only; §27.7 is the pre-registered test of both.
+
+### 27.6 The quota incident, and what is no longer resumable
+
+Mid-campaign `/work` hit its 1,100 GB hard cap (99.72 %) and `tr_curr_sft` (378791) failed at
+`save_model`; the arm was recovered from its epoch checkpoints. On 2026-09-06 the user authorised
+a cleanup: 685 `optimizer.pt` files (~346 GB) and the 25 GB uv cache were removed, taking `/work`
+to **66.24 %**. Adapter weights, `results/`, `hf_home` and every manifest are intact and
+`verify_migration.py` reproduces the published contrasts afterwards. **Consequence:** no training
+run under `runs/` can be resumed from its optimizer state; recovery of any adapter is re-training
+(~18 min at 7B, §1 of CLAUDE.md). Account: [`log/setup/2026-09-06_quota-cleanup.md`](log/setup/2026-09-06_quota-cleanup.md).
+
+### 27.7 In flight — objectives round 2 (pre-registered 2026-09-06)
+
+Submitted the same day (jobs 380166–380176), decision rules frozen in `CLAUDE_SCRATCHPAD.md`
+before submission and **nothing tuned on X1 after a read**:
+
+- **H-cons-seed** — `cons_lam3` at seeds 42 and 101 against `mono_all` at the same seeds. CONFIRM
+  iff `cons_lam3_sN − mono_all_sN` on X1 excludes zero above at **both** seeds.
+- **H-cons-lam** — λ ∈ {5, 10} added to {1, 3}. Decided on the **trainable grid** pooled
+  (`cons_lam10 − cons_lam3` excludes zero: confirm above / refute below / null otherwise); X1 is
+  never used to choose λ.
+- **H-curr-kl-from-mono** — the consistency term applied *from* `mono_all/best` rather than from
+  `tuned_L0/best` (§27.5 showed the KL term is worth ~1.3 pts from either start). CONFIRM iff
+  `currmono_kl − mono_all` on X1 excludes zero above AND `currmono_kl − tuned_L0` on X1 does not
+  exclude zero from below.
+
+Analysis: [`scripts/analysis/34_objectives.py`](scripts/analysis/34_objectives.py) (the round-2
+arms and contrasts are already wired); results will land in `objectives_2026-09-0X.json` and a
+dated `log/transfer/` entry. Until then §27.5 is single-seed and this report says so.
 
 ---
 
 ## Changelog
 
+- **2026-09-06 (rev 15)** — **§27 added; an *Added 6 Sep* block prepended to §1; §24, §25.1 and §26 corrected; nothing else in §1–§23 touched.**
+  **§27.1** — the H1 budget is **spent**: the final five-arm read (jobs 378518/378519, hypotheses at
+  `361d354`) confirmed every pre-registered test — `tuned_L0` 34B − 7B **+3.79 [+1.56, +6.10]**,
+  `tuned_L0 − mono_all` **+2.47 [+0.41, +4.78] at 34B** (the §20 headline at a second scale), 7B
+  `tuned_X1 − tuned_S2` **+3.46 [+1.32, +5.51]**, `mono_allX − mono_all` **+7.66 [+5.35, +10.04]**;
+  X1 → H1 was lossless (0.08 pts). **§27.2** — X1, the trainable sibling of H1's family, predicts H1
+  to **r = 0.9992** on six untrained arms and is now the project's held-out read. **§27.3** — 34B
+  **+8.56 [+7.00, +10.15]** pooled over 7B, entirely through tuning (`base` +1.47 [−0.24, +3.27]);
+  Llama-3.1-8B not promoted (+1.21 [−0.29, +2.64]); the breadth fingerprint replicates on four bases.
+  **§27.4** — trace SFT (null, but a +10.75 oracle complement), best-of-n rerank (any-of-8 ceiling
+  +17.74, no selector above +1.09, 43.7 % unreachable) and 3× input cases (+0.31 / +1.25) all null.
+  **§27.5** — the objectives campaign: **paired consistency** `cons_lam3 − mono_all` **+5.11 [+3.05,
+  +7.08] on X1**, +1.70 [+0.50, +2.97] pooled, no `L0` tax, pooled 0.3919 the best 7B system on the
+  seven-condition set; negatives refuted in the wrong direction (−2.72), resampling null, curriculum
+  refuted by rule while `curr_kl − curr_sft` +1.32 [+0.66, +1.98] locates the effect in the KL term.
+  **§27.6** — the 1,100 GB quota incident and the cleanup that made `runs/` non-resumable. **§27.7** —
+  round 2 (seed band, λ ∈ {5, 10}, KL from `mono_all`) pre-registered and in flight, jobs
+  380166–380176. **§24** — the "hold the final H1 pass" bullet retired, two hypotheses added.
+  **§25.1** — corpus recounted from parquet metadata: **3,188 cells / 2,546,826 trials**, the
+  CodeLlama-7b panel 699 / 1,063,102, plus 34B and Llama-3.1-8B rungs (24 cells each); the 222 new
+  cells are all §27. **§26** — the H1 row superseded by the frozen final column (34B `tuned_L0`
+  0.3213 leads; 7B `tuned_X1` ties it) and the scale paragraph extended to 34B.
 - **2026-09-04 (rev 14)** — **Moved to the repository root under the stable name `MASTER_REPORT.md`**
   (written as `docs/MASTER_REPORT_2026-09-04.md`), so the living report is the first thing in the
   repo rather than the newest file in a folder of dated predecessors; the dated revisions stay in

@@ -800,3 +800,10 @@ only these; round-1 contrasts unchanged) → log entry.
 `pooled_grid` (L0–S2) read for the λ decision; dry-run on round-1 cells OK. Next: when 380176
 completes → `python scripts/analysis/34_objectives.py --model codellama-7b --n-boot 2000` →
 log entry `log/transfer/2026-09-0X_objectives-round2.md`.
+
+## 2026-09-06 — master report rev 15 (DONE)
+- `MASTER_REPORT.md` 4,607 → 4,888 lines: §27 (H1 final read / X1 / scale / null levers / objectives / quota / round 2),
+  §1 addendum, §24 + §26 stale H1 advice superseded in place, §25.1 recounted (3,188 cells / 2,546,826 trials,
+  `results/analysis/corpus_inventory_2026-09-06.json`), rev 15 changelog. Entry `log/writeup/2026-09-06_master-report-rev15.md`.
+- NOTE: `28_master_panel.py` hard-codes `master_panel_2026-09-04.json` as output — do not rerun it without adding `--out`.
+- Rev 16 trigger: objectives round 2 (380166–380176) → fold §27.7 into §27.5.
