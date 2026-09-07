@@ -1,6 +1,6 @@
 # obtune — master results report
 
-*Last updated: 2026-09-06*
+*Last updated: 2026-09-07*
 
 **Everything run to date, in one frame.**
 
@@ -29,10 +29,11 @@ r = 0.999 and is now the project's held-out read; scale is the only conventional
 (34B +8.56 pooled, entirely through tuning); trace SFT, best-of-n reranking and more input cases
 joined the null column; and a new training objective — **paired consistency**, a KL to the frozen
 clean-code adapter on each row's L0 parent — is the first arm that keeps breadth's gain and pays
-neither of its taxes (+5.11 [+3.05, +7.08] over `mono_all` on X1, single seed, seed band in flight).*
+neither of its taxes (+5.11 [+3.05, +7.08] over `mono_all` on X1, confirmed at three seeds in
+round 2, §27.7).*
 
-Scope: all **3,188** evaluation cells / **2,546,826** graded trials under `results/cells/`, of which
-the **CodeLlama/Llama panel is 765 cells / 1,167,571 trials** (7B 699, 13B 18, 34B 24,
+Scope: all **3,237** evaluation cells / **2,622,398** graded trials under `results/cells/`, of which
+the **CodeLlama/Llama panel is 814 cells / 1,243,143 trials** (7B 748, 13B 18, 34B 24,
 Llama-3.1-8B 24; §25.1) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
 attention corpora on both models, and the zero-training normalization arms. Every number below was
 recomputed from raw per-trial data — by [`scripts/make_master_report.py`](scripts/make_master_report.py)
@@ -183,7 +184,7 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [27.4 Three more levers that do not move accuracy](#274-three-more-levers-that-do-not-move-accuracy)
   - [27.5 The objectives campaign — paired consistency is the first objective that repairs breadth](#275-the-objectives-campaign--paired-consistency-is-the-first-objective-that-repairs-breadth)
   - [27.6 The quota incident, and what is no longer resumable](#276-the-quota-incident-and-what-is-no-longer-resumable)
-  - [27.7 In flight — objectives round 2 (pre-registered 2026-09-06)](#277-in-flight--objectives-round-2-pre-registered-2026-09-06)
+  - [27.7 Objectives round 2 — the seed band holds, λ = 3 is the peak, and the KL term is start-dependent off-distribution](#277-objectives-round-2--the-seed-band-holds-λ--3-is-the-peak-and-the-kl-term-is-start-dependent-off-distribution)
 
 ---
 
@@ -215,7 +216,10 @@ further read. (3) One training objective finally beats the seed band: **paired c
 on the obfuscated row plus a KL to the frozen clean-code adapter's distribution *on that row's L0
 parent* — keeps breadth's trained-condition gain (+2.24 [+1.24, +3.26] over `tuned_L0`) and pays
 neither its `L0` tax (−0.30 [−1.80, +1.32]) nor its held-out-family tax (**+5.11 [+3.05, +7.08]**
-over `mono_all` on X1). It is one seed; the seed band and a λ sweep are in flight (§27.7).
+over `mono_all` on X1). **Round 2 held it up** (§27.7): the gain is +4.1 to +5.1 pts at all three
+seeds with a 0.91-pt spread, so it is the objective and not the draw — though λ = 3 turns out to be
+the objective's plateau rather than a floor, and the KL term's value proved to depend on where
+training *started* once you look off-distribution.
 Meanwhile trace SFT, best-of-n reranking and 3× input cases joined the null column, and scale
 stayed the only conventional lever (34B **+8.56 [+7.00, +10.15]** pooled, all of it through tuning).
 
@@ -4049,9 +4053,13 @@ and its own interval contains zero. Format competence is also **transform-specif
 label-shuffled adapter fails format on 17.0 % of H1 items against ~3 % for every real adapter, so
 the formatting skill it teaches does not itself transfer to an unseen transform.
 
-**Caveats.** Every H1 row is a single seed (`s17`); the `mono_all` s42/s101 rows wait on
-`final_eval`; and the headline rests on one program-clustered interval at the smallest n in the
-campaign (405 programs).
+**Caveats.** Every H1 row is a single seed (`s17`); ~~the `mono_all` s42/s101 rows wait on
+`final_eval`~~ — **those rows will never exist**: the budget was spent on 2026-09-05 (§27.1) on a
+five-arm manifest that did not include them, so H1 has no seed replicate and cannot acquire one.
+The nearest available substitute is the X1 column, where `cons_lam3` and `mono_all` were both read
+at three seeds (§27.7). The headline also rests on one program-clustered interval at the smallest n
+in the campaign (405 programs) — though it now has an independent replication at 34B,
++2.47 [+0.41, +4.78] (§27.1).
 
 ---
 
@@ -4369,10 +4377,18 @@ is the teacher, not the correspondence, that turned out not to matter.
   be used to select, tune, rank or choose anything; every held-out-family read runs on **X1**
   (§27.2). `mono_aug`, `mono_scale`, 13B and the alignment systems were never read on H1 and now
   never will be — their X1 columns are the available substitute.
-- **Objectives round 2 is in flight (§27.7):** H-cons-seed, H-cons-lam and H-curr-kl-from-mono,
-  jobs 380166–380176. §27.5 is single-seed until it lands. Open after it: **H-cons-teacher**
-  (does the consistency gain depend on the teacher being `tuned_L0`, or would `base` do?) and
-  **H-cons-scale** (does it survive at 13B/34B, where breadth's `L0` tax is larger?).
+- ~~Objectives round 2 is in flight~~ — **read 2026-09-07 (§27.7)**: H-cons-seed confirmed at two
+  further seeds, H-cons-lam refuted downward (λ = 3 is the plateau), H-curr-kl-from-mono confirmed
+  by 0.16 pts. Still open on that thread: **H-cons-scale** (does the X1 gain survive at 13B/34B,
+  where breadth's `L0` tax is larger?) and **H-cons-teacher** (does the gain depend on the teacher
+  being `tuned_L0`, or would `base` do?). Neither is scheduled.
+- **H-format-gate (§27.7)** — the round-2 pre-registration's "format_fail > 2 % voids that cell's
+  read" is unworkable on this panel: it voids the `tuned_L0` control on all seven conditions and six
+  published §27.5 cells. No verdict depends on it (every decisive contrast reproduces on the
+  format-clean subset), and it is deliberately **left un-rewritten** — re-specifying a frozen
+  threshold after seeing which reads it would void is what pre-registration exists to prevent. It
+  needs a human decision: a differential between the two arms of a contrast, or a
+  panel-calibrated level.
 - **H-L0-cost-source** (§22.6) — the `L1b` gain is now located and the `L0` cost is not; what the
   cost *is* is open. It appears for every specialist except `S2`, at roughly constant size, so it
   points at something generic about training on a transformed distribution rather than anything
@@ -4414,26 +4430,27 @@ is the teacher, not the correspondence, that turned out not to matter.
 ### 25.1 The corpus, recounted
 
 Recomputed cell and trial counts over every directory under `results/cells/`
-(`28_master_panel.py` on 2026-09-04; recounted **2026-09-06** from parquet metadata →
-`results/analysis/corpus_inventory_2026-09-06.json`, which is the table below). Quarantined
-directories are listed and are excluded from every table in this report. Rev 14's count was
-2,966 cells / 2,200,119 trials; the 222 new cells are all §27.
+(`28_master_panel.py` on 2026-09-04; recounted from parquet metadata on **2026-09-06** and again
+on **2026-09-07** → `results/analysis/corpus_inventory_2026-09-06.json`, which is the table below).
+Quarantined directories are listed and are excluded from every table in this report. Rev 14's count
+was 2,966 cells / 2,200,119 trials and rev 15's 3,188 / 2,546,826; the 271 cells added since rev 14
+are all §27, of which the last 49 are §27.7's round 2.
 
 | group | cells | trials |
 |---|---:|---:|
 | `main/qwen25c-1.5b/python` (the Qwen era, §1–§17) | 1,515 | 709,518 |
 | `main/qwen25c-1.5b/javascript` | 227 | 63,324 |
 | Qwen side grids — `baselines*`, `baselines_gridA`, `grid_rq1_7b`, `align_lam_sweep`, `pilot`, `final`, `formatonly_fix`, `main/qwen25c-7b` | 608 | 554,064 |
-| **CodeLlama-7b** — `rq2_generic` 144, `rq1_generic` 84, `objectives_generic` 56, `x1_generic` 56, `loto_generic` 54, `baselines_generic` 54, `extra_generic` 48, `merge_sweep_generic` 48, `rank_generic` 42, `mole_generic` 30 (+30 Grid B, §21.2), `selfcons_generic` 18, `trace_generic` 18, `h1_codellama` 14, `basecheck` 3 | **699** | **1,063,102** |
+| **CodeLlama-7b** — `rq2_generic` 144, `objectives_generic` 105, `rq1_generic` 84, `x1_generic` 56, `loto_generic` 54, `baselines_generic` 54, `extra_generic` 48, `merge_sweep_generic` 48, `rank_generic` 42, `mole_generic` 30 (+30 Grid B, §21.2), `selfcons_generic` 18, `trace_generic` 18, `h1_codellama` 14, `basecheck` 3 | **748** | **1,138,674** |
 | **CodeLlama-13b** — `rq2_generic` | **18** | **28,746** |
 | **CodeLlama-34b** — `rq2_generic` 18, `h1_codellama` 3, `basecheck` 3 | **24** | **37,395** |
 | **Llama-3.1-8B** — `rq2_generic` 18, `basecheck` 6 | **24** | **38,328** |
 | [quarantined] `_contaminated_2026-09-03` (§21.1) | 28 | 44,981 |
 | [quarantined] `_misplaced_2026-08-13` | 45 | 7,368 |
-| **total** | **3,188** | **2,546,826** |
+| **total** | **3,237** | **2,622,398** |
 
 - Lab notes for this era: [`log/setup/`](log/setup/) 2026-08-28 → 09-01 and 09-06, and
-  [`log/transfer/`](log/transfer/) 2026-09-01 → 09-06, indexed in [`log/README.md`](log/README.md).
+  [`log/transfer/`](log/transfer/) 2026-09-01 → 09-07, indexed in [`log/README.md`](log/README.md).
 
 ---
 
@@ -4482,7 +4499,8 @@ on all six obfuscations, at 0.2323 (§20).
 > (`tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51]). "Pick on other grounds" therefore no longer
 > applies: on H1, an adapter that has seen the *family* (X1) or a 5× larger clean-code adapter
 > wins outright. On the seven-condition set (`L0`…`S2` + X1) the best pooled **7B** system is
-> **`cons_lam3` at 0.3919** (§27.5), single seed; it was never read on H1 and cannot be.
+> **`cons_lam3_s42` at 0.3937** (§27.7), with the same recipe at 0.3919 / 0.3867 at the other two
+> seeds; none of them was ever read on H1 and none can be.
 
 **If accuracy is the only goal, the answer is not on this table.** CodeLlama-13b `mono_all` reaches
 0.4455 / 0.4228 / 0.4192 / 0.4192 / 0.4122 / 0.4439 on `L0`…`S2` and 13B `tuned_L0` reaches
@@ -4495,11 +4513,12 @@ noise.
 
 ## 27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works
 
-*Added 2026-09-06.* Two working days (09-05, 09-06) that closed the accuracy campaign and opened
-the objectives campaign. Grid A (`heldout`) throughout, CodeLlama-7b unless a row says 13B, 34B or
+*Added 2026-09-06; §27.7 read 2026-09-07.* Three working days (09-05 → 09-07) that closed the
+accuracy campaign and ran the objectives campaign to a second, pre-registered round. Grid A (`heldout`) throughout, CodeLlama-7b unless a row says 13B, 34B or
 Llama-3.1-8B; deltas in **percentage points**, program-clustered bootstraps (2000 resamples, seed
 17) on the items each pair shares. Lab notes: the nine [`log/transfer/`](log/transfer/) entries of
-2026-09-05 and [`2026-09-06_consistency-objective-repairs-breadth.md`](log/transfer/2026-09-06_consistency-objective-repairs-breadth.md).
+2026-09-05, [`2026-09-06_consistency-objective-repairs-breadth.md`](log/transfer/2026-09-06_consistency-objective-repairs-breadth.md)
+and [`2026-09-07_objectives-round2.md`](log/transfer/2026-09-07_objectives-round2.md).
 
 ### 27.1 The final H1 read — the budget is spent, and every pre-registered test confirms
 
@@ -4681,8 +4700,12 @@ noise), and at **0.3919 pooled is the highest of the fifteen 7B systems on this 
 set**. The mechanism separates into two parts: distilling from the clean-code teacher on the same
 input already recovers +2.80 on X1, and showing the teacher the *L0 parent* instead adds a further
 +0.94 pooled / +2.31 on X1 at λ = 3 — a consistency signal across surfaces, which is the closest
-thing to "semantic invariance" any training arm in this report has produced. Two cautions stand:
-this is **one seed**, and λ was read at two values only; §27.7 is the pre-registered test of both.
+thing to "semantic invariance" any training arm in this report has produced. Both of this
+section's original cautions — one seed, and λ read at two values only — were tested in round 2 and
+are resolved in **§27.7**: the gain holds at three seeds with a 0.91-pt spread, and λ = 3 turns out
+to be the plateau rather than a floor (λ = 10 is reliably worse on the trainable grid). §27.7 also
+qualifies one sentence above: "the KL term, not the order, is what works" holds on trained
+conditions, but the *starting point* costs 2.47 pts on the held-out family.
 
 ### 27.6 The quota incident, and what is no longer resumable
 
@@ -4694,29 +4717,109 @@ to **66.24 %**. Adapter weights, `results/`, `hf_home` and every manifest are in
 run under `runs/` can be resumed from its optimizer state; recovery of any adapter is re-training
 (~18 min at 7B, §1 of CLAUDE.md). Account: [`log/setup/2026-09-06_quota-cleanup.md`](log/setup/2026-09-06_quota-cleanup.md).
 
-### 27.7 In flight — objectives round 2 (pre-registered 2026-09-06)
+### 27.7 Objectives round 2 — the seed band holds, λ = 3 is the peak, and the KL term is start-dependent off-distribution
 
-Submitted the same day (jobs 380166–380176), decision rules frozen in `CLAUDE_SCRATCHPAD.md`
-before submission and **nothing tuned on X1 after a read**:
+*Read 2026-09-07.* Jobs 380166–380176, decision rules frozen in `CLAUDE_SCRATCHPAD.md` at commit
+`2b0b841` before any GPU job and **nothing tuned on X1 after a read**. Five new adapters
+(`cons_lam3` at seeds 42/101, `cons_lam5`, `cons_lam10`, and `currmono_kl` = §27.5's `curr_kl`
+recipe initialised from `mono_all/best` instead of `tuned_L0/best`) plus seed-matched `mono_all`
+controls; 49 cells. Full account:
+[`log/transfer/2026-09-07_objectives-round2.md`](log/transfer/2026-09-07_objectives-round2.md).
 
-- **H-cons-seed** — `cons_lam3` at seeds 42 and 101 against `mono_all` at the same seeds. CONFIRM
-  iff `cons_lam3_sN − mono_all_sN` on X1 excludes zero above at **both** seeds.
-- **H-cons-lam** — λ ∈ {5, 10} added to {1, 3}. Decided on the **trainable grid** pooled
-  (`cons_lam10 − cons_lam3` excludes zero: confirm above / refute below / null otherwise); X1 is
-  never used to choose λ.
-- **H-curr-kl-from-mono** — the consistency term applied *from* `mono_all/best` rather than from
-  `tuned_L0/best` (§27.5 showed the KL term is worth ~1.3 pts from either start). CONFIRM iff
-  `currmono_kl − mono_all` on X1 excludes zero above AND `currmono_kl − tuned_L0` on X1 does not
-  exclude zero from below.
+| system | `L0` | `L1b` | `L1r` | `L2` | `S1` | `S2` | **`X1`** | **pooled** |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| **`cons_lam3_s42`** | 0.4228 | 0.4035 | 0.3964 | 0.3994 | 0.4018 | **0.4229** | 0.2801 | **0.3937** |
+| `cons_lam3` (s17, §27.5) | 0.4251 | 0.4047 | 0.3940 | 0.3934 | 0.3994 | 0.4157 | 0.2834 | 0.3919 |
+| `cons_lam3_s101` | 0.4192 | 0.3945 | 0.3928 | 0.3856 | 0.3945 | 0.4175 | 0.2743 | 0.3867 |
+| `cons_lam5` | 0.4168 | 0.3987 | 0.3910 | 0.3934 | 0.3945 | 0.4205 | 0.2727 | 0.3882 |
+| `cons_lam10` | 0.4132 | 0.3969 | 0.3850 | 0.3892 | 0.3953 | 0.4145 | 0.2809 | 0.3859 |
+| `currmono_kl` | 0.4168 | 0.4041 | 0.3976 | 0.3964 | 0.3962 | 0.4127 | 0.2537 | 0.3874 |
+| `mono_all_s42` | 0.4150 | 0.3932 | 0.3838 | 0.3820 | 0.3769 | 0.4055 | 0.2348 | 0.3756 |
+| `mono_all_s101` | 0.4060 | 0.3782 | 0.3790 | 0.3832 | 0.3745 | 0.4031 | 0.2331 | 0.3705 |
 
-Analysis: [`scripts/analysis/34_objectives.py`](scripts/analysis/34_objectives.py) (the round-2
-arms and contrasts are already wired); results will land in `objectives_2026-09-0X.json` and a
-dated `log/transfer/` entry. Until then §27.5 is single-seed and this report says so.
+| hypothesis | decisive contrast | Δ pts [95 % CI] | verdict |
+|---|---|---:|---|
+| **H-cons-seed** | `cons_lam3_s42 − mono_all_s42` on X1 | **+4.53 [+2.64, +6.26]** | **CONFIRMED** — both seeds |
+| | `cons_lam3_s101 − mono_all_s101` on X1 | **+4.12 [+2.39, +5.93]** | |
+| | three seeds pooled, on X1 | **+4.59 [+3.16, +5.99]** | |
+| | `cons_lam3` X1 by seed | 0.2834 / 0.2801 / 0.2743, range **0.91 pts** | tighter than the ±0.8-pt SFT seed band (§22.3) |
+| **H-cons-lam** | `cons_lam10 − cons_lam3` on the trainable grid | **−0.65 [−1.20, −0.14]** | **REFUTED** — "over-regularised" |
+| | the same contrast on `L0` | −1.20 [−2.27, −0.18] | where the damage lands |
+| | `cons_lam5 − cons_lam3` on the grid | −0.28 [−0.82, +0.27] | null → **λ = 3 is a plateau, not a floor** |
+| **H-curr-kl-from-mono** | `currmono_kl − mono_all` on X1 | **+2.14 [+0.41, +3.79]** | **CONFIRMED on the rule**, by 0.16 pts |
+| | `currmono_kl − tuned_L0` on X1 | −1.65 [−3.54, **+0.16**] | the clause that passes narrowly |
+| | `currmono_kl − curr_kl` on the grid / on X1 | +0.14 [−0.84, +1.04] / **−2.47 [−4.12, −0.91]** | the start is free on trained conditions and expensive off them |
+
+**What round 2 settles.** §27.5's headline survives its own seed test: the consistency gain over
+breadth on the held-out family is +4.1 to +5.1 pts at every seed tried, with a seed spread
+(0.91 pts) narrower than the noise band plain SFT shows, so the objective — not the draw — is doing
+the work. **`cons_lam3_s42` at 0.3937 pooled is now the best 7B system in this report on the
+seven-condition set.**
+
+**What it corrects.** λ does not keep paying: at λ = 10 the trainable grid is reliably *worse* than
+at λ = 3, and the cost is concentrated on `L0` — too strong a pull toward the clean-code teacher
+re-creates a clean-code tax at the opposite end of the axis breadth sits on. λ = 3 is where the
+objective plateaus. One process note belongs with that number: the checkpoint-selection validation
+column ranked λ = 10 **highest** (0.3824 against λ = 3's 0.3777) and the 9,582-item held-out grid
+reversed it. 1,917 validation items over six conditions did not predict the grid; the rule was
+frozen on the grid, which is the only reason this did not become a promotion in the wrong
+direction.
+
+**What it qualifies.** §27.5 read `curr_kl − curr_sft` = +1.32 and concluded "the KL term is worth
+~1.3 pts from either start". Round 2 shows that is true **only on trained conditions**. Starting
+the same recipe from `mono_all` instead of `tuned_L0` is free on the grid (+0.14 [−0.84, +1.04])
+and costs **−2.47 [−4.12, −0.91] on X1**: one epoch of KL-continued training repairs roughly half
+of breadth's held-out deficit (0.2323 → 0.2537, against `tuned_L0`'s 0.2702) and no more. **A
+model's held-out disadvantage is a property of where it started, not only of what it was last
+trained on** — which is a sharper statement of this report's central finding than §27.5 could make,
+and it is why the arm passes its rule while still sitting below the clean-code control on X1.
+
+**⚠️ A defect in the round-2 pre-registration, recorded rather than repaired.** The registration
+included "format_fail > 2 % on any cell voids that cell's read". Applied literally that voids 10 of
+49 round-2 cells — and on this same panel the whole `tuned_L0` **control** column (0.0216–0.0428 on
+all seven conditions), `tuned_X1` (7/7), `base` (0.119–0.161), `formatonly` (0.080–0.147) and six
+of §27.5's already-published X1 cells. A gate that voids the control arm of every contrast voids
+the campaign. The 2 % comes from CLAUDE.md §4, where it is a **design expectation for the
+constrained no-CoT format**, not a per-cell validity threshold, and it was imported as the latter
+without being checked against the panel. **No verdict depends on it, and that was tested rather
+than asserted:** re-running all five decisive contrasts on the subset where neither arm
+format-failed leaves every one unchanged (s42 +4.53 → +4.73; s101 +4.12 → +4.26; `currmono_kl −
+mono_all` +2.14 → +2.22; `currmono_kl − tuned_L0` −1.65 → −1.74; the λ grid −0.65 → −0.64), and the
+winning arms format-fail *more* than the controls they beat, so format is a headwind to these
+results rather than their source. The rule is **left un-rewritten**: re-specifying a frozen
+threshold after seeing which reads it would void is the move pre-registration exists to prevent, so
+it is logged as **H-format-gate** for the human to settle before it is used again.
 
 ---
 
 ## Changelog
 
+- **2026-09-07 (rev 16)** — **§27.7 rewritten from a pre-registration into a result; §24, §25.1,
+  §26, §27.5 and §1 corrected where round 2 changed or qualified them.** **§27.7** — objectives
+  round 2 (jobs 380166–380176, rules frozen at `2b0b841`): **H-cons-seed CONFIRMED** —
+  `cons_lam3 − mono_all` on X1 excludes zero at both new seeds (**+4.53 [+2.64, +6.26]** s42,
+  **+4.12 [+2.39, +5.93]** s101; three-seed **+4.59 [+3.16, +5.99]**; X1 seed range 0.91 pts), and
+  **`cons_lam3_s42` at 0.3937 pooled is now the best 7B system in this report** on the
+  seven-condition set. **H-cons-lam REFUTED downward** — `cons_lam10 − cons_lam3` is
+  **−0.65 [−1.20, −0.14]** on the trainable grid with the cost on `L0` (−1.20 [−2.27, −0.18]), so
+  λ = 3 is a plateau, not a floor; recorded with it, the checkpoint-selection validation column
+  ranked λ = 10 *highest* and the held-out grid reversed it. **H-curr-kl-from-mono CONFIRMED on the
+  rule as written, by 0.16 pts** (+2.14 [+0.41, +3.79] vs `mono_all`; −1.65 [−3.54, **+0.16**] vs
+  `tuned_L0`), and qualified by `currmono_kl − curr_kl`: null on the grid (+0.14 [−0.84, +1.04]) but
+  **−2.47 [−4.12, −0.91] on X1** — §27.5's "the KL term is worth ~1.3 pts from either start" holds
+  only on trained conditions, and a model's held-out disadvantage follows *where it started*.
+  **A defect in my own round-2 pre-registration is recorded, not repaired:** the "format_fail > 2 %
+  voids that cell's read" gate voids the `tuned_L0` control on all seven conditions, `base`,
+  `formatonly` and six already-published §27.5 cells; all five decisive contrasts reproduce on the
+  format-clean subset and the winning arms format-fail *more* than the controls they beat, so
+  nothing rests on it, and re-specifying a frozen threshold after seeing which reads it would void
+  is left to the human as **H-format-gate**. **§25.1** — corpus **3,237 cells / 2,622,398 trials**
+  (7B panel 748 / 1,138,674). **§26** — the best 7B system on the seven-condition set updated to
+  `cons_lam3_s42` 0.3937. **§27.5** and **§1** — the "single seed" and "λ read at two values"
+  cautions retired and pointed at §27.7. **§20** — its caveat "the `mono_all` s42/s101 rows wait on
+  `final_eval`" struck: the budget was spent on a manifest that did not include them, so H1 has no
+  seed replicate and can never acquire one; X1 (§27.7) is the substitute, and the headline now has
+  a 34B replication instead.
 - **2026-09-06 (rev 15)** — **§27 added; an *Added 6 Sep* block prepended to §1; §24, §25.1 and §26 corrected; nothing else in §1–§23 touched.**
   **§27.1** — the H1 budget is **spent**: the final five-arm read (jobs 378518/378519, hypotheses at
   `361d354`) confirmed every pre-registered test — `tuned_L0` 34B − 7B **+3.79 [+1.56, +6.10]**,

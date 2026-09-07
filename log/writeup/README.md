@@ -1,6 +1,6 @@
 # writeup — Figures, paper draft, artifact packaging
 
-*Last updated: 2026-09-06*
+*Last updated: 2026-09-07*
 **Status:** active
 
 ## Hypotheses — open
@@ -41,6 +41,14 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-07_master-report-rev16.md`](2026-09-07_master-report-rev16.md) — **rev 16**,
+  [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). §27.7 rewritten from a pre-registration into
+  a result (H-cons-seed confirmed at three seeds, H-cons-lam refuted downward, H-curr-kl-from-mono
+  confirmed by 0.16 pts) and **three cautions retired with their replacements stated** — §27.5's
+  "single seed" and "λ at two values", and §20's "the `mono_all` s42/s101 rows wait on
+  `final_eval`", which will never exist now the budget is spent. Rev 15's "the KL term is worth
+  ~1.3 pts from either start" marked as qualified rather than rewritten. The round-2 format-gate
+  defect published in §27.7 and §24, deliberately un-repaired. Corpus **3,237 / 2,622,398**.
 - [`2026-09-06_master-report-rev15.md`](2026-09-06_master-report-rev15.md) — **rev 15**,
   [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). Two days appended as **§27** (the spent H1
   read and its four confirmations, X1 as the r = 0.999 proxy, 34B/Llama scale, three more null

@@ -818,3 +818,6 @@ log entry `log/transfer/2026-09-0X_objectives-round2.md`.
   the reads. Every verdict reproduces on the format-clean subset. Needs a differential or panel-calibrated rule.
 - `34_objectives.py --out` defaults to the 09-05 filename — always pass `--out` explicitly (same as 28_master_panel.py).
 - Rev 16 pending: fold MASTER_REPORT §27.7 into §27.5, drop the "single seed" caveat.
+- **rev 16 DONE (09-07):** §27.7 = round-2 result; §27.5/§1/§20 cautions retired with replacements;
+  format gate published in §27.7 + §24, NOT re-specified; corpus 3,237 / 2,622,398.
+  Structural note for next revision: promote §27.5+§27.7 to their own "objectives campaign" section.
