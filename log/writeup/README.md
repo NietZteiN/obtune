@@ -41,6 +41,11 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-07_master-report-rev17.md`](2026-09-07_master-report-rev17.md) — **rev 17**,
+  [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). **§28** added for the paper-plan experiments
+  (E1/E2 confirmed at three scales and three seeds; E5 refuted and underpowered by construction),
+  and **C2 narrowed in three places** — §1, §28.2 and the plan's claim table — so the first page no
+  longer asserts a generality the evidence does not support. Corpus **3,258 / 2,650,457**.
 - [`2026-09-07_master-report-rev16.md`](2026-09-07_master-report-rev16.md) — **rev 16**,
   [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). §27.7 rewritten from a pre-registration into
   a result (H-cons-seed confirmed at three seeds, H-cons-lam refuted downward, H-curr-kl-from-mono
