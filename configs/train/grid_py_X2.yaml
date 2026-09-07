@@ -1,0 +1,25 @@
+# E5 (2026-09-07) — per-condition specialist on X2, the TRAINABLE member of the SECOND
+# family pair. MODEL-NEUTRAL, same shape as grid_py_X1.yaml so `tuned_X2` is comparable to
+# `tuned_X1` and to the six RQ1 specialists cell for cell.
+#
+# WHY THIS EXISTS. The paper's central claim -- a tuned model acquires the transformation
+# FAMILY it was shown, not semantic invariance -- rests entirely on one family pair (X1
+# trainable / H1 held out, both string-encoding + MBA), and H1's read budget is spent so that
+# pair can never be extended. X2/Y2 are a second pair in a different family: every value
+# crosses a raise/except boundary. X2 raises a LookupError and catches it in-frame; Y2, the
+# UNSEEN sibling, reads StopIteration.value off a generator return.
+#
+# The test E5 runs: does `tuned_X2` beat `tuned_L0` on Y2 -- a surface it has never seen, in
+# a family it has? If yes, "the family is what transfers" generalises beyond encoding. If no,
+# the X1->H1 result was about the encoding family in particular, which is a narrower and
+# still-publishable claim. Y2 is NEVER trained on (paths.TRAINABLE_CONDITIONS excludes it).
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [X2]
+run_tag: grid_py_X2
+phase: main
+
+train:
+  per_device_batch: 16
+  grad_accum: 4

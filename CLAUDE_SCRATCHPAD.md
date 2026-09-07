@@ -864,3 +864,30 @@ snippet_id, n_boot 2000, seed 17.
 - format_fail reported, not gated (H-format-gate open).
 - 34B runs with `objective.teacher_device: cuda:1` and `--gres=gpu:2`: student + teacher is ~134 GB
   of a 141 GB card at 34B and OOMs on activations otherwise. New code path — SMOKE FIRST.
+
+### 2026-09-07 — E5 PRE-REGISTRATION (H-family-generalises), frozen before any Y2 read
+Second family pair: **X2** (trainable; value crosses a raised `LookupError`, caught in-frame) and
+**Y2** (EVAL-ONLY; value crosses a generator `return` read back as `StopIteration.value`). Same
+family, different surface — the X1:H1 relationship rebuilt in a family that is neither identifier,
+structural, dead-code nor encoding. Generator `src/obtune/obf/py/xy2.py`; ladder entries in
+`configs/conditions.yaml`; `Y2` is absent from `paths.TRAINABLE_CONDITIONS`, which is the enforced
+guarantee no adapter sees it. Configs: `train/grid_py_X2.yaml`, `eval/xy2_family.yaml`.
+Contrasts: bootstrap_delta clustered by `snippet_id`, n_boot 2000, seed 17, on the items every
+system in the column shares.
+
+- **H-family-generalises (primary)** — CONFIRM if `tuned_X2 − tuned_L0` on **Y2** excludes zero
+  ABOVE. REFUTE if it does not. Reference: the analogous X1→H1 contrast is +4.86 [+2.80, +6.92]
+  (on X1) and `tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51] on H1.
+- **H-family-specific (secondary, decides the STRENGTH of the claim)** — `tuned_X1 − tuned_L0` on
+  **Y2**. `tuned_X1` saw a held-out family, but the WRONG one. If it is null while `tuned_X2` is
+  positive, the effect is *family-specific* and the claim is "the model learns the family it was
+  shown". If `tuned_X1` is also positive, the effect is generic "exposure to any unusual
+  transform", which is a weaker and importantly different reading — reported either way.
+- **Also reported, not decisive:** `mono_all − tuned_L0` on Y2 (does breadth hurt on a held-out
+  family a second time? the C1 pattern at 7B on H1 is +3.79 for `tuned_L0`); the X2 diagonal
+  `tuned_X2 − tuned_L0` on X2 (if the surface is not learnable the arm is dead); and the `L0` tax.
+- **Coverage note:** X2 and Y2 gate on IDENTICAL program sets by construction (measured: 117/120
+  local, 35/40 testset, X2-only 0 / Y2-only 0), so the comparison carries no coverage confound.
+- format_fail reported, not gated (H-format-gate still open).
+- Y2 is NOT quarantined: it is regenerable from the module, so a re-read costs nothing. It
+  therefore EXTENDS H1's evidence and cannot replace it. No H1 cell is read by any E5 job.
