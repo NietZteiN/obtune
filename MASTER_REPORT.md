@@ -32,8 +32,8 @@ clean-code adapter on each row's L0 parent — is the first arm that keeps bread
 neither of its taxes (+5.11 [+3.05, +7.08] over `mono_all` on X1, confirmed at three seeds in
 round 2, §27.7).*
 
-Scope: all **3,237** evaluation cells / **2,622,398** graded trials under `results/cells/`, of which
-the **CodeLlama/Llama panel is 814 cells / 1,243,143 trials** (7B 748, 13B 18, 34B 24,
+Scope: all **3,258** evaluation cells / **2,650,457** graded trials under `results/cells/`, of which
+the **CodeLlama/Llama panel is 835 cells / 1,271,202 trials** (7B 765, 13B 20, 34B 26,
 Llama-3.1-8B 24; §25.1) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
 attention corpora on both models, and the zero-training normalization arms. Every number below was
 recomputed from raw per-trial data — by [`scripts/make_master_report.py`](scripts/make_master_report.py)
@@ -47,7 +47,7 @@ Qwen era and §21 for the CodeLlama era.
 
 **Which model a table is about.** §1–§17 are **Qwen2.5-Coder-1.5B-Instruct** except where a row or
 section says otherwise (the two documented exceptions are both 7B: the CFT side thread in §7 and the
-zero-shot panel in §9.3). §18–§27 are **CodeLlama-7b-Instruct**, with CodeLlama-13b/34b and
+zero-shot panel in §9.3). §18–§28 are **CodeLlama-7b-Instruct**, with CodeLlama-13b/34b and
 Llama-3.1-8B where a row says so. Never mix them in one table: 7B roughly doubles 1.5B accuracy on every condition, and the two
 panels do not even share a format floor (§19.1). **The Qwen panel is frozen** — it cannot be
 re-evaluated on this cluster, which is why §21.1 has to record one Qwen number as permanently
@@ -61,7 +61,7 @@ does the same for RQ3. [`RESULTS_BOOK_2026-08-11.md`](docs/RESULTS_BOOK_2026-08-
 tables-first sibling of this document and is **stale after 11 August**.
 
 Grid: **Grid B** (`testset`) for §12's baselines, **Grid A** (`heldout`) for the RQ1/RQ2
-headlines and for **everything in §18–§27**. These are different program sets and CLAUDE.md forbids
+headlines and for **everything in §18–§28**. These are different program sets and CLAUDE.md forbids
 pooling them — `base` on H1 reads 6.4 % on Grid A and 11.3 % on Grid B. Every table states its grid.
 **Grid B `H1` is 115 items over 27 programs and cannot support merge comparisons** — see §8.10, and
 §21.2 for the day a Grid B/Grid A mixup nearly bought a routing claim.
@@ -177,6 +177,10 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
 - [24. What has not been run, in the CodeLlama era](#24-what-has-not-been-run-in-the-codellama-era)
 - [25. Provenance — the CodeLlama panel](#25-provenance--the-codellama-panel)
 - [26. What actually works — best system per condition, on X1 and on H1](#26-what-actually-works--best-system-per-condition-on-x1-and-on-h1)
+- [28. The paper-plan experiments — what a submission still needed, and what happened when it was run](#28-the-paper-plan-experiments--what-a-submission-still-needed-and-what-happened-when-it-was-run)
+  - [28.1 E1/E2 — the headline replicates at three scales and three seeds](#281-e1e2--the-headline-replicates-at-three-scales-and-three-seeds-for-12-minutes-of-gpu)
+  - [28.2 E5 — a second family pair, and a null that is about power rather than mechanism](#282-e5--a-second-family-pair-and-a-null-that-is-about-power-rather-than-mechanism)
+  - [28.3 In flight, and what the plan still asks for](#283-in-flight-and-what-the-plan-still-asks-for)
 - [27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works](#27-since-rev-14--the-final-h1-read-its-trainable-proxy-scale-three-more-null-levers-and-the-objective-that-works)
   - [27.1 The final H1 read — the budget is spent, and every pre-registered test confirms](#271-the-final-h1-read--the-budget-is-spent-and-every-pre-registered-test-confirms)
   - [27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999](#272-x1--a-trainable-proxy-for-h1-that-predicts-it-to-r--0999)
@@ -212,7 +216,11 @@ mechanism family with a different surface, recovers on H1 exactly what a 5× lar
 adapter recovers (0.3180 vs 0.3213; −0.33 [−2.88, +2.06]) and beats every same-size arm that never
 saw the family (+3.46 [+1.32, +5.51] over `tuned_S2`). What transfers is the **family**, not the
 transform and not "invariance" — and X1 predicts H1 to r = 0.999, so it replaces H1 for every
-further read. (3) One training objective finally beats the seed band: **paired consistency** — CE
+further read. **How far that generalises is now a measured open question, not an assumption**: a
+second family pair built to test it (§28.2) came back null, because the family chosen damages a
+clean-code adapter by only 3.8 points against X1's 15.8 and so had almost no signal to detect. The
+claim the evidence supports is therefore *for a family that badly damages a clean-code adapter*, on
+one pair. (3) One training objective finally beats the seed band: **paired consistency** — CE
 on the obfuscated row plus a KL to the frozen clean-code adapter's distribution *on that row's L0
 parent* — keeps breadth's trained-condition gain (+2.24 [+1.24, +3.26] over `tuned_L0`) and pays
 neither its `L0` tax (−0.30 [−1.80, +1.32]) nor its held-out-family tax (**+5.11 [+3.05, +7.08]**
@@ -4432,23 +4440,24 @@ is the teacher, not the correspondence, that turned out not to matter.
 Recomputed cell and trial counts over every directory under `results/cells/`
 (`28_master_panel.py` on 2026-09-04; recounted from parquet metadata on **2026-09-06**
 → `corpus_inventory_2026-09-06.json` and again on **2026-09-07**
-→ `results/analysis/corpus_inventory_2026-09-07.json`, which is the table below).
+→ `corpus_inventory_2026-09-07.json`, and again for rev 17
+→ `results/analysis/corpus_inventory_2026-09-07b.json`, which is the table below).
 Quarantined directories are listed and are excluded from every table in this report. Rev 14's count
-was 2,966 cells / 2,200,119 trials and rev 15's 3,188 / 2,546,826; the 271 cells added since rev 14
-are all §27, of which the last 49 are §27.7's round 2.
+was 2,966 cells / 2,200,119 trials, rev 15's 3,188 / 2,546,826 and rev 16's 3,237 / 2,622,398; the
+21 cells added since rev 16 are §28's (15 `xy2_generic`, 6 `x1_generic` at three scales).
 
 | group | cells | trials |
 |---|---:|---:|
 | `main/qwen25c-1.5b/python` (the Qwen era, §1–§17) | 1,515 | 709,518 |
 | `main/qwen25c-1.5b/javascript` | 227 | 63,324 |
 | Qwen side grids — `baselines*`, `baselines_gridA`, `grid_rq1_7b`, `align_lam_sweep`, `pilot`, `final`, `formatonly_fix`, `main/qwen25c-7b` | 608 | 554,064 |
-| **CodeLlama-7b** — `rq2_generic` 144, `objectives_generic` 105, `rq1_generic` 84, `x1_generic` 56, `loto_generic` 54, `baselines_generic` 54, `extra_generic` 48, `merge_sweep_generic` 48, `rank_generic` 42, `mole_generic` 30 (+30 Grid B, §21.2), `selfcons_generic` 18, `trace_generic` 18, `h1_codellama` 14, `basecheck` 3 | **748** | **1,138,674** |
-| **CodeLlama-13b** — `rq2_generic` | **18** | **28,746** |
-| **CodeLlama-34b** — `rq2_generic` 18, `h1_codellama` 3, `basecheck` 3 | **24** | **37,395** |
+| **CodeLlama-7b** — `rq2_generic` 144, `objectives_generic` 105, `rq1_generic` 84, `x1_generic` 58, `loto_generic` 54, `baselines_generic` 54, `extra_generic` 48, `merge_sweep_generic` 48, `rank_generic` 42, `mole_generic` 30 (+30 Grid B, §21.2), `selfcons_generic` 18, `trace_generic` 18, `xy2_generic` 15 (§28.2), `h1_codellama` 14, `basecheck` 3 | **765** | **1,161,877** |
+| **CodeLlama-13b** — `rq2_generic` 18, `x1_generic` 2 (§28.1) | **20** | **31,174** |
+| **CodeLlama-34b** — `rq2_generic` 18, `h1_codellama` 3, `basecheck` 3, `x1_generic` 2 (§28.1) | **26** | **39,823** |
 | **Llama-3.1-8B** — `rq2_generic` 18, `basecheck` 6 | **24** | **38,328** |
 | [quarantined] `_contaminated_2026-09-03` (§21.1) | 28 | 44,981 |
 | [quarantined] `_misplaced_2026-08-13` | 45 | 7,368 |
-| **total** | **3,237** | **2,622,398** |
+| **total** | **3,258** | **2,650,457** |
 
 - Lab notes for this era: [`log/setup/`](log/setup/) 2026-08-28 → 09-01 and 09-06, and
   [`log/transfer/`](log/transfer/) 2026-09-01 → 09-07, indexed in [`log/README.md`](log/README.md).
@@ -4803,8 +4812,150 @@ it is logged as **H-format-gate** for the human to settle before it is used agai
 
 ---
 
+## 28. The paper-plan experiments — what a submission still needed, and what happened when it was run
+
+*Added 2026-09-07.* On 2026-09-07 the campaign was re-organised around a specific paper rather than
+around the open-hypothesis ledger: [`docs/PAPER_EXPERIMENTS.md`](docs/PAPER_EXPERIMENTS.md) maps the
+eight claims a submission would make (C1–C8) onto the evidence that already exists, and lists only
+the experiments that close a gap or convert a single observation into a general one. C1–C6 were
+already complete. This section reports the Tier-1 experiments run against that plan. Grid A
+(`heldout`), CodeLlama-7b unless stated, program-clustered bootstraps (2000 resamples, seed 17),
+deltas in **percentage points**.
+
+**Scope decision recorded with the plan:** this is a **Python-only** paper. `node` is still not
+installed on juno, so the JavaScript ladder, the JS H1 generator and the chartered cross-language
+hypothesis (H1b) are unreachable; that is declared in the limitations rather than left silent, and
+the frozen Qwen JS panel cannot substitute (§3.1 — legacy JS `L2`/`L3` rows carry H1-family
+features). The second recorded gap is statistical: there is still **no multiplicity correction**
+anywhere in this report, and the plan routes around the dead R environment with a Python GLMM+FDR
+pass rather than waiting for it.
+
+### 28.1 E1/E2 — the headline replicates at three scales and three seeds, for 12 minutes of GPU
+
+**Why these first.** C1 (*breadth training hurts on an unseen obfuscator*) was established on H1,
+whose budget is **fully spent** (§27.1), so it can never gain another replicate on the column it was
+established on. X1 reproduces H1 to r = 0.9992 and is the only held-out column still readable. Both
+experiments were **eval-only** on adapters that already existed; the entire cost was noticing the
+gap. Rules frozen at `a75b5fc` before submission; jobs 381290/381291/381292.
+
+| E1 — `tuned_L0 − mono_all` on X1 | `tuned_L0` | `mono_all` | Δ pts [95 % CI] |
+|---|---:|---:|---:|
+| 7B | 0.2702 | 0.2323 | **+3.79 [+1.65, +6.09]** |
+| 13B | 0.2965 | 0.2537 | **+4.28 [+2.06, +6.50]** |
+| 34B | 0.3262 | 0.2998 | **+2.64 [+0.25, +5.10]** |
+
+**H-C1-scale-X1 CONFIRMED.** Three scales, three intervals clearing zero. The magnitude is **not**
+resolved by scale — it is largest at 13B and the 34B interval only just clears — so the claim is
+"present at every scale tested", not "decreasing with scale". 13B had never been read on any
+held-out column before.
+
+| E2 — seed band at 7B | `tuned_L0` | `mono_all` | Δ pts [95 % CI] |
+|---|---:|---:|---:|
+| s17 | 0.2702 | 0.2323 | **+3.79 [+1.56, +5.93]** |
+| s42 | 0.2702 | 0.2348 | **+3.54 [+1.48, +5.60]** |
+| s101 | 0.2685 | 0.2331 | **+3.54 [+1.73, +5.60]** |
+
+**H-C1-seed-X1 CONFIRMED.** `tuned_L0` on X1 spans **0.16 pts** across seeds — tighter than
+`mono_all`'s 0.25 and much tighter than `cons_lam3`'s 0.91 (§27.7). **C1 now stands on two
+independent held-out columns, three model scales and three seeds.**
+
+**Unplanned, and useful beyond E1: the X1↔H1 proxy is validated at 34B.** It was calibrated at
+**7B** only. The new 34B X1 cells can be read against the 34B H1 cells that already existed from the
+09-05 final batch — *no new H1 access, nothing selected on H1*: `tuned_L0` 0.3262 (X1) vs 0.3213
+(H1), `mono_all` 0.2998 vs 0.2965 — **|Δ| 0.49 and 0.33 pts**. The substitute for the spent budget
+travels across scale, not only across arms at one scale.
+
+### 28.2 E5 — a second family pair, and a null that is about power rather than mechanism
+
+**Why.** C2 (*what transfers is the mechanism family*) rests on **one** family pair — X1 trainable /
+H1 held out, both string-encoding + MBA — and H1 is spent, so that pair can never be extended. One
+pair cannot separate "the family is what transfers" from "the *encoding* family is what transfers".
+E5 built a second pair in a different family: every value crosses a `raise`/`except` boundary.
+**X2** (trainable) raises a `LookupError` and catches it in-frame; **Y2** (eval-only, the unseen
+sibling) reads `StopIteration.value` off a generator return. Generator
+`src/obtune/obf/py/xy2.py`; `Y2` is absent from `paths.TRAINABLE_CONDITIONS`, which is what enforces
+that no adapter sees it. Rules frozen at `e2041c0` **before any Y2 read**.
+
+| system | `L0` | `X2` | **`Y2`** |
+|---|---:|---:|---:|
+| `base` | 0.2569 | 0.1913 | 0.1910 |
+| `tuned_L0` | **0.4263** | 0.3746 | 0.3884 |
+| **`tuned_X2`** | 0.4108 | **0.4043** | **0.4005** |
+| `tuned_X1` | 0.4102 | 0.4011 | 0.3852 |
+| `mono_all` | 0.4114 | 0.3593 | 0.3755 |
+
+| contrast on Y2 | Δ pts [95 % CI] | verdict |
+|---|---:|---|
+| **PRIMARY** `tuned_X2 − tuned_L0` | **+1.21 [−0.81, +3.22]** | **REFUTED** |
+| SECONDARY `tuned_X1 − tuned_L0` | −0.32 [−2.42, +1.69] | null — no generic-novelty effect either |
+| `mono_all − tuned_L0` | −1.29 [−3.62, +0.89] | C1's direction, not separable |
+| X2 diagonal `tuned_X2 − tuned_L0` on X2 | **+2.97 [+1.04, +5.06]** | the arm is alive |
+
+**H-family-generalises REFUTED**, and recorded as refuted. The rule was not re-specified and the
++1.21 is not reported as a trend. But the reason is measurable and is **not** "the family claim is
+wrong":
+
+| held-out family | `tuned_L0`: `L0` → family | damage | specialist's gain | gain / damage |
+|---|---|---:|---:|---:|
+| X1 (encoding + MBA) | 0.4281 → 0.2702 | **−15.8 pts** | +4.9 | 0.31 |
+| Y2 (exception routing) | 0.4263 → 0.3884 | **−3.8 pts** | +1.2 | 0.32 |
+
+In both pairs the family specialist recovers **about a third** of the damage its family does. Y2
+simply does not do much damage: it reroutes control flow without obscuring identifiers, literals,
+arithmetic or string contents, so the code stays readable, whereas X1/H1 destroy the surface of
+every literal and every operator. That left ~1.2 points of available signal against a ±2-point
+interval — **underpowered by construction**, a fact visible only once the difficulty was measured,
+and one the design should have checked *before* training.
+
+**What this costs the paper.** C2's scope narrows and must be stated as: *for a family that badly
+damages a clean-code adapter, training on a sibling surface recovers a substantial share of the
+damage.* That is still supported at full strength by X1→H1 (§27.1–§27.2). Whether it generalises to
+other **hard** families is **open**, and E5 as run does not answer it. The redo (**E5b** in the
+plan) requires a family that costs a clean-code adapter ≳10 points and gates on that measurement
+*before* any adapter is trained.
+
+### 28.3 In flight, and what the plan still asks for
+
+**E3 (H-cons-scale)** — does §27.5's paired-consistency result survive scale? `cons_lam3` at 13B
+(job 381340) and 34B (381405), rule frozen at `c35b6e3`: CONFIRM iff `cons_lam3 − mono_all` on X1
+excludes zero above at **both** scales. λ stays at 3 rather than being re-swept per scale, because
+re-tuning would make it a sweep rather than a replication. The 34B arm is ~20–24 h: its teacher is a
+second full copy of a 34B model (~67 GB), so it runs with the teacher on a second GPU inside one
+allocation — a smoke test caught that two visible GPUs otherwise make HF Trainer wrap the *student*
+in `DataParallel` and return a per-device loss.
+
+Still unrun from Tier 1: **E4** (does the consistency gain need the *clean-code* teacher, or would
+`base` do? — nothing has yet varied the teacher itself), **E6** (which half of X1 does the work,
+encoding or arithmetic), and **E5b**. Tier 2's **E7** (Python GLMM + BH-FDR) remains the largest
+methodological gap in the report.
+
+---
+
 ## Changelog
 
+- **2026-09-07 (rev 17)** — **§28 added: the campaign re-organised around a paper, and the first
+  three Tier-1 experiments run.** [`docs/PAPER_EXPERIMENTS.md`](docs/PAPER_EXPERIMENTS.md) maps the
+  eight claims a submission would make onto existing evidence; C1–C6 were already complete, and §28
+  reports what the gap-closing experiments found. **§28.1 — E1/E2 CONFIRMED, for 12 minutes of GPU
+  on adapters that already existed.** C1 was established on H1, whose budget is spent, so it could
+  never gain another replicate there; X1 is the only held-out column still readable.
+  `tuned_L0 − mono_all` on X1 is **+3.79 [+1.65, +6.09]** (7B), **+4.28 [+2.06, +6.50]** (13B) and
+  **+2.64 [+0.25, +5.10]** (34B), and **+3.79 / +3.54 / +3.54** at s17/s42/s101 with a `tuned_L0`
+  X1 seed range of **0.16 pts** — so **C1 now stands on two independent held-out columns, three
+  scales and three seeds**. Unplanned: the X1↔H1 proxy, calibrated only at 7B, **validates at 34B**
+  to |Δ| 0.49 / 0.33 pts against the already-spent H1 cells. **§28.2 — E5 REFUTED, and the reason
+  is power.** A second family pair (X2/Y2, values routed through exception machinery) was built to
+  test whether C2's family result generalises; `tuned_X2 − tuned_L0` on the unseen sibling Y2 is
+  **+1.21 [−0.81, +3.22]**. The arm is alive (X2 diagonal +2.97 [+1.04, +5.06]) and the
+  cross-family control is null too, but Y2 damages a clean-code adapter by only **3.8 pts** against
+  X1's **15.8**, and in both pairs the specialist recovers ~a third of the damage — leaving ~1.2 pts
+  of signal against a ±2-pt interval. **Underpowered by construction.** The rule was not
+  re-specified; **§1 and C2's scope are narrowed** to families that badly damage a clean-code
+  adapter, with generality left open and E5b added to the plan with a difficulty gate that must be
+  measured before training. **§28.3** records E3 in flight and names E4/E6/E5b and the still-absent
+  multiplicity correction (E7) as the outstanding Tier-1/2 work, plus the **Python-only scope
+  decision** forced by `node` still being missing. **§25.1** — corpus **3,258 cells / 2,650,457
+  trials**.
 - **2026-09-07 (rev 16)** — **§27.7 rewritten from a pre-registration into a result; §24, §25.1,
   §26, §27.5 and §1 corrected where round 2 changed or qualified them.** **§27.7** — objectives
   round 2 (jobs 380166–380176, rules frozen at `2b0b841`): **H-cons-seed CONFIRMED** —

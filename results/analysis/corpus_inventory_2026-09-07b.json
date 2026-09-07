@@ -1,0 +1,159 @@
+{
+ "generated_for": "MASTER_REPORT.md rev 17 (2026-09-07)",
+ "by_group": {
+  "[quarantined] _contaminated_2026-09-03": {
+   "cells": 28,
+   "trials": 44981
+  },
+  "[quarantined] _misplaced_2026-08-13": {
+   "cells": 45,
+   "trials": 7368
+  },
+  "align_lam_sweep/qwen25c-1.5b/python": {
+   "cells": 84,
+   "trials": 134148
+  },
+  "basecheck/codellama-34b/python": {
+   "cells": 3,
+   "trials": 5007
+  },
+  "basecheck/codellama-7b/python": {
+   "cells": 3,
+   "trials": 5007
+  },
+  "basecheck/llama31-8b/python": {
+   "cells": 6,
+   "trials": 9582
+  },
+  "baselines/qwen25c-1.5b/python": {
+   "cells": 222,
+   "trials": 36522
+  },
+  "baselines/qwen25c-7b/python": {
+   "cells": 18,
+   "trials": 2984
+  },
+  "baselines_generic/codellama-7b/python": {
+   "cells": 54,
+   "trials": 86238
+  },
+  "baselines_gridA/qwen25c-1.5b/python": {
+   "cells": 92,
+   "trials": 143566
+  },
+  "baselines_gridA/qwen25c-7b/python": {
+   "cells": 42,
+   "trials": 64776
+  },
+  "extra_generic/codellama-7b/python": {
+   "cells": 48,
+   "trials": 77514
+  },
+  "final/qwen25c-1.5b/python": {
+   "cells": 9,
+   "trials": 10926
+  },
+  "formatonly_fix/qwen25c-1.5b/python": {
+   "cells": 6,
+   "trials": 10014
+  },
+  "grid_rq1_7b/qwen25c-7b/python": {
+   "cells": 90,
+   "trials": 143730
+  },
+  "h1_codellama/codellama-34b/python": {
+   "cells": 3,
+   "trials": 3642
+  },
+  "h1_codellama/codellama-7b/python": {
+   "cells": 14,
+   "trials": 16996
+  },
+  "loto_generic/codellama-7b/python": {
+   "cells": 54,
+   "trials": 86238
+  },
+  "main/qwen25c-1.5b/javascript": {
+   "cells": 227,
+   "trials": 63324
+  },
+  "main/qwen25c-1.5b/python": {
+   "cells": 1515,
+   "trials": 709518
+  },
+  "main/qwen25c-7b/python": {
+   "cells": 10,
+   "trials": 1698
+  },
+  "merge_sweep_generic/codellama-7b/python": {
+   "cells": 48,
+   "trials": 76656
+  },
+  "mole_generic/codellama-7b/python": {
+   "cells": 30,
+   "trials": 47910
+  },
+  "mole_generic_testset/codellama-7b/python": {
+   "cells": 30,
+   "trials": 5125
+  },
+  "objectives_generic/codellama-7b/python": {
+   "cells": 105,
+   "trials": 161940
+  },
+  "pilot/qwen25c-1.5b/python": {
+   "cells": 35,
+   "trials": 5700
+  },
+  "rank_generic/codellama-7b/python": {
+   "cells": 42,
+   "trials": 67074
+  },
+  "rq1_generic/codellama-7b/python": {
+   "cells": 84,
+   "trials": 134148
+  },
+  "rq2_generic/codellama-13b/python": {
+   "cells": 18,
+   "trials": 28746
+  },
+  "rq2_generic/codellama-34b/python": {
+   "cells": 18,
+   "trials": 28746
+  },
+  "rq2_generic/codellama-7b/python": {
+   "cells": 144,
+   "trials": 229968
+  },
+  "rq2_generic/llama31-8b/python": {
+   "cells": 18,
+   "trials": 28746
+  },
+  "selfcons_generic/codellama-7b/python": {
+   "cells": 18,
+   "trials": 28746
+  },
+  "trace_generic/codellama-7b/python": {
+   "cells": 18,
+   "trials": 28746
+  },
+  "x1_generic/codellama-13b/python": {
+   "cells": 2,
+   "trials": 2428
+  },
+  "x1_generic/codellama-34b/python": {
+   "cells": 2,
+   "trials": 2428
+  },
+  "x1_generic/codellama-7b/python": {
+   "cells": 58,
+   "trials": 88796
+  },
+  "xy2_generic/codellama-7b/python": {
+   "cells": 15,
+   "trials": 20775
+  }
+ },
+ "total_cells": 3258,
+ "total_trials": 2650457
+}
