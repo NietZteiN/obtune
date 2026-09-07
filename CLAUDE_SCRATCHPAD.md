@@ -786,3 +786,17 @@ eval `eval/objectives2_codellama7b.yaml`, same phase dir `objectives_generic`):
 **Order of operations:** commit this → `submit_chains_r2.sh` (train → ckpt-select afterok, eval
 afterok on all five ckpt-selects) → extend `34_objectives.py` with the round-2 contrasts (adding
 only these; round-1 contrasts unchanged) → log entry.
+
+### 2026-09-06 — objectives round 2: chains submitted (after pre-registration commit 2b0b841)
+| arm | train | ckpt-select | walltime asked |
+|---|---|---|---|
+| cons_lam3_s42 | 380166 | 380167 | 6 h (round-1 cons runs took 4.4 h) |
+| cons_lam3_s101 | 380168 | 380169 | 6 h |
+| cons_lam5 | 380170 | 380171 | 6 h |
+| cons_lam10 | 380172 | 380173 | 6 h |
+| currmono_kl | 380174 | 380175 | 3 h (curr_kl took 1.3 h) |
+| **eval** `ev_objectives_r2` | 380176 | afterok on all five ckpt-selects | 1.5 h |
+`34_objectives.py` extended with the round-2 contrasts (round-1 contrasts untouched) and a
+`pooled_grid` (L0–S2) read for the λ decision; dry-run on round-1 cells OK. Next: when 380176
+completes → `python scripts/analysis/34_objectives.py --model codellama-7b --n-boot 2000` →
+log entry `log/transfer/2026-09-0X_objectives-round2.md`.

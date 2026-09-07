@@ -33,7 +33,9 @@ from obtune.config import RESULTS_DIR  # noqa: E402
 from obtune.control_relative import bootstrap_delta  # noqa: E402
 
 CONDS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
-ARMS = ["cons_lam1", "cons_lam3", "cons_same_lam1", "neg_ul", "neg_data", "x1_resample", "curr_sft", "curr_kl"]
+ARMS = ["cons_lam1", "cons_lam3", "cons_same_lam1", "neg_ul", "neg_data", "x1_resample", "curr_sft", "curr_kl",
+        # round 2 (2026-09-06): seed band, λ sweep, KL-continued from mono_all, seed-matched controls
+        "cons_lam3_s42", "cons_lam3_s101", "cons_lam5", "cons_lam10", "currmono_kl", "mono_all_s42", "mono_all_s101"]
 CONTROLS = {"tuned_L0": "x1_generic", "tuned_X1": "x1_generic", "mono_all": "x1_generic",
             "tuned_S2": "x1_generic", "mono_allX": "x1_generic"}
 
@@ -58,6 +60,10 @@ def contrast(t, k, label, nb, conds=CONDS):
     non = t[t.eval_cond != "L0"], k[k.eval_cond != "L0"]
     if len(non[0]) and len(non[1]):
         out["pooled_nonL0"] = bootstrap_delta(non[0], non[1], f"{label} [non-L0]", n_resamples=nb).to_dict()
+    # trainable grid only (L0–S2): the H-cons-lam decision read, so λ is never chosen on X1
+    grid = t[t.eval_cond != "X1"], k[k.eval_cond != "X1"]
+    if len(grid[0]) and len(grid[1]) and (t.eval_cond == "X1").any():
+        out["pooled_grid"] = bootstrap_delta(grid[0], grid[1], f"{label} [trainable grid]", n_resamples=nb).to_dict()
     return out
 
 
@@ -96,6 +102,8 @@ def main() -> int:
         print(f"\n{r['label']}\n  pooled   {fmt(r['pooled'])}")
         if "pooled_nonL0" in r:
             print(f"  non-L0   {fmt(r['pooled_nonL0'])}")
+        if "pooled_grid" in r:
+            print(f"  grid     {fmt(r['pooled_grid'])}")
         for c, v in r["by_cond"].items():
             print(f"  {c:<5}    {fmt(v)}")
 
@@ -119,6 +127,29 @@ def main() -> int:
     print("\n== H-curr: continued from tuned_L0 ==")
     add("curr_sft", "tuned_L0"); add("curr_kl", "tuned_L0")
     add("curr_sft", "mono_all"); add("curr_kl", "mono_all"); add("curr_kl", "curr_sft")
+
+    # ---- round 2 (pre-registered 2026-09-06, commit 2b0b841); contrasts above are unchanged ----
+    print("\n== H-cons-seed: cons_lam3 vs the seed-matched mono_all, s42 and s101 ==")
+    add("cons_lam3_s42", "mono_all_s42"); add("cons_lam3_s101", "mono_all_s101")
+    add("cons_lam3_s42", "tuned_L0"); add("cons_lam3_s101", "tuned_L0")
+    if all(S.get(k) is not None for k in ["cons_lam3", "cons_lam3_s42", "cons_lam3_s101", "mono_all", "mono_all_s42", "mono_all_s101"]):
+        # three-seed pooled read: stack the seeds on both sides; clustering by snippet_id keeps
+        # the three copies of each program in one bootstrap draw
+        t3 = pd.concat([S["cons_lam3"], S["cons_lam3_s42"], S["cons_lam3_s101"]], ignore_index=True)
+        k3 = pd.concat([S["mono_all"], S["mono_all_s42"], S["mono_all_s101"]], ignore_index=True)
+        r = contrast(t3, k3, "cons_lam3(3 seeds) - mono_all(3 seeds)", nb)
+        report["contrasts"].append(r)
+        print(f"\n{r['label']}\n  pooled   {fmt(r['pooled'])}")
+        for c, v in r["by_cond"].items():
+            print(f"  {c:<5}    {fmt(v)}")
+        x1 = [round(float(S[a][S[a].eval_cond == "X1"]["correct"].mean()), 4) for a in ["cons_lam3", "cons_lam3_s42", "cons_lam3_s101"]]
+        report["cons_lam3_seed_x1"] = x1
+        print(f"  cons_lam3 X1 by seed (s17, s42, s101): {x1}  range {max(x1)-min(x1):.4f}")
+    print("\n== H-cons-lam: λ sweep, decision on the TRAINABLE GRID (pooled_nonX1 below) ==")
+    add("cons_lam5", "cons_lam3"); add("cons_lam10", "cons_lam3"); add("cons_lam10", "cons_lam5")
+    add("cons_lam5", "mono_all"); add("cons_lam10", "mono_all"); add("cons_lam10", "tuned_L0")
+    print("\n== H-curr-kl-from-mono: curr_kl's recipe initialised from mono_all ==")
+    add("currmono_kl", "mono_all"); add("currmono_kl", "tuned_L0"); add("currmono_kl", "curr_kl")
 
     out = Path(args.out); out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=1))
