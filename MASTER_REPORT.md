@@ -4430,8 +4430,9 @@ is the teacher, not the correspondence, that turned out not to matter.
 ### 25.1 The corpus, recounted
 
 Recomputed cell and trial counts over every directory under `results/cells/`
-(`28_master_panel.py` on 2026-09-04; recounted from parquet metadata on **2026-09-06** and again
-on **2026-09-07** → `results/analysis/corpus_inventory_2026-09-06.json`, which is the table below).
+(`28_master_panel.py` on 2026-09-04; recounted from parquet metadata on **2026-09-06**
+→ `corpus_inventory_2026-09-06.json` and again on **2026-09-07**
+→ `results/analysis/corpus_inventory_2026-09-07.json`, which is the table below).
 Quarantined directories are listed and are excluded from every table in this report. Rev 14's count
 was 2,966 cells / 2,200,119 trials and rev 15's 3,188 / 2,546,826; the 271 cells added since rev 14
 are all §27, of which the last 49 are §27.7's round 2.

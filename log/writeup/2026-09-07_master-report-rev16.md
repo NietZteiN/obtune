@@ -26,7 +26,12 @@
     16 Changelog entry.
   - Numbers from [`log/transfer/2026-09-07_objectives-round2.md`](../transfer/2026-09-07_objectives-round2.md)
     and `results/analysis/objectives_2026-09-07.json`; corpus from a re-run of the rev-15
-    parquet-metadata script → `results/analysis/corpus_inventory_2026-09-06.json`.
+    parquet-metadata script → `results/analysis/corpus_inventory_2026-09-07.json`. (The first
+    run of that script overwrote the tracked 09-06 inventory, because I had hard-coded its output
+    filename on 09-06 — the third instance of this defect in three days, after
+    `28_master_panel.py` and `34_objectives.py --out`. Restored with `git checkout` and re-run to a
+    correctly dated file. Every analysis script in `scripts/analysis/` that writes a dated artifact
+    should take a required `--out`.)
 
 - **Results:**
   - **Corpus:** **3,237 cells / 2,622,398 trials** (rev 15: 3,188 / 2,546,826). The 49 new cells
