@@ -255,8 +255,12 @@ def make_trainer_class():
             if self.lam <= 0.0:
                 return task, outputs
             with torch.no_grad():
-                t_logits = self.teacher(input_ids=t_ids.to(labels.device),
-                                        attention_mask=t_att.to(labels.device)).logits
+                # The teacher may live on a second device (34B: two full copies do not fit one
+                # card). Feed it on ITS device and bring the logits back to the student's, so
+                # every index below is computed in one device's address space.
+                t_dev = next(self.teacher.parameters()).device
+                t_logits = self.teacher(input_ids=t_ids.to(t_dev),
+                                        attention_mask=t_att.to(t_dev)).logits.to(labels.device)
             s_logits = outputs.logits
             kls, n_ok, n_bad = [], 0, 0
             for b in range(labels.size(0)):
@@ -416,15 +420,32 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         # A SEPARATE frozen copy rather than a second adapter on the student: 13.5 GB more on a
         # 141 GB card buys a forward path that cannot interact with PEFT's active-adapter state
         # or gradient checkpointing.
+        #
+        # That trade stops working with scale: the copy is 13.5 GB at 7B and ~67 GB at 34B, so
+        # student + teacher is ~134 GB against a 141 GB card and OOMs on activations. `teacher_device`
+        # puts the teacher on a second GPU inside the SAME SLURM allocation (ask for --gres=gpu:2).
+        # This is not the CUDA_VISIBLE_DEVICES rewriting CLAUDE.md §1 forbids: local index 1 is ours
+        # by allocation, and cgroups still bound the set.
         t_base = AutoModelForCausalLM.from_pretrained(mcfg["hf_id"], dtype=dtype, attn_implementation="sdpa")
         teacher = PeftModel.from_pretrained(t_base, str(PROJECT_ROOT / ocfg["teacher_adapter"]))
         teacher.eval()
         for p in teacher.parameters():
             p.requires_grad_(False)
+        t_dev = ocfg.get("teacher_device")
         if use_cuda:
-            teacher.cuda()
+            if t_dev is not None:
+                n_vis = torch.cuda.device_count()
+                if int(str(t_dev).split(":")[-1]) >= n_vis:
+                    raise SystemExit(
+                        f"objective.teacher_device={t_dev} but only {n_vis} GPU(s) visible -- "
+                        "submit with --gres=gpu:2")
+                teacher.to(t_dev)
+                print(f"[objectives] teacher on {t_dev}, student on cuda:0", flush=True)
+            else:
+                teacher.cuda()
         obj_meta["teacher_adapter"] = ocfg["teacher_adapter"]
         obj_meta["teacher_view"] = view
+        obj_meta["teacher_device"] = ocfg.get("teacher_device")
 
     sft_args = SFTConfig(
         output_dir=str(out_dir),

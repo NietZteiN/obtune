@@ -845,3 +845,22 @@ n_boot 2000, seed 17, on the 1,214 X1 heldout items / 405 programs the existing 
   alongside `cons_lam3`'s 0.91 pts and `mono_all`'s (0.2323/0.2348/0.2331, range 0.25 pts).
 - Format-fail is REPORTED, not used as a gate — H-format-gate is open and un-respecified (09-07).
 - No H1 cell is read by either job. Neither result may be used to select or tune anything.
+
+### 2026-09-07 — E3 PRE-REGISTRATION (H-cons-scale), frozen before submission
+Arms: `cons_lam3` (λ=3, teacher_view parent, teacher = same-scale `tuned_L0/best`) trained at
+**13B** and **34B**; configs `train/obj_cons_codellama{13b,34b}_py.yaml`, eval
+`eval/objectives_scale.yaml` on all 7 conditions. Controls `tuned_L0` / `mono_all` already exist at
+both scales (rq2_generic for L0–S2, x1_generic for X1). Contrasts: bootstrap_delta clustered by
+snippet_id, n_boot 2000, seed 17.
+
+- **H-cons-scale** — CONFIRM if `cons_lam3 − mono_all` on **X1** excludes zero ABOVE at **both** 13B
+  and 34B; PARTIAL if one; REFUTE if neither. Reference: +5.11 [+3.05, +7.08] at 7B (s17).
+- Secondary, reported either way: (a) the `L0` tax `cons_lam3 − tuned_L0` on L0 at each scale — at
+  7B it is −0.30 [−1.80, +1.32], i.e. no tax, and the question is whether that survives where
+  breadth's tax is larger (34B: −2.63 [−4.49, −0.78]); (b) `cons_lam3 − tuned_L0` pooled non-L0;
+  (c) whether the trainable-grid gain tracks the X1 gain across scale.
+- λ is NOT re-swept at scale: λ=3 was fixed on the 7B trainable grid (round 2) and carrying it
+  unchanged is the point — re-tuning per scale would make the comparison a sweep, not a replication.
+- format_fail reported, not gated (H-format-gate open).
+- 34B runs with `objective.teacher_device: cuda:1` and `--gres=gpu:2`: student + teacher is ~134 GB
+  of a 141 GB card at 34B and OOMs on activations otherwise. New code path — SMOKE FIRST.

@@ -1,0 +1,24 @@
+# E3 / H-cons-scale — the paired-consistency arm at 13B and 34B. MODEL-NEUTRAL. NO H1.
+#
+# Only the new arm is evaluated here: its controls already exist at both scales — `tuned_L0` and
+# `mono_all` on L0–S2 under `rq2_generic` (09-04/09-05 scale batch) and on X1 under `x1_generic`
+# (E1, 09-07) — and re-reading them at 34B would cost more than the question. The analysis joins
+# the three phases on item_id, as the other cross-phase scripts do.
+_extends: _base_eval.yaml
+
+phase: objectives_scale
+experiment_id: objectives_scale
+run_tag: objectives_scale
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

@@ -1,0 +1,30 @@
+# E3 / H-cons-scale (docs/PAPER_EXPERIMENTS.md) — paired consistency at 13b, 2026-09-07.
+#   L = CE(y | x_obf) + lam * KL( p_teacher(. | x_L0parent) || p_student(. | x_obf) )  at answer tokens
+# The 7B version of this arm is the campaign's only positive training result (+4.59 [+3.16, +5.99]
+# over mono_all on X1, three seeds). This asks whether it survives scale, where breadth's L0 tax
+# is larger. lam = 3 is the plateau established by the round-2 sweep on the trainable grid.
+#
+# Controls already exist at this scale: tuned_L0 (same teacher) and mono_all (same data, same
+# shape) were trained for the 09-04/09-05 scale batch and are read on L0-S2 and on X1.
+# Batch shape is models.yaml's for 13b (8 x 8), so the effective batch 64 matches 7B.
+_extends: _base_lora.yaml
+
+model: codellama-13b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 3.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-13b/python/L0_r32_s17/best
+
+
+train:
+  per_device_batch: 8
+  grad_accum: 8
+  train_size: 30000
+  seed: 17
