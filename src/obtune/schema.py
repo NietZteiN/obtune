@@ -17,7 +17,11 @@ from typing import Union, Any, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "H1"]
+# X2/Y2 (E5, 2026-09-07) are the second family pair -- exception-routing. X2 is trainable,
+# Y2 is eval-only. A condition missing from this Literal is not a loud error: `builder`
+# catches the pydantic failure as a generic exception and reports the program as "declined",
+# so the whole build silently returns 0 coverage. That is how X2/Y2's first build failed.
+Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "X2", "Y2", "H1"]
 
 #: Composite (stacked) conditions live in a SEPARATE namespace and are deliberately NOT added
 #: to `Condition`. Keeping that Literal closed is what protects `paths.TRAINABLE_CONDITIONS`,

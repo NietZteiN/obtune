@@ -14,10 +14,10 @@ X2 and Y2 are a second pair, built the same way X1 was built against H1:
     This is a genuinely different mechanism from every existing condition: not renaming
     (L1b/L1r/L2), not dispatch flattening (S1), not inert material (S2), not encoding
     (X1/H1).
-  * DIFFERENT surface — X2 raises a bespoke `_Sig` exception and catches it in the same
-    frame. Y2 uses the generator protocol: a `return` inside a generator sets
-    `StopIteration.value`, which the helper reads back. Different statements, different
-    exception types, different helper names, no shared token beyond `try`/`except`.
+  * DIFFERENT surface — X2 raises a `LookupError` carrying the value in `.args[0]` and
+    catches it in the same frame. Y2 uses the generator protocol: a `return` inside a
+    generator sets `StopIteration.value`, which the helper reads back. Different statements,
+    different exception types, different helper names, no shared token beyond `try`/`except`.
 
 X2 is `trainable: true`; **Y2 is eval-only** (`trainable: false`) and is the unseen sibling
 the family claim is tested on. Y2 is deliberately NOT quarantined the way H1 is: H1 was the
@@ -29,7 +29,7 @@ mistakes a cheap column for a quarantined one.
 BOTH transforms are identity-preserving by construction. Every rewrite is `expr` ->
 `helper(expr)` where the helper provably returns its argument unchanged:
 
-    X2:  _thru(v)  raises _Sig(v) and catches it in the same frame, returning e.v
+    X2:  _thru(v)  raises LookupError(v), catches it in-frame and returns e.args[0]
     Y2:  _pull(v)  runs a generator whose `return v` sets StopIteration.value, read back
 
 Neither helper touches control flow *around* the expression: the argument is evaluated
@@ -49,27 +49,31 @@ import ast
 
 from obtune.obf.base import Bail, SnippetCtx, TransformResult
 
-# --- X2: bespoke signal exception, raised and caught in one frame --------------------
+# --- X2: a built-in exception carries the value, raised and caught in one frame ---------
+#
+# NOT a bespoke `class _Sig(Exception)`, which is what this started as. The execution
+# sandbox builds its child globals as `{k: getattr(builtins, k) for k in dir(builtins) if
+# not k.startswith("_")}` plus `__import__` -- so `__build_class__` is absent and ANY class
+# statement dies with NameError at module exec. That is a pre-existing property of
+# src/obtune/exec/runner_py.py (it silently excludes every class-defining program from every
+# condition), not something X2 should paper over, so X2 simply does not need a class:
+# `LookupError(v)` carries the value in `.args[0]` and is a different vehicle from Y2's
+# generator return either way.
 X2_HELPERS = '''\
-class _Sig(Exception):
-    def __init__(self, v):
-        self.v = v
-
-
 def _thru(v):
     try:
-        raise _Sig(v)
-    except _Sig as e:
-        return e.v
+        raise LookupError(v)
+    except LookupError as e:
+        return e.args[0]
 
 
 def _guard(c):
     try:
-        raise _Sig(c)
-    except _Sig as e:
-        return e.v
+        raise LookupError(c)
+    except LookupError as e:
+        return e.args[0]
 '''
-X2_NAMES = ("_Sig", "_thru", "_guard")
+X2_NAMES = ("_thru", "_guard")
 
 # --- Y2: the generator protocol -- `return` inside a generator sets StopIteration.value
 Y2_HELPERS = '''\
@@ -116,6 +120,15 @@ class _ExcRewriter(ast.NodeTransformer):
 
     def __init__(self, value_fn: str, test_fn: str):
         self.value_fn, self.test_fn = value_fn, test_fn
+        # Wrapping inside a loop body multiplies the cost by the iteration count, and this
+        # family is intrinsically expensive: every wrapped site raises and catches an
+        # exception (X2) or builds and exhausts a generator (Y2). Unrestricted, that blew the
+        # gate's runtime_ratio_max of 5.0 on hot programs -- at DIFFERENT rates for X2 and Y2
+        # (2/60 vs 6/60), which would have left the two siblings gated on different program
+        # sets and confounded the very comparison E5 exists to make. Sites in loop bodies are
+        # therefore skipped; `return` is still wrapped everywhere because it fires once per
+        # call, not once per iteration.
+        self._loop_depth = 0
         self.n_return = 0
         self.n_test = 0
         self.n_value = 0
@@ -133,7 +146,14 @@ class _ExcRewriter(ast.NodeTransformer):
         return node
 
     def _wrap_test(self, node):
+        is_loop = isinstance(node, ast.While)
+        outer = self._loop_depth
+        if is_loop:
+            self._loop_depth += 1
         self.generic_visit(node)
+        self._loop_depth = outer
+        if self._loop_depth:
+            return node
         self.n_test += 1
         # The WHOLE test, never an operand: wrapping inside `and`/`or` would make both
         # sides eager and change semantics for `if xs and xs[0]`.
@@ -153,18 +173,27 @@ class _ExcRewriter(ast.NodeTransformer):
     # NOT wrapped: `a < b < c` short-circuits, so wrapping `c` would force its evaluation.)
     def visit_Assign(self, node: ast.Assign):
         self.generic_visit(node)
+        if self._loop_depth:
+            return node
         self.n_value += 1
         node.value = self._call(self.value_fn, node.value)
         return node
 
     def visit_AugAssign(self, node: ast.AugAssign):
         self.generic_visit(node)
+        if self._loop_depth:
+            return node
         self.n_value += 1
         node.value = self._call(self.value_fn, node.value)
         return node
 
     def visit_For(self, node: ast.For):
+        outer = self._loop_depth
+        self._loop_depth += 1
         self.generic_visit(node)
+        self._loop_depth = outer
+        if self._loop_depth:
+            return node
         self.n_value += 1
         # The iterable is evaluated once, before the loop, exactly as `iter(expr)` would be.
         node.iter = self._call(self.value_fn, node.iter)
@@ -207,14 +236,14 @@ def _apply(ctx: SnippetCtx, code: str, helpers: str, names: tuple[str, ...],
     return TransformResult(
         src_out=out, applied=True,
         notes=[f"{tag}: {rw.n_return} returns, {rw.n_test} tests, {rw.n_value} values routed "
-               f"through {'a raised _Sig' if tag == 'X2' else 'StopIteration.value'}"],
+               f"through {'a raised LookupError' if tag == 'X2' else 'StopIteration.value'}"],
         extra={"n_return_sites": rw.n_return, "n_test_sites": rw.n_test,
                "n_value_sites": rw.n_value, "family": "exceptional"},
     )
 
 
 def transform_x2(ctx: SnippetCtx) -> TransformResult:
-    """X2 — trainable member of the exception-routing family (bespoke `_Sig`)."""
+    """X2 — trainable member of the exception-routing family (raised `LookupError`)."""
     return _apply(ctx, ctx.src, X2_HELPERS, X2_NAMES, "_thru", "_guard", "X2")
 
 

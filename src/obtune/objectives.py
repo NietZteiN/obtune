@@ -243,6 +243,10 @@ def make_trainer_class():
 
         def _tick(self, **vals):
             for k, v in vals.items():
+                # Defensive: any wrapper that returns a per-device loss (DataParallel) would
+                # otherwise take down the run in the logging path rather than the loss path.
+                if torch.is_tensor(v) and v.numel() > 1:
+                    v = v.mean()
                 self._acc[k] = self._acc.get(k, 0.0) + float(v)
             self._n += 1
 
@@ -479,6 +483,13 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
     )
 
     Trainer = make_trainer_class()
+    # With two GPUs visible (the teacher_device layout) HF Trainer sees n_gpu == 2 and wraps
+    # the STUDENT in nn.DataParallel, which returns one loss per device -- `_tick`'s float()
+    # then dies with "only one element tensors can be converted to Python scalars", 148 s into
+    # a 34B run (job 381343). We do not want DP here at all: the second card is the teacher's.
+    if ocfg.get("teacher_device") is not None:
+        sft_args._n_gpu = 1
+
     trainer = Trainer(model=model, args=sft_args, train_dataset=train_ds, eval_dataset=val_ds,
                       processing_class=tokenizer, peft_config=peft_cfg,
                       mode=mode, lam=lam, teacher=teacher)

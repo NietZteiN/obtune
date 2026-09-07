@@ -26,8 +26,10 @@ RAW_ROOT = DATA_DIR / "raw"
 SPLITS_ROOT = DATA_DIR / "splits"
 
 # Conditions a training job may ever see. H1 is deliberately absent.
-TRAINABLE_CONDITIONS = ("L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1")
-ALL_CONDITIONS = TRAINABLE_CONDITIONS + ("H1",)
+# Y2 is deliberately absent: it is the UNSEEN sibling of X2 (E5) and an adapter that has
+# seen it voids the family comparison. It is eval-only, like H1 but without the quarantine.
+TRAINABLE_CONDITIONS = ("L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "X2")
+ALL_CONDITIONS = TRAINABLE_CONDITIONS + ("Y2", "H1")
 LANGUAGES = ("python", "javascript")
 
 

@@ -127,8 +127,8 @@ conditions:
     trainable: true
     description: >
       TRAINABLE member of a SECOND family pair (E5, 2026-09-07). Every `return <expr>` and
-      every `if`/`while` test is routed through a raised-and-caught bespoke `_Sig` exception
-      via identity helpers `_thru`/`_guard`. The family -- "follow the value out through the
+      every `if`/`while` test is routed through a raised-and-caught `LookupError` carrying
+      the value in `.args[0]`, via identity helpers `_thru`/`_guard`. The family -- "follow the value out through the
       exception machinery and back" -- is distinct from renaming (L1b/L1r/L2), dispatch
       flattening (S1), inert material (S2) and encoding (X1/H1). Its sibling is Y2.
       Python only. Reported in its own namespace.
