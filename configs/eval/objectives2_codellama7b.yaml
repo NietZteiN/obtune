@@ -1,0 +1,32 @@
+# OBJECTIVES campaign, round 2 (2026-09-06) — seed band and λ sweep for the paired-consistency
+# objective, plus KL-continued training from mono_all. Same phase directory as round 1 so
+# 34_objectives.py reads every arm from one place; same eval rows as x1_generic. NO H1 (budget
+# spent); X1 is the held-out-family read and is NOT used to choose λ or anything else.
+# mono_all_s42 / mono_all_s101 are re-read here on all seven conditions so the seed band has a
+# seed-matched control on X1 (rq2_generic holds their L0–S2 cells only).
+# Decision rules: CLAUDE_SCRATCHPAD.md "2026-09-06 — objectives round 2: PRE-REGISTRATION",
+# committed before submission.
+_extends: _base_eval.yaml
+
+phase: objectives_generic
+experiment_id: objectives_generic
+run_tag: objectives_generic_r2
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: cons_lam3_s42,  adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s42/best", arch: obj_consistency, train_cond: mix}
+  - {name: cons_lam3_s101, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s101/best", arch: obj_consistency, train_cond: mix}
+  - {name: cons_lam5,      adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam5_s17/best", arch: obj_consistency, train_cond: mix}
+  - {name: cons_lam10,     adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam10_s17/best", arch: obj_consistency, train_cond: mix}
+  - {name: currmono_kl,    adapter: "runs/adapters_objectives/{model}/{language}/L1b-L1r-L2-S1-S2_r32_currmono_cons_parent_lam1_s17/best", arch: obj_curriculum_kl, train_cond: mix}
+  - {name: mono_all_s42,   adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s42/best", arch: per_type, train_cond: mix}
+  - {name: mono_all_s101,  adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s101/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

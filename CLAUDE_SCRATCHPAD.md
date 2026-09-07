@@ -752,3 +752,37 @@ Still pending, needs human approval (none given yet): quota cleanup. /work is at
 Removed 685 `runs/**/optimizer.pt` (~346 GB) and `tmp/uv-cache` (25 GB). `/work` 99.72 % → 66.24 %.
 Weights/results/hf_home untouched; verify_migration OK. Runs are no longer resumable.
 `runs/adapters_overtrain` (was 103 GB) kept — its weights are results. Entry: `log/setup/2026-09-06_quota-cleanup.md`.
+
+## 2026-09-06 — objectives round 2: PRE-REGISTRATION (frozen before submission)
+
+Five adapters + one gated eval, all CodeLlama-7b python, read on X1 (H1 spent). Nothing in this
+round is used to select anything on X1; the λ read is on the trainable grid.
+
+**Arms** (configs: `train/obj_cons_codellama7b_py.yaml`, `train/obj_currmono_codellama7b_py.yaml`;
+eval `eval/objectives2_codellama7b.yaml`, same phase dir `objectives_generic`):
+- `cons_lam3_s42`, `cons_lam3_s101` — the headline arm at two more seeds.
+- `cons_lam5`, `cons_lam10` — λ sweep at s17.
+- `currmono_kl` — curr_kl's recipe (5 non-L0 conds, 1 epoch, lr 5e-5, teacher tuned_L0 on the
+  parent) initialised from `mono_all/best` instead of `tuned_L0/best`.
+- `mono_all_s42`, `mono_all_s101` re-read on all 7 conditions (seed-matched X1 controls; the
+  adapters already exist).
+
+**Decision rules**
+- **H-cons-seed** — CONFIRM if `cons_lam3_sN − mono_all_sN` on X1 is > 0 with the cluster-bootstrap
+  CI excluding zero for BOTH N ∈ {42, 101}; PARTIAL if one; REFUTE if neither. Secondary: the
+  three-seed pooled contrast (s17+s42+s101 vs the matching `mono_all` seeds, clustered by
+  snippet_id) and the seed spread of `cons_lam3` on X1 (report the range).
+- **H-cons-lam** — read on the TRAINABLE GRID pooled (L0–S2, 6 conditions). CONFIRM if
+  `cons_lam10 − cons_lam3` > 0 excl. 0; REFUTE ("over-regularised") if < 0 excl. 0; NULL otherwise.
+  `cons_lam5 − cons_lam3` is reported as the monotonicity check. X1 values for λ=5/10 are reported
+  but not used to choose λ; no λ is promoted to "the" setting on the basis of X1.
+- **H-curr-kl-from-mono** — CONFIRM if `currmono_kl − mono_all` on X1 > 0 excl. 0 AND
+  `currmono_kl − tuned_L0` on X1 does not exclude zero from below (penalty removed); REFUTE if the
+  first contrast is null or negative. Secondary: `currmono_kl − curr_kl` on X1 and pooled (does
+  the start matter once the KL term is applied?), and the L0 tax `currmono_kl − mono_all` on L0.
+- Every contrast: `bootstrap_delta` clustered by `snippet_id`, n_boot 2000, same rows as round 1.
+  L0 tax reported for every arm. format_fail reported; > 2 % on any cell voids that cell's read.
+
+**Order of operations:** commit this → `submit_chains_r2.sh` (train → ckpt-select afterok, eval
+afterok on all five ckpt-selects) → extend `34_objectives.py` with the round-2 contrasts (adding
+only these; round-1 contrasts unchanged) → log entry.

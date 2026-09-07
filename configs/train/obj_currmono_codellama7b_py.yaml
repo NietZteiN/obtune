@@ -1,0 +1,31 @@
+# OBJECTIVE O4b — KL-continued training from mono_all/best (2026-09-06, H-curr-kl-from-mono).
+# Identical to obj_curr_codellama7b_py.yaml (five transformed conditions, ONE epoch, lr 5e-5,
+# teacher = frozen tuned_L0/best on the clean parent) except that the INIT is the breadth
+# adapter mono_all/best (checkpoint chosen 2026-08) instead of tuned_L0/best. curr_kl showed the
+# KL term is worth ~1.3 pts from the tuned_L0 start; this asks whether it also removes mono_all's
+# held-out penalty (X1 −3.79 vs tuned_L0). Contrast partner: curr_kl (same recipe, other init).
+# The default out_dir tag collides with curr_kl's, so the submit script passes --out explicitly:
+#   runs/adapters_objectives/codellama-7b/python/L1b-L1r-L2-S1-S2_r32_currmono_cons_parent_lam1_s17
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L1b, L1r, L2, S1, S2]
+run_tag: obj_currmono_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 1.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-7b/python/L0_r32_s17/best
+  init_adapter: runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  epochs: 1
+  lr: 5.0e-5
+  seed: 17
