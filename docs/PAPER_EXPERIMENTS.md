@@ -19,7 +19,7 @@ and expect queue waits in hours, not minutes (CLAUDE.md §1).
 | # | claim | current evidence | status |
 |---|---|---|---|
 | C1 | Breadth training **hurts** on an unseen obfuscator | on H1: **+4.12 [+1.81, +6.75]** (7B), **+2.47 [+0.41, +4.78]** (34B); on X1: **+3.79 / +4.28 / +2.64** at 7B/13B/34B and **+3.79 / +3.54 / +3.54** at s17/s42/s101 (E1/E2, 09-07) | **done** — two held-out columns, three scales, three seeds |
-| C2 | What transfers is the **mechanism family**, not invariance | X1→H1 lossless (0.08 pts); `tuned_X1` (7B) ties `tuned_L0` (34B), −0.33 [−2.88, +2.06]; `tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51] | **done**, one family pair — E5/E6 generalise it |
+| C2 | What transfers is the **mechanism family**, not invariance | X1→H1 lossless (0.08 pts); `tuned_X1` (7B) ties `tuned_L0` (34B), −0.33 [−2.88, +2.06]; `tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51]. **E5 (09-07) failed to generalise it to a second family** (+1.21 [−0.81, +3.22]) — but that family was too easy to test it (3.8 pts of damage vs X1's 15.8) | **one family pair only**; scope narrowed to *hard* families; E5b is the redo |
 | C3 | Within the trained ladder, transfer is near-complete at 7B+ | mean off-diagonal TR **0.9057 [0.8784, 0.9322]**; LOTO recovers 0.9452 [0.8940, 1.0058] of `mono_all` | **done** |
 | C4 | Modularity buys nothing, and we know why | router − random gate **+0.0000 [−0.0081, +0.0081]** while mixing is worth +0.2047; merging −3.13 vs specialists' +2.47; oracle over ten systems 52.9 pts below a permutation null | **done** |
 | C5 | One objective repairs breadth: **paired consistency** | `cons_lam3 − mono_all` on X1 **+4.59 [+3.16, +5.99]** (3 seeds); no `L0` tax (−0.30 [−1.80, +1.32]); λ=3 is the plateau | **done at 7B** — E1 tests scale, E2 tests mechanism |
@@ -75,7 +75,7 @@ teacher = **`mono_all`** (does a breadth teacher poison it?). 7B, seed 17.
 parent" and is much easier to apply; if only `tuned_L0` works, the claim is narrower and must say so.
 **Cost.** 2 × 4.4 h + eval ≈ **9.5 GPU-h**.
 
-### E5. A second family pair — the generality test for C2
+### ~~E5. A second family pair~~ — **DONE 2026-09-07, REFUTED (underpowered by construction)**
 **Question.** C2 rests on **one** family pair (X1 ↔ H1). A reviewer will ask whether "the family is
 what transfers" generalises or is a property of string-encoding+MBA.
 **Arms.** Build **X2** and **Y2**, two *siblings* of a second mechanism family that is neither
@@ -85,9 +85,22 @@ unlike anything in the current ladder. Train `tuned_X2` (7B, 22 min) and evaluat
 unseen sibling, against `tuned_L0` and `mono_all`.
 **Decision rule.** CONFIRM if `tuned_X2 − tuned_L0` on Y2 excludes zero above **and** `mono_all` does
 not beat `tuned_L0` on Y2 — i.e. both halves of C1+C2 reproduce on a family the ladder has never seen.
-**Cost.** generator ~1 CPU-day of *my* time, gate/verify on `normal`; then ~1.5 GPU-h.
-**This is the single most valuable new experiment in the list** — it converts the paper's central
-claim from an observation about one obfuscator family into a tested generalisation.
+**Result.** `tuned_X2 − tuned_L0` on the unseen sibling Y2 is **+1.21 [−0.81, +3.22]** — refuted on
+the rule as written. The arm is alive (X2 diagonal +2.97 [+1.04, +5.06]); the failure is **power**:
+Y2 costs `tuned_L0` only 3.8 pts where X1 costs 15.8, so there were ~1.2 pts of signal against a
+±2-pt interval. C2's scope narrows to families that badly damage a clean-code adapter. **A hard
+second family is still the most valuable experiment available** — see E5b.
+[`log/transfer/2026-09-07_second-family-pair-is-null.md`](../log/transfer/2026-09-07_second-family-pair-is-null.md)
+
+### E5b. A *hard* second family pair — the generality test, redone with power
+**Question.** E5's family was too gentle to test C2. Redo it with a family that destroys surface
+information rather than rerouting control flow, so a clean-code adapter loses ≳10 points on it.
+**Candidates.** Numeric-base re-encoding of every literal with computed reconstruction; or
+identifier-to-computed-attribute indirection (names resolved through a dict built at import).
+**Gate before training (the check E5 skipped).** Build the held-out sibling first, evaluate
+`tuned_L0` on it, and proceed **only if** the drop from `L0` exceeds 10 pts — the power estimate
+must come from the sibling's difficulty, not from hope.
+**Cost.** generator ~1 CPU-day; then ~1.5 GPU-h.
 
 ### E6. Which half of X1 does the work? — mechanism ablation
 **Question.** X1 is string-encoding **+** MBA arithmetic. Which half buys the H1/X1 transfer?

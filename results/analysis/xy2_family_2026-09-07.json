@@ -1,0 +1,50 @@
+{
+ "PRIMARY  tuned_X2 - tuned_L0": {
+  "delta": 1.21,
+  "ci": [
+   -0.81,
+   3.22
+  ],
+  "excl0": false
+ },
+ "SECONDARY tuned_X1 - tuned_L0": {
+  "delta": -0.32,
+  "ci": [
+   -2.42,
+   1.69
+  ],
+  "excl0": false
+ },
+ "mono_all - tuned_L0": {
+  "delta": -1.29,
+  "ci": [
+   -3.62,
+   0.89
+  ],
+  "excl0": false
+ },
+ "tuned_X2 - tuned_X1": {
+  "delta": 1.53,
+  "ci": [
+   -0.4,
+   3.38
+  ],
+  "excl0": false
+ },
+ "tuned_X2 - tuned_L0 on X2 (diagonal)": {
+  "delta": 2.97,
+  "ci": [
+   1.04,
+   5.06
+  ],
+  "excl0": true
+ },
+ "tuned_X2 - tuned_L0 on L0 (tax)": {
+  "delta": -1.56,
+  "ci": [
+   -3.17,
+   0.06
+  ],
+  "excl0": false
+ }
+}
