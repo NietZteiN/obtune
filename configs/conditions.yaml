@@ -122,6 +122,35 @@ conditions:
     size_cap_floor_chars: 1400
     params:
       min_total_sites: 3 # combined bar, H1's rule for H1's reason
+  X2:
+    family: exceptional
+    trainable: true
+    description: >
+      TRAINABLE member of a SECOND family pair (E5, 2026-09-07). Every `return <expr>` and
+      every `if`/`while` test is routed through a raised-and-caught bespoke `_Sig` exception
+      via identity helpers `_thru`/`_guard`. The family -- "follow the value out through the
+      exception machinery and back" -- is distinct from renaming (L1b/L1r/L2), dispatch
+      flattening (S1), inert material (S2) and encoding (X1/H1). Its sibling is Y2.
+      Python only. Reported in its own namespace.
+    size_cap: 12.0
+    size_cap_floor_chars: 1400
+    params:
+      min_total_sites: 3
+  Y2:
+    family: exceptional
+    trainable: false
+    description: >
+      THE UNSEEN SIBLING of X2, and EVAL-ONLY (E5, 2026-09-07). Same family, different
+      surface: the value crosses the boundary as `StopIteration.value` off a generator
+      `return`, read back by `_pull`/`_sel`. Never trained on -- an adapter that has seen Y2
+      voids the E5 comparison. NOT quarantined the way H1 is, and the difference matters: H1
+      was the paper's single discriminator with a two-read budget, whereas Y2 is regenerable
+      from src/obtune/obf/py/xy2.py at any time, so a re-read costs nothing and forecloses
+      nothing. That is also why Y2 EXTENDS the family evidence rather than replacing H1's.
+    size_cap: 12.0
+    size_cap_floor_chars: 1400
+    params:
+      min_total_sites: 3
   H1:
     family: heldout
     trainable: false

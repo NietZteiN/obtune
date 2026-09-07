@@ -53,6 +53,12 @@ TRANSFORM_REGISTRY: dict[str, dict[str, tuple[str, str]]] = {
         # X1: trainable SIBLING of the held-out H1 family (different encoding, different
         # identities, different helper names). Python only; reported in its own namespace.
         "X1": ("obtune.obf.py.x1", "transform"),
+        # X2/Y2 (E5, 2026-09-07): a SECOND family pair -- computation routed through
+        # exception machinery. X2 raises a bespoke _Sig; Y2 reads StopIteration.value off a
+        # generator return. Same family, different surface, exactly as X1 is to H1. Y2 is
+        # eval-only (conditions.yaml `trainable: false`) and is the unseen sibling.
+        "X2": ("obtune.obf.py.xy2", "transform_x2"),
+        "Y2": ("obtune.obf.py.xy2", "transform_y2"),
     },
     # The JS transforms are implemented in Babel (obf/js/transforms.mjs) and reached
     # through a Node subprocess; obf/js/adapters.py presents them as fn(ctx) callables.
