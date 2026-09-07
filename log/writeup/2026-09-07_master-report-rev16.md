@@ -78,3 +78,35 @@
 - **Next steps:** unchanged from the transfer thread — **H-cons-scale** (13B/34B) and
   **H-cons-teacher** are open and unscheduled, and **H-format-gate** needs a human decision. If
   either consistency hypothesis runs, §27.5/§27.7 should be promoted to their own section first.
+
+---
+
+**Addendum, same day — §26 recomputed (this is part of rev 16).**
+
+Rev 16 as first written updated §26's *prose* but left its table computed on 09-04. That was
+wrong in the way this project keeps finding: `30_best_per_condition.py` carries a hard-coded
+`GREEDY_GRID_A` phase list, and every phase run after 09-04 — `objectives_generic`, `x1_generic`,
+`trace_generic` — was simply invisible to it. The table said "59 CodeLlama-7b systems" and there
+were 83.
+
+- **Fixed in the script, not in the document:** the three phases added to `GREEDY_GRID_A` with a
+  comment saying why they share the intersection; **X1 added to `CONDS`** as a ranked column (it is
+  a *trainable* held-out family in its own namespace, so unlike H1 a leader there is not a
+  quarantine read); and `--out` made **required**, since this is the fourth dated artifact in a
+  week whose filename was hard-coded.
+- **What changed in the numbers:** four of seven leaders. `L1b` `mono_scale` → **`cons_lam3`**
+  0.4047; `L1r` `mono_scale` → **`mono_cases`** 0.3994; `L2` `mono_aug` → **`mono_cases`** 0.4006;
+  `S1` `s2fam` → **`cons_lam3_s42`** 0.4018; `S2` `mole_router` → **`cons_lam3_s42`** 0.4229; `L0`
+  unchanged (`mole_random`, and still nothing beats `tuned_L0` there). The **H1 column picked up
+  the final read automatically** — `tuned_X1` 0.3180 leads, and rev 15's hand-written "superseded"
+  block could be deleted because the recomputed row now says it. New **X1 column**: `x1_resample`
+  0.3237 leads.
+- **The X1 column is the most useful thing this recompute produced**, and not because of its
+  leader. `x1_resample` tops the column while its own hypothesis was *refuted* in §27.5 (+0.49
+  [−1.07, +1.90] over `tuned_X1`, not separable). A refuted arm leading a column is the cleanest
+  demonstration available of the point §21.3 and this section's own preamble keep making, so it is
+  stated in the section rather than smoothed over.
+- **Not done:** `26_campaign_arms.py` and `campaign_ranking_2026-09-05.json` have the same
+  frozen-phase-list problem and would produce a similar refresh. Left alone because §22 is written
+  against the campaign as it was run and re-ranking it would mix two questions; flagged here so the
+  next person does not assume it is current.

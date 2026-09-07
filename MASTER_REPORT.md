@@ -176,7 +176,7 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [23.3 Results](#233-results)
 - [24. What has not been run, in the CodeLlama era](#24-what-has-not-been-run-in-the-codellama-era)
 - [25. Provenance — the CodeLlama panel](#25-provenance--the-codellama-panel)
-- [26. What actually works — best system per condition, and on H1](#26-what-actually-works--best-system-per-condition-and-on-h1)
+- [26. What actually works — best system per condition, on X1 and on H1](#26-what-actually-works--best-system-per-condition-on-x1-and-on-h1)
 - [27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works](#27-since-rev-14--the-final-h1-read-its-trainable-proxy-scale-three-more-null-levers-and-the-objective-that-works)
   - [27.1 The final H1 read — the budget is spent, and every pre-registered test confirms](#271-the-final-h1-read--the-budget-is-spent-and-every-pre-registered-test-confirms)
   - [27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999](#272-x1--a-trainable-proxy-for-h1-that-predicts-it-to-r--0999)
@@ -4455,53 +4455,62 @@ are all §27, of which the last 49 are §27.7's round 2.
 
 ---
 
-## 26. What actually works — best system per condition, and on H1
+## 26. What actually works — best system per condition, on X1 and on H1
 
-*Added 2026-09-04.* Every ranking table in this project has invited the same misreading (§21.3),
-so this one ranks and then immediately tests each ranking against its own column leader **and**
-against the `tuned_L0` control. Recomputed by
+*Added 2026-09-04; recomputed 2026-09-07 over the full system set.* Every ranking table in this
+project has invited the same misreading (§21.3), so this one ranks and then immediately tests each
+ranking against its own column leader **and** against the `tuned_L0` control. Recomputed by
 [`scripts/analysis/30_best_per_condition.py`](scripts/analysis/30_best_per_condition.py) →
-`results/analysis/best_per_condition_2026-09-04.json`: **59 CodeLlama-7b systems**, Grid A, greedy,
-items intersected within each column (Grid B and the T=0.7 sampling phase excluded; a system present
-in several phases contributes its largest cell and the cross-phase spread is recorded).
+`results/analysis/best_per_condition_2026-09-07.json`: **83 CodeLlama-7b systems** (up from 59 on
+09-04 — the phase list now includes `objectives_generic`, `x1_generic` and `trace_generic`), Grid A,
+greedy, items intersected within each column (Grid B and the T=0.7 sampling phase excluded; a system
+present in several phases contributes its largest cell and the cross-phase spread is recorded).
 
-**Read the leaders as a band, not a winner.** A column leader is the maximum of 59 draws and is
-biased upward by that alone; in **every** column the top six are within each other's intervals. The
-column below that carries information is "vs `tuned_L0`", because that comparison was specified in
-advance.
+**Read the leaders as a band, not a winner.** A column leader is the maximum of 83 draws and is
+biased upward by that alone; in **every** column the top six are within each other's intervals —
+including X1, where the leader is an arm whose own hypothesis was refuted. The column that carries
+information is "vs `tuned_L0`", because that comparison was specified in advance.
 
 | condition | leader (acc) | is the leader separable from #2? | what genuinely beats `tuned_L0` |
 |---|---|---|---|
 | `L0` | `mole_random` 0.4329 | no (−0.06 [−1.26, +1.14]) | **nothing** — best margin +0.36, no interval clears zero |
-| `L1b` | `mono_scale` 0.4017 | no (−0.60 [−2.35, +1.21]) | **all six of the top six**: +2.90…**+3.92** |
-| `L1r` | `mono_scale` 0.3964 | no | `mono_scale` +2.16, `mole_random` +1.62 |
-| `L2` | `mono_aug` 0.3934 | no (a tie at 0.3934) | `mole_random` +1.32 only |
-| `S1` | `s2fam` 0.3978 | no | `mole_uniform` +1.60, `mole_random` +1.52 |
-| `S2` | `mole_router` 0.4211 | no (−0.06 [−0.60, +0.48]) | **all six of the top six**: +2.52…**+3.18** |
-| **`H1`** | `tuned_S2` 0.2834 | no (−0.58 [−2.31, +1.24]) | — (`tuned_L0` is itself 4th, inside the band) |
+| `L1b` | `cons_lam3` 0.4047 | no (−0.06 [−1.39, +1.15]) | **all six of the top six**: +3.92…**+4.22** |
+| `L1r` | `mono_cases` 0.3994 | no (−0.18 [−1.92, +1.62]) | **all six of the top six**: +1.92…**+2.46** |
+| `L2` | `mono_cases` 0.4006 | no (−0.12 [−1.80, +1.62]) | `mono_cases` +2.04, `cons_lam3_s42` +1.92 |
+| `S1` | `cons_lam3_s42` 0.4018 | no (−0.24 [−2.08, +1.52]) | `cons_lam3_s42` +2.33 only |
+| `S2` | `cons_lam3_s42` 0.4229 | no (−0.18 [−1.74, +1.26]) | **all six of the top six**: +3.00…**+3.36** |
+| **`X1`** | `x1_resample` 0.3237 | no (−0.49 [−1.90, +1.07]) | `x1_resample` +5.35, `tuned_X1` +4.86, `mono_allX` +3.95, `tuned_S2` +1.57 |
+| **`H1`** | **`tuned_X1` 0.3180** | no (−0.91 [−3.05, +1.15]) | — (`tuned_L0` is itself 6th; see below) |
 
-**Two conditions carry the whole of what obfuscation training buys.** On `L1b` and `S2` a broad
-spread of arms beats the clean-code control by ~3 points with intervals clearing zero; on `L1r`,
-`L2` and `S1` the best real margin is 1.3–2.2 points; on `L0` **nothing beats `tuned_L0` at all**.
-Those two conditions are exactly the two mechanisms this report identifies independently —
-identifier-distrust (§22.6) and dead-code elimination (§15–§16, §19.6). The ladder's other four
-conditions have no mechanism attached to them and no reliable winner.
+**The consistency objective now leads or co-leads four of the six trainable columns**, which it did
+not on 09-04 — `cons_lam3` on `L1b`, `cons_lam3_s42` on `S1` and `S2`, and both inside the top four
+on `L1r`. That is the §27.5/§27.7 result appearing in a ranking built for a different purpose, and
+it is the one substantive change to this table since it was first written. It does not change the
+shape below.
 
-**On H1 the top four are one band**: `tuned_S2` 0.2834, `tuned_S1` 0.2776, `merge_dare_ties` 0.2768,
-**`tuned_L0` 0.2735** — no pair separable. The first real gap is to `l0merge_dare_ties` at −2.14
-[−4.12, −0.33] below the leader. So the honest answer to "what is best on the held-out obfuscator"
-is *a specialist in an inert-material transform, a merge, or the clean-code adapter — pick on other
-grounds*, and the one thing the data does say is what is **worst**: `mono_all`, the adapter trained
-on all six obfuscations, at 0.2323 (§20).
+**Two conditions still carry most of what obfuscation training buys.** On `L1b` and `S2` a broad
+spread of arms beats the clean-code control by 3–4 points with intervals clearing zero; `L1r` now
+joins them at a smaller 1.9–2.5; on `L2` and `S1` only one or two arms clear; on `L0` **nothing
+beats `tuned_L0` at all**. `L1b` and `S2` are exactly the two mechanisms this report identifies
+independently — identifier-distrust (§22.6) and dead-code elimination (§15–§16, §19.6).
 
-> **Superseded on 2026-09-05 (§27.1).** The final H1 read added five arms and the column is now
-> frozen: the leader is **CodeLlama-34B `tuned_L0` at 0.3213**, tied by 7B **`tuned_X1` 0.3180**
-> (−0.33 [−2.88, +2.06]) and 7B `mono_allX` 0.3089 — every one of them beats the band above
-> (`tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51]). "Pick on other grounds" therefore no longer
-> applies: on H1, an adapter that has seen the *family* (X1) or a 5× larger clean-code adapter
-> wins outright. On the seven-condition set (`L0`…`S2` + X1) the best pooled **7B** system is
-> **`cons_lam3_s42` at 0.3937** (§27.7), with the same recipe at 0.3919 / 0.3867 at the other two
-> seeds; none of them was ever read on H1 and none can be.
+**On X1 the ranking inverts the ladder, and the leader is a refuted arm.** The three arms that saw
+the family (`x1_resample` 0.3237, `tuned_X1` 0.3188, `mono_allX` 0.3097) sit 4–5 points above
+everything that did not, and the best non-family arm is `tuned_S2` at 0.2858. `x1_resample` leads
+the column while its own hypothesis (H-resample, §27.5) was **refuted** — it is +0.49 [−1.07, +1.90]
+over `tuned_X1`, i.e. not separable from it. This is the clearest illustration in the report of why
+a column maximum is not a finding.
+
+**On H1 the final read reordered the column.** The leader is now **`tuned_X1` 0.3180**, with
+`mono_allX` 0.3089 not separable from it (−0.91 [−3.05, +1.15]); the whole pre-09-05 band —
+`tuned_S2` 0.2834, `tuned_S1` 0.2776, `merge_dare_ties` 0.2768, `tuned_L0` 0.2735 — now sits 3.5–4.5
+points below the leader with intervals that clear zero. *The 09-04 revision of this table reported
+`tuned_S2` as the H1 leader and concluded "pick on other grounds"; the 2026-09-05 final read
+(§27.1) retired that conclusion.* The answer to "what is best on the held-out obfuscator" is now
+**an adapter that has seen the mechanism family** — and, at 34B, the clean-code adapter, which is
+not in this 7B table but reaches 0.3213 (§27.1, statistically tied with 7B `tuned_X1` at
+−0.33 [−2.88, +2.06]). What the data still says most clearly is what is **worst**: `mono_all`, the
+adapter trained on all six obfuscations, at 0.2323 (§20).
 
 **If accuracy is the only goal, the answer is not on this table.** CodeLlama-13b `mono_all` reaches
 0.4455 / 0.4228 / 0.4192 / 0.4192 / 0.4122 / 0.4439 on `L0`…`S2` and 13B `tuned_L0` reaches
@@ -4698,7 +4707,8 @@ conditions × 1,214–1,670 items.
 and ~4 pts on the held-out family (§20, §22.5). `cons_lam3` keeps the gain (+2.24 over `tuned_L0`
 on the five trained non-L0 conditions), pays neither (−0.30 on `L0`, +1.32 on X1, both inside
 noise), and at **0.3919 pooled is the highest of the fifteen 7B systems on this seven-condition
-set**. The mechanism separates into two parts: distilling from the clean-code teacher on the same
+set** — and on the per-condition ranking it leads or co-leads four of the six trainable columns
+(§26). The mechanism separates into two parts: distilling from the clean-code teacher on the same
 input already recovers +2.80 on X1, and showing the teacher the *L0 parent* instead adds a further
 +0.94 pooled / +2.31 on X1 at λ = 3 — a consistency signal across surfaces, which is the closest
 thing to "semantic invariance" any training arm in this report has produced. Both of this
@@ -4815,8 +4825,14 @@ it is logged as **H-format-gate** for the human to settle before it is used agai
   format-clean subset and the winning arms format-fail *more* than the controls they beat, so
   nothing rests on it, and re-specifying a frozen threshold after seeing which reads it would void
   is left to the human as **H-format-gate**. **§25.1** — corpus **3,237 cells / 2,622,398 trials**
-  (7B panel 748 / 1,138,674). **§26** — the best 7B system on the seven-condition set updated to
-  `cons_lam3_s42` 0.3937. **§27.5** and **§1** — the "single seed" and "λ read at two values"
+  (7B panel 748 / 1,138,674). **§26 recomputed over the full system set** —
+  `30_best_per_condition.py` had a phase list frozen on 09-04 and so had never seen the
+  objectives, X1 or trace arms; it now ranks **83 systems** (from 59), carries an **X1 column**, and
+  its H1 column picks up the final read automatically. Four leaders change (`L1b` → `cons_lam3`,
+  `L1r`/`L2` → `mono_cases`, `S1`/`S2` → `cons_lam3_s42`, `H1` → `tuned_X1`), the consistency
+  objective leads or co-leads four of the six trainable columns, and rev 15's hand-written
+  "superseded" block for the H1 row is replaced by the recomputed row itself. The script now
+  **requires** `--out`. **§27.5** and **§1** — the "single seed" and "λ read at two values"
   cautions retired and pointed at §27.7. **§20** — its caveat "the `mono_all` s42/s101 rows wait on
   `final_eval`" struck: the budget was spent on a manifest that did not include them, so H1 has no
   seed replicate and can never acquire one; X1 (§27.7) is the substitute, and the headline now has

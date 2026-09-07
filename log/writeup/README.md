@@ -49,6 +49,9 @@
   `final_eval`", which will never exist now the budget is spent. Rev 15's "the KL term is worth
   ~1.3 pts from either start" marked as qualified rather than rewritten. The round-2 format-gate
   defect published in §27.7 and §24, deliberately un-repaired. Corpus **3,237 / 2,622,398**.
+  Addendum the same day: **§26 recomputed over 83 systems** (was 59 — the ranking script's phase
+  list had never seen the objectives, X1 or trace arms), gaining an **X1 column** and four new
+  column leaders, with the H1 row picking up the final read automatically.
 - [`2026-09-06_master-report-rev15.md`](2026-09-06_master-report-rev15.md) — **rev 15**,
   [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). Two days appended as **§27** (the spent H1
   read and its four confirmations, X1 as the r = 0.999 proxy, 34B/Llama scale, three more null

@@ -16,10 +16,13 @@ and the spread across phases is reported, so a duplicate can never silently chan
 Items are intersected across every system in a column before anything is compared, so each
 column is one program set. H1 comes from `h1_codellama` (already-spent reads; no new budget).
 
-Writes results/analysis/best_per_condition_2026-09-04.json.
+Writes results/analysis/best_per_condition_<date>.json (pass --out; the filename is a dated
+artifact, so it is required rather than defaulted -- three separate scripts in this directory
+overwrote a dated file in the first week of September because the name was hard-coded).
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from collections import defaultdict
@@ -35,8 +38,15 @@ from obtune.control_relative import bootstrap_delta  # noqa: E402
 CELLS = RESULTS_DIR / "cells"
 MODEL = "codellama-7b"
 GREEDY_GRID_A = ["rq1_generic", "rq2_generic", "loto_generic", "mole_generic",
-                 "merge_sweep_generic", "rank_generic", "extra_generic", "baselines_generic"]
-CONDS = ["L0", "L1b", "L1r", "L2", "S1", "S2"]
+                 "merge_sweep_generic", "rank_generic", "extra_generic", "baselines_generic",
+                 # added 2026-09-07: the greedy Grid A phases run after the 09-04 revision.
+                 # `objectives_generic` and `x1_generic` share the heldout rows the older phases
+                 # use, so they join the same intersection; `trace_generic` is greedy Grid A too.
+                 "objectives_generic", "x1_generic", "trace_generic"]
+# X1 is a held-out *trainable* family (its own namespace, configs/conditions.yaml) and is ranked
+# alongside the ladder rather than with H1: unlike H1 it may be trained on, so a column leader
+# there is not a quarantine read.
+CONDS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
 NBOOT, TOPK = 2000, 6
 
 
@@ -82,6 +92,11 @@ def rank(frames: dict[str, pd.DataFrame], control: str = "tuned_L0") -> dict:
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--out", required=True,
+                    help="dated output path, e.g. results/analysis/best_per_condition_2026-09-07.json")
+    args = ap.parse_args()
+
     report = {"model": MODEL, "grid": "A/heldout", "decoding": "greedy",
               "phases": GREEDY_GRID_A, "n_boot": NBOOT, "conditions": {}, "H1": {}}
 
@@ -119,7 +134,9 @@ def main() -> int:
                    + ("*" if vl["excludes_zero"] else ""))
         print(f"  {i+1}. {k:24s} {a:.4f}{tag}")
 
-    out = RESULTS_DIR / "analysis" / "best_per_condition_2026-09-04.json"
+    out = Path(args.out)
+    if not out.is_absolute():
+        out = ROOT / out
     out.write_text(json.dumps(report, indent=1))
     print(f"\nwrote {out}   (* = interval excludes zero)")
     return 0
