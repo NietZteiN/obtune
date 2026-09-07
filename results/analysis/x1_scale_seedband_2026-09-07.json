@@ -1,0 +1,94 @@
+{
+ "7B": {
+  "tuned_L0": 0.2702,
+  "mono_all": 0.2323,
+  "delta_pts": 3.79,
+  "ci": [
+   1.65,
+   6.09
+  ],
+  "excludes_zero": true,
+  "ff_tuned_L0": 0.0428,
+  "ff_mono_all": 0.0124
+ },
+ "13B": {
+  "tuned_L0": 0.2965,
+  "mono_all": 0.2537,
+  "delta_pts": 4.28,
+  "ci": [
+   2.06,
+   6.5
+  ],
+  "excludes_zero": true,
+  "ff_tuned_L0": 0.0412,
+  "ff_mono_all": 0.0231
+ },
+ "34B": {
+  "tuned_L0": 0.3262,
+  "mono_all": 0.2998,
+  "delta_pts": 2.64,
+  "ci": [
+   0.25,
+   5.1
+  ],
+  "excludes_zero": true,
+  "ff_tuned_L0": 0.0437,
+  "ff_mono_all": 0.0173
+ },
+ "tuned_L0_13B-7B": {
+  "delta_pts": 2.64,
+  "ci": [
+   0.41,
+   4.94
+  ],
+  "excludes_zero": true
+ },
+ "tuned_L0_34B-7B": {
+  "delta_pts": 5.6,
+  "ci": [
+   3.37,
+   7.9
+  ],
+  "excludes_zero": true
+ },
+ "tuned_L0_34B-13B": {
+  "delta_pts": 2.97,
+  "ci": [
+   0.91,
+   5.27
+  ],
+  "excludes_zero": true
+ },
+ "seed_band": {
+  "17": {
+   "tuned_L0": 0.2702,
+   "mono_all": 0.2323,
+   "delta_pts": 3.79,
+   "ci": [
+    1.56,
+    5.93
+   ],
+   "excludes_zero": true
+  },
+  "42": {
+   "tuned_L0": 0.2702,
+   "mono_all": 0.2348,
+   "delta_pts": 3.54,
+   "ci": [
+    1.48,
+    5.6
+   ],
+   "excludes_zero": true
+  },
+  "101": {
+   "tuned_L0": 0.2685,
+   "mono_all": 0.2331,
+   "delta_pts": 3.54,
+   "ci": [
+    1.73,
+    5.6
+   ],
+   "excludes_zero": true
+  }
+ }
+}

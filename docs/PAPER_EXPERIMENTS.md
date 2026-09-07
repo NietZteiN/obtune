@@ -18,7 +18,7 @@ and expect queue waits in hours, not minutes (CLAUDE.md §1).
 
 | # | claim | current evidence | status |
 |---|---|---|---|
-| C1 | Breadth training **hurts** on an unseen obfuscator | `tuned_L0 − mono_all` on H1: **+4.12 [+1.81, +6.75]** (7B), **+2.47 [+0.41, +4.78]** (34B) | **done**, two scales |
+| C1 | Breadth training **hurts** on an unseen obfuscator | on H1: **+4.12 [+1.81, +6.75]** (7B), **+2.47 [+0.41, +4.78]** (34B); on X1: **+3.79 / +4.28 / +2.64** at 7B/13B/34B and **+3.79 / +3.54 / +3.54** at s17/s42/s101 (E1/E2, 09-07) | **done** — two held-out columns, three scales, three seeds |
 | C2 | What transfers is the **mechanism family**, not invariance | X1→H1 lossless (0.08 pts); `tuned_X1` (7B) ties `tuned_L0` (34B), −0.33 [−2.88, +2.06]; `tuned_X1 − tuned_S2` +3.46 [+1.32, +5.51] | **done**, one family pair — E5/E6 generalise it |
 | C3 | Within the trained ladder, transfer is near-complete at 7B+ | mean off-diagonal TR **0.9057 [0.8784, 0.9322]**; LOTO recovers 0.9452 [0.8940, 1.0058] of `mono_all` | **done** |
 | C4 | Modularity buys nothing, and we know why | router − random gate **+0.0000 [−0.0081, +0.0081]** while mixing is worth +0.2047; merging −3.13 vs specialists' +2.47; oracle over ten systems 52.9 pts below a permutation null | **done** |
@@ -35,7 +35,7 @@ into a general one.
 
 ## 2. Tier 1 — run before submitting
 
-### E1. X1 column at 13B and 34B — *eval only, adapters already exist*
+### ~~E1. X1 column at 13B and 34B~~ — **DONE 2026-09-07, CONFIRMED**
 **Question.** C1 and C2 rest on H1, and **H1 can never be read again** (§3.2 budget spent). Does the
 held-out result replicate at scale on a column we *can* still read?
 **Arms.** `tuned_L0`, `mono_all` at 13B and 34B, evaluated on X1 (4 cells). Both adapters exist at
@@ -43,13 +43,18 @@ both scales; nothing is trained.
 **Why first.** It is ~15 minutes of GPU and it gives the paper's central claim a scale replication
 that does not depend on the spent budget. If `tuned_L0 − mono_all` on X1 is positive at 13B/34B, C1
 stands on two independent held-out columns.
-**Cost.** < 0.5 GPU-h. **Blocks nothing. Do this first.**
+**Result.** `tuned_L0 − mono_all` on X1: 7B **+3.79 [+1.65, +6.09]**, 13B **+4.28 [+2.06, +6.50]**,
+34B **+2.64 [+0.25, +5.10]** — all three clear zero (job 381291/381292, 234/301 s). C1 now stands on
+two independent held-out columns at three scales. Bonus: the X1↔H1 proxy, calibrated only at 7B,
+validates at **34B** to |Δ| 0.49 / 0.33 pts against the already-spent H1 cells.
+[`log/transfer/2026-09-07_x1-scale-and-seed-band.md`](../log/transfer/2026-09-07_x1-scale-and-seed-band.md)
 
-### E2. Seed band for the headline contrast on X1 — *eval only, adapters already exist*
+### ~~E2. Seed band for the headline contrast on X1~~ — **DONE 2026-09-07, CONFIRMED**
 **Question.** `mono_all` has X1 reads at s17/s42/s101 (round 2), but `tuned_L0` has only s17. The
 headline contrast therefore has no seed band on any held-out column, and H1 can never provide one.
 **Arms.** `tuned_L0_s42`, `tuned_L0_s101` on X1 (2 cells). Adapters exist.
-**Cost.** < 0.2 GPU-h. **Do this with E1, in the same job.**
+**Result.** +3.79 / +3.54 / +3.54 at s17/s42/s101, every interval clearing zero; `tuned_L0` on X1
+spans **0.16 pts** across seeds (job 381290, 201 s). The headline is not a seed draw.
 
 ### E3. H-cons-scale — does the one positive result survive scale?
 **Question.** C5 is a 7B result. If paired consistency is a small-model repair it is a much weaker
@@ -154,15 +159,14 @@ this paper and the bilingual design the project was chartered around.
 
 ## 6. Suggested order
 
-1. **E1 + E2 together** — one eval job, < 1 GPU-h, gives the headline a scale replication *and* a seed
-   band on a readable column. Nothing else has this ratio.
+1. ~~E1 + E2~~ — **done 2026-09-07, both CONFIRMED** in ~12 min of GPU.
 2. **E5 generator** (CPU, no queue) in parallel with **E3** (the long 34B run) on the GPU.
 3. **E4**, **E6** — both short, both sharpen a mechanism claim.
 4. **E7** (Python GLMM+FDR) as CPU work throughout.
 5. **E10 decision** — run or cut, but decide before the framing is written.
 6. Tier 2 as schedule allows; Tier 3 only on reviewer demand.
 
-**Total Tier 1: ≈ 33 GPU-hours** plus ~1.5 CPU-days of generator work. At current `h200` queue
+**Total Tier 1 remaining (E3–E6): ≈ 32 GPU-hours** plus ~1.5 CPU-days of generator work. At current `h200` queue
 behaviour that is roughly a week of submit-and-return-tomorrow, not a month.
 
 **Pre-registration.** Every experiment above with a decision rule gets that rule committed to
@@ -174,6 +178,9 @@ it inherits none of H1's credibility.
 
 ## Changelog
 
+- **2026-09-07 (b)** — E1 and E2 run and **both CONFIRMED**; struck through with their results, C1's
+  evidence row rewritten to two held-out columns / three scales / three seeds, and the Tier-1 total
+  reduced to E3–E6. The X1↔H1 proxy gained a 34B validation that was not planned.
 - **2026-09-07** — Created, after objectives round 2 closed and §26 was recomputed over 83 systems.
   Grounded in `MASTER_REPORT.md` rev 16; costs measured from `training_summary.json` across the
   existing adapter tree rather than estimated. Records the single-language scope decision and the
