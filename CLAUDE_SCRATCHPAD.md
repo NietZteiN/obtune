@@ -1013,3 +1013,8 @@ external 34B chain (382141 → 382142); `report` 382561 is `afterany` on every `
 walltime 78.5 GPU-h (the 34B composite eval and the three 7 h objective arms dominate). Queue:
 everything pending on Priority except `an_fdr`, held by QOSMaxJobsPerUserLimit. Monitor task
 `b5er8g695` reports every terminal state. Fix-and-resubmit protocol: `run.py --only <stage>`.
+- **X1 split coverage (noted before any read, 382533–382535):** X1m 4,263 pairs / 1,053 held-out
+  items; X1s 2,910 pairs / 738 items (X1: 4,947 / 1,215). X1s applies to fewer programs (needs
+  string literals). So `tuned_X1s` trains on ~40 % less data than `tuned_X1m`; if H-family-unit is
+  PARTIAL with the X1s→X1m leg weak, data volume is a confound to name — E12's half/quarter arms
+  calibrate it. Rules unchanged.
