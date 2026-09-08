@@ -1301,3 +1301,20 @@ human set, so human coverage is 98/98). Labels are `T_*` (`schema.TierCondition`
   `output_parsed`, and if they disagree by more than 2 pts on any arm the strict number is reported
   as an underestimate rather than quietly replaced.
 - Gates nothing. If ρ is flat this is a null and gets written as one.
+
+**E13 corrections and gates, recorded BEFORE the read (2026-09-08).**
+1. **Split leakage checked explicitly** (§4 item 1, the first silent failure on the list). The JS
+   `data/train/pairs/<cond>/javascript.jsonl` files carry **all three splits**, and the training
+   loader filters to `train`. Verified: `train` 473 programs, `val` 33, `test` 168, and the 168 test
+   programs are **exactly** the heldout eval set with **zero** overlap against `train` or `val`.
+   No leakage.
+2. **The pre-registration's data-volume figure was wrong and is corrected here, before any result is
+   looked at.** It said "JS trains on ~12.1k rows against Python's ~26.8k" — that 12.1k counted all
+   splits. The **train** splits are **JS 8,490 rows / 473 programs** against **Python 26,841 / 1,563**,
+   so JS is **32 %** of Python's volume, not 45 %. This sharpens H-xlang-volume rather than changing
+   it: 32 % is close to E12's *quarter* arm, where breadth's taxes essentially vanished
+   (`mono_quarter` X1 tax −0.49 n.s.; `mono_quarter − mono_all` @ X1 +3.29). The prediction on record
+   is therefore that **breadth's JS L0 cost should be small or undetectable and its stacked-seen gain
+   should still be there**. H-xlang-volume remains REPORTED, not verdicted — the confounds named in
+   the pre-registration (different programs, tokenizer, per-language ladder surface) are untouched by
+   this correction.
