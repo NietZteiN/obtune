@@ -15,6 +15,11 @@ phase: human_align
 experiment_id: human_align
 run_tag: human_align
 eval_source: testset
+# Both languages are in scope (50 of the 98 human cells are Python, 48 JavaScript). `languages`
+# rather than `language`, because eval_vllm reads `cfg["languages"] or [cfg["language"]]` and then
+# requires --language to be a member of it; a single `language:` line would make the JS job an error
+# instead of a second read.
+languages: [python, javascript]
 
 engine:
   gpu_memory_utilization: 0.85

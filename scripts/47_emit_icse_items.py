@@ -18,6 +18,7 @@ Writes data/eval/testset/items/T_<tier>/<language>.jsonl. Idempotent.
 from __future__ import annotations
 
 import argparse
+import ast
 import json
 import sys
 from collections import Counter
@@ -26,6 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from obtune.data import canon, check_output_repr  # noqa: E402
 from obtune.schema import EvalItem  # noqa: E402
 from obtune.testset import ingest  # noqa: E402
 
@@ -59,6 +61,34 @@ def args_repr_from(inp: str, code: str, language: str) -> tuple[str | None, str 
         return None, None
 
 
+def canonical_gold(raw: str) -> tuple[str, bool]:
+    """The study's answer key, re-spelled into the corpus's canonical-JSON contract.
+
+    WHY THIS IS LEGITIMATE, and it is the one judgement call in this script. The key carries the
+    study's own spelling — `FALSE`, `True`, single-quoted strings — and `data.check_output_repr`
+    requires valid JSON that re-canonicalizes to itself, so 34 of the 350 rows are rejected as
+    written. The human side of E10 was graded by MANUAL adjudication (`manual_status` in
+    paper2_graded.csv), i.e. a person decided whether a response was right, so spelling never
+    mattered for the humans. Canonicalizing the model's gold therefore moves the two sides CLOSER
+    to parity, not further apart. The original string is kept verbatim in `meta.output_repr_study`
+    so nothing is lost and the read reports how many rows were re-spelled.
+
+    Returns (canonical_repr, changed).
+    """
+    raw = raw.strip()
+    if check_output_repr(raw):
+        return raw, False
+    for parse in (json.loads, ast.literal_eval):
+        try:
+            return canon(parse(raw)), True
+        except Exception:
+            pass
+    low = raw.lower()
+    if low in {"true", "false", "null", "none", "nan"}:
+        return canon({"true": True, "false": False}.get(low, None)), True
+    return canon(raw), True                        # anything else is the string it looks like
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
@@ -69,7 +99,7 @@ def main() -> int:
     print(f"read {len(rows)} legacy rows from {SRC}")
 
     out: dict[tuple[str, str], list[dict]] = {}
-    bad = 0
+    bad = n_regold = 0
     for r in rows:
         tier, lang = r["tier_icse"], r["language"]
         args, callee = args_repr_from(r["input"], r["code"], lang)
@@ -80,6 +110,8 @@ def main() -> int:
         # The stored callee is a placeholder in Dataset B ("myFunct"); the code's own definition
         # wins, exactly as in ingest, or the prompt would name a function that does not exist.
         entry = ingest._entry_from_code(r["code"], lang) or callee or r["fn_name"]
+        gold, regold = canonical_gold(str(r["expected_output"]))
+        n_regold += int(regold)
         try:
             item = EvalItem(
                 item_id=f"{r['task_id']}::T_{tier}::0",
@@ -90,13 +122,14 @@ def main() -> int:
                 code=r["code"],
                 entry_point=entry,
                 args_repr=args,
-                output_repr=str(r["expected_output"]),
+                output_repr=gold,
                 case_role="human",
                 tier_icse=tier,
                 meta={"source": "legacy_icse", "dataset_source": r.get("dataset_source"),
                       "question_number": r.get("question_number"),
                       "source_sha256": r.get("source_sha256"), "fn_name_stored": r.get("fn_name"),
-                      "input_raw": r["input"],
+                      "input_raw": r["input"], "output_repr_study": str(r["expected_output"]),
+                      "gold_recanonicalised": regold,
                       # the human study's own tag, so the E10 join needs no re-derivation
                       "human_question_tag": f"{r['task_id']}_{tier}"},
             )
@@ -107,7 +140,8 @@ def main() -> int:
         out.setdefault((f"T_{tier}", lang), []).append(item.model_dump())
 
     print(f"{'would write' if a.dry_run else 'writing'} {len(out)} files, {sum(map(len, out.values()))} items"
-          f"{f' ({bad} skipped)' if bad else ''}")
+          f"{f' ({bad} skipped)' if bad else ''}; {n_regold} gold values re-spelled into canonical JSON "
+          f"(originals kept in meta.output_repr_study)")
     for (cond, lang), items in sorted(out.items()):
         p = DST / cond / f"{lang}.jsonl"
         langs = Counter(i["language"] for i in items)
