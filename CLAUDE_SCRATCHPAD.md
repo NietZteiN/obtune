@@ -1078,3 +1078,11 @@ than dropping the long tail — the split's point is that X1m and X1s see the sa
 dependents 382539/382540/382541 cancelled; chain resubmitted `tr_X1s` **382803** → `ck_X1s` 382804 →
 `ev_x1split` 382805 (also afterok `ck_X1m` 382538) → `an_x1split` 382806. RQ2′ rules untouched; the
 window difference is a caveat to name beside the coverage asymmetry already on file.
+
+### 2026-09-08 — RQ5′ READ (jobs 382620/382621/382622 all COMPLETED; nothing re-specified)
+- Format gate: no arm blocked (max `tuned_L0` 0.187). H-inv-transfer **REFUTED** (−1.67 [−3.29, −0.04] vs
+  base; −1.22 n.s. vs formatonly; forward +18.09). H-inv-breadth INCONCLUSIVE (+1.45 [−0.04, +2.94]).
+  H-inv-cons CONFIRMED (+1.73*) but `cons_lam3 − base` +0.49 n.s. H-inv-family CONFIRMED (+7.00*, q = 0.005;
+  `tuned_X1 − base` @ X1 +3.37*). H-inv-diagonal CONFIRMED 3/5 (L1b/S1/S2 vs tuned_L0) — vs base S2 is −3.7.
+- Written: `log/transfer/2026-09-08_bidirectional-inverse-task-read.md`, RQ_SUMMARY §6/§6.3, PAPER_EXPERIMENTS E16.
+- Next: `run.py --only report` (382561 predates an_inverse). No tuning on the read; no H1.

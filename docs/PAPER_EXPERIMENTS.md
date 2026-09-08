@@ -152,8 +152,8 @@ fingerprint is a recurring character in the paper and half of it is unexplained.
   reviewer disputes that data scale is saturated.
 - **E13. H-mixture** (§19.4): is the +0.205 mixture gain capacity or ensembling?
 - **E14. H-peaked-breadth** (§22.1): any-of-8 for `merge_dare_ties` and the uniform MoLE mixture.
-- **E16. RQ5′ — the bidirectional stress test** (added 2026-09-08 at the user's request; **submitted**
-  — jobs 382620/382621 → 382622). Every adapter was trained on program + call → value; ask the same
+- **E16. RQ5′ — the bidirectional stress test** (added 2026-09-08 at the user's request; **done 2026-09-08**
+  — jobs 382620/382621 → 382622: **H-inv-transfer REFUTED** — `tuned_L0` +18.09 forward, −1.67 [−3.29, −0.04] backwards; `cons_lam3` +0.49 vs base (no harm), `mono_all` −1.30; **H-inv-family CONFIRMED**, `tuned_X1` +3.37 over base on X1-inverse, the only above-base transfer, q = 0.005; diagonal 3/5 by rule but S2 −3.7 vs base. Unregistered: `tuned_L1b` best inverse arm on all 7 conditions. `log/transfer/2026-09-08_bidirectional-inverse-task-read.md`). Every adapter was trained on program + call → value; ask the same
   held-out items backwards (program + value → a call that returns it, CRUXEval-I style), graded by
   **execution**, for 11 forward-trained arms on 7 conditions (no H1). A `formatonly` control and a
   25 % format gate separate answer-format adaptation from reasoning. Pre-registered: H-inv-transfer
@@ -200,7 +200,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | scheduled |
 | RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | scheduled |
 | RQ-C depth | `bld_depth` → `emit_depth_items` → `ev_depth` → `an_depth` | scheduled |
-| E16 / RQ5′ | `ev_inverse_core`, `ev_inverse_specialists` → `an_inverse` (`42_inverse.py`) | **submitted 2026-09-08** (382620/382621 → 382622) |
+| E16 / RQ5′ | `ev_inverse_core`, `ev_inverse_specialists` → `an_inverse` (`42_inverse.py`) | **done 2026-09-08** (382620/382621 → 382622): H-inv-transfer REFUTED; family holds; `results/analysis/pipeline/inverse_codellama7b.json` |
 | report | `report` (`afterany` on every `an_*`) → `results/analysis/pipeline_report_<date>.md` | scheduled |
 
 Requested GPU walltime ≈ 45 h across 47 stages; the plan is idempotent (`done_when` files), so a
@@ -226,6 +226,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E16 read)** — E16 done: forward tuning does not transfer to the inverse task (−1.67 vs +18.09); only the X1-family adapter beats base backwards, on X1.
 - **2026-09-08** — E16 (RQ5′, bidirectional / inverse-task stress test) added at the user's request and submitted; stage row in §6.
 
 - **2026-09-07 (c)** — §6 superseded by the pipeline mapping table; E5b and E10 recorded as

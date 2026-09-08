@@ -319,7 +319,7 @@ before submission; **no stage reads H1** (budget spent), the held-out family is 
 | **RQ2′** | What is the **unit** of transfer? | family, not transform and not "invariance": X1→H1 transfer is lossless (0.08 pts); `tuned_X1` at 7B ties `tuned_L0` at 34B (−0.33 [−2.88, +2.06]); the gentle second family (X2/Y2) was underpowered by construction. | X1 split into its MBA half (X1m) and string-encoding half (X1s), each trained alone: does each half transfer to the other (`an_x1split`, H-family-unit) and does either half carry the whole (H-whole-ge-parts). E5b (a hard second family) waits on a generator. |
 | **RQ3′** | Can an objective get **both sides** of the trade? | paired consistency (`cons_lam3`, parent view, tuned_L0 teacher): +4.59 over `mono_all` on X1 with no L0 tax (−0.30 [−1.80, +1.32]), and +4.76 over `tuned_L0` on stacked-seen, not below `mono_all` there (+1.27 [−0.02, +2.59]). | survives scale? 13B/34B (`an_e3`, H-E3); which ingredient — the parent view, the tuned teacher, or a breadth teacher (`an_e4`); replicates on Llama-3.1-8B (`an_e8`). |
 | **RQ4′** | **Why?** *(support, not a co-equal claim)* | RQ3's attention re-anchoring on seen conditions; modularity's failure (no complementary capability for a router or merge to find) as evidence about the representation. | identifier-knockout signature on X1 across five arms (`an_attention`, **done 2026-09-08: both REFUTED** — `cons_lam3 − mono_all` −0.0001 [−0.097, +0.102] nats, `mono_all − tuned_L0` +0.019 [−0.088, +0.126]; the knockout moves gold log-prob by < 0.5 % for every arm on every condition, so the instrument is inert and RQ4′ keeps only its correlational support. Unplanned: `mono_all`'s clean log P(gold) on X1 is −11.4 vs −6.3 for `tuned_L0`/`cons_lam3`); BH-FDR over the transfer and arms families (`an_fdr`, **done 2026-09-08**: the specialist matrix is 1/30 after multiplicity — only `tuned_S2` on S2, q = 0.030 — while the arms the paper rests on survive: `mono_all` X1 −3.79 q = 0.017, `tuned_X1` X1 +4.86 q = 0.009, `cons_lam3` L1b/S2 q ≤ 0.014; `cons_lam3 − tuned_L0` on X1 does not, q = 0.29). Human alignment (E10) is disabled, not pretended. |
-| **RQ5′** | Does forward tuning also help the **inverse** task — a stress test for understanding vs. task fitting? | nothing yet: every adapter was trained on program + call → **value**; no arm has ever been asked for the **input**. The ATTRIB paper (`paper_bidirectional/`) found tuning direction-specific for *code emission* (obfuscate vs deobfuscate); whether that holds at *value* level is open. | the same held-out items asked backwards — program + return value → a call that returns it, **graded by execution** (any arguments that produce the value count; `src/obtune/inverse.py`) — for 11 forward-trained arms on 7 conditions (`ev_inverse_*` → `an_inverse`). A `formatonly` arm separates answer-format adaptation from reasoning; a format gate (>25 % unparsable calls) marks arms NOT INTERPRETABLE. |
+| **RQ5′** | Does forward tuning also help the **inverse** task — a stress test for understanding vs. task fitting? | **No** (`an_inverse`, done 2026-09-08): `tuned_L0` gains +18.09 forward and loses −1.67 [−3.29, −0.04] backwards on the same programs (H-inv-transfer **REFUTED**; DR −0.09). `mono_all` −1.30 vs base (at base); `cons_lam3` +0.49 (does no harm, the only SFT-family arm that does not); `tuned_X1` on X1 +3.37 [+0.41, +6.34] over base and +7.00 over `tuned_L0` (q = 0.005) — the family unit is the one thing that holds backwards. Diagonal 3/5 by the rule, but against base only L1b (+8.1) is real; S2 is −3.7. Nikiema et al.'s direction-specificity replicates at value level. Unregistered: `tuned_L1b` best inverse arm on every condition. | the same held-out items asked backwards — program + return value → a call that returns it, **graded by execution** (any arguments that produce the value count; `src/obtune/inverse.py`) — for 11 forward-trained arms on 7 conditions (`ev_inverse_*` → `an_inverse`, jobs 382620/382621 → 382622). A `formatonly` arm separates answer-format adaptation from reasoning (residue −0.45, ≈ 0); no arm failed the 25 % format gate, though `tuned_L0` fails to emit a call on 32 %/42 % of S1/S2 items. Table and full read in §6.3. |
 
 ### 6.1 RQ1′ — what breadth buys and costs: the results so far
 
@@ -381,14 +381,42 @@ Conditions L0 L1b L1r L2 S1 S2 X1 (no H1). Forward numbers are the existing Grid
 
 | hypothesis | contrast (inverse task) | Δ pts [95 % CI] | verdict |
 |---|---|---:|---|
-| format gate | pooled-seen6 `format_fail_rate` per arm; > 0.25 ⇒ NOT INTERPRETABLE | *pending (382620/382621)* | — |
-| format residue | `formatonly − base` @ seen6 | *pending* | reported, gates nothing |
-| H-inv-transfer — forward tuning transfers to the inverse task | `tuned_L0 − base` @ seen6 **and** `tuned_L0 − formatonly` @ seen6, both ci_lo > 0 | *pending* | CONFIRMED / REFUTED (equivalent at ±1.0 ⇒ "cognitive specialization" replicates) / INCONCLUSIVE |
-| H-inv-breadth — breadth's stacked-seen gain has an inverse counterpart | `mono_all − tuned_L0` @ obf | *pending* | |
-| H-inv-cons — the consistency objective keeps it | `cons_lam3 − mono_all` @ obf | *pending* | |
-| H-inv-family — the family unit holds backwards | `tuned_X1 − tuned_L0` @ X1 | *pending* | |
-| H-inv-diagonal — specialists still own their condition | `tuned_c − tuned_L0` @ c, 5 conditions | *pending* | ≥ 3/5 CONFIRMED · 0/5 REFUTED · else PARTIAL |
-| direction ratio (descriptive) | DR(arm) = (inv_arm − inv_base)/(fwd_arm − fwd_base), pooled seen6 | *pending* | how much of the forward gain survives the flip |
+| format gate | pooled-seen6 `format_fail_rate` per arm; > 0.25 ⇒ NOT INTERPRETABLE | max is `tuned_L0` 0.187 (32 % on S1, 42 % on S2); `cons_lam3` 0.014 | **nobody blocked** |
+| format residue | `formatonly − base` @ seen6 | −0.45 [−0.76, −0.12] (equiv ±1.0) | ≈ 0; forward +1.84 |
+| H-inv-transfer — forward tuning transfers to the inverse task | `tuned_L0 − base` @ seen6 **and** `tuned_L0 − formatonly` @ seen6 | **−1.67 [−3.29, −0.04]** · −1.22 [−2.82, +0.37] | **REFUTED** — forward +18.09 becomes −1.67 backwards; "cognitive specialization" replicates at value level |
+| H-inv-breadth — breadth's stacked-seen gain has an inverse counterpart | `mono_all − tuned_L0` @ obf | +1.45 [−0.04, +2.94] | INCONCLUSIVE (`mono_all − base` −1.30 [−3.01, +0.36]) |
+| H-inv-cons — the consistency objective keeps it | `cons_lam3 − mono_all` @ obf | +1.73 [+0.25, +3.27] | **CONFIRMED** — but `cons_lam3 − base` is +0.49 [−1.38, +2.30]: it avoids the SFT arms' damage, it does not teach inversion |
+| H-inv-family — the family unit holds backwards | `tuned_X1 − tuned_L0` @ X1 | **+7.00 [+4.12, +9.96]** (q = 0.005) | **CONFIRMED** — and `tuned_X1 − base` @ X1 +3.37 [+0.41, +6.34]: the only forward training that beats base on the inverse task, on its own family |
+| H-inv-diagonal — specialists still own their condition | `tuned_c − tuned_L0` @ c, 5 conditions | L1b +9.46* · S1 +9.38* · S2 +8.45* · L1r −1.50 · L2 −0.24 | **CONFIRMED (3/5)** by the rule; against `base` it is L1b +8.1, S1 +2.1, **S2 −3.7** — S1/S2 mostly recover `tuned_L0`'s format collapse |
+| direction ratio (descriptive) | DR(arm) = (inv_arm − inv_base)/(fwd_arm − fwd_base), pooled seen6 | `formatonly` −0.24 · `tuned_L0` −0.09 · `mono_all` −0.07 · `cons_lam3` +0.03 · `tuned_X1` +0.10 | ≤ 10 % of any forward gain survives the flip; two arms reverse sign |
+| BH-FDR (five primary) | | only `tuned_X1 − tuned_L0` @ X1 survives (q = 0.005); the rest q = 0.065–0.14 | reported, gates nothing |
+
+**Pooled accuracy, inverse vs forward** (seen6 mean; X1 separately; job 382620/382621):
+
+| arm | inv seen6 | fwd seen6 | inv X1 | fwd X1 | inv `format_fail` |
+|---|---:|---:|---:|---:|---:|
+| `base` | 0.290 | 0.204 | 0.257 | 0.119 | 0.035 |
+| `formatonly` | 0.285 | 0.222 | 0.250 | 0.125 | 0.038 |
+| `tuned_L0` | 0.271 | 0.386 | 0.221 | 0.270 | 0.192 |
+| `mono_all` | 0.277 | 0.393 | 0.237 | 0.232 | 0.035 |
+| `cons_lam3` | 0.295 | 0.405 | 0.281 | 0.283 | 0.014 |
+| `tuned_X1` | 0.306 | 0.370 | 0.290 | 0.319 | 0.053 |
+| `tuned_L1b` | **0.346** | — | **0.302** | — | 0.030 |
+| `tuned_L1r` | 0.287 | — | 0.226 | — | 0.055 |
+| `tuned_L2` | 0.297 | — | 0.246 | — | 0.071 |
+| `tuned_S1` | 0.288 | 0.383 | 0.249 | 0.272 | 0.141 |
+| `tuned_S2` | 0.281 | 0.391 | 0.213 | 0.286 | 0.100 |
+
+**Read (2026-09-08, `an_inverse` 382622; log `log/transfer/2026-09-08_bidirectional-inverse-task-read.md`).**
+Output-prediction tuning does not teach input prediction. The adapter that gains +18 pts forward loses
+1.7 pts backwards on the same programs; breadth (`mono_all`) sits exactly at base; the consistency
+objective is the only SFT-family arm that does no harm, and the X1-family adapter is the only arm that
+transfers above base — on its own family. Both pre-read expectations were wrong: base inverse accuracy
+(0.29) is *above* base forward (0.20), because execution grading accepts any call that reproduces the
+value, and no arm failed the format gate. Unregistered, single-seed: **`tuned_L1b` is the best inverse
+arm on all seven conditions** (+5.6 over base pooled) while `L1r`/`L2` specialists do nothing — the one
+forward signal that penalises trusting identifiers is the one that transfers backwards. Forward and
+inverse orderings do not agree (`tuned_X1` > `cons_lam3` > `base` > `mono_all` > `tuned_L0` inverse).
 
 Expectation stated before the read: base inverse accuracy will be well below forward (CRUXEval-I is
 harder than CRUXEval-O for every published model) and the base arm may fail the format gate — the
@@ -401,6 +429,7 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08 (RQ5′ read)** — §6 RQ5′ row and §6.3 carry the `an_inverse` read: H-inv-transfer REFUTED (+18 forward → −1.7 backwards), H-inv-family the only above-base transfer, H-inv-cons "does no harm", diagonal qualified against base.
 - **2026-09-08 (E9)** — §6 RQ4′ row carries the knockout read: both attention hypotheses refuted, instrument inert.
 - **2026-09-08 (FDR)** — §6 RQ4′ row carries the `an_fdr` read (1/30 transfer cells, 8/28 arm cells survive BH).
 - **2026-09-08 (RQ5′)** — §6 gains RQ5′ (bidirectional / inverse-task stress test): table row and §6.3 with
