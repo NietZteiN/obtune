@@ -1086,3 +1086,9 @@ window difference is a caveat to name beside the coverage asymmetry already on f
   `tuned_X1 − base` @ X1 +3.37*). H-inv-diagonal CONFIRMED 3/5 (L1b/S1/S2 vs tuned_L0) — vs base S2 is −3.7.
 - Written: `log/transfer/2026-09-08_bidirectional-inverse-task-read.md`, RQ_SUMMARY §6/§6.3, PAPER_EXPERIMENTS E16.
 - Next: `run.py --only report` (382561 predates an_inverse). No tuning on the read; no H1.
+
+### 2026-09-08 — E12 SATURATION READ (382531/382532 COMPLETED; rules as frozen)
+- H-sat-L0 REFUTED (−1.05*, quarter −2.71*); H-sat-mono CONFIRMED (+0.01 equiv); H-tax-scales CONFIRMED
+  (X1 tax −0.49 → −2.31* → −3.79*; `mono_quarter − mono_all` @ X1 +3.29*). Written to
+  `log/transfer/2026-09-08_saturation-the-tax-grows-with-data.md`, RQ_SUMMARY §6/§6.1, PAPER_EXPERIMENTS E12.
+- `tr_X1s` 382803 passed the 4096-window gate (27 min); chain 382804 → 382805 → 382806 continues.

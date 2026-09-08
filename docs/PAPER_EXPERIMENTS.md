@@ -148,8 +148,12 @@ fingerprint is a recurring character in the paper and half of it is unexplained.
 
 ## 4. Tier 3 — nice to have, cut without regret
 
-- **E12. H-saturation** (§22.3): `train_size` sweep at 50 % / 25 %. ~7 GPU-h. Only interesting if a
-  reviewer disputes that data scale is saturated.
+- **E12. H-saturation** (§22.3): `train_size` sweep at 50 % / 25 %. ~7 GPU-h. **DONE 2026-09-08** —
+  more interesting than the reviewer-defence it was planned as: H-sat-mono CONFIRMED (`mono_half − mono_all`
+  +0.01 equiv), H-sat-L0 REFUTED (clean-only −1.05* at half, −2.71* at quarter), **H-tax-scales CONFIRMED**
+  — the X1 tax is −0.49 → −2.31* → −3.79* across quarter/half/full, and `mono_quarter` beats `mono_all` on
+  X1 by +3.29 [+1.32, +5.35]. Breadth overfits the seen set as a function of volume.
+  `log/transfer/2026-09-08_saturation-the-tax-grows-with-data.md`.
 - **E13. H-mixture** (§19.4): is the +0.205 mixture gain capacity or ensembling?
 - **E14. H-peaked-breadth** (§22.1): any-of-8 for `merge_dare_ties` and the uniform MoLE mixture.
 - **E16. RQ5′ — the bidirectional stress test** (added 2026-09-08 at the user's request; **done 2026-09-08**
@@ -197,7 +201,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
 | E10 | `an_human_align` | **disabled** — tier_icse items not emitted, no script; decision deferred to the writeup |
 | E11 | `an_l0cost` (after the new evals so every arm is included) | scheduled |
-| E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | scheduled |
+| E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | **done 2026-09-08** (382531 → 382532): H-tax-scales CONFIRMED, the X1 tax grows with data volume |
 | RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | scheduled |
 | RQ-C depth | `bld_depth` → `emit_depth_items` → `ev_depth` → `an_depth` | scheduled |
 | E16 / RQ5′ | `ev_inverse_core`, `ev_inverse_specialists` → `an_inverse` (`42_inverse.py`) | **done 2026-09-08** (382620/382621 → 382622): H-inv-transfer REFUTED; family holds; `results/analysis/pipeline/inverse_codellama7b.json` |
@@ -226,6 +230,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E12 read)** — saturation done: seen gain saturates by ¼ corpus, X1 tax grows with volume.
 - **2026-09-08 (E16 read)** — E16 done: forward tuning does not transfer to the inverse task (−1.67 vs +18.09); only the X1-family adapter beats base backwards, on X1.
 - **2026-09-08** — E16 (RQ5′, bidirectional / inverse-task stress test) added at the user's request and submitted; stage row in §6.
 
