@@ -891,3 +891,14 @@ system in the column shares.
 - format_fail reported, not gated (H-format-gate still open).
 - Y2 is NOT quarantined: it is regenerable from the module, so a re-read costs nothing. It
   therefore EXTENDS H1's evidence and cannot replace it. No H1 cell is read by any E5 job.
+
+## 2026-09-07 — docs/RQ_SUMMARY.md
+- One-page index: 20 approaches, RQ1/RQ2/RQ3 answers, per-condition leaders, and **§4 combined
+  (stacked) obfuscation** — NEW analysis of composite cells that existed on the Qwen panel and had
+  never been read as a group.
+- **KEY NEW FINDING (Qwen-only, needs CodeLlama replication = RQ-A):** `mono_all − tuned_L0` is
+  **+3.91 [+2.45, +5.28]** pooled on stacked conditions, while the same contrast is **−4.12** on
+  the unseen H1. Breadth buys robustness to RECOMBINATION of seen transforms and pays for it with
+  robustness to UNSEEN ones. Stacking cost: tuned_L0 −8.23 pts, mono_all −3.62.
+- Order matters: C_L1r_S1 vs C_S1_L1r differ up to 3.6 pts, no consistent direction (RQ-D).
+- New RQs proposed A–G; A and B are the same ~2 GPU-h job and are the cheapest high-value work.
