@@ -181,17 +181,36 @@ the consistency-objective result both replicate, so this RQ no longer rests on o
 
 ### 4.1 Accuracy on stacked conditions
 
-| system | `C_L1b_S1` | `C_L1r_S1` | `C_S1_L1r` | `C_L2_S4` | `C_L1r_S3` | `C_S4_S3` | mean |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| `base` | 0.3133 | 0.2667 | 0.2533 | 0.2159 | 0.1761 | 0.2045 | 0.2383 |
-| `tuned_L0` | 0.2474 | 0.2706 | 0.2450 | 0.3431 | 0.3455 | 0.4235 | 0.3125 |
-| `mono_all` | 0.3216 | 0.3336 | 0.3256 | 0.3725 | 0.3683 | 0.4133 | 0.3558 |
-| `tuned_L1r` | 0.3600 | 0.3467 | 0.3600 | 0.4432 | 0.4205 | 0.4261 | 0.3927 |
-| `tuned_S2` | 0.3333 | 0.3600 | 0.3933 | 0.4886 | 0.4489 | 0.4886 | 0.4188 |
-| `tuned_L2` | 0.3600 | 0.4067 | 0.4067 | 0.4659 | 0.4545 | 0.4716 | 0.4276 |
-| `merge_dare_ties` | 0.4067 | 0.4000 | 0.4400 | 0.4432 | 0.4318 | 0.4659 | 0.4313 |
-| **`tuned_L1b`** | 0.4333 | 0.4000 | 0.4267 | 0.4830 | 0.4489 | 0.4659 | **0.4430** |
-| **`mole_router`** | 0.4200 | 0.4067 | 0.4200 | 0.5398 | 0.4602 | 0.4773 | **0.4540** |
+> ⚠️ **THIS TABLE MAY NOT BE READ AS A RANKING** (caveat added 2026-09-08). The rows sit on **two
+> different program sets**. `tuned_L0` and `mono_all` were evaluated on the full composite grid
+> (418 programs on the `S1` composites, 556–557 on the rest); **every other row, `base` included,
+> is a 34/40-program subset** — the `main`-phase cells. That subset is much easier: run the *same
+> untuned model* on the *same condition* in both, and `base` scores **+5.3 to +15.7 points higher**
+> on the subset (`C_L1b_S1` 0.3133 on 34 programs against **0.1564** on 418; `C_L1r_S1` +9.1,
+> `C_S1_L1r` +9.3, `C_L2_S4` +6.4, `C_L1r_S3` +5.6, `C_S4_S3` +5.3; mean ≈ +8.6). The gap between
+> the top row and `mono_all` is +9.8 points — **smaller than the subset effect itself**, so the
+> apparent ordering of the bottom six rows is not evidence that they beat breadth or the clean-code
+> control. It also explains why these numbers look higher than §3's per-condition leaders even
+> though stacking is *harder*: §3 is CodeLlama-7b over 416–557 programs, these are Qwen-1.5B over 34.
+> **§4.2 is unaffected** — its contrast is `mono_all − tuned_L0`, and both of those rows are
+> full-grid. Fixing the ranking would need the six subset systems re-evaluated on the full composite
+> grid; until then read this table row-wise, never column-wise.
+
+| system | n_prog | `C_L1b_S1` | `C_L1r_S1` | `C_S1_L1r` | `C_L2_S4` | `C_L1r_S3` | `C_S4_S3` | mean |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `base` | 34/40 | 0.3133 | 0.2667 | 0.2533 | 0.2159 | 0.1761 | 0.2045 | 0.2383 |
+| `base` *(full grid)* | **418/557** | **0.1564** | **0.1756** | **0.1604** | **0.1524** | **0.1204** | **0.1512** | **0.1527** |
+| `tuned_L0` | **418/557** | 0.2474 | 0.2706 | 0.2450 | 0.3431 | 0.3455 | 0.4235 | 0.3125 |
+| `mono_all` | **418/557** | 0.3216 | 0.3336 | 0.3256 | 0.3725 | 0.3683 | 0.4133 | 0.3558 |
+| `tuned_L1r` | 34/40 | 0.3600 | 0.3467 | 0.3600 | 0.4432 | 0.4205 | 0.4261 | 0.3927 |
+| `tuned_S2` | 34/40 | 0.3333 | 0.3600 | 0.3933 | 0.4886 | 0.4489 | 0.4886 | 0.4188 |
+| `tuned_L2` | 34/40 | 0.3600 | 0.4067 | 0.4067 | 0.4659 | 0.4545 | 0.4716 | 0.4276 |
+| `merge_dare_ties` | 34/40 | 0.4067 | 0.4000 | 0.4400 | 0.4432 | 0.4318 | 0.4659 | 0.4313 |
+| `tuned_L1b` | 34/40 | 0.4333 | 0.4000 | 0.4267 | 0.4830 | 0.4489 | 0.4659 | 0.4430 |
+| `mole_router` | 34/40 | 0.4200 | 0.4067 | 0.4200 | 0.5398 | 0.4602 | 0.4773 | 0.4540 |
+
+The `base` *(full grid)* row is new and is the reference that makes the subset effect visible: it is
+the same system and the same six conditions as the row above it, differing only in program set.
 
 ### 4.2 The headline: breadth **wins** on stacked transforms and **loses** on unseen ones
 
@@ -226,13 +245,19 @@ transforms, restricted to the programs the composite gated:
 | `mono_all` | 0.3558 | 0.3920 | **−3.62** |
 
 Stacking is not free for anyone, but **breadth halves the cost**. Same dissociation, seen from
-the other side.
+the other side. **The comparison that carries this is `mono_all` −3.62 against `tuned_L0` −8.23, and
+both are full-grid rows, so it stands.** The `tuned_S2` row is a 34/40-program subset row (§4.1's
+caveat): its *own* cost is internally valid, because it is a within-system paired comparison on the
+programs that system was scored on, but −6.67 may not be lined up against the other two as if the
+three were measured on one program set.
 
 ### 4.4 Order effects
 
 `C_L1r_S1` vs `C_S1_L1r` are the same two transforms in opposite order and differ by up to 3.6
 points per system (`mole_router` 0.4067 vs 0.4200; `tuned_S1` 0.3400 vs 0.4133), with no
-consistent direction across systems. Applying a renamer before or after a flattener is not the
+consistent direction across systems. **Both of those systems are 34-program subset rows** (§4.1),
+where one program is 2.9 points, so a 3.6-point difference is one or two items and this subsection
+should be read as "no evidence of a consistent order effect" rather than as a measured one. Applying a renamer before or after a flattener is not the
 same problem, which is worth stating because a "composition is compositional" assumption is
 tempting and wrong here.
 
@@ -454,6 +479,7 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08 (§4.1 correction)** — **§4.1's table mixed two program sets and could be read as a ranking; it no longer can be.** `tuned_L0` and `mono_all` are full-grid (418/557 programs); `base` and the six specialist/merge/router rows are 34/40-program `main`-phase cells, and that subset is **+5.3 to +15.7 points easier for the same untuned model on the same condition** — larger than the +9.8-point gap the ordering rested on. An `n_prog` column, a full-grid `base` reference row and a caveat were added; no number was changed. §4.2's headline is unaffected (both its rows are full-grid) and so is §4.5's CodeLlama replication. §4.3 and §4.4 gained the matching caveats.
 - **2026-09-08 (E13, E10)** — two new §6 rows. E13 gives the project a second language and splits: RQ3′'s objective replicates and amplifies, RQ1′'s breadth-stacking gain does **not** replicate and is reported as a failure to replicate rather than as underpowered, and the H-xlang-volume prediction recorded before the read did not come true. E10 answers claim C8 for the first time — tuning moves the model **away** from human difficulty orderings, and the untuned model is the one that tracks people. Entries `log/transfer/2026-09-08_crosslanguage-javascript.md`, `log/human-align/2026-09-08_tuning-moves-away-from-humans.md`.
 - **2026-09-08 (unseen-obfuscator rows)** — §2 RQ1 gains three rows and a note answering "what works on an unseen obfuscator?" (user request). Routing is zero there as everywhere (+0.0000); the only measured winner is family-matched training (`x1_resample` 0.3237 vs `tuned_L0` 0.270 on X1; family arms only on H1), with the clean-code adapter as the general fallback. Records two gaps the question exposes: `H1` is spent as a held-out condition, and **ICL has never been run on a held-out family** despite being the best no-training arm on every seen condition.
 - **2026-09-08 (E7c, E11c, and the open-items wave)** — the gaps the earlier reads recorded are closed in the order the discipline requires: E7c's `mono_all`-controlled FDR family was frozen in the pre-registration before `--control-family` existed as code, and RQ3′'s headline survives at q = 0.0049; E11c breaks E11b's format/difficulty confound and the reversal *grows* to +10.21. Also submitted this wave: the cross-language JS grid (E13), E10 human alignment (the Paper-2 map was never missing), the GLMM, and the log P(gold) follow-up. E5b is respecified, not run.
