@@ -127,13 +127,22 @@ this is the cheapest way to say what a family is.
 
 ## 3. Tier 2 — run if the schedule allows; each pre-empts a specific reviewer objection
 
-### E7. Statistical hardening — GLMM + FDR
+### E7. Statistical hardening — GLMM + FDR — **FDR DONE 2026-09-08 (twice); GLMM still owed**
 CLAUDE.md §4 specifies item-level binomial GLMMs with crossed random effects for program × model and
 **BH-FDR across the transfer matrix as one family**. The paper currently has cluster bootstraps and
 **no multiplicity correction**, across a matrix of dozens of arms. Two routes: rebuild the R stack
 (blocked, §5) **or** implement in Python (`statsmodels` binomial GLM with cluster-robust SEs, plus a
 BH pass over the matrix) — the latter is not blocked and is a day of CPU work. **Do the Python route
 regardless**; a reviewer asking "how many comparisons?" needs an answer that exists.
+**Read (`an_fdr` 382559, `an_fdr2` 383162).** Bootstrap-p + BH, labelled as a substitute for the GLMM
+(lme4/statsmodels absent). Pre-registered families: transfer **1/30** survives (`tuned_S2` on S2,
+q = 0.030 — the specialist matrix does not survive multiplicity), arms **8/28** including the headline
+`mono_all` on X1 −3.79 (q = 0.017). Enlarged 7× as a robustness check: **203 tests, 69 survive, none
+of the eight lost**; `mono_all` on X1 comes back at **q = 0.014**. Composites 10/12 (RQ-B 6/6, RQ-A
+4/6). Both primary families reproduce byte-identically. **Gap stated, not closed:** every family is
+controlled against `tuned_L0`, so RQ3′'s headline `cons_lam3 − mono_all` @ X1 is uncorrected; a
+`mono_all`-controlled family is pre-registered for the next read rather than added on the spot.
+The GLMM itself remains owed and blocked. `log/writeup/2026-09-08_fdr-family-enlarged.md`.
 
 ### E8. Cross-family replication of C5 — **DONE 2026-09-08, CONFIRMED**
 **Read (`an_e8` 382552).** On Llama-3.1-8B `cons_lam3 − mono_all` on X1 **+3.46** [+1.65, +5.35], `cons_lam3 −
@@ -164,8 +173,14 @@ fingerprint is a recurring character in the paper and half of it is unexplained.
 1 L0-free (a seed twin), 38 underpowered — a 557-program cell gives ±1.5–2 pt CIs, so ±1.0 equivalence
 is unreachable for any genuinely different arm. Ordering: consistency (−0.1 … −1.0) < breadth (−1.1 …
 −1.7) < X1-family (−1.6 … −4.3) < alignment/negatives < TIES merges ≪ `cons_tbase` −12.0, `base` −17.0.
-The by-format / by-length stratification E11 actually asks for is not done (CPU-only, existing cells).
-`log/transfer/2026-09-08_l0-cost-classified.md`.
+**Read 2 (`an_l0strat` 383161).** The stratification: **neither, and the format half is backwards**.
+`mono_all` (3 seeds) loses on the **common** answer types (−2.38 [−3.94, −0.78]) and not at all on the
+unusual tail (+2.32) — difference **+4.70** [+0.44, +8.89] — and its whole cost sits on **short**
+answers (−4.16) with none on long ones (+0.30). Program LOC −2.00 [−5.87, +2.20], inconclusive, but
+`base` localizes on length in the same strata (−7.36 [−13.67, −1.13]) so the null is a bound rather
+than an instrument failure. Both frozen verdicts are INCONCLUSIVE (the rule was one-sided) and are
+**not** re-specified. Confound stated: unusual format and easy item are the same stratum here.
+`log/transfer/2026-09-08_l0-cost-classified.md`, `log/transfer/2026-09-08_where-the-l0-cost-lands.md`.
 
 ---
 
@@ -219,11 +234,11 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | **done 2026-09-08** (382548): H-E4-view REFUTED, H-E4-teacher CONFIRMED, H-E4-mono REFUTED — the tuned clean-code teacher is the ingredient |
 | E5b | `e5b_hard_family` | **disabled** — generator not written |
 | E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` (382803, 4,096 window) → `ck_*` → `ev_x1split` → `an_x1split` (382806) | **done 2026-09-08**: H-family-unit REFUTED, H-whole-ge-parts CONFIRMED; either half ≈ 90 % of the whole on X1 |
-| E7 | `an_fdr` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | scheduled, no deps |
+| E7 | `an_fdr` + `an_fdr2` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | **FDR done 2026-09-08** (382559, 383162): transfer 1/30, arms 8/28, enlarged 203-test family 69 survive with none of the eight lost; GLMM still owed |
 | E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` (382549–382552) | **done 2026-09-08**: H-E8 / H-E8-seen / H-E8-tax all CONFIRMED |
 | E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
 | E10 | `an_human_align` | **disabled** — tier_icse items not emitted, no script; decision deferred to the writeup |
-| E11 | `an_l0cost` (after the new evals so every arm is included) | **classification done 2026-09-08** (382560): 21 pay / 0 gain / 38 underpowered at ±1.0; stratification open |
+| E11 | `an_l0cost` → `an_l0strat` | **done 2026-09-08** (382560, 383161): 21 pay / 0 gain / 38 underpowered at ±1.0; the cost lands on **common** formats and **short** answers, the reversal of the hypothesis (+4.70 [+0.44, +8.89]) |
 | E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | **done 2026-09-08** (382531 → 382532): H-tax-scales CONFIRMED, the X1 tax grows with data volume |
 | RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | **done 2026-09-08** (13B 382514 → 382515; 34B 382516 → 382518): RQ-A/RQ-B CONFIRMED at both; H-cons-stack-strict CONFIRMED at 13B (+1.36) and 34B (+2.58) |
 | RQ-C depth | `bld_depth` → `emit_depth_items` → `ev_depth` → `an_depth` | scheduled |
@@ -253,6 +268,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E7b / E11b reads)** — E7's BH-FDR re-run with the family enlarged 7× (arms_all 203 tests, composites 12): every claim the paper rests on survives, the two primary families reproduce byte-identically, and the uncorrected `cons_lam3 − mono_all` headline is recorded as a gap for the next pre-registration. E11's stratification done: the L0 cost is on common answer types and short answers, not the exotic tail. Master report rev 18 (§29) written.
 - **2026-09-08 (E4 / composite_34b / E11 reads)** — E4: the tuned clean-code teacher is the ingredient, claim narrowed to teacher-distillation. 34B composites: RQ-A/RQ-B at three scales, H-cons-stack-strict closed. E11 classification: 21 pay / 0 gain / 38 underpowered; stratification remains. Every pipeline stage is now terminal and read.
 - **2026-09-08 (E6 read)** — X1 split done: the halves do not transfer to each other, either half carries ~90 % of the stacked gain.
 - **2026-09-08 (E8 read)** — E8 done: consistency replicates on Llama-3.1-8B (+3.46 over breadth on X1).

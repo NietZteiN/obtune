@@ -1176,3 +1176,28 @@ programs / Grid B — the exact item set every 7B L0 cell was graded on).
 **Master report rev 18.** Editorial, no new numbers: a §29 for the pipeline campaign (every stage,
 every verdict including the refutations), §1 amended where the pipeline narrowed a headline claim
 (RQ3′ is teacher-distillation, not learned invariance), Contents, scope counts, Changelog.
+
+### 2026-09-08 — reads: E11b stratification, E7b enlarged FDR, master report rev 18
+- **E11b (`an_l0strat` 383161):** **H-L0-format INCONCLUSIVE** by the frozen one-sided rule — but the
+  observed effect is a *significant reversal*: `mono_all` (3 seeds) loses on **common** answer types
+  (−2.38 [−3.94, −0.78]) and not at all on the unusual tail (+2.32); unusual − common **+4.70**
+  [+0.44, +8.89]. Whole cost sits on **short** answers (−4.16) with none on long (+0.30).
+  **H-L0-length INCONCLUSIVE** (−2.00 [−5.87, +2.20]); `base` localizes on length in the same strata
+  (−7.36 [−13.67, −1.13]), so the null is a bound, not an instrument failure. Rules NOT re-specified.
+  **Lesson for the next pre-registration: a one-sided rule needs an explicit branch for a significant
+  reversal.** Confound to state in the paper: "unusual format" and "easy item" are the same stratum.
+  `log/transfer/2026-09-08_where-the-l0-cost-lands.md`.
+- **E7b (`an_fdr2` 383162):** primary families reproduce **byte-identically** (58/58 rows). Enlarged
+  `arms_all` 203 tests / 69 survive, **none of the eight primary survivors lost**; `mono_all` @ X1
+  q = 0.014, `tuned_X1` @ X1 q = 0.005; `cons_lam3 − tuned_L0` @ X1 still q = 0.44. `composites`
+  10/12 (RQ-B 6/6, RQ-A 4/6). **Open gap, deliberately not closed:** every family is controlled
+  against `tuned_L0`, so `cons_lam3 − mono_all` @ X1 is uncorrected — pre-register a
+  `mono_all`-controlled family BEFORE the next read; do not add it after noticing.
+  `log/writeup/2026-09-08_fdr-family-enlarged.md`.
+- **Master report rev 18:** §29 added (6 subsections, the whole campaign), §1 *Added 8 Sep* block
+  narrows RQ3′ (teacher distillation) and RQ2′ (shared surface) where the claims are first made,
+  RQ4′ loses its causal leg, "no L0 tax" → "no detectable cost at n = 557", nine refutations gathered
+  in §29.6. 5,176 → 5,522 lines. Corpus recounted: **3,564 cells / 3,104,044 trials**, panel 1,141.
+- **State:** 52 pipeline stages, all terminal and read. Next: the paper draft. Blocked/parked: E5b
+  (needs a hard-family generator), E10 (needs tier_icse items graded), all JavaScript (`node`), the
+  GLMM (R stack).

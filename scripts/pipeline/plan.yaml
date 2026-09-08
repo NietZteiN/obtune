@@ -371,6 +371,21 @@ stages:
     dep_type: afterany
     argv: [scripts/analysis/38_l0_cost.py, --model, codellama-7b, --out, results/analysis/pipeline/l0_cost_codellama7b.json]
     report_json: results/analysis/pipeline/l0_cost_codellama7b.json
+  # E11b: WHERE the L0 cost lands (rules frozen 2026-09-08, commit e5d08ab). Analysis only.
+  - name: an_l0strat
+    rq: RQ1'
+    kind: analysis
+    deps: [an_l0cost]
+    dep_type: afterany
+    argv: [scripts/analysis/43_l0_stratify.py, --model, codellama-7b, --out, results/analysis/pipeline/l0_stratify_codellama7b.json]
+    report_json: results/analysis/pipeline/l0_stratify_codellama7b.json
+  # E7b: the same BH-FDR with two ADDED families (arms_all, composites). The 09-07 families stay
+  # primary and are re-reported unchanged; enlargement is conservative, so nothing can be upgraded.
+  - name: an_fdr2
+    rq: RQ4'
+    kind: analysis
+    argv: [scripts/analysis/37_fdr_family.py, --model, codellama-7b, --extended, --out, results/analysis/pipeline/fdr_extended_codellama7b.json]
+    report_json: results/analysis/pipeline/fdr_extended_codellama7b.json
   # E10: human alignment. Disabled: needs the tier_icse eval items (350 byte-identical rows)
   # emitted and graded, and the Paper-2 item map — a build task that has no script yet.
   - name: an_human_align

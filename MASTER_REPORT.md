@@ -1,6 +1,6 @@
 # obtune — master results report
 
-*Last updated: 2026-09-07*
+*Last updated: 2026-09-08*
 
 **Everything run to date, in one frame.**
 
@@ -32,9 +32,9 @@ clean-code adapter on each row's L0 parent — is the first arm that keeps bread
 neither of its taxes (+5.11 [+3.05, +7.08] over `mono_all` on X1, confirmed at three seeds in
 round 2, §27.7).*
 
-Scope: all **3,258** evaluation cells / **2,650,457** graded trials under `results/cells/`, of which
-the **CodeLlama/Llama panel is 835 cells / 1,271,202 trials** (7B 765, 13B 20, 34B 26,
-Llama-3.1-8B 24; §25.1) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
+Scope: all **3,564** evaluation cells / **3,104,044** graded trials under `results/cells/`, of which
+the **CodeLlama/Llama panel is 1,141 cells / 1,724,789 trials** (7B 993, 13B 45, 34B 51,
+Llama-3.1-8B 52; §25.1, recounted 2026-09-08 → `results/analysis/corpus_inventory_2026-09-08.json`) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
 attention corpora on both models, and the zero-training normalization arms. Every number below was
 recomputed from raw per-trial data — by [`scripts/make_master_report.py`](scripts/make_master_report.py)
 → `results/analysis/master_report.json` for the tables inherited from the 08-12 revision, by
@@ -181,6 +181,13 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [28.1 E1/E2 — the headline replicates at three scales and three seeds](#281-e1e2--the-headline-replicates-at-three-scales-and-three-seeds-for-12-minutes-of-gpu)
   - [28.2 E5 — a second family pair, and a null that is about power rather than mechanism](#282-e5--a-second-family-pair-and-a-null-that-is-about-power-rather-than-mechanism)
   - [28.3 In flight, and what the plan still asks for](#283-in-flight-and-what-the-plan-still-asks-for)
+- [29. The pipeline campaign — 47 stages run end to end, and what each one settled](#29-the-pipeline-campaign--47-stages-run-end-to-end-and-what-each-one-settled)
+  - [29.1 RQ1′ — what breadth buys, what it costs, and how both scale](#291-rq1--what-breadth-buys-what-it-costs-and-how-both-scale)
+  - [29.2 RQ2′ — the unit of transfer is shared *surface*, not shared mechanism](#292-rq2--the-unit-of-transfer-is-shared-surface-not-shared-mechanism)
+  - [29.3 RQ3′ — the objective that gets both sides, and the one ingredient that makes it work](#293-rq3--the-objective-that-gets-both-sides-and-the-one-ingredient-that-makes-it-work)
+  - [29.4 The two stress tests that came back negative](#294-the-two-stress-tests-that-came-back-negative)
+  - [29.5 Multiplicity — what survives when the whole matrix is corrected at once](#295-multiplicity--what-survives-when-the-whole-matrix-is-corrected-at-once)
+  - [29.6 What the campaign changed](#296-what-the-campaign-changed)
 - [27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works](#27-since-rev-14--the-final-h1-read-its-trainable-proxy-scale-three-more-null-levers-and-the-objective-that-works)
   - [27.1 The final H1 read — the budget is spent, and every pre-registered test confirms](#271-the-final-h1-read--the-budget-is-spent-and-every-pre-registered-test-confirms)
   - [27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999](#272-x1--a-trainable-proxy-for-h1-that-predicts-it-to-r--0999)
@@ -230,6 +237,28 @@ the objective's plateau rather than a floor, and the KL term's value proved to d
 training *started* once you look off-distribution.
 Meanwhile trace SFT, best-of-n reranking and 3× input cases joined the null column, and scale
 stayed the only conventional lever (34B **+8.56 [+7.00, +10.15]** pooled, all of it through tuning).
+
+*Added 8 Sep.* **A 47-stage pipeline campaign (§29) narrowed two claims, strengthened two, and
+refuted nine hypotheses on their own frozen rules.** (1) **Breadth is mis-sold, not useless.** It buys
+robustness to *recombination of seen* transforms — `mono_all − tuned_L0` is **+3.49 / +2.90 / +3.05**
+on six depth-2 composites at 7B / 13B / 34B, and **+4.15** at depth 3/4 — and pays for it on unseen
+ones (−3.79 / −4.28 / −2.64 on X1). Its unseen-family tax is a function of *data volume*: a
+quarter-corpus breadth model is **+3.29** [+1.32, +5.35] better on X1 than a full one, while its seen
+gain has already saturated by half. (2) **Paired consistency is distillation, not learned
+invariance** — and this narrows §27.5's claim at the point where it is first made. Varying the frozen
+teacher shows the student's unseen-family number is simply the *teacher's* number plus ~1 pt: an
+untuned teacher collapses the arm (−8.98 vs breadth on X1) and a breadth teacher imports breadth's
+tax (−4.20), while both keep the seen-condition gain, which comes from the CE term. The claim the
+evidence supports is "distil from a *clean-code-tuned* model on the clean parent". It survives scale
+(13B +3.95, 34B +3.38 over breadth on X1), replicates on Llama-3.1-8B (+3.46), and at 34B beats both
+baselines on every column of every grid. (3) **What transfers is shared *surface*, not shared
+mechanism**: X1's two halves do not transfer to each other at all (+1.49, −0.10) yet either alone
+carries ~90 % of the whole's gain on stacked X1. (4) **Two stress tests came back negative and are
+reported as such** — eighteen points of forward output-prediction gain buy **−1.67** [−3.29, −0.04]
+on the same programs run backwards (input prediction), and the RQ3 attention knockout turns out to be
+inert on X1 (< 0.5 % of gold log-prob for every arm), so RQ4′ loses its causal leg. (5) **The
+specialist transfer matrix does not survive multiplicity**: 1 of 30 cells at BH q < 0.05. The headline
+does — `mono_all` on X1 at **q = 0.014** in a 203-test family.
 
 *Rewritten 4 Sep.* **The result now stands on two model families, and on the second one it is
 stated more strongly than it ever was on the first.** Everything above was measured on
@@ -4924,15 +4953,332 @@ second full copy of a 34B model (~67 GB), so it runs with the teacher on a secon
 allocation — a smoke test caught that two visible GPUs otherwise make HF Trainer wrap the *student*
 in `DataParallel` and return a per-device loss.
 
-Still unrun from Tier 1: **E4** (does the consistency gain need the *clean-code* teacher, or would
-`base` do? — nothing has yet varied the teacher itself), **E6** (which half of X1 does the work,
-encoding or arithmetic), and **E5b**. Tier 2's **E7** (Python GLMM + BH-FDR) remains the largest
-methodological gap in the report.
+~~Still unrun from Tier 1: **E4**, **E6**, and **E5b**. Tier 2's **E7** (Python GLMM + BH-FDR)
+remains the largest methodological gap in the report.~~ **Superseded 2026-09-08 (§29):** E3, E4, E6,
+E7, E8, E11 and E12 all ran in the pipeline campaign and are read. **E5b** is still unrun — it needs
+a generator for a *hard* second family — and E10 (human alignment) is disabled, not pretended. E7's
+BH-FDR ran twice (§29.5); the GLMM itself is still owed and still blocked on the dead R stack, so
+the substitute is labelled as a substitute wherever it appears.
+
+---
+
+## 29. The pipeline campaign — 47 stages run end to end, and what each one settled
+
+*Added 2026-09-08.* §28 reported the first three paper-plan experiments, run by hand. On 2026-09-07
+everything still outstanding — the rest of Tier 1, the statistical hardening, and five revised
+research questions (RQ1′–RQ5′, [`docs/RQ_SUMMARY.md`](docs/RQ_SUMMARY.md) §6) — was compiled into a
+single declarative plan, [`scripts/pipeline/plan.yaml`](scripts/pipeline/plan.yaml), and submitted as
+one dependency-ordered SLURM graph: **47 stages** (corpus builds, trainings, checkpoint selections,
+evaluations and analyses), plus a four-job external chain for the 34B consistency arm that predates
+the pipeline. Every stage is `python <argv>` in an sbatch built by `scripts/slurm/submit.py`; the
+manifest lifecycle moves inside the script, so a walltime kill files a job under `failed/` instead of
+stranding it. By 2026-09-08 every stage was terminal and read.
+
+**Two disciplines held throughout, and both are load-bearing for how this section should be read.**
+
+1. **Decision rules were frozen before submission, in `CLAUDE_SCRATCHPAD.md`, and committed** — the
+   RQ1′–RQ4′ rules at `0286c5f`, RQ5′ at `361d354`, the two 09-08 follow-ups at `e5d08ab`. The
+   analysis scripts apply them verbatim and print the verdict themselves. **Nine hypotheses were
+   refuted and are reported as refuted**; no rule was re-specified after a read, including the two
+   places below where the refutation is more interesting than the confirmation would have been.
+2. **No stage reads H1.** The budget was spent on 2026-09-05 (§27.1) and CLAUDE.md §3.2 permits no
+   further read. This campaign added a fifth enforcement layer to the four in the charter:
+   `scripts/analysis/cellkit.py::load_cell` raises on `cond == "H1"` outright, so an analysis script
+   cannot read the column even by accident. Every held-out number below is **X1**, the trainable
+   sibling that reproduces H1 to r = 0.9992 (§27.2).
+
+### 29.1 RQ1′ — what breadth buys, what it costs, and how both scale
+
+Breadth training (`mono_all`, all six conditions at once) has always looked like a pure loss: it
+matches the clean-code-only adapter on seen conditions and loses on the held-out family. The revised
+question is whether it buys anything at all. It does — on **stacked** obfuscation, which no arm was
+trained on and which is what real obfuscators emit.
+
+| `mono_all − tuned_L0`, pts [95 % CI] | 7B | 13B | 34B | other |
+|---|---:|---:|---:|---:|
+| **stacked-seen, depth 2** (6 composites, pooled) | **+3.49** [+2.04, +5.01] | **+2.90** [+1.45, +4.37] | **+3.05** [+1.60, +4.50] | Qwen-1.5B **+3.91** [+2.58, +5.27] |
+| **stacked-seen, depth 3/4** (4 composites, 394-program subset) | **+4.15** [+2.37, +5.91] | — | — | — |
+| **unseen family X1** | **−3.79** [−6.09, −1.65] | **−4.28** [−6.50, −2.06] | **−2.64** [−5.10, −0.25] | seeds s42/s101 −3.54 / −3.54 |
+| **clean code L0** | −1.74 | −2.34 | **−2.63** [−4.49, −0.78] | Llama-3.1-8B **−2.22** [−4.13, −0.24] |
+
+**The dissociation is the RQ1′ result and it holds at every scale tested.** Breadth buys robustness
+to *recombination of transforms it has seen* and pays for it on *transforms it has not*. Both halves
+have the same sign at 7B, 13B and 34B, and the gain does not decay with depth — at depth 3/4 it is
+the largest number in the table. A reader who wants one sentence: **breadth is not useless, it is
+mis-sold; what it generalises over is composition, not novelty.**
+
+**Where the buy comes from.** At all three scales the gain concentrates on the identifier×structural
+pairs containing `S1` (34B: +7.58 / +4.79 / +3.91) and nearly vanishes on the `S3`/`S4` pairs (+0.66
+/ +0.90), which are the composites a clean-only model already handles.
+
+**Saturation — the tax is a function of data volume, the gain is not** (`an_saturation`, half and
+quarter-corpus arms at 7B, single seed):
+
+| | quarter | half | full |
+|---|---:|---:|---:|
+| `mono_*` on X1 | 0.264 | 0.246 | 0.231 |
+| `tuned_L0_*` on X1 | 0.250 | 0.259 | 0.269 |
+| X1 tax vs `tuned_L0` | −0.49 [−2.31, +1.40] | **−2.31** | **−3.79** |
+
+`mono_half − mono_all` on seen conditions is **+0.01, equivalent at ±1.0** — breadth's *gain*
+saturates by half the corpus and is already most of the way there at a quarter — while
+`mono_quarter − mono_all` on X1 is **+3.29 [+1.32, +5.35]**: a quarter-size breadth model is
+*better* on the unseen family than a full one. **H-tax-scales CONFIRMED, H-sat-mono CONFIRMED,
+H-sat-L0 REFUTED** (clean-only training is still climbing at full corpus: half −1.05, quarter −2.71).
+Breadth overfits the seen transform set as a function of how much of it you show. The FDR pass
+agrees at the cell level: `mono_quarter` on X1 is −0.74 (q = 0.59) where `mono_all` is −3.79
+(q = 0.014).
+
+**Where the clean-code cost lands** (`an_l0cost`, `an_l0strat`; §29.5 has the multiplicity context).
+E11 classified all 60 arms' L0 cells against `tuned_L0` at a TOST margin of ±1.0: **21 pay a
+certified cost, none gains, 1 is certified L0-free (a seed twin of the reference), and 38 are
+underpowered.** That last number is a fact about the instrument, not the arms — a 557-program cell
+gives ±1.5–2 pt intervals, so ±1.0 equivalence is unreachable for any genuinely different arm.
+**Every "no L0 tax" statement in this report should therefore be read as "no *detectable* cost at
+n = 557".** The ordering of the point estimates is still informative and matches the campaign's
+story: consistency (−0.1 … −1.0) < breadth (−1.1 … −1.7) < X1-family training (−1.6 … −4.3) <
+alignment and negatives (−1.9 … −3.5) < TIES merges (−3.2 … −5.9) ≪ `cons_tbase` −12.0,
+`formatonly` −14.5, `base` −17.0.
+
+§22.6 had asked *where* on clean code the cost falls — on unusual answer formats, or on long
+programs? `an_l0strat` answers it on existing cells, with `mono_all` pooled over three seeds against
+a pooled clean-code control:
+
+| stratum | Δ pts [95 % CI] | control acc |
+|---|---:|---:|
+| answer format **common** (int/str/list, 86 % of items) | **−2.38** [−3.94, −0.78] | 0.402 |
+| answer format **unusual** (bool/None, dict/set, float) | +2.32 [−1.51, +6.10] | 0.596 |
+| **unusual − common** | **+4.70** [+0.44, +8.89] | |
+| program LOC T3 (9–56) − T1 (3–5) | −2.00 [−5.87, +2.20] | |
+| answer length T3 (long) − T1 (short) | **+4.46** [+0.96, +8.15] | |
+
+**Neither, and the first is backwards.** The frozen rule was one-sided (confirm iff the difference
+is *negative*), so **H-L0-format is INCONCLUSIVE and H-L0-length is INCONCLUSIVE** — the rule is not
+re-specified — but what the data show is a *significant reversal*: breadth's clean-code cost sits on
+the **common** answer types and on **short** answers, and there is none at all on the exotic tail.
+It is not a floor artifact: the control is *stronger* on the unusual stratum (0.596 vs 0.402), so
+there was more room to fall there and breadth did not fall. The `base` row is what makes the nulls
+informative — run through the same strata, `base − control` **does** localize on program length
+(T3 − T1 **−7.36** [−13.67, −1.13]), so these 557 programs can resolve a length effect when one is
+present; they cannot resolve a ~2-pt one. **Breadth's cost is a uniform erosion of the ordinary
+case — the items the clean-code adapter is best at — not a tail effect that could be written off as
+a formatting quirk.** One confound must be stated with it: "unusual format" and "easy item" are the
+same stratum here (`bool_none` is 9.6 % of items and the control scores 0.596 on the group), so this
+read cannot separate format rarity from item easiness.
+
+### 29.2 RQ2′ — the unit of transfer is shared *surface*, not shared mechanism
+
+§27.2 established that what transfers is the **family**: an adapter trained on X1 recovers on H1
+what a 5× larger clean-code adapter recovers. RQ2′ asks what a "family" actually is. X1 has two
+mechanisms — guarded MBA arithmetic and string encoding — so it was split into **X1m** (4,263 train
+pairs) and **X1s** (2,910; string encoding needs string literals, so it covers fewer programs) and
+each half was trained alone.
+
+| arm | L0 | X1 | X1m | X1s |
+|---|---:|---:|---:|---:|
+| `base` | 0.2569 | 0.1194 | 0.1331 | 0.1504 |
+| `tuned_L0` | **0.4275** | 0.2694 | 0.3184 | 0.2737 |
+| `tuned_X1` (whole) | 0.4108 | **0.3155** | **0.3565** | **0.2913** |
+| `tuned_X1m` (MBA half) | 0.4042 | 0.3105 | 0.3527 | 0.2886 |
+| `tuned_X1s` (string half) | 0.3838 | 0.3114 | 0.3175 | **0.2913** |
+
+**H-family-unit REFUTED.** The halves do not reach each other: `tuned_X1m − tuned_L0` on X1s is
+**+1.49** [−0.95, +3.93] and `tuned_X1s − tuned_L0` on X1m is **−0.10** [−2.38, +2.19]. Training on
+guarded MBA teaches you nothing about string encoding, and the reverse.
+
+**H-whole-ge-parts CONFIRMED, and this is the interesting half.** Either half alone delivers ~90 % of
+the whole's gain on stacked X1 (+4.12 and +4.20 against the whole's +4.61), even though neither half
+transfers to the other. The two facts are only compatible if what a half buys on the *stacked*
+column is not its mechanism but the **surface both mechanisms share** — the parenthesised arithmetic
+soup and the indirection that both rewrites produce. "Family" is a statement about what the code
+*looks like*, not about what it *does*. That is a narrower and more falsifiable claim than
+"invariance", and it is the one the evidence supports.
+
+Cost: the halves pay more on clean code than the whole (`tuned_X1` −1.68, `X1m` −2.34, `X1s` −4.37)
+and more on the seen conditions — a smaller, narrower training set is not a cheaper one.
+
+### 29.3 RQ3′ — the objective that gets both sides, and the one ingredient that makes it work
+
+§27.5–§27.7 introduced **paired consistency** (`cons_lam3`): cross-entropy on the obfuscated row plus
+a KL to the frozen clean-code adapter's distribution *on that row's L0 parent*. It was the first arm
+to keep breadth's gain without either of breadth's taxes, at 7B, at three seeds. The pipeline asked
+three questions about it, and answered all three.
+
+**Does it survive scale?** (`an_e3`) `cons_lam3 − mono_all` on X1 is **+3.95** [+2.22, +5.84] at 13B
+and **+3.38** [+1.32, +5.51] at 34B against +4.59 at 7B, and `cons_lam3 − tuned_L0` on X1 is
+−0.33 / +0.74 — no unseen tax at any scale. Breadth's own taxes are scale-invariant (L0
+−1.74/−2.34/−2.63; X1 −3.79/−4.28/−2.64), so **the objective, not scale, is what resolves the
+trade**. At 34B `cons_lam3` is the best arm on all seven columns.
+
+**Does it replicate off CodeLlama?** (`an_e8`, Llama-3.1-8B) `cons_lam3 − mono_all` on X1 **+3.46**
+[+1.65, +5.35]; `cons_lam3 − tuned_L0` on seen **+2.53** [+1.30, +3.73] and on L0 **+0.00**
+[−1.56, +1.56]. Best or tied-best on every column. All three rules CONFIRMED.
+
+**And on stacked obfuscation?** (`an_composite_34b`) `cons_lam3 − mono_all` on the six composites is
++1.27 [−0.02, +2.59] at 7B, **+1.36** [+0.18, +2.55] at 13B and **+2.58** [+1.26, +3.90] at 34B —
+**H-cons-stack-strict CONFIRMED**, and the advantage *grows* with scale where the X1 advantage is
+stable. At 34B there is no column of any grid on which `cons_lam3` loses.
+
+**Which ingredient is doing the work?** (`an_e4`) Nothing had varied the *teacher* itself. Two arms,
+identical but for the frozen teacher:
+
+| system | L0 | L1b | L1r | L2 | S1 | S2 | X1 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `tuned_L0` | **0.4263** | 0.3571 | 0.3766 | 0.3796 | 0.3833 | 0.3881 | 0.2710 |
+| `mono_all` | 0.4132 | 0.3860 | 0.3874 | 0.3802 | 0.3849 | 0.4043 | 0.2331 |
+| `cons_lam3` (teacher `tuned_L0`) | 0.4216 | **0.4017** | **0.3928** | **0.3928** | **0.4018** | **0.4151** | **0.2817** |
+| `cons_tbase` (teacher `base`) | 0.3060 | 0.2823 | 0.2892 | 0.2844 | 0.2606 | 0.3035 | 0.1433 |
+| `cons_tmono` (teacher `mono_all`) | 0.4126 | 0.3999 | 0.3892 | 0.3892 | 0.3921 | 0.4127 | 0.2397 |
+
+- **H-E4-view REFUTED.** An untuned teacher does not merely fail to help — it collapses the arm to
+  ~5 pts above `base` (`cons_tbase − mono_all` on X1 **−8.98** [−11.44, −6.43]). At λ = 3 the KL term
+  pins the student to the teacher's distribution and the CE term cannot pull it back.
+- **H-E4-teacher CONFIRMED.** `cons_lam3 − cons_tbase` on X1 **+13.84** [+11.19, +16.56].
+- **H-E4-mono REFUTED** in the "imports the tax" direction. `cons_tmono − cons_lam3` on X1 **−4.20**
+  [−6.27, −2.14], while on seen conditions the two are indistinguishable (−0.39 [−1.71, +0.92]).
+
+**This decomposes the result cleanly, and narrows it.** The seen-condition gain is teacher-independent
+— it comes from the CE term over obfuscated rows, and `cons_tmono` gets it too. The unseen-family
+number is **inherited from the teacher**: student X1 tracks teacher X1 with a small non-significant
+bonus in all three cases (teacher `tuned_L0` 0.2710 → 0.2817; teacher `mono_all` 0.2331 → 0.2397;
+teacher `base` 0.1194 → 0.1433). Paired consistency does not *create* invariance. **It distils a
+clean-code-tuned teacher's behaviour on the unseen family and adds breadth's seen gain on top without
+breadth's tax — provided the teacher has not itself paid that tax.** The method is therefore "distil
+from a *clean-code-tuned* model on the clean parent", not "distil from *some* view of the clean
+parent", and this report and the paper plan now say so. It also explains, with no new machinery, why
+`cons_lam3 ≈ tuned_L0` on X1 at every scale and on Llama (−0.33 / +0.74 / +0.58 / +1.07): that is the
+teacher's number.
+
+An unregistered observation worth a line: `cons_tmono` is a strictly better *breadth* model than
+`mono_all` — seen +0.81, L0 −0.06 against breadth's −1.32, X1 +0.66. The objective removes breadth's
+clean-code cost even with a breadth teacher; only the unseen-family tax is inherited.
+
+### 29.4 The two stress tests that came back negative
+
+**RQ5′ — bidirectionality** (`an_inverse`). Every adapter in this project was trained on
+program + call → value. The stress test asks the same held-out programs **backwards**: given the
+program and an output value, produce a call that returns it, graded by execution. If output-prediction
+tuning taught semantic understanding rather than a direction-specific skill, it should transfer.
+
+| system | forward (obf, pooled) | inverse (obf, pooled) |
+|---|---:|---:|
+| `base` | 0.204 | 0.290 |
+| `tuned_L0` | 0.386 | 0.271 |
+| `mono_all` | 0.393 | 0.277 |
+| `cons_lam3` | 0.405 | 0.295 |
+| `tuned_X1` | 0.370 | 0.306 |
+
+**H-inv-transfer REFUTED.** `tuned_L0 − base` is **+18.09** forward and **−1.67** [−3.29, −0.04]
+backwards on the same programs. Eighteen points of forward gain buy nothing in the other direction —
+if anything a shade less than nothing. The format gate cleared (no arm blocked; `tuned_L0`'s
+format-failure rate on the inverse task peaks at 0.187), so this is not a parsing artifact. Two
+findings soften it without rescuing it: `cons_lam3` does no *harm* (+0.49 over base, n.s. —
+**H-inv-cons CONFIRMED** with that caveat), and **H-inv-family CONFIRMED** — `tuned_X1 − tuned_L0` on
+X1 is **+7.00** (q = 0.005), the only above-base inverse transfer anywhere in the grid, so the family
+result is the one thing that *is* bidirectional. Unregistered: `tuned_L1b` is the best inverse arm on
+all seven conditions, which nothing in the campaign predicts.
+
+**RQ4′ — the attention instrument is inert** (`an_attention`). The identifier-knockout signature was
+supposed to predict which transfers succeed. On X1 across five arms the knockout moves the gold
+log-probability by **less than 0.5 %** for every arm on every condition: `cons_lam3 − mono_all`
+−0.0001 [−0.097, +0.102] nats, `mono_all − tuned_L0` +0.019 [−0.088, +0.126]. **Both hypotheses
+REFUTED.** RQ4′ keeps only its correlational support and the causal leg is withdrawn — an instrument
+that cannot move the output cannot carry a mechanism claim. One unplanned observation survives and is
+worth following: `mono_all`'s clean log P(gold) on X1 is **−11.4** against −6.3 for `tuned_L0` and
+`cons_lam3`, which is a large, unexplained representational difference sitting exactly where the
+unseen-family tax is.
+
+### 29.5 Multiplicity — what survives when the whole matrix is corrected at once
+
+CLAUDE.md §4 asks for BH-FDR across the transfer matrix as one family. `an_fdr` did that on the two
+families pre-registered on 09-07; `an_fdr2` re-ran it with the family **enlarged 7×** to every arm the
+campaign now has, as a conservative robustness check (membership discovered from the directory tree,
+never hand-picked). The two primary families reproduced **byte-identically** — all 58 rows, every
+delta, CI, p and q — which is the first time the bootstrap's determinism has been verified rather
+than assumed.
+
+- **Transfer family (30 tests): 1 survives.** `tuned_S2` on S2, +3.36 [+1.74, +5.10], q = 0.030.
+  **The per-condition specialist matrix does not survive multiplicity.** Six cells that exclude zero
+  on their own CI do not survive BH, including `tuned_L1b` on L1b (+2.35, q = 0.105). This is the
+  single most consequential statistical fact in the report and §3's diagonal must be read through it.
+- **Arms family (28 tests): 8 survive** — including the headline `mono_all` on X1 **−3.79**
+  (q = 0.017) and `tuned_X1` on X1 **+4.86** (q = 0.009).
+- **Enlarged family (203 tests): 69 survive, and not one of the eight is lost.** `mono_all` on X1
+  comes back at **q = 0.014**, `tuned_X1` on X1 at q = 0.005. E4's `cons_tmono` on X1 (−3.13,
+  q = 0.038) and E12's `tuned_L0_quarter` on L0 (−3.29, q = 0.005) survive as new entries. The two
+  contrasts this report has always flagged as *not* surviving still do not: `cons_lam3 − tuned_L0` on
+  X1 (+1.07, q = 0.44) and breadth's L0 cost (−1.32, q = 0.38).
+- **Composites (12 tests): 10 survive.** All six `cons_lam3 − tuned_L0` (q ≤ 0.006) and four of six
+  `mono_all − tuned_L0`; the two that fail are the `S3`/`S4` pairs that §29.1 already identifies as
+  the ones a clean-only model handles.
+
+**One gap, stated rather than closed.** Every family is controlled against `tuned_L0`. RQ3′'s actual
+headline — `cons_lam3 − mono_all` on X1 — is therefore **in no family and has never been
+multiplicity-corrected**. That was noticed while reading these results, which is precisely why a
+third family was *not* added on the spot: a family chosen after seeing that the headline was
+uncovered cannot be distinguished, by a reader, from a family chosen because the headline survives in
+it. It is pre-registered as the next read's rule, and until then the contrast must be quoted as
+uncorrected.
+
+### 29.6 What the campaign changed
+
+**Narrowed.** RQ3′'s claim is now *teacher distillation*, not learned invariance (§29.3) — stated in
+§1 as well as here. RQ2′'s "the family is the unit" is now "shared **surface** is the unit"
+(§29.2). RQ4′ loses its causal leg (§29.4). Every "no L0 tax" is now "no detectable cost at n = 557"
+(§29.1).
+
+**Strengthened.** The RQ1′ dissociation holds at three scales and to depth 4. Consistency survives
+scale, replicates on a second model family, and beats breadth on breadth's own ground at 13B and
+34B. The headline C1 result survives a 203-test correction.
+
+**Refuted, and reported as such:** H-sat-L0, H-family-unit, H-E4-view, H-E4-mono, H-inv-transfer,
+both RQ4′ attention hypotheses, and — in the sense that the observed effect ran significantly the
+other way — the format half of E11b. Nine of the campaign's hypotheses did not survive their own
+pre-registered rule, which is the number worth quoting when this report is accused of only finding
+what it looked for.
+
+**Still open after all of it:** the `mono_all`-controlled FDR family (§29.5); E11b's format/difficulty
+confound; the `mono_all` log P(gold) anomaly (§29.4); E10 (human alignment), which needs the
+`tier_icse` eval items emitted and graded and is **disabled, not pretended**; and everything
+JavaScript, which is blocked on `node` not being installed on juno.
 
 ---
 
 ## Changelog
 
+- **2026-09-08 (rev 18)** — **§29 added: the 47-stage pipeline campaign, run end to end and read in
+  full.** Everything outstanding from the paper plan plus five revised research questions was compiled
+  into one declarative SLURM graph (`scripts/pipeline/plan.yaml`) with every decision rule frozen and
+  committed before submission (`0286c5f`, `361d354`, `e5d08ab`); all 47 stages plus a four-job
+  external 34B chain are terminal. **Two headline claims are narrowed in §1 as well as in §29**, which
+  is the part of this revision worth defending. (a) **Paired consistency is teacher distillation, not
+  learned invariance** — E4 varied the frozen teacher for the first time and the student's
+  unseen-family number is the *teacher's* number plus ~1 pt in all three cases (untuned teacher
+  −8.98 vs breadth on X1, breadth teacher −4.20 vs `cons_lam3`, both keeping the seen gain). §27.5's
+  claim now reads "distil from a *clean-code-tuned* model on the clean parent". (b) **RQ2′'s unit of
+  transfer is shared *surface*, not shared mechanism** — X1's MBA and string halves do not transfer to
+  each other (+1.49 [−0.95, +3.93]; −0.10 [−2.38, +2.19]) yet either alone gives ~90 % of the whole's
+  X1 gain. **Strengthened:** the RQ1′ dissociation at three scales and to depth 4 (+3.49 / +2.90 /
+  +3.05 stacked-seen against −3.79 / −4.28 / −2.64 on X1; +4.15 at depth 3/4); consistency surviving
+  scale (13B +3.95, 34B +3.38 over breadth on X1), replicating on Llama-3.1-8B (+3.46) and clearing
+  breadth on breadth's own stacked ground at 13B (+1.36) and 34B (+2.58). **Nine hypotheses refuted
+  on their own frozen rules and reported as refuted**, including both RQ4′ attention hypotheses — the
+  identifier knockout moves gold log-prob by < 0.5 % on X1, so **RQ4′ loses its causal leg** — and
+  H-inv-transfer: eighteen points of forward gain buy **−1.67** [−3.29, −0.04] when the same programs
+  are run backwards (RQ5′, execution-graded input prediction). **Statistical hardening (§29.5):**
+  BH-FDR over the pre-registered families says the specialist transfer matrix is **1 of 30**, while
+  the headline `mono_all` on X1 survives a 7×-enlarged 203-test family at **q = 0.014**; the two
+  families reproduce byte-identically across runs. Two honest additions rather than fixes — the L0
+  cost is **not** where §22.6 guessed (it lands on common answer types and short answers, the
+  reversal of the hypothesis, and the frozen one-sided rule is left INCONCLUSIVE rather than
+  re-specified), and every "no L0 tax" in this report now reads "no *detectable* cost at n = 557",
+  because a 557-program cell cannot certify ±1.0 equivalence for any genuinely different arm. **One
+  gap is stated rather than closed:** every FDR family is controlled against `tuned_L0`, so RQ3′'s
+  actual headline (`cons_lam3 − mono_all` on X1) has never been corrected; a family chosen after
+  noticing that would be indistinguishable from a family chosen because the headline survives in it,
+  so it goes to the next pre-registration instead. Corpus recounted from parquet metadata:
+  **3,564 cells / 3,104,044 trials**, CodeLlama/Llama panel **1,141 / 1,724,789**
+  (`corpus_inventory_2026-09-08.json`). §28.3's "still unrun" paragraph struck through and superseded.
 - **2026-09-07 (rev 17)** — **§28 added: the campaign re-organised around a paper, and the first
   three Tier-1 experiments run.** [`docs/PAPER_EXPERIMENTS.md`](docs/PAPER_EXPERIMENTS.md) maps the
   eight claims a submission would make onto existing evidence; C1–C6 were already complete, and §28
