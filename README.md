@@ -31,7 +31,8 @@ CodeLlama-7b/13b/34b one. The experiment plan behind the current campaign is
 [`docs/PAPER_EXPERIMENTS.md`](docs/PAPER_EXPERIMENTS.md).
 
 **One-page index of every RQ, approach and answer — plus the combined-obfuscation results and
-proposed new RQs: [`docs/RQ_SUMMARY.md`](docs/RQ_SUMMARY.md).**
+proposed new RQs: [`docs/RQ_SUMMARY.md`](docs/RQ_SUMMARY.md).** How the paper should be framed
+around them — spine, contributions, outline, claims to refuse: [`docs/PAPER_FRAMING.md`](docs/PAPER_FRAMING.md).
 
 Full design: [`docs/design_doc_v0.1.md`](docs/design_doc_v0.1.md). Hypothesis ledger and phase
 tracker: [`docs/CHECKLIST.md`](docs/CHECKLIST.md). Operating rules: [`CLAUDE.md`](CLAUDE.md).

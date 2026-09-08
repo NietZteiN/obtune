@@ -1343,3 +1343,11 @@ human set, so human coverage is 98/98). Labels are `T_*` (`schema.TierCondition`
 - **Open after this wave:** a JS X1 (needs a node toolchain — installable, no root required) so the
   cross-language *tax* can be measured; a second JS seed; E5b's generator against its respecified
   design; Paper-3 (n = 73) at condition level; a calibration curve per arm (E14 follow-up, CPU-only).
+
+## 2026-09-08 — paper framing written (no experiment)
+
+`docs/PAPER_FRAMING.md`: the spine is *fluency, not invariance*, a characterisation paper. Four
+contributions P1–P4 (labels chosen not to collide with `PAPER_EXPERIMENTS.md` C1–C8). Every number
+is an already-published one, cross-referenced to its log entry; nothing was read. Recorded
+correction: the first instrument is "the ladder cannot discriminate" (TR 0.906, 1/30 after FDR),
+not "transfer collapses". Entry: `log/writeup/2026-09-08_paper-framing.md`.
