@@ -1107,3 +1107,20 @@ window difference is a caveat to name beside the coverage asymmetry already on f
 - H-family-unit REFUTED (+1.49 n.s. / −0.10); H-whole-ge-parts CONFIRMED (−0.49 / −0.41). Reported: either half
   +4.12 / +4.20 on X1 vs whole +4.61; breadth tax −4.94* / −3.93* on the halves. Written to
   `log/transfer/2026-09-08_x1-split-mechanism-not-family.md`, RQ_SUMMARY §6/§6.2, PAPER_EXPERIMENTS E6.
+
+### 2026-09-08 — reads: composite_34b, E4, E11 (pipeline fully read)
+- **composite_34b (382518):** RQ-A +3.05 [+1.60, +4.50]*, RQ-B +5.63*, `cons_lam3 − mono_all` +2.58
+  [+1.26, +3.90]* → H-cons-stack-strict CONFIRMED at 13B (+1.36 [+0.18, +2.55]) and 34B. §6.1 34B
+  cell filled. `log/transfer/2026-09-08_composites-at-34b.md`.
+- **E4 (382548):** H-E4-view REFUTED (`cons_tbase − mono_all` @ X1 −8.98*), H-E4-teacher CONFIRMED
+  (+13.84*), H-E4-mono REFUTED (`cons_tmono − cons_lam3` @ X1 −4.20*; seen −0.39 n.s.). Student X1 ≈
+  teacher X1 + ~1 pt in all three teacher choices → seen gain is the SFT term, unseen number is
+  distilled. RQ3′ claim narrowed to "distil from a clean-code-*tuned* teacher on the parent".
+  `log/transfer/2026-09-08_teacher-is-the-ingredient.md`.
+- **E11 (382560):** 60 arms: 21 pay / 0 gain / 1 L0-free (seed twin) / 38 underpowered at TOST ±1.0.
+  Instrument lesson: n = 557 gives ±1.5–2 pt CIs; "no L0 tax" must be written as "no detectable
+  cost". Margin stays ±1.0 (no post-hoc relaxation). Stratification by answer format / length still
+  open. `log/transfer/2026-09-08_l0-cost-classified.md`.
+- **State:** all 47 stages + external 34B chain terminal and read. Open follow-ups, none submitted:
+  E11 stratification (CPU); `an_fdr` re-run over the enlarged arms family (documented family change);
+  master report revision.

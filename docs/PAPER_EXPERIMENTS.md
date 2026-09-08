@@ -71,7 +71,7 @@ Evaluate on all seven conditions incl. X1.
 excludes zero above at **both** scales; PARTIAL if one; REFUTE if neither.
 **Cost.** 13B ≈ 6.5 h + 34B ≈ 12 h training, + ~1 h eval ≈ **20 GPU-h**.
 
-### E4. H-cons-teacher — is it the *clean-code* teacher, or any teacher?
+### E4. H-cons-teacher — is it the *clean-code* teacher, or any teacher? — **DONE 2026-09-08: the tuned clean-code teacher, narrowly**
 **Question.** C5's mechanism story is "distil from a model that saw clean code, on the clean parent".
 Round 1 separated the *view* (parent vs same input, +0.94 pooled) and round 2 separated the *init*
 (`currmono_kl`, −2.47 on X1). Nothing has varied the **teacher itself**.
@@ -80,6 +80,13 @@ teacher = **`mono_all`** (does a breadth teacher poison it?). 7B, seed 17.
 **Why it matters.** If `base` works as well, the method is "distil from *some* view of the clean
 parent" and is much easier to apply; if only `tuned_L0` works, the claim is narrower and must say so.
 **Cost.** 2 × 4.4 h + eval ≈ **9.5 GPU-h**.
+**Read (`an_e4` 382548).** `base` as teacher collapses the arm (L0 0.306, X1 0.143; `cons_tbase − mono_all`
+@ X1 **−8.98** [−11.44, −6.43] — H-E4-view REFUTED, H-E4-teacher CONFIRMED +13.84). `mono_all` as teacher
+matches `cons_lam3` on seen (−0.39 n.s.) but inherits breadth's X1 tax (`cons_tmono − cons_lam3` @ X1
+**−4.20** [−6.27, −2.14]; `cons_tmono − mono_all` @ X1 +0.66 n.s. — H-E4-mono REFUTED). The seen gain is
+teacher-independent (SFT term); the unseen-family number is distilled from the teacher. The claim is
+narrower and must say so: "distil from a clean-code-*tuned* model on the clean parent".
+`log/transfer/2026-09-08_teacher-is-the-ingredient.md`.
 
 ### ~~E5. A second family pair~~ — **DONE 2026-09-07, REFUTED (underpowered by construction)**
 **Question.** C2 rests on **one** family pair (X1 ↔ H1). A reviewer will ask whether "the family is
@@ -149,10 +156,16 @@ thread has never started. Either run the item-level ρ comparison (analysis-only
 cells, ~1 CPU-day, no GPU) or **remove human alignment from the framing**. Do not leave it as a
 stated RQ with no result.
 
-### E11. H-L0-cost-source — analysis only
+### E11. H-L0-cost-source — analysis only — **classification DONE 2026-09-08; stratification still open**
 §22.6: the `L1b` gain is located, the `L0` cost is not. Testable on **existing cells**: does the cost
 concentrate on unusual answer formats, or on long programs? No new compute. Worth it because the
 fingerprint is a recurring character in the paper and half of it is unexplained.
+**Read (`an_l0cost` 382560).** 60 arms vs `tuned_L0` on L0, TOST ±1.0: 21 pay a certified cost, 0 gain,
+1 L0-free (a seed twin), 38 underpowered — a 557-program cell gives ±1.5–2 pt CIs, so ±1.0 equivalence
+is unreachable for any genuinely different arm. Ordering: consistency (−0.1 … −1.0) < breadth (−1.1 …
+−1.7) < X1-family (−1.6 … −4.3) < alignment/negatives < TIES merges ≪ `cons_tbase` −12.0, `base` −17.0.
+The by-format / by-length stratification E11 actually asks for is not done (CPU-only, existing cells).
+`log/transfer/2026-09-08_l0-cost-classified.md`.
 
 ---
 
@@ -203,16 +216,16 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | experiment | pipeline stages | status |
 |---|---|---|
 | E3 | `an_e3` (chains 381340/382139/382140 at 13B; 381405/382141/382142 at 34B) → 382542 | **done 2026-09-08**: H-E3 + H-E3-tax CONFIRMED at both scales |
-| E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | scheduled |
+| E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | **done 2026-09-08** (382548): H-E4-view REFUTED, H-E4-teacher CONFIRMED, H-E4-mono REFUTED — the tuned clean-code teacher is the ingredient |
 | E5b | `e5b_hard_family` | **disabled** — generator not written |
 | E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` (382803, 4,096 window) → `ck_*` → `ev_x1split` → `an_x1split` (382806) | **done 2026-09-08**: H-family-unit REFUTED, H-whole-ge-parts CONFIRMED; either half ≈ 90 % of the whole on X1 |
 | E7 | `an_fdr` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | scheduled, no deps |
 | E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` (382549–382552) | **done 2026-09-08**: H-E8 / H-E8-seen / H-E8-tax all CONFIRMED |
 | E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
 | E10 | `an_human_align` | **disabled** — tier_icse items not emitted, no script; decision deferred to the writeup |
-| E11 | `an_l0cost` (after the new evals so every arm is included) | scheduled |
+| E11 | `an_l0cost` (after the new evals so every arm is included) | **classification done 2026-09-08** (382560): 21 pay / 0 gain / 38 underpowered at ±1.0; stratification open |
 | E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | **done 2026-09-08** (382531 → 382532): H-tax-scales CONFIRMED, the X1 tax grows with data volume |
-| RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | scheduled |
+| RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | **done 2026-09-08** (13B 382514 → 382515; 34B 382516 → 382518): RQ-A/RQ-B CONFIRMED at both; H-cons-stack-strict CONFIRMED at 13B (+1.36) and 34B (+2.58) |
 | RQ-C depth | `bld_depth` → `emit_depth_items` → `ev_depth` → `an_depth` | scheduled |
 | E16 / RQ5′ | `ev_inverse_core`, `ev_inverse_specialists` → `an_inverse` (`42_inverse.py`) | **done 2026-09-08** (382620/382621 → 382622): H-inv-transfer REFUTED; family holds; `results/analysis/pipeline/inverse_codellama7b.json` |
 | report | `report` (`afterany` on every `an_*`) → `results/analysis/pipeline_report_<date>.md` | scheduled |
@@ -240,6 +253,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E4 / composite_34b / E11 reads)** — E4: the tuned clean-code teacher is the ingredient, claim narrowed to teacher-distillation. 34B composites: RQ-A/RQ-B at three scales, H-cons-stack-strict closed. E11 classification: 21 pay / 0 gain / 38 underpowered; stratification remains. Every pipeline stage is now terminal and read.
 - **2026-09-08 (E6 read)** — X1 split done: the halves do not transfer to each other, either half carries ~90 % of the stacked gain.
 - **2026-09-08 (E8 read)** — E8 done: consistency replicates on Llama-3.1-8B (+3.46 over breadth on X1).
 - **2026-09-08 (E3 read)** — E3 done: consistency survives scale (13B +3.95, 34B +3.38 over breadth on X1, no tax).
