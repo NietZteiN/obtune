@@ -8,11 +8,11 @@
  "stages": {
   "an_attention": {
    "dependency": "afterok:382553:382554:382555:382556:382557",
-   "elapsed_s": 0,
+   "elapsed_s": 6,
    "job_id": "382558",
    "rq": "RQ4'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:15+00:00"
   },
   "an_composite_13b": {
@@ -80,11 +80,11 @@
   },
   "an_inverse": {
    "dependency": "afterok:382620:382621",
-   "elapsed_s": 0,
+   "elapsed_s": 35,
    "job_id": "382622",
    "rq": "RQ5'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:47:56+00:00"
   },
   "an_l0cost": {
@@ -107,6 +107,7 @@
   },
   "an_x1split": {
    "dependency": "afterok:382805",
+   "elapsed_s": 0,
    "job_id": "382806",
    "rq": "RQ2'",
    "slurm_state": "PENDING",
@@ -135,33 +136,37 @@
   },
   "ck_L0_half": {
    "dependency": "afterok:382523",
-   "elapsed_s": 0,
+   "elapsed_s": 172,
    "job_id": "382527",
+   "note": "outputs present",
    "rq": "RQ1'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
   "ck_L0_quarter": {
    "dependency": "afterok:382524",
-   "elapsed_s": 0,
+   "elapsed_s": 188,
    "job_id": "382528",
+   "note": "outputs present",
    "rq": "RQ1'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
   "ck_X1m": {
    "dependency": "afterok:382536",
-   "elapsed_s": 0,
+   "elapsed_s": 165,
    "job_id": "382538",
+   "note": "outputs present",
    "rq": "RQ2'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
   "ck_X1s": {
    "dependency": "afterok:382803",
+   "elapsed_s": 0,
    "job_id": "382804",
    "rq": "RQ2'",
    "slurm_state": "PENDING",
@@ -197,20 +202,21 @@
   },
   "ck_mono_half": {
    "dependency": "afterok:382525",
-   "elapsed_s": 0,
+   "elapsed_s": 211,
    "job_id": "382529",
    "rq": "RQ1'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "RUNNING",
+   "status": "running",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
   "ck_mono_quarter": {
    "dependency": "afterok:382526",
-   "elapsed_s": 0,
+   "elapsed_s": 219,
    "job_id": "382530",
+   "note": "outputs present",
    "rq": "RQ1'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
   "emit_depth_items": {
@@ -274,20 +280,22 @@
   },
   "ev_inverse_core": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 918,
    "job_id": "382620",
+   "note": "outputs present",
    "rq": "RQ5'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:47:55+00:00"
   },
   "ev_inverse_specialists": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 800,
    "job_id": "382621",
+   "note": "outputs present",
    "rq": "RQ5'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:47:55+00:00"
   },
   "ev_llama": {
@@ -319,6 +327,7 @@
   },
   "ev_x1split": {
    "dependency": "afterok:382538:382804",
+   "elapsed_s": 0,
    "job_id": "382805",
    "rq": "RQ2'",
    "slurm_state": "PENDING",
@@ -327,57 +336,61 @@
   },
   "ko_x1_base": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 106,
    "job_id": "382553",
+   "note": "outputs present",
    "rq": "RQ4'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:15+00:00"
   },
   "ko_x1_cons_lam3": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 78,
    "job_id": "382556",
+   "note": "outputs present",
    "rq": "RQ4'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:15+00:00"
   },
   "ko_x1_mono_all": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 80,
    "job_id": "382555",
+   "note": "outputs present",
    "rq": "RQ4'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:15+00:00"
   },
   "ko_x1_tuned_L0": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 82,
    "job_id": "382554",
+   "note": "outputs present",
    "rq": "RQ4'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:15+00:00"
   },
   "ko_x1_tuned_X1": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 81,
    "job_id": "382557",
+   "note": "outputs present",
    "rq": "RQ4'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:15+00:00"
   },
   "report": {
-   "dependency": "afterany:382517:382518:382522:382532:382541:382542:382548:382552:382558:382559:382560",
-   "elapsed_s": 0,
-   "job_id": "382561",
+   "dependency": "afterany:382518:382532:382806:382542:382548:382552:382560",
+   "job_id": "383102",
    "rq": null,
    "slurm_state": "PENDING",
    "status": "queued",
-   "submitted_utc": "2026-09-08T02:09:15+00:00"
+   "submitted_utc": "2026-09-08T07:55:56+00:00"
   },
   "tr_L0_half": {
    "dependency": null,
@@ -411,33 +424,35 @@
   },
   "tr_X1s": {
    "dependency": null,
+   "elapsed_s": 391,
    "job_id": "382803",
    "rq": "RQ2'",
-   "slurm_state": "PENDING",
-   "status": "queued",
+   "slurm_state": "RUNNING",
+   "status": "running",
    "submitted_utc": "2026-09-08T04:03:29+00:00"
   },
   "tr_cons_llama": {
    "dependency": null,
-   "elapsed_s": 0,
+   "elapsed_s": 13004,
    "job_id": "382549",
-   "rq": "RQ3'",
-   "slurm_state": "PENDING",
-   "status": "queued",
-   "submitted_utc": "2026-09-08T02:09:14+00:00"
-  },
-  "tr_cons_tbase": {
-   "dependency": null,
-   "elapsed_s": 3576,
-   "job_id": "382543",
    "rq": "RQ3'",
    "slurm_state": "RUNNING",
    "status": "running",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
+  "tr_cons_tbase": {
+   "dependency": null,
+   "elapsed_s": 14671,
+   "job_id": "382543",
+   "note": "outputs present",
+   "rq": "RQ3'",
+   "slurm_state": "COMPLETED",
+   "status": "done",
+   "submitted_utc": "2026-09-08T02:09:14+00:00"
+  },
   "tr_cons_tmono": {
    "dependency": null,
-   "elapsed_s": 175,
+   "elapsed_s": 14122,
    "job_id": "382544",
    "rq": "RQ3'",
    "slurm_state": "RUNNING",
@@ -446,11 +461,12 @@
   },
   "tr_mono_half": {
    "dependency": null,
-   "elapsed_s": 5587,
+   "elapsed_s": 6530,
    "job_id": "382525",
+   "note": "outputs present",
    "rq": "RQ1'",
-   "slurm_state": "RUNNING",
-   "status": "running",
+   "slurm_state": "COMPLETED",
+   "status": "done",
    "submitted_utc": "2026-09-08T02:09:14+00:00"
   },
   "tr_mono_quarter": {
