@@ -87,6 +87,20 @@ Stage names (`an_depth`, `ev_teacher`, `tr_cons_tbase`, …) are pipeline stages
 | Does breadth help on an **unseen** obfuscator? | **no — it hurts** | `tuned_L0 − mono_all` **+4.12** [+1.81, +6.75] on H1 at 7B; **+2.47** [+0.41, +4.78] at 34B | CodeLlama |
 | Does that survive scale and seeds? | **yes** | on X1: +3.79 / +4.28 / +2.64 at 7B/13B/34B; +3.79 / +3.54 / +3.54 at three seeds | CodeLlama |
 | So is it invariance or memorization? | **neither, exactly — it is the *family*** | a 7B adapter trained on X1 (H1's family, different surface) **ties a 34B clean-code adapter** on H1: −0.33 [−2.88, +2.06] | CodeLlama |
+| Does **routing** help on an unseen obfuscator? | **no — routing is worth exactly zero anywhere** | learned gate vs random gate **+0.0000** [−0.0081, +0.0081]; on the held-out family the only arms that beat the control are family-matched, and `mole_random` leads on `L0` only | CodeLlama |
+| Then **what *does* work on an unseen obfuscator?** | **only training on the same family** — and, failing that, the clean-code adapter | `X1`: leader `x1_resample` **0.3237** vs `tuned_L0` 0.270, family arms **+3.95…+5.35**; `H1`: leader `tuned_X1` **0.3180**, **family arms only**. Everything else is flat-or-worse: breadth **−4.12**, merging −3.13, oracle prompting ≈ −9 | CodeLlama |
+| What has **not** been tried there? | **ICL — the cheapest candidate, never run on a held-out family** | `k4_cross` recovers ≈ **40 %** of the base→`tuned_L0` gap on *every* seen condition; on `X1`/`H1` it is *not run* | CodeLlama |
+
+**On the unseen question specifically.** Three of these rows say the same thing from different
+directions, and it is the sharpest negative the project has: *nothing generic transfers to an
+obfuscator the model has not seen*. Breadth hurts, routing is exactly zero, merging costs, oracle
+prompting is worse than the plain clean-code adapter. The **only** thing measured to help is having
+trained on that transform's **family** — and it helps enough that a 7B family-matched adapter ties a
+34B clean-code one, which is the strongest form of the claim available: the family is worth about a
+5× scale step. Two honest gaps sit behind that. `H1` is spent, so it can never be used as a
+held-out condition again; and **ICL has never been run on a held-out family at all**, even though it
+is the best no-training arm on every seen condition — so "what works on unseen" is currently
+answered only over *tuned* systems.
 
 ### RQ2 — Does modularity rescue it?
 
@@ -438,6 +452,7 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08 (unseen-obfuscator rows)** — §2 RQ1 gains three rows and a note answering "what works on an unseen obfuscator?" (user request). Routing is zero there as everywhere (+0.0000); the only measured winner is family-matched training (`x1_resample` 0.3237 vs `tuned_L0` 0.270 on X1; family arms only on H1), with the clean-code adapter as the general fallback. Records two gaps the question exposes: `H1` is spent as a held-out condition, and **ICL has never been run on a held-out family** despite being the best no-training arm on every seen condition.
 - **2026-09-08 (E7c, E11c, and the open-items wave)** — the gaps the earlier reads recorded are closed in the order the discipline requires: E7c's `mono_all`-controlled FDR family was frozen in the pre-registration before `--control-family` existed as code, and RQ3′'s headline survives at q = 0.0049; E11c breaks E11b's format/difficulty confound and the reversal *grows* to +10.21. Also submitted this wave: the cross-language JS grid (E13), E10 human alignment (the Paper-2 map was never missing), the GLMM, and the log P(gold) follow-up. E5b is respecified, not run.
 - **2026-09-08 (E7b, E11b)** — §6 RQ1′ row closes the "where does the L0 cost land" question (neither hypothesis; the format half runs significantly the other way) and §6 RQ4′ row carries the enlarged FDR family (every claim survives; the uncorrected `cons_lam3 − mono_all` headline recorded as a gap). Master report rev 18 adds §29 for the whole campaign. Entries `log/transfer/2026-09-08_where-the-l0-cost-lands.md`, `log/writeup/2026-09-08_fdr-family-enlarged.md`, `log/writeup/2026-09-08_master-report-rev18.md`.
 - **2026-09-08 (composite_34b, E4, E11)** — §6 RQ1′ row carries the 34B composites (RQ-A at three scales) and the L0-cost classification (21 pay, 0 gain, 38 underpowered at ±1.0 — "no L0 tax" is *no detectable cost*, not certified); §6.1 34B stacked-seen cell filled (+3.05) and the L0 row annotated; §6 RQ3′ row carries H-cons-stack-strict (CONFIRMED at 13B/34B) and the E4 teacher decomposition (tuned clean-code teacher is the ingredient; seen gain teacher-independent, unseen number distilled from the teacher). RQ3′'s open column is now empty. Entries `log/transfer/2026-09-08_composites-at-34b.md`, `_teacher-is-the-ingredient.md`, `_l0-cost-classified.md`.
