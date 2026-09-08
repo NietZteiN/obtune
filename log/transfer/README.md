@@ -10,6 +10,7 @@
 - ✓ **H-inv-family** (09-08, CONFIRMED, survives FDR q = 0.005): `tuned_X1 − tuned_L0` @ X1 +7.00*, `− base` +3.37* — the only above-base inverse transfer.
 - ✓ **H-inv-diagonal** (09-08, CONFIRMED 3/5 by rule; qualified): L1b/S1/S2 beat `tuned_L0`, but vs base S1 +2.1 and S2 −3.7 — recovery of `tuned_L0`'s format collapse, not inversion skill.
 - ✓ **H-cons-scale (H-E3)** CONFIRMED 09-08: `cons_lam3 − mono_all` on X1 +3.95 [+2.22, +5.84] at 13B, +3.38 [+1.32, +5.51] at 34B (7B +4.59 at three seeds). ✓ **H-E3-tax**: `cons_lam3 − tuned_L0` on X1 −0.33 / +0.74, no tax at any scale. Best arm on every column at 34B.
+- ✗ **H-family-unit** REFUTED 09-08 (`an_x1split`): `tuned_X1m − tuned_L0` @ X1s +1.49 [−0.95, +3.93], `tuned_X1s − tuned_L0` @ X1m −0.10 [−2.38, +2.19]. ✓ **H-whole-ge-parts**: −0.49 / −0.41 vs the whole on X1. Unanticipated: either half alone +4.12 / +4.20 on X1 against +4.61 for the whole — transfer follows shared surface, not mechanism.
 - ✓ **H-E8 / H-E8-seen / H-E8-tax** CONFIRMED 09-08: on Llama-3.1-8B `cons_lam3 − mono_all` @ X1 +3.46 [+1.65, +5.35], `− tuned_L0` @ seen +2.53*, @ L0 +0.00, @ X1 +0.58. Not a CodeLlama artefact.
 - **H-cons-teacher** (opened 09-06): which ingredient — untuned-base teacher, breadth teacher (`an_e4`, running).
 - **H-cons-stack-strict** (opened 09-07): `cons_lam3 − mono_all` on composites excludes zero above at 13B/34B (point +1.27 at 7B, lower bound −0.02). Scheduled in the pipeline as `composite_scale` after E3.
@@ -103,6 +104,7 @@
 - (none yet)
 
 ## Entries
+- [`2026-09-08_x1-split-mechanism-not-family.md`](2026-09-08_x1-split-mechanism-not-family.md) — **Read — E6 / RQ2′ X1 split.** The MBA and string halves do not transfer to each other (H-family-unit REFUTED) yet either half alone recovers ~90 % of the whole adapter's X1 gain (H-whole-ge-parts CONFIRMED, non-additive). Six seen transforms do not reach X1; either half does; the halves do not reach each other — shared surface, not mechanism. X1s coverage/window caveats recorded.
 - [`2026-09-08_consistency-replicates-on-llama.md`](2026-09-08_consistency-replicates-on-llama.md) — **Read — E8.** Consistency replicates on Llama-3.1-8B: +3.46* over breadth on X1, +2.53* over clean-only on seen, +0.00 on L0; best or tied-best on every column. RQ3′ now holds on four model/scale points.
 - [`2026-09-08_consistency-survives-scale.md`](2026-09-08_consistency-survives-scale.md) — **Read — E3.** Consistency beats breadth on X1 at 13B (+3.95*) and 34B (+3.38*) and pays no tax against `tuned_L0` at either; at 34B it is the best arm on all seven columns. Breadth's L0/X1 taxes are scale-invariant; the objective resolves the trade, scale does not.
 - [`2026-09-08_saturation-the-tax-grows-with-data.md`](2026-09-08_saturation-the-tax-grows-with-data.md) — **Read — E12 saturation.** Breadth's seen gain saturates by a quarter of the corpus (`mono_half − mono_all` +0.01 equiv) while its X1 tax grows monotonically with volume (−0.49 → −2.31* → −3.79*); `mono_quarter` beats `mono_all` on X1 by +3.29*. Clean-only is not saturated (half −1.05*, quarter −2.71*). Breadth overfits the seen transform set as a function of volume.

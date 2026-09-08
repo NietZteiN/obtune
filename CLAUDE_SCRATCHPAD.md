@@ -1102,3 +1102,8 @@ window difference is a caveat to name beside the coverage asymmetry already on f
 ### 2026-09-08 — E8 READ (382551/382552 COMPLETED; rules as frozen)
 - H-E8 +3.46*, H-E8-seen +2.53*, H-E8-tax +0.58 (ci_hi > 0) — all CONFIRMED on Llama-3.1-8B. Written to
   `log/transfer/2026-09-08_consistency-replicates-on-llama.md`, RQ_SUMMARY §6/§6.1, PAPER_EXPERIMENTS E8.
+
+### 2026-09-08 — E6 X1-SPLIT READ (382805/382806 COMPLETED; rules as frozen)
+- H-family-unit REFUTED (+1.49 n.s. / −0.10); H-whole-ge-parts CONFIRMED (−0.49 / −0.41). Reported: either half
+  +4.12 / +4.20 on X1 vs whole +4.61; breadth tax −4.94* / −3.93* on the halves. Written to
+  `log/transfer/2026-09-08_x1-split-mechanism-not-family.md`, RQ_SUMMARY §6/§6.2, PAPER_EXPERIMENTS E6.

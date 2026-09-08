@@ -205,7 +205,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E3 | `an_e3` (chains 381340/382139/382140 at 13B; 381405/382141/382142 at 34B) → 382542 | **done 2026-09-08**: H-E3 + H-E3-tax CONFIRMED at both scales |
 | E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | scheduled |
 | E5b | `e5b_hard_family` | **disabled** — generator not written |
-| E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` → `ck_*` → `ev_x1split` → `an_x1split` | scheduled |
+| E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` (382803, 4,096 window) → `ck_*` → `ev_x1split` → `an_x1split` (382806) | **done 2026-09-08**: H-family-unit REFUTED, H-whole-ge-parts CONFIRMED; either half ≈ 90 % of the whole on X1 |
 | E7 | `an_fdr` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | scheduled, no deps |
 | E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` (382549–382552) | **done 2026-09-08**: H-E8 / H-E8-seen / H-E8-tax all CONFIRMED |
 | E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
@@ -240,6 +240,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E6 read)** — X1 split done: the halves do not transfer to each other, either half carries ~90 % of the stacked gain.
 - **2026-09-08 (E8 read)** — E8 done: consistency replicates on Llama-3.1-8B (+3.46 over breadth on X1).
 - **2026-09-08 (E3 read)** — E3 done: consistency survives scale (13B +3.95, 34B +3.38 over breadth on X1, no tax).
 - **2026-09-08 (E12 read)** — saturation done: seen gain saturates by ¼ corpus, X1 tax grows with volume.
