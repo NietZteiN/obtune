@@ -1,0 +1,31 @@
+# E10 — human alignment. The legacy Papers-1/3 tier rows, which are the ONLY rows comparable to the
+# human baselines (CLAUDE.md 3.1, docs/TIER_MAPPING.md), evaluated with the same arms as everything
+# else so the model's item difficulty ordering can be compared with the Paper-2 study's.
+#
+# NAMESPACE. `T_*`, not `L*`: schema.TierCondition is deliberately outside AnyCondition so a tier
+# label cannot reach the training path or be averaged into the transfer matrix. NEVER trainable.
+#
+# GOLD. `output_repr` here is the study's own answer key, verbatim — the string the human
+# participants were graded against. That is the point: model and human are scored on one key.
+# It also means the key carries the study's spelling ("FALSE", "True"), so the read reports a
+# case/format-insensitive sensitivity check beside the strict grading rather than assuming.
+_extends: _base_eval.yaml
+
+phase: human_align
+experiment_id: human_align
+run_tag: human_align
+eval_source: testset
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [T_L0, T_L1, T_L1b, T_L2, T_L3]

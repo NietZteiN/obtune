@@ -1271,3 +1271,33 @@ is `mono_all`'s log P(gold) deficit *specific to the unseen family* or *global*?
 existing files. Six more score-mode extractions are therefore submitted (`ko_{l0,s2}_{tuned_L0,
 mono_all,cons_lam3}`, ~2 min each, same script, same 150-item cap, same identifier class). E14 stays
 **REPORTED, not verdicted**; this only makes the reported comparison possible.
+
+### 2026-09-08 — PRE-REGISTRATION #3 (E10 human alignment; frozen before the eval is submitted)
+E10 has been "disabled, not pretended" since the plan was written, on the grounds that it needs the
+`tier_icse` items emitted and graded plus the Paper-2 item map. Checked before assuming: the map is
+not missing — `data/human/paper2_graded.csv` holds **600 graded responses from 50 participants over
+98 item cells**, and every one of those 98 cells matches a legacy row. `scripts/47_emit_icse_items.py`
+now emits all 350 rows (320 parse; the 30 skipped are LeetCode keyword-call rows **outside** the
+human set, so human coverage is 98/98). Labels are `T_*` (`schema.TierCondition`), outside
+`AnyCondition`, never trainable.
+- **Setup:** `ev_human_align_py` (and `_js`, after the JS arms exist) → `an_human_align`
+  (`scripts/analysis/48_human_align.py`). Arms `base` / `tuned_L0` / `mono_all` / `cons_lam3` on
+  `T_L0…T_L3`. Human accuracy per cell = fraction of that cell's responses graded `Correct`
+  (case-normalised; ~6.1 responses per cell, min 5). Model accuracy per cell = mean `correct`.
+  Bootstrap clusters by **program_id** (70 programs), never by cell.
+- **H-human-base** (does the untuned model order items like people?): item-level Spearman ρ between
+  `base` accuracy and human accuracy over the 98 cells. CONFIRMED iff ci_lo > 0, REFUTED iff
+  ci_hi < 0, else INCONCLUSIVE.
+- **H-human-shift** (the charter's actual question — does tuning move models toward or away from
+  human difficulty orderings?): Δρ = ρ(`tuned_L0`) − ρ(`base`), paired on the same bootstrap draws.
+  ci_lo > 0 **TOWARD**, ci_hi < 0 **AWAY**, else NO DETECTABLE SHIFT. Same statistic reported for
+  `mono_all` and `cons_lam3`, verdicted only for `tuned_L0` (one arm, one rule).
+- **H-human-tier** — condition level, 5 tiers: report the human and model orderings and their rank
+  correlation. **REPORTED, never verdicted**: n = 5.
+- **Paper-3 (n = 73, `paper3_graded.csv`) is used at CONDITION level only**, per CLAUDE.md — 6 items
+  cannot support an item-level ρ, and saying so is part of the contribution.
+- **Mandatory sensitivity check, fixed now:** the study's key carries its own spelling (`FALSE`,
+  `True`). The read reports strict grading AND a case/whitespace-insensitive regrade from
+  `output_parsed`, and if they disagree by more than 2 pts on any arm the strict number is reported
+  as an underestimate rather than quietly replaced.
+- Gates nothing. If ρ is flat this is a null and gets written as one.

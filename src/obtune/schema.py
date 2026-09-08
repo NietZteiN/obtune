@@ -41,6 +41,19 @@ CompositeCondition = Literal[
 #: Anything that may appear as a variant/eval label, ladder or composite.
 AnyCondition = Union[Condition, CompositeCondition]
 TierICSE = Literal["L0", "L1", "L1b", "L2", "L3"]
+
+#: The legacy Papers-1/3 tiers, as EVAL LABELS. Deliberately prefixed `T_` and deliberately NOT
+#: folded into `AnyCondition`: CLAUDE.md 3.1 keeps the two namespaces apart because the tier
+#: semantics differ per language, and a tier code that could pass as a ladder code would sooner or
+#: later be trained on or averaged into the transfer matrix. These labels exist so the 350
+#: byte-identical rows -- the only rows comparable to the human baselines (E10) -- can be evaluated
+#: through the normal item path without widening the ladder anywhere else. NEVER trainable.
+TierCondition = Literal["T_L0", "T_L1", "T_L1b", "T_L2", "T_L3"]
+
+#: What may label an EVAL item: the ladder, a composite, or a legacy tier. Only EvalItem.condition
+#: and TrialRow.eval_cond take this union; Variant and Pair keep `AnyCondition`, so nothing in the
+#: training path can carry a tier label.
+EvalCondition = Union[AnyCondition, TierCondition]
 Language = Literal["python", "javascript"]
 Split = Literal["train", "val", "test"]
 
@@ -111,7 +124,7 @@ class EvalItem(BaseModel):
     item_id: str
     program_id: str
     dataset: Literal["A", "B"]
-    condition: AnyCondition
+    condition: EvalCondition
     language: Language
     code: str
     entry_point: str
@@ -196,7 +209,7 @@ class TrialRow(BaseModel):
         "obj_curriculum_kl",     # same, with the consistency term
     ]
     train_cond: Optional[str]  # None | condition | "mix"
-    eval_cond: AnyCondition
+    eval_cond: EvalCondition
     language: Language
     dataset: Literal["A", "B"]
     snippet_id: str  # program_id
