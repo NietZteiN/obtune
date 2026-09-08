@@ -182,6 +182,9 @@ def render(panel: dict, model: str, lang: str, conds: list[str], out: list[str])
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--family-table", metavar="PATH",
+                    help="also emit the compact APPROACH x CONDITION table, one block per model "
+                         "(docs/RQ_SUMMARY.md 7)")
     a = ap.parse_args()
     panel, dupes = collect()
     out: list[str] = []
@@ -226,6 +229,44 @@ def main() -> int:
                f"{dict(dupes) or 'none'}.*")
     Path(a.out).write_text("\n".join(out))
     print(f"wrote {a.out} ({len(out)} lines)")
+
+    if a.family_table:
+        fam_out: list[str] = []
+        for model, lang, conds, title in blocks:
+            rows = [(s_, r) for (m, l, s_), r in panel.items() if m == model and l == lang]
+            if not rows:
+                continue
+            byfam: dict = collections.defaultdict(list)
+            for s_, r in rows:
+                byfam[family(s_)].append((s_, r))
+            # one REPRESENTATIVE system per family: its best by mean single. Never a per-column
+            # max, which would build a row out of several different systems.
+            reps = []
+            for fam, members in byfam.items():
+                scored = [(mean_of(r, SINGLE), s_, r) for s_, r in members]
+                scored = [t for t in scored if t[0]]
+                if not scored:
+                    continue
+                # Prefer a representative that HAS the held-out read, so the column that
+                # discriminates is not empty for a whole approach; among those, the best by
+                # mean single. Only if no member of the family was ever read on X1 does the
+                # plain best win. Stated in the caption, because it is a selection rule.
+                withx1 = [t for t in scored if "X1" in t[2]]
+                pool = withx1 or scored
+                ms, s_, r = max(pool, key=lambda t: float(t[0].strip("*")))
+                reps.append((float(ms.strip("*")), fam, s_, r))
+            if not reps:
+                continue
+            present = [c for c in conds if any(c in r for _, _, _, r in reps)]
+            fam_out.append(f"\n**{title}**\n")
+            hdr = ["approach", "representative row", "mean single"] + present
+            fam_out.append("| " + " | ".join(hdr) + " |")
+            fam_out.append("|" + "---|" * len(hdr))
+            for ms, fam, s_, r in sorted(reps, reverse=True):
+                cells_ = [fmt(r.get(c)) for c in present]
+                fam_out.append(f"| {fam} | `{s_}` | **{ms:.3f}** | " + " | ".join(cells_) + " |")
+        Path(a.family_table).write_text("\n".join(fam_out))
+        print(f"wrote {a.family_table} ({len(fam_out)} lines)")
     return 0
 
 
