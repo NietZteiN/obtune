@@ -1201,3 +1201,66 @@ every verdict including the refutations), §1 amended where the pipeline narrowe
 - **State:** 52 pipeline stages, all terminal and read. Next: the paper draft. Blocked/parked: E5b
   (needs a hard-family generator), E10 (needs tier_icse items graded), all JavaScript (`node`), the
   GLMM (R stack).
+
+### 2026-09-08 — PRE-REGISTRATION #2 (frozen before submission; the "open items" wave)
+The 09-08 reads left six open items. Four turned out not to be blocked at all, and the reason is
+worth recording: **`node` blocks *regenerating* the JavaScript corpus, not *using* it**, and the
+corpus transferred intact. Verified before writing any config — `scripts/check_manifest.py` passes
+on the whole tree (SHA manifests **and** the H1-marker content scan), the JS banks hold 2,022 train
+pairs and 504 heldout items per condition plus the six depth-2 composites, and network access to
+PyPI/CRAN/nodejs.org works from the login node. NO stage below reads H1.
+
+**A. E13 / cross-language — the paper's Python-only scope, tested** (`tr_js_L0` → `ck_js_L0` →
+`tr_js_mono`/`tr_js_cons` → `ck_*` → `ev_crosslang_js` → `an_crosslang`). CodeLlama-7b, seed 17,
+`configs/eval/crosslang_js.yaml`: `base` / `tuned_L0` / `mono_all` / `cons_lam3` on the six seen
+conditions and the six depth-2 composites. Sequence lengths measured first (max 1,247 tokens; 0.00 %
+over 2048), so the inherited window stands and no truncation-gate refusal is expected.
+- **H-xlang-stack** (RQ-A in a second language): `mono_all − tuned_L0` pooled over the six JS
+  composites — ci_lo > 0 CONFIRMED, ci_hi < 0 REFUTED, else INCONCLUSIVE.
+- **H-xlang-cons-seen** (RQ3′ in a second language): `cons_lam3 − tuned_L0` pooled over the five
+  obfuscated seen conditions — same three-way rule.
+- **H-xlang-cons-stack**: `cons_lam3 − mono_all` on the six composites — same three-way rule.
+- **H-xlang-L0** (breadth's clean-code cost replicates): `mono_all − tuned_L0` @ L0 — ci_hi < 0
+  CONFIRMED, inside ±1.0 REFUTED, else INCONCLUSIVE.
+- **H-xlang-volume** — **REPORTED, not verdicted**, and the prediction is put on record *now* so it
+  is falsifiable either way: JS trains on ~12.1k rows against Python's ~26.8k, and E12 showed
+  breadth's taxes grow with data volume, so **the JS L0 cost should be the smaller one** (Python:
+  −1.32). No verdict is claimed, because a cross-language magnitude comparison is confounded by the
+  programs, the tokenizer and the ladder's per-language surface all at once.
+- **Not claimed here:** any unseen-family number. X1 is Python-only by construction and no JS X1
+  generator exists; H1 is spent. The cross-language read covers the "buy" side and the L0 cost only,
+  and must say so.
+
+**B. E7c — the `mono_all`-controlled FDR family** (`an_fdr3`). The gap the 09-08 E7b read recorded
+and deliberately did not close on the spot: every existing family is controlled against `tuned_L0`,
+so RQ3′'s headline `cons_lam3 − mono_all` @ X1 has never been corrected. Family membership is again
+**discovered mechanically** — every system holding all seven generic cells — now contrasted against
+**`mono_all`**, 7 conditions. Rule unchanged: survives iff q < 0.05. Reported; gates nothing. This is
+the family being frozen *before* its read, which is the whole point of deferring it on 09-08.
+
+**C. E7d — the GLMM the charter actually asks for** (`an_glmm`). CLAUDE.md §4 specifies item-level
+binomial GLMMs with crossed random effects for program × model; every report to date substitutes a
+program-clustered bootstrap and says so. `statsmodels` is installable (network works) and goes in a
+**separate venv** (`envs/obtune-stats`) so the pinned training env is not touched.
+`BinomialBayesMixedGLM` with crossed variance components for `program_id` and `system` on the 7B
+generic grid. **REPORTED, gates nothing, and it does not replace a single existing number**: it is
+reported as agreement or disagreement with the bootstrap intervals. Rule fixed now: for each of the
+campaign's four headline contrasts the GLMM "agrees" iff its posterior mean has the same sign as the
+bootstrap point **and** its 95 % credible interval excludes zero iff the bootstrap CI did. Any
+disagreement is reported as a disagreement, not resolved in favour of whichever is convenient.
+
+**D. E11c — breaking E11b's format/difficulty confound** (`an_l0strat2`). E11b could not separate
+"unusual answer format" from "easy item" because `bool_none` is both. Fix, fixed now: recompute the
+format contrast on a **difficulty-matched subsample** — bin items by the control's own per-item
+accuracy (0, partial, 1 over the control's trials for that item) and compare common vs unusual
+*within* each bin, then pool the within-bin deltas. **H-L0-format-matched**: ci_hi < 0 CONFIRMED
+(cost concentrates on unusual formats once difficulty is held), ci_lo > 0 **CONFIRMED-REVERSED**
+(it concentrates on common formats), inside ±1.0 REFUTED, else INCONCLUSIVE. **The rule is two-sided
+this time** — E11b's one-sided rule had no branch for the reversal it found, and that was a rule
+design error, recorded then and corrected here.
+
+**E. E14 — the `mono_all` log P(gold) anomaly** (`an_logp`). Unplanned observation from `an_attention`:
+`mono_all`'s clean log P(gold) on X1 is −11.4 against −6.3 for `tuned_L0` and `cons_lam3`, sitting
+exactly where the unseen-family tax is. **REPORTED, not verdicted** — it is one number from an
+instrument that turned out inert, so the read's job is to establish whether it is real (present on
+other conditions and other arms, not an artifact of the attention subset) and nothing more.

@@ -1,0 +1,20 @@
+# Cross-language replication (2026-09-08) — monolithic adapter, all six trainable conditions,
+# JAVASCRIPT. Exact twin of mono_generic_py.yaml but for `language`. MODEL-NEUTRAL.
+#
+# NOTE THE DATA VOLUME, it is the one thing that is not held constant across the two languages:
+# the JS banks are ~2,022 pairs per condition against Python's ~6,693, so the six-condition union
+# is ~12.1k rows against Python's ~26.8k. E12 (2026-09-08) showed breadth's taxes GROW with data
+# volume, so this run is also an out-of-sample test of that: the JS taxes should be the smaller
+# ones. train_size is well above the union either way, so nothing is subsampled.
+_extends: _base_lora.yaml
+
+language: javascript
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: mono_js_all
+phase: main
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17

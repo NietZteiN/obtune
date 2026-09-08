@@ -1,0 +1,17 @@
+# Cross-language replication (2026-09-08) — per-condition specialist, L0, JAVASCRIPT.
+# Twin of grid_py_L0.yaml; the only differences are `language` and the run tag. MODEL-NEUTRAL.
+#
+# Sequence lengths were measured before submission rather than guessed: on CodeLlama-7b the JS
+# banks are far shorter than the Python ones (max 1,247 tokens over all six conditions against
+# Python's 20k tail), so the inherited max_seq_len of 2048 truncates NOTHING and the batch shape
+# does not need the Python grid's overrides. Measured 2026-09-08, all six conditions, >2048 = 0.00 %.
+_extends: _base_lora.yaml
+
+language: javascript
+train_conditions: [L0]
+run_tag: grid_js_L0
+phase: main
+
+train:
+  per_device_batch: 16
+  grad_accum: 4

@@ -1,0 +1,37 @@
+# Cross-language replication (2026-09-08) — the RQ1'/RQ3' grid on JAVASCRIPT, CodeLlama-7b.
+#
+# WHY THIS EXISTS. Every number in the paper is Python. The charter's cross-language hypothesis
+# was declared unreachable because `node` is not installed on juno — but that blocks REGENERATING
+# the corpus, not using it, and the JS corpus transferred intact (2,022 train pairs and 504 heldout
+# items per condition, and the six depth-2 composites). Verified 2026-09-08: the whole data tree
+# passes `scripts/check_manifest.py`, SHA manifests and the H1-marker content scan alike.
+#
+# WHAT IS AND IS NOT HERE. Seen singles + the six depth-2 composites, so the "buy" side of RQ1'
+# and RQ3's seen/L0 claims get a second language. The "cost" side does NOT: X1 is Python-only by
+# construction (configs/conditions.yaml) and a JS X1 generator does not exist, so no unseen-family
+# column is claimed here. H1 is absent, permanently — the budget is spent (CLAUDE.md 3.2).
+#
+# CLAUDE.md 3.1 WARNING, and why it does not apply: legacy JS L2/L3 rows carry H1-family features
+# (string-keyed dispatch tables). Those are the *tier_icse* namespace. These are the condition
+# namespace, built by the same generators as Python's, and they pass the marker scan.
+_extends: _base_eval.yaml
+
+phase: crosslang_js
+experiment_id: crosslang_js
+run_tag: crosslang_js
+language: javascript
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3]

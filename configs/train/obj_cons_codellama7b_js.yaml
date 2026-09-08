@@ -1,0 +1,26 @@
+# Cross-language replication (2026-09-08) — OBJECTIVE O1, paired consistency, JAVASCRIPT.
+#   L = CE(y | x_obf) + lam * KL( p_teacher(. | x_L0parent) || p_student(. | x_obf) )
+# Twin of obj_cons_codellama7b_py.yaml. Teacher is the JAVASCRIPT clean-code adapter, which is
+# why this arm depends on grid_js_L0 finishing first — E4 (2026-09-08) showed the teacher is the
+# ingredient, so using the Python teacher here would be a different experiment, not a translation.
+# Arm: --lam 3 (cons_lam3), the peak established at 7B/13B/34B and replicated on Llama-3.1-8B.
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: javascript
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_js
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 1.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-7b/javascript/L0_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17
