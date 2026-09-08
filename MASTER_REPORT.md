@@ -32,9 +32,10 @@ clean-code adapter on each row's L0 parent — is the first arm that keeps bread
 neither of its taxes (+5.11 [+3.05, +7.08] over `mono_all` on X1, confirmed at three seeds in
 round 2, §27.7).*
 
-Scope: all **3,564** evaluation cells / **3,104,044** graded trials under `results/cells/`, of which
-the **CodeLlama/Llama panel is 1,141 cells / 1,724,789 trials** (7B 993, 13B 45, 34B 51,
-Llama-3.1-8B 52; §25.1, recounted 2026-09-08 → `results/analysis/corpus_inventory_2026-09-08.json`) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
+Scope: all **3,652** evaluation cells / **3,129,468** graded trials under `results/cells/`, of which
+the **CodeLlama/Llama panel is 1,229 cells / 1,750,213 trials** (7B 1,081, 13B 45, 34B 51,
+Llama-3.1-8B 52; §25.1, recounted 2026-09-08 → `results/analysis/corpus_inventory_2026-09-08b.json`).
+**48 of the 7B cells are JavaScript** — the first non-Python cells on this panel (§29.8) and the rest is the Qwen era that §1–§17 describe; plus the CFT/bidirectional side thread (51 `results/forgetting/` probes), the RQ3
 attention corpora on both models, and the zero-training normalization arms. Every number below was
 recomputed from raw per-trial data — by [`scripts/make_master_report.py`](scripts/make_master_report.py)
 → `results/analysis/master_report.json` for the tables inherited from the 08-12 revision, by
@@ -189,6 +190,7 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [29.5 Multiplicity — what survives when the whole matrix is corrected at once](#295-multiplicity--what-survives-when-the-whole-matrix-is-corrected-at-once)
   - [29.6 What the campaign changed](#296-what-the-campaign-changed)
   - [29.7 The open-items wave — four of six "blocked" items were not blocked](#297-the-open-items-wave--four-of-six-blocked-items-were-not-blocked)
+  - [29.8 A second language, and the first human-alignment result](#298-a-second-language-and-the-first-human-alignment-result)
 - [27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works](#27-since-rev-14--the-final-h1-read-its-trainable-proxy-scale-three-more-null-levers-and-the-objective-that-works)
   - [27.1 The final H1 read — the budget is spent, and every pre-registered test confirms](#271-the-final-h1-read--the-budget-is-spent-and-every-pre-registered-test-confirms)
   - [27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999](#272-x1--a-trainable-proxy-for-h1-that-predicts-it-to-r--0999)
@@ -5344,10 +5346,123 @@ with E5's damage gate intact and pre-registration required before the generator 
 shipped in haste writes a corpus that costs CPU-days to regenerate and can silently corrupt a
 headline claim; specifying it correctly and leaving it unrun is the better outcome.
 
+### 29.8 A second language, and the first human-alignment result
+
+*Added 2026-09-08.* §29.7 established that the JavaScript corpus was usable and that E10's data was
+on disk. Both were then run.
+
+**E13 — the paper's Python-only scope, tested.** Three arms trained on the JS corpus (`tuned_L0`,
+`mono_all`, and `cons_lam3` with the **JavaScript** clean-code teacher, because §29.3 showed the
+teacher is the ingredient), evaluated on the six seen conditions and the six depth-2 composites.
+168 programs against Python's 557. Split disjointness was verified explicitly rather than assumed:
+the pair files carry all three splits, `train` is 473 programs, `test` is 168, and the 168 are
+exactly the heldout eval set with zero overlap.
+
+| system | L0 | L1b | L1r | L2 | S1 | S2 |
+|---|---:|---:|---:|---:|---:|---:|
+| `base` | 0.3591 | 0.2639 | 0.3313 | 0.3194 | 0.3214 | 0.2202 |
+| `tuned_L0` | 0.5317 | 0.4742 | 0.5179 | 0.5298 | 0.5190 | 0.3532 |
+| `mono_all` | 0.5000 | 0.5000 | 0.4960 | 0.4940 | 0.5090 | 0.5079 |
+| `cons_lam3` | **0.5655** | **0.5556** | **0.5556** | **0.5437** | **0.5489** | **0.5575** |
+
+**RQ3′ replicates and amplifies.** `cons_lam3` is the best arm on **all twelve columns**, with
+margins roughly three times the Python ones: **+7.35** [+4.93, +9.72] over the clean-code arm on
+seen conditions (Python +2.41), **+4.91** [+2.68, +7.29] over breadth on composites (Python +1.27,
+34B +2.58), positive against breadth on all six composites individually. And a result with no Python
+counterpart: **+3.37** [+0.79, +5.95] over `tuned_L0` **on clean code itself**, where in Python it
+merely ties. The objective is not a CodeLlama-Python artifact.
+
+**RQ1′'s stacking gain does not replicate, and that is reported as a failure to replicate rather
+than as low power.** `mono_all − tuned_L0` on the composites is **+2.55 [−0.30, +5.31]** against
+Python's +3.49 / +2.90 / +3.05 at three scales — but the pooled number understates the problem: the
+per-composite pattern is heterogeneous in a way Python's never was. Three of six are *negative*
+(`C_L1r_S1` −1.60, `C_S1_L1r` −1.60, `C_L1r_S3` −3.17) and the pooled figure is carried almost
+entirely by `C_S4_S3` **+14.09**, the one composite whose interval clears zero — and that is where
+the JS `tuned_L0` is anomalously weak (0.3611, against ~0.50 on everything else). In Python all six
+were positive at every scale. §29.1's dissociation therefore holds at three model scales in one
+language and **does not reproduce its shape in a second**.
+
+**H-xlang-volume — the prediction on record was wrong, and is reported that way.** Before the read it
+was recorded that JS trains on 8,490 rows against Python's 26,841 (**32 %**, close to §29.1's
+quarter arm where breadth's taxes essentially vanished) and that the JS L0 cost should therefore be
+the *smaller* one. Observed: **−3.17 against Python's −1.32**, more than twice as large. The interval
+spans zero and the comparison was pre-declared confounded by programs, tokenizer and per-language
+ladder surface, so this does not refute the saturation result — but the prediction it licensed did
+not come true. One independent corroboration survives, from the checkpoint selector rather than the
+accuracy: on Python both arms peak at epoch 2 of 3, while on JavaScript `tuned_L0` peaks at epoch 2
+and **`mono_all` peaks at epoch 1** — breadth overfits a third of the data a full epoch sooner.
+
+**What E13 cannot say.** There is **no unseen-family column**: X1 is Python-only by construction and
+a JS X1 generator does not exist, so the *tax* half of RQ1′ — the half the paper's headline rests on
+— is untested in JavaScript. Nothing in §29.8 may be quoted for it. Closing that needs a `node`
+toolchain, which is installable without root and is now the only thing standing between this project
+and a complete second language.
+
+**E10 — and the thread that never started has a result.** §29.6 listed human alignment as "disabled,
+not pretended". The blocker was stale: `data/human/paper2_graded.csv` holds 600 graded responses from
+50 participants over **98 item cells, all 98 matching a legacy tier row**. Only the item emitter was
+missing. With the items emitted into a `T_*` namespace deliberately outside `AnyCondition`, all four
+arms were evaluated on the 350 byte-identical legacy rows in both languages.
+
+| item-level Spearman ρ with human accuracy | ρ [95 % CI] | Δρ vs `base` | |
+|---|---:|---:|---|
+| `base` | +0.132 [−0.140, +0.381] | — | H-human-base INCONCLUSIVE |
+| `tuned_L0` | −0.171 [−0.406, +0.094] | **−0.303 [−0.575, −0.028]** | **AWAY** |
+| `mono_all` | −0.043 [−0.276, +0.214] | −0.174 [−0.430, +0.059] | no detectable shift |
+| `cons_lam3` | −0.113 [−0.353, +0.140] | −0.244 [−0.520, +0.056] | no detectable shift |
+
+**Fine-tuning moves the model away from human difficulty orderings.** The condition-level view — 
+reported, never verdicted at n = 5 — agrees and is starker: human accuracy falls monotonically across
+the legacy ladder (0.406 → 0.315, people find each tier harder than the last), **`base` tracks that
+gradient at +0.82 rank correlation, and every tuned arm inverts it** (−0.10, −0.41, −0.41), all three
+doing their *best* on `T_L3`, the tier humans find hardest. The reading the two views jointly support
+is that tuning buys exactly what humans do not have — fluency with the specific surface deformations
+of the ladder — so the heaviest tier stops being the hardest. **Claim C8 is answered, and the answer
+is a divergence: the accuracy this project measures is not a gain in anything that behaves like human
+comprehension.**
+
+It is a weak instrument and must be quoted with its interval: 98 cells over 20 programs, **one trial
+per cell**, and the one interval that clears zero does so at −0.028. The power ceiling is a property
+of the human study's design — one input case per item — and cannot be raised by compute, because
+adding cases would change the item and break the byte-identical comparability that licenses the
+comparison at all.
+
+**A note on how this section came to exist.** Of the six items §29.6 left open, **four were not
+blocked** — the notes recording them as blocked had gone stale and had not been re-tested. `node`
+blocked regenerating the JS corpus rather than using it; E10's "missing" item map was on disk;
+`statsmodels` installs fine into a side venv. That is worth recording as a process finding of the
+same standing as the numbers: **in a long campaign, re-test a blocker before believing it.**
+
 ---
 
 ## Changelog
 
+- **2026-09-08 (rev 19)** — **§29.7 and §29.8 added: the open-items wave.** Of the six items rev 18's
+  §29.6 left open, **four were not blocked at all** — the notes recording them as blocked had gone
+  stale and had not been re-tested, which is recorded in §29.8 as a process finding of the same
+  standing as the numbers. `node` blocks *regenerating* the JavaScript corpus rather than *using* it,
+  and the corpus transferred intact and passes both H1-leak layers; E10's "missing" Paper-2 item map
+  is on disk with **98/98 human cells matching** a legacy row; `statsmodels` installs into a side venv
+  without touching the pinned training env. **New results.** **E7c** closes the multiplicity gap rev 18
+  recorded and declined to close on the spot: rule frozen before `--control-family` existed as code,
+  and `cons_lam3 − mono_all` @ X1 survives at **q = 0.0049** in a 203-test family, at all three seeds
+  and all four λ — while **0 of `cons_lam3`'s 6 non-X1 cells survive**, so its advantage is
+  specifically on the unseen family. **E7d** fits the charter's GLMM at last: **4/4 headline contrasts
+  agree** with the bootstrap; contrasts the GLMM resolves that the bootstrap cannot (breadth's L0 cost)
+  are reported and deliberately **not** promoted. **E11c** removes E11b's format/difficulty confound
+  and the reversal *grows* to **+10.21 [+5.34, +15.14]** — the confound was masking it. **E14** shows
+  the log P(gold) anomaly is global rather than X1-specific and is a **polarization** effect: breadth
+  is *more* confident where it is right and twice as far from the gold where it is wrong, which
+  supplies the tax mechanism rev 18's inert knockout could not. **E13** gives the project a second
+  language and splits: RQ3′'s objective replicates and *amplifies* (best on all 12 JS columns, and
+  +3.37 over `tuned_L0` on clean code, which Python never showed), while **RQ1′'s stacked-seen gain
+  does not replicate** (+2.55 [−0.30, +5.31], three of six composites negative) — written up as a
+  failure to replicate, not as low power. Its pre-read H-xlang-volume prediction **did not come true**
+  and says so. **E10** answers claim C8 for the first time: tuning moves the model **away** from human
+  difficulty orderings (Δρ −0.303 [−0.575, −0.028]), and at condition level `base` tracks the human
+  gradient at +0.82 while every tuned arm inverts it. **E5b** is respecified rather than run, because
+  §29.2 refuted the relation its planned design tested. Corpus recounted: **3,652 cells / 3,129,468
+  trials**, panel **1,229 / 1,750,213**, including the first 48 JavaScript cells on this panel.
 - **2026-09-08 (rev 18)** — **§29 added: the 47-stage pipeline campaign, run end to end and read in
   full.** Everything outstanding from the paper plan plus five revised research questions was compiled
   into one declarative SLURM graph (`scripts/pipeline/plan.yaml`) with every decision rule frozen and
