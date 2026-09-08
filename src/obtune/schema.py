@@ -166,7 +166,10 @@ class TrialRow(BaseModel):
                    "composite_depth", "composite_scale",
                    # E6 X1 mechanism split, E4 teacher variation, E8 Llama cons, E12 saturation
                    "x1_split", "objectives_teacher", "objectives_llama", "saturation",
-                   "inverse_generic"]
+                   "inverse_generic",
+                   # 2026-09-08 open-items wave: the cross-language replication on the intact JS
+                   # corpus (E13) and the legacy-tier human-alignment grid (E10, T_* namespace).
+                   "crosslang_js", "human_align"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
