@@ -1,6 +1,6 @@
 # Experiment plan for the paper
 
-*Last updated: 2026-09-07*
+*Last updated: 2026-09-08*
 
 **Working title claim:** *fine-tuning on obfuscated code teaches the transformation **family** it was
 shown, not semantic invariance — and training on more families makes it worse on an unseen one.*
@@ -152,6 +152,15 @@ fingerprint is a recurring character in the paper and half of it is unexplained.
   reviewer disputes that data scale is saturated.
 - **E13. H-mixture** (§19.4): is the +0.205 mixture gain capacity or ensembling?
 - **E14. H-peaked-breadth** (§22.1): any-of-8 for `merge_dare_ties` and the uniform MoLE mixture.
+- **E16. RQ5′ — the bidirectional stress test** (added 2026-09-08 at the user's request; **submitted**
+  — jobs 382620/382621 → 382622). Every adapter was trained on program + call → value; ask the same
+  held-out items backwards (program + value → a call that returns it, CRUXEval-I style), graded by
+  **execution**, for 11 forward-trained arms on 7 conditions (no H1). A `formatonly` control and a
+  25 % format gate separate answer-format adaptation from reasoning. Pre-registered: H-inv-transfer
+  (`tuned_L0` clears both `base` and `formatonly`), H-inv-breadth, H-inv-cons, H-inv-family,
+  H-inv-diagonal, plus a descriptive direction ratio. A null replicates ATTRIB's "cognitive
+  specialization" at value level; a positive bounds it. ~6 GPU-h. `docs/RQ_SUMMARY.md` §6.3.
+
 - **E15. The canary guard** (§21.1): re-evaluate one adapter per eval job and assert ≥95 % raw-output
   agreement. Not a paper result — an infrastructure guard that would have caught the prefix-cache
   collision. Cheap; do it if any large eval batch is still to come.
@@ -191,6 +200,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | scheduled |
 | RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | scheduled |
 | RQ-C depth | `bld_depth` → `emit_depth_items` → `ev_depth` → `an_depth` | scheduled |
+| E16 / RQ5′ | `ev_inverse_core`, `ev_inverse_specialists` → `an_inverse` (`42_inverse.py`) | **submitted 2026-09-08** (382620/382621 → 382622) |
 | report | `report` (`afterany` on every `an_*`) → `results/analysis/pipeline_report_<date>.md` | scheduled |
 
 Requested GPU walltime ≈ 45 h across 47 stages; the plan is idempotent (`done_when` files), so a
@@ -216,6 +226,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08** — E16 (RQ5′, bidirectional / inverse-task stress test) added at the user's request and submitted; stage row in §6.
 
 - **2026-09-07 (c)** — §6 superseded by the pipeline mapping table; E5b and E10 recorded as
   disabled stages with their reasons rather than left as open items. RQs revised to RQ1′–RQ4′

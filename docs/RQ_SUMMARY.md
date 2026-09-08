@@ -319,6 +319,7 @@ before submission; **no stage reads H1** (budget spent), the held-out family is 
 | **RQ2′** | What is the **unit** of transfer? | family, not transform and not "invariance": X1→H1 transfer is lossless (0.08 pts); `tuned_X1` at 7B ties `tuned_L0` at 34B (−0.33 [−2.88, +2.06]); the gentle second family (X2/Y2) was underpowered by construction. | X1 split into its MBA half (X1m) and string-encoding half (X1s), each trained alone: does each half transfer to the other (`an_x1split`, H-family-unit) and does either half carry the whole (H-whole-ge-parts). E5b (a hard second family) waits on a generator. |
 | **RQ3′** | Can an objective get **both sides** of the trade? | paired consistency (`cons_lam3`, parent view, tuned_L0 teacher): +4.59 over `mono_all` on X1 with no L0 tax (−0.30 [−1.80, +1.32]), and +4.76 over `tuned_L0` on stacked-seen, not below `mono_all` there (+1.27 [−0.02, +2.59]). | survives scale? 13B/34B (`an_e3`, H-E3); which ingredient — the parent view, the tuned teacher, or a breadth teacher (`an_e4`); replicates on Llama-3.1-8B (`an_e8`). |
 | **RQ4′** | **Why?** *(support, not a co-equal claim)* | RQ3's attention re-anchoring on seen conditions; modularity's failure (no complementary capability for a router or merge to find) as evidence about the representation. | identifier-knockout signature on X1 across five arms — does `cons_lam3` depend less on identifier keys than `mono_all`, and does breadth make the model *more* identifier-dependent on the unseen family (`an_attention`); BH-FDR over the transfer and arms families (`an_fdr`, reported). Human alignment (E10) is disabled, not pretended. |
+| **RQ5′** | Does forward tuning also help the **inverse** task — a stress test for understanding vs. task fitting? | nothing yet: every adapter was trained on program + call → **value**; no arm has ever been asked for the **input**. The ATTRIB paper (`paper_bidirectional/`) found tuning direction-specific for *code emission* (obfuscate vs deobfuscate); whether that holds at *value* level is open. | the same held-out items asked backwards — program + return value → a call that returns it, **graded by execution** (any arguments that produce the value count; `src/obtune/inverse.py`) — for 11 forward-trained arms on 7 conditions (`ev_inverse_*` → `an_inverse`). A `formatonly` arm separates answer-format adaptation from reasoning; a format gate (>25 % unparsable calls) marks arms NOT INTERPRETABLE. |
 
 ### 6.1 RQ1′ — what breadth buys and costs: the results so far
 
@@ -361,6 +362,38 @@ open question is the grain *inside* a family — whether X1's MBA half and strin
 skill or two — and that is what the X1m/X1s stages measure. Caveat on file: X1s covers fewer
 programs (2,910 vs 4,263 training pairs), so its leg has less power.
 
+### 6.3 RQ5′ — bidirectional: does output prediction also teach input prediction?
+
+**Why it is a stress test.** Forward tuning could raise accuracy by teaching the model to *run*
+the program better, or by teaching it the forward task's surface — what an answer looks like, which
+tokens to attend to for a value. Only the first should help when the same program is asked
+*backwards* (CRUXEval-I style: given the return value, produce a call that yields it). No adapter
+is trained on the inverse task, so any inverse gain is a transfer of program understanding, not of
+task fitting. The ATTRIB replication in `paper_bidirectional/` found the opposite for *code*
+emission — obfuscate-tuning did not help deobfuscation ("cognitive specialization") — so a null
+here would replicate that at value level, and a positive would bound it.
+
+**Design** (pre-registered `CLAUDE_SCRATCHPAD.md` 2026-09-08 before submission; jobs 382620/382621 → 382622):
+one prompt family for every arm (`inverse_1shot_v1`, one L0 demonstration, forward template hash
+unchanged); grading by execution in the sandbox — the gold arguments are never the target, a call is
+correct iff it returns the gold value; `format_fail` = not a single parsable `name(args)` line.
+Conditions L0 L1b L1r L2 S1 S2 X1 (no H1). Forward numbers are the existing Grid A cells.
+
+| hypothesis | contrast (inverse task) | Δ pts [95 % CI] | verdict |
+|---|---|---:|---|
+| format gate | pooled-seen6 `format_fail_rate` per arm; > 0.25 ⇒ NOT INTERPRETABLE | *pending (382620/382621)* | — |
+| format residue | `formatonly − base` @ seen6 | *pending* | reported, gates nothing |
+| H-inv-transfer — forward tuning transfers to the inverse task | `tuned_L0 − base` @ seen6 **and** `tuned_L0 − formatonly` @ seen6, both ci_lo > 0 | *pending* | CONFIRMED / REFUTED (equivalent at ±1.0 ⇒ "cognitive specialization" replicates) / INCONCLUSIVE |
+| H-inv-breadth — breadth's stacked-seen gain has an inverse counterpart | `mono_all − tuned_L0` @ obf | *pending* | |
+| H-inv-cons — the consistency objective keeps it | `cons_lam3 − mono_all` @ obf | *pending* | |
+| H-inv-family — the family unit holds backwards | `tuned_X1 − tuned_L0` @ X1 | *pending* | |
+| H-inv-diagonal — specialists still own their condition | `tuned_c − tuned_L0` @ c, 5 conditions | *pending* | ≥ 3/5 CONFIRMED · 0/5 REFUTED · else PARTIAL |
+| direction ratio (descriptive) | DR(arm) = (inv_arm − inv_base)/(fwd_arm − fwd_base), pooled seen6 | *pending* | how much of the forward gain survives the flip |
+
+Expectation stated before the read: base inverse accuracy will be well below forward (CRUXEval-I is
+harder than CRUXEval-O for every published model) and the base arm may fail the format gate — the
+one-shot demonstration and the `formatonly` control exist for exactly that.
+
 Dependencies stated plainly: RQ1′'s scale leg and RQ3′'s survival both hinge on the E3/composite
 runs at 13B/34B; if `cons_lam3` does not beat `mono_all` on X1 at either scale, RQ3′ shrinks to a 7B
 observation and is reported as such. Refuted hypotheses are reported as refuted.
@@ -368,6 +401,8 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08 (RQ5′)** — §6 gains RQ5′ (bidirectional / inverse-task stress test): table row and §6.3 with
+  pre-registered hypotheses, all pending on jobs 382620/382621 → 382622.
 - **2026-09-08 (ICL)** — §1 row 21 adds the in-context-learning baselines; §3 gains `base` / best-ICL /
   `tuned_L0` reference columns per condition (user request).
 - **2026-09-08 (later)** — §1 gains a naming legend (every system name decoded, with the
