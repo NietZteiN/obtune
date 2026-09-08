@@ -1,6 +1,6 @@
 # writeup — Figures, paper draft, artifact packaging
 
-*Last updated: 2026-09-07*
+*Last updated: 2026-09-08*
 **Status:** active
 
 ## Hypotheses — open
@@ -41,6 +41,7 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-08_fdr-over-the-families.md`](2026-09-08_fdr-over-the-families.md) — **E7 BH-FDR (job 382559): the specialist transfer matrix is 1/30 after multiplicity (`tuned_S2` on S2 +3.36, q = 0.030); the arms that carry the paper survive — `mono_all` X1 −3.79 (q 0.017), `tuned_X1` X1 +4.86 (q 0.009), `cons_lam3` L1b/S2 (q ≤ 0.014). Reported, gates nothing.
 - [`2026-09-07_master-report-rev17.md`](2026-09-07_master-report-rev17.md) — **rev 17**,
   [`../../MASTER_REPORT.md`](../../MASTER_REPORT.md). **§28** added for the paper-plan experiments
   (E1/E2 confirmed at three scales and three seeds; E5 refuted and underpowered by construction),
