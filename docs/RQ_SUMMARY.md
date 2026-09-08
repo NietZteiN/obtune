@@ -38,6 +38,40 @@ Two panels, never pooled: **Qwen2.5-Coder-1.5B** (frozen, §1–§17 of the repo
 | 19 | **Family exposure** (X1, sibling of the held-out obfuscator) | training on the *family*, not the transform | 7B with family exposure ties 34B without |
 | 20 | **Symbolic normalization** | zero-training canonicalisation | a second instrument on the same mechanism |
 
+### Legend — how systems are named
+
+Every system name in this document is `<recipe>[_<variant>][_s<seed>]`. All are LoRA adapters on
+the same base unless the row says otherwise; seed 17 is the default and is omitted from the name.
+
+| name | what it is | approach # |
+|---|---|---|
+| `base` | the untuned model, same prompt, no adapter | — |
+| `tuned_<cond>` (`tuned_L0`, `tuned_S2`, `tuned_X1`, …) | a **specialist**: one adapter trained only on that condition's rows. `tuned_L0` is trained on clean code only (4,689 rows) and is the **clean-code control** every other arm is measured against | 1 |
+| `mono_all` | **monolithic breadth**: one adapter on all six seen conditions (`L0 L1b L1r L2 S1 S2`, 26,841 rows) | 2 |
+| `mono_cases` | `mono_all` with **3× input cases** per program (more rows, same programs) | 11 |
+| `mono_allX` | `mono_all` **plus X1** rows (breadth + family exposure) | 2 + 19 |
+| `mono_half`, `mono_quarter` | `mono_all` on ½ / ¼ of the programs (RQ1′ saturation) | 18 |
+| `mono_r128` | `mono_all` at LoRA rank 128 instead of 32 | 8 |
+| `cons_lam<λ>` (`cons_lam1`, `cons_lam3`) | **paired consistency**, objective O1: standard SFT cross-entropy **plus λ × KL divergence** between the student's answer distribution on the obfuscated view and a frozen `tuned_L0` teacher's distribution on the **clean L0 parent** of the same program. `lam3` means λ = 3. `cons_same` is the control where the teacher sees the same obfuscated input (plain distillation) | 17 |
+| `curr_sft`, `curr_kl` | **curriculum**: start from `tuned_L0`, then one epoch on the five obfuscated conditions, without / with the KL term | 16 |
+| `neg_ul`, `neg_data` | **semantic negatives**: verified single-operator mutants as extra rows, with / without an unlikelihood term | 15 |
+| `align_lam<λ>` | **weight-space alignment**: a hidden-state loss pulling obfuscated representations toward the clean parent's | 14 |
+| `trace_L0`, `trace_mono` | **execution-trace SFT**: emit a trace before the answer | 12 |
+| `loto_hold<cond>` | **leave-one-transform-out**: `mono_all` with that condition removed from training | 7 |
+| `merge_*`, `l0merge_*`, `sweep_*` | **task-vector merges** of the six specialists (TIES / DARE-TIES / DARE-linear; `sweep_*_d0p7` = density 0.7; `l0merge` anchors on `tuned_L0`) | 4 |
+| `mole_uniform`, `mole_random`, `mole_router`, `mole_router_bal` | **MoLE mixture** of the 8 experts: gate fixed uniform / frozen at random init / trained / trained with load balancing | 5 |
+| `x1_resample` | **resampled surfaces**, objective O3: X1 rebuilt at three obfuscation seeds, 3 surfaces × 1 epoch, step-matched to `tuned_X1` | 10 + 19 |
+| `oracle_prompt_1shot` | the base model told the obfuscation type in the prompt | 6 |
+| `icl_k<k>_<clean|cross>` | *k*-shot in-context examples, clean or cross-condition, no tuning | — |
+| `formatonly` | adapter trained on the answer *format* only (no obfuscated content) — the "did it just learn the format?" control | — |
+| `norm_structural`, `norm_full` | **symbolic normalization**: canonicalise the input at inference, no training | 20 |
+| `*_cases`, `*_scale`, `*_r64` | data-scale / capacity variants of the named recipe | 11, 8 |
+| `_s17`, `_s42`, `_s101` | **training seed**. Two names differing only in seed are the *same recipe*; their gap is the seed band, and a "win" narrower than that band is noise | — |
+
+Stage names (`an_depth`, `ev_teacher`, `tr_cons_tbase`, …) are pipeline stages in
+`scripts/pipeline/plan.yaml`, not systems: `bld_` build, `emit_` write items, `tr_` train,
+`ck_` checkpoint, `ev_` evaluate, `an_` analyse.
+
 ---
 
 ## 2. The chartered RQs, and their answers
@@ -85,6 +119,20 @@ on disk; no result exists. Run it or cut it from the framing.
 
 83 CodeLlama-7b systems, Grid A, items intersected per column. In every column the top six sit
 inside each other's intervals, so the informative column is the last one.
+
+**How to read it.** *leader* = the single system with the highest accuracy on that condition
+among all 83 systems ever evaluated on it (the ranking in
+`results/analysis/campaign_ranking_2026-09-05.json`). *acc* is its strict exact-match accuracy.
+The last column says which systems beat `tuned_L0` — the adapter trained on clean code only, the
+control — with a 95 % cluster-bootstrap interval that excludes zero, and by how much (points).
+Being *leader* is not the same as *beating the control*: the top six always sit inside each
+other's intervals, so which of them is nominally first is seed noise.
+
+Names, decoded (full key in §1): `mole_random` — mixture of the 8 specialist adapters with the
+gate frozen at random init; `cons_lam3` — paired-consistency objective (SFT + 3 × KL to a
+clean-code teacher on the L0 parent), seed 17; `cons_lam3_s42` — the same recipe at seed 42;
+`mono_cases` — one adapter on all six seen conditions with 3× input cases; `x1_resample` — an X1
+specialist trained on three resampled obfuscation surfaces; `tuned_X1` — a plain X1 specialist.
 
 | condition | leader | acc | beats the clean-code control? |
 |---|---|---:|---|
@@ -313,6 +361,9 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08 (later)** — §1 gains a naming legend (every system name decoded, with the
+  approach number it belongs to); §3 now defines *leader* and decodes each leader's name
+  (user request: the names were opaque).
 - **2026-09-08** — §6.1/§6.2 result tables added for RQ1′ and RQ2′ (user request), including the
   pipeline's first reads (13B composites, depth 3/4) and the pending rows named by job id.
 - **2026-09-07 (later)** — §5 marks RQ-A/RQ-B answered and maps every other proposed RQ to a
