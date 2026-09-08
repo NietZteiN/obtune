@@ -515,6 +515,28 @@ stages:
            --max-items, "150", --classes, identifier]
     resources: {time: "01:00:00"}
     done_when: [results/attn/knockout/codellama-7b/S2/cons_lam3.json]
+  # ───────────────────────────── E10 — human alignment ─────────────────────────────────
+  # Rules frozen 2026-09-08 (pre-registration #3, commit 4665e17). T_* namespace, never trainable.
+  - name: ev_human_align_py
+    rq: E10
+    kind: gpu
+    argv: [-m, obtune.eval_vllm, --config, eval/human_align_icse.yaml, --model, codellama-7b, --language, python]
+    resources: {time: "02:00:00"}
+    done_when: [results/cells/human_align/codellama-7b/python/cons_lam3__T_L3/trials.parquet]
+  - name: ev_human_align_js
+    rq: E10
+    kind: gpu
+    deps: [ck_js_L0, ck_js_mono, ck_js_cons]
+    argv: [-m, obtune.eval_vllm, --config, eval/human_align_icse.yaml, --model, codellama-7b, --language, javascript]
+    resources: {time: "02:00:00"}
+    done_when: [results/cells/human_align/codellama-7b/javascript/cons_lam3__T_L3/trials.parquet]
+  - name: an_human_align
+    rq: E10
+    kind: analysis
+    deps: [ev_human_align_py, ev_human_align_js]
+    dep_type: afterany
+    argv: [scripts/analysis/48_human_align.py, --model, codellama-7b, --out, results/analysis/pipeline/human_align_codellama7b.json]
+    report_json: results/analysis/pipeline/human_align_codellama7b.json
   # E11b: WHERE the L0 cost lands (rules frozen 2026-09-08, commit e5d08ab). Analysis only.
   - name: an_l0strat
     rq: RQ1'
@@ -530,14 +552,11 @@ stages:
     kind: analysis
     argv: [scripts/analysis/37_fdr_family.py, --model, codellama-7b, --extended, --out, results/analysis/pipeline/fdr_extended_codellama7b.json]
     report_json: results/analysis/pipeline/fdr_extended_codellama7b.json
-  # E10: human alignment. Disabled: needs the tier_icse eval items (350 byte-identical rows)
-  # emitted and graded, and the Paper-2 item map — a build task that has no script yet.
-  - name: an_human_align
-    rq: RQ4'
-    kind: analysis
-    enabled: false
-    argv: [scripts/analysis/42_human_align.py]
-    note: "tier_icse items not emitted; no script yet (docs/PAPER_EXPERIMENTS.md E10)"
+  # E10 was disabled here until 2026-09-08 with the note "tier_icse items not emitted; no script
+  # yet". Both halves of that turned out to be wrong on inspection: the Paper-2 item map exists
+  # (data/human/paper2_graded.csv, 600 responses / 50 participants / 98 cells, all 98 matching a
+  # legacy row) and the items only needed an emitter, which scripts/47_emit_icse_items.py now is.
+  # The live stages are ev_human_align_{py,js} -> an_human_align, above.
 
   # ───────────────────────────── RQ5' — bidirectional: does forward tuning help INPUT prediction? ──
   # Every adapter was trained on program+call -> value. The inverse grid asks the same held-out
