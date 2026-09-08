@@ -24,6 +24,21 @@ existed, and applied verbatim:
   H-L0-answerlen  same statistic on answer-length terciles; REPORTED, not verdicted.
 
 Gates nothing. A "both refuted" outcome is a finding — the cost is diffuse — not a failure.
+
+--matched (E11c, pre-registration #2, commit 8da96b4) breaks the confound the first read could not:
+"unusual format" and "easy item" are the SAME stratum on this item set (bool_none is 9.6 % of items
+and the control scores 0.596 on the unusual group against 0.402 on the common one). It bins items by
+the CONTROL's own per-item accuracy (0 / partial / 1 over the control's trials for that item),
+compares common vs unusual WITHIN each bin, and pools the within-bin deltas weighted by the bin's
+item count. The rule is TWO-SIDED this time:
+
+  H-L0-format-matched  ci_hi < 0            CONFIRMED           (cost concentrates on unusual formats)
+                       ci_lo > 0            CONFIRMED-REVERSED  (it concentrates on common formats)
+                       inside +/-1.0        REFUTED             (no difference once difficulty is held)
+                       otherwise            INCONCLUSIVE
+
+E11b's rule had no branch for the reversal it found. That was a rule-design error, recorded in the
+09-08 entry and corrected here rather than quietly patched into the old rule.
 """
 from __future__ import annotations
 
@@ -163,6 +178,80 @@ def analyse(arm: pd.DataFrame, ref: pd.DataFrame, key: str, levels: list[str]) -
     return out
 
 
+def matched_contrast(arm: pd.DataFrame, ref: pd.DataFrame) -> dict:
+    """common-vs-unusual within difficulty bins, pooled. Difficulty is the CONTROL's per-item
+    accuracy, so it is defined without reference to the arm being tested (using the arm's own
+    accuracy would condition on the outcome and bias the contrast toward zero)."""
+    diff = ref.groupby("item_id")["correct"].mean()
+    bins = pd.cut(diff, [-0.01, 0.001, 0.999, 1.01], labels=["hard", "partial", "easy"])
+    for df in (arm, ref):
+        df["dbin"] = df["item_id"].map(bins).astype(str)
+    progs = sorted(set(arm["program_id"]) & set(ref["program_id"]))
+    levels = ["common", "unusual"]
+    dbins = ["hard", "partial", "easy"]
+
+    # one matrix per (difficulty bin x format group), all resampled together
+    keys = [(d, f) for d in dbins for f in levels]
+    def mat(df):
+        pi = {p: i for i, p in enumerate(progs)}
+        S = np.zeros((len(progs), len(keys))); N = np.zeros((len(progs), len(keys)))
+        ki = {k: j for j, k in enumerate(keys)}
+        sub = df[df["program_id"].isin(pi)]
+        for (p, d, f), g in sub.groupby(["program_id", "dbin", "fmt_group"], observed=True):
+            if (d, f) in ki:
+                S[pi[p], ki[(d, f)]] = g["correct"].sum(); N[pi[p], ki[(d, f)]] = len(g)
+        return S, N
+    aS, aN = mat(arm); bS, bN = mat(ref)
+    w = np.array([aN[:, j].sum() for j in range(len(keys))])
+
+    def stat(rows) -> tuple[float, np.ndarray]:
+        with np.errstate(invalid="ignore", divide="ignore"):
+            d = (aS[rows].sum(0) / aN[rows].sum(0) - bS[rows].sum(0) / bN[rows].sum(0)) * 100.0
+        per = {}
+        num = den = 0.0
+        for i, dbin in enumerate(dbins):
+            c, u = d[2 * i], d[2 * i + 1]
+            wt = w[2 * i] + w[2 * i + 1]
+            per[dbin] = u - c
+            if np.isfinite(u - c) and wt > 0:
+                num += (u - c) * wt; den += wt
+        return (num / den if den else np.nan), per
+
+    allrows = np.arange(len(progs))
+    point, per_point = stat(allrows)
+    rng = np.random.default_rng(SEED)
+    draws = np.empty(N_BOOT)
+    per_draws = {b: np.empty(N_BOOT) for b in dbins}
+    for i in range(N_BOOT):
+        rows = rng.choice(allrows, size=len(progs), replace=True)
+        draws[i], per = stat(rows)
+        for b in dbins:
+            per_draws[b][i] = per[b]
+    lo, hi = (float(x) for x in np.nanpercentile(draws, [2.5, 97.5]))
+    out = {"pooled": {"delta_pts": round(float(point), 3), "ci_lo": round(lo, 3), "ci_hi": round(hi, 3),
+                      "excludes_zero": bool(lo > 0 or hi < 0),
+                      "equivalent": bool(lo > -EQ_MARGIN and hi < EQ_MARGIN)},
+           "per_difficulty_bin": {}, "n_programs": len(progs)}
+    for j, (d, f) in enumerate(keys):
+        out.setdefault("cells", {})[f"{d}/{f}"] = {"n_trials_arm": int(aN[:, j].sum()),
+                                                   "acc_ref": round(float(bS[:, j].sum() / bN[:, j].sum()), 4) if bN[:, j].sum() else None}
+    for b in dbins:
+        l2, h2 = (float(x) for x in np.nanpercentile(per_draws[b], [2.5, 97.5]))
+        out["per_difficulty_bin"][b] = {"delta_pts": round(float(per_point[b]), 3),
+                                        "ci_lo": round(l2, 3), "ci_hi": round(h2, 3)}
+    return out
+
+
+def matched_verdict(d: dict) -> str:
+    if d["ci_hi"] < 0:
+        return "CONFIRMED"
+    if d["ci_lo"] > 0:
+        return "CONFIRMED-REVERSED"
+    if d["equivalent"]:
+        return "REFUTED"
+    return "INCONCLUSIVE"
+
+
 def verdict(d: dict) -> str:
     if d["ci_hi"] < 0:
         return "CONFIRMED"
@@ -175,6 +264,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--matched", action="store_true",
+                    help="E11c: difficulty-matched format contrast (two-sided rule)")
     a = ap.parse_args()
 
     items = load_items()
@@ -239,6 +330,28 @@ def main() -> int:
                 star = "*" if d["excludes_zero"] else ""
                 eq = " (equiv)" if d["equivalent"] else ""
                 print(f"      {name:<12} {d['delta_pts']:+6.2f} [{d['ci_lo']:+.2f}, {d['ci_hi']:+.2f}]{star}{eq}")
+
+    if a.matched:
+        print("\n=== E11c: format contrast MATCHED on the control's own per-item difficulty ===")
+        for unit, unit_cells in UNITS.items():
+            arm = pooled_cell(block, unit_cells)
+            if arm is None:
+                continue
+            m = matched_contrast(prep(arm).copy(), ref.copy())
+            res["units"].setdefault(unit, {})["matched_format"] = m
+            pl = m["pooled"]
+            star = "*" if pl["excludes_zero"] else ""
+            eq = " (equiv)" if pl["equivalent"] else ""
+            per = "  ".join(f"{b}: {v['delta_pts']:+.2f} [{v['ci_lo']:+.2f},{v['ci_hi']:+.2f}]"
+                            for b, v in m["per_difficulty_bin"].items())
+            print(f"  {unit:<20} unusual-common (pooled within difficulty) "
+                  f"{pl['delta_pts']:+.2f} [{pl['ci_lo']:+.2f}, {pl['ci_hi']:+.2f}]{star}{eq}")
+            print(f"  {'':<20} by bin: {per}")
+        mp = res["units"][PRIMARY]["matched_format"]["pooled"]
+        ck.hypothesis(res, "H-L0-format-matched",
+                      "two-sided: ci_hi<0 CONFIRMED; ci_lo>0 CONFIRMED-REVERSED; inside +/-1.0 REFUTED",
+                      matched_verdict(mp),
+                      f"{PRIMARY}: {mp['delta_pts']:+.2f} [{mp['ci_lo']:+.2f}, {mp['ci_hi']:+.2f}]")
 
     p = res["units"][PRIMARY]
     fmt_d = p["fmt_group"]["differences"]["unusual - common"]

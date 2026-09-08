@@ -1,0 +1,885 @@
+{
+ "rq": "RQ1'/RQ4' (support)",
+ "script": "43_l0_stratify.py",
+ "generated_utc": "2026-09-08T12:06:12+00:00",
+ "models": [
+  "codellama-7b"
+ ],
+ "accuracy": {},
+ "format_fail": {},
+ "contrasts": {},
+ "hypotheses": [
+  {
+   "id": "H-L0-format-matched",
+   "rule": "two-sided: ci_hi<0 CONFIRMED; ci_lo>0 CONFIRMED-REVERSED; inside +/-1.0 REFUTED",
+   "verdict": "CONFIRMED-REVERSED",
+   "evidence": "mono_all(3 seeds): +10.21 [+5.34, +15.14]"
+  },
+  {
+   "id": "H-L0-format",
+   "rule": "Delta(unusual)-Delta(common) ci_hi<0 CONFIRMED; inside +/-1.0 REFUTED",
+   "verdict": "INCONCLUSIVE",
+   "evidence": "mono_all(3 seeds): +4.70 [+0.44, +8.89]"
+  },
+  {
+   "id": "H-L0-length",
+   "rule": "Delta(T3_long)-Delta(T1_short) ci_hi<0 CONFIRMED; inside +/-1.0 REFUTED",
+   "verdict": "INCONCLUSIVE",
+   "evidence": "mono_all(3 seeds): -2.00 [-5.87, +2.20]"
+  },
+  {
+   "id": "H-L0-answerlen",
+   "rule": "same statistic on answer-length terciles (REPORTED, not verdicted)",
+   "verdict": "REPORTED",
+   "evidence": "mono_all(3 seeds): +4.46 [+0.96, +8.15]"
+  }
+ ],
+ "strata": {
+  "format_common": [
+   "int",
+   "list",
+   "str"
+  ],
+  "format_share": {
+   "int": 0.3483,
+   "str": 0.313,
+   "list": 0.2011,
+   "bool_none": 0.0958,
+   "dict_set": 0.0305,
+   "float": 0.0114
+  },
+  "n_items": 1671,
+  "n_unusual_items": 230,
+  "loc_terciles": {
+   "T1": {
+    "min": 3,
+    "max": 5,
+    "n_programs": 185
+   },
+   "T2": {
+    "min": 5,
+    "max": 9,
+    "n_programs": 186
+   },
+   "T3": {
+    "min": 9,
+    "max": 56,
+    "n_programs": 186
+   }
+  }
+ },
+ "units": {
+  "mono_all(3 seeds)": {
+   "fmt_group": {
+    "levels": [
+     "common",
+     "unusual"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "common": {
+      "delta_pts": -2.384,
+      "ci_lo": -3.941,
+      "ci_hi": -0.775,
+      "acc_arm": 0.3782,
+      "acc_ref": 0.4021,
+      "n_trials_arm": 4320
+     },
+     "unusual": {
+      "delta_pts": 2.319,
+      "ci_lo": -1.511,
+      "ci_hi": 6.096,
+      "acc_arm": 0.6188,
+      "acc_ref": 0.5957,
+      "n_trials_arm": 690
+     }
+    },
+    "differences": {
+     "unusual - common": {
+      "delta_pts": 4.703,
+      "ci_lo": 0.443,
+      "ci_hi": 8.887,
+      "excludes_zero": true,
+      "equivalent": false
+     }
+    }
+   },
+   "loc_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -1.111,
+      "ci_lo": -4.105,
+      "ci_hi": 1.655,
+      "acc_arm": 0.424,
+      "acc_ref": 0.4351,
+      "n_trials_arm": 1665
+     },
+     "T2": {
+      "delta_pts": -0.987,
+      "ci_lo": -3.127,
+      "ci_hi": 1.207,
+      "acc_arm": 0.4219,
+      "acc_ref": 0.4318,
+      "n_trials_arm": 1671
+     },
+     "T3": {
+      "delta_pts": -3.106,
+      "ci_lo": -5.803,
+      "ci_hi": -0.319,
+      "acc_arm": 0.3883,
+      "acc_ref": 0.4194,
+      "n_trials_arm": 1674
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": 0.124,
+      "ci_lo": -3.592,
+      "ci_hi": 3.671,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": -1.995,
+      "ci_lo": -5.867,
+      "ci_hi": 2.201,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": -2.119,
+      "ci_lo": -5.467,
+      "ci_hi": 1.435,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "alen_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -4.159,
+      "ci_lo": -6.722,
+      "ci_hi": -1.509,
+      "acc_arm": 0.4476,
+      "acc_ref": 0.4892,
+      "n_trials_arm": 1671
+     },
+     "T2": {
+      "delta_pts": -1.349,
+      "ci_lo": -3.979,
+      "ci_hi": 1.275,
+      "acc_arm": 0.473,
+      "acc_ref": 0.4865,
+      "n_trials_arm": 1668
+     },
+     "T3": {
+      "delta_pts": 0.299,
+      "ci_lo": -2.16,
+      "ci_hi": 2.743,
+      "acc_arm": 0.3136,
+      "acc_ref": 0.3106,
+      "n_trials_arm": 1671
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": 2.81,
+      "ci_lo": -0.812,
+      "ci_hi": 6.298,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": 4.458,
+      "ci_lo": 0.962,
+      "ci_hi": 8.151,
+      "excludes_zero": true,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": 1.648,
+      "ci_lo": -1.829,
+      "ci_hi": 5.191,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "matched_format": {
+    "pooled": {
+     "delta_pts": 10.214,
+     "ci_lo": 5.341,
+     "ci_hi": 15.143,
+     "excludes_zero": true,
+     "equivalent": false
+    },
+    "per_difficulty_bin": {
+     "hard": {
+      "delta_pts": 11.689,
+      "ci_lo": 3.628,
+      "ci_hi": 20.833
+     },
+     "partial": {
+      "delta_pts": 23.514,
+      "ci_lo": 8.887,
+      "ci_hi": 37.234
+     },
+     "easy": {
+      "delta_pts": 4.984,
+      "ci_lo": -0.696,
+      "ci_hi": 9.674
+     }
+    },
+    "n_programs": 557,
+    "cells": {
+     "hard/common": {
+      "n_trials_arm": 2400,
+      "acc_ref": 0.0
+     },
+     "hard/unusual": {
+      "n_trials_arm": 231,
+      "acc_ref": 0.0
+     },
+     "partial/common": {
+      "n_trials_arm": 366,
+      "acc_ref": 0.5
+     },
+     "partial/unusual": {
+      "n_trials_arm": 96,
+      "acc_ref": 0.5
+     },
+     "easy/common": {
+      "n_trials_arm": 1554,
+      "acc_ref": 1.0
+     },
+     "easy/unusual": {
+      "n_trials_arm": 363,
+      "acc_ref": 1.0
+     }
+    }
+   }
+  },
+  "cons_lam3(3 seeds)": {
+   "fmt_group": {
+    "levels": [
+     "common",
+     "unusual"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "common": {
+      "delta_pts": -1.204,
+      "ci_lo": -2.484,
+      "ci_hi": 0.115,
+      "acc_arm": 0.39,
+      "acc_ref": 0.4021,
+      "n_trials_arm": 4320
+     },
+     "unusual": {
+      "delta_pts": 2.029,
+      "ci_lo": -0.995,
+      "ci_hi": 5.208,
+      "acc_arm": 0.6159,
+      "acc_ref": 0.5957,
+      "n_trials_arm": 690
+     }
+    },
+    "differences": {
+     "unusual - common": {
+      "delta_pts": 3.233,
+      "ci_lo": -0.1,
+      "ci_hi": 6.658,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "loc_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -0.991,
+      "ci_lo": -3.166,
+      "ci_hi": 1.22,
+      "acc_arm": 0.4252,
+      "acc_ref": 0.4351,
+      "n_trials_arm": 1665
+     },
+     "T2": {
+      "delta_pts": 0.269,
+      "ci_lo": -1.88,
+      "ci_hi": 2.386,
+      "acc_arm": 0.4345,
+      "acc_ref": 0.4318,
+      "n_trials_arm": 1671
+     },
+     "T3": {
+      "delta_pts": -1.553,
+      "ci_lo": -3.38,
+      "ci_hi": 0.44,
+      "acc_arm": 0.4038,
+      "acc_ref": 0.4194,
+      "n_trials_arm": 1674
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": 1.26,
+      "ci_lo": -1.801,
+      "ci_hi": 4.385,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": -0.562,
+      "ci_lo": -3.485,
+      "ci_hi": 2.458,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": -1.822,
+      "ci_lo": -4.681,
+      "ci_hi": 1.136,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "alen_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -2.244,
+      "ci_lo": -4.228,
+      "ci_hi": -0.159,
+      "acc_arm": 0.4668,
+      "acc_ref": 0.4892,
+      "n_trials_arm": 1671
+     },
+     "T2": {
+      "delta_pts": 0.09,
+      "ci_lo": -1.971,
+      "ci_hi": 2.14,
+      "acc_arm": 0.4874,
+      "acc_ref": 0.4865,
+      "n_trials_arm": 1668
+     },
+     "T3": {
+      "delta_pts": -0.12,
+      "ci_lo": -2.254,
+      "ci_hi": 2.199,
+      "acc_arm": 0.3094,
+      "acc_ref": 0.3106,
+      "n_trials_arm": 1671
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": 2.334,
+      "ci_lo": -0.251,
+      "ci_hi": 5.075,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": 2.124,
+      "ci_lo": -0.922,
+      "ci_hi": 5.264,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": -0.21,
+      "ci_lo": -3.152,
+      "ci_hi": 2.772,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "matched_format": {
+    "pooled": {
+     "delta_pts": 6.435,
+     "ci_lo": 2.503,
+     "ci_hi": 10.981,
+     "excludes_zero": true,
+     "equivalent": false
+    },
+    "per_difficulty_bin": {
+     "hard": {
+      "delta_pts": 6.73,
+      "ci_lo": 0.133,
+      "ci_hi": 14.602
+     },
+     "partial": {
+      "delta_pts": 7.036,
+      "ci_lo": -7.272,
+      "ci_hi": 21.12
+     },
+     "easy": {
+      "delta_pts": 5.886,
+      "ci_lo": 2.916,
+      "ci_hi": 8.632
+     }
+    },
+    "n_programs": 557,
+    "cells": {
+     "hard/common": {
+      "n_trials_arm": 2400,
+      "acc_ref": 0.0
+     },
+     "hard/unusual": {
+      "n_trials_arm": 231,
+      "acc_ref": 0.0
+     },
+     "partial/common": {
+      "n_trials_arm": 366,
+      "acc_ref": 0.5
+     },
+     "partial/unusual": {
+      "n_trials_arm": 96,
+      "acc_ref": 0.5
+     },
+     "easy/common": {
+      "n_trials_arm": 1554,
+      "acc_ref": 1.0
+     },
+     "easy/unusual": {
+      "n_trials_arm": 363,
+      "acc_ref": 1.0
+     }
+    }
+   }
+  },
+  "tuned_X1": {
+   "fmt_group": {
+    "levels": [
+     "common",
+     "unusual"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "common": {
+      "delta_pts": -1.736,
+      "ci_lo": -3.253,
+      "ci_hi": -0.235,
+      "acc_arm": 0.3847,
+      "acc_ref": 0.4021,
+      "n_trials_arm": 1440
+     },
+     "unusual": {
+      "delta_pts": -2.174,
+      "ci_lo": -5.026,
+      "ci_hi": 0.77,
+      "acc_arm": 0.5739,
+      "acc_ref": 0.5957,
+      "n_trials_arm": 230
+     }
+    },
+    "differences": {
+     "unusual - common": {
+      "delta_pts": -0.438,
+      "ci_lo": -3.679,
+      "ci_hi": 2.961,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "loc_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -2.072,
+      "ci_lo": -4.063,
+      "ci_hi": 0.0,
+      "acc_arm": 0.4144,
+      "acc_ref": 0.4351,
+      "n_trials_arm": 555
+     },
+     "T2": {
+      "delta_pts": -2.424,
+      "ci_lo": -5.246,
+      "ci_hi": 0.407,
+      "acc_arm": 0.4075,
+      "acc_ref": 0.4318,
+      "n_trials_arm": 557
+     },
+     "T3": {
+      "delta_pts": -0.896,
+      "ci_lo": -3.175,
+      "ci_hi": 1.296,
+      "acc_arm": 0.4104,
+      "acc_ref": 0.4194,
+      "n_trials_arm": 558
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": -0.352,
+      "ci_lo": -3.846,
+      "ci_hi": 3.19,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": 1.176,
+      "ci_lo": -1.814,
+      "ci_hi": 4.121,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": 1.528,
+      "ci_lo": -2.183,
+      "ci_hi": 5.131,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "alen_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": 0.269,
+      "ci_lo": -2.076,
+      "ci_hi": 2.649,
+      "acc_arm": 0.4919,
+      "acc_ref": 0.4892,
+      "n_trials_arm": 557
+     },
+     "T2": {
+      "delta_pts": -3.327,
+      "ci_lo": -5.738,
+      "ci_hi": -0.924,
+      "acc_arm": 0.4532,
+      "acc_ref": 0.4865,
+      "n_trials_arm": 556
+     },
+     "T3": {
+      "delta_pts": -2.334,
+      "ci_lo": -4.758,
+      "ci_hi": 0.002,
+      "acc_arm": 0.2873,
+      "acc_ref": 0.3106,
+      "n_trials_arm": 557
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": -3.597,
+      "ci_lo": -7.024,
+      "ci_hi": -0.385,
+      "excludes_zero": true,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": -2.603,
+      "ci_lo": -5.915,
+      "ci_hi": 0.654,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": 0.993,
+      "ci_lo": -2.08,
+      "ci_hi": 4.236,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "matched_format": {
+    "pooled": {
+     "delta_pts": 1.337,
+     "ci_lo": -1.72,
+     "ci_hi": 4.16,
+     "excludes_zero": false,
+     "equivalent": false
+    },
+    "per_difficulty_bin": {
+     "hard": {
+      "delta_pts": -2.278,
+      "ci_lo": -5.556,
+      "ci_hi": 2.192
+     },
+     "partial": {
+      "delta_pts": 9.016,
+      "ci_lo": -10.407,
+      "ci_hi": 27.32
+     },
+     "easy": {
+      "delta_pts": 4.447,
+      "ci_lo": -0.993,
+      "ci_hi": 9.377
+     }
+    },
+    "n_programs": 557,
+    "cells": {
+     "hard/common": {
+      "n_trials_arm": 800,
+      "acc_ref": 0.0
+     },
+     "hard/unusual": {
+      "n_trials_arm": 77,
+      "acc_ref": 0.0
+     },
+     "partial/common": {
+      "n_trials_arm": 122,
+      "acc_ref": 0.5
+     },
+     "partial/unusual": {
+      "n_trials_arm": 32,
+      "acc_ref": 0.5
+     },
+     "easy/common": {
+      "n_trials_arm": 518,
+      "acc_ref": 1.0
+     },
+     "easy/unusual": {
+      "n_trials_arm": 121,
+      "acc_ref": 1.0
+     }
+    }
+   }
+  },
+  "base": {
+   "fmt_group": {
+    "levels": [
+     "common",
+     "unusual"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "common": {
+      "delta_pts": -18.333,
+      "ci_lo": -21.015,
+      "ci_hi": -15.711,
+      "acc_arm": 0.2188,
+      "acc_ref": 0.4021,
+      "n_trials_arm": 1440
+     },
+     "unusual": {
+      "delta_pts": -10.0,
+      "ci_lo": -15.582,
+      "ci_hi": -4.011,
+      "acc_arm": 0.4957,
+      "acc_ref": 0.5957,
+      "n_trials_arm": 230
+     }
+    },
+    "differences": {
+     "unusual - common": {
+      "delta_pts": 8.333,
+      "ci_lo": 1.904,
+      "ci_hi": 14.703,
+      "excludes_zero": true,
+      "equivalent": false
+     }
+    }
+   },
+   "loc_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -14.505,
+      "ci_lo": -18.717,
+      "ci_hi": -10.497,
+      "acc_arm": 0.2901,
+      "acc_ref": 0.4351,
+      "n_trials_arm": 555
+     },
+     "T2": {
+      "delta_pts": -15.171,
+      "ci_lo": -19.044,
+      "ci_hi": -11.46,
+      "acc_arm": 0.2801,
+      "acc_ref": 0.4318,
+      "n_trials_arm": 557
+     },
+     "T3": {
+      "delta_pts": -21.864,
+      "ci_lo": -26.842,
+      "ci_hi": -17.116,
+      "acc_arm": 0.2007,
+      "acc_ref": 0.4194,
+      "n_trials_arm": 558
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": -0.666,
+      "ci_lo": -6.085,
+      "ci_hi": 4.879,
+      "excludes_zero": false,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": -7.359,
+      "ci_lo": -13.671,
+      "ci_hi": -1.132,
+      "excludes_zero": true,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": -6.693,
+      "ci_lo": -13.047,
+      "ci_hi": -0.559,
+      "excludes_zero": true,
+      "equivalent": false
+     }
+    }
+   },
+   "alen_bin": {
+    "levels": [
+     "T1",
+     "T2",
+     "T3"
+    ],
+    "n_programs": 557,
+    "per_stratum": {
+     "T1": {
+      "delta_pts": -26.481,
+      "ci_lo": -31.056,
+      "ci_hi": -22.273,
+      "acc_arm": 0.2244,
+      "acc_ref": 0.4892,
+      "n_trials_arm": 557
+     },
+     "T2": {
+      "delta_pts": -15.198,
+      "ci_lo": -19.406,
+      "ci_hi": -11.207,
+      "acc_arm": 0.3345,
+      "acc_ref": 0.4865,
+      "n_trials_arm": 556
+     },
+     "T3": {
+      "delta_pts": -9.874,
+      "ci_lo": -13.832,
+      "ci_hi": -5.876,
+      "acc_arm": 0.2118,
+      "acc_ref": 0.3106,
+      "n_trials_arm": 557
+     }
+    },
+    "differences": {
+     "T2 - T1": {
+      "delta_pts": 11.283,
+      "ci_lo": 5.344,
+      "ci_hi": 17.407,
+      "excludes_zero": true,
+      "equivalent": false
+     },
+     "T3 - T1": {
+      "delta_pts": 16.607,
+      "ci_lo": 10.674,
+      "ci_hi": 22.752,
+      "excludes_zero": true,
+      "equivalent": false
+     },
+     "T3 - T2": {
+      "delta_pts": 5.324,
+      "ci_lo": -0.313,
+      "ci_hi": 11.032,
+      "excludes_zero": false,
+      "equivalent": false
+     }
+    }
+   },
+   "matched_format": {
+    "pooled": {
+     "delta_pts": 20.03,
+     "ci_lo": 13.323,
+     "ci_hi": 27.12,
+     "excludes_zero": true,
+     "equivalent": false
+    },
+    "per_difficulty_bin": {
+     "hard": {
+      "delta_pts": 21.099,
+      "ci_lo": 9.435,
+      "ci_hi": 33.968
+     },
+     "partial": {
+      "delta_pts": 12.91,
+      "ci_lo": -3.767,
+      "ci_hi": 30.414
+     },
+     "easy": {
+      "delta_pts": 20.278,
+      "ci_lo": 10.213,
+      "ci_hi": 29.667
+     }
+    },
+    "n_programs": 557,
+    "cells": {
+     "hard/common": {
+      "n_trials_arm": 800,
+      "acc_ref": 0.0
+     },
+     "hard/unusual": {
+      "n_trials_arm": 77,
+      "acc_ref": 0.0
+     },
+     "partial/common": {
+      "n_trials_arm": 122,
+      "acc_ref": 0.5
+     },
+     "partial/unusual": {
+      "n_trials_arm": 32,
+      "acc_ref": 0.5
+     },
+     "easy/common": {
+      "n_trials_arm": 518,
+      "acc_ref": 1.0
+     },
+     "easy/unusual": {
+      "n_trials_arm": 121,
+      "acc_ref": 1.0
+     }
+    }
+   }
+  }
+ }
+}

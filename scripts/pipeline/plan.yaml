@@ -371,6 +371,150 @@ stages:
     dep_type: afterany
     argv: [scripts/analysis/38_l0_cost.py, --model, codellama-7b, --out, results/analysis/pipeline/l0_cost_codellama7b.json]
     report_json: results/analysis/pipeline/l0_cost_codellama7b.json
+  # ───────────────────────────── E13 — cross-language (JAVASCRIPT) ─────────────────────
+  # The paper is Python-only because `node` is absent; but node blocks REGENERATING the JS
+  # corpus, not using it, and the corpus transferred intact and passes check_manifest.py.
+  # Rules frozen 2026-09-08 (commit 8da96b4). No unseen-family column: X1 is Python-only.
+  - name: tr_js_L0
+    rq: E13
+    kind: gpu
+    argv: [-m, obtune.train_sft, --config, train/grid_js_L0.yaml, --model, codellama-7b, --seed, "17"]
+    resources: {time: "03:00:00"}
+    done_when: [runs/adapters/codellama-7b/javascript/L0_r32_s17/training_summary.json]
+  - name: ck_js_L0
+    rq: E13
+    kind: gpu
+    deps: [tr_js_L0]
+    argv: [-m, obtune.eval_vllm, --config, train/grid_js_L0.yaml, --model, codellama-7b, --mode, ckpt-select]
+    resources: {time: "01:00:00"}
+    done_when: [runs/adapters/codellama-7b/javascript/L0_r32_s17/ckpt_select.json]
+  - name: tr_js_mono
+    rq: E13
+    kind: gpu
+    argv: [-m, obtune.train_sft, --config, train/mono_generic_js.yaml, --model, codellama-7b, --seed, "17"]
+    resources: {time: "05:00:00"}
+    done_when: [runs/adapters/codellama-7b/javascript/L0-L1b-L1r-L2-S1-S2_r32_s17/training_summary.json]
+  - name: ck_js_mono
+    rq: E13
+    kind: gpu
+    deps: [tr_js_mono]
+    argv: [-m, obtune.eval_vllm, --config, train/mono_generic_js.yaml, --model, codellama-7b, --mode, ckpt-select]
+    resources: {time: "01:00:00"}
+    done_when: [runs/adapters/codellama-7b/javascript/L0-L1b-L1r-L2-S1-S2_r32_s17/ckpt_select.json]
+  # cons needs the JAVASCRIPT clean-code teacher, not the Python one (E4: the teacher is the
+  # ingredient), so it waits on ck_js_L0 rather than running beside it.
+  - name: tr_js_cons
+    rq: E13
+    kind: gpu
+    deps: [ck_js_L0]
+    argv: [-m, obtune.objectives, train, --config, train/obj_cons_codellama7b_js.yaml, --lam, "3",
+           --out, runs/adapters_objectives/codellama-7b/javascript/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17]
+    resources: {mem: 96G, time: "06:00:00"}
+    done_when: [runs/adapters_objectives/codellama-7b/javascript/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/training_summary.json]
+  - name: ck_js_cons
+    rq: E13
+    kind: gpu
+    deps: [tr_js_cons]
+    argv: [-m, obtune.eval_vllm, --config, train/obj_cons_codellama7b_js.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_objectives/codellama-7b/javascript/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17]
+    resources: {time: "01:30:00"}
+    done_when: [runs/adapters_objectives/codellama-7b/javascript/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/ckpt_select.json]
+  - name: ev_crosslang_js
+    rq: E13
+    kind: gpu
+    deps: [ck_js_L0, ck_js_mono, ck_js_cons]
+    argv: [-m, obtune.eval_vllm, --config, eval/crosslang_js.yaml, --model, codellama-7b, --language, javascript]
+    resources: {mem: 96G, time: "04:00:00"}
+    done_when: [results/cells/crosslang_js/codellama-7b/javascript/cons_lam3__C_S4_S3/trials.parquet]
+  - name: an_crosslang
+    rq: E13
+    kind: analysis
+    deps: [ev_crosslang_js]
+    argv: [scripts/analysis/44_crosslang.py, --model, codellama-7b, --out, results/analysis/pipeline/crosslang_codellama7b.json]
+    report_json: results/analysis/pipeline/crosslang_codellama7b.json
+  # ───────────────────────────── follow-ups on the 09-08 reads ──────────────────────────
+  # E7c: the mono_all-controlled FDR family, frozen BEFORE its read (the gap E7b recorded).
+  - name: an_fdr3
+    rq: RQ4'
+    kind: analysis
+    argv: [scripts/analysis/37_fdr_family.py, --model, codellama-7b, --control-family, mono_all,
+           --out, results/analysis/pipeline/fdr_mono_codellama7b.json]
+    report_json: results/analysis/pipeline/fdr_mono_codellama7b.json
+  # E7d: the GLMM the charter asks for. Separate venv so the pinned training env is untouched.
+  - name: an_glmm
+    rq: RQ4'
+    kind: analysis
+    # 45_glmm.py re-execs itself under envs/obtune-stats (statsmodels is deliberately NOT in the
+    # pinned training env); submit.py's build_script always launches the project python.
+    argv: [scripts/analysis/45_glmm.py, --model, codellama-7b, --out, results/analysis/pipeline/glmm_codellama7b.json]
+    resources: {cpus: 8, mem: 32G, time: "03:00:00"}
+    report_json: results/analysis/pipeline/glmm_codellama7b.json
+  # E11c: break E11b's format/difficulty confound with a difficulty-matched contrast.
+  - name: an_l0strat2
+    rq: RQ1'
+    kind: analysis
+    argv: [scripts/analysis/43_l0_stratify.py, --model, codellama-7b, --matched,
+           --out, results/analysis/pipeline/l0_stratify_matched_codellama7b.json]
+    report_json: results/analysis/pipeline/l0_stratify_matched_codellama7b.json
+  # E14: is the mono_all log P(gold) anomaly real, or an artifact of the attention subset?
+  - name: an_logp
+    rq: RQ4'
+    kind: analysis
+    deps: [ko_l0_tuned_L0, ko_l0_mono_all, ko_l0_cons_lam3, ko_s2_tuned_L0, ko_s2_mono_all, ko_s2_cons_lam3]
+    dep_type: afterany
+    argv: [scripts/analysis/46_logp_anomaly.py, --model, codellama-7b, --out, results/analysis/pipeline/logp_codellama7b.json]
+    report_json: results/analysis/pipeline/logp_codellama7b.json
+  # E14: is mono_all's log P(gold) deficit specific to the UNSEEN family, or global? The X1 dumps
+  # have all five arms; L0 and S2 have only base + the matching specialist, so the comparison the
+  # anomaly needs does not exist yet. ~2 min each, score mode, same 150-item cap and same script.
+  - name: ko_l0_tuned_L0
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, tuned_L0, --condition, L0,
+           --adapter, runs/adapters/codellama-7b/python/L0_r32_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/L0/tuned_L0.json]
+  - name: ko_l0_mono_all
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, mono_all, --condition, L0,
+           --adapter, runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/L0/mono_all.json]
+  - name: ko_l0_cons_lam3
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, cons_lam3, --condition, L0,
+           --adapter, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/L0/cons_lam3.json]
+  - name: ko_s2_tuned_L0
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, tuned_L0, --condition, S2,
+           --adapter, runs/adapters/codellama-7b/python/L0_r32_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/S2/tuned_L0.json]
+  - name: ko_s2_mono_all
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, mono_all, --condition, S2,
+           --adapter, runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/S2/mono_all.json]
+  - name: ko_s2_cons_lam3
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, cons_lam3, --condition, S2,
+           --adapter, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/S2/cons_lam3.json]
   # E11b: WHERE the L0 cost lands (rules frozen 2026-09-08, commit e5d08ab). Analysis only.
   - name: an_l0strat
     rq: RQ1'

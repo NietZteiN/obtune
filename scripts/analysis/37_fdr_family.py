@@ -23,6 +23,14 @@ of how its number came out:
 
   arms_all   every system holding all seven generic cells (L0 + 5 seen + X1) × 7 conditions vs tuned_L0
   composites {mono_all, cons_lam3} × the six depth-2 composites vs tuned_L0                 (12 tests)
+
+--control-family <system> runs ONE family, mechanically discovered as above but controlled against
+<system> instead of tuned_L0, and writes it alone. This exists because every family above uses the
+clean-code arm as the control, which leaves RQ3's actual headline — cons_lam3 - mono_all @ X1 —
+uncorrected. That gap was recorded on 2026-09-08 (E7b) and deliberately NOT closed in the same
+breath: a family chosen after seeing that the headline was uncovered cannot be told apart, by a
+reader, from a family chosen because the headline survives in it. The rule was frozen first
+(pre-registration #2, commit 8da96b4) and only then run.
 """
 from __future__ import annotations
 
@@ -84,8 +92,25 @@ def main() -> int:
     ap.add_argument("--out", required=True)
     ap.add_argument("--extended", action="store_true",
                     help="also run the arms_all and composites families (2026-09-08 pre-registration)")
+    ap.add_argument("--control-family", metavar="SYSTEM",
+                    help="run ONE mechanically-discovered family controlled against SYSTEM (e.g. mono_all)")
     a = ap.parse_args()
     res = ck.new_result("RQ4' (support)", Path(__file__).name, [a.model])
+    if a.control_family:
+        conds7 = ck.SEEN + ["X1"]
+        arms = discover(a.model, GEN_PHASES, conds7)
+        if a.control_family not in arms:
+            print(f"FATAL: control {a.control_family} has no complete 7-condition row", file=sys.stderr)
+            return 1
+        print(f"[control-family] {len(arms)} systems discovered, control = {a.control_family}: {arms}")
+        family(f"arms_vs_{a.control_family}", GEN_PHASES, a.model, arms, a.control_family, conds7, {}, res)
+        f = res["families"][f"arms_vs_{a.control_family}"]
+        ck.hypothesis(res, f"FDR-arms_vs_{a.control_family}",
+                      "q<0.05 after BH over the family (reported, gates nothing)", "REPORTED",
+                      f"{f['n_survive']}/{f['n_tests']} cells survive")
+        ck.write(res, a.out)
+        print(f"wrote {a.out}")
+        return 0
     alias = {s: f"{s}_s17" for s in SPEC}
     family("transfer", ["rq1_generic"], a.model, SPEC, "tuned_L0", ck.SEEN, alias, res)
     family("arms", ["objectives_generic", "x1_generic", "rq1_generic"], a.model,

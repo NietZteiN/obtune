@@ -1264,3 +1264,10 @@ design error, recorded then and corrected here.
 exactly where the unseen-family tax is. **REPORTED, not verdicted** — it is one number from an
 instrument that turned out inert, so the read's job is to establish whether it is real (present on
 other conditions and other arms, not an artifact of the attention subset) and nothing more.
+
+**E14 amendment (recorded before submission, same day).** The X1 knockout dumps carry all five arms;
+`L0` and `S2` carry only `base` + the matching specialist, so the comparison the anomaly needs —
+is `mono_all`'s log P(gold) deficit *specific to the unseen family* or *global*? — cannot be made on
+existing files. Six more score-mode extractions are therefore submitted (`ko_{l0,s2}_{tuned_L0,
+mono_all,cons_lam3}`, ~2 min each, same script, same 150-item cap, same identifier class). E14 stays
+**REPORTED, not verdicted**; this only makes the reported comparison possible.
