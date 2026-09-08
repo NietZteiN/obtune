@@ -1,6 +1,6 @@
 # Research questions, approaches, and answers — one page
 
-*Last updated: 2026-09-07*
+*Last updated: 2026-09-08*
 
 A compressed index of everything the project has asked and what came back. Full numbers and
 provenance are in [`../MASTER_REPORT.md`](../MASTER_REPORT.md); the forward plan is in
@@ -265,6 +265,47 @@ before submission; **no stage reads H1** (budget spent), the held-out family is 
 | **RQ3′** | Can an objective get **both sides** of the trade? | paired consistency (`cons_lam3`, parent view, tuned_L0 teacher): +4.59 over `mono_all` on X1 with no L0 tax (−0.30 [−1.80, +1.32]), and +4.76 over `tuned_L0` on stacked-seen, not below `mono_all` there (+1.27 [−0.02, +2.59]). | survives scale? 13B/34B (`an_e3`, H-E3); which ingredient — the parent view, the tuned teacher, or a breadth teacher (`an_e4`); replicates on Llama-3.1-8B (`an_e8`). |
 | **RQ4′** | **Why?** *(support, not a co-equal claim)* | RQ3's attention re-anchoring on seen conditions; modularity's failure (no complementary capability for a router or merge to find) as evidence about the representation. | identifier-knockout signature on X1 across five arms — does `cons_lam3` depend less on identifier keys than `mono_all`, and does breadth make the model *more* identifier-dependent on the unseen family (`an_attention`); BH-FDR over the transfer and arms families (`an_fdr`, reported). Human alignment (E10) is disabled, not pretended. |
 
+### 6.1 RQ1′ — what breadth buys and costs: the results so far
+
+`mono_all − tuned_L0` (six-condition breadth vs clean-code-only, same base, same rows per program),
+pts [95 % CI], program-clustered bootstrap. Positive = breadth helps. CodeLlama unless marked.
+
+| column | 7B | 13B | 34B | other |
+|---|---:|---:|---:|---:|
+| **stacked-seen, depth 2** (6 composites, pooled) | **+3.49** [+2.04, +5.01] | **+2.90** [+1.45, +4.37] | *pending (382516)* | Qwen-1.5B **+3.91** [+2.58, +5.27] |
+| **stacked-seen, depth 3/4** (4 composites, 394-program common subset) | **+4.15** [+2.37, +5.91] | — | — | — |
+| **unseen family X1** | **−3.79** [−6.09, −1.65] | **−4.28** [−6.50, −2.06] | **−2.64** [−5.10, −0.25] | seeds s42/s101: −3.54 / −3.54 |
+| **unseen family H1** (budget spent; final read) | −4.12 [−6.75, −1.81] | — | **−2.47** [−4.78, −0.41] | — |
+| **clean code L0** (the cost) | −1.74 | −2.34 | **−2.63** [−4.49, −0.78] | Llama-3.1-8B **−2.22** [−4.13, −0.24] |
+| seen single transform L1b (the gain, for reference) | +2.41 | +2.71 | **+5.19** [+3.02, +7.36] | Llama-3.1-8B +2.83 [+0.90, +4.76] |
+
+Reading: one pair of adapters, opposite signs on the two axes at every scale read — breadth buys
+recombination of what it saw and pays on what it did not, plus a clean-code tax that grows with
+scale. The stacked gain does not decay with depth (RQ-C-persists CONFIRMED; RQ-C-grows
+INCONCLUSIVE — the point rises, the interval straddles). Still to land: the 34B composite column
+(`an_composite_34b`), whether the unseen tax is a data-volume effect (`an_saturation`, H-tax-scales),
+and every arm's L0 cost classified (`an_l0cost`).
+
+### 6.2 RQ2′ — the unit of transfer: the results so far
+
+| test | contrast | Δ pts [95 % CI] | verdict |
+|---|---|---:|---|
+| a sibling family transfers to the held-out family | `tuned_X1 − tuned_S2` on **H1** (vs the best transform-trained 7B arm) | **+3.46** [+1.32, +5.51] | H-X1-family CONFIRMED |
+| …and adding it to breadth rescues breadth | `mono_allX − mono_all` on **H1** | **+7.66** [+5.35, +10.04] | H-mono-X CONFIRMED |
+| X1→H1 transfer is lossless | `tuned_X1`: X1 0.3188 → H1 0.3180; `mono_allX`: 0.3097 → 0.3089 | 0.08 / 0.08 pts | X1 and H1 are one problem to the model (learned from the final read; not assumed for new families) |
+| family exposure vs scale | `tuned_X1` (7B) − `tuned_L0` (34B) on **H1** | −0.33 [−2.88, +2.06] | indistinguishable: a 7B adapter with the family ≈ a 34B adapter without |
+| the X1 diagonal | `tuned_X1 − tuned_L0` on **X1** | **+4.86** [+2.80, +6.92] | survives BH-FDR (q = 0.009, `an_fdr`) |
+| a *gentle* second family (X2 → Y2) | `tuned_X2 − tuned_L0` on **Y2** | +1.21 [−0.81, +3.22] | H-family-generalises REFUTED — underpowered by construction (Y2 costs `tuned_L0` 3.8 pts vs X1's 15.8) |
+| is the family or the *mechanism* the unit | `tuned_X1m − tuned_L0` on **X1s**; `tuned_X1s − tuned_L0` on **X1m** | *pending (382540 → 382541)* | H-family-unit |
+| does either half carry the whole | `tuned_X1m − tuned_X1`, `tuned_X1s − tuned_X1` on **X1** | *pending* | H-whole-ge-parts |
+| a *hard* second family | — | *not run* | E5b: generator not written |
+
+Reading: transfer follows the family, not the transform (six seen transforms do not reach H1;
+one sibling does, losslessly) and not "invariance" (a gentle novel family shows nothing). The
+open question is the grain *inside* a family — whether X1's MBA half and string half are one
+skill or two — and that is what the X1m/X1s stages measure. Caveat on file: X1s covers fewer
+programs (2,910 vs 4,263 training pairs), so its leg has less power.
+
 Dependencies stated plainly: RQ1′'s scale leg and RQ3′'s survival both hinge on the E3/composite
 runs at 13B/34B; if `cons_lam3` does not beat `mono_all` on X1 at either scale, RQ3′ shrinks to a 7B
 observation and is reported as such. Refuted hypotheses are reported as refuted.
@@ -272,6 +313,8 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08** — §6.1/§6.2 result tables added for RQ1′ and RQ2′ (user request), including the
+  pipeline's first reads (13B composites, depth 3/4) and the pending rows named by job id.
 - **2026-09-07 (later)** — §5 marks RQ-A/RQ-B answered and maps every other proposed RQ to a
   pipeline stage or a stated deferral; §6 adopts RQ1′–RQ4′ as the paper's spine (user decision,
   "let's add these as rqs and run the experiment").
