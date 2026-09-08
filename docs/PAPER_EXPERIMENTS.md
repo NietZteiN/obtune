@@ -128,7 +128,11 @@ CLAUDE.md §4 specifies item-level binomial GLMMs with crossed random effects fo
 BH pass over the matrix) — the latter is not blocked and is a day of CPU work. **Do the Python route
 regardless**; a reviewer asking "how many comparisons?" needs an answer that exists.
 
-### E8. Cross-family replication of C5
+### E8. Cross-family replication of C5 — **DONE 2026-09-08, CONFIRMED**
+**Read (`an_e8` 382552).** On Llama-3.1-8B `cons_lam3 − mono_all` on X1 **+3.46** [+1.65, +5.35], `cons_lam3 −
+tuned_L0` on seen **+2.53** [+1.30, +3.73], L0 +0.00 [−1.56, +1.56], X1 +0.58; best or tied-best arm on all
+seven columns. Breadth's fingerprint (L0 −2.22*, X1 −2.88*) replicates too. `log/transfer/2026-09-08_consistency-replicates-on-llama.md`.
+
 `cons_lam3` on **Llama-3.1-8B**, whose `base`/`tuned_L0`/`mono_all` already exist and whose breadth
 fingerprint already replicates (−2.22 / +2.83). Shows the objective is not a CodeLlama artefact.
 **Cost.** ~5 h + eval ≈ **6 GPU-h**.
@@ -203,7 +207,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E5b | `e5b_hard_family` | **disabled** — generator not written |
 | E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` → `ck_*` → `ev_x1split` → `an_x1split` | scheduled |
 | E7 | `an_fdr` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | scheduled, no deps |
-| E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` | scheduled |
+| E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` (382549–382552) | **done 2026-09-08**: H-E8 / H-E8-seen / H-E8-tax all CONFIRMED |
 | E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
 | E10 | `an_human_align` | **disabled** — tier_icse items not emitted, no script; decision deferred to the writeup |
 | E11 | `an_l0cost` (after the new evals so every arm is included) | scheduled |
@@ -236,6 +240,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E8 read)** — E8 done: consistency replicates on Llama-3.1-8B (+3.46 over breadth on X1).
 - **2026-09-08 (E3 read)** — E3 done: consistency survives scale (13B +3.95, 34B +3.38 over breadth on X1, no tax).
 - **2026-09-08 (E12 read)** — saturation done: seen gain saturates by ¼ corpus, X1 tax grows with volume.
 - **2026-09-08 (E16 read)** — E16 done: forward tuning does not transfer to the inverse task (−1.67 vs +18.09); only the X1-family adapter beats base backwards, on X1.

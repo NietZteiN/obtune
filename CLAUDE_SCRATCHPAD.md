@@ -1098,3 +1098,7 @@ window difference is a caveat to name beside the coverage asymmetry already on f
   `tuned_L0`). Written to `log/transfer/2026-09-08_consistency-survives-scale.md`, RQ_SUMMARY §6/§6.1, PAPER_EXPERIMENTS E3.
 - Remaining: `ev_composite_34b` 382516 → `an_composite_34b`; E4 (`ck_cons_tmono` → `ev_teacher` → `an_e4`); E8 (`ev_llama` → `an_e8`);
   X1s chain 382804–382806; `an_l0cost`; `report` 383102.
+
+### 2026-09-08 — E8 READ (382551/382552 COMPLETED; rules as frozen)
+- H-E8 +3.46*, H-E8-seen +2.53*, H-E8-tax +0.58 (ci_hi > 0) — all CONFIRMED on Llama-3.1-8B. Written to
+  `log/transfer/2026-09-08_consistency-replicates-on-llama.md`, RQ_SUMMARY §6/§6.1, PAPER_EXPERIMENTS E8.
