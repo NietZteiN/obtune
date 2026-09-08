@@ -1003,3 +1003,13 @@ REFUTED / PARTIAL / INCONCLUSIVE / PENDING / REPORTED, as the script emits them.
 - Refuted hypotheses are reported as refuted in the pipeline report, the log and the master report.
 - `report` stage runs `afterany` on every analysis stage; a failed upstream stage shows as PENDING,
   never as a number.
+
+### 2026-09-07 — pipeline SUBMITTED (after pre-registration commit `0286c5f`)
+`python scripts/pipeline/run.py` → 47 stages, jobs **382515–382561** (`runs/pipeline/state.json`).
+Roots: `ev_composite_13b` 382515, `bld_depth` 382519 (running), `tr_{L0,mono}_{half,quarter}`
+382523–382526, `bld_x1split` 382533 (running), `tr_cons_tbase/tmono` 382543/382544,
+`tr_cons_llama` 382549, `ko_x1_*` 382553–382557, `an_fdr` 382559; `an_e3` 382542 waits on the
+external 34B chain (382141 → 382142); `report` 382561 is `afterany` on every `an_*`. Requested
+walltime 78.5 GPU-h (the 34B composite eval and the three 7 h objective arms dominate). Queue:
+everything pending on Priority except `an_fdr`, held by QOSMaxJobsPerUserLimit. Monitor task
+`b5er8g695` reports every terminal state. Fix-and-resubmit protocol: `run.py --only <stage>`.
