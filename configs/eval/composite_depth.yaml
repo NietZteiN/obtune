@@ -1,0 +1,30 @@
+# RQ-C / RQ1' depth leg (docs/RQ_SUMMARY.md §6) — depth-3 and depth-4 composites on 7B. NO H1.
+#
+# WHY THIS EXISTS. The six depth-2 composites show breadth's stacking gain is +3.49 on 7B. If
+# that gain GROWS with depth, breadth is buying compositional robustness; if it is flat or
+# shrinks, it is buying two-transform pattern coverage. The four codes were registered in
+# configs/conditions_composite.yaml on 2026-09-07 with their rationale. Every part is a SEEN
+# transform (S3/S4 are the aug ladder, not held-out), so the unseen leg of RQ1' is untouched.
+# `tuned_S2` is the single-structural control the depth-2 run carried, kept for comparability.
+_extends: _base_eval.yaml
+
+phase: composite_depth
+experiment_id: composite_depth
+run_tag: composite_depth
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+  - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
+
+eval_conditions: [C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4]

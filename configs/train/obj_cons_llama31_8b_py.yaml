@@ -1,0 +1,25 @@
+# RQ3' / E8 (2026-09-07) — paired consistency on a SECOND model family (Llama-3.1-8B).
+# Same objective, same rows, same shape as obj_cons_codellama7b_py.yaml at lam 3; teacher is
+# Llama's own frozen tuned_L0/best. Everything the consistency claim rests on so far is
+# CodeLlama (7B, and 13B/34B via E3). One family-external replicate is the difference between
+# "an objective" and "a CodeLlama quirk".
+_extends: _base_lora.yaml
+
+model: llama31-8b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 3.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/llama31-8b/python/L0_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17

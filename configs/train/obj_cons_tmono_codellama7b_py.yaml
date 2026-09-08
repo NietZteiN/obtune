@@ -1,0 +1,25 @@
+# RQ3' / E4 (2026-09-07) — paired consistency with the BREADTH teacher.
+# Same as obj_cons_codellama7b_py.yaml at lam 3 with `mono_all` as the frozen teacher on the
+# clean parent. mono_all is at least as good as tuned_L0 on L0 (§27), so if teacher quality is
+# what cons_lam3 buys, this arm should match or beat it; if the clean-VIEW is what matters,
+# teacher identity is irrelevant and tbase/tmono/cons_lam3 tie. See obj_cons_tbase_*.
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_tmono_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 3.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17

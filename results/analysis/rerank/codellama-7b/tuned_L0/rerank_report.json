@@ -1,0 +1,1145 @@
+{
+  "model": "codellama-7b",
+  "candidates_tag": "tuned_L0",
+  "adapters": [
+    "none",
+    "runs/adapters_verifier/codellama-7b/python/tuned_L0_r32_s17/checkpoint-1132",
+    "runs/adapters_verifier/codellama-7b/python/tuned_L0_r32_s17/checkpoint-566",
+    "runs/adapters_verifier/codellama-7b/python/tuned_L0_r32_s17/final"
+  ],
+  "yes_ids": [
+    4874,
+    3869
+  ],
+  "no_ids": [
+    694,
+    1939
+  ],
+  "splits": {
+    "val": {
+      "classifier": {
+        "verifier:base": {
+          "n": 7535,
+          "auc": 0.40430828688219994,
+          "acc_at_0": 0.8626410086264101,
+          "pos_rate": 0.13735899137358992
+        },
+        "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+          "n": 7535,
+          "auc": 0.9013810479375697,
+          "acc_at_0": 0.8090245520902455,
+          "pos_rate": 0.13735899137358992
+        },
+        "verifier:tuned_L0_r32_s17/checkpoint-566": {
+          "n": 7535,
+          "auc": 0.8933428465254553,
+          "acc_at_0": 0.6979429329794293,
+          "pos_rate": 0.13735899137358992
+        },
+        "verifier:tuned_L0_r32_s17/final": {
+          "n": 7535,
+          "auc": 0.9013895206243032,
+          "acc_at_0": 0.8086264100862641,
+          "pos_rate": 0.13735899137358992
+        }
+      },
+      "selectors": {
+        "ALL": {
+          "n_items": 1917,
+          "n_programs": 111,
+          "greedy": {
+            "acc": 0.3688,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5394,
+            "delta_vs_greedy_pts": 17.06,
+            "ci_pts": [
+              13.52,
+              20.58
+            ]
+          },
+          "vote": {
+            "acc": 0.3672,
+            "delta_vs_greedy_pts": -0.16,
+            "ci_pts": [
+              -1.69,
+              1.46
+            ]
+          },
+          "logprob": {
+            "acc": 0.3735,
+            "delta_vs_greedy_pts": 0.47,
+            "ci_pts": [
+              -0.69,
+              1.5
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3631,
+            "delta_vs_greedy_pts": -0.57,
+            "ci_pts": [
+              -1.77,
+              0.62
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3161,
+            "delta_vs_greedy_pts": -5.27,
+            "ci_pts": [
+              -7.83,
+              -2.66
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3725,
+            "delta_vs_greedy_pts": 0.37,
+            "ci_pts": [
+              -2.38,
+              3.0
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3672,
+            "delta_vs_greedy_pts": -0.16,
+            "ci_pts": [
+              -2.48,
+              2.15
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3725,
+            "delta_vs_greedy_pts": 0.37,
+            "ci_pts": [
+              -2.47,
+              3.02
+            ]
+          }
+        },
+        "L0": {
+          "n_items": 333,
+          "n_programs": 111,
+          "greedy": {
+            "acc": 0.4144,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5586,
+            "delta_vs_greedy_pts": 14.41,
+            "ci_pts": [
+              10.51,
+              18.62
+            ]
+          },
+          "vote": {
+            "acc": 0.4114,
+            "delta_vs_greedy_pts": -0.3,
+            "ci_pts": [
+              -3.0,
+              2.4
+            ]
+          },
+          "logprob": {
+            "acc": 0.4084,
+            "delta_vs_greedy_pts": -0.6,
+            "ci_pts": [
+              -2.7,
+              1.5
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3904,
+            "delta_vs_greedy_pts": -2.4,
+            "ci_pts": [
+              -4.8,
+              0.0
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3423,
+            "delta_vs_greedy_pts": -7.21,
+            "ci_pts": [
+              -12.01,
+              -2.1
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3994,
+            "delta_vs_greedy_pts": -1.5,
+            "ci_pts": [
+              -5.41,
+              2.1
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3874,
+            "delta_vs_greedy_pts": -2.7,
+            "ci_pts": [
+              -6.01,
+              0.61
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.4054,
+            "delta_vs_greedy_pts": -0.9,
+            "ci_pts": [
+              -4.8,
+              2.7
+            ]
+          }
+        },
+        "L1b": {
+          "n_items": 333,
+          "n_programs": 111,
+          "greedy": {
+            "acc": 0.3333,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5285,
+            "delta_vs_greedy_pts": 19.52,
+            "ci_pts": [
+              15.02,
+              24.32
+            ]
+          },
+          "vote": {
+            "acc": 0.3303,
+            "delta_vs_greedy_pts": -0.3,
+            "ci_pts": [
+              -3.0,
+              2.7
+            ]
+          },
+          "logprob": {
+            "acc": 0.3363,
+            "delta_vs_greedy_pts": 0.3,
+            "ci_pts": [
+              -1.5,
+              2.1
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3273,
+            "delta_vs_greedy_pts": -0.6,
+            "ci_pts": [
+              -3.01,
+              1.8
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.2793,
+            "delta_vs_greedy_pts": -5.41,
+            "ci_pts": [
+              -9.31,
+              -1.5
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3423,
+            "delta_vs_greedy_pts": 0.9,
+            "ci_pts": [
+              -3.0,
+              5.11
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3393,
+            "delta_vs_greedy_pts": 0.6,
+            "ci_pts": [
+              -3.31,
+              4.5
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3423,
+            "delta_vs_greedy_pts": 0.9,
+            "ci_pts": [
+              -3.3,
+              5.11
+            ]
+          }
+        },
+        "L1r": {
+          "n_items": 333,
+          "n_programs": 111,
+          "greedy": {
+            "acc": 0.3844,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5616,
+            "delta_vs_greedy_pts": 17.72,
+            "ci_pts": [
+              12.91,
+              22.82
+            ]
+          },
+          "vote": {
+            "acc": 0.3904,
+            "delta_vs_greedy_pts": 0.6,
+            "ci_pts": [
+              -2.4,
+              3.61
+            ]
+          },
+          "logprob": {
+            "acc": 0.3964,
+            "delta_vs_greedy_pts": 1.2,
+            "ci_pts": [
+              -1.2,
+              3.6
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3874,
+            "delta_vs_greedy_pts": 0.3,
+            "ci_pts": [
+              -1.8,
+              2.4
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3514,
+            "delta_vs_greedy_pts": -3.3,
+            "ci_pts": [
+              -6.91,
+              0.3
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3964,
+            "delta_vs_greedy_pts": 1.2,
+            "ci_pts": [
+              -2.4,
+              4.8
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3844,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              -3.9,
+              3.9
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3904,
+            "delta_vs_greedy_pts": 0.6,
+            "ci_pts": [
+              -3.0,
+              4.2
+            ]
+          }
+        },
+        "L2": {
+          "n_items": 333,
+          "n_programs": 111,
+          "greedy": {
+            "acc": 0.3694,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5345,
+            "delta_vs_greedy_pts": 16.52,
+            "ci_pts": [
+              11.71,
+              21.32
+            ]
+          },
+          "vote": {
+            "acc": 0.3724,
+            "delta_vs_greedy_pts": 0.3,
+            "ci_pts": [
+              -2.7,
+              3.3
+            ]
+          },
+          "logprob": {
+            "acc": 0.3844,
+            "delta_vs_greedy_pts": 1.5,
+            "ci_pts": [
+              -0.3,
+              3.6
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3754,
+            "delta_vs_greedy_pts": 0.6,
+            "ci_pts": [
+              -1.8,
+              2.7
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3123,
+            "delta_vs_greedy_pts": -5.71,
+            "ci_pts": [
+              -10.51,
+              -1.2
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3664,
+            "delta_vs_greedy_pts": -0.3,
+            "ci_pts": [
+              -4.2,
+              3.6
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3874,
+            "delta_vs_greedy_pts": 1.8,
+            "ci_pts": [
+              -2.1,
+              6.01
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3634,
+            "delta_vs_greedy_pts": -0.6,
+            "ci_pts": [
+              -4.5,
+              3.3
+            ]
+          }
+        },
+        "S1": {
+          "n_items": 252,
+          "n_programs": 84,
+          "greedy": {
+            "acc": 0.3373,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5,
+            "delta_vs_greedy_pts": 16.27,
+            "ci_pts": [
+              10.71,
+              21.83
+            ]
+          },
+          "vote": {
+            "acc": 0.3333,
+            "delta_vs_greedy_pts": -0.4,
+            "ci_pts": [
+              -3.57,
+              2.78
+            ]
+          },
+          "logprob": {
+            "acc": 0.3532,
+            "delta_vs_greedy_pts": 1.59,
+            "ci_pts": [
+              -0.79,
+              3.97
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3373,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              -2.78,
+              2.78
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.2659,
+            "delta_vs_greedy_pts": -7.14,
+            "ci_pts": [
+              -11.9,
+              -1.98
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3373,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              -4.37,
+              4.76
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3175,
+            "delta_vs_greedy_pts": -1.98,
+            "ci_pts": [
+              -6.75,
+              2.78
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3413,
+            "delta_vs_greedy_pts": 0.4,
+            "ci_pts": [
+              -3.97,
+              5.16
+            ]
+          }
+        },
+        "S2": {
+          "n_items": 333,
+          "n_programs": 111,
+          "greedy": {
+            "acc": 0.3664,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5435,
+            "delta_vs_greedy_pts": 17.72,
+            "ci_pts": [
+              13.21,
+              22.82
+            ]
+          },
+          "vote": {
+            "acc": 0.3574,
+            "delta_vs_greedy_pts": -0.9,
+            "ci_pts": [
+              -3.9,
+              2.4
+            ]
+          },
+          "logprob": {
+            "acc": 0.3574,
+            "delta_vs_greedy_pts": -0.9,
+            "ci_pts": [
+              -3.0,
+              1.2
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3544,
+            "delta_vs_greedy_pts": -1.2,
+            "ci_pts": [
+              -3.0,
+              0.6
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3333,
+            "delta_vs_greedy_pts": -3.3,
+            "ci_pts": [
+              -7.81,
+              1.5
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3844,
+            "delta_vs_greedy_pts": 1.8,
+            "ci_pts": [
+              -2.4,
+              5.71
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3754,
+            "delta_vs_greedy_pts": 0.9,
+            "ci_pts": [
+              -2.4,
+              4.2
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3844,
+            "delta_vs_greedy_pts": 1.8,
+            "ci_pts": [
+              -2.4,
+              5.71
+            ]
+          }
+        }
+      }
+    },
+    "heldout": {
+      "classifier": {
+        "verifier:base": {
+          "n": 35553,
+          "auc": 0.347037200371737,
+          "acc_at_0": 0.847495288723877,
+          "pos_rate": 0.15247658425449329
+        },
+        "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+          "n": 35553,
+          "auc": 0.8873158679807984,
+          "acc_at_0": 0.7805811042668692,
+          "pos_rate": 0.15247658425449329
+        },
+        "verifier:tuned_L0_r32_s17/checkpoint-566": {
+          "n": 35553,
+          "auc": 0.8823859884001019,
+          "acc_at_0": 0.6843585632717352,
+          "pos_rate": 0.15247658425449329
+        },
+        "verifier:tuned_L0_r32_s17/final": {
+          "n": 35553,
+          "auc": 0.887236092325784,
+          "acc_at_0": 0.7813124068292409,
+          "pos_rate": 0.15247658425449329
+        }
+      },
+      "selectors": {
+        "ALL": {
+          "n_items": 9582,
+          "n_programs": 557,
+          "greedy": {
+            "acc": 0.3854,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5628,
+            "delta_vs_greedy_pts": 17.74,
+            "ci_pts": [
+              16.38,
+              19.09
+            ]
+          },
+          "vote": {
+            "acc": 0.3756,
+            "delta_vs_greedy_pts": -0.98,
+            "ci_pts": [
+              -1.67,
+              -0.33
+            ]
+          },
+          "logprob": {
+            "acc": 0.3907,
+            "delta_vs_greedy_pts": 0.53,
+            "ci_pts": [
+              -0.09,
+              1.15
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3889,
+            "delta_vs_greedy_pts": 0.34,
+            "ci_pts": [
+              -0.21,
+              0.89
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3302,
+            "delta_vs_greedy_pts": -5.52,
+            "ci_pts": [
+              -6.75,
+              -4.28
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3963,
+            "delta_vs_greedy_pts": 1.09,
+            "ci_pts": [
+              0.0,
+              2.17
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.385,
+            "delta_vs_greedy_pts": -0.04,
+            "ci_pts": [
+              -1.14,
+              1.05
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3949,
+            "delta_vs_greedy_pts": 0.95,
+            "ci_pts": [
+              -0.14,
+              2.05
+            ]
+          }
+        },
+        "L0": {
+          "n_items": 1670,
+          "n_programs": 557,
+          "greedy": {
+            "acc": 0.4287,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5946,
+            "delta_vs_greedy_pts": 16.59,
+            "ci_pts": [
+              14.66,
+              18.39
+            ]
+          },
+          "vote": {
+            "acc": 0.4138,
+            "delta_vs_greedy_pts": -1.5,
+            "ci_pts": [
+              -2.76,
+              -0.36
+            ]
+          },
+          "logprob": {
+            "acc": 0.4329,
+            "delta_vs_greedy_pts": 0.42,
+            "ci_pts": [
+              -0.48,
+              1.32
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.4323,
+            "delta_vs_greedy_pts": 0.36,
+            "ci_pts": [
+              -0.6,
+              1.26
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3725,
+            "delta_vs_greedy_pts": -5.63,
+            "ci_pts": [
+              -7.55,
+              -3.59
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.4389,
+            "delta_vs_greedy_pts": 1.02,
+            "ci_pts": [
+              -0.54,
+              2.57
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.4192,
+            "delta_vs_greedy_pts": -0.96,
+            "ci_pts": [
+              -2.69,
+              0.9
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.4383,
+            "delta_vs_greedy_pts": 0.96,
+            "ci_pts": [
+              -0.54,
+              2.51
+            ]
+          }
+        },
+        "L1b": {
+          "n_items": 1658,
+          "n_programs": 553,
+          "greedy": {
+            "acc": 0.3589,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5344,
+            "delta_vs_greedy_pts": 17.55,
+            "ci_pts": [
+              15.69,
+              19.43
+            ]
+          },
+          "vote": {
+            "acc": 0.3486,
+            "delta_vs_greedy_pts": -1.03,
+            "ci_pts": [
+              -2.47,
+              0.3
+            ]
+          },
+          "logprob": {
+            "acc": 0.3673,
+            "delta_vs_greedy_pts": 0.84,
+            "ci_pts": [
+              -0.42,
+              2.05
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3655,
+            "delta_vs_greedy_pts": 0.66,
+            "ci_pts": [
+              -0.48,
+              1.69
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3064,
+            "delta_vs_greedy_pts": -5.25,
+            "ci_pts": [
+              -7.24,
+              -3.26
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3697,
+            "delta_vs_greedy_pts": 1.09,
+            "ci_pts": [
+              -0.72,
+              2.78
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3625,
+            "delta_vs_greedy_pts": 0.36,
+            "ci_pts": [
+              -1.45,
+              2.17
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3691,
+            "delta_vs_greedy_pts": 1.03,
+            "ci_pts": [
+              -0.72,
+              2.77
+            ]
+          }
+        },
+        "L1r": {
+          "n_items": 1670,
+          "n_programs": 557,
+          "greedy": {
+            "acc": 0.376,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5539,
+            "delta_vs_greedy_pts": 17.78,
+            "ci_pts": [
+              15.83,
+              19.69
+            ]
+          },
+          "vote": {
+            "acc": 0.3695,
+            "delta_vs_greedy_pts": -0.66,
+            "ci_pts": [
+              -2.04,
+              0.66
+            ]
+          },
+          "logprob": {
+            "acc": 0.3838,
+            "delta_vs_greedy_pts": 0.78,
+            "ci_pts": [
+              -0.18,
+              1.86
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.382,
+            "delta_vs_greedy_pts": 0.6,
+            "ci_pts": [
+              -0.36,
+              1.56
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3186,
+            "delta_vs_greedy_pts": -5.75,
+            "ci_pts": [
+              -7.66,
+              -3.83
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3772,
+            "delta_vs_greedy_pts": 0.12,
+            "ci_pts": [
+              -1.62,
+              1.86
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.376,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              -1.8,
+              1.74
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3766,
+            "delta_vs_greedy_pts": 0.06,
+            "ci_pts": [
+              -1.68,
+              1.86
+            ]
+          }
+        },
+        "L2": {
+          "n_items": 1670,
+          "n_programs": 557,
+          "greedy": {
+            "acc": 0.3796,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5551,
+            "delta_vs_greedy_pts": 17.54,
+            "ci_pts": [
+              15.56,
+              19.52
+            ]
+          },
+          "vote": {
+            "acc": 0.3737,
+            "delta_vs_greedy_pts": -0.6,
+            "ci_pts": [
+              -2.03,
+              0.78
+            ]
+          },
+          "logprob": {
+            "acc": 0.3784,
+            "delta_vs_greedy_pts": -0.12,
+            "ci_pts": [
+              -1.26,
+              1.08
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.379,
+            "delta_vs_greedy_pts": -0.06,
+            "ci_pts": [
+              -1.14,
+              1.02
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3222,
+            "delta_vs_greedy_pts": -5.75,
+            "ci_pts": [
+              -7.72,
+              -3.59
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.388,
+            "delta_vs_greedy_pts": 0.84,
+            "ci_pts": [
+              -1.08,
+              2.76
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3677,
+            "delta_vs_greedy_pts": -1.2,
+            "ci_pts": [
+              -3.0,
+              0.6
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3862,
+            "delta_vs_greedy_pts": 0.66,
+            "ci_pts": [
+              -1.26,
+              2.63
+            ]
+          }
+        },
+        "S1": {
+          "n_items": 1247,
+          "n_programs": 416,
+          "greedy": {
+            "acc": 0.3785,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5581,
+            "delta_vs_greedy_pts": 17.96,
+            "ci_pts": [
+              15.65,
+              20.29
+            ]
+          },
+          "vote": {
+            "acc": 0.3681,
+            "delta_vs_greedy_pts": -1.04,
+            "ci_pts": [
+              -2.56,
+              0.48
+            ]
+          },
+          "logprob": {
+            "acc": 0.3905,
+            "delta_vs_greedy_pts": 1.2,
+            "ci_pts": [
+              -0.16,
+              2.57
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3873,
+            "delta_vs_greedy_pts": 0.88,
+            "ci_pts": [
+              -0.48,
+              2.33
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.336,
+            "delta_vs_greedy_pts": -4.25,
+            "ci_pts": [
+              -6.58,
+              -2.0
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.3937,
+            "delta_vs_greedy_pts": 1.52,
+            "ci_pts": [
+              -0.72,
+              3.61
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.3825,
+            "delta_vs_greedy_pts": 0.4,
+            "ci_pts": [
+              -1.85,
+              2.57
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.3929,
+            "delta_vs_greedy_pts": 1.44,
+            "ci_pts": [
+              -0.8,
+              3.61
+            ]
+          }
+        },
+        "S2": {
+          "n_items": 1667,
+          "n_programs": 556,
+          "greedy": {
+            "acc": 0.3887,
+            "delta_vs_greedy_pts": 0.0,
+            "ci_pts": [
+              0.0,
+              0.0
+            ]
+          },
+          "any_of_n": {
+            "acc": 0.5795,
+            "delta_vs_greedy_pts": 19.08,
+            "ci_pts": [
+              17.16,
+              21.06
+            ]
+          },
+          "vote": {
+            "acc": 0.3779,
+            "delta_vs_greedy_pts": -1.08,
+            "ci_pts": [
+              -2.4,
+              0.36
+            ]
+          },
+          "logprob": {
+            "acc": 0.3911,
+            "delta_vs_greedy_pts": 0.24,
+            "ci_pts": [
+              -0.84,
+              1.26
+            ]
+          },
+          "logprob_norm": {
+            "acc": 0.3863,
+            "delta_vs_greedy_pts": -0.24,
+            "ci_pts": [
+              -1.2,
+              0.72
+            ]
+          },
+          "verifier:base": {
+            "acc": 0.3269,
+            "delta_vs_greedy_pts": -6.18,
+            "ci_pts": [
+              -8.16,
+              -4.26
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-1132": {
+            "acc": 0.4091,
+            "delta_vs_greedy_pts": 2.04,
+            "ci_pts": [
+              0.36,
+              3.84
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/checkpoint-566": {
+            "acc": 0.4013,
+            "delta_vs_greedy_pts": 1.26,
+            "ci_pts": [
+              -0.6,
+              3.18
+            ]
+          },
+          "verifier:tuned_L0_r32_s17/final": {
+            "acc": 0.4055,
+            "delta_vs_greedy_pts": 1.68,
+            "ci_pts": [
+              0.0,
+              3.48
+            ]
+          }
+        }
+      }
+    }
+  },
+  "chosen_by_val": "verifier:tuned_L0_r32_s17/checkpoint-1132"
+}

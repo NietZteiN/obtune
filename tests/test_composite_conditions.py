@@ -71,7 +71,10 @@ def test_condition_literal_stays_closed() -> None:
     """Composites must NOT be members of `Condition`."""
     ladder = set(typing.get_args(Condition))
     comps = set(typing.get_args(CompositeCondition))
-    assert ladder == {"L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "H1"}
+    # the ladder proper plus the trainable siblings (X1 and its halves, X2) and the eval-only
+    # Y2 -- all single-transform conditions, none composite. Extend deliberately, never by accident.
+    assert ladder == {"L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "H1",
+                      "X1", "X1m", "X1s", "X2", "Y2"}
     assert not (ladder & comps), "a composite leaked into the ladder Literal"
     # get_args on a Union of Literals yields the two Literal TYPES, not their members —
     # flatten one level before comparing.

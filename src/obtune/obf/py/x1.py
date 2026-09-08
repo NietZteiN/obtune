@@ -243,11 +243,20 @@ def transform(ctx: SnippetCtx) -> TransformResult:
             raise Bail(f"program already uses the helper name {name!r}")
 
     min_sites = int(ctx.param("min_total_sites", 3))
+    # E6 (2026-09-07): `mechanisms` selects which half of X1 runs, so `X1m` (MBA only) and
+    # `X1s` (string encoding only) are the same generator with one stage disabled rather
+    # than two new generators whose differences could be anything. Full X1 is the default.
+    # The disabled stage is still constructed (count 0) so the site bar and notes read the same.
+    mechanisms = tuple(ctx.param("mechanisms", ("mba", "str")))
+    if not set(mechanisms) <= {"mba", "str"} or not mechanisms:
+        raise Bail(f"unknown X1 mechanisms {mechanisms!r}")
     # MBA first so the `+` that joins f-string chunks stays a plain str concatenation.
     mba = _MBARewriter(ctx.rng)
-    tree = mba.visit(tree)
+    if "mba" in mechanisms:
+        tree = mba.visit(tree)
     enc = _StringEncoder(key=ctx.rng.randrange(1, 256))
-    tree = enc.visit(tree)
+    if "str" in mechanisms:
+        tree = enc.visit(tree)
     ast.fix_missing_locations(tree)
     try:
         body = ast.unparse(tree)
@@ -269,5 +278,6 @@ def transform(ctx: SnippetCtx) -> TransformResult:
         notes=[f"X1: {mba.count} mba sites ({mba.literal_count} literal expansions), "
                f"{enc.count} encoded strings, key {enc.key}"],
         extra={"n_mba_sites": mba.count, "n_literal_sites": mba.literal_count,
-               "n_encoded_strings": enc.count, "x1_key": enc.key},
+               "n_encoded_strings": enc.count, "x1_key": enc.key,
+               "mechanisms": list(mechanisms)},
     )

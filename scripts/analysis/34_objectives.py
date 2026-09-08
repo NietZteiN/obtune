@@ -75,7 +75,7 @@ def fmt(c):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="codellama-7b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--language", default="python")
     ap.add_argument("--n-boot", type=int, default=2000)
     ap.add_argument("--out", default=str(RESULTS_DIR / "analysis" / "objectives_2026-09-05.json"))

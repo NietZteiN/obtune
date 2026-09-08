@@ -122,6 +122,34 @@ conditions:
     size_cap_floor_chars: 1400
     params:
       min_total_sites: 3 # combined bar, H1's rule for H1's reason
+  X1m:
+    family: encoding
+    trainable: true
+    description: >
+      E6 MECHANISM ABLATION (2026-09-07): X1 with ONLY the MBA-arithmetic half -- every + - ^
+      through the type-guarded algebraic helpers and int literals expanded; string literals
+      untouched. Same generator, same RNG stream, `mechanisms: [mba]`. Asks which half of
+      the X1/H1 family carries the transfer. Own namespace, like X1.
+    size_cap: 12.0
+    size_cap_floor_chars: 1400
+    params:
+      min_total_sites: 3
+      mechanisms: [mba]
+  X1s:
+    family: encoding
+    trainable: true
+    description: >
+      E6 MECHANISM ABLATION (2026-09-07): X1 with ONLY the string-encoding half -- every str
+      literal through the inline `_rs` decoder; arithmetic untouched. `mechanisms: [str]`.
+      The complement of X1m. Own namespace, like X1. SITE BAR IS 1, NOT 3: at X1's bar of 3
+      only 7/40 sampled programs have enough string literals, which would make the X1s
+      training set a "programs with many strings" subset -- a confound. The primary E6 read
+      is on FULL X1 items (same items for every system), so X1s's own coverage is secondary.
+    size_cap: 12.0
+    size_cap_floor_chars: 1400
+    params:
+      min_total_sites: 1
+      mechanisms: [str]
   X2:
     family: exceptional
     trainable: true

@@ -106,8 +106,9 @@ attributable to one mechanism. But six **composite** conditions were built and e
 Qwen panel (`configs/conditions_composite.yaml`): two transforms applied in sequence, including
 one order-reversed pair (`C_L1r_S1` vs `C_S1_L1r`).
 
-**⚠️ Panel warning: every number in this section is Qwen2.5-Coder-1.5B.** Composites were never
-re-run on CodeLlama, so this is the one RQ whose answer rests entirely on the frozen panel.
+**Panel note:** §4.1–§4.4 are Qwen2.5-Coder-1.5B (the frozen panel). **§4.5 is the CodeLlama-7b
+replication (job 382427, 2026-09-07, pre-registered as RQ-A/RQ-B)** — the headline dissociation and
+the consistency-objective result both replicate, so this RQ no longer rests on one panel.
 
 ### 4.1 Accuracy on stacked conditions
 
@@ -166,20 +167,52 @@ consistent direction across systems. Applying a renamer before or after a flatte
 same problem, which is worth stating because a "composition is compositional" assumption is
 tempting and wrong here.
 
+### 4.5 CodeLlama-7b replication — RQ-A and RQ-B, both CONFIRMED (2026-09-07)
+
+Pre-registered before submission (`47ae9af`, rules verbatim in `CLAUDE_SCRATCHPAD.md`); 1,667 items
+per cell; program-clustered bootstrap. Source: `results/analysis/composites_codellama7b_2026-09-07.json`,
+entry `log/transfer/2026-09-07_composites-on-codellama.md`.
+
+| system | `C_L1b_S1` | `C_L1r_S1` | `C_S1_L1r` | `C_L2_S4` | `C_L1r_S3` | `C_S4_S3` | pooled |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `base` | 0.1413 | 0.1309 | 0.1349 | 0.1758 | 0.1719 | 0.1860 | 0.1598 |
+| `tuned_L0` | 0.2785 | 0.2937 | 0.2849 | 0.3551 | 0.3599 | 0.3923 | 0.3333 |
+| `tuned_S2` | 0.2857 | 0.3033 | 0.3009 | 0.3701 | 0.3766 | 0.4199 | 0.3493 |
+| `mono_all` | 0.3448 | 0.3496 | 0.3264 | 0.3851 | 0.3796 | 0.4031 | 0.3683 |
+| **`cons_lam3`** | **0.3599** | **0.3559** | **0.3488** | **0.3923** | **0.3868** | **0.4223** | **0.3809** |
+
+| contrast (pooled, pts) | CodeLlama-7b | Qwen-1.5B | verdict |
+|---|---:|---:|---|
+| `mono_all − tuned_L0` on **stacked-seen** | **+3.49 [+2.04, +5.01]** | +3.91 [+2.58, +5.27] | **RQ-A CONFIRMED** — all six composites positive on CodeLlama |
+| `mono_all − tuned_L0` on **unseen** (X1 / H1) | **−3.79 [−6.09, −1.65]** | −4.12 | the other half of the dissociation |
+| `cons_lam3 − tuned_L0` on stacked-seen | **+4.76 [+3.53, +6.05]** | — | **RQ-B CONFIRMED** (first conjunct) |
+| `cons_lam3 − mono_all` on stacked-seen | +1.27 [−0.02, +2.59] | — | RQ-B second conjunct holds (not below); strict ">" grazes zero → 13B/34B |
+| `tuned_S2 − tuned_L0` on stacked-seen | +1.60 [+0.72, +2.45] | — | the structural specialist helps where its family is stacked |
+
+Two things the replication adds. First, the per-composite breadth gain is ordered by how much of
+the stack is an *identifier* transform: +6.6/+5.6 (identifier+S1) down to +1.1 (S4+S3, structural
+only; −1.0 on Qwen). Breadth helps stacked conditions mostly through the identifier transforms it
+has seen — what a family account predicts (H-stack-identifier, open). Second, the order pair:
+identifier-first (`C_L1r_S1`) is easier in 7 of 9 model×system comparisons, by ≤2.6 pts, so §4.4's
+"no consistent direction" was a Qwen-only, across-systems read; the effect is small and mostly
+consistent.
+
 ---
 
 ## 5. Proposed new RQs
 
-Ordered by what they would buy a paper.
+Ordered by what they would buy a paper. **Status 2026-09-07:** RQ-A and RQ-B are answered (§4.5);
+the rest were folded into the revised spine in §6 and are now stages of the autonomous pipeline
+(`scripts/pipeline/plan.yaml`) — the mapping is given at the end of each item.
 
-### RQ-A — Is the seen/unseen dissociation real on the current panel?
+### ~~RQ-A — Is the seen/unseen dissociation real on the current panel?~~ — **CONFIRMED (§4.5)**; scale leg → RQ1′
 §4 is the strongest new result in this document **and it is Qwen-only**. Re-run the six composites
 on CodeLlama-7b for `base`, `tuned_L0`, `mono_all`, `cons_lam3` and one specialist.
 *Eval-only if the composite items are rebuilt; ~2 GPU-h.* **Confirm** if
 `mono_all − tuned_L0` pooled on composites excludes zero *above* while the H1/X1 contrast stays
 negative — one model, one grid, opposite signs.
 
-### RQ-B — Does the consistency objective inherit breadth's stacking robustness?
+### ~~RQ-B — Does the consistency objective inherit breadth's stacking robustness?~~ — **CONFIRMED (§4.5)**; scale leg → RQ3′
 `cons_lam3` keeps breadth's trained-condition gain without its held-out tax. If it *also* keeps
 breadth's +3.91 on stacked transforms, it dominates `mono_all` outright and becomes the paper's
 recommended recipe rather than one arm among many. *Same job as RQ-A.*
@@ -187,33 +220,61 @@ recommended recipe rather than one arm among many. *Same job as RQ-A.*
 ### RQ-C — How many transforms deep does it go?
 All composites are depth 2. Build depth 3 and 4 and measure the decay curve per system. The
 interesting shape is whether breadth's advantage *grows* with depth (it is a recombination story)
-or saturates (it is a two-transform artefact). *Generator work + ~3 GPU-h.*
+or saturates (it is a two-transform artefact). *Generator work + ~3 GPU-h.* → **RQ1′**, stages `bld_depth`/`ev_depth`/`an_depth`.
 
 ### RQ-D — Does order-sensitivity predict anything?
 §4.4 shows order matters by up to 3.6 pts with no consistent direction. Is the asymmetry
 predictable from the transforms' interaction — e.g. does a renamer applied *after* a flattener
 destroy the dispatch-variable names the model was using? This connects directly to RQ3's
-attention account and is testable with the existing knockout apparatus. *Analysis + ~2 GPU-h.*
+attention account and is testable with the existing knockout apparatus. *Analysis + ~2 GPU-h.* → deferred; §4.5 found the order effect small and mostly consistent (identifier-first easier in 7/9), so it is reported, not pursued.
 
 ### RQ-E — Is "family" the right grain, and how hard must a family be?
 The family result rests on one pair (X1/H1). A second pair returned null because the family was
 too gentle — it damaged a clean-code adapter by 3.8 pts against X1's 15.8. The redo needs a family
 that costs ≳10 points, with power estimated from the held-out sibling *before* training.
-*Generator + ~1.5 GPU-h.*
+*Generator + ~1.5 GPU-h.* → **RQ2′**: the grain question runs now as the X1m/X1s split (`an_x1split`); the hard-family redo (E5b) is a disabled stage until its generator exists.
 
 ### RQ-F — Does the clean-code teacher have to be a *tuned* model?
 Nothing has yet varied the teacher in the consistency objective — only its view (parent vs same
 input) and the student's init. If an untuned `base` teacher works as well, the method is far more
-portable; if only `tuned_L0` works, the claim must say so. *~9 GPU-h.*
+portable; if only `tuned_L0` works, the claim must say so. *~9 GPU-h.* → **RQ3′**, stages `tr_cons_tbase`/`tr_cons_tmono`/`ev_teacher`/`an_e4`.
 
 ### RQ-G — What is the `L0` cost made of?
 Every breadth adapter pays ~1.7–2.6 pts on clean code and the cause is unlocated. Testable on
 **existing cells**: does it concentrate on unusual answer formats, on long programs, or on
-specific answer types? *No new compute.*
+specific answer types? *No new compute.* → **RQ1′/RQ4′ support**, stages `an_l0cost` (every arm's L0 cell vs `tuned_L0`, TOST ±1.0) and the saturation arms (`an_saturation`: is the tax a data-volume effect?).
+
+---
+
+## 6. The revised research questions (adopted 2026-09-07)
+
+The chartered RQs (§2) no longer describe what the project found. RQ1 as chartered is a false
+binary — *invariance or memorization?* — and the answer is neither: transfer is near-complete
+inside the trained ladder (TR 0.906 at 7B+), fails on an unseen family, and is recovered by training
+on a *sibling* of that family. RQ2 is finished (router = random gate, merges at or below control)
+and is a section, not a question. RQ3 is real but partial and reads better as support. Human
+alignment has data on disk and zero results. The paper is therefore written to four revised
+questions; each names the evidence that carries it and the pipeline stages that complete it.
+Decision rules for every new stage are frozen in `CLAUDE_SCRATCHPAD.md` (2026-09-07, "REVISED RQs")
+before submission; **no stage reads H1** (budget spent), the held-out family is X1 throughout.
+
+| | question | what carries it now | what the pipeline adds |
+|---|---|---|---|
+| **RQ1′** | What does breadth training actually **buy and cost**? | stacked-seen: `mono_all − tuned_L0` **+3.49** [+2.04, +5.01] on six depth-2 composites (7B; Qwen +3.91). Unseen: **−3.79** [−6.09, −1.65] on X1, −4.12 on H1; at 34B `tuned_L0` still wins H1 by +2.47. L0: breadth pays ~1.7–2.6 pts. | the same composite grid at 13B and 34B (`an_composite_*`); depth-3/4 composites — does the gain persist or grow (`an_depth`, RQ-C); half/quarter-data arms — is the unseen tax a data-volume effect (`an_saturation`); every arm's L0 cost classified (`an_l0cost`). |
+| **RQ2′** | What is the **unit** of transfer? | family, not transform and not "invariance": X1→H1 transfer is lossless (0.08 pts); `tuned_X1` at 7B ties `tuned_L0` at 34B (−0.33 [−2.88, +2.06]); the gentle second family (X2/Y2) was underpowered by construction. | X1 split into its MBA half (X1m) and string-encoding half (X1s), each trained alone: does each half transfer to the other (`an_x1split`, H-family-unit) and does either half carry the whole (H-whole-ge-parts). E5b (a hard second family) waits on a generator. |
+| **RQ3′** | Can an objective get **both sides** of the trade? | paired consistency (`cons_lam3`, parent view, tuned_L0 teacher): +4.59 over `mono_all` on X1 with no L0 tax (−0.30 [−1.80, +1.32]), and +4.76 over `tuned_L0` on stacked-seen, not below `mono_all` there (+1.27 [−0.02, +2.59]). | survives scale? 13B/34B (`an_e3`, H-E3); which ingredient — the parent view, the tuned teacher, or a breadth teacher (`an_e4`); replicates on Llama-3.1-8B (`an_e8`). |
+| **RQ4′** | **Why?** *(support, not a co-equal claim)* | RQ3's attention re-anchoring on seen conditions; modularity's failure (no complementary capability for a router or merge to find) as evidence about the representation. | identifier-knockout signature on X1 across five arms — does `cons_lam3` depend less on identifier keys than `mono_all`, and does breadth make the model *more* identifier-dependent on the unseen family (`an_attention`); BH-FDR over the transfer and arms families (`an_fdr`, reported). Human alignment (E10) is disabled, not pretended. |
+
+Dependencies stated plainly: RQ1′'s scale leg and RQ3′'s survival both hinge on the E3/composite
+runs at 13B/34B; if `cons_lam3` does not beat `mono_all` on X1 at either scale, RQ3′ shrinks to a 7B
+observation and is reported as such. Refuted hypotheses are reported as refuted.
 
 ---
 
 ## Changelog
+- **2026-09-07 (later)** — §5 marks RQ-A/RQ-B answered and maps every other proposed RQ to a
+  pipeline stage or a stated deferral; §6 adopts RQ1′–RQ4′ as the paper's spine (user decision,
+  "let's add these as rqs and run the experiment").
 - **2026-09-07** — Created. §4 is new analysis, not a restatement: the composite cells existed on
   the Qwen panel and had never been read as a group, and the `mono_all − tuned_L0` sign flip
   between stacked and unseen conditions had not been noticed anywhere in the project.

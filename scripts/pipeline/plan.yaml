@@ -1,0 +1,389 @@
+# End-to-end plan for the paper's revised RQs (docs/RQ_SUMMARY.md §6). Consumed by run.py.
+#
+#   python scripts/pipeline/run.py --dry-run     # what would be submitted
+#   python scripts/pipeline/run.py               # submit everything not done / queued
+#   python scripts/pipeline/run.py --status
+#
+# Every stage is `python <argv>` in an sbatch built by scripts/slurm/submit.py. Decision rules
+# are NOT here — they are frozen in CLAUDE_SCRATCHPAD.md (2026-09-07 pre-registration) and
+# applied verbatim by the analysis scripts each `an_*` stage calls. NO stage reads H1.
+#
+# kinds: gpu (h200, 1 card) · cpu (normal partition, corpus work) · analysis (normal, small)
+# done_when: files whose presence marks the stage done even if its job record is lost.
+
+defaults:
+  gpu:      {partition: h200,   gres: "gpu:1", cpus: 8,  mem: 64G, time: "02:00:00", qos: high-throughput}
+  cpu:      {partition: normal, gres: none,    cpus: 16, mem: 64G, time: "04:00:00", qos: high-throughput}
+  analysis: {partition: normal, gres: none,    cpus: 4,  mem: 16G, time: "01:00:00", qos: high-throughput}
+
+# Jobs submitted by hand before the pipeline existed (E3: cons_lam3 at 13B/34B). Stages may
+# depend on them as `ext:<name>`; run.py reads their state from sacct.
+external_jobs:
+  ck_cons13b: 382139
+  ev_cons13b: 382140
+  ck_cons34b: 382141
+  ev_cons34b: 382142
+
+stages:
+  # ───────────────────────────── RQ1' — what breadth buys and what it costs ─────────────
+  - name: ev_composite_13b
+    rq: RQ1'
+    kind: gpu
+    deps: [ext:ck_cons13b]
+    argv: [-m, obtune.eval_vllm, --config, eval/composite_scale.yaml, --model, codellama-13b, --language, python]
+    resources: {mem: 128G, time: "03:00:00"}
+    done_when: [results/cells/composite_scale/codellama-13b/python/cons_lam3__C_S4_S3/trials.parquet,
+                results/cells/composite_scale/codellama-13b/python/mono_all__C_S4_S3/trials.parquet,
+                results/cells/composite_scale/codellama-13b/python/tuned_L0__C_S4_S3/trials.parquet]
+  - name: ev_composite_34b
+    rq: RQ1'
+    kind: gpu
+    deps: [ext:ck_cons34b]
+    argv: [-m, obtune.eval_vllm, --config, eval/composite_scale.yaml, --model, codellama-34b, --language, python]
+    resources: {mem: 200G, time: "05:00:00"}
+    done_when: [results/cells/composite_scale/codellama-34b/python/cons_lam3__C_S4_S3/trials.parquet,
+                results/cells/composite_scale/codellama-34b/python/mono_all__C_S4_S3/trials.parquet,
+                results/cells/composite_scale/codellama-34b/python/tuned_L0__C_S4_S3/trials.parquet]
+  - name: an_composite_13b
+    rq: RQ1'
+    kind: analysis
+    deps: [ev_composite_13b]
+    argv: [scripts/analysis/35_composites.py, --model, codellama-13b, --phase, composite_scale,
+           --systems, tuned_L0, mono_all, cons_lam3, --out, results/analysis/pipeline/composite_scale_codellama13b.json]
+    report_json: results/analysis/pipeline/composite_scale_codellama13b.json
+  - name: an_composite_34b
+    rq: RQ1'
+    kind: analysis
+    deps: [ev_composite_34b]
+    argv: [scripts/analysis/35_composites.py, --model, codellama-34b, --phase, composite_scale,
+           --systems, tuned_L0, mono_all, cons_lam3, --out, results/analysis/pipeline/composite_scale_codellama34b.json]
+    report_json: results/analysis/pipeline/composite_scale_codellama34b.json
+
+  - name: bld_depth
+    rq: RQ1'
+    kind: cpu
+    argv: [scripts/05_build_variants.py, --target, train, --conditions, C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+           --conditions-config, conditions_composite.yaml, --workers, "16"]
+    resources: {time: "08:00:00"}
+    done_when: [data/train/variants/C3_L1r_S3_S4/python.jsonl, data/train/variants/C3_S1_S3_S4/python.jsonl,
+                data/train/variants/C3_L1r_S1_S4/python.jsonl, data/train/variants/C4_L1r_S1_S3_S4/python.jsonl]
+  - name: emit_depth_items
+    rq: RQ1'
+    kind: cpu
+    deps: [bld_depth]
+    argv: [scripts/07_emit_eval_items.py, --conditions, C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+           --languages, python, --source, heldout]
+    resources: {time: "01:00:00"}
+    done_when: [data/eval/heldout/items/C4_L1r_S1_S3_S4/python.jsonl, data/eval/heldout/items/C3_L1r_S3_S4/python.jsonl]
+  - name: ev_depth
+    rq: RQ1'
+    kind: gpu
+    deps: [emit_depth_items]
+    argv: [-m, obtune.eval_vllm, --config, eval/composite_depth.yaml, --model, codellama-7b, --language, python]
+    resources: {time: "03:00:00"}
+    done_when: [results/cells/composite_depth/codellama-7b/python/tuned_S2__C4_L1r_S1_S3_S4/trials.parquet]
+  - name: an_depth
+    rq: RQ1'
+    kind: analysis
+    deps: [ev_depth]
+    argv: [scripts/analysis/35_composites.py, --model, codellama-7b, --phase, composite_depth,
+           --composites, C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4, --common,
+           --ref-json, results/analysis/composites_codellama7b_2026-09-07.json,
+           --out, results/analysis/pipeline/composite_depth_codellama7b.json]
+    report_json: results/analysis/pipeline/composite_depth_codellama7b.json
+
+  # E12 — data saturation of the two standing SFT arms (RQ1' support)
+  - name: tr_L0_half
+    rq: RQ1'
+    kind: gpu
+    argv: [-m, obtune.train_sft, --config, train/grid_py_L0.yaml, --model, codellama-7b, --seed, "17",
+           --train-size, "2344", --out, runs/adapters_saturation/codellama-7b/python/L0_n2344_r32_s17]
+    done_when: [runs/adapters_saturation/codellama-7b/python/L0_n2344_r32_s17/training_summary.json]
+  - name: tr_L0_quarter
+    rq: RQ1'
+    kind: gpu
+    argv: [-m, obtune.train_sft, --config, train/grid_py_L0.yaml, --model, codellama-7b, --seed, "17",
+           --train-size, "1172", --out, runs/adapters_saturation/codellama-7b/python/L0_n1172_r32_s17]
+    done_when: [runs/adapters_saturation/codellama-7b/python/L0_n1172_r32_s17/training_summary.json]
+  - name: tr_mono_half
+    rq: RQ1'
+    kind: gpu
+    argv: [-m, obtune.train_sft, --config, train/mono_generic_py.yaml, --model, codellama-7b, --seed, "17",
+           --train-size, "13420", --out, runs/adapters_saturation/codellama-7b/python/mono_n13420_r32_s17]
+    resources: {time: "04:00:00"}
+    done_when: [runs/adapters_saturation/codellama-7b/python/mono_n13420_r32_s17/training_summary.json]
+  - name: tr_mono_quarter
+    rq: RQ1'
+    kind: gpu
+    argv: [-m, obtune.train_sft, --config, train/mono_generic_py.yaml, --model, codellama-7b, --seed, "17",
+           --train-size, "6710", --out, runs/adapters_saturation/codellama-7b/python/mono_n6710_r32_s17]
+    resources: {time: "03:00:00"}
+    done_when: [runs/adapters_saturation/codellama-7b/python/mono_n6710_r32_s17/training_summary.json]
+  - name: ck_L0_half
+    rq: RQ1'
+    kind: gpu
+    deps: [tr_L0_half]
+    argv: [-m, obtune.eval_vllm, --config, train/grid_py_L0.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_saturation/codellama-7b/python/L0_n2344_r32_s17]
+    resources: {time: "01:00:00"}
+    done_when: [runs/adapters_saturation/codellama-7b/python/L0_n2344_r32_s17/ckpt_select.json]
+  - name: ck_L0_quarter
+    rq: RQ1'
+    kind: gpu
+    deps: [tr_L0_quarter]
+    argv: [-m, obtune.eval_vllm, --config, train/grid_py_L0.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_saturation/codellama-7b/python/L0_n1172_r32_s17]
+    resources: {time: "01:00:00"}
+    done_when: [runs/adapters_saturation/codellama-7b/python/L0_n1172_r32_s17/ckpt_select.json]
+  - name: ck_mono_half
+    rq: RQ1'
+    kind: gpu
+    deps: [tr_mono_half]
+    argv: [-m, obtune.eval_vllm, --config, train/mono_generic_py.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_saturation/codellama-7b/python/mono_n13420_r32_s17]
+    resources: {time: "01:30:00"}
+    done_when: [runs/adapters_saturation/codellama-7b/python/mono_n13420_r32_s17/ckpt_select.json]
+  - name: ck_mono_quarter
+    rq: RQ1'
+    kind: gpu
+    deps: [tr_mono_quarter]
+    argv: [-m, obtune.eval_vllm, --config, train/mono_generic_py.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_saturation/codellama-7b/python/mono_n6710_r32_s17]
+    resources: {time: "01:30:00"}
+    done_when: [runs/adapters_saturation/codellama-7b/python/mono_n6710_r32_s17/ckpt_select.json]
+  - name: ev_saturation
+    rq: RQ1'
+    kind: gpu
+    deps: [ck_L0_half, ck_L0_quarter, ck_mono_half, ck_mono_quarter]
+    argv: [-m, obtune.eval_vllm, --config, eval/saturation.yaml, --model, codellama-7b, --language, python]
+    resources: {time: "04:00:00"}
+    done_when: [results/cells/saturation/codellama-7b/python/mono_quarter__X1/trials.parquet]
+  - name: an_saturation
+    rq: RQ1'
+    kind: analysis
+    deps: [ev_saturation]
+    argv: [scripts/analysis/40_saturation.py, --model, codellama-7b, --out, results/analysis/pipeline/saturation_codellama7b.json]
+    report_json: results/analysis/pipeline/saturation_codellama7b.json
+
+  # ───────────────────────────── RQ2' — is the unit of transfer the family? ──────────────
+  - name: bld_x1split
+    rq: RQ2'
+    kind: cpu
+    argv: [scripts/05_build_variants.py, --target, train, --conditions, X1m, X1s, --workers, "16"]
+    resources: {time: "06:00:00"}
+    done_when: [data/train/variants/X1m/python.jsonl, data/train/variants/X1s/python.jsonl]
+  - name: emit_x1split_pairs
+    rq: RQ2'
+    kind: cpu
+    deps: [bld_x1split]
+    argv: [scripts/06_emit_pairs.py, --conditions, X1m, X1s, --languages, python]
+    resources: {time: "01:00:00"}
+    done_when: [data/train/pairs/X1m/python.jsonl, data/train/pairs/X1s/python.jsonl]
+  - name: emit_x1split_items
+    rq: RQ2'
+    kind: cpu
+    deps: [bld_x1split]
+    argv: [scripts/07_emit_eval_items.py, --conditions, X1m, X1s, --languages, python, --source, heldout]
+    resources: {time: "01:00:00"}
+    done_when: [data/eval/heldout/items/X1m/python.jsonl, data/eval/heldout/items/X1s/python.jsonl]
+  - name: tr_X1m
+    rq: RQ2'
+    kind: gpu
+    deps: [emit_x1split_pairs]
+    argv: [-m, obtune.train_sft, --config, train/grid_py_X1m.yaml, --model, codellama-7b, --seed, "17"]
+    done_when: [runs/adapters/codellama-7b/python/X1m_r32_s17/training_summary.json]
+  - name: tr_X1s
+    rq: RQ2'
+    kind: gpu
+    deps: [emit_x1split_pairs]
+    argv: [-m, obtune.train_sft, --config, train/grid_py_X1s.yaml, --model, codellama-7b, --seed, "17"]
+    done_when: [runs/adapters/codellama-7b/python/X1s_r32_s17/training_summary.json]
+  - name: ck_X1m
+    rq: RQ2'
+    kind: gpu
+    deps: [tr_X1m]
+    argv: [-m, obtune.eval_vllm, --config, train/grid_py_X1m.yaml, --model, codellama-7b, --mode, ckpt-select]
+    resources: {time: "01:00:00"}
+    done_when: [runs/adapters/codellama-7b/python/X1m_r32_s17/ckpt_select.json]
+  - name: ck_X1s
+    rq: RQ2'
+    kind: gpu
+    deps: [tr_X1s]
+    argv: [-m, obtune.eval_vllm, --config, train/grid_py_X1s.yaml, --model, codellama-7b, --mode, ckpt-select]
+    resources: {time: "01:00:00"}
+    done_when: [runs/adapters/codellama-7b/python/X1s_r32_s17/ckpt_select.json]
+  - name: ev_x1split
+    rq: RQ2'
+    kind: gpu
+    deps: [ck_X1m, ck_X1s, emit_x1split_items]
+    argv: [-m, obtune.eval_vllm, --config, eval/x1_split.yaml, --model, codellama-7b, --language, python]
+    resources: {time: "03:00:00"}
+    done_when: [results/cells/x1_split/codellama-7b/python/mono_all__X1s/trials.parquet]
+  - name: an_x1split
+    rq: RQ2'
+    kind: analysis
+    deps: [ev_x1split]
+    argv: [scripts/analysis/39_x1_split.py, --model, codellama-7b, --out, results/analysis/pipeline/x1_split_codellama7b.json]
+    report_json: results/analysis/pipeline/x1_split_codellama7b.json
+  # E5b — a SECOND held-out family (hard: e.g. dynamic dispatch/eval-string construction).
+  # Disabled: the generator does not exist yet; registering it is a corpus task, not a job.
+  - name: e5b_hard_family
+    rq: RQ2'
+    kind: cpu
+    enabled: false
+    argv: [scripts/05_build_variants.py, --target, train, --conditions, X3, --workers, "16"]
+    note: "generator for a second held-out family not written; see docs/PAPER_EXPERIMENTS.md E5b"
+
+  # ───────────────────────────── RQ3' — can an objective get both sides? ─────────────────
+  - name: an_e3
+    rq: RQ3'
+    kind: analysis
+    deps: [ext:ev_cons13b, ext:ev_cons34b]
+    argv: [scripts/analysis/36_cons_arms.py, --mode, e3, --out, results/analysis/pipeline/e3_scale.json]
+    report_json: results/analysis/pipeline/e3_scale.json
+  - name: tr_cons_tbase
+    rq: RQ3'
+    kind: gpu
+    argv: [-m, obtune.objectives, train, --config, train/obj_cons_tbase_codellama7b_py.yaml, --lam, "3",
+           --out, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tbase_lam3_s17]
+    resources: {mem: 96G, time: "07:00:00"}
+    done_when: [runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tbase_lam3_s17/training_summary.json]
+  - name: tr_cons_tmono
+    rq: RQ3'
+    kind: gpu
+    argv: [-m, obtune.objectives, train, --config, train/obj_cons_tmono_codellama7b_py.yaml, --lam, "3",
+           --out, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tmono_lam3_s17]
+    resources: {mem: 96G, time: "07:00:00"}
+    done_when: [runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tmono_lam3_s17/training_summary.json]
+  - name: ck_cons_tbase
+    rq: RQ3'
+    kind: gpu
+    deps: [tr_cons_tbase]
+    argv: [-m, obtune.eval_vllm, --config, train/obj_cons_tbase_codellama7b_py.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tbase_lam3_s17]
+    resources: {time: "01:30:00"}
+    done_when: [runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tbase_lam3_s17/ckpt_select.json]
+  - name: ck_cons_tmono
+    rq: RQ3'
+    kind: gpu
+    deps: [tr_cons_tmono]
+    argv: [-m, obtune.eval_vllm, --config, train/obj_cons_tmono_codellama7b_py.yaml, --model, codellama-7b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tmono_lam3_s17]
+    resources: {time: "01:30:00"}
+    done_when: [runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_tmono_lam3_s17/ckpt_select.json]
+  - name: ev_teacher
+    rq: RQ3'
+    kind: gpu
+    deps: [ck_cons_tbase, ck_cons_tmono]
+    argv: [-m, obtune.eval_vllm, --config, eval/objectives_teacher.yaml, --model, codellama-7b, --language, python]
+    resources: {time: "04:00:00"}
+    done_when: [results/cells/objectives_teacher/codellama-7b/python/cons_tmono__X1/trials.parquet]
+  - name: an_e4
+    rq: RQ3'
+    kind: analysis
+    deps: [ev_teacher]
+    argv: [scripts/analysis/36_cons_arms.py, --mode, e4, --out, results/analysis/pipeline/e4_teacher.json]
+    report_json: results/analysis/pipeline/e4_teacher.json
+  - name: tr_cons_llama
+    rq: RQ3'
+    kind: gpu
+    argv: [-m, obtune.objectives, train, --config, train/obj_cons_llama31_8b_py.yaml, --lam, "3",
+           --out, runs/adapters_objectives/llama31-8b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17]
+    resources: {mem: 96G, time: "07:00:00"}
+    done_when: [runs/adapters_objectives/llama31-8b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/training_summary.json]
+  - name: ck_cons_llama
+    rq: RQ3'
+    kind: gpu
+    deps: [tr_cons_llama]
+    argv: [-m, obtune.eval_vllm, --config, train/obj_cons_llama31_8b_py.yaml, --model, llama31-8b, --mode, ckpt-select,
+           --adapter-root, runs/adapters_objectives/llama31-8b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17]
+    resources: {time: "01:30:00"}
+    done_when: [runs/adapters_objectives/llama31-8b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/ckpt_select.json]
+  - name: ev_llama
+    rq: RQ3'
+    kind: gpu
+    deps: [ck_cons_llama]
+    argv: [-m, obtune.eval_vllm, --config, eval/objectives_llama.yaml, --model, llama31-8b, --language, python]
+    resources: {time: "04:00:00"}
+    done_when: [results/cells/objectives_llama/llama31-8b/python/cons_lam3__X1/trials.parquet]
+  - name: an_e8
+    rq: RQ3'
+    kind: analysis
+    deps: [ev_llama]
+    argv: [scripts/analysis/36_cons_arms.py, --mode, e8, --out, results/analysis/pipeline/e8_llama.json]
+    report_json: results/analysis/pipeline/e8_llama.json
+
+  # ───────────────────────────── RQ4' — mechanism & support ─────────────────────────────
+  # E9: identifier-knockout (score mode) on the held-out family X1, five arms. ~2 min each.
+  - name: ko_x1_base
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, base, --condition, X1,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/X1/base.json]
+  - name: ko_x1_tuned_L0
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, tuned_L0, --condition, X1,
+           --adapter, runs/adapters/codellama-7b/python/L0_r32_s17/best, --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/X1/tuned_L0.json]
+  - name: ko_x1_mono_all
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, mono_all, --condition, X1,
+           --adapter, runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best, --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/X1/mono_all.json]
+  - name: ko_x1_cons_lam3
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, cons_lam3, --condition, X1,
+           --adapter, runs/adapters_objectives/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best,
+           --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/X1/cons_lam3.json]
+  - name: ko_x1_tuned_X1
+    rq: RQ4'
+    kind: gpu
+    argv: [scripts/attn/30_knockout.py, --model, codellama-7b, --language, python, --system, tuned_X1, --condition, X1,
+           --adapter, runs/adapters/codellama-7b/python/X1_r32_s17/best, --max-items, "150", --classes, identifier]
+    resources: {time: "01:00:00"}
+    done_when: [results/attn/knockout/codellama-7b/X1/tuned_X1.json]
+  - name: an_attention
+    rq: RQ4'
+    kind: analysis
+    deps: [ko_x1_base, ko_x1_tuned_L0, ko_x1_mono_all, ko_x1_cons_lam3, ko_x1_tuned_X1]
+    argv: [scripts/analysis/41_attention_x1.py, --model, codellama-7b, --out, results/analysis/pipeline/attention_x1_codellama7b.json]
+    report_json: results/analysis/pipeline/attention_x1_codellama7b.json
+  # E7: family-wise correction over the existing transfer matrix (no new GPU work)
+  - name: an_fdr
+    rq: RQ4'
+    kind: analysis
+    argv: [scripts/analysis/37_fdr_family.py, --model, codellama-7b, --out, results/analysis/pipeline/fdr_codellama7b.json]
+    report_json: results/analysis/pipeline/fdr_codellama7b.json
+  # E11: L0 cost of every arm; runs after the new evals so the new arms are included
+  - name: an_l0cost
+    rq: RQ4'
+    kind: analysis
+    deps: [ev_teacher, ev_x1split, ev_saturation]
+    dep_type: afterany
+    argv: [scripts/analysis/38_l0_cost.py, --model, codellama-7b, --out, results/analysis/pipeline/l0_cost_codellama7b.json]
+    report_json: results/analysis/pipeline/l0_cost_codellama7b.json
+  # E10: human alignment. Disabled: needs the tier_icse eval items (350 byte-identical rows)
+  # emitted and graded, and the Paper-2 item map — a build task that has no script yet.
+  - name: an_human_align
+    rq: RQ4'
+    kind: analysis
+    enabled: false
+    argv: [scripts/analysis/42_human_align.py]
+    note: "tier_icse items not emitted; no script yet (docs/PAPER_EXPERIMENTS.md E10)"
+
+  # ───────────────────────────── report ─────────────────────────────────────────────────
+  - name: report
+    kind: analysis
+    deps: [an_composite_13b, an_composite_34b, an_depth, an_saturation, an_x1split, an_e3, an_e4, an_e8,
+           an_attention, an_fdr, an_l0cost]
+    dep_type: afterany
+    argv: [scripts/pipeline/report.py]

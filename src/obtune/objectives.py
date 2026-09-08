@@ -431,7 +431,14 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         # This is not the CUDA_VISIBLE_DEVICES rewriting CLAUDE.md §1 forbids: local index 1 is ours
         # by allocation, and cgroups still bound the set.
         t_base = AutoModelForCausalLM.from_pretrained(mcfg["hf_id"], dtype=dtype, attn_implementation="sdpa")
-        teacher = PeftModel.from_pretrained(t_base, str(PROJECT_ROOT / ocfg["teacher_adapter"]))
+        # E4 (H-cons-teacher, 2026-09-07): `teacher_adapter: null` means the UNTUNED base is the
+        # teacher. Every earlier arm distilled from `tuned_L0`; this asks whether the teacher
+        # has to have seen clean code at all, or whether any view of the clean parent will do.
+        if ocfg.get("teacher_adapter"):
+            teacher = PeftModel.from_pretrained(t_base, str(PROJECT_ROOT / ocfg["teacher_adapter"]))
+        else:
+            teacher = t_base
+            print("[objectives] teacher = untuned base (teacher_adapter is null)", flush=True)
         teacher.eval()
         for p in teacher.parameters():
             p.requires_grad_(False)
@@ -447,7 +454,7 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
                 print(f"[objectives] teacher on {t_dev}, student on cuda:0", flush=True)
             else:
                 teacher.cuda()
-        obj_meta["teacher_adapter"] = ocfg["teacher_adapter"]
+        obj_meta["teacher_adapter"] = ocfg.get("teacher_adapter")
         obj_meta["teacher_view"] = view
         obj_meta["teacher_device"] = ocfg.get("teacher_device")
 

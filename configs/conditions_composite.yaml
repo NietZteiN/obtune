@@ -89,3 +89,47 @@ composite_conditions:
     trainable: true
     size_cap: 5.0
     size_cap_floor_chars: 900
+
+  # ---------------------------------------------------------------------------------
+  # DEPTH 3 AND 4 — RQ-C (H-stack-depth) and H-stack-identifier, added 2026-09-07.
+  #
+  # The 2026-09-07 CodeLlama replication (RQ-A) made breadth's stacked-seen advantage a
+  # paper-level result at depth 2 (+3.49 pooled), and it was ordered by how much of the stack
+  # is an identifier transform (+6.6 for L1b+S1 down to +1.1 for S4+S3). Two questions need
+  # deeper stacks: does the advantage GROW with depth (a recombination story) or saturate
+  # (a two-transform artefact); and is it carried by the identifier component at all?
+  #
+  # Design: at depth 3, one stack WITH an identifier stage and one structural-only stack;
+  # at depth 4, the identifier stack extended by one more structural stage. Identifier
+  # first in every case (the 7-of-9 easier order on 09-07), so order is held fixed and
+  # only depth varies. S1 (flattening) is the expensive stage, so it is placed last and the
+  # caps are the product of the parts' caps with headroom; a too-tight cap selects short
+  # programs, the confound obf/validate.py exists to avoid. Coverage is reported, never
+  # hidden -- the depth curve is read on the programs that survive EVERY depth.
+  C3_L1r_S3_S4:
+    parts: [L1r, S3, S4]
+    family: composite
+    trainable: true
+    size_cap: 10.0
+    size_cap_floor_chars: 1400
+
+  C3_S1_S3_S4:
+    parts: [S1, S3, S4]
+    family: composite
+    trainable: true
+    size_cap: 14.0
+    size_cap_floor_chars: 1800
+
+  C3_L1r_S1_S4:
+    parts: [L1r, S1, S4]
+    family: composite
+    trainable: true
+    size_cap: 14.0
+    size_cap_floor_chars: 1800
+
+  C4_L1r_S1_S3_S4:
+    parts: [L1r, S1, S3, S4]
+    family: composite
+    trainable: true
+    size_cap: 18.0
+    size_cap_floor_chars: 2200

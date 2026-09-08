@@ -172,6 +172,32 @@ this paper and the bilingual design the project was chartered around.
 
 ## 6. Suggested order
 
+**Superseded 2026-09-07 by the autonomous pipeline.** Everything below that is not struck through
+is now a stage in `scripts/pipeline/plan.yaml` (`python scripts/pipeline/run.py --status`), with
+dependencies expressed as SLURM `afterok` chains and the decision rules frozen in
+`CLAUDE_SCRATCHPAD.md` before submission. The mapping:
+
+| experiment | pipeline stages | status |
+|---|---|---|
+| E3 | `an_e3` (hand-submitted chains 381340/382139/382140 at 13B — done; 381405/382141/382142 at 34B — running) | pending the 34B chain |
+| E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | scheduled |
+| E5b | `e5b_hard_family` | **disabled** — generator not written |
+| E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` → `ck_*` → `ev_x1split` → `an_x1split` | scheduled |
+| E7 | `an_fdr` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | scheduled, no deps |
+| E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` | scheduled |
+| E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
+| E10 | `an_human_align` | **disabled** — tier_icse items not emitted, no script; decision deferred to the writeup |
+| E11 | `an_l0cost` (after the new evals so every arm is included) | scheduled |
+| E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | scheduled |
+| RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | scheduled |
+| RQ-C depth | `bld_depth` → `emit_depth_items` → `ev_depth` → `an_depth` | scheduled |
+| report | `report` (`afterany` on every `an_*`) → `results/analysis/pipeline_report_<date>.md` | scheduled |
+
+Requested GPU walltime ≈ 45 h across 47 stages; the plan is idempotent (`done_when` files), so a
+failed stage is fixed and resubmitted with `run.py --only <stage>` without touching the rest.
+
+Original ordering, kept for the record:
+
 1. ~~E1 + E2~~ — **done 2026-09-07, both CONFIRMED** in ~12 min of GPU.
 2. **E5 generator** (CPU, no queue) in parallel with **E3** (the long 34B run) on the GPU.
 3. **E4**, **E6** — both short, both sharpen a mechanism claim.
@@ -191,6 +217,9 @@ it inherits none of H1's credibility.
 
 ## Changelog
 
+- **2026-09-07 (c)** — §6 superseded by the pipeline mapping table; E5b and E10 recorded as
+  disabled stages with their reasons rather than left as open items. RQs revised to RQ1′–RQ4′
+  (`RQ_SUMMARY.md` §6); this plan's experiments are the evidence for them, unchanged.
 - **2026-09-07 (b)** — E1 and E2 run and **both CONFIRMED**; struck through with their results, C1's
   evidence row rewritten to two held-out columns / three scales / three seeds, and the Tier-1 total
   reduced to E3–E6. The X1↔H1 proxy gained a 34B validation that was not planned.

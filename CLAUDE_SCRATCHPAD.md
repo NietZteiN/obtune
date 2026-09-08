@@ -919,3 +919,87 @@ Eval-only; composite items are model-independent and already exist. Config `eval
 - Reported either way: per-composite deltas; the order pair `C_L1r_S1` vs `C_S1_L1r` (Qwen shows up
   to 3.6 pts with no consistent direction, RQ-D); `tuned_S2` as the specialist reference.
 - format_fail reported, not gated (H-format-gate still open). No H1 cell is read.
+
+## 2026-09-07 — REVISED RQs (RQ1′–RQ4′) ADOPTED; PIPELINE PRE-REGISTRATION (frozen before submission)
+User: "let's add these as rqs and run the experiment. we have a lot planned so work on an end to end
+autonomous pipeline to run everything." The paper's RQs are re-cut as in `docs/RQ_SUMMARY.md` §6:
+**RQ1′** what breadth buys (stacked-seen) and costs (unseen, L0); **RQ2′** the unit of transfer is the
+family; **RQ3′** can an objective get both sides; **RQ4′** mechanism and support. Everything below is
+driven by `scripts/pipeline/plan.yaml` (47 stages, ~45 GPU-h requested) and applied verbatim by the
+analysis scripts; the rules are copied from those scripts, not paraphrased. **No stage reads H1.**
+Every contrast = `bootstrap_delta` clustered by `snippet_id`, n_boot 2000, seed 17, 95 % percentile
+CI; TOST equivalence uses the 90 % interval at the stated margin. Verdicts are one of CONFIRMED /
+REFUTED / PARTIAL / INCONCLUSIVE / PENDING / REPORTED, as the script emits them.
+
+### RQ1′ — breadth's stacked-seen gain vs its unseen/L0 cost
+- **RQ-A / RQ-B at scale** (`an_composite_13b`, `an_composite_34b`; `35_composites` on
+  `composite_scale`, six depth-2 composites, systems tuned_L0 / mono_all / cons_lam3; `base` omitted —
+  it is the only arm whose composite behaviour we do not need, and it is 4 h at 34B). Same rules as the
+  2026-09-07 RQ-A/RQ-B pre-registration above: **RQ-A** CONFIRMED iff `mono_all − tuned_L0` pooled
+  ci_lo > 0; **RQ-B** CONFIRMED iff `cons_lam3 − tuned_L0` pooled ci_lo > 0 AND `cons_lam3 − mono_all`
+  pooled ci_hi ≥ 0. Reported per model; a scale trend is described, never tested (n = 3 models).
+- **RQ-C depth leg** (`an_depth`; `composite_depth`, C3_L1r_S3_S4 / C3_S1_S3_S4 / C3_L1r_S1_S4 /
+  C4_L1r_S1_S3_S4 on the `--common` program subset, 7B). **RQ-C-persists** CONFIRMED iff
+  `mono_all − tuned_L0` pooled over depth-3/4 has ci_lo > 0, else REFUTED. **RQ-C-grows** CONFIRMED iff
+  that ci_lo exceeds the depth-2 pooled point estimate (`results/analysis/composites_codellama7b_2026-09-07.json`),
+  REFUTED iff ci_hi is below it, else INCONCLUSIVE. **RQ-C-cons-persists** CONFIRMED iff
+  `cons_lam3 − tuned_L0` pooled over depth-3/4 has ci_lo > 0.
+- **E12 saturation** (`an_saturation`; `40_saturation`; arms tuned_L0 at 4,689 / 2,344 / 1,172 rows,
+  mono at 26,841 / 13,420 / 6,710 rows, all r32 s17 codellama-7b). **H-sat-L0** CONFIRMED iff
+  `tuned_L0_half − tuned_L0` pooled over the six seen conditions is TOST-equivalent at ±1.0 pt.
+  **H-sat-mono** likewise for `mono_half − mono_all`. **H-tax-scales** ("the unseen tax is a
+  data-volume effect"): CONFIRMED iff `mono_quarter − tuned_L0_quarter` @ X1 has ci_hi ≥ 0 AND the
+  full-data tax `mono_all − tuned_L0` @ X1 is more negative than the quarter tax; REFUTED iff the quarter
+  arm already has ci_hi < 0; else INCONCLUSIVE.
+
+### RQ2′ — is the family the unit of transfer?
+- (`an_x1split`; `39_x1_split`; X1m = X1's MBA half, X1s = X1's string-encoding half, each trained alone
+  at r32 s17; eval on L0 / X1 / X1m / X1s.) **H-family-unit** CONFIRMED iff `tuned_X1m − tuned_L0` @ X1s
+  ci_lo > 0 AND `tuned_X1s − tuned_L0` @ X1m ci_lo > 0 (each half transfers to the other — the family,
+  not the mechanism, is the unit); PARTIAL if exactly one; REFUTED if neither. **H-whole-ge-parts**
+  CONFIRMED iff neither `tuned_X1m − tuned_X1` nor `tuned_X1s − tuned_X1` @ X1 has ci_lo > 0.
+  **H-mech-dominance** (which half carries X1's level) and **H-breadth-on-parts** (`mono_all − tuned_L0`
+  on X1m and X1s separately) are REPORTED, not gated.
+- E5b (a hard second family) stays disabled in the plan: the generator does not exist.
+
+### RQ3′ — can one objective get both sides?
+- **E3** (`an_e3`; `36_cons_arms --mode e3`; cons_lam3 at 13B and 34B vs the same models' mono_all /
+  tuned_L0, already frozen in the 2026-09-07 E3 pre-registration above; restated for the script):
+  **H-E3** CONFIRMED iff `cons_lam3 − mono_all` @ X1 has ci_lo > 0 at BOTH 13B and 34B; PARTIAL if at
+  one; REFUTED if at neither. **H-E3-tax** CONFIRMED iff `cons_lam3 − tuned_L0` @ X1 does NOT have
+  ci_hi < 0 at both scales (cons pays no unseen tax at scale).
+- **E4 teacher variation** (`an_e4`; `--mode e4`; 7B; `cons_tbase` = untuned base teacher,
+  `cons_tmono` = mono_all teacher, both parent view, lam 3). **H-E4-view** ("the parent view alone
+  beats breadth on the unseen family") CONFIRMED iff `cons_tbase − mono_all` @ X1 ci_lo > 0.
+  **H-E4-teacher** ("the tuned clean-code teacher matters") CONFIRMED iff `cons_lam3 − cons_tbase` @ X1
+  ci_lo > 0. **H-E4-mono** (`cons_tmono − cons_lam3` @ X1): ci_lo > 0 CONFIRMED (a breadth teacher
+  helps), ci_hi < 0 REFUTED (a breadth teacher imports its tax), else INCONCLUSIVE.
+- **E8 cross-family replication** (`an_e8`; `--mode e8`; llama31-8b, cons_lam3 with the Llama tuned_L0
+  teacher). **H-E8** CONFIRMED iff `cons_lam3 − mono_all` @ X1 ci_lo > 0. **H-E8-seen** CONFIRMED iff
+  `cons_lam3 − tuned_L0` pooled over the five obfuscated seen conditions ci_lo > 0. **H-E8-tax**
+  CONFIRMED iff `cons_lam3 − tuned_L0` @ X1 does not have ci_hi < 0.
+
+### RQ4′ — mechanism and support
+- **E9 attention/knockout on X1** (`an_attention`; `41_attention_x1`; `30_knockout` score mode,
+  identifier class, 150 stratified X1 items, arms base / tuned_L0 / mono_all / cons_lam3 / tuned_X1;
+  Δ = log P(gold | knocked out) − log P(gold | clean), negative = the knockout hurt; per-item Δ paired
+  across arms and bootstrapped by program). **H-attn-cons** CONFIRMED iff mean(Δ_cons − Δ_mono) ci_lo > 0
+  (cons depends less on identifier keys). **H-attn-breadth** CONFIRMED iff mean(Δ_mono − Δ_L0) ci_hi < 0
+  (breadth makes the model MORE identifier-dependent on the unseen family). **H-attn-order** (Spearman
+  between per-arm mean damage and per-arm X1 accuracy, n = 5) is descriptive only. This is support for
+  RQ4′, not a causal claim about transfer.
+- **E7 FDR** (`an_fdr`; `37_fdr_family`): BH q < 0.05 over the transfer family (5 specialists × 6
+  conditions vs tuned_L0_s17, 30 tests) and the arms family (mono_all / cons_lam3 / cons_lam1 /
+  tuned_X1 × 7 conditions). p is a two-sided program-cluster-bootstrap p; it stands in for the GLMM
+  (statsmodels/lme4 not installed on juno) and is labelled as such. **Reported, gates nothing.**
+- **E11 L0 cost** (`an_l0cost`; `38_l0_cost`): every arm's `__L0` cell vs tuned_L0, TOST ±1.0;
+  classified L0-free / pays L0 cost / gains on L0 / underpowered. Reported, gates nothing.
+- E10 human alignment stays disabled: the tier_icse items are not emitted and there is no script.
+
+### Discipline
+- Rules above are final for this batch; nothing is re-specified after a read. X1 is read exactly
+  once per new arm by the pipeline's eval stage; no hyperparameter, checkpoint or prompt is chosen on
+  X1 (ckpt-select uses the train conditions' val split, as everywhere). H1 is never read.
+- Refuted hypotheses are reported as refuted in the pipeline report, the log and the master report.
+- `report` stage runs `afterany` on every analysis stage; a failed upstream stage shows as PENDING,
+  never as a number.

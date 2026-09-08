@@ -1,0 +1,30 @@
+# RQ2' / E6 — within-family transfer on the held-out family. NO H1. MODEL-NEUTRAL (7B in the plan).
+#
+# The 4 x 6 block that decides whether the unit of transfer is the FAMILY or the MECHANISM:
+# specialists on the whole family (X1), on each mechanism alone (X1m = MBA, X1s = string
+# encoding), plus the three standing arms. Rows are eval conditions; the contrasts that matter
+# are tuned_X1m on X1s and tuned_X1s on X1m, each against tuned_L0 (pre-registered in
+# CLAUDE_SCRATCHPAD.md 2026-09-07). L0 is here for the forgetting check (§4 item 7).
+_extends: _base_eval.yaml
+
+phase: x1_split
+experiment_id: x1_split
+run_tag: x1_split
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+  - {name: tuned_X1m, adapter: "runs/adapters/{model}/{language}/X1m_r32_s17/best", arch: per_type, train_cond: X1m}
+  - {name: tuned_X1s, adapter: "runs/adapters/{model}/{language}/X1s_r32_s17/best", arch: per_type, train_cond: X1s}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, X1, X1m, X1s]

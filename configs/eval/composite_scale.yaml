@@ -1,0 +1,29 @@
+# RQ1' (docs/RQ_SUMMARY.md §6) — the COMPOSITE ladder at 13B and 34B. MODEL-NEUTRAL. NO H1.
+#
+# WHY THIS EXISTS. RQ-A/RQ-B (composite_generic.yaml) replicated the Qwen dissociation on
+# CodeLlama-7b: breadth (`mono_all`) buys +3.49 on stacked-but-SEEN transforms and pays −3.79 on
+# the UNSEEN family, and `cons_lam3` keeps the first without the second. Both legs of RQ1' are
+# now on ONE model size. `mono_all`/`tuned_L0` composite cells do not exist at 13B/34B, and
+# `cons_lam3` at those scales is trained by E3 (jobs 381340/381405). This is the eval that
+# makes RQ1' a scale claim rather than a 7B claim. `base` is omitted: it enters no RQ1'
+# contrast and at 34B costs as much as the three arms that do.
+_extends: _base_eval.yaml
+
+phase: composite_scale
+experiment_id: composite_scale
+run_tag: composite_scale
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3]

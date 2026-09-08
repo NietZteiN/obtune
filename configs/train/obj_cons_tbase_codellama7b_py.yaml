@@ -1,0 +1,28 @@
+# RQ3' / E4 (2026-09-07) — paired consistency with an UNTUNED teacher.
+#   L = CE(y | x_obf) + 3 * KL( p_base(. | x_L0parent) || p_student(. | x_obf) )
+# Identical to obj_cons_codellama7b_py.yaml at lam 3 except `teacher_adapter: null`: the
+# teacher is the base model on the clean parent. cons_lam3's gain could come from the
+# consistency TERM (matching the clean view) or from the tuned TEACHER (distilling tuned_L0's
+# competence). This arm removes the second; obj_cons_tmono_* swaps in a broader teacher.
+# Output dir is fixed by --out in scripts/pipeline/plan.yaml so the tag cannot collide with
+# the standing cons_parent_lam3 adapter.
+_extends: _base_lora.yaml
+
+model: codellama-7b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_tbase_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 3.0
+  teacher_view: parent
+  teacher_adapter: null
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17

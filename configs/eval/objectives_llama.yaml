@@ -1,0 +1,23 @@
+# RQ3' / E8 — the consistency objective on Llama-3.1-8B. NO H1. Same-phase re-read of the
+# three standing arms so the family-external replicate is fully same-engine.
+_extends: _base_eval.yaml
+
+phase: objectives_llama
+experiment_id: objectives_llama
+run_tag: objectives_llama
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

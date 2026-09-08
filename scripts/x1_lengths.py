@@ -16,7 +16,7 @@ from obtune.prompts import build_example
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--conditions", nargs="+", default=["X1"])
-    ap.add_argument("--model", default="codellama-7b")
+    ap.add_argument("--model", required=True)
     ap.add_argument("--aug-tag", default=None)
     args = ap.parse_args()
     from transformers import AutoTokenizer

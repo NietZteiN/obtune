@@ -1,0 +1,19 @@
+# RQ2' / E6 (2026-09-07) — per-mechanism specialist on X1m, the MBA-only half of X1 (arithmetic rewriting, no string encoding).
+# MODEL-NEUTRAL, same shape as grid_py_X1.yaml so `tuned_X1m` is comparable to `tuned_X1`.
+#
+# WHY THIS EXISTS. X1→H1 transfer was lossless (0.08 pts), which says the FAMILY transfers.
+# It does not say which mechanism carried it, or whether one mechanism's specialist helps on
+# the other. X1 is split into its two mechanisms (configs/conditions.yaml::X1m / X1s, both
+# built by obf/py/x1.py with `mechanisms` gated); training on one and evaluating on the other
+# is the within-family transfer test that decides whether the unit of transfer is the family
+# or the mechanism. No H1 is read anywhere in this arm (CLAUDE.md §3.2: budget spent).
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [X1m]
+run_tag: grid_py_X1m
+phase: main
+
+train:
+  per_device_batch: 16
+  grad_accum: 4

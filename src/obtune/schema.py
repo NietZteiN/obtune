@@ -21,7 +21,7 @@ from pydantic import BaseModel, Field, field_validator
 # Y2 is eval-only. A condition missing from this Literal is not a loud error: `builder`
 # catches the pydantic failure as a generic exception and reports the program as "declined",
 # so the whole build silently returns 0 coverage. That is how X2/Y2's first build failed.
-Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "X2", "Y2", "H1"]
+Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "X1m", "X1s", "X2", "Y2", "H1"]
 
 #: Composite (stacked) conditions live in a SEPARATE namespace and are deliberately NOT added
 #: to `Condition`. Keeping that Literal closed is what protects `paths.TRAINABLE_CONDITIONS`,
@@ -34,6 +34,8 @@ Condition = Literal["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4", "X1", "X2"
 #: `C_L1r_S1` rather than a spelling of it.
 CompositeCondition = Literal[
     "C_L1r_S1", "C_S1_L1r", "C_L1b_S1", "C_L2_S4", "C_L1r_S3", "C_S4_S3",
+    # depth 3 / 4 (RQ-C, 2026-09-07) -- see conditions_composite.yaml
+    "C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4", "C4_L1r_S1_S3_S4",
 ]
 
 #: Anything that may appear as a variant/eval label, ladder or composite.
@@ -146,7 +148,11 @@ class TrialRow(BaseModel):
                    # 2026-09-07: E3 (consistency at 13B/34B) and E5 (the X2/Y2 family pair).
                    "objectives_scale", "xy2_generic",
                    # RQ-A/RQ-B (2026-09-07): the composite (stacked) ladder on the CodeLlama panel.
-                   "composite_generic"]
+                   "composite_generic",
+                   # depth-3/4 composites at 7B and the depth-2 set at 13B/34B (RQ-C / H-cons-stack-strict)
+                   "composite_depth", "composite_scale",
+                   # E6 X1 mechanism split, E4 teacher variation, E8 Llama cons, E12 saturation
+                   "x1_split", "objectives_teacher", "objectives_llama", "saturation"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
