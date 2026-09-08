@@ -530,9 +530,18 @@ disjoint. A number from one is never compared with a number from the other; §2 
 ### 2.2 Every system, every obfuscation level, one table
 
 *Added 13 August 2026 · regenerated in full 27 August 2026.* Accuracy, higher is better. `—` means
-not run for that pair, never zero. **This is the one table in the project that contains every
-system.** If you want one place to see what exists, it is here; everything else in this document
-is a slice of it with statistics attached.
+not run for that pair, never zero. **This is the one table that contains every system *on the Qwen
+panel*.** Everything else in §1–§17 is a slice of it with statistics attached.
+
+> **Scope correction, 2026-09-08.** This paragraph used to read "the one table in the project that
+> contains every system … if you want one place to see what exists, it is here". That stopped being
+> true when the panel changed (§18): the live model is CodeLlama, which now has **96 systems on 7B
+> Python alone** plus the 13B, 34B and Llama-3.1-8B rungs, and **none of them appear here** — by the
+> rule stated in the next paragraph, which still stands. The CodeLlama panel has no equivalent
+> whole-panel table; §26 ranks 83 of its systems per condition but is a leaderboard, not a matrix.
+> That is a gap in this document, recorded here rather than papered over, and the machinery to close
+> it already exists (`scripts/analysis/28_master_panel.py` computes the system × condition panel and
+> its all-conditions-succeeded common-subset twin).
 
 **Model: `qwen25c-1.5b` (Qwen2.5-Coder-1.5B-Instruct), Python, every row.** No 7B row appears
 here and none may be added: 7B roughly doubles accuracy on every condition (§9.3), so a single
