@@ -58,15 +58,19 @@ def load_cell(phases: Iterable[str], model: str, system: str, cond: str,
 
 def load_block(phases: Iterable[str], model: str, systems: Iterable[str], conds: Iterable[str],
                alias: Optional[dict[str, str]] = None, quiet: bool = False,
-               ) -> dict[str, dict[str, pd.DataFrame]]:
-    """system -> cond -> trials. Missing cells are reported on stderr, not fatal."""
+               language: str = "python") -> dict[str, dict[str, pd.DataFrame]]:
+    """system -> cond -> trials. Missing cells are reported on stderr, not fatal.
+
+    `language` defaults to python because every analysis until 2026-09-08 was Python-only; the
+    cross-language grid (E13) must pass it explicitly, and a caller that forgets gets an empty
+    block rather than wrong numbers, because the cell path itself carries the language."""
     alias = alias or {}
     phases = list(phases)
     out: dict[str, dict[str, pd.DataFrame]] = {}
     missing = []
     for s in systems:
         for c in conds:
-            df = load_cell(phases, model, alias.get(s, s), c)
+            df = load_cell(phases, model, alias.get(s, s), c, language=language)
             if df is None:
                 missing.append((s, c))
             else:

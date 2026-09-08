@@ -65,7 +65,12 @@ def main() -> int:
     a = ap.parse_args()
 
     conds = ck.SEEN + COMPOSITES
-    b = ck.load_block(PHASES, a.model, SYSTEMS, conds, alias=None)
+    # EXPLICIT: the cell path carries the language, and cellkit defaults to python. Without this
+    # the block comes back empty and every contrast is silently unavailable.
+    b = ck.load_block(PHASES, a.model, SYSTEMS, conds, alias=None, language="javascript")
+    if not b:
+        print("FATAL: no crosslang_js cells found for any system", file=sys.stderr)
+        return 1
     res = ck.new_result("E13 (cross-language)", Path(__file__).name, [a.model])
     res["accuracy"][a.model], res["format_fail"][a.model] = ck.acc_table(b)
     print(f"=== {a.model} / JAVASCRIPT — seen singles ===")
