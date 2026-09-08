@@ -1061,3 +1061,11 @@ obf = L1b L1r L2 S1 S2):
   exists for that; tuned arms, having learned the *forward* answer format only, may fail the inverse
   format more, which is why every arm gets the one-shot demonstration.
 - Nothing is re-specified after the read. X1 is read once per arm by the eval stage. H1 never.
+
+### 2026-09-08 — RQ5′ SUBMITTED (after pre-registration commit `832a6cb`)
+`run.py --only ev_inverse_core` → **382620**, `--only ev_inverse_specialists` → **382621**,
+`--only an_inverse` → **382622** (afterok both). Both evals pending on QOSMaxJobsPerUserLimit behind
+the 09-07 pipeline. The queued `report` 382561 predates `an_inverse`; re-run `--only report` after
+382622. Monitor `b79onvos5`. Docs: RQ_SUMMARY §6.3 (pending rows), PAPER_EXPERIMENTS E16, log
+`transfer/2026-09-08_bidirectional-inverse-task-submitted.md`. E7 FDR read logged separately
+(`writeup/2026-09-08_fdr-over-the-families.md`): 1/30 transfer cells, 8/28 arm cells survive BH.
