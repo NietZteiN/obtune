@@ -115,6 +115,37 @@ identifier-to-computed-attribute indirection (names resolved through a dict buil
 must come from the sibling's difficulty, not from hope.
 **Cost.** generator ~1 CPU-day; then ~1.5 GPU-h.
 
+**STATUS 2026-09-08 — specified, deliberately NOT run, and the specification above is now wrong.**
+E6 landed between the writing of this entry and this note, and it changes what E5b has to be. E5b as
+written asks for a second pair built the way X2/Y2 were: **same mechanism, different surface**. E6
+tested exactly that relation *inside* X1 and refuted it — `tuned_X1m` reaches X1s at +1.49
+[−0.95, +3.93] and `tuned_X1s` reaches X1m at −0.10 [−2.38, +2.19], i.e. two halves of one family
+that share the "read a helper defined at the top of the module and evaluate it" schema do **not**
+transfer to each other. A harder X2/Y2 would therefore be predicted to come back null *whatever* its
+difficulty, and a null would be uninterpretable: it would confirm E6 rather than test C2.
+
+What C2 actually needs after E6 is a pair that isolates the thing that *did* transfer. X1 → H1 is
+lossless (0.08 pts) across genuinely different surfaces — different helper names, different
+identities, a different encoding scheme — while X1m → X1s fails across a *shared* surface. So the
+unit is neither "the surface" nor "the mechanism" as those were operationalised; the candidate that
+survives both observations is **the reading operation the transform forces** (X1 and H1 both force
+"evaluate a locally-defined decoder to recover a literal"; MBA and string encoding force different
+ones). The redone E5b must vary *that*, holding damage constant:
+
+  * **X3 / Y3** share one forced reading operation and differ in every surface detail — the X1 → H1
+    relation reproduced in a domain that is neither encoding nor arithmetic (the strongest candidate
+    is comparison/ordering: every `<`, `<=`, `==` routed through a helper that recomputes the
+    relation, X3 by sign-of-difference, Y3 by a `sorted`-based lookup).
+  * **Damage gate, unchanged and non-negotiable:** build Y3 first, evaluate `tuned_L0` on it, and
+    proceed only if the drop from `L0` exceeds 10 pts. E5's null was a power failure and repeating it
+    would be a waste of the corpus as well as the GPU.
+  * **Pre-register before the generator is written**, so "which pair counts" cannot be chosen after
+    seeing which one damages more.
+
+This is a design problem, not an execution problem, and a generator shipped in haste writes a corpus
+that costs CPU-days to regenerate and can silently corrupt a headline claim. It is specified here and
+left unrun on purpose; `log/transfer/2026-09-08_e5b-redesigned-not-run.md` records the reasoning.
+
 ### E6. Which half of X1 does the work? — mechanism ablation
 **Question.** X1 is string-encoding **+** MBA arithmetic. Which half buys the H1/X1 transfer?
 **Arms.** `X1-str` (encoding only) and `X1-mba` (arithmetic only) as separate conditions; train a
@@ -232,7 +263,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 |---|---|---|
 | E3 | `an_e3` (chains 381340/382139/382140 at 13B; 381405/382141/382142 at 34B) → 382542 | **done 2026-09-08**: H-E3 + H-E3-tax CONFIRMED at both scales |
 | E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | **done 2026-09-08** (382548): H-E4-view REFUTED, H-E4-teacher CONFIRMED, H-E4-mono REFUTED — the tuned clean-code teacher is the ingredient |
-| E5b | `e5b_hard_family` | **disabled** — generator not written |
+| E5b | `e5b_hard_family` | **disabled** — respecified 2026-09-08 after E6 changed its requirement; generator deliberately not written (see E5b) |
 | E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` (382803, 4,096 window) → `ck_*` → `ev_x1split` → `an_x1split` (382806) | **done 2026-09-08**: H-family-unit REFUTED, H-whole-ge-parts CONFIRMED; either half ≈ 90 % of the whole on X1 |
 | E7 | `an_fdr` + `an_fdr2` (bootstrap-p + BH; GLMM stack not installed on juno — labelled as a substitute) | **FDR done 2026-09-08** (382559, 383162): transfer 1/30, arms 8/28, enlarged 203-test family 69 survive with none of the eight lost; GLMM still owed |
 | E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` (382549–382552) | **done 2026-09-08**: H-E8 / H-E8-seen / H-E8-tax all CONFIRMED |
