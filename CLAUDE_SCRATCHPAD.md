@@ -1318,3 +1318,28 @@ human set, so human coverage is 98/98). Labels are `T_*` (`schema.TierCondition`
    should still be there**. H-xlang-volume remains REPORTED, not verdicted — the confounds named in
    the pre-registration (different programs, tokenizer, per-language ladder surface) are untouched by
    this correction.
+
+### 2026-09-08 — reads: E13 cross-language, E10 human alignment (the open-items wave is complete)
+- **E13 (`an_crosslang` 383171):** H-xlang-cons-seen **CONFIRMED** +7.35 [+4.93, +9.72];
+  H-xlang-cons-stack **CONFIRMED** +4.91 [+2.68, +7.29]; H-xlang-stack **INCONCLUSIVE** +2.55
+  [−0.30, +5.31]; H-xlang-L0 **INCONCLUSIVE** −3.17 [−6.75, +0.20]. `cons_lam3` best on all 12
+  columns and **+3.37 [+0.79, +5.95] over `tuned_L0` on L0** (no Python counterpart).
+  **Breadth's stacking gain is a failure to replicate, not low power**: three of six composites
+  negative, pooled figure carried by `C_S4_S3` +14.09, where Python had 6/6 positive at three scales.
+  **H-xlang-volume's pre-read prediction was WRONG** (−3.17 vs Python −1.32 at 32 % volume) — written
+  up as wrong. Checkpoint selector does corroborate the volume story: JS `mono_all` peaks epoch 1,
+  Python's epoch 2. No unseen-family column (X1 Python-only) — the tax half is untested in JS.
+  `log/transfer/2026-09-08_crosslanguage-javascript.md`.
+- **E10 (`48_human_align.py`, 383195/383200):** **H-human-shift AWAY** — `tuned_L0 − base`
+  Δρ = −0.303 [−0.575, −0.028]; `mono_all` −0.174, `cons_lam3` −0.244 (same sign, n.s.; only
+  `tuned_L0` verdicted per the rule). H-human-base INCONCLUSIVE (+0.132). Condition level: human
+  accuracy falls monotonically across the ladder, `base` +0.82 rank corr, every tuned arm negative
+  and best on `T_L3`. Claim C8 answered for the first time.
+  `log/human-align/2026-09-08_tuning-moves-away-from-humans.md`.
+- **Standing lesson from this wave, worth carrying:** four of the six "blocked" items were not
+  blocked — the blocker notes had gone stale and nobody re-tested them. **Re-test a blocker before
+  believing it.** `node` blocked regeneration not use; E10's "missing" map was on disk; statsmodels
+  installs fine into a side venv. Only E5b was genuinely unbuilt.
+- **Open after this wave:** a JS X1 (needs a node toolchain — installable, no root required) so the
+  cross-language *tax* can be measured; a second JS seed; E5b's generator against its respecified
+  design; Paper-3 (n = 73) at condition level; a calibration curve per arm (E14 follow-up, CPU-only).

@@ -25,7 +25,7 @@ and expect queue waits in hours, not minutes (CLAUDE.md §1).
 | C5 | One objective repairs breadth: **paired consistency** | `cons_lam3 − mono_all` on X1 **+4.59 [+3.16, +5.99]** (3 seeds); no `L0` tax (−0.30 [−1.80, +1.32]); λ=3 is the plateau | **done at 7B** — E1 tests scale, E2 tests mechanism |
 | C6 | Ten other levers do not move accuracy | self-consistency, augmentation, data scale, more cases, trace SFT, rerankers, span alignment, negatives, resampling, curriculum — all with intervals | **done** |
 | C7 | Attention re-anchoring is the mechanism for the one transfer that works | correlational (§15.1) + knockout (§15.3) + training-free normalization (§16.5) | **partial** — E9 |
-| C8 | Tuning moves models toward/away from human difficulty orderings | none — thread never started, data on disk | **not started** — E10, or cut |
+| C8 | Tuning moves models **away** from human difficulty orderings | **E10 (2026-09-08): `tuned_L0 − base` Δρ = −0.303 [−0.575, −0.028]** over the 98 Paper-2 cells; at condition level `base` tracks the human gradient at +0.82 rank correlation and every tuned arm inverts it | **answered**; weak instrument (20 programs, one trial per cell) — quote with the interval |
 
 **Read this table as the paper's spine.** C1–C6 are complete and are enough to submit. The
 experiments below either (a) close a gap a reviewer will find, or (b) convert a single observation
@@ -285,8 +285,8 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 | E7 | `an_fdr` + `an_fdr2` + `an_fdr3` + `an_glmm` | **FDR done 2026-09-08** (382559, 383162, 383172): transfer 1/30, arms 8/28, enlarged family 69/203 with none of the eight lost, `mono_all`-controlled family closes the headline at q = 0.0049. GLMM unblocked via a side venv and running (383180) |
 | E8 | `tr_cons_llama` → `ck_cons_llama` → `ev_llama` → `an_e8` (382549–382552) | **done 2026-09-08**: H-E8 / H-E8-seen / H-E8-tax all CONFIRMED |
 | E9 | `ko_x1_{base,tuned_L0,mono_all,cons_lam3,tuned_X1}` → `an_attention` | scheduled |
-| E10 | `47_emit_icse_items.py` → `ev_human_align_{py,js}` → `an_human_align` | **submitted 2026-09-08** (383194/383195 → 383196): the map was never missing — 98/98 human cells matched; rules frozen in pre-registration #3 (`4665e17`) |
-| E13 | `tr_js_L0` → `ck_js_L0` → `tr_js_{mono,cons}` → `ck_*` → `ev_crosslang_js` → `an_crosslang` | **submitted 2026-09-08** (383164–383171): cross-language replication on the intact JS corpus; seen + composites only, no unseen-family column |
+| E10 | `47_emit_icse_items.py` → `ev_human_align_{py,js}` → `48_human_align.py` | **done 2026-09-08** (383195/383200): **H-human-shift AWAY** (Δρ −0.303 [−0.575, −0.028]); H-human-base INCONCLUSIVE; condition level `base` +0.82 against every tuned arm negative |
+| E13 | `tr_js_L0` → `ck_js_L0` → `tr_js_{mono,cons}` → `ck_*` → `ev_crosslang_js` → `an_crosslang` | **done 2026-09-08** (383164–383171): `cons_lam3` best on all 12 columns (+7.35 seen, +4.91 over breadth on composites, +3.37 on L0); **breadth's stacking gain does NOT replicate** (+2.55 [−0.30, +5.31], three of six composites negative); no unseen-family column |
 | E11 | `an_l0cost` → `an_l0strat` | **done 2026-09-08** (382560, 383161): 21 pay / 0 gain / 38 underpowered at ±1.0; the cost lands on **common** formats and **short** answers, the reversal of the hypothesis (+4.70 [+0.44, +8.89]) |
 | E12 | `tr_{L0,mono}_{half,quarter}` → `ck_*` → `ev_saturation` → `an_saturation` | **done 2026-09-08** (382531 → 382532): H-tax-scales CONFIRMED, the X1 tax grows with data volume |
 | RQ-A/B at scale | `ev_composite_13b/34b` → `an_composite_*` | **done 2026-09-08** (13B 382514 → 382515; 34B 382516 → 382518): RQ-A/RQ-B CONFIRMED at both; H-cons-stack-strict CONFIRMED at 13B (+1.36) and 34B (+2.58) |
