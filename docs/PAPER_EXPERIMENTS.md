@@ -177,8 +177,14 @@ controlled against `tuned_L0`, so RQ3′'s headline `cons_lam3 − mono_all` @ X
 pre-registration (`8da96b4`) before `--control-family` existed as code. A `mono_all`-controlled family
 of the same 203 tests: **`cons_lam3 − mono_all` @ X1 +4.86 [+2.88, +6.83], q = 0.0049**, and the same
 at all three seeds and all four λ. 22 of 29 X1 cells survive; **0 of `cons_lam3`'s 6 non-X1 cells do**,
-which is the shape the campaign claims. The GLMM is no longer blocked either — `statsmodels` installs
-into a side venv (`an_glmm`). `log/writeup/2026-09-08_fdr-family-enlarged.md`,
+which is the shape the campaign claims. **Read 4 (`an_glmm` 383180, E7d) — the GLMM itself, no longer blocked.** `statsmodels` into a side
+venv (the script re-execs itself there, so the pinned training env is untouched); per-condition
+`correct ~ C(system) + (1|program_id) + (1|item_id)`, VB, 40,600 item-level rows. **4/4 headline
+contrasts agree** with the bootstrap in sign and in exclusion of zero. Borderline contrasts the GLMM
+resolves (breadth's L0 cost, −0.218 [−0.397, −0.040]) are reported and **not** promoted — uncorrected,
+VB intervals are optimistically narrow, and the registered inference is the bootstrap. The remaining
+shortfall is stated: crossed program × item within one base model rather than program × model, and a
+Python VB fit rather than the R REML fit the charter named. `log/writeup/2026-09-08_glmm-agrees.md`. `log/writeup/2026-09-08_fdr-family-enlarged.md`,
 `log/writeup/2026-09-08_fdr-the-uncovered-headline.md`.
 
 ### E8. Cross-family replication of C5 — **DONE 2026-09-08, CONFIRMED**
