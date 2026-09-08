@@ -1,6 +1,6 @@
 # attention — RQ3 — token classes, slicers, anchoring metrics, regression
 
-*Last updated: 2026-08-27*
+*Last updated: 2026-09-08*
 **Status:** active — RQ3 has a correlational result (§15.1), a causal result (§15.3) and a
 training-free intervention (§16.5). Outstanding: a generate-mode confirmation of steering, the
 length-matched control, and an unpaid `H1` attention read.
@@ -17,6 +17,7 @@ length-matched control, and an unpaid `H1` attention read.
 (see [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md) for the full ledger)
 
 ## Hypotheses — resolved
+- ✗ **H-attn-cons** / ✗ **H-attn-breadth** (E9, 2026-09-08): identifier knockout on X1 across five arms — `cons_lam3 − mono_all` −0.0001 [−0.097, +0.102] nats, `mono_all − tuned_L0` +0.019 [−0.088, +0.126]. REFUTED as pre-registered, with the caveat that the score-mode knockout moves gold log-prob by < 0.5 % for every arm on every condition tried — the instrument is inert. Entry: `2026-09-08_x1-knockout-is-inert.md`.
 - (none yet)
 
 ## What worked
@@ -57,6 +58,7 @@ length-matched control, and an unpaid `H1` attention read.
   remains inferential.
 
 ## Entries
+- [`2026-09-08_x1-knockout-is-inert.md`](2026-09-08_x1-knockout-is-inert.md) — **E9: both RQ4′ knockout hypotheses REFUTED on X1 (jobs 382553–382558), and the identifier knockout is inert everywhere (|Δ| ≤ 0.06 nats on −6…−17).** Unplanned: `mono_all`'s clean log P(gold) on X1 is −11.4 vs −6.3 for `tuned_L0`/`cons_lam3` — a five-nat likelihood gap that consistency closes.
 | Date | Entry |
 |---|---|
 | 2026-08-17 | [`2026-08-17_rq3-path-repaired.md`](2026-08-17_rq3-path-repaired.md) |
