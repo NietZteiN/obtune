@@ -1124,3 +1124,55 @@ window difference is a caveat to name beside the coverage asymmetry already on f
 - **State:** all 47 stages + external 34B chain terminal and read. Open follow-ups, none submitted:
   E11 stratification (CPU); `an_fdr` re-run over the enlarged arms family (documented family change);
   master report revision.
+
+### 2026-09-08 — PRE-REGISTRATION (frozen before any of the three follow-ups is run)
+Written and committed **before** `43_l0_stratify.py` and the enlarged-family `37_fdr_family.py`
+exist as runnable code, per the campaign's standing rule. Nothing below may be re-specified after
+a read; refuted is reported as refuted. NO stage reads H1.
+
+**E11b — where on L0 the cost lands** (`an_l0strat`, `scripts/analysis/43_l0_stratify.py`,
+codellama-7b, CPU). E11's classification (read 09-08) said *which* arms pay; §22.6's open question
+is *where*. Item metadata joins from `data/eval/heldout/items/L0/python.jsonl` (1,671 items / 557
+programs / Grid B — the exact item set every 7B L0 cell was graded on).
+- **Strata, fixed now:**
+  1. **Answer-format class** of the gold `output_repr`, by a deterministic classifier on the literal
+     string: `list` (`[`), `tuple` (`(`), `dict_set` (`{`), `str` (quote), `bool_none`
+     (true/false/null/True/False/None), `int` (`^-?\d+$`), `float` (numeric with `.`/`e`), else
+     `other`. A class is **common** iff it holds **≥ 10 %** of the 1,671 items; every remaining class
+     is pooled into **unusual**. The 10 % threshold is fixed here, before the distribution is looked at.
+  2. **Program length**: `meta.loc` of the L0 program, **terciles over the 557 evaluated programs**
+     (T1 short / T2 mid / T3 long), boundaries from the evaluated set itself.
+  3. **Answer length**: `len(output_repr)` in characters, item-level terciles. Exploratory.
+- **Estimand.** Δ(arm, stratum) = 100·(acc_arm − acc_ref) on that stratum. Reference = the pooled
+  clean-code control {`tuned_L0`, `tuned_L0_s42`} (two seeds). Program-clustered bootstrap, 2,000
+  draws, seed 17; **one resample of programs per draw, every stratum recomputed on it**, so
+  between-stratum differences are paired and their CIs are valid.
+- **Primary unit:** `mono_all` pooled over {`mono_all`, `mono_all_s42`, `mono_all_s101`} — pooling
+  seeds is the power fix the E11 read identified, and breadth's L0 cost is the fingerprint §22.6 is
+  about. Reported but **not** verdicted: `cons_lam3` (3 seeds), `tuned_X1`, and `base` as a reference
+  pattern (its −17 must land somewhere; if it too is flat, the strata are the wrong ones and the
+  read says so).
+- **H-L0-format** ("the cost concentrates on unusual answer formats"): CONFIRMED iff, for the primary
+  unit, Δ(unusual) − Δ(common) has **ci_hi < 0**; REFUTED iff that interval lies inside **±1.0**
+  (the same TOST margin as E11); else INCONCLUSIVE.
+- **H-L0-length** ("the cost concentrates on long programs"): CONFIRMED iff Δ(T3) − Δ(T1) has
+  **ci_hi < 0**; REFUTED iff inside ±1.0; else INCONCLUSIVE.
+- **H-L0-answerlen**: same statistic on answer-length terciles. **Reported, not verdicted.**
+- Gates nothing. If both are REFUTED or INCONCLUSIVE the honest conclusion is that the L0 cost is
+  **diffuse** — that is a finding about the phenomenon, and §22.6 gets it as an answer, not a TODO.
+
+**E7b — FDR family enlargement** (`an_fdr2`, same `scripts/analysis/37_fdr_family.py`, new families).
+- The two families pre-registered 2026-09-07 — `transfer` (30 tests) and `arms` (28 tests) — are
+  **primary and frozen**; their q-values are re-reported unchanged and no claim moves on the new ones.
+- Added as a **conservative robustness check only** (enlarging a family can only raise q, never lower
+  it — so nothing can be upgraded by this, only survive or fail it):
+  - **`arms_all`**: every system holding all seven generic cells (L0 + the five seen + X1),
+    **discovered mechanically** from the campaign's generic phases — no hand-picking, no arm added
+    because of how its number came out — × 7 conditions vs `tuned_L0`.
+  - **`composites`**: {`mono_all`, `cons_lam3`} × the six depth-2 composites vs `tuned_L0`, 7B
+    (12 tests) — RQ-A/RQ-B have never been multiplicity-corrected.
+- Rule unchanged: a cell survives iff **q < 0.05**. Reported; gates nothing.
+
+**Master report rev 18.** Editorial, no new numbers: a §29 for the pipeline campaign (every stage,
+every verdict including the refutations), §1 amended where the pipeline narrowed a headline claim
+(RQ3′ is teacher-distillation, not learned invariance), Contents, scope counts, Changelog.
