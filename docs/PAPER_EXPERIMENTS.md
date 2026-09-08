@@ -56,7 +56,13 @@ headline contrast therefore has no seed band on any held-out column, and H1 can 
 **Result.** +3.79 / +3.54 / +3.54 at s17/s42/s101, every interval clearing zero; `tuned_L0` on X1
 spans **0.16 pts** across seeds (job 381290, 201 s). The headline is not a seed draw.
 
-### E3. H-cons-scale — does the one positive result survive scale?
+### E3. H-cons-scale — does the one positive result survive scale? — **DONE 2026-09-08, CONFIRMED**
+**Read (`an_e3` 382542).** `cons_lam3 − mono_all` on X1 **+3.95** [+2.22, +5.84] at 13B, **+3.38** [+1.32, +5.51]
+at 34B (7B: +4.59 at three seeds); `cons_lam3 − tuned_L0` on X1 −0.33 / +0.74, no unseen tax at any
+scale. At 34B `cons_lam3` is the best arm on all seven columns. Breadth's L0/X1 taxes are scale-invariant
+(L0 −1.74/−2.34/−2.63, X1 −3.79/−4.28/−2.64); the objective, not scale, resolves the trade.
+`log/transfer/2026-09-08_consistency-survives-scale.md`.
+
 **Question.** C5 is a 7B result. If paired consistency is a small-model repair it is a much weaker
 contribution than if it holds at 34B, where breadth's `L0` tax is larger (−2.63 [−4.49, −0.78]).
 **Arms.** `cons_lam3` at **13B** and **34B**; controls (`tuned_L0`, `mono_all`) exist at both.
@@ -192,7 +198,7 @@ dependencies expressed as SLURM `afterok` chains and the decision rules frozen i
 
 | experiment | pipeline stages | status |
 |---|---|---|
-| E3 | `an_e3` (hand-submitted chains 381340/382139/382140 at 13B — done; 381405/382141/382142 at 34B — running) | pending the 34B chain |
+| E3 | `an_e3` (chains 381340/382139/382140 at 13B; 381405/382141/382142 at 34B) → 382542 | **done 2026-09-08**: H-E3 + H-E3-tax CONFIRMED at both scales |
 | E4 | `tr_cons_tbase`, `tr_cons_tmono` → `ck_*` → `ev_teacher` → `an_e4` | scheduled |
 | E5b | `e5b_hard_family` | **disabled** — generator not written |
 | E6 | `bld_x1split` → `emit_x1split_*` → `tr_X1m`, `tr_X1s` → `ck_*` → `ev_x1split` → `an_x1split` | scheduled |
@@ -230,6 +236,7 @@ it inherits none of H1's credibility.
 ---
 
 ## Changelog
+- **2026-09-08 (E3 read)** — E3 done: consistency survives scale (13B +3.95, 34B +3.38 over breadth on X1, no tax).
 - **2026-09-08 (E12 read)** — saturation done: seen gain saturates by ¼ corpus, X1 tax grows with volume.
 - **2026-09-08 (E16 read)** — E16 done: forward tuning does not transfer to the inverse task (−1.67 vs +18.09); only the X1-family adapter beats base backwards, on X1.
 - **2026-09-08** — E16 (RQ5′, bidirectional / inverse-task stress test) added at the user's request and submitted; stage row in §6.

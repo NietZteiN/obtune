@@ -1092,3 +1092,9 @@ window difference is a caveat to name beside the coverage asymmetry already on f
   (X1 tax −0.49 → −2.31* → −3.79*; `mono_quarter − mono_all` @ X1 +3.29*). Written to
   `log/transfer/2026-09-08_saturation-the-tax-grows-with-data.md`, RQ_SUMMARY §6/§6.1, PAPER_EXPERIMENTS E12.
 - `tr_X1s` 382803 passed the 4096-window gate (27 min); chain 382804 → 382805 → 382806 continues.
+
+### 2026-09-08 — E3 READ (382142/382542 COMPLETED; rules as frozen)
+- H-E3 CONFIRMED (13B +3.95*, 34B +3.38* for `cons_lam3 − mono_all` @ X1); H-E3-tax CONFIRMED (−0.33 / +0.74 vs
+  `tuned_L0`). Written to `log/transfer/2026-09-08_consistency-survives-scale.md`, RQ_SUMMARY §6/§6.1, PAPER_EXPERIMENTS E3.
+- Remaining: `ev_composite_34b` 382516 → `an_composite_34b`; E4 (`ck_cons_tmono` → `ev_teacher` → `an_e4`); E8 (`ev_llama` → `an_e8`);
+  X1s chain 382804–382806; `an_l0cost`; `report` 383102.
