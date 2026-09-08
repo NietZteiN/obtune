@@ -902,3 +902,20 @@ system in the column shares.
   robustness to UNSEEN ones. Stacking cost: tuned_L0 −8.23 pts, mono_all −3.62.
 - Order matters: C_L1r_S1 vs C_S1_L1r differ up to 3.6 pts, no consistent direction (RQ-D).
 - New RQs proposed A–G; A and B are the same ~2 GPU-h job and are the cheapest high-value work.
+
+### 2026-09-07 — RQ-A / RQ-B PRE-REGISTRATION (composites on CodeLlama), frozen before submission
+Eval-only; composite items are model-independent and already exist. Config `eval/composite_generic.yaml`,
+5 systems x 6 composites. Contrasts: bootstrap_delta clustered by snippet_id, n_boot 2000, seed 17.
+
+- **RQ-A / H-stack-dissociation** — CONFIRM if `mono_all − tuned_L0` **pooled over the six
+  composites** excludes zero ABOVE on CodeLlama-7b, given that the same pair's contrast on the
+  unseen column is negative (X1: `tuned_L0 − mono_all` +3.79 [+1.65, +6.09]). That is the
+  dissociation: one model, one grid, opposite signs on stacked-seen vs unseen. REFUTE if the
+  composite contrast is null or negative. Qwen reference: +3.91 [+2.45, +5.28].
+- **RQ-B / H-cons-stacking** — CONFIRM if `cons_lam3 − tuned_L0` pooled on composites excludes zero
+  ABOVE **and** `cons_lam3 − mono_all` on composites does not exclude zero from below. That is the
+  "dominates mono_all outright" reading: breadth's stacking robustness kept, without its held-out
+  tax (X1 +4.59 [+3.16, +5.99]) and without its L0 tax (−0.30 [−1.80, +1.32]).
+- Reported either way: per-composite deltas; the order pair `C_L1r_S1` vs `C_S1_L1r` (Qwen shows up
+  to 3.6 pts with no consistent direction, RQ-D); `tuned_S2` as the specialist reference.
+- format_fail reported, not gated (H-format-gate still open). No H1 cell is read.

@@ -144,7 +144,9 @@ class TrialRow(BaseModel):
     # asserts every committed config's phase is one this Literal accepts.
     phase: Literal["pilot", "main", "final", "baselines", "baselines_gridA", "grid_rq1_7b", "align_lam_sweep", "formatonly_fix", "basecheck", "rq1_generic", "loto_generic", "rq2_generic", "baselines_generic", "rank_generic", "extra_generic", "merge_sweep_generic", "mole_generic", "h1_codellama", "selfcons_generic", "trace_generic", "x1_generic", "align_span_generic", "objectives_generic",
                    # 2026-09-07: E3 (consistency at 13B/34B) and E5 (the X2/Y2 family pair).
-                   "objectives_scale", "xy2_generic"]
+                   "objectives_scale", "xy2_generic",
+                   # RQ-A/RQ-B (2026-09-07): the composite (stacked) ladder on the CodeLlama panel.
+                   "composite_generic"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
