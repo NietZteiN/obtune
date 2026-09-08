@@ -188,6 +188,7 @@ Task: output prediction on **still-obfuscated** code, graded by execution-verifi
   - [29.4 The two stress tests that came back negative](#294-the-two-stress-tests-that-came-back-negative)
   - [29.5 Multiplicity — what survives when the whole matrix is corrected at once](#295-multiplicity--what-survives-when-the-whole-matrix-is-corrected-at-once)
   - [29.6 What the campaign changed](#296-what-the-campaign-changed)
+  - [29.7 The open-items wave — four of six "blocked" items were not blocked](#297-the-open-items-wave--four-of-six-blocked-items-were-not-blocked)
 - [27. Since rev 14 — the final H1 read, its trainable proxy, scale, three more null levers, and the objective that works](#27-since-rev-14--the-final-h1-read-its-trainable-proxy-scale-three-more-null-levers-and-the-objective-that-works)
   - [27.1 The final H1 read — the budget is spent, and every pre-registered test confirms](#271-the-final-h1-read--the-budget-is-spent-and-every-pre-registered-test-confirms)
   - [27.2 X1 — a trainable proxy for H1 that predicts it to r = 0.999](#272-x1--a-trainable-proxy-for-h1-that-predicts-it-to-r--0999)
@@ -5241,6 +5242,107 @@ what it looked for.
 confound; the `mono_all` log P(gold) anomaly (§29.4); E10 (human alignment), which needs the
 `tier_icse` eval items emitted and graded and is **disabled, not pretended**; and everything
 JavaScript, which is blocked on `node` not being installed on juno.
+
+### 29.7 The open-items wave — four of six "blocked" items were not blocked
+
+*Added 2026-09-08, after §29.6.* §29.6 closed with a list of open items. Re-examining them produced a
+result about the project's own record-keeping worth stating plainly: **four of the six were not
+blocked, and the notes saying they were had gone stale without anyone re-testing them.**
+
+- **`node` blocks *regenerating* the JavaScript corpus, not *using* it.** The corpus transferred
+  intact — 2,022 train pairs and 504 heldout items per condition plus all six depth-2 composites —
+  and the whole tree passes `scripts/check_manifest.py`, SHA manifests and the H1-marker content scan
+  alike. The paper's Python-only scope was a consequence of a true fact about the toolchain and a
+  false inference from it. §29.8 reports the cross-language run this made possible.
+- **E10's "missing Paper-2 item map" is on disk.** `data/human/paper2_graded.csv` holds 600 graded
+  responses from 50 participants over 98 item cells, and **all 98 match a legacy tier row**. The
+  items needed an emitter, not data: `scripts/47_emit_icse_items.py`, writing a `T_*` namespace that
+  is deliberately outside `AnyCondition` so a tier label cannot reach the training path.
+- **The GLMM is not blocked.** `statsmodels` installs; it simply must not go into the pinned training
+  env, and does not — it lives in a side venv the analysis script re-execs itself into.
+- **Only E5b is genuinely unbuilt**, and it is respecified rather than run: see the end of this
+  section.
+
+**E7c — the uncovered headline, corrected.** §29.5 recorded that every FDR family is controlled
+against `tuned_L0`, leaving RQ3′'s actual headline in no family, and declined to fix it on the spot.
+The rule was frozen in the pre-registration and committed **before `--control-family` existed as
+code**, then run: in a 203-test `mono_all`-controlled family, **`cons_lam3 − mono_all` @ X1 is +4.86
+[+2.88, +6.83], q = 0.0049** — and survives at all three seeds (+4.86/+4.70/+4.12) and all four λ
+(+2.96/+4.86/+3.95/+4.78). The sharpest part is what does *not* survive: **22 of the 29 X1 cells do,
+and 0 of `cons_lam3`'s 6 non-X1 cells do.** Consistency's advantage over breadth is specifically on
+the unseen family; its seen-condition and L0 advantages over `mono_all` must not be quoted as
+corrected. `cons_tmono` at +0.66 (q = 0.61) is E4 corroborated by a second method.
+
+**E7d — the GLMM the charter has asked for since the beginning.** Per condition,
+`correct ~ C(system) + (1|program_id) + (1|item_id)`, `BinomialBayesMixedGLM` (VB), 40,600
+item-level rows, reported on the logit scale because a GLMM coefficient is a log-odds ratio.
+
+| contrast | bootstrap | GLMM (logit) | |
+|---|---:|---:|---|
+| `mono_all − tuned_L0` @ X1 (**C1**) | −3.79 pts* | −0.546 [−0.761, −0.331]* | agrees |
+| `cons_lam3 − mono_all` @ X1 (**RQ3′**) | +4.86 pts* | +0.698 [+0.492, +0.904]* | agrees |
+| `mono_all − tuned_L0` @ L1b | +2.90 pts* | +0.354 [+0.186, +0.523]* | agrees |
+| `tuned_X1 − tuned_L0` @ X1 | +4.86 pts* | +0.636 [+0.436, +0.837]* | agrees |
+
+**4/4.** Modelling item difficulty as a random effect also resolves contrasts the bootstrap cannot —
+breadth's L0 cost among them, −0.218 [−0.397, −0.040]. **None of those is promoted**, for three
+reasons the paper must give: they are uncorrected for multiplicity, VB credible intervals run
+optimistically narrow, and the campaign's registered inference is the bootstrap. Switching estimator
+until a borderline number turns significant is the practice the pre-registrations exist to prevent.
+The remaining shortfall is stated rather than hidden: crossed **program × item within one base
+model** rather than the charter's program × model, and a Python VB fit rather than R's REML.
+
+**E11c — §29.1's format reversal, with the confound removed.** E11b could not separate "unusual
+format" from "easy item". Matched on the control's own per-item difficulty the contrast is
+**+10.21 [+5.34, +15.14]** against +4.70 unmatched, positive in all three difficulty bins —
+**CONFIRMED-REVERSED** under a rule that is two-sided this time, replacing E11b's one-sided rule
+rather than patching it. Easiness was *diluting* the effect, not producing it. `base` shows the same
+ordering at twice the size, which gives the mechanism: the unusual classes are small output spaces
+(booleans, `None`, floats) where even a damaged model lands on the right token, so **what breadth
+costs is the ability to get the answers that can be gotten wrong.**
+
+**E14 — and that is exactly what the log-probabilities say.** §29.4 left an unplanned observation:
+`mono_all`'s clean log P(gold) on X1 is −11.4 against −6.3 for the other arms. Six more score-mode
+extractions later, it is real, it is **not X1-specific**, and it is not what it looked like:
+
+| clean mean log P(gold) | L0 | S2 | X1 |
+|---|---:|---:|---:|
+| `tuned_L0` | −4.13 | −4.20 | −6.26 |
+| `cons_lam3` | −4.09 | −4.16 | −6.36 |
+| `mono_all` | **−8.27** | **−8.36** | **−11.42** |
+
+`mono_all − tuned_L0` is −4.14 / −4.16 / −5.15, every interval clearing zero, and it is neither a
+length artifact (gold-token counts are identical by construction) nor a pure tail (56–74 % of items
+are worse; the trimmed means keep most of the effect). Split each arm's items by whether that arm got
+them right and the shape appears:
+
+| | L0 correct / wrong | S2 correct / wrong | X1 correct / wrong |
+|---|---:|---:|---:|
+| `tuned_L0` | −0.33 / −7.00 | −0.39 / −6.50 | −2.24 / −8.16 |
+| `cons_lam3` | −0.37 / −6.59 | −0.35 / −6.33 | −2.19 / −8.10 |
+| `mono_all` | **−0.16 / −12.95** | **−0.16 / −13.05** | **−2.33 / −14.15** |
+
+**Breadth training does not degrade the model. It polarizes it** — *more* confident than the
+clean-code arm on what it gets right, roughly twice as far from the gold on what it gets wrong. That
+is free on conditions it has seen, where L0 and S2 accuracy are unchanged or better, and expensive
+exactly where its decisions are wrong more often. **The unseen-family tax is what breadth's
+sharpening costs when the sharpening is aimed at the wrong answer.** This is the mechanism §29.4's
+inert knockout could not supply, and it is offered as a supported hypothesis, not an established
+one: correlational, 150 items, one seed. It also corroborates §29.3 independently — `cons_lam3` sits
+on `tuned_L0`'s profile on *both* sides of the split, on all three conditions, which is exactly what
+a KL to a frozen clean-code teacher should produce, measured on an instrument entirely separate from
+the accuracy cells E4 was read on.
+
+**E5b — respecified, deliberately not run.** E5b was written as "X2/Y2 again, but harder": a second
+pair sharing a *mechanism* and differing in *surface*. §29.2 tested that exact relation inside X1 and
+refuted it — the MBA and string halves share the family, the module and the reading schema and do not
+transfer to each other. A harder version of the same pair is therefore predicted null *whatever* its
+difficulty, and the null would confirm §29.2 rather than test C2. What survives both observations
+(X1 → H1 lossless across different surfaces; X1m → X1s failing across a shared one) is **the reading
+operation the transform forces**, and that is what the replacement design varies, at matched damage,
+with E5's damage gate intact and pre-registration required before the generator exists. A generator
+shipped in haste writes a corpus that costs CPU-days to regenerate and can silently corrupt a
+headline claim; specifying it correctly and leaving it unrun is the better outcome.
 
 ---
 
