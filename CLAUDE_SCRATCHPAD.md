@@ -1069,3 +1069,12 @@ the 09-07 pipeline. The queued `report` 382561 predates `an_inverse`; re-run `--
 382622. Monitor `b79onvos5`. Docs: RQ_SUMMARY §6.3 (pending rows), PAPER_EXPERIMENTS E16, log
 `transfer/2026-09-08_bidirectional-inverse-task-submitted.md`. E7 FDR read logged separately
 (`writeup/2026-09-08_fdr-over-the-families.md`): 1/30 transfer cells, 8/28 arm cells survive BH.
+
+### 2026-09-08 — `tr_X1s` (382537) refused by the truncation gate; resubmitted as 382803
+1.64 % truncation at 2048 (33/2,007 rows, max 4,612 tokens; X1 parent 0.69 %, X1m 0.10 %):
+string encoding lengthens every literal and X1s concentrates the rows X1 diluted. Fix: `max_seq_len:
+4096` for this arm only (`configs/train/grid_py_X1s.yaml`), keeping the program set intact rather
+than dropping the long tail — the split's point is that X1m and X1s see the same programs. Stranded
+dependents 382539/382540/382541 cancelled; chain resubmitted `tr_X1s` **382803** → `ck_X1s` 382804 →
+`ev_x1split` 382805 (also afterok `ck_X1m` 382538) → `an_x1split` 382806. RQ2′ rules untouched; the
+window difference is a caveat to name beside the coverage asymmetry already on file.

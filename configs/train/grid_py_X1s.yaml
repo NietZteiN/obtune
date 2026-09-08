@@ -17,3 +17,10 @@ phase: main
 train:
   per_device_batch: 16
   grad_accum: 4
+  # 2026-09-08: at 2048 the truncation gate refused this arm (job 382537): 1.64 %, 33 of 2,007
+  # rows, max 4,612 tokens. String encoding lengthens every literal, and X1s concentrates the
+  # rows X1 diluted (X1 parent: 0.69 %; X1m: 0.10 %). Raised rather than dropping programs so
+  # the X1s program set stays the one X1m/X1 saw — dropping the long third would change WHICH
+  # programs this arm learns, which is the confound the split is meant to avoid. Same lr,
+  # batch shape and epochs as its siblings; only the window differs.
+  max_seq_len: 4096
