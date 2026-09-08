@@ -4,6 +4,8 @@ Both tests pin bugs found on 2026-08-11 by auditing code that had never run.
 """
 from __future__ import annotations
 
+import re
+
 import pytest
 
 from obtune import data, paths
@@ -65,7 +67,8 @@ def test_composites_are_refused_by_default() -> None:
 def test_allowance_covers_only_declared_trainable_composites() -> None:
     allowed = data._trainable_composites()
     assert allowed, "composite ladder declares no trainable codes — allowance is inert"
-    assert all(c.startswith("C_") for c in allowed)
+    # depth-2 composites are `C_…`; the 2026-09-07 depth ladder added `C3_…` / `C4_…`
+    assert all(re.match(r"^C\d?_", c) for c in allowed), sorted(allowed)
     assert "H1" not in allowed
 
 
