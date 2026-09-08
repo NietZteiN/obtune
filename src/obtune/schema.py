@@ -152,7 +152,8 @@ class TrialRow(BaseModel):
                    # depth-3/4 composites at 7B and the depth-2 set at 13B/34B (RQ-C / H-cons-stack-strict)
                    "composite_depth", "composite_scale",
                    # E6 X1 mechanism split, E4 teacher variation, E8 Llama cons, E12 saturation
-                   "x1_split", "objectives_teacher", "objectives_llama", "saturation"]
+                   "x1_split", "objectives_teacher", "objectives_llama", "saturation",
+                   "inverse_generic"]
     experiment_id: str
     base_model: str
     model_family: Literal["coder", "instruct"]
@@ -207,7 +208,7 @@ class TrialRow(BaseModel):
     output_parsed: Optional[str] = None
     correct: int = 0
     parse_ok: int = 1
-    grade_method: Literal["exact", "normalized", "manual"] = "normalized"
+    grade_method: Literal["exact", "normalized", "manual", "exec"] = "normalized"
     error_category: Optional[str] = None
     n_gen_tokens: int = 0
     gpu_id: Optional[str] = None

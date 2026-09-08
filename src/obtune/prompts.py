@@ -100,6 +100,50 @@ SYSTEM_PROMPT_TRACE = (
 USER_TEMPLATE_TRACE = USER_TEMPLATE.replace("Return value:", "Trace, then return value:")
 assert USER_TEMPLATE_TRACE != USER_TEMPLATE
 
+# ---------------------------------------------------------------------------------
+# Inverse task (`task="input"`; src/obtune/inverse.py) — RQ5' in docs/RQ_SUMMARY.md.
+#
+# The model is given the program and the value one call RETURNED, and must write a
+# call that returns it: CRUXEval-I to the forward task's CRUXEval-O. Every adapter in
+# the project was trained on the forward direction only, so this prompt is a
+# distribution shift for tuned and untuned arms alike — which is the point: it asks
+# whether what tuning taught is a fact about the *code* (usable in either direction)
+# or a fact about the *forward mapping*. Grading is by execution (inverse.py), not by
+# matching the gold call: any call that reproduces the value is correct, exactly as in
+# CRUXEval-I.
+#
+# The entry-point name is given in the prompt. Withholding it would make every reply
+# fail on the name under L1b/L1r/L2, where the entry point is renamed, and the task is
+# "find an input", not "find the function".
+# ---------------------------------------------------------------------------------
+SYSTEM_PROMPT_INVERSE = (
+    "You are a deterministic code execution engine run in reverse.\n"
+    "You are given a program and the value that one call to its entry point returned. "
+    "You reply with a call to the entry point that returns exactly that value.\n"
+    "\n"
+    "Rules:\n"
+    "1. Reply with ONLY the call, on one line, in the form name(arg1, arg2, ...).\n"
+    "2. No explanation, no reasoning, no code fences, no backticks, no trailing "
+    "punctuation.\n"
+    "3. Write every argument as a literal in the program's language (numbers, strings, "
+    "lists, tuples, dicts, booleans, None/null). No variables, no expressions, no calls.\n"
+    "4. Any arguments that make the call return the given value are acceptable.\n"
+    "5. The program may have been transformed (identifiers renamed, control flow "
+    "restructured). The call must return the value under the code as written."
+)
+
+USER_TEMPLATE_INVERSE = (
+    "Language: {language}\n"
+    "{oracle_block}"
+    "Program:\n"
+    "{code}\n"
+    "\n"
+    "Entry point: {entry_point}\n"
+    "Return value: {output}\n"
+    "\n"
+    "Call:"
+)
+
 # One description per condition. H1 is present because the oracle-prompt *system* is
 # evaluated on every eval condition including H1 — this is prompt text, not training
 # data, and it carries no H1 code (quarantine is about code, CLAUDE.md §3.2).
@@ -210,6 +254,8 @@ def build_user_content(
     condition: Optional[str] = None,
     oracle: bool = False,
     trace: bool = False,
+    task: str = "output",
+    output_repr: Optional[str] = None,
 ) -> str:
     oracle_block = ""
     if oracle:
@@ -218,6 +264,20 @@ def build_user_content(
         if condition not in ORACLE_DESCRIPTIONS:
             raise KeyError(f"no oracle description for condition {condition!r}")
         oracle_block = f"{ORACLE_PREFIX}{ORACLE_DESCRIPTIONS[condition]}\n"
+    if task == "input":
+        if trace:
+            raise ValueError("task='input' cannot be combined with trace=True")
+        if output_repr is None:
+            raise ValueError("task='input' needs the gold output_repr to show")
+        return USER_TEMPLATE_INVERSE.format(
+            language=language,
+            oracle_block=oracle_block,
+            code=code.rstrip("\n"),
+            entry_point=entry_point,
+            output=output_repr.strip(),
+        )
+    if task != "output":
+        raise ValueError(f"unknown task {task!r} (output|input)")
     return (USER_TEMPLATE_TRACE if trace else USER_TEMPLATE).format(
         language=language,
         oracle_block=oracle_block,
@@ -236,19 +296,27 @@ def build_prompt(
     one_shot: bool = False,
     demo: Optional[Demo] = None,
     trace: bool = False,
+    task: str = "output",
+    output_repr: Optional[str] = None,
 ) -> list[dict[str, str]]:
     """Return the chat `prompt` message list (no assistant turn).
 
     Used verbatim by train (as the `prompt` field), by vLLM eval (through
     `render_chat`), by HF eval and by attention extraction.
+
+    `task="input"` builds the inverse prompt (program + return value -> call); the
+    one-shot demo then shows the demo's *call* as the assistant turn, and
+    `output_repr` is required.
     """
     if trace and one_shot:
         # The frozen demo has no trace and its point (pinning a one-literal format)
         # is exactly what the trace system does not want.
         raise ValueError("trace=True cannot be combined with one_shot=True")
-    messages: list[dict[str, str]] = [
-        {"role": "system", "content": SYSTEM_PROMPT_TRACE if trace else SYSTEM_PROMPT}
-    ]
+    inverse = task == "input"
+    if inverse and trace:
+        raise ValueError("task='input' cannot be combined with trace=True")
+    system_text = SYSTEM_PROMPT_INVERSE if inverse else (SYSTEM_PROMPT_TRACE if trace else SYSTEM_PROMPT)
+    messages: list[dict[str, str]] = [{"role": "system", "content": system_text}]
     if one_shot:
         d = demo or ONE_SHOT_DEMOS[language]
         messages.append(
@@ -260,16 +328,20 @@ def build_prompt(
                     # own (truthful) "none" description so the format of the two user
                     # turns matches.
                     condition=d.condition, oracle=oracle,
+                    task=task, output_repr=d.output_repr,
                 ),
             }
         )
-        messages.append({"role": "assistant", "content": d.output_repr})
+        messages.append(
+            {"role": "assistant",
+             "content": format_call(d.entry_point, d.args_repr) if inverse else d.output_repr}
+        )
     messages.append(
         {
             "role": "user",
             "content": build_user_content(
                 code, entry_point, args_repr, language, condition=condition, oracle=oracle,
-                trace=trace,
+                trace=trace, task=task, output_repr=output_repr,
             ),
         }
     )
@@ -311,8 +383,13 @@ def build_example(
     }
 
 
-def prompt_id(oracle: bool = False, one_shot: bool = False, trace: bool = False) -> str:
+def prompt_id(
+    oracle: bool = False, one_shot: bool = False, trace: bool = False, task: str = "output"
+) -> str:
     """Stable identifier written into every TrialRow (schema.TrialRow.prompt_id)."""
+    if task == "input":
+        tag = "inverse" + ("_oracle" if oracle else "") + ("_1shot" if one_shot else "")
+        return f"{tag}_{PROMPT_VERSION}"
     if trace:
         return f"trace_oracle_{PROMPT_VERSION}" if oracle else f"trace_{PROMPT_VERSION}"
     if oracle and one_shot:
@@ -331,10 +408,14 @@ ALL_PROMPT_IDS = (
     prompt_id(oracle=True, one_shot=True),
     prompt_id(trace=True),
     prompt_id(trace=True, oracle=True),
+    prompt_id(task="input"),
+    prompt_id(task="input", one_shot=True),
+    prompt_id(task="input", oracle=True),
+    prompt_id(task="input", oracle=True, one_shot=True),
 )
 
 
-def template_sha256(trace: bool = False) -> str:
+def template_sha256(trace: bool = False, task: str = "output") -> str:
     """Hash of the template *content*, not of this file.
 
     Cosmetic edits (docstrings, helper refactors) must not change the id; any change
@@ -358,17 +439,22 @@ def template_sha256(trace: bool = False) -> str:
     if trace:
         payload["system_trace"] = SYSTEM_PROMPT_TRACE
         payload["user_template_trace"] = USER_TEMPLATE_TRACE
+    if task == "input":
+        # Same rule as the trace arm: the inverse templates enter the hash only for
+        # inverse cells, so every forward cell's recorded hash stays valid.
+        payload["system_inverse"] = SYSTEM_PROMPT_INVERSE
+        payload["user_template_inverse"] = USER_TEMPLATE_INVERSE
     blob = json.dumps(payload, sort_keys=True, ensure_ascii=False)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
 def provenance_block(
-    oracle: bool = False, one_shot: bool = False, trace: bool = False
+    oracle: bool = False, one_shot: bool = False, trace: bool = False, task: str = "output"
 ) -> dict[str, str]:
     """Drop-in for RunManifest.extra / cell_meta.json."""
     return {
-        "prompt_id": prompt_id(oracle=oracle, one_shot=one_shot, trace=trace),
-        "prompt_template_sha256": template_sha256(trace=trace),
+        "prompt_id": prompt_id(oracle=oracle, one_shot=one_shot, trace=trace, task=task),
+        "prompt_template_sha256": template_sha256(trace=trace, task=task),
         "prompt_version": PROMPT_VERSION,
     }
 

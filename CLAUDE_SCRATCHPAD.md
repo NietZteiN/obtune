@@ -1018,3 +1018,46 @@ everything pending on Priority except `an_fdr`, held by QOSMaxJobsPerUserLimit. 
   string literals). So `tuned_X1s` trains on ~40 % less data than `tuned_X1m`; if H-family-unit is
   PARTIAL with the X1s→X1m leg weak, data volume is a confound to name — E12's half/quarter arms
   calibrate it. Rules unchanged.
+
+## 2026-09-08 — RQ5′ BIDIRECTIONAL (inverse task) PRE-REGISTRATION, frozen before submission
+User request: "add Bidirectional ty as another rq (does output prediction also help with input
+prediction — this is like a stress test for true understanding)". Distinct from
+`paper_bidirectional/` (ATTRIB: forward obfuscation vs reverse deobfuscation *code emission*); this is
+value-level: the same held-out items asked backwards.
+
+**Task.** Program + entry point + return value → a call `f(args)` that returns it (CRUXEval-I style).
+Prompt: `prompts.SYSTEM_PROMPT_INVERSE` + `USER_TEMPLATE_INVERSE`, one L0 demonstration for EVERY
+arm (`one_shot: true`, `prompt_id=inverse_1shot_v1`; the forward template hash is unchanged, tested).
+Grading: **execution** (`src/obtune/inverse.py`; single-line `name(args)` parsed by `ast.literal_eval`,
+run in the exec sandbox, canonical output == gold output_repr, float tol 1e-6). Any args that produce
+the gold value count — the gold args are never the target. `format_fail` = not a single parsable call.
+No adapter is trained on the inverse task. **No H1** (`run_grid` refuses `task: input` with H1).
+Config `configs/eval/inverse_generic.yaml`, phase `inverse_generic`, heldout items, 7 conditions
+(L0 L1b L1r L2 S1 S2 X1), 11 systems. Stages `ev_inverse_core` (base, formatonly, tuned_L0,
+mono_all, cons_lam3, tuned_X1) and `ev_inverse_specialists` (tuned_{L1b,L1r,L2,S1,S2}) → `an_inverse`
+(`scripts/analysis/42_inverse.py`). Forward numbers are the existing Grid A cells, never re-run.
+
+**Rules** (95 % program-cluster bootstrap; TOST ±1.0 pts at 90 %; seen6 = L0 L1b L1r L2 S1 S2;
+obf = L1b L1r L2 S1 S2):
+- **Format gate (first).** An arm whose pooled-seen6 inverse `format_fail_rate` > 0.25 is NOT
+  INTERPRETABLE and every hypothesis naming it is INCONCLUSIVE, whatever its accuracy. The
+  `formatonly − base` contrast is reported as the *format residue* of forward tuning on this task.
+- **H-inv-transfer** (primary): forward tuning transfers to the inverse task. CONFIRMED iff
+  `tuned_L0 − base @ seen6` ci_lo > 0 AND `tuned_L0 − formatonly @ seen6` ci_lo > 0 (the gain is not
+  answer-format adaptation). REFUTED iff `tuned_L0 − base` is TOST-equivalent or ci_hi < 0 — tuning
+  is direction-specific ("cognitive specialization", Nikiema et al. 2025, replicates at value level).
+  Else INCONCLUSIVE.
+- **H-inv-breadth**: `mono_all − tuned_L0 @ obf` (inverse): ci_lo > 0 CONFIRMED; equivalent or
+  ci_hi < 0 REFUTED; else INCONCLUSIVE.
+- **H-inv-cons**: `cons_lam3 − mono_all @ obf` (inverse): same rule.
+- **H-inv-family**: `tuned_X1 − tuned_L0 @ X1` (inverse): same rule.
+- **H-inv-diagonal**: each specialist vs tuned_L0 on its own condition (5 contrasts): ≥ 3/5 ci_lo > 0
+  CONFIRMED; 0/5 REFUTED; else PARTIAL.
+- **Direction ratio** (descriptive, gates nothing): DR(arm) = (inv_arm − inv_base)/(fwd_arm − fwd_base),
+  pooled seen6, for formatonly, tuned_L0, mono_all, cons_lam3, tuned_X1 (X1 arm on X1 also reported).
+- **BH-FDR** over the five primary contrasts is reported; verdicts use the CIs.
+- Expectation stated before the read: base inverse accuracy will be low (the task is harder than
+  forward, CRUXEval-I < CRUXEval-O on every model) and format_fail may be high for base — the gate
+  exists for that; tuned arms, having learned the *forward* answer format only, may fail the inverse
+  format more, which is why every arm gets the one-shot demonstration.
+- Nothing is re-specified after the read. X1 is read once per arm by the eval stage. H1 never.

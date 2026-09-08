@@ -380,10 +380,36 @@ stages:
     argv: [scripts/analysis/42_human_align.py]
     note: "tier_icse items not emitted; no script yet (docs/PAPER_EXPERIMENTS.md E10)"
 
+  # ───────────────────────────── RQ5' — bidirectional: does forward tuning help INPUT prediction? ──
+  # Every adapter was trained on program+call -> value. The inverse grid asks the same held-out
+  # items backwards (program+value -> a call that returns it), graded by execution
+  # (src/obtune/inverse.py). No adapter is trained on the inverse task; it is a stress test of
+  # whether the forward gain is task-specific or reflects a model of the program. No H1.
+  - name: ev_inverse_core
+    rq: RQ5'
+    kind: gpu
+    argv: [-m, obtune.eval_vllm, --config, eval/inverse_generic.yaml, --model, codellama-7b, --language, python,
+           --systems, "base,formatonly,tuned_L0,mono_all,cons_lam3,tuned_X1"]
+    resources: {time: "03:00:00"}
+    done_when: [results/cells/inverse_generic/codellama-7b/python/tuned_X1__X1/trials.parquet]
+  - name: ev_inverse_specialists
+    rq: RQ5'
+    kind: gpu
+    argv: [-m, obtune.eval_vllm, --config, eval/inverse_generic.yaml, --model, codellama-7b, --language, python,
+           --systems, "tuned_L1b,tuned_L1r,tuned_L2,tuned_S1,tuned_S2"]
+    resources: {time: "03:00:00"}
+    done_when: [results/cells/inverse_generic/codellama-7b/python/tuned_S2__X1/trials.parquet]
+  - name: an_inverse
+    rq: RQ5'
+    kind: analysis
+    deps: [ev_inverse_core, ev_inverse_specialists]
+    argv: [scripts/analysis/42_inverse.py, --model, codellama-7b, --out, results/analysis/pipeline/inverse_codellama7b.json]
+    report_json: results/analysis/pipeline/inverse_codellama7b.json
+
   # ───────────────────────────── report ─────────────────────────────────────────────────
   - name: report
     kind: analysis
     deps: [an_composite_13b, an_composite_34b, an_depth, an_saturation, an_x1split, an_e3, an_e4, an_e8,
-           an_attention, an_fdr, an_l0cost]
+           an_attention, an_fdr, an_l0cost, an_inverse]
     dep_type: afterany
     argv: [scripts/pipeline/report.py]

@@ -148,6 +148,13 @@ def _assert_resume_same_grid(cell: Path, meta_base: Mapping[str, Any]) -> None:
         have_meta = json.loads(meta_p.read_text())
     except (OSError, ValueError):
         return  # unreadable meta is not evidence of a mismatch; leave resume alone
+    have_task = have_meta.get("task", "output")
+    want_task = meta_base.get("task", "output")
+    if have_task != want_task:
+        raise GridCollisionError(
+            f"refusing to resume {cell}: it holds task={have_task!r} cells but this run is "
+            f"task={want_task!r}. Give the inverse grid its own `phase:`."
+        )
     have = have_meta.get("eval_source")
     if have is None or have == want:
         return
@@ -248,16 +255,41 @@ def _normalized_code(system: "SystemSpec", item) -> str:
                      profile=system.normalize).code
 
 
-def _prov(system: SystemSpec) -> dict[str, str]:
-    """prompt provenance for `system` — one call site for the three flags."""
+def _prov(system: SystemSpec, task: str = "output") -> dict[str, str]:
+    """prompt provenance for `system` — one call site for the three flags (+ task)."""
     return prompts.provenance_block(
-        oracle=system.prompt_oracle, one_shot=system.one_shot, trace=system.trace
+        oracle=system.prompt_oracle, one_shot=system.one_shot, trace=system.trace, task=task
     )
 
 
-def render_prompts(items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any) -> list[str]:
+def render_prompts(
+    items: Sequence[EvalItem], system: SystemSpec, tokenizer: Any, task: str = "output"
+) -> list[str]:
     if system.trace and (system.icl_k or system.one_shot or system.baseline or system.normalize):
         raise ValueError(f"system {system.name!r}: trace cannot combine with icl/one_shot/baseline")
+    if task == "input":
+        # The inverse task (RQ5', src/obtune/inverse.py) has one prompt family; the ICL
+        # composer, the external baselines and the trace template are all forward-only.
+        if system.icl_k or system.baseline or system.trace:
+            raise ValueError(f"system {system.name!r}: task='input' cannot combine with icl/baseline/trace")
+        return [
+            prompts.render_chat(
+                prompts.build_prompt(
+                    code=_normalized_code(system, it),
+                    entry_point=it.entry_point,
+                    args_repr=it.args_repr,
+                    language=it.language,
+                    condition=it.condition,
+                    oracle=system.prompt_oracle,
+                    one_shot=system.one_shot,
+                    demo=None,
+                    task="input",
+                    output_repr=it.output_repr,
+                ),
+                tokenizer,
+            )
+            for it in items
+        ]
     if system.baseline == "semcoder":
         from obtune.baselines.semcoder import SemCoderSpec
 
@@ -312,11 +344,24 @@ def build_trial_rows(
     system: SystemSpec,
     meta: Mapping[str, Any],
     float_tol: float = scoring.DEFAULT_FLOAT_TOL,
+    task: str = "output",
+    exec_cfg: Optional[Mapping[str, Any]] = None,
 ) -> list[dict[str, Any]]:
     """Grade + shape into schema.TrialRow dicts. Validated row by row, on purpose:
     a malformed trial must fail here, not in the R stats layer three days later."""
     rows: list[dict[str, Any]] = []
     extract = None
+    inverse_grades = None
+    if task == "input":
+        # Graded by execution, in one sandbox batch per cell, before the row loop.
+        from obtune import inverse
+
+        ecfg = dict(exec_cfg or {})
+        inverse_grades = inverse.grade_batch(
+            items, list(outputs), timeout_s=float(ecfg.get("timeout_s", 2.0)),
+            mem_mb=int(ecfg.get("mem_mb", 512)), workers=int(ecfg.get("workers", 16)),
+            float_tol=float_tol,
+        )
     if system.baseline == "semcoder":
         from obtune.baselines.semcoder import extract_answer as extract
     elif system.trace:
@@ -324,11 +369,16 @@ def build_trial_rows(
         # generation that never reaches `=> ` grades as an empty answer (format_fail).
         from obtune.trace import extract_answer as extract
 
-    for it, out, ntok in zip(items, outputs, n_tokens):
+    for k, (it, out, ntok) in enumerate(zip(items, outputs, n_tokens)):
         # A baseline answers in its own format; recover the literal before grading, or
         # every row scores zero against a correct answer wrapped in [ANSWER] tags.
         graded_text = extract(out) if extract else out
-        g = scoring.grade(graded_text, it.output_repr, it.language, float_tol)
+        if inverse_grades is not None:
+            g = inverse_grades[k]
+            err = inverse.error_category(g)
+        else:
+            g = scoring.grade(graded_text, it.output_repr, it.language, float_tol)
+            err = scoring.error_category(g, it.language)
         row = TrialRow(
             run_id=meta["run_id"],
             run_ts=meta["run_ts"],
@@ -353,7 +403,7 @@ def build_trial_rows(
             correct=int(g.correct),
             parse_ok=int(g.parse_ok),
             grade_method=g.grade_method,
-            error_category=scoring.error_category(g, it.language),
+            error_category=err,
             n_gen_tokens=int(ntok),
             gpu_id=meta.get("gpu_id"),
             config_sha=meta.get("config_sha"),
@@ -362,6 +412,12 @@ def build_trial_rows(
         d = row.model_dump()
         d["raw_exact"] = int(g.raw_exact)  # grading-sensitivity appendix column
         d["format_fail"] = int(g.format_fail)
+        if inverse_grades is not None:
+            d["task"] = "input"
+            d["exec_status"] = g.exec_status
+            d["exec_output"] = g.exec_output
+            d["called_name"] = g.called_name
+            d["args_exact"] = int(g.raw_exact)
         rows.append(d)
     return rows
 
@@ -625,6 +681,7 @@ def run_cell(
     meta_base: Mapping[str, Any],
     resume: bool = True,
     limit: Optional[int] = None,
+    task: str = "output",
 ) -> CellResult:
     import time
 
@@ -638,7 +695,7 @@ def run_cell(
                           skipped=True)
 
     items = list(items)[: limit or None]
-    texts = render_prompts(items, system, engine.tokenizer)
+    texts = render_prompts(items, system, engine.tokenizer, task=task)
     items, texts, overlong = drop_overlong(
         items, texts, engine.tokenizer,
         max_model_len=int(engine.ecfg.get("max_model_len", 4096)),
@@ -729,11 +786,12 @@ def run_cell(
         "elapsed_s": round(elapsed, 2),
         "gen_tokens": int(sum(ntoks)),
         "tokens_per_sec": round(sum(ntoks) / elapsed, 2) if elapsed > 0 else 0.0,
-        **_prov(system),
+        "task": task,
+        **_prov(system, task),
     }
     rows = build_trial_rows(
-        items, outs, ntoks, system, {**meta, **_prov(system)},
-        float_tol=float_tol,
+        items, outs, ntoks, system, {**meta, **_prov(system, task)},
+        float_tol=float_tol, task=task, exec_cfg=(cfg.get("scoring") or {}).get("exec"),
     )
     if extras:
         for r, e in zip(rows, extras):
@@ -896,6 +954,12 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
         languages = [args.language]
     eval_conditions = list(cfg["eval_conditions"])
     raw_systems = list(cfg["systems"])
+    task = str(cfg.get("task", "output"))
+    if task not in ("output", "input"):
+        raise ValueError(f"{args.config}: task must be output|input, got {task!r}")
+    if task == "input" and "H1" in eval_conditions:
+        # Rule 3 of CLAUDE.md §3.2: the H1 budget is spent; no new grid may read it.
+        raise ValueError("task='input' grids may not include H1 (quarantine budget spent)")
     eval_source = args.source or cfg.get("eval_source", data.DEFAULT_EVAL_SOURCE)
     grid_train_conditions = list(cfg.get("train_conditions") or [])
     grid_seeds = [int(x) for x in (cfg.get("seeds") or [cfg.get("seed", GLOBAL_SEED)])]
@@ -988,12 +1052,13 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
                         "config_sha": config_sha,
                         "script_sha": script_sha,
                         "git_commit": _git_commit(),
-                        **_prov(system),
+                        "task": task,
+                        **_prov(system, task),
                     }
                     try:
                         res = run_cell(
                             engine, items, system, cell, cfg, meta_base,
-                            resume=resume, limit=args.limit,
+                            resume=resume, limit=args.limit, task=task,
                         )
                     except _UnroutedCell as exc:
                         # Recorded as a skipped cell, not a failure: the routed system

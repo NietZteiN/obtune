@@ -1,0 +1,55 @@
+# RQ5' (docs/RQ_SUMMARY.md §6.5) — the INVERSE task: program + return value -> a call that
+# returns it. MODEL-NEUTRAL. NO H1 (task='input' grids refuse it in eval_vllm.run_grid).
+#
+# WHY THIS EXISTS. Every adapter in the project was trained on output prediction only. If
+# what tuning teaches is a fact about the CODE (reading it under a transform), it should be
+# usable in either direction; if it is a fact about the forward MAPPING, the inverse task
+# should show base-level accuracy — Nikiema et al. 2025's "cognitive specialization", which
+# the CFT replication (docs/CFT_REPLICATION.md) found at 0 % on deobfuscation. This is the
+# stress test for "understanding": same items, same code, the question asked backwards.
+#
+# Design.
+# * ONE prompt for every arm, with the frozen L0 one-shot demo (prompts.ONE_SHOT_DEMOS,
+#   shown in its inverse form). No arm was trained on this prompt, so the demo is the same
+#   distribution shift for all of them; without it the tuned arms — trained to answer with a
+#   bare literal — would fail on format alone, and the read would be about the format, not
+#   the task. `formatonly` is here to measure exactly that residue.
+# * Grading is by EXECUTION (src/obtune/inverse.py): any call that reproduces the value is
+#   correct, as in CRUXEval-I. `args_exact` (the gold call) is a secondary column.
+# * max_tokens 128: a call with list/dict arguments is longer than a return literal.
+#   `stop` keeps the base config's "\n\n" / fence; the call is one line.
+# * Two cell blocks are submitted as two stages (core / specialists) so neither needs an
+#   8-hour backfill slot; both write to this phase.
+_extends: _base_eval.yaml
+
+phase: inverse_generic
+experiment_id: inverse_generic
+run_tag: inverse_generic
+language: python
+eval_source: heldout
+task: input
+
+engine:
+  gpu_memory_utilization: 0.85
+
+sampling:
+  max_tokens: 128
+
+scoring:
+  float_tol: 1.0e-6
+  exec: {timeout_s: 2.0, mem_mb: 512, workers: 16}
+
+systems:
+  - {name: base, arch: none, one_shot: true}
+  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0, one_shot: true}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0, one_shot: true}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix, one_shot: true}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix, one_shot: true}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1, one_shot: true}
+  - {name: tuned_L1b, adapter: "runs/adapters/{model}/{language}/L1b_r32_s17/best", arch: per_type, train_cond: L1b, one_shot: true}
+  - {name: tuned_L1r, adapter: "runs/adapters/{model}/{language}/L1r_r32_s17/best", arch: per_type, train_cond: L1r, one_shot: true}
+  - {name: tuned_L2, adapter: "runs/adapters/{model}/{language}/L2_r32_s17/best", arch: per_type, train_cond: L2, one_shot: true}
+  - {name: tuned_S1, adapter: "runs/adapters/{model}/{language}/S1_r32_s17/best", arch: per_type, train_cond: S1, one_shot: true}
+  - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2, one_shot: true}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

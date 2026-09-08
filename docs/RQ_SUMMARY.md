@@ -37,6 +37,7 @@ Two panels, never pooled: **Qwen2.5-Coder-1.5B** (frozen, §1–§17 of the repo
 | 18 | **Model scale** (1.5B → 7B → 13B → 34B) | capacity | **+8.56** 34B vs 7B, entirely through tuning |
 | 19 | **Family exposure** (X1, sibling of the held-out obfuscator) | training on the *family*, not the transform | 7B with family exposure ties 34B without |
 | 20 | **Symbolic normalization** | zero-training canonicalisation | a second instrument on the same mechanism |
+| 21 | **In-context learning** (`icl_k1_clean`, `icl_k1_cross`, `icl_k4_cross`) | 1 or 4 demonstrations in the prompt, no tuning | best ICL (`k` = 4, cross-condition demos) is **−9.87 [−11.47, −8.22]** vs the clean-code adapter, pooled; +5…+9 over `base` on every condition, but never within 10 pts of any tuned arm |
 
 ### Legend — how systems are named
 
@@ -128,22 +129,28 @@ control — with a 95 % cluster-bootstrap interval that excludes zero, and by ho
 Being *leader* is not the same as *beating the control*: the top six always sit inside each
 other's intervals, so which of them is nominally first is seed noise.
 
-Names, decoded (full key in §1): `mole_random` — mixture of the 8 specialist adapters with the
+Columns `base`/`best ICL`/`tuned_L0` are plain accuracies on the same items, no CI. Names, decoded (full key in §1): `mole_random` — mixture of the 8 specialist adapters with the
 gate frozen at random init; `cons_lam3` — paired-consistency objective (SFT + 3 × KL to a
 clean-code teacher on the L0 parent), seed 17; `cons_lam3_s42` — the same recipe at seed 42;
 `mono_cases` — one adapter on all six seen conditions with 3× input cases; `x1_resample` — an X1
 specialist trained on three resampled obfuscation surfaces; `tuned_X1` — a plain X1 specialist.
 
-| condition | leader | acc | beats the clean-code control? |
-|---|---|---:|---|
-| `L0` | `mole_random` | 0.4329 | **nothing does** |
-| `L1b` | `cons_lam3` | 0.4047 | all top six, +3.92…+4.22 |
-| `L1r` | `mono_cases` | 0.3994 | all top six, +1.92…+2.46 |
-| `L2` | `mono_cases` | 0.4006 | two arms, +1.92 / +2.04 |
-| `S1` | `cons_lam3_s42` | 0.4018 | one arm, +2.33 |
-| `S2` | `cons_lam3_s42` | 0.4229 | all top six, +3.00…+3.36 |
-| `X1` (held-out family) | `x1_resample` | 0.3237 | family arms, +3.95…+5.35 |
-| `H1` (held out, spent) | `tuned_X1` | 0.3180 | family arms only |
+| condition | leader | acc | beats the clean-code control? | `base` | best ICL (no tuning) | `tuned_L0` |
+|---|---|---:|---|---:|---:|---:|
+| `L0` | `mole_random` | 0.4329 | **nothing does** | 0.257 | 0.329 (`k4_cross`) | 0.429 |
+| `L1b` | `cons_lam3` | 0.4047 | all top six, +3.92…+4.22 | 0.197 | 0.271 (`k4_cross`) | 0.359 |
+| `L1r` | `mono_cases` | 0.3994 | all top six, +1.92…+2.46 | 0.207 | 0.295 (`k4_cross`) | 0.376 |
+| `L2` | `mono_cases` | 0.4006 | two arms, +1.92 / +2.04 | 0.202 | 0.287 (`k4_cross`) | 0.383 |
+| `S1` | `cons_lam3_s42` | 0.4018 | one arm, +2.33 | 0.168 | 0.254 (`k4_cross`) | 0.380 |
+| `S2` | `cons_lam3_s42` | 0.4229 | all top six, +3.00…+3.36 | 0.193 | 0.281 (`k4_cross`) | 0.388 |
+| `X1` (held-out family) | `x1_resample` | 0.3237 | family arms, +3.95…+5.35 | 0.119 | not run | 0.270 |
+| `H1` (held out, spent) | `tuned_X1` | 0.3180 | family arms only | — | not run | — |
+
+The three right-hand columns are the same items (`baselines_generic` cells, n = 1,247–1,670 per
+condition) and are there to place the tuned arms: ICL with four cross-condition demonstrations is
+the best thing that costs no training, and it recovers roughly **40 % of the gap** between `base`
+and the clean-code adapter on every condition — never more. `icl_k1_clean` / `icl_k1_cross` sit
+2–4 points below `k4_cross` everywhere. No ICL arm has been run on the held-out family.
 
 ---
 
@@ -361,6 +368,8 @@ observation and is reported as such. Refuted hypotheses are reported as refuted.
 ---
 
 ## Changelog
+- **2026-09-08 (ICL)** — §1 row 21 adds the in-context-learning baselines; §3 gains `base` / best-ICL /
+  `tuned_L0` reference columns per condition (user request).
 - **2026-09-08 (later)** — §1 gains a naming legend (every system name decoded, with the
   approach number it belongs to); §3 now defines *leader* and decodes each leader's name
   (user request: the names were opaque).
