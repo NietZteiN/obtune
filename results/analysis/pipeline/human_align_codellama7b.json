@@ -1,0 +1,194 @@
+{
+ "rq": "E10 (human alignment)",
+ "script": "48_human_align.py",
+ "generated_utc": "2026-09-08T13:16:21+00:00",
+ "models": [
+  "codellama-7b"
+ ],
+ "accuracy": {},
+ "format_fail": {},
+ "contrasts": {},
+ "hypotheses": [
+  {
+   "id": "H-human-base",
+   "rule": "item-level rho(base, human): ci_lo>0 CONFIRMED / ci_hi<0 REFUTED",
+   "verdict": "INCONCLUSIVE",
+   "evidence": "rho=0.1319 [-0.14, 0.3808]"
+  },
+  {
+   "id": "H-human-shift",
+   "rule": "d_rho(tuned_L0 - base): ci_lo>0 TOWARD / ci_hi<0 AWAY",
+   "verdict": "AWAY",
+   "evidence": "d_rho=-0.3027 [-0.5745, -0.0276]; mono_all -0.174 (NO DETECTABLE SHIFT); cons_lam3 -0.244 (NO DETECTABLE SHIFT)"
+  },
+  {
+   "id": "H-human-tier",
+   "rule": "condition-level ordering (REPORTED, n=5, never verdicted)",
+   "verdict": "REPORTED",
+   "evidence": "base +0.82, tuned_L0 -0.10, mono_all -0.41, cons_lam3 -0.41"
+  }
+ ],
+ "human": {
+  "n_cells": 98,
+  "n_responses": 600,
+  "mean_accuracy": 0.3679
+ },
+ "joined_cells": 98,
+ "accuracy_by_arm": {
+  "base": 0.2755,
+  "tuned_L0": 0.3367,
+  "mono_all": 0.2959,
+  "cons_lam3": 0.3061
+ },
+ "grading_sensitivity": {
+  "base": {
+   "strict_pct": 28.75,
+   "lenient_pct": 27.5,
+   "gap_pts": -1.25,
+   "format_fail_pct": 7.19,
+   "strict_is_underestimate": false,
+   "normalized_share_of_correct_pct": 71.74,
+   "grade_methods": {
+    "normalized": 294,
+    "exact": 26
+   }
+  },
+  "tuned_L0": {
+   "strict_pct": 42.5,
+   "lenient_pct": 44.69,
+   "gap_pts": 2.19,
+   "format_fail_pct": 1.88,
+   "strict_is_underestimate": true,
+   "normalized_share_of_correct_pct": 0.0,
+   "grade_methods": {
+    "normalized": 184,
+    "exact": 136
+   }
+  },
+  "mono_all": {
+   "strict_pct": 42.81,
+   "lenient_pct": 44.69,
+   "gap_pts": 1.88,
+   "format_fail_pct": 1.25,
+   "strict_is_underestimate": false,
+   "normalized_share_of_correct_pct": 0.0,
+   "grade_methods": {
+    "normalized": 183,
+    "exact": 137
+   }
+  },
+  "cons_lam3": {
+   "strict_pct": 42.81,
+   "lenient_pct": 44.69,
+   "gap_pts": 1.88,
+   "format_fail_pct": 0.94,
+   "strict_is_underestimate": false,
+   "normalized_share_of_correct_pct": 0.0,
+   "grade_methods": {
+    "normalized": 183,
+    "exact": 137
+   }
+  }
+ },
+ "item_level": {
+  "n_cells": 98,
+  "n_programs": 20,
+  "rho": {
+   "base": {
+    "rho": 0.1319,
+    "ci_lo": -0.14,
+    "ci_hi": 0.3808,
+    "excludes_zero": false
+   },
+   "tuned_L0": {
+    "rho": -0.1708,
+    "ci_lo": -0.4058,
+    "ci_hi": 0.0936,
+    "excludes_zero": false
+   },
+   "mono_all": {
+    "rho": -0.0425,
+    "ci_lo": -0.2758,
+    "ci_hi": 0.2136,
+    "excludes_zero": false
+   },
+   "cons_lam3": {
+    "rho": -0.1126,
+    "ci_lo": -0.3528,
+    "ci_hi": 0.1401,
+    "excludes_zero": false
+   }
+  },
+  "delta_rho": {
+   "tuned_L0": {
+    "delta": -0.3027,
+    "ci_lo": -0.5745,
+    "ci_hi": -0.0276,
+    "verdict": "AWAY"
+   },
+   "mono_all": {
+    "delta": -0.1745,
+    "ci_lo": -0.43,
+    "ci_hi": 0.0591,
+    "verdict": "NO DETECTABLE SHIFT"
+   },
+   "cons_lam3": {
+    "delta": -0.2445,
+    "ci_lo": -0.5196,
+    "ci_hi": 0.0561,
+    "verdict": "NO DETECTABLE SHIFT"
+   }
+  },
+  "undefined_draw_frac": {
+   "base": 0.0,
+   "tuned_L0": 0.0,
+   "mono_all": 0.0,
+   "cons_lam3": 0.0
+  }
+ },
+ "tier_level": {
+  "table": {
+   "human": {
+    "T_L0": 0.4056,
+    "T_L1": 0.3987,
+    "T_L1b": 0.3824,
+    "T_L2": 0.341,
+    "T_L3": 0.3148
+   },
+   "base": {
+    "T_L0": 0.4,
+    "T_L1": 0.2778,
+    "T_L1b": 0.25,
+    "T_L2": 0.2,
+    "T_L3": 0.25
+   },
+   "tuned_L0": {
+    "T_L0": 0.35,
+    "T_L1": 0.3333,
+    "T_L1b": 0.25,
+    "T_L2": 0.3,
+    "T_L3": 0.45
+   },
+   "mono_all": {
+    "T_L0": 0.3,
+    "T_L1": 0.2222,
+    "T_L1b": 0.3,
+    "T_L2": 0.25,
+    "T_L3": 0.4
+   },
+   "cons_lam3": {
+    "T_L0": 0.3,
+    "T_L1": 0.2222,
+    "T_L1b": 0.3,
+    "T_L2": 0.25,
+    "T_L3": 0.45
+   }
+  },
+  "rank_corr_vs_human": {
+   "base": 0.8208,
+   "tuned_L0": -0.1,
+   "mono_all": -0.4104,
+   "cons_lam3": -0.4104
+  }
+ }
+}
