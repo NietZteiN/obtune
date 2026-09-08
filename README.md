@@ -1,7 +1,7 @@
 # obtune — Does fine-tuning teach semantic invariance?
 
 *Generalization, Modularity, and Attention Under Code Obfuscation.*
-*Last updated: 2026-09-04*
+*Last updated: 2026-09-07*
 
 LLMs degrade sharply on obfuscated code. Prior fine-tuning work targets **deobfuscation** —
 recovering the original source. This project asks a different question: does fine-tuning on
@@ -19,10 +19,16 @@ The discriminator is a **held-out obfuscator (H1)** that never appears in any tr
 
 Secondary: does tuning move models toward or away from **human** difficulty orderings (Papers 2–3)?
 
-**Results: [`MASTER_REPORT.md`](MASTER_REPORT.md)** — every number the project has produced, in one
-frame, recomputed from the per-cell parquets (2,966 cells / 2,200,119 graded trials). It is the
-living document; the dated revisions it grew out of are archived in [`docs/`](docs/). Two panels:
-§1–§17 are the frozen Qwen2.5-Coder-1.5B era, §18–§25 the current CodeLlama-7b/13b one.
+**Findings at a glance: [Does fine-tuning teach invariance?](https://claude.ai/code/artifact/7b0611fe-c4c6-46ba-b4f8-dbde9962e63f)**
+— a one-page summary of the six supported claims with their intervals, the per-condition leader
+board, and what is still unsettled. Private link; share from the page's own menu.
+
+**Results in full: [`MASTER_REPORT.md`](MASTER_REPORT.md)** — every number the project has
+produced, in one frame, recomputed from the per-cell parquets (3,258 cells / 2,650,457 graded
+trials). It is the living document; the dated revisions it grew out of are archived in
+[`docs/`](docs/). Two panels: §1–§17 are the frozen Qwen2.5-Coder-1.5B era, §18–§28 the current
+CodeLlama-7b/13b/34b one. The experiment plan behind the current campaign is
+[`docs/PAPER_EXPERIMENTS.md`](docs/PAPER_EXPERIMENTS.md).
 
 Full design: [`docs/design_doc_v0.1.md`](docs/design_doc_v0.1.md). Hypothesis ledger and phase
 tracker: [`docs/CHECKLIST.md`](docs/CHECKLIST.md). Operating rules: [`CLAUDE.md`](CLAUDE.md).
@@ -35,6 +41,11 @@ Single-transform from the L0 parent, never stacked, identical semantics in Pytho
 
 `L0` original · `L1b` adversarial rename · `L1r` random hex rename · `L2` sequential minify ·
 `S1` control-flow flattening · `S2` opaque predicates + dead code · **`H1` held out, never trained**
+
+Two further families were added for the transfer question and are reported in their own
+namespaces: **`X1`** (trainable sibling of H1's encoding + MBA family, which predicts H1 to
+r = 0.9992 and replaced it once H1's two-read budget was spent) and **`X2`/`Y2`** (a second pair
+routing values through exception machinery, `Y2` eval-only).
 
 The legacy Papers-1/3 tiers (`L0/L1/L1b/L2/L3`) live in a separate `tier_icse` namespace on
 byte-identical rows — the only rows comparable to the human baselines. Their semantics differ per
