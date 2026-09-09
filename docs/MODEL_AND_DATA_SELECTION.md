@@ -196,6 +196,49 @@ None of D1–D5 changes the training corpus; every adapter already trained stays
 **evaluation-only columns** and inherit X1's own-namespace rule: never pooled with the ladder, never
 used to select anything.
 
+## 5a. Preflight — what is actually on disk (`scripts/preflight_panel.py`)
+
+Run before any job is queued; it reads `configs/models.yaml`, so a model added to the panel
+is preflighted automatically. Two distinctions it exists to make, both of which the first
+audit on 2026-09-09 got wrong before they were fixed:
+
+* **A complete snapshot vs. a killed one.** `snapshot_download` writes blobs and symlinks
+  them into `snapshots/<rev>/`, so an interrupted download leaves the right *names* with a
+  missing or dangling target. The authority is `model.safetensors.index.json`: every file in
+  its `weight_map` must exist, resolve through its symlink and be non-empty. A `.incomplete`
+  blob **beside a complete shard set is orphaned scratch, not a broken model** —
+  `codellama-34b` resolves all seven shards (62.9 GB) and carries 23.7 GB of orphans from an
+  earlier attempt. That is a disk report; deleting it is a human decision (CLAUDE.md).
+* **Metadata vs. weights.** Fetching `config.json` alone (which the gate work does, to read
+  `n_layers`/`hidden_size` from the real file) creates a snapshot directory with no weights
+  in it. That reads as "downloaded" to anything that only checks for the directory.
+
+State at 2026-09-09:
+
+| | status |
+|---|---|
+| `codellama-7b/13b/34b`, `llama31-8b`, `llama31-8b-base`, `gemma3-12b` | **complete** (12.6 / 24.2 / 62.9 / 15.0 / 15.0 / 22.7 GB) |
+| `starcoder2-15b`, `codegemma-7b`, `granite31-8b` | metadata only — downloading (dev chain 385666 → 385667 → 385668) |
+| `semcoder`, `semcoder-s` | never downloaded; `role: baseline_only`, off the critical path, reported as optional |
+| train pairs, held-out eval items (ladder + X1/X1m/X1s + 10 composites), corpus base, splits, human data | **all present** |
+| raw HF datasets | `code_search_net`, `mbpp`, `mbppplus` cached; **APPS, CRUXEval, HumanEval were not** — see below |
+
+**The corpus can be *used* but could not be *rebuilt* on this cluster.** The tier-1 sources
+that produced the 2,231-program corpus were fetched on the old host and never entered juno's
+cache, so `scripts/02_build_corpus.py` had nothing to read. Nothing is blocked by this — every
+job reads `data/train/base/python.jsonl` — but for an artifact-track submission it is the
+difference between "the corpus is included" and "the corpus can be regenerated", so
+`scripts/fetch_corpus_datasets.py` (job 385669) pulls them.
+
+**Scheduling note, learned the same day.** The `high-throughput` QOS named in
+`scripts/pipeline/plan.yaml` **does not exist on juno** (`sacctmgr show qos`: normal, juno,
+hpcre, large, fio-bench, juno-dev, juno-pri, education). Jobs requesting it fall back to the
+default QOS, whose **`MaxJobsPU` is 4** — shared with every other project on this account. On
+2026-09-09 four `nla_ml_*` array tasks held all four slots with ~52 more queued, so the panel
+downloads sat at `QOSMaxJobsPerUserLimit` indefinitely. `dev` has its own QOS (`juno-dev`,
+`MaxJobsPU=1`, 2 h walltime) and is unaffected, so CPU work — downloads included — should go
+there when the shared limit is saturated. GPU work has no such escape hatch and simply waits.
+
 ## 6. Cost
 
 Per new 7–9B model, core arms + evals: `tuned_L0` 22 min + `tuned_X1` 22 min + `mono_all` 3.5 h +
@@ -208,6 +251,13 @@ Downloads: CodeGemma-7B ~17 GB, StarCoder2-15B ~32 GB, Granite-8B ~16 GB, OLMo-2
 ---
 
 ## Changelog
+- **2026-09-09 (c)** — §5a added: `scripts/preflight_panel.py`, the on-disk audit. Six models
+  complete, three downloading, data tree complete. Two facts it surfaced: `codellama-34b` and
+  `gemma3-12b` carry 23.8 GB of orphaned `.incomplete` blobs beside complete shard sets (reclaimable,
+  not a blocker), and the tier-1 corpus datasets were never in juno's cache, so the corpus could be
+  used but not rebuilt — `scripts/fetch_corpus_datasets.py` fixes that. Also recorded: the
+  `high-throughput` QOS does not exist here and the real limit is 4 jobs per user shared across
+  projects, which is why CPU work now goes to `dev`.
 - **2026-09-09 (b)** — All five adopted and entered in `models.yaml`. §2a added: **three of the five
   reject the system role** (StarCoder2, CodeGemma) or have no chat template at all (pretrained
   Llama-3.1), measured on the real tokenizers before any weights were pulled; `prompts.py` gained a
