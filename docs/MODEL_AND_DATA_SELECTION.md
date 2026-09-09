@@ -54,6 +54,47 @@ cards as known to the author and **must be re-checked at download** (`config.jso
 | **OLMo-2-7B/13B-Instruct** | AI2 (US) | general, fully open data | 7/13B | Apache 2.0 | ❌ | the only candidate whose pretraining data is public — the contamination question (§4) can be *answered* on it rather than argued |
 | ~~Qwen2.5-Coder-1.5B/7B, Qwen2.5-7B, Qwen3-0.6B, DeepSeek-Coder-6.7B, R1-Distill-Qwen~~ | China | — | — | — | on disk | **barred** |
 
+## 2a. Measured 2026-09-09: three of the five panel models reject the system role
+
+Before any weights were pulled, every candidate tokenizer was rendered with the project's
+real prompt. The result changed the code, not just the config:
+
+| model | `apply_chat_template` with a system turn | mode |
+|---|---|---|
+| CodeLlama-7b/13b/34b, Llama-3.1-8B-Instruct, **Granite-3.1-8B** | own system turn | `system` |
+| **Gemma-3-12B-it** | the template folds it into the first user turn itself | `system` |
+| **StarCoder2-15B-Instruct** | `TemplateError: System messages are not allowed in this template` | `merged` |
+| **CodeGemma-7B-it** | `TemplateError: System role not supported` | `merged` |
+| **Llama-3.1-8B (pretrained)** | no `chat_template` at all | `plain` |
+
+`CLAUDE.md` §4 silent-failure #3 makes this load-bearing: train, vLLM eval, HF eval and
+attention extraction must build byte-identical prompts, so the fix cannot be a call-site
+`try/except`. `prompts.py` gained one adaptation layer — `template_mode` (resolved once per
+template, cached, and **verified**: a template that accepts a system role but silently drops
+its text raises rather than training on a prompt with no task description), `adapt_messages`
+(folds the system text into the head of the first user turn — exactly what Gemma-3's own
+template does, so the merged form is not an invention), `render_plain` (`plain_v1`, a fixed
+versioned plain-text form for a checkpoint with no template), and `to_trl_example`, which
+hands TRL conversational messages when a template exists and TRL's text prompt-completion
+form when it does not. `render_chat`, `render_full`, `objectives._ids` (the KL term),
+`attention/capture.py` and `scripts/inspect_batch.py` all route through it.
+
+In `system` mode the layer is the identity, so **every adapter already trained is
+unaffected**. `tests/test_template_adaptation.py` (30 cases) asserts, per model, that the
+mode is what `models.yaml` declares, that the system text survives rendering, that the
+prompt is a prefix of prompt+completion (TRL's `completion_only_loss` contract), and that
+what the trainer templates equals what eval renders.
+
+Rejected alternative for the pretrained checkpoint: borrow the instruct twin's template.
+It would put control tokens in front of a checkpoint that never saw them, and the
+base-vs-instruct comparison — the reason that model is in the panel — would be confounded
+by a template the base model cannot read.
+
+One more consequence, recorded in `models.yaml`: Gemma-3-12B is a
+`Gemma3ForConditionalGeneration` checkpoint and PEFT matches `target_modules` by **name
+suffix**, so `q_proj` would attach LoRA to the vision tower as well. `peft_exclude_modules:
+[vision_tower, multi_modal_projector]` is declared per model and passed to `LoraConfig`.
+
 ## 3. Recommended panel and the gate every new model passes
 
 **Panel (recommendation).** Three lineages × {code, general}, with the CodeLlama scale ladder as
@@ -61,11 +102,14 @@ the spine and one true pretrained checkpoint:
 
 | lineage | code model | general model |
 |---|---|---|
-| Meta | CodeLlama-7b / 13b / 34b (exists) | Llama-3.1-8B-Instruct (exists) + **Llama-3.1-8B pretrained** (on disk) |
-| Google | **CodeGemma-7B-it** | **Gemma-3-12B-it** (on disk) |
-| BigCode / IBM | **StarCoder2-15B-Instruct** | **Granite-3.1-8B-Instruct** *(or Mistral-7B-v0.3)* |
+| Meta | CodeLlama-7b / 13b / 34b (`codellama-*`, exist) | Llama-3.1-8B-Instruct (`llama31-8b`, exists) + **Llama-3.1-8B pretrained** (`llama31-8b-base`) |
+| Google | **CodeGemma-7B-it** (`codegemma-7b`) | **Gemma-3-12B-it** (`gemma3-12b`) |
+| BigCode / IBM | **StarCoder2-15B-Instruct** (`starcoder2-15b`) | **Granite-3.1-8B-Instruct** (`granite31-8b`) |
 
-That is **five new models**. If the budget or the queue forces a cut, the order of importance is
+That is **five new models — all five adopted 2026-09-09** and entered in `configs/models.yaml`
+with `role: candidate_main`, every `n_layers`/`hidden_size` read from the downloaded
+`config.json` rather than a model card. Alternates (Mistral-7B-v0.3, OLMo-2-13B) stay under
+`candidates:`. If the budget or the queue forces a cut, the order of importance is
 StarCoder2-15B (different pretraining pipeline) > Gemma-3-12B (already on disk, 2025) > Llama-3.1-8B
 pretrained (the base-vs-instruct axis, already on disk) > CodeGemma-7B > Granite/Mistral. OLMo-2 is
 the right choice **if** the paper makes a contamination argument (§4.2) — it replaces Granite in
@@ -79,7 +123,7 @@ unseen-in-stack read per model; RQ2's cue evidence (X1 split, order pair) stays 
 
 **Gate protocol per model** (pre-declared before any adapter is trained; the Llama-3.1 gate is the
 worked example):
-1. `basecheck_<model>.yaml`: untuned accuracy and `format_fail` on the seven columns. The model
+1. `configs/eval/basecheck_panel.yaml --model <key>` (model-neutral): untuned accuracy and `format_fail` on the seven columns. The model
    enters the panel if `format_fail` ≤ 0.15 on L0 and untuned L0 accuracy is within the range the
    paper can interpret (a base at 0.05 has no room for the −4 pt unseen tax to be visible).
 2. Chat template renders a system role deterministically (`prompts.py` unchanged) — or, for the
@@ -164,6 +208,14 @@ Downloads: CodeGemma-7B ~17 GB, StarCoder2-15B ~32 GB, Granite-8B ~16 GB, OLMo-2
 ---
 
 ## Changelog
+- **2026-09-09 (b)** — All five adopted and entered in `models.yaml`. §2a added: **three of the five
+  reject the system role** (StarCoder2, CodeGemma) or have no chat template at all (pretrained
+  Llama-3.1), measured on the real tokenizers before any weights were pulled; `prompts.py` gained a
+  single verified adaptation layer that every path routes through, covered by 30 tests, and the
+  identity in `system` mode so no existing adapter is affected. Gate config is model-neutral
+  (`eval/basecheck_panel.yaml --model <key>`). Gemma-3 needs `peft_exclude_modules` for its vision
+  tower. Downloads submitted (StarCoder2 385346, CodeGemma 385353, Granite 385360); gates submitted
+  for the two already on disk (Gemma-3 385500, pretrained Llama-3.1 385501).
 - **2026-09-09** — Created. Chinese-origin models barred from the paper; Qwen panel results withdrawn
   from the evidence base (kept as record); five-model non-Chinese panel recommended across three
   lineages × {code, general} plus one pretrained checkpoint; gate protocol fixed; dataset objections

@@ -36,7 +36,7 @@ if not os.environ.get("OBTUNE_DATA_DIR") and not any(_REAL_PAIRS.glob("*/*.jsonl
 
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")  # CPU only, and before torch
 
-from obtune import data  # noqa: E402
+from obtune import data, prompts  # noqa: E402
 from obtune.config import load_config  # noqa: E402
 from obtune.train_sft import _effective_train_knobs, resolve_model_cfg  # noqa: E402
 
@@ -96,6 +96,10 @@ def main() -> int:
         seed=int(tcfg.get("seed", 17)),
         dataloader_num_workers=0,
     )
+    # Same adaptation train_sft.py applies, or this gate would test a different dataset
+    # than the one that gets trained.
+    if prompts.template_mode(tok) != "system":
+        ds = ds.map(lambda ex: prompts.to_trl_example(ex, tok))
     trainer = SFTTrainer(
         model=model, args=sft_args, train_dataset=ds, processing_class=tok
     )
@@ -125,16 +129,20 @@ def main() -> int:
         assert all(labels[j] == -100 for j in range(first)), f"row {i}: prompt token supervised"
         assert all(labels[j] == ids[j] for j in sup), f"row {i}: label != input_id in the answer"
 
-        rendered = tok.apply_chat_template(
-            list(ds[i]["prompt"]), tokenize=False, add_generation_prompt=True
-        )
+        # Through the shared renderer: on a model whose template has no system role the
+        # trainer sees adapted messages, so comparing against the raw template would
+        # fail here for the wrong reason (prompts.py, "Template adaptation").
+        raw_prompt = ds[i]["prompt"]
+        rendered = (raw_prompt if isinstance(raw_prompt, str)
+                    else prompts.render_chat(list(raw_prompt), tok))
         decoded_prompt = tok.decode(ids[:first])
         assert decoded_prompt == rendered, (
             f"row {i}: the masked prefix is not the rendered prompt.\n"
             f"--- masked prefix ---\n{decoded_prompt!r}\n--- prompts.render_chat ---\n{rendered!r}"
         )
         decoded_answer = tok.decode(ids[first:])
-        gold = ds[i]["completion"][0]["content"]
+        raw_completion = ds[i]["completion"]
+        gold = raw_completion if isinstance(raw_completion, str) else raw_completion[0]["content"]
         assert gold in decoded_answer, (
             f"row {i}: gold {gold!r} is not inside the supervised span {decoded_answer!r}"
         )

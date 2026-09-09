@@ -1,0 +1,36 @@
+# GO/NO-GO gate for a candidate panel model (docs/MODEL_AND_DATA_SELECTION.md §3, step 1).
+#
+# MODEL-NEUTRAL: pass the key with `--model`, e.g.
+#   python -m obtune.eval_vllm --config eval/basecheck_panel.yaml --model gemma3-12b --language python
+#
+# WHY A GATE AT ALL. The Llama-3.1 gate (2026-09-04) is the worked example of why an
+# untuned read is not a formality: that model equalled CodeLlama-7b on L0 to three
+# decimals and its whole apparent margin on the obfuscated columns was FORMAT
+# (format_fail 0.05 vs 0.13-0.16) -- conditional on a well-formed answer it was weaker.
+# A base model whose format floor eats the effect cannot show a +/-4-point unseen-family
+# tax, which is the contrast the paper is built on.
+#
+# THE RULE (frozen before any of these run): the model enters the panel if
+#   format_fail <= 0.15 on L0, AND untuned L0 accuracy is in a band where the paper's
+#   contrasts are visible -- neither at the floor (a model that cannot do the task shows
+#   nothing) nor so high that the ladder saturates.
+# The read is REPORTED for every model whatever the verdict; a NO-GO is a result about
+# base models, not a failure to be hidden.
+#
+# NO H1, NO X1. A gate never touches a held-out column: X1 is read once per new arm by
+# the eval stage that follows, and H1's budget is spent (CLAUDE.md §3.2).
+_extends: _base_eval.yaml
+
+phase: basecheck
+experiment_id: basecheck_panel
+run_tag: basecheck_panel
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+systems:
+  - {name: base, arch: none}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2]

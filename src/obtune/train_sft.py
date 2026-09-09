@@ -115,11 +115,14 @@ def measure_truncation(dataset, tokenizer, max_seq_len: int, sample: Optional[in
     texts, prompt_texts = [], []
     for i in range(n):
         ex = dataset[i]
-        full = list(ex["prompt"]) + list(ex["completion"])
-        texts.append(tokenizer.apply_chat_template(full, tokenize=False))
-        prompt_texts.append(
-            tokenizer.apply_chat_template(list(ex["prompt"]), tokenize=False, add_generation_prompt=True)
-        )
+        # Through prompts.render_* so the measurement matches the prompt the trainer
+        # will actually build on a model whose template has no system role.
+        if isinstance(ex["prompt"], str):  # already adapted to TRL's text form
+            prompt_texts.append(ex["prompt"])
+            texts.append(ex["prompt"] + ex["completion"])
+        else:
+            texts.append(prompts.render_full(list(ex["prompt"]) + list(ex["completion"]), tokenizer))
+            prompt_texts.append(prompts.render_chat(list(ex["prompt"]), tokenizer))
     lens = [len(x) for x in tokenizer(texts, add_special_tokens=False)["input_ids"]]
     plens = [len(x) for x in tokenizer(prompt_texts, add_special_tokens=False)["input_ids"]]
     over = sum(1 for x in lens if x > max_seq_len)
@@ -209,6 +212,20 @@ def main(argv: Optional[list[str]] = None) -> int:
     bundle = data.build_sft_splits({**cfg, "train": tcfg})
     train_ds, val_ds = bundle["train"], bundle["val"]
 
+    # Adapt the conversational examples to what THIS model's chat template accepts
+    # (prompts.py, "Template adaptation"). StarCoder2 and CodeGemma refuse a system role
+    # and a pretrained checkpoint has no template at all, so TRL — which applies the
+    # template itself — would raise on the first, or invent a format on the second, and
+    # the eval prompt would no longer match the training prefix (CLAUDE.md §4 #3).
+    # In "system" mode this is the identity, so every adapter trained before today is
+    # unaffected.
+    render_mode = prompts.template_mode(tokenizer)
+    if render_mode != "system":
+        train_ds = train_ds.map(lambda ex: prompts.to_trl_example(ex, tokenizer))
+        if val_ds is not None:
+            val_ds = val_ds.map(lambda ex: prompts.to_trl_example(ex, tokenizer))
+        print(f"[train_sft] chat-template mode: {render_mode} (examples adapted)", flush=True)
+
     trunc = measure_truncation(train_ds, tokenizer, int(tcfg["max_seq_len"]))
     print(f"[train_sft] truncation: {json.dumps(trunc)}", flush=True)
 
@@ -235,6 +252,10 @@ def main(argv: Optional[list[str]] = None) -> int:
                     one_shot=bool((cfg.get("prompt") or {}).get("one_shot", False)),
                     trace=bool((cfg.get("prompt") or {}).get("trace", False)),
                 ),
+                # How this model's template lays the prompt out (system / merged / plain).
+                # Beside the template hash, not inside it: the hash names the prompt text
+                # and every published cell carries it already.
+                **prompts.render_provenance(tokenizer),
             },
         )
         .capture_git()
@@ -256,6 +277,14 @@ def main(argv: Optional[list[str]] = None) -> int:
         lora_alpha=int(cfg["peft"]["alpha"]),
         lora_dropout=float(cfg["peft"]["dropout"]),
         target_modules=list(cfg["peft"]["target_modules"]),
+        # PEFT matches target_modules by NAME SUFFIX, so on a multimodal checkpoint
+        # (Gemma-3 is `Gemma3ForConditionalGeneration`) `q_proj` also matches the vision
+        # tower's attention and LoRA would be attached to an encoder this task never
+        # uses -- extra trainable parameters, and a merge/geometry comparison against a
+        # text-only model that is no longer like-for-like. Declared per model in
+        # models.yaml (`peft_exclude_modules`), empty for every text-only model.
+        exclude_modules=(list(mcfg.get("peft_exclude_modules") or [])
+                         or list(cfg["peft"].get("exclude_modules") or []) or None),
         task_type=cfg["peft"].get("task_type", "CAUSAL_LM"),
         bias="none",
     )

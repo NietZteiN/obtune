@@ -1389,3 +1389,25 @@ before any read.
 - Dataset: training corpus untouched. Eval-only columns D1–D5. Node: x86_64 + glibc 2.34 → official tarball
   runs in user space; install under $OBTUNE_ROOT/../tools/node and add to env.sh PATH.
 - Awaiting: user's panel size decision (5 vs 3). Then downloads + basecheck configs; no adapters until gates pass.
+
+## 2026-09-09 — FIVE-MODEL PANEL ADOPTED (user: "let's try five models"); GATE RULE PRE-REGISTERED
+
+Panel keys in models.yaml (role: candidate_main): starcoder2-15b, gemma3-12b, codegemma-7b,
+granite31-8b, llama31-8b-base (pretrained). Alternates under `candidates:` (Mistral-7B-v0.3, OLMo-2-13B).
+
+**GATE RULE, frozen before any read:** a candidate enters the panel iff untuned format_fail <= 0.15 on L0
+AND untuned L0 accuracy is in a band where a +/-4-pt contrast is visible (not floor, not saturating).
+Every gate read is REPORTED whatever the verdict. No gate reads X1 or H1.
+Then per model that passes: truncation re-gate at 2048 on 1500 mono rows, loss-mask gate
+(inspect_batch.py), adapter-applied assert on the first eval, and tuned_L0 must clear base beyond the
+seed band before mono_all/cons_lam3 are queued.
+
+Jobs: downloads 385346 (StarCoder2) / 385353 (CodeGemma) / 385360 (Granite); gates 385500 (gemma3-12b),
+385501 (llama31-8b-base). All PENDING on QOSMaxJobsPerUserLimit behind the nla arrays.
+
+**Code change that had to happen first (log/setup/2026-09-09_five-model-panel.md):** 3 of 5 models
+cannot take the system role prompts.py emits. prompts.py now has ONE adaptation layer
+(template_mode/adapt_messages/render_plain/to_trl_example); train_sft, measure_truncation,
+objectives._ids, attention/capture, inspect_batch all route through it. Identity in `system` mode ->
+no existing adapter or cell is affected. 30 tests in tests/test_template_adaptation.py.
+Gemma-3 needs peft_exclude_modules (vision tower) — wired into LoraConfig.

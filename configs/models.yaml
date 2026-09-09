@@ -126,40 +126,104 @@ models:
     grad_accum: 16
     role: baseline_only
 
-# Model used for execution-gated Python->JS transpilation (corpus/transpile.py).
-# Its outputs are accepted only if the JS reproduces the Python canonical outputs.
-transpiler: llama31-8b # 2026-09-09: was qwen25c-7b (barred); JS tier 3 is not needed for the paper
-
-# Candidate panel additions (docs/MODEL_AND_DATA_SELECTION.md §2-§3). NOT resolvable as `--model`
-# until moved into `models:` with n_layers/hidden_size/router_layer copied from the downloaded
-# config.json and the §3 gate passed. Values here are from the model cards and are unverified.
-candidates:
-  starcoder2-15b-instruct:
+  # --- FSE panel extension (2026-09-09) ------------------------------------------
+  # docs/MODEL_AND_DATA_SELECTION.md §3: three lineages x {code, general} plus one
+  # PRETRAINED checkpoint, none Chinese-origin. Every n_layers/hidden_size below is read
+  # from the downloaded config.json, not from a model card. `render_mode` records what
+  # prompts.template_mode() returns for that tokenizer, measured 2026-09-09 -- it is
+  # documentation, not an input: the code re-derives it, and
+  # tests/test_template_adaptation.py fails if a template upgrade changes it.
+  # NONE of these may be trained until its §3 gate passes (basecheck ff <= 0.15, truncation
+  # re-gate at 2048, loss-mask gate, adapter-applied assert).
+  starcoder2-15b:
     hf_id: bigcode/starcoder2-15b-instruct-v0.1
     family: coder
-    origin: BigCode (ServiceNow/HF)
-    note: The Stack v2 lineage; highest priority — the most different code-pretraining pipeline available
-  gemma3-12b-it:
+    origin: BigCode (ServiceNow/HF, US/FR)
+    n_layers: 40
+    router_layer: 20
+    hidden_size: 6144
+    max_seq_len: 2048 # native 16384; 2048 matches the panel and must be truncation-re-gated
+    per_device_batch: 8
+    grad_accum: 8
+    role: candidate_main
+    render_mode: merged # template raises "System messages are not allowed"; system folds into user
+    note: >
+      The Stack v2 pretraining lineage -- the most different code-pretraining pipeline in
+      the panel, and the reason it is first priority. Its template also injects its own
+      assistant preamble; that is part of the model and is left alone.
+  gemma3-12b:
     hf_id: google/gemma-3-12b-it
     family: instruct
     origin: Google
-    note: already in HF_HOME (23 GB); multimodal checkpoint, load text-only and gate the vision tower
+    n_layers: 48 # text_config; the checkpoint is Gemma3ForConditionalGeneration
+    router_layer: 24
+    hidden_size: 3840
+    max_seq_len: 2048
+    per_device_batch: 8
+    grad_accum: 8
+    role: candidate_main
+    render_mode: system # its own template folds a system turn into the first user turn
+    peft_exclude_modules: [vision_tower, multi_modal_projector]
+    note: >
+      Multimodal checkpoint used text-only. PEFT matches target_modules by suffix, so
+      `q_proj` would otherwise attach LoRA to the vision tower as well -- hence the
+      exclusions above, which train_sft.py passes to LoraConfig.
+  codegemma-7b:
+    hf_id: google/codegemma-7b-it
+    family: coder
+    origin: Google
+    n_layers: 28
+    router_layer: 14
+    hidden_size: 3072
+    max_seq_len: 2048 # native 8192
+    per_device_batch: 16
+    grad_accum: 4
+    role: candidate_main
+    render_mode: merged # template raises "System role not supported"
+  granite31-8b:
+    hf_id: ibm-granite/granite-3.1-8b-instruct
+    family: instruct
+    origin: IBM
+    n_layers: 40
+    router_layer: 20
+    hidden_size: 4096
+    max_seq_len: 2048
+    per_device_batch: 16
+    grad_accum: 4
+    role: candidate_main
+    render_mode: system
+    note: Apache 2.0 and ungated -- the panel's one fully permissive licence.
   llama31-8b-base:
     hf_id: meta-llama/Llama-3.1-8B
     family: pretrained
     origin: Meta
-    note: already in HF_HOME (30 GB); no chat template -- plain-text prompt path, declared in the paper
-  codegemma-7b-it:
-    hf_id: google/codegemma-7b-it
-    family: coder
-    origin: Google
-  granite-3.1-8b-instruct:
-    hf_id: ibm-granite/granite-3.1-8b-instruct
-    family: instruct
-    origin: IBM
-    note: Apache 2.0, ungated; swap for mistralai/Mistral-7B-Instruct-v0.3 if preferred
+    n_layers: 32
+    router_layer: 16
+    hidden_size: 4096
+    max_seq_len: 2048
+    per_device_batch: 16
+    grad_accum: 4
+    role: candidate_main
+    render_mode: plain # NO chat template exists; prompts.render_plain (plain_v1) is used
+    note: >
+      The pretrained twin of llama31-8b. It is in the panel for one comparison the rest
+      cannot make: every result in the paper so far is on an instruction-tuned checkpoint,
+      so "tuning moves models away from human difficulty orderings" (E10) could be an
+      artefact of instruction tuning. Its prompts are plain text and the paper must say so.
+
+# Model used for execution-gated Python->JS transpilation (corpus/transpile.py).
+# Its outputs are accepted only if the JS reproduces the Python canonical outputs.
+transpiler: llama31-8b # 2026-09-09: was qwen25c-7b (barred); JS tier 3 is not needed for the paper
+
+# Not in the panel; the alternates named in docs/MODEL_AND_DATA_SELECTION.md §2.
+candidates:
+  mistral-7b-instruct-v0.3:
+    hf_id: mistralai/Mistral-7B-Instruct-v0.3
+    origin: Mistral (FR)
+    note: alternate for granite31-8b
   olmo2-13b-instruct:
     hf_id: allenai/OLMo-2-1124-13B-Instruct
-    family: instruct
     origin: AI2
-    note: public pretraining data -- only candidate on which contamination can be measured rather than argued
+    note: >
+      swap in if the paper measures contamination rather than arguing it -- the only
+      candidate whose pretraining corpus is public.

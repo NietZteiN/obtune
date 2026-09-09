@@ -29,6 +29,7 @@ from typing import Any, Iterable, Optional, Sequence
 
 import numpy as np
 
+from obtune import prompts
 from obtune.attention.metrics import ATTN_DIR, AttentionRecord, save_attention_npz
 from obtune.attention.token_classes import classify_code
 from obtune.config import load_config
@@ -54,7 +55,10 @@ def build_prompt_text(tokenizer, *, code: str, entry_point: str, args_repr: str,
         return text, False
     msgs = build_prompt(code=code, entry_point=entry_point, args_repr=args_repr,
                         language=language, condition=condition, oracle=False)
-    text = tokenizer.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
+    # prompts.render_chat, not the raw template: attention extraction runs on a different
+    # engine (HF eager) and must measure the distribution the accuracy numbers came from
+    # (CLAUDE.md §1, §4 #3) -- including on a model whose template has no system role.
+    text = prompts.render_chat(msgs, tokenizer)
     return text, True
 
 

@@ -459,16 +459,180 @@ def provenance_block(
     }
 
 
+# --------------------------------------------------------------------------- #
+# Template adaptation — ONE policy, applied by every path (2026-09-09)
+# --------------------------------------------------------------------------- #
+# The panel outgrew the assumption that every base model takes a system role. Measured
+# on 2026-09-09 with the real tokenizers:
+#
+#   CodeLlama / Llama-3.1-Instruct / Granite-3.1  -> system role rendered as its own turn
+#   Gemma-3-12b-it                                -> template folds system into the first
+#                                                    user turn ("SYS\n\nU1") and returns
+#   StarCoder2-15b-instruct                       -> TemplateError: "System messages are
+#                                                    not allowed in this template"
+#   CodeGemma-7b-it                               -> TemplateError: "System role not supported"
+#   Llama-3.1-8B (pretrained)                     -> no chat_template at all
+#
+# CLAUDE.md §4 silent-failure #3 makes this load-bearing: train, vLLM eval, HF eval and
+# attention extraction must build byte-identical prompts, so the adaptation cannot live at
+# a call site. It lives here, is resolved once per template, and every renderer goes
+# through it.
+#
+# The two adaptations are content-preserving by construction:
+#   "merged" — the system text becomes the head of the first user turn, separated by a
+#              blank line. This is exactly what Gemma-3's own template does to a system
+#              message, so the merged form is not an invention; it is the one the
+#              template family already defines.
+#   "plain"  — no template exists, so we render a fixed, versioned plain-text form.
+#              REJECTED alternative: borrow the instruct twin's template. It would put
+#              control tokens in front of a checkpoint that never saw them, and the
+#              base-vs-instruct comparison (the reason the pretrained model is in the
+#              panel) would then be confounded by a template the base model cannot read.
+#
+# A model whose template *silently* drops the system content — rather than raising — would
+# defeat this, so `template_mode` verifies that the system text survives rendering and
+# raises if it does not.
+PLAIN_RENDER_VERSION = "plain_v1"
+_PLAIN_HEADERS = {"system": "### System", "user": "### Instruction", "assistant": "### Response"}
+
+_MODE_CACHE: dict[str, str] = {}
+_PROBE_SYSTEM = "__OBTUNE_SYS_PROBE__"
+_PROBE_USER = "__OBTUNE_USER_PROBE__"
+
+
+def template_mode(tokenizer: Any) -> str:
+    """One of "system" | "merged" | "plain" for this tokenizer's chat template.
+
+    Cached on the template string itself, not on the tokenizer object: two tokenizer
+    instances of the same model must resolve identically, and an lru_cache over an
+    unhashable tokenizer would not compile.
+    """
+    tpl = getattr(tokenizer, "chat_template", None)
+    if not tpl:
+        return "plain"
+    key = tpl if isinstance(tpl, str) else json.dumps(tpl, sort_keys=True)
+    hit = _MODE_CACHE.get(key)
+    if hit is not None:
+        return hit
+    probe = [{"role": "system", "content": _PROBE_SYSTEM}, {"role": "user", "content": _PROBE_USER}]
+    try:
+        rendered = tokenizer.apply_chat_template(probe, tokenize=False, add_generation_prompt=True)
+        # A template that accepts the role but discards the text is the dangerous case:
+        # it would train and evaluate on a prompt with no task description at all.
+        if _PROBE_SYSTEM not in rendered:
+            raise ValueError(
+                "this chat template accepts a system role but drops its content; "
+                "refusing to build prompts with it"
+            )
+        mode = "system"
+    except ValueError:
+        raise
+    except Exception:
+        # Any template-side refusal (jinja2 TemplateError and friends). Verify the
+        # fallback actually renders before committing to it.
+        merged = adapt_messages(probe, None, force="merged")
+        rendered = tokenizer.apply_chat_template(merged, tokenize=False, add_generation_prompt=True)
+        if _PROBE_SYSTEM not in rendered or _PROBE_USER not in rendered:
+            raise ValueError("chat template renders neither a system turn nor a merged user turn")
+        mode = "merged"
+    _MODE_CACHE[key] = mode
+    return mode
+
+
+def adapt_messages(
+    messages: Sequence[Mapping[str, str]], tokenizer: Any, force: Optional[str] = None
+) -> list[dict[str, str]]:
+    """Messages this tokenizer's template can render, with identical content.
+
+    In "system" mode the list is returned unchanged. In "merged" and "plain" mode the
+    system turn is folded into the first user turn. `force` is for the probe above and
+    for tests; production callers pass a tokenizer.
+    """
+    mode = force or template_mode(tokenizer)
+    msgs = [dict(m) for m in messages]
+    if mode == "system" or not msgs or msgs[0].get("role") != "system":
+        return msgs
+    system = msgs.pop(0)["content"]
+    for m in msgs:
+        if m.get("role") == "user":
+            m["content"] = f"{system}\n\n{m['content']}"
+            return msgs
+    # No user turn to carry it (never happens for our prompts, but silently dropping the
+    # system text is the one outcome that must not be possible).
+    raise ValueError("cannot merge the system turn: the prompt has no user turn")
+
+
+def render_plain(messages: Sequence[Mapping[str, str]], add_generation_prompt: bool = True) -> str:
+    """Fixed plain-text rendering for a checkpoint with no chat template.
+
+    Deterministic and versioned (`PLAIN_RENDER_VERSION`): training and every eval engine
+    call this same function, so the pretrained model sees one format everywhere.
+    """
+    parts = []
+    for m in adapt_messages(messages, None, force="merged"):
+        parts.append(f"{_PLAIN_HEADERS[m['role']]}\n{m['content']}")
+    if add_generation_prompt:
+        parts.append(f"{_PLAIN_HEADERS['assistant']}\n")
+        return "\n\n".join(parts[:-1]) + "\n\n" + parts[-1]
+    return "\n\n".join(parts)
+
+
 def render_chat(messages: Sequence[Mapping[str, str]], tokenizer: Any) -> str:
     """Apply the model's chat template and open the assistant turn.
 
     Both eval engines go through here, so the eval prompt is byte-identical to the
-    prefix TRL builds during training (which also calls `apply_chat_template` on the
-    `prompt` field with a generation prompt appended).
+    prefix training builds (which renders the same adapted messages with the same
+    template — see `to_trl_example`).
     """
+    if template_mode(tokenizer) == "plain":
+        return render_plain(messages, add_generation_prompt=True)
     return tokenizer.apply_chat_template(
-        list(messages), tokenize=False, add_generation_prompt=True
+        adapt_messages(messages, tokenizer), tokenize=False, add_generation_prompt=True
     )
+
+
+def render_full(
+    messages: Sequence[Mapping[str, str]], tokenizer: Any, completion: Optional[str] = None
+) -> str:
+    """Prompt + assistant turn, no generation prompt — what the trainer's loss sees.
+
+    `completion` may be given as text; otherwise the last message is already the
+    assistant turn.
+    """
+    msgs = list(messages)
+    if completion is not None:
+        msgs = msgs + [{"role": "assistant", "content": completion}]
+    if template_mode(tokenizer) == "plain":
+        return render_plain(msgs, add_generation_prompt=False)
+    return tokenizer.apply_chat_template(adapt_messages(msgs, tokenizer), tokenize=False)
+
+
+def to_trl_example(example: Mapping[str, Any], tokenizer: Any) -> dict[str, Any]:
+    """`build_example`'s output in the form THIS tokenizer's trainer can consume.
+
+    Conversational (adapted messages) when a template exists; TRL's text
+    prompt-completion form when it does not. Either way `completion_only_loss=True`
+    masks the prompt, and `scripts/inspect_batch.py` asserts it did.
+    """
+    prompt, completion = example["prompt"], example["completion"]
+    if template_mode(tokenizer) != "plain":
+        return {"prompt": adapt_messages(prompt, tokenizer), "completion": list(completion)}
+    text = completion[0]["content"] if not isinstance(completion, str) else completion
+    return {"prompt": render_plain(prompt, add_generation_prompt=True), "completion": text}
+
+
+def render_provenance(tokenizer: Any) -> dict[str, str]:
+    """Recorded in every run manifest beside `prompt_template_sha256`.
+
+    Deliberately NOT folded into that hash: the hash identifies the prompt *text*, and
+    every cell already published carries it. How a given model's template lays that text
+    out is a separate fact, and it is the one a reader needs to compare two models.
+    """
+    mode = template_mode(tokenizer)
+    return {
+        "render_mode": mode,
+        "render_version": PLAIN_RENDER_VERSION if mode == "plain" else PROMPT_VERSION,
+    }
 
 
 def assert_demo_disjoint(eval_program_ids: Iterable[str]) -> None:

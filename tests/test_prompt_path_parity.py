@@ -20,6 +20,7 @@ from typing import Any, Sequence
 
 import pytest
 
+from obtune import prompts
 from obtune.eval_hf import _prompt_and_code_span
 from obtune.eval_vllm import render_prompts
 from obtune.schema import EvalItem
@@ -32,12 +33,24 @@ class _StubTokenizer:
     original bug pass. The marker text is what makes "the template was applied" observable.
     """
 
+    # A real tokenizer always carries this attribute; prompts.template_mode() reads it to
+    # decide whether the model has a chat template at all (a pretrained checkpoint has
+    # none and gets prompts.render_plain instead). Each instance gets its own string so
+    # the mode cache, which is keyed on the template, cannot leak between tests.
+    _n = 0
+
     def __init__(self) -> None:
         self.calls: list[list[dict[str, str]]] = []
+        type(self)._n += 1
+        self.chat_template = f"<stub-{type(self)._n}>"
 
     def apply_chat_template(self, messages: Sequence[Any], tokenize: bool = False,
                             add_generation_prompt: bool = False, **_: Any) -> str:
-        self.calls.append([dict(m) for m in messages])
+        # template_mode() probes once per template to find out whether a system role is
+        # accepted. That is not a production render, so it is not recorded — the tests
+        # below read calls[0] and mean "the first prompt the code under test built".
+        if not any(prompts._PROBE_SYSTEM in m["content"] for m in messages):
+            self.calls.append([dict(m) for m in messages])
         body = "".join(f"<|{m['role']}|>\n{m['content']}\n" for m in messages)
         return body + ("<|assistant|>\n" if add_generation_prompt else "")
 

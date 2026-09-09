@@ -510,10 +510,11 @@ into a band. Rule: `cons_lam3 − mono_all` @ X1 ci_lo > 0 at s42 (H-E3 at a sec
 
 ### F10. Panel extension — three lineages × {code, general} + one pretrained checkpoint
 **Question.** Every headline is Meta-lineage (CodeLlama ×3, Llama-3.1-8B). §1–§3 of
-[`MODEL_AND_DATA_SELECTION.md`](MODEL_AND_DATA_SELECTION.md) fix the panel: **StarCoder2-15B-Instruct**
-(BigCode), **Gemma-3-12B-it** (on disk), **Llama-3.1-8B pretrained** (on disk; the base-vs-instruct
-axis), **CodeGemma-7B-it**, **Granite-3.1-8B-Instruct** (or Mistral-7B-v0.3; OLMo-2-13B if the
-contamination argument is made). Priority in that order.
+[`MODEL_AND_DATA_SELECTION.md`](MODEL_AND_DATA_SELECTION.md) fix the panel; **all five were adopted
+on 2026-09-09** and are in `configs/models.yaml`: `starcoder2-15b` (BigCode), `gemma3-12b`,
+`llama31-8b-base` (pretrained — the base-vs-instruct axis), `codegemma-7b`, `granite31-8b`.
+Priority in that order. Note §2a of that document: three of the five needed a prompt-rendering
+adaptation before they could be trained at all.
 **What runs per model.** The gate (§3 of that doc, ~10 min), then the core arms `tuned_L0`,
 `tuned_X1`, `mono_all`, `cons_lam3` (teacher = the model's own `tuned_L0`), evaluated on the six
 ladder conditions, X1, the six depth-2 composites and F2's unseen-in-stack composites.

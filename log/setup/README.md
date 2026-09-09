@@ -27,6 +27,7 @@
 - Consider recording per-condition transform wall-time in the coverage manifest; a condition that is slow to generate is usually one that is bailing and retrying.
 
 ## Entries
+- [`2026-09-09_five-model-panel.md`](2026-09-09_five-model-panel.md) — **five-model panel adopted; three of the five reject the system role.** StarCoder2 and CodeGemma raise `TemplateError`, the pretrained Llama-3.1 has no chat template — `prompts.py` gained one verified adaptation layer used by every path (identity in `system` mode, 30 tests). PEFT-on-the-vision-tower disarmed for Gemma-3. Downloads and the first two gates submitted.
 - [`2026-09-07_autonomous-pipeline.md`](2026-09-07_autonomous-pipeline.md) — RQ1′–RQ4′ adopted; `scripts/pipeline/plan.yaml` (47 stages) + `report.py` run everything planned as SLURM chains; rules pre-registered; E5b/E10 disabled with reasons
 - [`2026-09-06_quota-cleanup.md`](2026-09-06_quota-cleanup.md) — 685 `optimizer.pt` (~346 GB) + uv cache dropped after the quota incident; `/work` 99.7 % → 66.2 %; nothing under `runs/` is resumable now.
 - [`2026-09-01_model-agnostic-and-an-inherited-pin.md`](2026-09-01_model-agnostic-and-an-inherited-pin.md) — model-agnostic refactor + lint; the inherited `_base_lora.yaml` model pin that doomed 17 jobs

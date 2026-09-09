@@ -68,7 +68,16 @@ NEGATIVES_SUBDIR = "negatives"
 # --------------------------------------------------------------------------- #
 
 def _ids(tok, msgs, **kw) -> list[int]:
-    out = tok.apply_chat_template(msgs, tokenize=True, **kw)
+    """Token ids for a message list, through the same adaptation every other path uses.
+
+    A model whose template refuses a system role (StarCoder2, CodeGemma) or has none at
+    all (a pretrained checkpoint) would otherwise tokenize a *different* prompt here than
+    the trainer and the evaluator build — and the KL term would be computed on it.
+    """
+    if prompts.template_mode(tok) == "plain":
+        text = prompts.render_plain(msgs, add_generation_prompt=bool(kw.get("add_generation_prompt")))
+        return list(tok(text)["input_ids"])
+    out = tok.apply_chat_template(prompts.adapt_messages(msgs, tok), tokenize=True, **kw)
     if isinstance(out, dict) or hasattr(out, "keys"):
         out = out["input_ids"]
     return list(out)
