@@ -1,6 +1,6 @@
 # writeup — Figures, paper draft, artifact packaging
 
-*Last updated: 2026-09-08*
+*Last updated: 2026-09-09*
 **Status:** active
 
 ## Hypotheses — open
@@ -41,6 +41,7 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-09_paper-plan-rq1-4.md`](2026-09-09_paper-plan-rq1-4.md) — **paper plan re-cut to RQ1–RQ4** (composition / what is learned / anchoring / robustness) with every finding mapped to its evidence and status, and experiments **F1–F9** listed in `PAPER_EXPERIMENTS.md` §7. Flagged: breadth wins on stacked-seen (the "all three fail" gloss is wrong on that axis); the interference mechanism for merging was refuted 08-17; routing/merging on stacks and unseen-in-stack composites are unmeasured. F3a can close H-stack-identifier from existing cells.
 - [`2026-09-08_paper-framing.md`](2026-09-08_paper-framing.md) — **paper framing** in `docs/PAPER_FRAMING.md`: fluency-not-invariance as the spine, four contributions P1–P4, title/abstract/outline/figures, claims to refuse, SE venue. One gloss corrected: the ladder does not *discriminate* (TR 0.906), it is not that transfer collapses.
 - [`2026-09-08_glmm-agrees.md`](2026-09-08_glmm-agrees.md) — **E7d (job 383180): the charter's GLMM, fitted at last.** `statsmodels` in a side venv so the pinned training env is untouched; per-condition `correct ~ C(system) + (1|program_id) + (1|item_id)`, VB, 40,600 rows. **4/4 headline contrasts agree** with the bootstrap. Contrasts it resolves that the bootstrap cannot (breadth's L0 cost) are reported and deliberately not promoted.
 - [`2026-09-08_fdr-the-uncovered-headline.md`](2026-09-08_fdr-the-uncovered-headline.md) — **E7c (job 383172): the `mono_all`-controlled family, frozen before its read.** `cons_lam3 − mono_all` @ X1 **+4.86 [+2.88, +6.83], q = 0.0049** in 203 tests — RQ3′'s headline is corrected and survives, at all three seeds and all four λ. 22/29 X1 cells survive, 0/6 of `cons_lam3`'s non-X1 cells do: the advantage is specific to the unseen family. `cons_tmono` +0.66 (q = 0.61) corroborates E4 by a second method.

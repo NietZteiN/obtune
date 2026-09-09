@@ -3,7 +3,7 @@
 *Protocol: [`CLAUDE.md`](CLAUDE.md) §0. Update before and after any complex task; this is
 working memory, not a log. The durable record lives in [`log/`](log/).*
 
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-09
 
 ---
 
@@ -1351,3 +1351,29 @@ contributions P1–P4 (labels chosen not to collide with `PAPER_EXPERIMENTS.md` 
 is an already-published one, cross-referenced to its log entry; nothing was read. Recorded
 correction: the first instrument is "the ladder cannot discriminate" (TR 0.906, 1/30 after FDR),
 not "transfer collapses". Entry: `log/writeup/2026-09-08_paper-framing.md`.
+
+## 2026-09-09 — paper plan re-cut to RQ1–RQ4 (no experiment; F1–F9 drafted, NOT pre-registered yet)
+
+User fixed four RQs (composition / what is learned / anchoring / robustness) with stated findings.
+`docs/PAPER_FRAMING.md` rewritten as an evidence map with a status per finding; `docs/PAPER_EXPERIMENTS.md`
+§7 lists F1–F9. Nothing was read; nothing was submitted.
+
+What the record does NOT support as stated (the paper must use the narrower form):
+- "All three composition strategies fail" — breadth WINS on stacked-seen (+3.49/+2.90/+3.05; depth 3/4 +4.15);
+  it fails on unseen (−3.79/−4.28/−2.64) and L0 (−1.74/−2.34/−2.63).
+- "Merging fails through contrasting task-vector geometries" — refuted 08-17 (cross-seed L0 bank cos 0.053,
+  sign conflict 0.487, merges fine). Report merging's failure without that mechanism unless F1b says otherwise.
+- "Consistent performance on the reverse task" — `cons_lam3 − base` +0.49 [−1.38, +2.30]: undamaged, not improved.
+- Unseen-family number of `cons_lam3` is the teacher's (E4); 7th of 33 on X1.
+
+Unmeasured: routing/merging on any CodeLlama composite; router decision on a stack; any stack containing an
+unseen family; specialists on CodeLlama composites (RQ2's "stacking destroys the cue"); compute-matched control
+for the consistency arm.
+
+F-order on the user's go: **F2** (six X1/X1m/X1s-containing composites, 10 systems, ~1.5 GPU-h) → **F1** (MoLE ×4,
+merges ×5, specialists ×3 on the ten existing composites + gate dump, ~2 GPU-h) → F3/F3a/F1b (CPU) → **F4**
+(`cons_lam0`, paired SFT without KL, 4.4 h/seed) → F5, F7, F8; F6 = E5b stays design-gated.
+Rules are drafted in §7 and must be copied here verbatim and committed BEFORE the first F-job is submitted.
+**H1 is never stacked, never read; every unseen component is X1.** Calibrate `size_cap` for the X1 composites
+on real programs before the full build (conditions_composite.yaml header rule); record the common subset
+before any read.

@@ -1,6 +1,6 @@
 # Experiment plan for the paper
 
-*Last updated: 2026-09-08*
+*Last updated: 2026-09-09*
 
 **Working title claim:** *fine-tuning on obfuscated code teaches the transformation **family** it was
 shown, not semantic invariance — and training on more families makes it worse on an unseen one.*
@@ -314,9 +314,213 @@ behaviour that is roughly a week of submit-and-return-tomorrow, not a month.
 particular defines a new held-out sibling: it must be registered with the same discipline H1 had, or
 it inherits none of H1's credibility.
 
+## 7. Experiments for the RQ1–RQ4 paper plan (added 2026-09-09)
+
+[`PAPER_FRAMING.md`](PAPER_FRAMING.md) re-cut the paper around four RQs — composition (RQ1), what is
+learned (RQ2), anchoring (RQ3), robustness (RQ4) — and marked which stated findings the record does
+not yet support. These are the experiments that close those gaps, numbered **F1–F9** so they do not
+collide with E1–E16 above. Costs are from measured rates on this cluster: 7B eval ≈ 18 s/cell via vLLM
+multi-LoRA (535 s for 30 composite cells, job 382427), MoLE eval through the HF path (slower; budget
+2× the vLLM rate), 7B consistency arm 4.4 h, composite build 2.5 min CPU for four conditions. Decision
+rules go into `CLAUDE_SCRATCHPAD.md` **before** each submission, as every read since 2026-09-02 has;
+every contrast is a program-clustered bootstrap (2,000 resamples, seed 17). **No stage reads H1, and
+H1 is never stacked** — every unseen component below is X1 (or its halves X1m/X1s), the calibrated
+proxy.
+
+### Priority table
+
+| # | RQ leg it closes | what runs | new training? | GPU | CPU |
+|---|---|---|---|---|---|
+| **F2** | RQ1 divergence gradient · RQ4 unseen-in-stack | build 6 composites containing X1/X1m/X1s; evaluate 10 systems | none | ~1.5 h | ~0.5 h |
+| **F1** | RQ1 routing + merging on stacks | 4 MoLE arms, 5 merges, 3 specialists on the 10 existing composites; router decision dump | none | ~2 h | — |
+| **F3** | RQ2 "stacking destroys the cue" | analysis over F1's specialist cells + cue-survival regex; **F3a** closes H-stack-identifier from existing JSON | none | — | ~2 h |
+| **F4** | RQ3 compute-matched control | `cons_lam0` (paired SFT, λ = 0) at 7B; 3 seeds if the first clears | 3 × 4.4 h | ~14 h | — |
+| **F5** | RQ4 surface-perturbation | X1 + two X1 composites rebuilt at obfuscation seeds 101/202/303; 6 systems | none | ~1 h | ~1 h |
+| **F1b** | RQ1 merging mechanism | task-vector geometry on CodeLlama-7b, cross-seed and same-seed banks | none | — | ~1 h |
+| **F7** | RQ4 reverse task at scale | inverse eval for base/`tuned_L0`/`mono_all`/`cons_lam3` at 13B and 34B | none | ~2.5 h | — |
+| **F8** | seed band at 13B for RQ3 | `cons_lam3_s42`, `mono_all_s42` at 13B | 2 × ~6 h | ~13 h | — |
+| **F6** | RQ2/RQ4 second hard family (= E5b) | X3/Y3 generator, damage gate, `tuned_X3` | 1 × 22 min | ~1.5 h | ~1 day |
+
+**Order.** F2 first — it is the cheapest experiment and the one both RQ1's last sentence and RQ4's
+headline depend on. F1 second (eval-only). F3/F3a/F1b are CPU work that runs while GPU jobs queue.
+F4 is the one new training arm the paper cannot go out without. F5, F7, F8 harden; F6 stays
+design-gated. Total: **~22 GPU-h without F8/F6, ~37 GPU-h with** — a week of submit-and-return at
+current `h200` queue behaviour.
+
+### F1. Routing and merging on stacked inputs — the RQ1 legs that have never been measured on this panel
+**Question.** The finding says inference-time routing and weight merging fail on stacks. On the
+CodeLlama panel both were measured on single transforms only (router − random gate +0.0000; merges
+−3.13 vs specialists' +2.47); the only stacked reads are Qwen-1.5B on a 34/40-program subset that
+`RQ_SUMMARY.md` §4.1 forbids ranking.
+**Arms** (all exist; eval-only), on the 6 depth-2 composites (`composite_generic` items) and the 4
+depth-3/4 composites (`composite_depth` items, `--common` subset):
+- MoLE: `mole_router`, `mole_hardrouter`, `mole_random`, `mole_uniform` (gate checkpoint
+  `runs/mole/codellama-7b/python/routerlora_codellama7b_s17/gate.pt`, experts as in
+  `configs/eval/mole_ladder_codellama-7b.yaml`) — a new `configs/eval/mole_composite_codellama-7b.yaml`
+  with `eval_conditions` set to the ten composites. **Also dump the gate's per-item expert
+  distribution** (argmax expert, entropy) — the finding's mechanism ("matches no single distribution")
+  is a claim about what the router *does*, and on singles it is at 100 % route accuracy with entropy
+  ~1e-6; on a stack it must either pick one part or spread.
+- Merges: `merge_ties`, `merge_dare_ties`, `merge_dare_linear`, `l0merge_ties`, `l0merge_dare_ties`
+  (`runs/adapters/codellama-7b/python/*merge*`) — add to a `composite_generic`-style config.
+- Specialists for F3: `tuned_L1r`, `tuned_S1`, `tuned_L1b` (`tuned_S2` already has composite cells).
+Controls `base`, `tuned_L0`, `mono_all`, `cons_lam3` exist on every composite.
+**Decision rules (to pre-register).**
+- **H-F1-route** — routing adds nothing on stacks: CONFIRMED iff `mole_router − mole_random` pooled
+  over the ten composites is TOST-equivalent at ±1.0; REFUTED iff ci_lo > +1.0.
+- **H-F1-route-vs-breadth** — a router over specialists does not reach breadth on stacks: CONFIRMED
+  iff `mole_router − mono_all` pooled ci_hi < 0.
+- **H-F1-merge** — merging is at or below the clean-code control on stacks: CONFIRMED iff
+  `merge_dare_ties − tuned_L0` pooled ci_hi ≤ 0 (report all five merges; the l0merge rows are the
+  "is it the merge or the specialists" control, as on singles).
+- **H-F1-router-behaviour** (descriptive): on `C_L1r_S1` vs `C_S1_L1r`, fraction of items routed to
+  an identifier expert vs a structural expert, and mean gate entropy vs the singles' ~1e-6.
+**Cost.** ~12 systems × 10 composites = 120 cells; ~40 min vLLM + MoLE via HF ≈ **2 GPU-h**. New
+config only; `35_composites.py --systems …` reads the result.
+
+### F1b. Task-vector geometry on CodeLlama, cross-seed — reported, gates nothing
+**Question.** The finding attributes merging's failure to "contrasting task-vector geometries". On
+Qwen that was refuted (`REPORT_2026-08-17` §3: same-data different-seed adapters are near-orthogonal
+at sign conflict 0.487 and merge fine). CodeLlama has the banks to repeat it — `L0` at s17/s42/s101,
+six specialists at s17 and s42.
+**What runs.** The existing geometry script with `--seeds`: pairwise cosine, sign conflict, TIES
+keep fraction, ‖ΔW‖ for (a) `L0` cross-seed, (b) specialists same-seed, (c) specialists cross-seed.
+CPU only, ~1 h.
+**Use.** If CodeLlama reproduces Qwen, the paper reports merging's failure *without* the
+interference mechanism and cites this as the reason. If it does not, that is a result.
+
+### F2. The divergence ladder — stacks that contain an unseen family
+**Question.** RQ1's last sentence ("failures worsen as the stack diverges from training") and RQ4's
+"stacks containing unseen transformation families" both need stacks with an unseen component. None
+exists. X1 is trainable and `obf/builder.py::load_composite_transform` chains arbitrary `parts`, so
+this is a composite build plus an eval — **H1 is never a part**.
+**New composites** (`configs/conditions_composite.yaml`, own namespace, `size_cap` calibrated on real
+programs before the full build as the file's header requires):
+
+| code | parts | divergence level |
+|---|---|---|
+| `C_L1r_X1` | L1r → X1 | d2: one unseen, depth 2, identifier + encoding |
+| `C_X1_S1` | X1 → S1 | d2: one unseen, depth 2, encoding + structural |
+| `C_S2_X1` | S2 → X1 | d2: one unseen, depth 2, inert material + encoding |
+| `C_L1r_X1m` | L1r → X1m | d2 with a *single-mechanism* unseen half (MBA) |
+| `C_S1_X1s` | S1 → X1s | d2 with the string half |
+| `C3_L1r_S1_X1` | L1r → S1 → X1 | d3: one unseen, depth 3 |
+
+Existing levels: **d0** = the six depth-2 seen composites; **d1** = depth-3/4 seen; **d4** = X1
+alone (itself two mechanisms, E6) and X1m/X1s. Coverage will shrink (X1 needs ≥ 3 sites → 405
+programs; S1 bails on some) — record the common subset **before** any read and run every contrast
+on it.
+**Systems** (all exist): `base`, `tuned_L0`, `mono_all`, `cons_lam3`, `tuned_X1`, `mono_allX`
+(breadth + family), `tuned_S2`, `mole_router`, `merge_dare_ties`, `x1_resample`.
+**Decision rules (to pre-register).**
+- **H-F2-breadth-monotone** — breadth's advantage falls with divergence: CONFIRMED iff
+  `mono_all − tuned_L0` has ci_lo > 0 at d0 (known) **and** ci_hi < 0 at d2 (pooled over the three
+  full-X1 stacks) — i.e. the sign flips once an unseen component enters; INCONCLUSIVE if d2 straddles.
+  The d3 point is reported; a "worsens further" reading needs d3 ci_hi below the d2 point.
+- **H-F2-cons-no-tax** — anchoring pays no tax at any level: CONFIRMED iff `cons_lam3 − tuned_L0`
+  ci_hi ≥ 0 at d2 and d3.
+- **H-F2-cons-vs-breadth** — anchoring beats breadth where the two behaviours collide: CONFIRMED iff
+  `cons_lam3 − mono_all` ci_lo > 0 pooled at d2.
+- **H-F2-family-stacks** — family exposure survives stacking with seen transforms: CONFIRMED iff
+  `tuned_X1 − tuned_L0` ci_lo > 0 pooled at d2; `mono_allX − mono_all` reported beside it.
+- **H-F2-route / H-F2-merge** — as F1's rules, on the d2 stacks.
+**This is the experiment RQ4 is decided by.** If `cons_lam3` holds `tuned_L0`'s level on d2/d3 while
+`mono_all` drops below it, the paper's Fig 1 exists; if `cons_lam3` drops with breadth, RQ4's answer
+is "a better heuristic, not robustness" and is reported that way.
+**Cost.** build ~10 min CPU (`05_build_variants.py --target train --conditions … --conditions-config
+conditions_composite.yaml`; then `07_emit_eval_items.py --source heldout`); eval 10 × 6 = 60 cells ≈
+20 min + MoLE ≈ **1.5 GPU-h**. Analysis: `35_composites.py` with a `--composites` list per level.
+
+### F3. Cue destruction — the causal link from RQ2 to RQ1
+**Question.** RQ2 claims stacking fails *because* it destroys the single-transform cue. The order pair
+`C_L1r_S1` / `C_S1_L1r` is the built-in test: S1 emits `_st_` state variables and renaming them second
+(`C_S1_L1r`) removes the surface cue an S1 specialist keys on, while `C_L1r_S1` keeps it. No specialist
+has composite cells on CodeLlama; F1 supplies them.
+**Analysis** (CPU, on F1's cells):
+- **H-F3-order** — the S1 specialist's gain survives when its cue survives and not otherwise:
+  CONFIRMED iff [`tuned_S1 − tuned_L0` on `C_L1r_S1`] − [same on `C_S1_L1r`] has ci_lo > 0 (paired by
+  program).
+- **H-F3-cue-items** — item-level: regex the composite source for surviving `_st_` names (S1 cue) and
+  for L1b's misleading-name markers; CONFIRMED iff the specialist's per-item gain is larger on
+  cue-present items (bootstrap on the difference). Analysis of existing trials + F1; no GPU.
+- **H-F3-retention** (descriptive): for each specialist, fraction of its diagonal gain retained on
+  composites containing its transform, by depth.
+**F3a — close H-stack-identifier from existing JSON.** `composite_depth_codellama7b.json` already has
+the structural-only depth-3 stack `C3_S1_S3_S4`: `mono_all − tuned_L0` **+1.61** [−1.02, +4.31], n.s.,
+against +6.10* on `C3_L1r_S1_S4` and +5.17* on the depth-4 stack. The rule as opened 09-07 ("CONFIRM
+if structural-only stacks show no breadth gain at depth 3") is met; write the read and move the
+hypothesis to resolved. No compute.
+
+### F4. Compute-matched control for anchoring — is it the KL or the second view?
+**Question.** `cons_lam3` sees two views per row (the obfuscated input and the clean parent through
+the teacher). Nothing has matched that budget without the KL term, so "gains stem from the clean-code
+anchor" has a teacher ablation (E4) and a view ablation (`cons_same`) but no *data-exposure* control.
+**Arm.** `cons_lam0`: the consistency pipeline with `objective.lam: 0.0` — paired SFT over both views,
+no KL — 7B, r32, s17 (`configs/train/obj_cons_codellama7b_py.yaml` with `lam: 0.0`; confirm the
+trainer does not short-circuit λ = 0 into plain SFT before submitting). If the first seed clears the
+rule, s42/s101 for the band.
+**Decision rule.** **H-F4-kl** — the KL term, not the data exposure, is the ingredient: CONFIRMED iff
+`cons_lam3 − cons_lam0` @ X1 ci_lo > 0 **and** `cons_lam0 − mono_all` @ X1 ci_hi ≤ +1.0 (paired SFT
+alone does not remove breadth's tax). Also report `cons_lam0 − tuned_L0` @ L0 (does the second view
+alone protect clean code?).
+**Cost.** 4.4 h + ~5 min eval per seed → **~14 GPU-h** for three seeds.
+
+### F5. Surface perturbation — is anchoring's unseen-family level a new surface heuristic?
+**Question.** RQ4 asks whether the model learned a *new* surface cue. X1 has one canonical surface;
+`x1_resample` proved the transform can be rebuilt at other obfuscation seeds (three surfaces exist
+as *training* data, `05_build_variants.py --seed <s> --aug-tag <tag>`). No arm has been *evaluated* on
+a resampled surface.
+**What runs.** Build held-out items for X1, `C_L1r_X1` and `C_X1_S1` at seeds 101/202/303; evaluate
+`base`, `tuned_L0`, `mono_all`, `cons_lam3`, `tuned_X1`, `x1_resample` (6 × 9 = 54 cells).
+**Decision rules.** **H-F5-stability** — anchoring's X1 level does not depend on the surface:
+CONFIRMED iff `cons_lam3` at each resampled seed is TOST-equivalent (±1.5) to its canonical X1 cell,
+paired by program. **H-F5-specialist-fragile** (descriptive): the seed-to-seed range for `tuned_X1`
+vs `x1_resample` vs `cons_lam3` — a surface heuristic shows as range, not level.
+**Cost.** ~1 h CPU build, ~20 min eval → **~1 GPU-h**.
+
+### F6. A hard second family (= E5b, unchanged) — design-gated
+The specification in E5b stands: X3/Y3 sharing one forced reading operation (comparison/ordering
+routed through a helper), Y3 built first, `tuned_L0` must lose > 10 pts on it before anything is
+trained, pre-registered before the generator is written. With F2 in place it gains a second use: a
+`C_L1r_Y3` stack is the unseen-in-stack test on a family that is *not* X1's. ~1 CPU-day + 1.5 GPU-h.
+
+### F7. The reverse task at 13B and 34B
+**Question.** RQ4's reverse-task leg is 7B only, and the honest result is "undamaged" (`cons_lam3 −
+base` +0.49 [−1.38, +2.30]), not "consistent". Two more scales make it a statement about the
+objective rather than a model.
+**What runs.** `inverse_generic` for `base`, `tuned_L0`, `mono_all`, `cons_lam3` at 13B and 34B
+(adapters exist; 7 conditions × 4 arms × 2 scales = 56 cells; the inverse task caps at 128 tokens so
+34B is ~45 min).
+**Decision rules.** **H-F7-no-harm** — CONFIRMED iff `cons_lam3 − base` @ seen6 ci_hi ≥ 0 at both
+scales; **H-F7-vs-sft** — CONFIRMED iff `cons_lam3 − tuned_L0` @ obf ci_lo > 0 at both. Report DR.
+**Cost.** ~**2.5 GPU-h**.
+
+### F8. Second seed at 13B
+`cons_lam3_s42` and `mono_all_s42` at 13B (6.5 h + 5.2 h). Turns the 13B column of RQ3 from one draw
+into a band. Rule: `cons_lam3 − mono_all` @ X1 ci_lo > 0 at s42 (H-E3 at a second seed).
+**~13 GPU-h**; run only after F2/F1/F4 are queued.
+
+### F9. Analysis-only closures (no compute)
+- Depth-3 structural-only breadth gain → H-stack-identifier resolved (F3a).
+- Per-composite `cons_lam3 − mono_all` on the depth-3/4 stacks from `composite_depth_codellama7b.json`,
+  to state whether the depth-4 stack's +7.20 over `tuned_L0` is also a gain over breadth.
+- Item-level "weakest-link vs surface" split on the X1 trials (E6's open question): under a weakest-link
+  gain the items `tuned_X1m` newly solves are those where the MBA guard precedes the encoded string.
+
+### Pre-registration
+Every F-rule above is copied into `CLAUDE_SCRATCHPAD.md` and committed **before** the first F-job is
+submitted, exactly as the pipeline's 47 stages were (`0286c5f`). F2 defines six new composites; they
+inherit X1's own-namespace rule (any adapter that saw X1 is reported apart from the headline systems)
+and, like X1, are never pooled with H1 or compared to it.
+
 ---
 
 ## Changelog
+- **2026-09-09 (RQ1–RQ4 plan)** — §7 added: experiments **F1–F9** for the four-RQ framing in
+  `PAPER_FRAMING.md`. F2 (stacks containing the unseen family — the divergence ladder) and F1 (routing
+  and merging on stacks, never measured on this panel) are the two the stated findings cannot go out
+  without; F4 is the compute-matched control the anchoring claim lacks; F3a closes H-stack-identifier
+  from existing cells. Nothing was run.
 - **2026-09-08 (open-items wave)** — the six items left "open" or "blocked" were re-examined and four
   of them were not blocked at all. **`node` blocks regenerating the JavaScript corpus, not using it**,
   and the corpus transferred intact (2,022 train pairs / 504 heldout items per condition plus the six
