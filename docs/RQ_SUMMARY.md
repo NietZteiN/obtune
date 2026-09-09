@@ -1,12 +1,16 @@
 # Research questions, approaches, and answers — one page
 
-*Last updated: 2026-09-08*
+*Last updated: 2026-09-09*
 
 A compressed index of everything the project has asked and what came back. Full numbers and
 provenance are in [`../MASTER_REPORT.md`](../MASTER_REPORT.md); the forward plan is in
 [`PAPER_EXPERIMENTS.md`](PAPER_EXPERIMENTS.md). Deltas are percentage points, intervals are
 program-clustered bootstraps (2,000 resamples). **Every evaluation is on code that stays
 obfuscated** — this project never trains or evaluates on deobfuscation.
+
+> **2026-09-09 scope rule:** no Chinese-origin model appears in the paper. The Qwen panel below is
+> kept as the record of how the design was reached; nothing from it is cited
+> (`MODEL_AND_DATA_SELECTION.md`).
 
 Two panels, never pooled: **Qwen2.5-Coder-1.5B** (frozen, §1–§17 of the report) and
 **CodeLlama-7b/13b/34b + Llama-3.1-8B** (current, §18–§28). A table says which.

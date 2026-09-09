@@ -1377,3 +1377,15 @@ Rules are drafted in §7 and must be copied here verbatim and committed BEFORE t
 **H1 is never stacked, never read; every unseen component is X1.** Calibrate `size_cap` for the X1 composites
 on real programs before the full build (conditions_composite.yaml header rule); record the common subset
 before any read.
+
+## 2026-09-09 — SCOPE RULE: no Chinese-origin models (user). Panel + dataset plan written, nothing run.
+
+- `models.yaml`: qwen25c-* `role: barred`; `transpiler: llama31-8b`; `candidates:` block (not resolvable).
+- Withdrawn from evidence: Qwen composites (+3.91) and the Qwen geometry refutation → **F1b is now required**.
+- Recommended panel (docs/MODEL_AND_DATA_SELECTION.md §3): StarCoder2-15B-Instruct > Gemma-3-12B-it (on disk)
+  > Llama-3.1-8B pretrained (on disk) > CodeGemma-7B-it > Granite-3.1-8B / Mistral-7B-v0.3; OLMo-2 if
+  contamination is to be measured. Gate before any adapter: basecheck ff ≤ 0.15, template/plain-text path,
+  truncation re-gate, loss-mask gate, adapter-applied assert, tuned_L0 clears base beyond the seed band.
+- Dataset: training corpus untouched. Eval-only columns D1–D5. Node: x86_64 + glibc 2.34 → official tarball
+  runs in user space; install under $OBTUNE_ROOT/../tools/node and add to env.sh PATH.
+- Awaiting: user's panel size decision (5 vs 3). Then downloads + basecheck configs; no adapters until gates pass.

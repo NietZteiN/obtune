@@ -6,7 +6,8 @@
 shown, not semantic invariance — and training on more families makes it worse on an unseen one.*
 
 Scope assumed here: **Python only, CodeLlama-7b/13b/34b**, with Llama-3.1-8B as a cross-family
-check. JavaScript is excluded by necessity (`node` is not installed on juno) and that exclusion is
+check. **No Chinese-origin model is used for any paper result** (2026-09-09; `MODEL_AND_DATA_SELECTION.md`) —
+Qwen-era numbers are record, not evidence; the panel extension is F10 and the dataset additions F11. JavaScript is excluded by necessity (`node` is not installed on juno) and that exclusion is
 **declared in the paper**, not discovered by a reviewer — see §5. Every cost below is measured on
 this cluster, not estimated: 7B specialist 22 min, 7B `mono_all` 3.5 h, 7B consistency arm 4.4 h,
 13B `mono_all` 5.2 h, 34B `mono_all` 9.8 h, eval ≈ 12 s/cell at 7B. Add ~5 min/job of ckpt-select
@@ -507,6 +508,35 @@ into a band. Rule: `cons_lam3 − mono_all` @ X1 ci_lo > 0 at s42 (H-E3 at a sec
 - Item-level "weakest-link vs surface" split on the X1 trials (E6's open question): under a weakest-link
   gain the items `tuned_X1m` newly solves are those where the MBA guard precedes the encoded string.
 
+### F10. Panel extension — three lineages × {code, general} + one pretrained checkpoint
+**Question.** Every headline is Meta-lineage (CodeLlama ×3, Llama-3.1-8B). §1–§3 of
+[`MODEL_AND_DATA_SELECTION.md`](MODEL_AND_DATA_SELECTION.md) fix the panel: **StarCoder2-15B-Instruct**
+(BigCode), **Gemma-3-12B-it** (on disk), **Llama-3.1-8B pretrained** (on disk; the base-vs-instruct
+axis), **CodeGemma-7B-it**, **Granite-3.1-8B-Instruct** (or Mistral-7B-v0.3; OLMo-2-13B if the
+contamination argument is made). Priority in that order.
+**What runs per model.** The gate (§3 of that doc, ~10 min), then the core arms `tuned_L0`,
+`tuned_X1`, `mono_all`, `cons_lam3` (teacher = the model's own `tuned_L0`), evaluated on the six
+ladder conditions, X1, the six depth-2 composites and F2's unseen-in-stack composites.
+**Decision rules (per model, to pre-register).** **H-F10-dissociation** — `mono_all − tuned_L0`
+ci_lo > 0 on stacked-seen AND ci_hi < 0 on X1. **H-F10-repair** — `cons_lam3 − mono_all` @ X1 ci_lo > 0
+AND `cons_lam3 − tuned_L0` @ L0 ci_hi ≥ 0. **H-F10-base-vs-instruct** (pretrained Llama-3.1 vs its
+instruct twin, descriptive + E10 re-run): does the human-divergence Δρ have the same sign on a
+checkpoint that never saw instruction data?
+**Cost.** ≈ 9.5 GPU-h per 7–9B model, ≈ 17 per 12–15B; five models ≈ **60 GPU-h**; the three-model
+minimum ≈ **43 GPU-h**.
+
+### F11. Dataset additions — evaluation-only columns, training corpus untouched
+From §4–§5 of `MODEL_AND_DATA_SELECTION.md`: **D1** length-stratified reads of every headline
+(analysis only); **D2** user-space `node` (x86_64, glibc 2.34 — the official tarball runs without
+admin) → JS ladder + JS X1 regenerated; **D3** LiveCodeBench post-cutoff slice (≥ 2025-01, ≥ 300
+programs after the execution gate) as an eval-only contamination control; **D4** an off-the-shelf
+obfuscator column (`python-minifier`; `javascript-obfuscator` after D2); **D5** a CSN long slice
+(`loc_max` 120), eval-only. Each new column inherits X1's own-namespace rule.
+**Decision rules.** D3/D5: the headline contrasts (H-F10-dissociation, H-F10-repair) reproduce on the
+new column at 7B — CONFIRMED per contrast by the same ci rules. D4: classify the in-the-wild obfuscator
+as seen-like or unseen-like by whether `mono_all − tuned_L0` on it has ci_lo > 0 or ci_hi < 0.
+**Cost.** ~3 CPU-days of corpus work in total; ≈ 2 GPU-h per panel model of evaluation.
+
 ### Pre-registration
 Every F-rule above is copied into `CLAUDE_SCRATCHPAD.md` and committed **before** the first F-job is
 submitted, exactly as the pipeline's 47 stages were (`0286c5f`). F2 defines six new composites; they
@@ -516,6 +546,8 @@ and, like X1, are never pooled with H1 or compared to it.
 ---
 
 ## Changelog
+- **2026-09-09 (b)** — Scope: no Chinese-origin models. F10 (panel extension, five non-Chinese models
+  across three lineages + a pretrained checkpoint) and F11 (evaluation-only dataset additions D1–D5) added.
 - **2026-09-09 (RQ1–RQ4 plan)** — §7 added: experiments **F1–F9** for the four-RQ framing in
   `PAPER_FRAMING.md`. F2 (stacks containing the unseen family — the divergence ladder) and F1 (routing
   and merging on stacks, never measured on this panel) are the two the stated findings cannot go out

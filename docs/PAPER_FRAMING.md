@@ -2,6 +2,11 @@
 
 *Last updated: 2026-09-09*
 
+> **Scope (2026-09-09): no Chinese-origin models.** Qwen/DeepSeek results are withdrawn from the
+> evidence base and every number below is CodeLlama-7b/13b/34b or Llama-3.1-8B. The panel, its
+> planned extension (StarCoder2, Gemma-3, a pretrained Llama-3.1, CodeGemma, Granite) and the
+> dataset additions are in [`MODEL_AND_DATA_SELECTION.md`](MODEL_AND_DATA_SELECTION.md).
+
 The paper is organised around the four research questions the user fixed on 2026-09-09
 (verbatim in §1). This document maps each RQ's stated methodology and finding onto what the
 project has **already measured** (with the number and the log entry), marks what is **not yet
@@ -47,9 +52,9 @@ unseen families. Claimed finding: consistent performance across these ⇒ struct
 
 | leg | what the finding says | what is measured | status |
 |---|---|---|---|
-| **inference — routing** | fails: a stacked input matches no single distribution | On **singles**, CodeLlama-7b: learned gate − random gate **+0.0000** [−0.0081, +0.0081]; mixture worth +0.205 regardless of gate; oracle over 10 systems 52.9 pts below a permutation null (no complementary capability to route to). On **stacks**: only Qwen-1.5B `mole_router` on a 34/40-program subset that §4.1 of `RQ_SUMMARY.md` forbids reading as a ranking. **No routing arm has been evaluated on a composite on the CodeLlama panel**, and the router's *behaviour* on a stack (which expert it picks, with what entropy) has never been recorded. | ❌ → **F1** |
-| **weights — merging** | fails through task-vector interference (contrasting geometries) | On singles: TIES/DARE merges at or below `tuned_L0` (−3.13 [−4.78, −1.40] while specialists contribute +2.47). On stacks: Qwen subset only. **The interference explanation was tested and refuted** (`REPORT_2026-08-17` §3): three `L0` adapters on byte-identical data at different seeds are near-orthogonal (cos 0.053, sign conflict 0.487 — a coin flip) and *merge fine* (`l0merge_dare_ties` = `tuned_L0` on H1), while eight different-transform specialists are 0.59-aligned. Geometry is initialisation, and maximal sign conflict costs nothing. | 🚫 on the mechanism; ❌ on stacks → **F1** (accuracy) + **F1b** (geometry re-measured cross-seed on CodeLlama, reported descriptively) |
-| **data — breadth** | fails: drops on unseen families and degrades clean code | `mono_all − tuned_L0`: **stacked-seen +3.49 / +2.90 / +3.05** at 7B/13B/34B (Qwen +3.91), depth 3/4 **+4.15**; **unseen X1 −3.79 / −4.28 / −2.64**, H1 −4.12; **L0 −1.74 / −2.34 / −2.63**; the X1 tax grows with data (−0.49 → −2.31 → −3.79 at ¼/½/full) while the seen gain saturates by ¼. GLMM agrees 4/4; `mono_all` on X1 survives FDR at q = 0.014. | ⚠️ **Breadth does not fail on stacked-seen inputs — it is the one strategy that succeeds there.** It fails on the two axes the finding names (unseen, clean). The paper must say "breadth generalises to recombination of *seen* transforms and pays for it on unseen families and on clean code", not "all three fail". |
+| **inference — routing** | fails: a stacked input matches no single distribution | On **singles**, CodeLlama-7b: learned gate − random gate **+0.0000** [−0.0081, +0.0081]; mixture worth +0.205 regardless of gate; oracle over 10 systems 52.9 pts below a permutation null (no complementary capability to route to). On **stacks**: nothing on this panel (the only stacked routing read was Qwen, now withdrawn). **No routing arm has been evaluated on a composite on the CodeLlama panel**, and the router's *behaviour* on a stack (which expert it picks, with what entropy) has never been recorded. | ❌ → **F1** |
+| **weights — merging** | fails through task-vector interference (contrasting geometries) | On singles: TIES/DARE merges at or below `tuned_L0` (−3.13 [−4.78, −1.40] while specialists contribute +2.47). On stacks: never on this panel. **The interference explanation was tested and refuted on the (now withdrawn) Qwen panel** (`REPORT_2026-08-17` §3): three `L0` adapters on byte-identical data at different seeds were near-orthogonal (cos 0.053, sign conflict 0.487 — a coin flip) and *merged fine*, while eight different-transform specialists were 0.59-aligned — geometry was initialisation. That read cannot be cited; **F1b repeats it on CodeLlama**, and until it lands the mechanism is neither supported nor refuted. | ❌ on stacks and on the mechanism → **F1** (accuracy) + **F1b** (geometry, cross-seed, CodeLlama) |
+| **data — breadth** | fails: drops on unseen families and degrades clean code | `mono_all − tuned_L0`: **stacked-seen +3.49 / +2.90 / +3.05** at 7B/13B/34B, depth 3/4 **+4.15**; **unseen X1 −3.79 / −4.28 / −2.64**, H1 −4.12; **L0 −1.74 / −2.34 / −2.63**; the X1 tax grows with data (−0.49 → −2.31 → −3.79 at ¼/½/full) while the seen gain saturates by ¼. GLMM agrees 4/4; `mono_all` on X1 survives FDR at q = 0.014. | ⚠️ **Breadth does not fail on stacked-seen inputs — it is the one strategy that succeeds there.** It fails on the two axes the finding names (unseen, clean). The paper must say "breadth generalises to recombination of *seen* transforms and pays for it on unseen families and on clean code", not "all three fail". |
 | **divergence gradient** | failures worsen as the stack diverges from training | Two points exist: depth-2 seen (+3.49) → depth-3/4 seen (+4.15, *no decay*) and single unseen (−3.79). **No stack containing an unseen family has ever been built**; there is no intermediate point on the axis. | ❌ → **F2** (the divergence ladder: seen-d2 → seen-d3/4 → one-unseen-d2 → one-unseen-d3 → unseen-only) |
 
 **What the current data support for RQ1, verbatim for the paper.** *Of the three composition
@@ -63,7 +68,7 @@ Entries: [`transfer/2026-09-07_composites-on-codellama.md`](../log/transfer/2026
 [`transfer/2026-09-08_composites-at-13b-and-depth-3-4.md`](../log/transfer/2026-09-08_composites-at-13b-and-depth-3-4.md),
 [`transfer/2026-09-08_composites-at-34b.md`](../log/transfer/2026-09-08_composites-at-34b.md),
 [`transfer/2026-09-08_saturation-the-tax-grows-with-data.md`](../log/transfer/2026-09-08_saturation-the-tax-grows-with-data.md),
-[`modularity/`](../log/modularity/) (router/merge, Qwen and CodeLlama singles), `REPORT_2026-08-15_modularity_verdict.md`,
+[`modularity/`](../log/modularity/) (router/merge on CodeLlama singles), `REPORT_2026-08-15_modularity_verdict.md`,
 `REPORT_2026-08-17_geometry-and-attempted-repairs.md`.
 
 ## 3. RQ2 — what is learned: evidence map
@@ -169,7 +174,7 @@ Entries: [`transfer/2026-09-08_bidirectional-inverse-task-read.md`](../log/trans
    JavaScript; the profile evidence; the honest bound (X1 = teacher's number; 7th of 33).
 7. **Limitations** — one hard family pair (F6 pending); H1 budget spent, every unseen number is X1;
    single seed at 13B/34B; JS has no unseen column; mechanism is correlational; human anchor is
-   one trial per cell; Qwen systems only on the 34/40 subset.
+   one trial per cell; no Chinese-origin model (scope rule), so the Qwen-era results are not cited.
 8. **Related work** — DOBF lineage (never trained on recovery); task-vector merging (TIES/DARE) and
    the interference literature we fail to reproduce; MoE/LoRA routing; consistency/invariance
    regularisers; Nikiema et al. (direction-specificity); Papers 1–3 (human baselines).
@@ -186,8 +191,8 @@ variance (F5).
 
 - **"All three composition strategies fail."** Breadth succeeds on stacked-seen at every scale. Say
   which axis each strategy fails on.
-- **"Merging fails because of task-vector interference."** Refuted by the cross-seed L0 bank. Report
-  merging's failure; do not supply that mechanism unless F1b shows something new *cross-seed*.
+- **"Merging fails because of task-vector interference."** Neither supported nor refuted on this panel (the
+  Qwen refutation is withdrawn). Report merging's failure without a mechanism until F1b lands.
 - **"Consistency training improves robustness / learns invariance."** It removes a cost; on the
   unseen family it inherits the teacher; 7th of 33 on X1.
 - **"Consistent performance on the reverse task."** It is undamaged, not improved (+0.49 vs base).
@@ -204,6 +209,9 @@ at an ML venue.
 ---
 
 ## Changelog
+- **2026-09-09 (b)** — Scope rule: no Chinese-origin models; Qwen numbers removed from the evidence
+  map (the Qwen composite +3.91 and the Qwen geometry refutation), F1b promoted from "reported" to
+  required. Panel and dataset plan in `MODEL_AND_DATA_SELECTION.md`.
 - **2026-09-09** — Reorganised around the user's RQ1–RQ4 (composition / what is learned / anchoring /
   robustness), replacing the 2026-09-08 "fluency, not invariance" P1–P4 framing as the organising
   principle. Every result is re-mapped with a status; three stated findings are flagged against the

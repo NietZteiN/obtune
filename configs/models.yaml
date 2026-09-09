@@ -4,6 +4,10 @@
 # The panel's default. One place to change when the base model changes; code that needs a
 # concrete model without being told one (e.g. attention/validate.py, whose span->token
 # resolution is tokenizer-dependent) resolves it from here rather than pinning an HF id.
+# 2026-09-09 SCOPE RULE: no Chinese-origin model (Qwen, DeepSeek, Yi, InternLM, GLM, ...) may be
+# used for any paper result. Their entries stay so frozen results resolve, with `role: barred`;
+# see docs/MODEL_AND_DATA_SELECTION.md. Candidate additions are under `candidates:` (not
+# `models:`) so nothing resolves them until their config.json has been verified at download.
 default_model: codellama-7b
 
 models:
@@ -16,7 +20,7 @@ models:
     max_seq_len: 1536
     per_device_batch: 16
     grad_accum: 4
-    role: pilot_and_ablation
+    role: barred # 2026-09-09: Chinese-origin, out of the paper (was pilot_and_ablation)
   qwen25c-7b:
     hf_id: Qwen/Qwen2.5-Coder-7B-Instruct
     family: coder
@@ -124,4 +128,38 @@ models:
 
 # Model used for execution-gated Python->JS transpilation (corpus/transpile.py).
 # Its outputs are accepted only if the JS reproduces the Python canonical outputs.
-transpiler: qwen25c-7b
+transpiler: llama31-8b # 2026-09-09: was qwen25c-7b (barred); JS tier 3 is not needed for the paper
+
+# Candidate panel additions (docs/MODEL_AND_DATA_SELECTION.md §2-§3). NOT resolvable as `--model`
+# until moved into `models:` with n_layers/hidden_size/router_layer copied from the downloaded
+# config.json and the §3 gate passed. Values here are from the model cards and are unverified.
+candidates:
+  starcoder2-15b-instruct:
+    hf_id: bigcode/starcoder2-15b-instruct-v0.1
+    family: coder
+    origin: BigCode (ServiceNow/HF)
+    note: The Stack v2 lineage; highest priority — the most different code-pretraining pipeline available
+  gemma3-12b-it:
+    hf_id: google/gemma-3-12b-it
+    family: instruct
+    origin: Google
+    note: already in HF_HOME (23 GB); multimodal checkpoint, load text-only and gate the vision tower
+  llama31-8b-base:
+    hf_id: meta-llama/Llama-3.1-8B
+    family: pretrained
+    origin: Meta
+    note: already in HF_HOME (30 GB); no chat template -- plain-text prompt path, declared in the paper
+  codegemma-7b-it:
+    hf_id: google/codegemma-7b-it
+    family: coder
+    origin: Google
+  granite-3.1-8b-instruct:
+    hf_id: ibm-granite/granite-3.1-8b-instruct
+    family: instruct
+    origin: IBM
+    note: Apache 2.0, ungated; swap for mistralai/Mistral-7B-Instruct-v0.3 if preferred
+  olmo2-13b-instruct:
+    hf_id: allenai/OLMo-2-1124-13B-Instruct
+    family: instruct
+    origin: AI2
+    note: public pretraining data -- only candidate on which contamination can be measured rather than argued
