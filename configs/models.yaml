@@ -30,7 +30,7 @@ models:
     max_seq_len: 1536
     per_device_batch: 8
     grad_accum: 8
-    role: main
+    role: barred # 2026-09-09: Chinese-origin, out of the paper (was main)
   # Candidate third base (2026-09-04, W6 lever 1). A 2024 model: Qwen2.5-Coder-7B UNTUNED
   # with 4-shot ICL reads L0 0.487 / H1 0.291, above every tuned CodeLlama-7B system, and
   # Qwen is barred here -- so the base model, not the tuning, is the lever. Llama-3.1 is the
