@@ -43,6 +43,9 @@ export PYTHONPATH="$OBTUNE_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 # directories). Everything here is RE-DOWNLOADABLE from the hub, so a purge costs time and
 # nothing else. Adapters and results stay on /work, which is backed by the quota we pay for.
 # Override by exporting HF_HOME before sourcing this file; the /work copy is left in place.
+# NB: the hub TOKEN lives at $HF_HOME/token, so it must travel with the cache. Moving HF_HOME
+# without it breaks every gated repo (gemma-3, codegemma, both Llamas) with a 401 GatedRepoError
+# at the first hub call -- even when the weights are already present locally.
 export OBTUNE_HF_STORE="${OBTUNE_HF_STORE:-/scratch/juno/$USER/hf_home}"
 export HF_HOME="${HF_HOME:-$OBTUNE_HF_STORE}"
 export TMPDIR="${TMPDIR:-$OBTUNE_SCRATCH/tmp}"
