@@ -54,6 +54,13 @@ export TRITON_CACHE_DIR="${TRITON_CACHE_DIR:-$OBTUNE_SCRATCH/cache/triton}"
 
 # Quieter vLLM startup; the engine's real errors still reach stderr.
 export VLLM_LOGGING_LEVEL="${VLLM_LOGGING_LEVEL:-WARNING}"
+# vLLM's engine core is spawned, not forked. Added 2026-09-10 after two checkpoint-select jobs
+# died 28 minutes in on the h100 partition's MIG node (g-06-01, 4 x nvidia_h100_nvl_3g.47gb)
+# with `RuntimeError: Cannot re-initialize CUDA in forked subprocess`. h200 never showed it --
+# the difference is several jobs sharing one physical card through MIG slices, where a CUDA
+# context already exists when the engine forks. `spawn` is the documented remedy and costs a
+# few seconds of start-up on the partitions that were fine anyway.
+export VLLM_WORKER_MULTIPROC_METHOD="${VLLM_WORKER_MULTIPROC_METHOD:-spawn}"
 export TOKENIZERS_PARALLELISM=false
 
 # flashinfer JIT-compiles its sampling kernel on first use and needs nvcc/CUDA_HOME. juno's
