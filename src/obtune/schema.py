@@ -174,7 +174,10 @@ class TrialRow(BaseModel):
                    # one-shot cell can never be pooled with a zero-shot `basecheck` cell -- every
                    # panel model except the pretrained checkpoint was gated zero-shot
                    # (configs/eval/basecheck_1shot.yaml).
-                   "basecheck_1shot"]
+                   "basecheck_1shot",
+                   # 2026-09-10: the panel's four core arms (tuned_L0 / tuned_X1 / mono_all /
+                   # cons_lam3) on the six ladder conditions plus the held-out family X1.
+                   "panel_core"]
     experiment_id: str
     base_model: str
     # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned

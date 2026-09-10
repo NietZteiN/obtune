@@ -1,0 +1,36 @@
+# The panel's four core arms, one config, model-neutral (2026-09-10).
+#
+#   python -m obtune.eval_vllm --config eval/panel_core.yaml --model <key> --language python
+#
+# WHY A NEW CONFIG RATHER THAN x1_generic.yaml. That one carries `formatonly`, `tuned_S1`,
+# `tuned_S2` and `mono_allX` — arms that exist for CodeLlama-7b and for none of the new panel
+# models. Pointing it at a new model would either fail on a missing adapter or, worse, silently
+# skip arms and produce a grid that looks complete. This lists exactly the four arms every panel
+# model has, so a missing one is an error rather than a gap.
+#
+# `X1` is in eval_conditions: it is the held-out FAMILY (the trainable sibling of the spent H1),
+# and it is the column on which the arms actually separate — the ladder does not discriminate
+# (mean off-diagonal TR 0.906, 1 of 30 cells after FDR). NO H1: its budget is spent
+# (CLAUDE.md §3.2) and nothing here may read it.
+_extends: _base_eval.yaml
+
+phase: panel_core
+experiment_id: panel_core
+run_tag: panel_core
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

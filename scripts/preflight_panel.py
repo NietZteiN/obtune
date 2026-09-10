@@ -122,6 +122,45 @@ def check_model(key: str, spec: dict) -> dict:
     return out
 
 
+def check_gated_repos() -> list[dict]:
+    """A gated repo must actually LOAD, not merely have its shards on disk.
+
+    Shard-resolution says nothing about credentials: `huggingface_hub` reads the token from
+    `$HF_HOME/token`, so relocating HF_HOME without it leaves every shard present and every
+    gated repo failing with `GatedRepoError: 401` at the first hub call. That is exactly what
+    happened on 2026-09-10 (job 389173 died on a model whose weights it could already read),
+    and this file's own "OK, 5 shards, 22.7 GB" line said the model was fine.
+
+    Loading the tokenizer is the cheapest thing that exercises the credential path.
+    """
+    from obtune.config import load_config as _lc
+    rows = []
+    token = HF_HOME / "token"
+    rows.append({"item": "HF token present in the active HF_HOME", "ok": token.exists(),
+                 "detail": str(token) if token.exists()
+                           else f"MISSING at {token} — gated repos will 401"})
+    try:
+        from transformers import AutoTokenizer
+    except Exception as exc:
+        rows.append({"item": "gated-repo load", "ok": False,
+                     "detail": f"transformers unavailable: {type(exc).__name__}"})
+        return rows
+    models = _lc("models.yaml")["models"]
+    # One gated repo per vendor is enough to prove the credential works.
+    probes = [k for k, v in models.items()
+              if v.get("role") != "barred"
+              and any(v["hf_id"].startswith(p) for p in ("google/", "meta-llama/"))][:3]
+    for k in probes:
+        hf_id = models[k]["hf_id"]
+        try:
+            AutoTokenizer.from_pretrained(hf_id)
+            rows.append({"item": f"gated repo loads: {k}", "ok": True, "detail": hf_id})
+        except Exception as exc:
+            rows.append({"item": f"gated repo loads: {k}", "ok": False,
+                         "detail": f"{type(exc).__name__}: {str(exc)[:120]}"})
+    return rows
+
+
 def check_eval_phases() -> list[dict]:
     """Every eval config's `phase` must be in TrialRow's literal.
 
@@ -204,7 +243,7 @@ def main() -> int:
     for r in mrows:
         if r["role"] == "baseline_only" and not r["ok"]:
             r["optional"] = True
-    drows = check_data() + check_eval_phases()
+    drows = check_data() + check_eval_phases() + check_gated_repos()
 
     if a.json:
         print(json.dumps({"models": mrows, "data": drows}, indent=2))
