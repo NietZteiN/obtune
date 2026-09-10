@@ -27,6 +27,7 @@
 - Consider recording per-condition transform wall-time in the coverage manifest; a condition that is slow to generate is usually one that is bailing and retrying.
 
 ## Entries
+- [`2026-09-09_quota-cleanup-for-the-panel.md`](2026-09-09_quota-cleanup-for-the-panel.md) — **125 GB freed** (218 non-selected checkpoints, 23.8 GB of orphaned download scratch, the barred Qwen-1.5B) so the five-model panel fits; 1,074.6 → 965.4 GB, back under the soft quota. `best/` is a symlink into a checkpoint dir — a blanket delete would have destroyed every selected adapter. Two dangling symlinks are 2026-08-28 migration damage, not this cleanup.
 - [`2026-09-09_five-model-panel.md`](2026-09-09_five-model-panel.md) — **five-model panel adopted; three of the five reject the system role.** StarCoder2 and CodeGemma raise `TemplateError`, the pretrained Llama-3.1 has no chat template — `prompts.py` gained one verified adaptation layer used by every path (identity in `system` mode, 30 tests). PEFT-on-the-vision-tower disarmed for Gemma-3. Downloads and the first two gates submitted.
 - [`2026-09-07_autonomous-pipeline.md`](2026-09-07_autonomous-pipeline.md) — RQ1′–RQ4′ adopted; `scripts/pipeline/plan.yaml` (47 stages) + `report.py` run everything planned as SLURM chains; rules pre-registered; E5b/E10 disabled with reasons
 - [`2026-09-06_quota-cleanup.md`](2026-09-06_quota-cleanup.md) — 685 `optimizer.pt` (~346 GB) + uv cache dropped after the quota incident; `/work` 99.7 % → 66.2 %; nothing under `runs/` is resumable now.

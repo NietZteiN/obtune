@@ -1411,3 +1411,24 @@ cannot take the system role prompts.py emits. prompts.py now has ONE adaptation 
 objectives._ids, attention/capture, inspect_batch all route through it. Identity in `system` mode ->
 no existing adapter or cell is affected. 30 tests in tests/test_template_adaptation.py.
 Gemma-3 needs peft_exclude_modules (vision tower) — wired into LoraConfig.
+
+## 2026-09-09 — QUOTA CLEANUP (user approved: "ok proceed"). 125 GB freed, 0 damage.
+
+/work is quota'd PER USER and SHARED ACROSS PROJECTS: 1000 GB soft / 1100 hard. Was 1058 (42 GB from
+the stop) and falling ~15 GB/h as transcoders/nla ran. Now **965.4 GB, 134.6 GB headroom**.
+
+Deleted: 218 non-selected epoch checkpoints (98.2 GB) + 11 orphaned .incomplete blobs (23.8 GB,
+codellama-34b + gemma-3-12b only) + Qwen2.5-Coder-1.5B (2.9 GB, barred, unreferenced elsewhere).
+Guards re-derived at delete time; 0 refused.
+
+**THREE TRAPS the dry-run caught — keep these in mind for any future cleanup:**
+1. `best/` is a SYMLINK into checkpoint-N. Blanket checkpoint deletion destroys every selected adapter.
+2. `runs/merges` + `runs/taskvecs` are EXPERIMENT BANKS, not scratch (withdrawn from the plan).
+3. `configs/eval/overtrain_individual_*.yaml` PINS 12 raw checkpoints as evaluated systems. Scan
+   configs for `checkpoint-\d+` before deleting anything under runs/.
+
+**Pre-existing damage found, NOT caused by this:** qwen25c-1.5b/python/{L0,L1b}_r32_s17_pilotsplit/best
+dangle (targets checkpoint-200/198 never existed in those dirs); links dated 2026-08-28 15:50 =
+migration day path-rewrite bug. Qwen pilot arms, barred from the paper. 110/112 best symlinks resolve.
+
+Download chain RELEASED: 385666 sc2 -> 385667 granite -> 385668 cgemma -> 385669 datasets (dev).
