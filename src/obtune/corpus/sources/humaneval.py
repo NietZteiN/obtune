@@ -24,7 +24,11 @@ from typing import Any, Iterator
 
 from obtune.corpus.sources import DatasetNotCached, find_cached, parse_assert_cases, take
 
-REPO_ID = "openai_humaneval"
+# Renamed on the hub: the bare id no longer resolves ("Repository id must be
+# 'namespace/name'", seen 2026-09-09 rebuilding the cache on juno). The old name is kept
+# as a fallback because a cache populated before the rename still uses it.
+REPO_ID = "openai/openai_humaneval"
+REPO_ID_LEGACY = "openai_humaneval"
 SOURCE_PY = "humaneval"
 SOURCE_JS = "humaneval_x_js"
 # Single source of truth is configs/sources.yaml; this constant only exists so the
@@ -50,7 +54,10 @@ def load(limit: int | None = None, language: str = "python") -> Iterator[dict[st
 
 
 def dataset_path():
-    return find_cached(REPO_ID, "*.parquet")
+    try:
+        return find_cached(REPO_ID, "*.parquet")
+    except DatasetNotCached:
+        return find_cached(REPO_ID_LEGACY, "*.parquet")
 
 
 def load_python(limit: int | None = None) -> Iterator[dict[str, Any]]:
