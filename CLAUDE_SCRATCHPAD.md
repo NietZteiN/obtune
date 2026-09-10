@@ -1553,3 +1553,39 @@ This is the cheapest available test of H-merged-persona's practical consequence.
 - Descriptive rule: if base_1shot(llama31-8b-base) clears ~0.15 with ff < 0.25, the model is
   measurable and the panel question is live; if it stays at the floor, the pretrained arm is dropped
   and the base-vs-instruct comparison is declared unavailable rather than quietly fudged.
+
+## 2026-09-10 — PANEL REPLICATION PRE-REGISTERED (frozen before ev_panel_g3 389609 returns)
+
+The five-model panel's first graded grid. `configs/eval/panel_core.yaml`, 5 systems x 7 conditions,
+`base / tuned_L0 / tuned_X1 / mono_all / cons_lam3`, ladder + X1. No H1. Contrasts are
+program-clustered bootstraps (2,000 resamples, seed 17) on the intersected items, as everywhere.
+
+These are REPLICATIONS of published CodeLlama/Llama results on models with different tokenizers,
+different pretraining corpora and (for the Gemmas and StarCoder2) different chat templates. The
+rules below are fixed now, before any panel cell is read.
+
+**R1 — breadth's unseen-family tax (RQ1).** `mono_all - tuned_L0` @ X1.
+  Published: -3.79 (7B) / -4.28 (13B) / -2.64 (34B) / -2.88 (Llama-3.1-8B).
+  REPLICATED iff ci_hi < 0. REFUTED iff ci_lo > 0. INCONCLUSIVE otherwise.
+
+**R2 — anchoring removes it (RQ3).** `cons_lam3 - mono_all` @ X1.
+  Published: +4.59 / +3.95 / +3.38 / +3.46.
+  REPLICATED iff ci_lo > 0. REFUTED iff ci_hi < 0. INCONCLUSIVE otherwise.
+
+**R3 — anchoring pays no clean-code tax.** `cons_lam3 - tuned_L0` @ L0.
+  Published: -0.30 / -0.60 / +0.42 / +0.00 (never significantly negative).
+  REPLICATED iff ci_hi >= 0.
+
+**R4 — the ladder does not discriminate (RQ2).** `mono_all - tuned_L0` pooled over the five
+  obfuscated ladder conditions. Published: small and not reliably above zero at scale
+  (+1.43 at 13B, +0.72 at 34B). REPORTED, not verdicted -- one model cannot settle it.
+
+**Stated before the read, so it cannot be retrofitted:** a per-model REFUTED on R1 or R2 would be a
+real result, not a failure of the panel. The whole point of adding models with different lineages is
+that a CodeLlama-only effect should be allowed to show itself as one. If R1 refutes here, the paper
+reports breadth's tax as lineage-dependent and the abstract changes.
+
+**Granite watch item (noted before its cells exist):** its X1 train loss is 2.03 against 0.12-0.64
+for every other arm, and its tuned_L0 loss 1.24 was also the highest. Loss is not comparable across
+models, so this is not evidence of a problem -- but if Granite's X1 column reads weak, this is the
+first place to look, and the note exists so that check is not a post-hoc rationalisation.
