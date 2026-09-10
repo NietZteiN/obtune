@@ -169,7 +169,12 @@ class TrialRow(BaseModel):
                    "inverse_generic",
                    # 2026-09-08 open-items wave: the cross-language replication on the intact JS
                    # corpus (E13) and the legacy-tier human-alignment grid (E10, T_* namespace).
-                   "crosslang_js", "human_align"]
+                   "crosslang_js", "human_align",
+                   # 2026-09-10: the one-shot gate variant. Its OWN phase, deliberately, so a
+                   # one-shot cell can never be pooled with a zero-shot `basecheck` cell -- every
+                   # panel model except the pretrained checkpoint was gated zero-shot
+                   # (configs/eval/basecheck_1shot.yaml).
+                   "basecheck_1shot"]
     experiment_id: str
     base_model: str
     # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned

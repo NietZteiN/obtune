@@ -122,6 +122,35 @@ def check_model(key: str, spec: dict) -> dict:
     return out
 
 
+def check_eval_phases() -> list[dict]:
+    """Every eval config's `phase` must be in TrialRow's literal.
+
+    This has now cost three jobs: `selfcons_generic` (376082, crashed on cell 1),
+    `model_family: pretrained` (388497) and `basecheck_1shot` (388897) — each time a new config
+    reached a GPU, ran to completion, and died writing the first row. The literal is a deliberate
+    guard against typos and should stay closed; what was missing is a check that runs before the
+    queue wait rather than after it.
+    """
+    from obtune.schema import TrialRow
+    import typing
+    allowed = set(typing.get_args(TrialRow.model_fields["phase"].annotation))
+    rows = []
+    for cfg in sorted(Path("configs/eval").glob("*.y*ml")):
+        if cfg.name.startswith("_"):
+            continue
+        try:
+            phase = load_config(f"eval/{cfg.name}").get("phase")
+        except Exception:
+            continue
+        if phase and phase not in allowed:
+            rows.append({"item": f"eval/{cfg.name} phase={phase!r}", "ok": False,
+                         "detail": "NOT in TrialRow.phase — every row write will fail"})
+    if not rows:
+        rows.append({"item": "eval config phases", "ok": True,
+                     "detail": "all in TrialRow.phase"})
+    return rows
+
+
 def check_data() -> list[dict]:
     rows = []
 
@@ -175,7 +204,7 @@ def main() -> int:
     for r in mrows:
         if r["role"] == "baseline_only" and not r["ok"]:
             r["optional"] = True
-    drows = check_data()
+    drows = check_data() + check_eval_phases()
 
     if a.json:
         print(json.dumps({"models": mrows, "data": drows}, indent=2))
