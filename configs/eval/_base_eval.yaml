@@ -20,7 +20,16 @@ sampling:
   temperature: 0.0
   top_p: 1.0
   max_tokens: 64
-  stop: ["\n\n", "```"]
+  # `<end_of_turn>` added 2026-09-10. CodeGemma-7B's generation_config lists eos_token_id=1
+  # (`<eos>`) ONLY, while its chat template terminates an assistant turn with `<end_of_turn>`
+  # (id 107) -- so a model FINE-TUNED on that template emits the terminator and vLLM does not
+  # stop, running to max_tokens and repeating the answer:
+  #   '1<end_of_turn>\n<end_of_turn>\n1<end_of_turn>\n...'  -> format_fail 1.000 on every item.
+  # Gemma-3 is unaffected because its generation_config lists [1, 106], which includes its own
+  # terminator; that is why the Gemma-3 probe worked and the CodeGemma one read 0.0000.
+  # Adding it as a STOP STRING is a no-op for every model that never emits that text, so no
+  # published cell changes; it only rescues the models whose eos config omits their terminator.
+  stop: ["\n\n", "```", "<end_of_turn>"]
 
 prompt:
   id: base_v1
