@@ -45,6 +45,17 @@ def main() -> int:
                 kw["name"] = entry["config"]
             if entry.get("data_file"):
                 kw["data_files"] = entry["data_file"]
+            # Two hub-side changes since the corpus was first built (both hit on 2026-09-09):
+            #  * `datasets` 4.x refuses script-based loaders ("Dataset scripts are no longer
+            #    supported, but found apps.py"). The hub keeps an auto-converted parquet copy of
+            #    every such dataset at refs/convert/parquet, which is the same data without the
+            #    script.
+            #  * bare repo ids are no longer resolvable; openai_humaneval is openai/openai_humaneval.
+            SCRIPT_DATASETS = {"codeparrot/apps"}
+            RENAMED = {"openai_humaneval": "openai/openai_humaneval"}
+            hf_id = RENAMED.get(hf_id, hf_id)
+            if hf_id in SCRIPT_DATASETS:
+                kw["revision"] = "refs/convert/parquet"
             try:
                 # The split string in sources.yaml can be "train+validation+test"; fetching
                 # the whole repo is simpler and is what the loaders will read anyway.

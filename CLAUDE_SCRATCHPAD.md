@@ -1432,3 +1432,26 @@ dangle (targets checkpoint-200/198 never existed in those dirs); links dated 202
 migration day path-rewrite bug. Qwen pilot arms, barred from the paper. 110/112 best symlinks resolve.
 
 Download chain RELEASED: 385666 sc2 -> 385667 granite -> 385668 cgemma -> 385669 datasets (dev).
+
+## 2026-09-09 — PANEL DOWNLOADED; GATE 1 READ (gemma3-12b NO-GO by the rule)
+
+All 11 non-barred models complete (preflight_panel.py). starcoder2-15b 29.7 GB, codegemma-7b 15.9,
+granite31-8b 15.2. Quota 993.9 GB used / 106.1 GB headroom.
+
+**gemma3-12b: NO-GO** — format_fail 0.2796 on L0 (rule: <= 0.15), 0.27-0.29 everywhere.
+BUT: L0 acc 0.3335 vs CodeLlama-7b base 0.2569, and **942/2706 failures (34.8 %, 9.8 pts of accuracy)
+are the gold value WITH THE QUOTES MISSING** (`cba` for `"cba"`). Diagnostic only -- grader untouched.
+The floor is a literal-syntax convention, not capability.
+
+**OPEN DECISION FOR THE USER (do not take it silently):** the 09-04 Llama-3.1 precedent ran a reduced
+probe (tuned_L0 only, ~22 min) despite a NO-GO, because the real question is the tuned ceiling.
+Applying that here after seeing the number is exactly the selection freedom pre-registration removes,
+so it is the human's call.
+**H-gate-format** (opened): base format_fail predicts nothing about the tuned ceiling when the
+failures are one learnable convention. CONFIRM if tuned_L0(gemma3-12b) >= tuned_L0(codellama-7b)=0.4275
+on L0; REFUTE if it lands at/below the untuned conditional rate.
+
+Schema: TrialRow.model_family gained "pretrained" (llama31-8b-base) -- purely additive.
+Gates queued: 388497 llama31-8b-base (resubmitted after the schema fix), 388499 starcoder2-15b,
+388500 codegemma-7b, 388501 granite31-8b. dl_datasets 388502 (datasets 4.x: apps needs
+refs/convert/parquet, humaneval is openai/openai_humaneval).

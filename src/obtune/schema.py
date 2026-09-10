@@ -172,7 +172,12 @@ class TrialRow(BaseModel):
                    "crosslang_js", "human_align"]
     experiment_id: str
     base_model: str
-    model_family: Literal["coder", "instruct"]
+    # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned
+    # checkpoint (docs/MODEL_AND_DATA_SELECTION.md §3). It is a *third* value rather than a
+    # relabelling of "instruct": whether a base model ever saw instruction data is exactly the
+    # axis that model is in the panel to test, so a row must be able to say so. Purely additive —
+    # every row written before today still validates.
+    model_family: Literal["coder", "instruct", "pretrained"]
     adapter_id: Optional[str]  # None = untuned base
     adapter_arch: Literal[
         "none", "oracle_prompt", "mono", "per_type", "router", "oracle_route",
