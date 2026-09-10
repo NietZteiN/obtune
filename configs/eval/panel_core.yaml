@@ -31,11 +31,8 @@ systems:
   - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
   - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
   - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
-  # Path scoped by objective ROOT, not by a suffix in the leaf name. The CodeLlama arms encode
-  # the objective in the leaf (`..._r32_cons_parent_lam3_s17`) because they were submitted with an
-  # explicit --out; `train_sft.adapter_dir` itself names only <conditions>_r<rank>_s<seed>, so a
-  # config that forgets the flag silently collides with any other objective for the same model.
-  # The panel's configs put it in `adapter_root` instead, where it cannot be forgotten.
-  - {name: cons_lam3, adapter: "runs/adapters_objectives/cons_parent_lam3/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  # obtune.objectives names the directory `<conditions>_r<rank>_cons_<view>_lam<lam>_s<seed>`,
+  # so the objective is in the leaf and cannot collide with another objective for the same model.
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
 
 eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

@@ -397,6 +397,16 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         tag = "sft"
     if init_adapter:
         tag = f"curr_{tag}"
+    # Adapt to what THIS model's chat template accepts before TRL sees the rows. TRL templates
+    # the dataset itself (`sft_trainer.tokenize_fn` -> `data_utils._tokenize`), so a model whose
+    # template refuses a system role dies inside TRL with `TemplateError: System role not
+    # supported` — CodeGemma did exactly that (job 389678). train_sft.py gained this on
+    # 2026-09-09; this second training entry point did not, which is the kind of gap a partial
+    # fix leaves. Identity for templates that accept a system turn.
+    if prompts.template_mode(tokenizer) != "system":
+        tr = [prompts.to_trl_example(r, tokenizer) if "prompt" in r else r for r in tr]
+        va = [prompts.to_trl_example(r, tokenizer) if "prompt" in r else r for r in va]
+
     train_ds = Dataset.from_list(tr)
     val_ds = Dataset.from_list(va) if va else None
 
