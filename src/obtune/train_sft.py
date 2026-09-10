@@ -163,6 +163,19 @@ def main(argv: Optional[list[str]] = None) -> int:
     args = build_parser().parse_args(argv)
 
     cfg = load_config(args.config)
+    # A config carrying an `objective:` block belongs to obtune.objectives, not here. This module
+    # ignores the block entirely, so running one of those configs through it silently trains PLAIN
+    # SFT under the objective's name — on 2026-09-10 that produced four "cons_lam3" adapters that
+    # were byte-different but behaviourally ~96 % identical to mono_all, and the tell was two cells
+    # scoring an identical number of correct answers. ~20 GPU-hours, and it would have been read as
+    # "the anchoring result does not replicate". Refuse instead.
+    if cfg.get("objective"):
+        raise SystemExit(
+            f"REFUSING: {args.config} declares objective={cfg['objective'].get('mode')!r}, which "
+            f"obtune.train_sft does not implement and would silently ignore. Use:\n"
+            f"  python -m obtune.objectives train --config {args.config} --lam <lam>"
+        )
+
     cfg.setdefault("train", {})
     # Applied BEFORE resolve_model_cfg and before adapter_dir(), both of which read
     # cfg["model"]: the model key is part of the adapter path, so overriding it later

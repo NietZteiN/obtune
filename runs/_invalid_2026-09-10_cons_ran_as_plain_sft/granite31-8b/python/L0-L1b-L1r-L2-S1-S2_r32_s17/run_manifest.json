@@ -1,0 +1,156 @@
+{
+  "experiment": "main/sft",
+  "run_id": "granite31-8b__python__obj_cons_py__s17",
+  "seed": 17,
+  "config_path": "/work/jvl210002/migration/obtune/configs/train/obj_cons_granite31-8b_py.yaml",
+  "config_resolved": {
+    "model": "granite31-8b",
+    "language": "python",
+    "train_conditions": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2"
+    ],
+    "peft": {
+      "r": 32,
+      "alpha": 64,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "task_type": "CAUSAL_LM"
+    },
+    "train": {
+      "dtype": "bfloat16",
+      "attn_implementation": "sdpa",
+      "gradient_checkpointing": true,
+      "max_seq_len": 2048,
+      "per_device_batch": 16,
+      "grad_accum": 4,
+      "lr": 0.0001,
+      "lr_scheduler_type": "cosine",
+      "warmup_ratio": 0.03,
+      "epochs": 3,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0,
+      "seed": 17,
+      "train_size": 30000,
+      "val_size": 1000,
+      "save_strategy": "epoch",
+      "eval_steps": 200,
+      "logging_steps": 20,
+      "l0_replay_fraction": 0.0
+    },
+    "ckpt_select": {
+      "metric": "exact_match",
+      "tolerance_pts": 0.2
+    },
+    "_config_path": "/work/jvl210002/migration/obtune/configs/train/obj_cons_granite31-8b_py.yaml",
+    "run_tag": "obj_cons_py",
+    "phase": "main",
+    "adapter_root": "runs/adapters_objectives/cons_parent_lam3",
+    "objective": {
+      "mode": "consistency",
+      "lam": 3.0,
+      "teacher_view": "parent",
+      "teacher_adapter": "runs/adapters/granite31-8b/python/L0_r32_s17/best"
+    }
+  },
+  "model_hf_id": "ibm-granite/granite-3.1-8b-instruct",
+  "model_revision_resolved": null,
+  "adapter": {
+    "path": "/work/jvl210002/migration/obtune/runs/adapters_objectives/cons_parent_lam3/granite31-8b/python/L0-L1b-L1r-L2-S1-S2_r32_s17",
+    "train_cond": "L0-L1b-L1r-L2-S1-S2",
+    "rank": 32,
+    "base_model": "ibm-granite/granite-3.1-8b-instruct"
+  },
+  "gpu_visible": "1",
+  "command": "/work/jvl210002/migration/obtune/src/obtune/train_sft.py --config train/obj_cons_granite31-8b_py.yaml --model granite31-8b",
+  "git_commit": "47306df85d74cdee6b0f55cfc5d9a6f2ef7a91e4",
+  "script_sha256": {
+    "src/obtune/train_sft.py": "8539ceb1ee88fd0ba564f3dfe57f8fe53d0e8799318e770edb7a25e8e7fea785",
+    "src/obtune/data.py": "d52444c6cd85d261656b12970de1e3cbb19911bc4971ec1225188ea3f3d9e610",
+    "src/obtune/prompts.py": "4d5b964950021dc9956ef3b0dc69093cdc0298ad09924902748f4a76b72cd1fd",
+    "src/obtune/schema.py": "50add90180235a0d4bccab4cd61838721ea6ddc6b8ca8a71184f306bea1fe15a",
+    "src/obtune/paths.py": "761c1e3d2a0c67c52e9a37aa7904508693f814b567e355441549269be84c31cb"
+  },
+  "started_utc": "2026-09-10T20:37:13.818835+00:00",
+  "finished_utc": null,
+  "libraries": {
+    "python": "3.12.14",
+    "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+    "torch": "2.11.0+cu129",
+    "transformers": "5.14.1",
+    "peft": "0.20.0",
+    "trl": "1.9.2",
+    "vllm": "0.26.0",
+    "numpy": "2.3.5"
+  },
+  "extra": {
+    "dataset": {
+      "language": "python",
+      "train_conditions": [
+        "L0",
+        "L1b",
+        "L1r",
+        "L2",
+        "S1",
+        "S2"
+      ],
+      "seed": 17,
+      "n_train": 26841,
+      "n_val": 1000,
+      "n_train_programs": 1563,
+      "augment_tags": [],
+      "l0_replay_fraction": 0.0,
+      "corpus": {
+        "n_rows": 38346,
+        "n_programs": 2231,
+        "by_condition": {
+          "L0": 6693,
+          "L1b": 6618,
+          "L1r": 6693,
+          "L2": 6690,
+          "S1": 4968,
+          "S2": 6684
+        },
+        "by_split": {
+          "train": 26841,
+          "test": 9588,
+          "val": 1917
+        },
+        "n_bad_gold": 0,
+        "n_leaked_programs": 0
+      },
+      "trace": null,
+      "prompt_id": "base_v1",
+      "prompt_template_sha256": "c1e8fe28c30873d7daec2e5cbcb0cbc28b1bf4d6f1b5924ebb03b209bec51958",
+      "prompt_version": "v1"
+    },
+    "truncation": {
+      "n_checked": 26841,
+      "max_seq_len": 2048,
+      "truncation_rate": 0.0010059237733318432,
+      "n_truncated": 27,
+      "len_mean": 422.1917588763459,
+      "len_p50": 361,
+      "len_p95": 729,
+      "len_max": 3761,
+      "prompt_len_mean": 414.20450057747473
+    },
+    "prompt_id": "base_v1",
+    "prompt_template_sha256": "c1e8fe28c30873d7daec2e5cbcb0cbc28b1bf4d6f1b5924ebb03b209bec51958",
+    "prompt_version": "v1",
+    "render_mode": "system",
+    "render_version": "v1"
+  }
+}

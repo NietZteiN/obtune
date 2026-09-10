@@ -1,0 +1,26 @@
+{
+  "run_id": "starcoder2-15b__python__obj_cons_py__s17",
+  "finished_utc": "2026-09-10T18:17:11.263544+00:00",
+  "train_runtime_s": 15425.3305,
+  "train_loss": 0.13100275798577019,
+  "tokens_per_sec": null,
+  "steps": 1257,
+  "truncation": {
+    "n_checked": 26841,
+    "max_seq_len": 2048,
+    "truncation_rate": 0.0010059237733318432,
+    "n_truncated": 27,
+    "len_mean": 447.1945531090496,
+    "len_p50": 386,
+    "len_p95": 754,
+    "len_max": 3786,
+    "prompt_len_mean": 435.2053947319399
+  },
+  "n_train": 26841,
+  "n_val": 1000,
+  "checkpoints": [
+    "checkpoint-1257",
+    "checkpoint-419",
+    "checkpoint-838"
+  ]
+}

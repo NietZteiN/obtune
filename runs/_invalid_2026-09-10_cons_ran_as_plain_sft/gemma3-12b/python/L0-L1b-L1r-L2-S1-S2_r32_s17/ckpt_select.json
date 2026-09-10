@@ -1,0 +1,28 @@
+{
+  "adapter_root": "/work/jvl210002/migration/obtune/runs/adapters_objectives/cons_parent_lam3/gemma3-12b/python/L0-L1b-L1r-L2-S1-S2_r32_s17",
+  "metric": "exact_match",
+  "tolerance_pts": 0.2,
+  "n_val_items": 1917,
+  "n_val_dropped_overlong": 0,
+  "val_conditions": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2"
+  ],
+  "prompt_id": "base_v1",
+  "max_tokens": 64,
+  "accuracies": {
+    "checkpoint-419": 0.4413145539906103,
+    "checkpoint-838": 0.43870631194574855,
+    "checkpoint-1257": 0.43870631194574855,
+    "final": 0.440792905581638
+  },
+  "best": "checkpoint-419",
+  "best_accuracy": 0.4413145539906103,
+  "best_symlink": "/work/jvl210002/migration/obtune/runs/adapters_objectives/cons_parent_lam3/gemma3-12b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best",
+  "engine": "vllm-0.26.0",
+  "selected_utc": "2026-09-10T22:47:36.129556+00:00"
+}
