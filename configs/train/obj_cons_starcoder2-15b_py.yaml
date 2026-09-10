@@ -10,7 +10,13 @@ language: python
 train_conditions: [L0, L1b, L1r, L2, S1, S2]
 run_tag: obj_cons_py
 phase: main
-adapter_root: runs/adapters_objectives
+# NOT the bare runs/adapters_objectives. `train_sft.adapter_dir` names a directory
+# `<conditions>_r<rank>_s<seed>` and encodes NOTHING about the objective, so consistency at
+# lam=3 and lam=1 for the same model would resolve to the SAME path and silently overwrite —
+# the hazard that function's own docstring warns about for train.epochs. The CodeLlama arms
+# avoided it by passing an explicit --out; a per-objective root gets the same guarantee from
+# the config alone, so it cannot be lost by a submission that forgets the flag.
+adapter_root: runs/adapters_objectives/cons_parent_lam3
 
 objective:
   mode: consistency
