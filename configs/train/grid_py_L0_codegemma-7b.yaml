@@ -1,0 +1,10 @@
+# tuned_L0 on codegemma-7b — a gate-rule probe (2026-09-10), not a panel arm.
+#
+# Batch shape left to models.yaml rather than inherited from grid_py_L0.yaml, which hard-codes
+# the 7B shape (16 x 4) and would beat the model's own declaration. Same reasoning as
+# grid_py_L0_gemma3.yaml. Nothing here reads X1 or H1.
+_extends: grid_py_L0.yaml
+
+train:
+  per_device_batch: null
+  grad_accum: null

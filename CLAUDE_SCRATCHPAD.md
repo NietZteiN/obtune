@@ -1509,3 +1509,47 @@ lineage). CONFIRM if tuned_L0(codegemma-7b) @ L0 >= tuned_L0(codellama-7b) = 0.4
 
 OPEN FOR THE USER: (1) does gemma3-12b rejoin the panel, and on what recorded justification;
 (2) run the CodeGemma probe; (3) adopt the two-part gate. Nothing re-gated until decided.
+
+## 2026-09-10 — THREE MORE PROBES PRE-REGISTERED (user: "I'm on the side of running more")
+
+All rules frozen BEFORE submission. None reads X1 or H1.
+
+### CORRECTION to 2026-09-09 first
+I told the user llama31-8b-base's gate was "INVALID -- this session's render_plain bug". The bug was
+real (prompt ended on a newline; the model opened with a blank line into the "\n\n" stop and returned
+EMPTY on 92.9 % of failures). Fixing it changed the failures from "" to "\n" and the accuracy **not at
+all**: 0.0383 / ff 0.9006 (388553) against 0.0383 / ff 0.902 (388497). So the trailing newline was not
+the cause, only a symptom. The real incompatibility is structural: this model answers by opening a
+block ("\n[3, 11, 15, 20, 23]\n" is a CORRECT answer from it), and the shared stop sequence "\n\n"
+truncates that opening. The zero-shot gate cannot measure a pretrained checkpoint, and no whitespace
+tweak fixes it. **0.0383 is a real measurement of "this model under this prompt+stop contract", not a
+measurement of the model.**
+
+### P1 — H-gate-format-lineage (codegemma-7b)
+Same lineage and same failure mode as gemma3-12b (ff 0.204; 31.8 % of failures are the gold value
+unquoted). Chain: loss-mask gate -> train tuned_L0 -> ckpt-select -> eval rq2_generic.
+- CONFIRMED iff tuned_L0(codegemma-7b) @ L0 >= **0.4293** (tuned_L0(codellama-7b), the incumbent).
+- REFUTED iff <= **0.2365** (its own untuned raw rate).
+- INCONCLUSIVE between. Report tuned format_fail beside it (prediction: collapses toward ~0.01 as
+  gemma3's did, 0.2796 -> 0.0096).
+
+### P2 — H-persona-override (starcoder2-15b)
+Its gate read 0.0000 / ff 1.000 because its template asserts its own assistant persona while refusing
+a system role, so under `merged` rendering our instruction is demoted into the user turn and loses.
+Question: does SFT override a persona baked into the template?
+- CONFIRMED iff tuned_L0(starcoder2-15b) @ L0 >= **0.4293** (the persona was not a real barrier).
+- REFUTED iff <= **0.05** (still collapsed; the template genuinely prevents the task).
+- INCONCLUSIVE between. Report tuned format_fail (base was 1.000).
+This is the cheapest available test of H-merged-persona's practical consequence.
+
+### P3 — one-shot gate for the pretrained checkpoint (llama31-8b-base) + incumbent reference
+`configs/eval/basecheck_1shot.yaml`, eval-only, `base_1shot` (one_shot: true), on
+**llama31-8b-base AND codellama-7b** so the number has a comparable reference.
+- **NOT COMPARABLE to any basecheck_panel cell** -- every other model was gated zero-shot. One-shot
+  numbers may only be compared to other one-shot numbers. Stated in the config header too.
+- REPORTED, gates nothing: this measures whether the pretrained checkpoint can do the task at all
+  when the answer shape is demonstrated, which is the precondition for it being in the panel for the
+  base-vs-instruct comparison (E10's "is the human-divergence result an instruct artefact?").
+- Descriptive rule: if base_1shot(llama31-8b-base) clears ~0.15 with ff < 0.25, the model is
+  measurable and the panel question is live; if it stays at the floor, the pretrained arm is dropped
+  and the base-vs-instruct comparison is declared unavailable rather than quietly fudged.
