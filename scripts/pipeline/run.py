@@ -204,7 +204,7 @@ def submit_stage(plan: dict, st: dict, s: dict, dep_ids: list[str], dry: bool) -
     script = build_script([str(a) for a in s["argv"]], job_name=s["name"], manifest_src=None,
                           partition=r["partition"], gres=r["gres"], cpus=int(r["cpus"]),
                           mem=r["mem"], time=r["time"], dependency=dep,
-                          qos=r.get("qos", "high-throughput") or None,
+                          qos=r.get("qos") or None,  # 2026-09-10: no default QOS; "high-throughput" does not exist here
                           exclude=r.get("exclude"), nodelist=r.get("nodelist"))
     if dry:
         print(f"  would submit {s['name']:<28} {r['partition']:<7} {r['gres']:<7} {r['time']}  dep={dep or '-'}")

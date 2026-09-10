@@ -1,0 +1,7 @@
+# mono arm on granite31-8b (panel core arms, 2026-09-10). Batch shape from models.yaml: the parent
+# config hard-codes the 7B shape and an explicit value beats the model's declaration.
+_extends: mono_generic_py.yaml
+
+train:
+  per_device_batch: null
+  grad_accum: null

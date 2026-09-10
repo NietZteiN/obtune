@@ -1,0 +1,8 @@
+# tuned_L0 on granite31-8b. Batch shape from models.yaml rather than grid_py_L0's hard-coded
+# 7B shape (an explicit value there beats the model's own declaration). Same pattern as the
+# gemma3 / codegemma / starcoder2 probe configs.
+_extends: grid_py_L0.yaml
+
+train:
+  per_device_batch: null
+  grad_accum: null

@@ -26,9 +26,25 @@ export PATH="$OBTUNE_ENV/bin:$PATH"
 export PYTHONPATH="$OBTUNE_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 
 # Keep caches and temp off $HOME (monorepo CLAUDE.md §2). On juno both /home and
-# /work are the same MooseFS cluster, but compute nodes contend on $HOME, and the
-# 88 GB model cache moved with the project rather than being re-downloaded.
-export HF_HOME="${HF_HOME:-$OBTUNE_SCRATCH/hf_home}"
+# /work are the same MooseFS cluster, but compute nodes contend on $HOME.
+#
+# HF_HOME MOVED TO /scratch ON 2026-09-10, for two independent reasons:
+#   * OWNERSHIP. The old location ($OBTUNE_SCRATCH/hf_home, on /work) is a cache SHARED by every
+#     project on this account. On 2026-09-10 another project deleted CodeLlama-13B and 34B from
+#     it -- 87 GB the paper's scale legs depend on -- to make room for its own datasets. A cache
+#     obtune owns cannot be reclaimed by a neighbour.
+#   * SPACE. /work carries a 1.1 TB per-user quota shared across projects and was exhausted twice
+#     in 24 hours; /scratch/juno/$USER is a separate 30 TB quota (8 KB used before this move).
+# It is also faster: measured on a compute node, /scratch reads at 14,186 MB/s against /work's
+# 1,289 MB/s (11x) and writes at 1.49x -- WekaFS with 32 MB readahead vs MooseFS.
+#
+# CAVEAT, and the reason this holds only models and datasets: /scratch/juno carries a purge
+# policy whose terms are unconfirmed (a `purge_scratch_test` directory sits beside the user
+# directories). Everything here is RE-DOWNLOADABLE from the hub, so a purge costs time and
+# nothing else. Adapters and results stay on /work, which is backed by the quota we pay for.
+# Override by exporting HF_HOME before sourcing this file; the /work copy is left in place.
+export OBTUNE_HF_STORE="${OBTUNE_HF_STORE:-/scratch/juno/$USER/hf_home}"
+export HF_HOME="${HF_HOME:-$OBTUNE_HF_STORE}"
 export TMPDIR="${TMPDIR:-$OBTUNE_SCRATCH/tmp}"
 export TORCHINDUCTOR_CACHE_DIR="${TORCHINDUCTOR_CACHE_DIR:-$OBTUNE_SCRATCH/cache/inductor}"
 export TRITON_CACHE_DIR="${TRITON_CACHE_DIR:-$OBTUNE_SCRATCH/cache/triton}"

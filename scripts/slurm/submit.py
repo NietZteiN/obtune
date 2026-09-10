@@ -155,13 +155,17 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
     # leaves everything downstream PENDING with DependencyNeverSatisfied instead of running
     # on missing inputs -- which is the behaviour we want, since an eval whose adapter never
     # trained would otherwise silently score the base model.
-    # The h200 partition carries QoS=juno, whose MaxJobsPU=4 is what caps concurrency --
-    # NOT our account, which is on `normal` with no limit. `high-throughput` has the
-    # OverPartQOS flag and MaxJobsPU=8, so it overrides the partition cap and doubles the
-    # number of jobs we can hold. `large` (150) looks better but lacks OverPartQOS, so the
-    # partition's 4 still binds. `juno-pri` is also 8 but carries Priority=200000 against
-    # the default 1 -- it would jump every other user on a shared cluster for the same
-    # throughput, so it is deliberately not the default.
+    # QOS, CORRECTED 2026-09-10. The paragraph that stood here described `high-throughput` as
+    # having OverPartQOS and MaxJobsPU=8, overriding the partition cap. **There is no such QOS
+    # on this cluster.** `sacctmgr show qos` lists exactly: normal, juno, hpcre, large,
+    # fio-bench, juno-dev, juno-pri, education. Jobs requesting it are accepted and then sit at
+    # QOSMaxJobsPerUserLimit indefinitely; the identical job with the account default (`normal`)
+    # starts at once -- job 389017 went submit -> RUNNING on g-08-04 while five jobs holding the
+    # old default stayed pending behind it, with h200 GPUs idle.
+    # So the default is now None (take the account's own QOS). `juno-pri` does exist with
+    # MaxJobsPU=8 and Priority=200000, but that priority jumps every other user on a shared
+    # cluster, so it is deliberately not the default -- request it explicitly if a deadline
+    # justifies it.
     q = f"#SBATCH --qos={qos}\n" if qos else ""
     dep = f"#SBATCH --dependency={dependency}\n" if dependency else ""
     extra = ""
@@ -235,9 +239,18 @@ def main() -> int:
     ap.add_argument("--cpus", type=int, default=d["cpus_per_task"])
     ap.add_argument("--mem", default=d["mem"])
     ap.add_argument("--time", default=None, help=f"walltime (default: 2x est_gpu_h, else {d['time']})")
-    ap.add_argument("--qos", default="high-throughput",
-                    help="SLURM QOS. Default high-throughput (MaxJobsPU=8, OverPartQOS, "
-                         "priority 0). Pass '' to take the partition default (juno, cap 4).")
+    # DEFAULT CHANGED 2026-09-10 from "high-throughput", which IS NOT A QOS ON THIS CLUSTER
+    # (`sacctmgr show qos` lists: normal, juno, hpcre, large, fio-bench, juno-dev, juno-pri,
+    # education). Every obtune job since the migration requested it and was throttled --
+    # jobs sat at QOSMaxJobsPerUserLimit for hours while h200 had idle GPUs. The same job
+    # submitted with the account default (`normal`) starts immediately: verified 2026-09-10,
+    # job 389017 went from submit to RUNNING on g-08-04 while five others stayed pending.
+    # CLAUDE.md §1's "queue waits are real, and they are the new planning constraint" was
+    # measuring this, not the cluster.
+    ap.add_argument("--qos", default=None,
+                    help="SLURM QOS. Default: none — take the account's QOS (`normal`), which "
+                         "is what actually runs. Do NOT pass high-throughput; it does not exist "
+                         "here and jobs requesting it are throttled.")
     ap.add_argument("--dependency", default=None,
                     help="SLURM dependency spec, e.g. afterok:12345 or afterok:12345:12346")
     ap.add_argument("--nodelist", default=None,

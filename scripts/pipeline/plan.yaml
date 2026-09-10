@@ -12,9 +12,9 @@
 # done_when: files whose presence marks the stage done even if its job record is lost.
 
 defaults:
-  gpu:      {partition: h200,   gres: "gpu:1", cpus: 8,  mem: 64G, time: "02:00:00", qos: high-throughput}
-  cpu:      {partition: normal, gres: none,    cpus: 16, mem: 64G, time: "04:00:00", qos: high-throughput}
-  analysis: {partition: normal, gres: none,    cpus: 4,  mem: 16G, time: "01:00:00", qos: high-throughput}
+  gpu:      {partition: h200,   gres: "gpu:1", cpus: 8,  mem: 64G, time: "02:00:00", qos: null            # 2026-09-10: "high-throughput" is not a QOS here; it throttled every job}
+  cpu:      {partition: normal, gres: none,    cpus: 16, mem: 64G, time: "04:00:00", qos: null            # 2026-09-10: "high-throughput" is not a QOS here; it throttled every job}
+  analysis: {partition: normal, gres: none,    cpus: 4,  mem: 16G, time: "01:00:00", qos: null            # 2026-09-10: "high-throughput" is not a QOS here; it throttled every job}
 
 # Jobs submitted by hand before the pipeline existed (E3: cons_lam3 at 13B/34B). Stages may
 # depend on them as `ext:<name>`; run.py reads their state from sacct.

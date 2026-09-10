@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 """Run N project commands in parallel inside ONE SLURM allocation, one per GPU.
 
-WHY. Concurrency here is capped by jobs, not GPUs: the h200 partition's QoS (`juno`)
-allows 4 jobs per user, `high-throughput` raises that to 8 -- but each h200 node has TWO
-GPUs and a one-adapter-per-job pipeline uses one of them. Packing two trainings into a
-`--gres=gpu:2` allocation doubles throughput per job slot, on top of whatever the QOS
-allows, without asking the cluster for anything extra.
+WHY. Each h200 node has TWO GPUs and a one-adapter-per-job pipeline uses one of them, so a
+`--gres=gpu:2` allocation running two trainings doubles throughput per job slot.
+
+CORRECTED 2026-09-10: this docstring used to say `high-throughput` raises the per-user job cap
+from 4 to 8. There is no such QOS on this cluster (see scripts/slurm/submit.py) and requesting
+it throttled every job instead. The h200 partition's QoS (`juno`) does cap a user at 4 jobs.
+
+WHEN PACKING IS AND IS NOT THE RIGHT TOOL. It trades schedulability for density: `--gres=gpu:2`
+needs both GPUs free on ONE node, and on a busy cluster most nodes sit in `mix` with one GPU
+taken, so a pack can wait for a whole-node slot that two single-GPU jobs would not have needed.
+Pack when the job cap is the binding constraint; submit singles when node fragmentation is.
+Running a mix of both, as of 2026-09-10, keeps fragmented capacity busy and still exploits
+whole nodes when they appear.
 
 DEVICE ASSIGNMENT. Each child gets `CUDA_VISIBLE_DEVICES=<i>` over the allocation's
 devices. This is safe precisely BECAUSE obtune.gpu.pin() is a no-op under SLURM: it
