@@ -1,0 +1,23 @@
+# tuned_L0 on Gemma-3-12B — the H-gate-format probe (2026-09-09).
+#
+# WHY THIS CONFIG EXISTS RATHER THAN `--model gemma3-12b` ON grid_py_L0.yaml. That config
+# hard-codes `per_device_batch: 16 / grad_accum: 4`, the shape measured for a 7B on an H200,
+# and an explicit value beats models.yaml (`_effective_train_knobs` only falls back when the
+# config leaves it null). Gemma-3-12B declares 8 x 8 there. The effective batch is 64 either
+# way, so this is about memory headroom, not optimization: the same arm at two shapes is the
+# same arm, and a config that silently trains a 12B at the 7B shape is the kind of thing that
+# turns into an unexplained OOM three hours into a queue wait.
+#
+# WHAT IT IS FOR. gemma3-12b FAILED its basecheck gate (format_fail 0.2796 on L0 against a 0.15
+# threshold, job 385500) while beating CodeLlama-7b's untuned L0 by +7.7 points, because 34.8 %
+# of its failures are the gold value with the quotes stripped -- a literal-syntax convention, not
+# a reasoning failure. H-gate-format asks whether the gate rule measures capability or
+# punctuation: CONFIRM if tuned_L0(gemma3-12b) on L0 reaches tuned_L0(codellama-7b) = 0.4275,
+# REFUTE if it lands at or below gemma3's untuned rate conditional on a well-formed answer.
+#
+# Nothing here reads X1 or H1.
+_extends: grid_py_L0.yaml
+
+train:
+  per_device_batch: 8
+  grad_accum: 8

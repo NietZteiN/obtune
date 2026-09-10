@@ -1455,3 +1455,31 @@ Schema: TrialRow.model_family gained "pretrained" (llama31-8b-base) -- purely ad
 Gates queued: 388497 llama31-8b-base (resubmitted after the schema fix), 388499 starcoder2-15b,
 388500 codegemma-7b, 388501 granite31-8b. dl_datasets 388502 (datasets 4.x: apps needs
 refs/convert/parquet, humaneval is openai/openai_humaneval).
+
+## 2026-09-09 — H-gate-format PROBE SUBMITTED (user: "probe"). Rule frozen BEFORE the read.
+
+gemma3-12b failed its basecheck gate (format_fail 0.2796 > 0.15) but beat CodeLlama-7b untuned on L0
+(0.3335 vs 0.2569) with 34.8 % of its failures being the gold value minus its quotes. The user chose
+the reduced-probe precedent (2026-09-04, Llama-3.1) over the NO-GO. **The rule below is frozen now,
+before tuned_L0(gemma3-12b) exists.**
+
+**H-gate-format:** a base model's format_fail predicts nothing about its tuned ceiling when the
+failures are a single learnable convention.
+- CONFIRMED iff tuned_L0(gemma3-12b) on L0 >= tuned_L0(codellama-7b) = 0.4275 (the panel's standing
+  clean-code control), i.e. the gate would have discarded a model that is at or above the incumbent.
+- REFUTED iff it lands at or below gemma3's untuned rate conditional on a well-formed answer
+  = 0.3335 / (1 - 0.2796) = 0.4629 ... NOTE: that conditional rate is ABOVE the CONFIRM threshold,
+  so the two bounds are stated separately and the ambiguous middle is INCONCLUSIVE:
+    * CONFIRMED   : acc(L0) >= 0.4275
+    * REFUTED     : acc(L0) <= 0.3335 (no better than untuned raw -- tuning bought nothing)
+    * INCONCLUSIVE: in between.
+- Reported either way. format_fail(tuned) is reported beside it: if the probe works, the mechanism
+  is that tuning teaches the quoting convention, and format_fail should collapse toward CodeLlama's
+  tuned level (~0.02-0.04).
+- This does NOT re-open gemma3's gate verdict. The gate said NO-GO and that stands as the registered
+  verdict; the probe tests the RULE, not the model.
+
+Chain: gate4_lossmask_gemma3 **388535** (dev, CLAUDE.md §4 #4 -- prompt tokens must be -100)
+-> tr_gemma3_L0 **388536** (h200, configs/train/grid_py_L0_gemma3.yaml, 8x8 per models.yaml rather
+than grid_py_L0's hard-coded 7B 16x4) -> ck_gemma3_L0 **388537** -> ev_gemma3_probe **388538**
+(rq2_generic, --systems base,tuned_L0, six ladder conditions). No X1, no H1.
