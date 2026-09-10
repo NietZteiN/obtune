@@ -139,6 +139,34 @@ def _walltime(job: Job | None, override: str | None, default: str) -> str:
     return f"{hours:02d}:00:00"
 
 
+def obtune_jobs_on(partition: str) -> int:
+    """How many jobs obtune already holds on `partition`, running or queued.
+
+    Exists because a share agreed with the other project on this account was enforced by
+    arithmetic-before-submitting, and that failed inside an hour: a panel eval went to h200
+    without counting a checkpoint-select moved there minutes earlier, putting obtune at 3 of the
+    account's 4 slots. Nothing caught it but a monitor.
+
+    PENDING counts as well as RUNNING. A queued job competes for the same slot the other project
+    would use, so submitting three and letting the scheduler sort it out is precisely what the
+    share forbids.
+
+    Obtune's jobs are recognised by this submitter's own name prefixes. Another project's jobs on
+    this shared account are never counted and never touched.
+    """
+    import subprocess as _sp
+    out = _sp.run(["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j %P %T"],
+                  capture_output=True, text=True).stdout
+    mine = ("tr", "ck", "ev", "pk", "pkck", "os", "an", "bld", "dl", "gate", "lm")
+    n = 0
+    for line in out.splitlines():
+        f = line.split()
+        if len(f) >= 3 and f[1] == partition and f[2] in ("RUNNING", "PENDING") \
+           and f[0].split("_")[0] in mine:
+            n += 1
+    return n
+
+
 def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
                  partition: str, gres: str, cpus: int, mem: str, time: str,
                  nodelist: str | None = None, exclude: str | None = None,
@@ -251,6 +279,12 @@ def main() -> int:
                     help="SLURM QOS. Default: none — take the account's QOS (`normal`), which "
                          "is what actually runs. Do NOT pass high-throughput; it does not exist "
                          "here and jobs requesting it are throttled.")
+    ap.add_argument("--share-limit", type=int,
+                    default=int(os.environ.get("OBTUNE_H200_SHARE", "0") or 0),
+                    help="refuse to submit to a contested partition if obtune already holds this "
+                         "many jobs there (0 = no limit). Also settable via OBTUNE_H200_SHARE.")
+    ap.add_argument("--ignore-share-limit", action="store_true",
+                    help="submit anyway; use when the limit is deliberately being exceeded.")
     ap.add_argument("--dependency", default=None,
                     help="SLURM dependency spec, e.g. afterok:12345 or afterok:12345:12346")
     ap.add_argument("--nodelist", default=None,
@@ -261,6 +295,16 @@ def main() -> int:
     ap.add_argument("--name", default="adhoc", help="job name for --argv submissions")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+
+    # Share guard: refuse rather than quietly exceed an agreed allocation on a contested
+    # partition. See obtune_jobs_on() for why this is code and not care.
+    if a.share_limit and not a.ignore_share_limit:
+        held = obtune_jobs_on(a.partition)
+        if held >= a.share_limit:
+            print(f"REFUSING: obtune already holds {held} job(s) on {a.partition}; the agreed "
+                  f"share is {a.share_limit}. Use h100/a30 (no QOS cap), wait, or pass "
+                  f"--ignore-share-limit deliberately.", file=sys.stderr)
+            return 2
 
     if a.argv:
         script = build_script(a.argv, job_name=a.name, manifest_src=None,

@@ -61,6 +61,14 @@ export VLLM_LOGGING_LEVEL="${VLLM_LOGGING_LEVEL:-WARNING}"
 # context already exists when the engine forks. `spawn` is the documented remedy and costs a
 # few seconds of start-up on the partitions that were fine anyway.
 export VLLM_WORKER_MULTIPROC_METHOD="${VLLM_WORKER_MULTIPROC_METHOD:-spawn}"
+
+# Share of the h200 partition obtune may hold. The account is shared with another project and
+# h200 imposes QoS=juno (MaxJobsPU=4), so holding all four squeezes them out entirely.
+# scripts/slurm/submit.py REFUSES an h200 submission above this, rather than relying on whoever
+# is submitting to count first — which failed within an hour of the share being agreed.
+# h100 and a30 carry no QOS (`scontrol show partition`), so work there is unaffected.
+# Set to 0 to disable.
+export OBTUNE_H200_SHARE="${OBTUNE_H200_SHARE:-2}"
 export TOKENIZERS_PARALLELISM=false
 
 # flashinfer JIT-compiles its sampling kernel on first use and needs nvcc/CUDA_HOME. juno's
