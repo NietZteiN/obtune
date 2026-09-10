@@ -1,0 +1,27 @@
+# Paired consistency (objective O1) on granite31-8b — panel core arm, 2026-09-10.
+#   L = CE(y | x_obf) + lam * KL( p_teacher(. | x_L0parent) || p_student(. | x_obf) )  at answer tokens
+# lam = 3 is the plateau from the round-2 sweep. Teacher is THIS model's own tuned_L0: E4
+# (2026-09-08) showed the unseen-family number is distilled from the teacher, so another model's
+# teacher would import that model's behaviour rather than measure this one's.
+# The teacher path is the `best` symlink, which ckpt-select writes — hence this arm is chained
+# afterok on ck_granite_L0 rather than submitted alongside the training.
+_extends: _base_lora.yaml
+
+model: granite31-8b
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: obj_cons_py
+phase: main
+adapter_root: runs/adapters_objectives
+
+objective:
+  mode: consistency
+  lam: 3.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/granite31-8b/python/L0_r32_s17/best
+
+train:
+  per_device_batch: null
+  grad_accum: null
+  train_size: 30000
+  seed: 17
