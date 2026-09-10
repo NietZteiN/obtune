@@ -218,17 +218,29 @@ State at 2026-09-09:
 | | status |
 |---|---|
 | `codellama-7b/13b/34b`, `llama31-8b`, `llama31-8b-base`, `gemma3-12b` | **complete** (12.6 / 24.2 / 62.9 / 15.0 / 15.0 / 22.7 GB) |
-| `starcoder2-15b`, `codegemma-7b`, `granite31-8b` | metadata only — downloading (dev chain 385666 → 385667 → 385668) |
+| `starcoder2-15b` 29.7 GB, `codegemma-7b` 15.9 GB, `granite31-8b` 15.2 GB | **complete** (dev chain 385666 → 385667 → 385668) |
 | `semcoder`, `semcoder-s` | never downloaded; `role: baseline_only`, off the critical path, reported as optional |
 | train pairs, held-out eval items (ladder + X1/X1m/X1s + 10 composites), corpus base, splits, human data | **all present** |
-| raw HF datasets | `code_search_net`, `mbpp`, `mbppplus` cached; **APPS, CRUXEval, HumanEval were not** — see below |
+| raw HF datasets | **all six cached**; `preflight_panel.py` exits 0 |
 
-**The corpus can be *used* but could not be *rebuilt* on this cluster.** The tier-1 sources
+**The corpus can now be rebuilt (fixed 2026-09-09).** It could not be before: The tier-1 sources
 that produced the 2,231-program corpus were fetched on the old host and never entered juno's
 cache, so `scripts/02_build_corpus.py` had nothing to read. Nothing is blocked by this — every
 job reads `data/train/base/python.jsonl` — but for an artifact-track submission it is the
 difference between "the corpus is included" and "the corpus can be regenerated", so
-`scripts/fetch_corpus_datasets.py` (job 385669) pulls them.
+`scripts/fetch_corpus_datasets.py` pulls them.
+
+**And the first attempt at that silently did not work, which is the part worth keeping.** Calling
+`load_dataset` reported success on all three sources while the corpus stayed unbuildable: the
+loaders in `obtune/corpus/sources/` never touch `datasets` — they read raw files out of the hub
+cache through `find_cached(REPO_ID, pattern)`. `apps.dataset_path()` wants `train.jsonl`, and under
+`datasets` 4.x APPS is reachable only through `refs/convert/parquet` (script loaders are refused),
+which never produces that file. The script now fetches raw files with `snapshot_download` against
+the patterns each loader names **and ends by calling every `dataset_path()`**, failing loudly if one
+cannot resolve. Two hub-side renames were found the same way: `openai_humaneval` is now
+`openai/openai_humaneval` (the loader keeps the old id as a fallback), and APPS' jsonl lives on
+`main` even though `load_dataset` refuses to read it there. All three loaders resolve as of
+job 388510.
 
 **Scheduling note, learned the same day.** The `high-throughput` QOS named in
 `scripts/pipeline/plan.yaml` **does not exist on juno** (`sacctmgr show qos`: normal, juno,
@@ -251,6 +263,11 @@ Downloads: CodeGemma-7B ~17 GB, StarCoder2-15B ~32 GB, Granite-8B ~16 GB, OLMo-2
 ---
 
 ## Changelog
+- **2026-09-09 (d)** — All five panel models downloaded and verified; `preflight_panel.py` exits 0.
+  The corpus is rebuildable on juno for the first time since the migration — but only after the
+  `load_dataset` fetch was found to satisfy nothing the loaders read, so the fetcher now pulls raw
+  files and verifies each `dataset_path()` resolves. Quota after the cleanup: 999 GB used, ~101 GB
+  headroom.
 - **2026-09-09 (c)** — §5a added: `scripts/preflight_panel.py`, the on-disk audit. Six models
   complete, three downloading, data tree complete. Two facts it surfaced: `codellama-34b` and
   `gemma3-12b` carry 23.8 GB of orphaned `.incomplete` blobs beside complete shard sets (reclaimable,
