@@ -572,8 +572,14 @@ def render_plain(messages: Sequence[Mapping[str, str]], add_generation_prompt: b
     for m in adapt_messages(messages, None, force="merged"):
         parts.append(f"{_PLAIN_HEADERS[m['role']]}\n{m['content']}")
     if add_generation_prompt:
-        parts.append(f"{_PLAIN_HEADERS['assistant']}\n")
-        return "\n\n".join(parts[:-1]) + "\n\n" + parts[-1]
+        # NO trailing newline after the response header. With one, a pretrained checkpoint
+        # continues a *block* rather than a line: it emits a blank line first, and the eval's
+        # stop sequence is "\n\n" (configs/eval/_base_eval.yaml), so generation halts after
+        # one or two tokens having produced nothing. Measured 2026-09-09 on the first
+        # llama31-8b-base gate: 92.9 % of its 1,507 L0 failures were EMPTY strings at
+        # n_gen_tokens <= 2, which read as a 0.038-accuracy model and were an artifact of this
+        # newline. Ending on the header makes the model's own first newline the separator.
+        parts.append(_PLAIN_HEADERS["assistant"])
     return "\n\n".join(parts)
 
 

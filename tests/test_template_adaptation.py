@@ -102,3 +102,15 @@ def test_merged_preserves_content_without_a_tokenizer():
 def test_merge_refuses_rather_than_dropping_the_system_turn():
     with pytest.raises(ValueError):
         prompts.adapt_messages([{"role": "system", "content": "SYS"}], None, force="merged")
+
+
+def test_plain_prompt_does_not_end_in_a_newline():
+    """Regression: the eval's stop sequence is "\\n\\n" and a pretrained checkpoint answers a
+    header-terminated prompt by opening a new block — a blank line — which matched the stop
+    immediately and returned an empty string on 92.9 % of items (llama31-8b-base gate, job
+    388497, 2026-09-09). The prompt must end ON the response header, not after it."""
+    text = prompts.render_plain(_messages(), add_generation_prompt=True)
+    assert not text.endswith("\n"), repr(text[-40:])
+    # Ends ON the header: the blank line before it is the section separator and is fine;
+    # what must not exist is anything after it for the model to continue past.
+    assert text.endswith(prompts._PLAIN_HEADERS["assistant"])
