@@ -251,6 +251,70 @@ downloads sat at `QOSMaxJobsPerUserLimit` indefinitely. `dev` has its own QOS (`
 `MaxJobsPU=1`, 2 h walltime) and is unaffected, so CPU work — downloads included — should go
 there when the shared limit is saturated. GPU work has no such escape hatch and simply waits.
 
+## 5b. What the gate actually decided (2026-09-10) — and why it is not a screen
+
+Every candidate was gated zero-shot, then the three the gate rejected were probed with one epoch
+of `tuned_L0`, against rules frozen before each arm existed. The gate was wrong about all three.
+
+| model | gate (untuned) | verdict | `tuned_L0` @ L0 | tuned `ff` |
+|---|---|---|---:|---:|
+| `starcoder2-15b` | 0.0000, ff **1.000** | NO-GO | **0.5401** | 0.0138 |
+| `gemma3-12b` | 0.3335, ff 0.280 | NO-GO | **0.5180** | 0.0096 |
+| `codegemma-7b` | 0.2365, ff 0.204 | NO-GO | **0.4647** | 0.0150 |
+| `granite31-8b` | 0.2850, ff 0.125 | **PASS** | training | — |
+| `llama31-8b-base` | 0.0383, ff 0.902 | NO-GO | 0.3150 *(one-shot, base)* | 0.167 |
+| `codellama-7b` (incumbent) | 0.2569, ff 0.129 | PASS | 0.4293 | 0.0222 |
+
+Program-clustered bootstrap on the same 1,670 items: `starcoder2-15b − codellama-34b`
+**+1.80 [−0.36, +3.89]** (a tie, at under half the parameters), `− gemma3-12b` +2.22 [+0.06, +4.49],
+`− codellama-7b` +11.08 [+8.92, +13.41]; `codegemma-7b − codellama-7b` +3.53 [+1.26, +5.69].
+
+**Three rejections, three unrelated causes, none of them the model:**
+1. **A quoting convention** (both Google models): bare unquoted strings where the spec wants a
+   quoted literal — 34.8 % and 31.8 % of their failures were the gold value modulo quotes.
+2. **A template persona** (StarCoder2): its template refuses a system role *and* asserts its own
+   ("an exceptionally intelligent coding assistant"), so under `merged` rendering our instruction is
+   demoted into the user turn and loses. SFT overrides it entirely.
+3. **A stop-sequence collision** (the pretrained checkpoint): it answers by opening a *block*, and
+   the shared `stop: ["\n\n"]` truncates the blank first line before any content. One
+   demonstration takes it from 0.0383 to 0.3150 — above the incumbent's 0.3018 on the same footing.
+
+**The rule was generalised from its own exception.** It came from the 2026-09-04 Llama-3.1-Instruct
+gate, where a model's whole apparent margin *was* format and it was weaker conditional on a
+well-formed answer. That case is real and worth catching; it is also the minority here.
+
+**What replaces it.** Untuned `format_fail` is a diagnostic that *the prompt contract does not fit
+the model* — a reason to investigate, never to discard. The composition of the failures separates
+the two cases and is nearly free to compute over cells the gate already writes: what fraction of
+unparsable outputs are the gold value modulo a fixed transformation. Adopting a two-part gate
+(`ff ≤ 0.15` **or** failures dominated by one recoverable convention **and** conditional accuracy
+clearing the incumbent) is a decision still open with the user; nothing has been re-gated.
+
+**A fourth trap, from the CodeGemma re-run.** Its first probe read 0.0000 / ff 1.000 — void, not
+refuted. CodeGemma's `generation_config` lists `eos_token_id=1` while its chat template terminates
+turns with `<end_of_turn>` (107), so a model fine-tuned on that template emits the terminator, vLLM
+never stops, and generation repeats to the cap. Gemma-3 escaped only because its config lists
+`[1, 106]`. `<end_of_turn>` is now a stop string; the rest of the panel was checked and is clean.
+
+**On this evidence the strongest panel is `starcoder2-15b`, `codellama-34b`, `gemma3-12b`**, with
+`codegemma-7b` and the pretrained Llama each beating the incumbent in their own comparison — a
+materially better panel than the gate would have left (CodeLlama-7B and Granite).
+
+## 5c. Where the models live (2026-09-10)
+
+`HF_HOME` moved to **`/scratch/juno/$USER/hf_home`** (`scripts/env.sh`, via an overridable
+`OBTUNE_HF_STORE`). Two reasons, either sufficient: the `/work` cache is **shared**, and another
+project deleted CodeLlama-13B and 34B out of it — 87 GB the scale legs depend on — to make room for
+its own datasets; and `/work`'s 1.1 TB quota is shared and was exhausted twice in 24 hours, where
+scratch is a separate 30 TB allocation. Measured on a compute node, scratch also reads **11× faster**
+(14,186 vs 1,289 MB/s, WekaFS vs MooseFS). 143.8 GB copied in ~7 minutes, every shard verified; both
+deleted CodeLlama models re-downloaded there at no `/work` cost.
+
+**Only models and datasets live there.** `/scratch/juno` carries a purge policy whose terms are
+unconfirmed. Everything in the HF cache is re-downloadable, so a purge costs time and nothing else;
+adapters and results stay on `/work`, which is quota-backed. If the admins confirm scratch is
+persistent, adapters could follow and the space problem ends.
+
 ## 6. Cost
 
 Per new 7–9B model, core arms + evals: `tuned_L0` 22 min + `tuned_X1` 22 min + `mono_all` 3.5 h +
@@ -263,6 +327,11 @@ Downloads: CodeGemma-7B ~17 GB, StarCoder2-15B ~32 GB, Granite-8B ~16 GB, OLMo-2
 ---
 
 ## Changelog
+- **2026-09-10** — §5b: the gate rejected three of five models and was wrong about each, for three
+  unrelated causes (a quoting convention, a template persona, a stop-sequence collision); tuned,
+  StarCoder2 is the best model in the panel and CodeGemma beats the same-size incumbent. Untuned
+  `format_fail` is demoted from screen to diagnostic. §5c: `HF_HOME` moved to a 30 TB scratch
+  allocation that obtune owns, after a neighbour deleted 87 GB of our weights from the shared cache.
 - **2026-09-09 (d)** — All five panel models downloaded and verified; `preflight_panel.py` exits 0.
   The corpus is rebuildable on juno for the first time since the migration — but only after the
   `load_dataset` fetch was found to satisfy nothing the loaders read, so the fetcher now pulls raw
