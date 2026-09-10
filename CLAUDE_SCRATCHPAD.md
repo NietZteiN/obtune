@@ -1483,3 +1483,29 @@ Chain: gate4_lossmask_gemma3 **388535** (dev, CLAUDE.md §4 #4 -- prompt tokens 
 -> tr_gemma3_L0 **388536** (h200, configs/train/grid_py_L0_gemma3.yaml, 8x8 per models.yaml rather
 than grid_py_L0's hard-coded 7B 16x4) -> ck_gemma3_L0 **388537** -> ev_gemma3_probe **388538**
 (rq2_generic, --systems base,tuned_L0, six ladder conditions). No X1, no H1.
+
+## 2026-09-10 — H-gate-format CONFIRMED (rule was frozen in be12802 before the arm existed)
+
+tuned_L0(gemma3-12b) @ L0 = **0.5180** vs CONFIRM threshold 0.4275. format_fail 0.2796 -> **0.0096**
+(29x) in ONE epoch (ckpt-select picked epoch 1; all three epochs within 0.3 pts).
+Program-clustered bootstrap on the same 1,670 items / 557 programs:
+  gemma3-12b - codellama-34b @ L0  -0.42 [-2.75, +1.86]   <- TIES 34B at ~1/3 the parameters
+  gemma3-12b - codellama-13b @ L0  +4.91 [+2.46, +7.25]*
+  gemma3-12b - codellama-7b  @ L0  +8.86 [+6.64, +11.03]*
+
+**The registered gate rule would have discarded the best new model in the panel.** It is not a stupid
+rule -- it was written from the 09-04 Llama-3.1 gate where the margin WAS format -- but format_fail
+alone cannot separate that case from this one. The COMPOSITION of the failures can, and the gate
+never looked at it.
+
+PROPOSED two-part gate (NOT adopted unilaterally; needs the user): pass iff format_fail <= 0.15 OR
+(failures dominated by one recoverable convention AND conditional accuracy clears the incumbent).
+The diagnostic is ~20 lines over cells the gate already writes, no GPU.
+
+Gemma-3's original NO-GO stands in the record; the probe tested the RULE, not the model.
+**H-gate-format-lineage** (opened): same probe on codegemma-7b (ff 0.204, 31.8 % unquoted, same
+lineage). CONFIRM if tuned_L0(codegemma-7b) @ L0 >= tuned_L0(codellama-7b) = 0.4293; REFUTE if
+<= its untuned 0.2365. ~25 min GPU.
+
+OPEN FOR THE USER: (1) does gemma3-12b rejoin the panel, and on what recorded justification;
+(2) run the CodeGemma probe; (3) adopt the two-part gate. Nothing re-gated until decided.
