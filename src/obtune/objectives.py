@@ -404,8 +404,21 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
     # 2026-09-09; this second training entry point did not, which is the kind of gap a partial
     # fix leaves. Identity for templates that accept a system turn.
     if prompts.template_mode(tokenizer) != "system":
-        tr = [prompts.to_trl_example(r, tokenizer) if "prompt" in r else r for r in tr]
-        va = [prompts.to_trl_example(r, tokenizer) if "prompt" in r else r for r in va]
+        # MERGE the adapted prompt/completion back into the row; do not REPLACE the row.
+        # to_trl_example returns only {prompt, completion}, so replacing drops the extra fields
+        # these objectives attach -- `t_ids`/`t_clen` for the consistency teacher, `kind`/
+        # `ul_index` for negatives. Replacing cost two jobs with `KeyError: 't_ids'` three
+        # minutes in, and only on merged-template models, because the branch never fires for a
+        # template that accepts a system role (gemma3, granite trained fine).
+        def _adapt(rows):
+            out = []
+            for r in rows:
+                if "prompt" not in r:
+                    out.append(r); continue
+                a = prompts.to_trl_example(r, tokenizer)
+                out.append({**r, "prompt": a["prompt"], "completion": a["completion"]})
+            return out
+        tr, va = _adapt(tr), _adapt(va)
 
     train_ds = Dataset.from_list(tr)
     val_ds = Dataset.from_list(va) if va else None
