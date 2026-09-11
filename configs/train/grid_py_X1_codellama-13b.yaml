@@ -1,0 +1,9 @@
+# tuned_X1 on codellama-13b — completes the four-arm core set for the incumbent models so that all eight
+# panel models can be read from ONE phase (panel_core) instead of stitching x1_generic,
+# rq2_generic and objectives_scale together, which carry different system sets per model.
+# Batch shape from models.yaml, not grid_py_X1's hard-coded 7B shape.
+_extends: grid_py_X1.yaml
+
+train:
+  per_device_batch: null
+  grad_accum: null
