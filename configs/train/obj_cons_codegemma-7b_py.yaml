@@ -24,8 +24,13 @@ objective:
   teacher_adapter: runs/adapters/codegemma-7b/python/L0_r32_s17/best
 
 train:
-  # from models.yaml rather than a hard-coded shape
-  per_device_batch: null
-  grad_accum: null
+  # NOT from models.yaml here. models.yaml declares 16 x 4 for this model, which is right for
+  # plain SFT and OOMs under the consistency objective: the KL term holds answer-token logits over
+  # the FULL vocabulary for BOTH student and teacher, and the Gemma family's vocab is 256,000
+  # against StarCoder2's and Granite's ~49,000 — five times the logit tensor for the same batch.
+  # Measured: 16 x 4 died at step 17 trying to allocate 30.52 GiB on a 140 GB H200 (job 390240).
+  # 4 x 16 keeps the effective batch at 64, so the arm stays comparable to every other one.
+  per_device_batch: 4
+  grad_accum: 16
   train_size: 30000
   seed: 17
