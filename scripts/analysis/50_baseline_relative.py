@@ -37,8 +37,21 @@ LADDER = ["L0", "L1b", "L1r", "L2", "S1", "S2"]
 HELDOUT = "X1"
 
 
-def load_cells(model: str, language: str) -> dict:
-    """(system, condition) -> (n, accuracy). Later phases win, so a re-run supersedes."""
+def load_cells(model: str, language: str, task: str = "forward") -> dict:
+    """(system, condition) -> (n, accuracy) for ONE task direction.
+
+    THE KEY MUST INCLUDE THE TASK. The inverse-task cells (`inverse_generic`, RQ5') carry the
+    same (system, condition) names as the forward ones -- 56 such collisions exist for
+    codellama-7b alone -- so a dict keyed on (system, condition) silently keeps whichever phase
+    sorted last. The forward numbers happened to survive because `rq2_generic` sorts after
+    `inverse_generic`, which is luck, not correctness: any system whose only forward cells live
+    in a phase sorting earlier (`grid_rq1_7b`, `h1_codellama`, `basecheck`) would have had an
+    inverse accuracy reported as a forward one.
+
+    The direction is read from `prompt_id`, which the prompt builder stamps into every row
+    (`inverse_*` for the value->call task), not from the phase name -- a phase is a batch label
+    and a future config could mix.
+    """
     import pandas as pd
     out = {}
     for p in sorted(glob.glob(f"results/cells/*/{model}/{language}/*/trials.parquet")):
@@ -46,7 +59,12 @@ def load_cells(model: str, language: str) -> dict:
         if phase.startswith("_"):          # quarantined cells are never read
             continue
         s, _, c = os.path.basename(os.path.dirname(p)).partition("__")
-        df = pd.read_parquet(p, columns=["correct"])
+        df = pd.read_parquet(p, columns=["correct", "prompt_id"])
+        if df.empty:
+            continue
+        is_inv = str(df["prompt_id"].iloc[0]).startswith("inverse")
+        if (task == "inverse") != is_inv:
+            continue
         out[(s, c)] = (len(df), float(df["correct"].mean()))
     return out
 
@@ -56,13 +74,16 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--language", default="python")
     ap.add_argument("--models", nargs="*", default=None)
+    ap.add_argument("--task", choices=["forward", "inverse"], default="forward",
+                    help="which direction to report; the inverse task is RQ5', "
+                         "program+value -> a call, graded by execution")
     ap.add_argument("--json", default=None)
     a = ap.parse_args()
 
     models = a.models or sorted({p.split("/")[3] for p in glob.glob(f"results/cells/*/*/{a.language}/*/trials.parquet")})
     report = {}
     for m in models:
-        cells = load_cells(m, a.language)
+        cells = load_cells(m, a.language, a.task)
         base = cells.get(("base", "L0"))
         if not base:
             continue
