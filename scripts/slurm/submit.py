@@ -280,7 +280,7 @@ def main() -> int:
                          "is what actually runs. Do NOT pass high-throughput; it does not exist "
                          "here and jobs requesting it are throttled.")
     ap.add_argument("--share-limit", type=int,
-                    default=int(os.environ.get("OBTUNE_H200_SHARE", "0") or 0),
+                    default=None,
                     help="refuse to submit to a contested partition if obtune already holds this "
                          "many jobs there (0 = no limit). Also settable via OBTUNE_H200_SHARE.")
     ap.add_argument("--ignore-share-limit", action="store_true",
@@ -298,6 +298,14 @@ def main() -> int:
 
     # Share guard: refuse rather than quietly exceed an agreed allocation on a contested
     # partition. See obtune_jobs_on() for why this is code and not care.
+    # Resolve the share from configs/compute.yaml unless given explicitly. NOT from the
+    # environment: that form was inert, because env.sh is sourced by the sbatch script and not by
+    # the shell doing the submitting.
+    if a.share_limit is None:
+        try:
+            a.share_limit = int((load_config("compute.yaml").get("share_limits") or {}).get(a.partition, 0))
+        except Exception:
+            a.share_limit = 0
     if a.share_limit and not a.ignore_share_limit:
         held = obtune_jobs_on(a.partition)
         if held >= a.share_limit:

@@ -100,6 +100,18 @@ exec_pool:
 # isolation, and CUDA_VISIBLE_DEVICES is set for us. src/obtune/sched/,
 # src/obtune/gpu_alloc.py, scripts/launch_workers.sh and scripts/supervise.sh are
 # superseded by sbatch wrappers.
+# Per-partition cap on how many jobs OBTUNE may hold, so a shared account is not monopolised.
+# The account is shared with another project; h200 imposes QoS=juno (MaxJobsPU=4), so obtune
+# holding all four squeezes them out. scripts/slurm/submit.py REFUSES a submission above these.
+#
+# It lives here, not in an environment variable, because the variable form was inert: it was set
+# in scripts/env.sh, which the SBATCH SCRIPT sources but the SUBMITTING SHELL does not, so the
+# guard defaulted to "no limit" in the one place that decides whether a job is created. A policy
+# that depends on the submitter's shell being set up correctly is not a policy.
+# h100 and a30 carry no QOS (`scontrol show partition`) and are deliberately unlimited.
+share_limits:
+  h200: 2
+
 legacy_scheduler_policy:
   retired: 2026-08-28
   superseded_by: slurm
