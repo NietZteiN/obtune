@@ -1589,3 +1589,33 @@ reports breadth's tax as lineage-dependent and the abstract changes.
 for every other arm, and its tuned_L0 loss 1.24 was also the highest. Loss is not comparable across
 models, so this is not evidence of a problem -- but if Granite's X1 column reads weak, this is the
 first place to look, and the note exists so that check is not a post-hoc rationalisation.
+
+## 2026-09-10 — OVERNIGHT CHAIN SUBMITTED (self-completing; no session required)
+
+15 jobs, fully dependency-chained. Nothing below needs a human or this session to advance.
+
+    tr_<model>_cons  (4, running/queued)
+      -> ck_<model>_cons   afterok      (h100, MIG node g-06-01 excluded)
+      -> ev_panel_<model>  afterok      (panel_core: 5 systems x 7 conditions)
+      -> an_panel_repl / an_baseline_fwd / an_baseline_inv   afterany   (normal, CPU)
+
+Design choices that matter if something goes wrong overnight:
+- **afterok between stages, afterany before analysis.** A failed arm leaves its eval unsatisfied
+  rather than evaluating a missing adapter; the analysis still runs and reports that model as
+  SKIPPED with its missing arms named. Nothing is silently partially read.
+- **Everything downstream is on h100**, which carries no QOS (`scontrol show partition`), so the
+  overnight chain never competes with the other project for the h200 share. g-06-01 is excluded:
+  its MIG slices fail vLLM with "Cannot re-initialize CUDA in forked subprocess".
+- **scripts/analysis/51_panel_replication.py restates the R1-R4 rules verbatim** from the
+  pre-registration (`d63340c`) so the script cannot drift from what was frozen, and filters cells
+  to the forward task by `prompt_id` (inverse cells share (system, condition) names).
+- The h200 share guard (`configs/compute.yaml::share_limits.h200 = 2`) stays in force; submit.py
+  refuses a third.
+
+**Morning outputs:** `results/analysis/panel_replication_2026-09-11.json` (R1-R4 per model with
+verdicts), `baseline_relative_2026-09-11.json` and `..._inverse_2026-09-11.json`.
+
+**Known watch item:** the four cons arms are the RETRAINED ones. `kl_loss` is confirmed present in
+gemma3 and granite; starcoder2 and codegemma are still queued and unverified. If either logs steps
+without `kl_loss`, its arm is plain SFT again and its R2/R3 must not be read
+(`log/setup/2026-09-10_cons-arms-ran-as-plain-sft.md`).
