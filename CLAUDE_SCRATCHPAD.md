@@ -1726,3 +1726,49 @@ what pre-registration forbids. It changes what the *result* is allowed to say:
   exist yet, so this is a cost (~2 training runs + 1 eval), not a free extension.
 
 Recorded now so that a single-model CONFIRMED cannot later be written up as a general claim.
+
+---
+
+## 2026-09-12 — F2 on three further lineages: rules PRE-REGISTERED, and the prediction stated
+
+Written before `f2_divergence_core` is submitted and before any cell for these models exists. This
+is a **replication test with a stated prediction**, not a fresh hypothesis: CodeLlama-7b's F2 result
+is already known, so the only honest way to run this is to say in advance what a replication looks
+like and what would falsify it.
+
+**Models:** `starcoder2-15b` (BigCode), `gemma3-12b` (Google), `granite31-8b` (IBM). All four arms
+the rules need already exist for each; **no new training**. Granite is the adversarial case — it is
+the one model that REFUTED R2 on the panel.
+
+**The prediction (CodeLlama-7b, 2026-09-11), which these three either reproduce or do not:**
+
+| quantity | d2 (unseen-containing, depth 2) | d3 |
+|---|---:|---:|
+| `mono_all − tuned_L0` | −1.71 [−3.60, +0.31] | −0.35 [−2.67, +1.86] |
+| `cons_lam3 − tuned_L0` | **+2.13** [+0.66, +3.60] | **+3.26** [+0.81, +5.92] |
+| `cons_lam3 − mono_all` | **+3.84** [+1.90, +5.70] | **+3.60** [+1.40, +5.81] |
+| `tuned_X1 − tuned_L0` | **+5.93** [+4.10, +7.78] | **+5.70** [+3.14, +8.27] |
+
+**Rules, identical to F2's and evaluated per model** (program-clustered bootstrap, 2,000 resamples,
+seed 17, on the 287-program common subset already recorded):
+- **H-F2x-cons-no-tax** — `cons_lam3 − tuned_L0` ci_hi ≥ 0 at d2 AND d3.
+- **H-F2x-cons-vs-breadth** — `cons_lam3 − mono_all` ci_lo > 0 pooled at d2.
+- **H-F2x-family-stacks** — `tuned_X1 − tuned_L0` ci_lo > 0 pooled at d2.
+- **H-F2x-breadth-sign** — `mono_all − tuned_L0` at d2 is **below** its own d0/d1 value for that
+  model (the sign-flip claim), reported per model; CONFIRMED per model iff the d2 point is below
+  the d1 point and d2's ci_hi < d1's ci_lo.
+- **H-F2x-identifier-split** — F3a's rule on these composites:
+  [identifier-containing] − [structural-containing] has ci_lo > 0. Out-of-sample for every one of
+  these three models.
+
+**Cross-model reading, fixed now:**
+- **3 of 3 on H-F2x-cons-vs-breadth** → RQ4's sentence generalises beyond the lineage of discovery
+  and the scope qualifier committed on 2026-09-11 can be dropped.
+- **Granite refuting it** → the honest claim is that **anchoring's divergence advantage tracks
+  whether R2 held for that model in the first place**, which is a *sharper* result than a uniform
+  one and must be reported as the finding rather than as a failure.
+- **Mixed on the other two** → report per model; no pooled claim.
+
+**Stated in advance:** Granite is expected to be the one that breaks, because it already refuted R2
+on the ladder. If it replicates here while having refuted R2 there, that is a contradiction inside
+the panel and the priority becomes explaining it, not reporting either.

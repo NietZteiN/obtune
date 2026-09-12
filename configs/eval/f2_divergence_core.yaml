@@ -1,0 +1,37 @@
+# F2's divergence ladder, reduced to the FOUR arms every panel model has (2026-09-12).
+#
+# WHY A SECOND CONFIG. `f2_divergence.yaml` carries nine systems, five of which exist only for
+# CodeLlama-7b (`mono_allX`, `tuned_S2`, `merge_dare_ties`, `x1_resample`). Pointing it at another
+# model would fail on a missing adapter -- or, before the guard added 2026-09-11, would have
+# silently evaluated the BASE model under those arms' names. This lists exactly the four arms the
+# pre-registered F2 rules need, so a missing one is an error rather than a gap.
+#
+# WHAT IT BUYS. The eight-model tally showed R2 and R3 are model-dependent, and F2 -- the read RQ4
+# turns on -- was CodeLlama-7b alone, the model the anchoring objective was developed on. All four
+# of these arms already exist for starcoder2-15b, gemma3-12b and granite31-8b, so the divergence
+# ladder generalises to three further lineages for the cost of evaluation and NO new training.
+# Granite matters most: it is the one model that REFUTED R2, so it is the adversarial case.
+#
+# NO H1: the unseen component is X1 throughout (CLAUDE.md 3.2, budget spent).
+_extends: _base_eval.yaml
+
+phase: f2_divergence
+experiment_id: f2_divergence_core
+run_tag: f2_divergence_core
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+
+eval_conditions: [C_L1r_X1, C_X1_S1, C_S2_X1, C_L1r_X1m, C_S1_X1s, C3_L1r_S1_X1]
