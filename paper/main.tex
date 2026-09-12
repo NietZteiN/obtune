@@ -78,7 +78,42 @@ out-of-sample divergence reads complete}
 
 % =======================================================================================
 \section{Introduction}
-\slot{the five moves, from docs/PAPER_DRAFT.md 3}
+
+Obfuscated code is a deployment condition, not a thought experiment. Malware triage, minified and
+bundled production JavaScript, and plagiarism and clone detection all present models with programs
+whose surface has been deliberately rewritten while their behaviour has not. Adapting a code model
+to that condition works, and works easily: fine-tuning on output prediction over obfuscated programs
+gains \textbf{18.09 points} on the transforms it was trained on. If that were the end of it, this
+would be an engineering note.
+
+What makes it a question is that real obfuscators \emph{stack} transforms. A production pipeline
+renames identifiers \emph{and} flattens control flow \emph{and} inserts opaque predicates. So: does
+single-transform competence compose? That is a question about what adaptation actually learned,
+asked in a form that can be measured.
+
+\textbf{The answer is a dissociation rather than a failure, and stating it as failure would be both
+wrong and less interesting.} The same pair of adapters takes opposite signs on two axes. On stacks
+built from transforms the model was trained on, breadth training beats clean-code tuning by
+\textbf{+2.7 to +5.3 points} more than it does on stacks containing a family it never saw --- a gap
+significant on \textbf{every one of the six models we could measure it on}, across four lineages
+(Table~\ref{tab:dissoc}). Composition in the \emph{data} works; composition after the fact does
+not. Inference-time routing over per-transform specialists beats a \emph{random} gate by
+$+0.0000$, and weight-space merging lands at or below the clean-code control.
+
+\textbf{Why.} Adaptation is anchored to the surface a transform leaves behind, not to the semantics
+it preserves. The cleanest evidence is a family split in two: its arithmetic half and its
+string-encoding half do not transfer to each other, yet either half alone recovers about 90\,\% of
+the whole adapter's gain on the family. That is not additive, so it is not two skills being summed.
+The second piece is direction specificity: asked backwards --- given a program and a return value,
+produce a call that yields it --- the arm that gains $+18.09$ forwards \emph{loses} ground.
+
+\textbf{What follows for method, and its bound.} If the failure is surface anchoring, anchor to
+something else: the model's own behaviour on the unobfuscated parent of the same program. A
+paired-consistency objective does exactly that, and it removes breadth's costs on most models we
+tested. \textbf{We state the bound in the introduction rather than leaving a reviewer to extract
+it}: on the held-out family the anchored model is as robust as clean-code tuning and \emph{no more},
+its clean-code benefit holds on five of eight models, and on one model it reverses. The objective
+buys breadth's recombination benefit at little cost; it does not add the capability breadth lacks.
 
 The paper's separation from the DOBF lineage is a design decision rather than a framing: we never
 train or evaluate on deobfuscation. Evaluation is always output prediction over code that remains
