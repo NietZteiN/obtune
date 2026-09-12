@@ -122,6 +122,14 @@ def _defaults() -> dict:
     d.setdefault("partition", cfg.get("default_partition", "h200"))
     d.setdefault("gres", "gpu:1")
     d.setdefault("cpus_per_task", 8)
+    # 64 G IS THE RIGHT DEFAULT AND OVER-REQUESTING IS NOT FREE. A vLLM eval keeps almost
+    # nothing on the host -- weights go to the GPU, and what remains is the safetensors read plus
+    # the cached LoRAs (max_cpu_loras=32 at ~160 MB is about 5 G). On 2026-09-11 three panel evals
+    # were submitted by hand with `--mem 128G` copied from an earlier chain, and SLURM scheduled
+    # them a DAY out: `h200` had free cards and idle CPUs, but its busy nodes were down to 1.4-15 GB
+    # of free RAM, so memory -- not the GPU -- was the binding constraint. Dropping the request to
+    # 64 G started one of them immediately. Raise this only for a job that demonstrably needs it
+    # (34B's 68 GB of weights get 96 G), and never by reflex.
     d.setdefault("mem", "64G")
     d.setdefault("time", "08:00:00")
     return d
