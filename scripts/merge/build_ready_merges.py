@@ -78,22 +78,25 @@ def main() -> int:
     for m in MODELS:
         ok, why = ready(m)
         print(f"  {m:16s} {why}")
-        # Stage 1: checkpoint-select anything trained but unselected. GPU, ~6 min each.
-        for c in needs_ckpt_select(m):
-            job = f"ck_{c}_{m}"
-            if job in live:
-                continue
-            if a.submit:
-                r = subprocess.run(
-                    [sys.executable, str(ROOT / "scripts/slurm/submit.py"), "--name", job,
-                     "--partition", "h100", "--gres", "gpu:1", "--cpus", "8", "--mem", "64G",
-                     "--time", "1:00:00", "--argv", "-m", "obtune.eval_vllm",
-                     "--config", f"train/grid_py_{c}_panel.yaml", "--model", m,
-                     "--mode", "ckpt-select", "--adapter-root",
-                     f"runs/adapters/{m}/python/{c}_r32_s17"],
-                    capture_output=True, text=True, cwd=ROOT)
-                print(f"      {((r.stdout or r.stderr).strip().splitlines() or [''])[-1]}")
-                n_ck += 1
+        # Stage 1: checkpoint-select, ONE ALLOCATION PER MODEL rather than one per adapter.
+        # Each selection is ~6 min of GPU, but on a jammed partition each also costs a full queue
+        # wait: five separate jobs for one model were scheduled TWO DAYS out, so 30 minutes of work
+        # would have taken 48 hours of waiting. The batch script loops over that model's trained
+        # specialists in a single allocation, skipping any that already have `best/`, so it is safe
+        # to resubmit as more finish. It also loads the base model once instead of five times,
+        # which is most of the 6 minutes.
+        pend = needs_ckpt_select(m)
+        job = f"ckb_{m}"
+        if pend and job not in live and a.submit:
+            r = subprocess.run(
+                ["sbatch", "--parsable", "-p", "h100", "--gres=gpu:1", "-c", "8", "--mem", "96G",
+                 "-t", "2:00:00", "-J", job, "--exclude", "g-06-01",
+                 "-o", f"runs/logs/slurm/%j_{job}.out",
+                 "--wrap", f"bash {ROOT}/runs/probe/ckpt_select_batch.sh {m}"],
+                capture_output=True, text=True, cwd=ROOT)
+            jid = (r.stdout or "").strip()
+            print(f"      submitted {jid}  {job} ({len(pend)} adapter(s): {','.join(pend)})")
+            n_ck += 1
         if not (ok and a.submit):
             continue
         for name, comb, cfg in ARMS:
