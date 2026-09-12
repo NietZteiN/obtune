@@ -1,0 +1,25 @@
+% GENERATED 2026-09-12 23:42 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/direction_ratio_codellama7b.json
+% Do not edit by hand -- regenerate. New: the spine of the reorganised argument (docs/PAPER_REORG.md).
+\begin{table*}[ht]
+\centering
+\caption{\textbf{The direction ratio: how much of a forward gain survives the task being run
+backwards.} Forward is output prediction; backward is input prediction on the same programs, graded
+by execution. No adapter is trained on the backward task, so any backward gain is transferred
+program understanding rather than task fitting. $\mathrm{DR} < 0$ means the arm bought forward
+accuracy by \emph{losing} backward competence. Every adaptation method that fits the forward task
+directly is negative; only anchoring and family exposure are not. Both directions use the same 412 programs and the same six conditions.
+Bold intervals exclude zero; the ratio is descriptive and is read with its components.}
+\label{tab:direction_ratio}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Method} & \textbf{Arm} & \textbf{Forward gain} & \textbf{Backward gain} & \textbf{DR} \\
+\midrule
+Format-only control & \texttt{formatonly} & \textbf{$+1.47$ [$+0.90$, $+2.10$]} & \textbf{$-0.44$ [$-0.81$, $-0.08$]} & $-0.30$ \\
+Clean-code tuning & \texttt{tuned\_L0} & \textbf{$+19.34$ [$+16.87$, $+21.81$]} & $-1.60$ [$-3.41$, $+0.35$] & $-0.08$ \\
+Training breadth & \texttt{mono\_all} & \textbf{$+19.46$ [$+16.68$, $+22.01$]} & $-0.89$ [$-2.86$, $+1.04$] & $-0.05$ \\
+Paired consistency (ours) & \texttt{cons\_lam3} & \textbf{$+20.88$ [$+18.07$, $+23.49$]} & $+0.62$ [$-1.56$, $+2.81$] & $+0.03$ \\
+Family exposure & \texttt{tuned\_X1} & \textbf{$+17.35$ [$+14.98$, $+19.73$]} & \textbf{$+1.63$ [$+0.11$, $+3.20$]} & $+0.09$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -241,9 +241,47 @@ effect in the table and replicates on every model. Bold intervals exclude zero.}
           "New: shows anchoring's advantage is conditional on the model.")
 
 
+def t_direction_ratio():
+    d = load("pipeline/direction_ratio_codellama7b.json")
+    arms = (d or {}).get("arms", {})
+    NAME = {"formatonly": "Format-only control", "tuned_L0": "Clean-code tuning",
+            "mono_all": "Training breadth", "cons_lam3": "Paired consistency (ours)",
+            "tuned_X1": "Family exposure"}
+    rows = []
+    for a in ["formatonly", "tuned_L0", "mono_all", "cons_lam3", "tuned_X1"]:
+        e = arms.get(a)
+        if not e:
+            continue
+        rows.append(f"{NAME[a]} & \\texttt{{{a.replace('_', chr(92) + '_')}}} & "
+                    f"{iv(e['forward'])} & {iv(e['backward'])} & {num(e['direction_ratio'])} \\\\")
+    body = (r"""\begin{table*}[ht]
+\centering
+\caption{\textbf{The direction ratio: how much of a forward gain survives the task being run
+backwards.} Forward is output prediction; backward is input prediction on the same programs, graded
+by execution. No adapter is trained on the backward task, so any backward gain is transferred
+program understanding rather than task fitting. $\mathrm{DR} < 0$ means the arm bought forward
+accuracy by \emph{losing} backward competence. Every adaptation method that fits the forward task
+directly is negative; only anchoring and family exposure are not. Both directions use the same """
+            + str((d or {}).get("n_programs", "N")) + r""" programs and the same six conditions.
+Bold intervals exclude zero; the ratio is descriptive and is read with its components.}
+\label{tab:direction_ratio}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Method} & \textbf{Arm} & \textbf{Forward gain} & \textbf{Backward gain} & \textbf{DR} \\
+\midrule
+""" + "\n".join(rows) + r"""
+\bottomrule
+\end{tabular}
+\end{table*}""")
+    write("direction_ratio.tex", body,
+          "results/analysis/pipeline/direction_ratio_codellama7b.json",
+          "New: the spine of the reorganised argument (docs/PAPER_REORG.md).")
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    for f in (t_rq1_dissociation, t_rq2_identifier, t_rq3_panel, t_rq4_ladder, t_rq4_by_model):
+    for f in (t_rq1_dissociation, t_rq2_identifier, t_rq3_panel, t_rq4_ladder,
+              t_rq4_by_model, t_direction_ratio):
         f()
     print(f"\n  {len(list(OUT.glob('*.tex')))} tables in paper/paper_latex/tables/")
     print("  add to the RQ sections with, e.g.:  \\input{tables/rq1_dissociation}")

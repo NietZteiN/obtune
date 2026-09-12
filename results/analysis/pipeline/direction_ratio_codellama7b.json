@@ -1,0 +1,94 @@
+{
+ "script": "58_direction_ratio.py",
+ "generated_utc": "2026-09-12T23:41:37+00:00",
+ "model": "codellama-7b",
+ "conditions": [
+  "L0",
+  "L1b",
+  "L1r",
+  "L2",
+  "S1",
+  "S2"
+ ],
+ "n_programs": 412,
+ "n_resamples": 2000,
+ "seed": 17,
+ "arms": {
+  "formatonly": {
+   "forward": {
+    "value_pts": 1.470985155195681,
+    "ci_lo": 0.9031329022706112,
+    "ci_hi": 2.103602452733776,
+    "excludes_zero": true
+   },
+   "backward": {
+    "value_pts": -0.4449838187702282,
+    "ci_lo": -0.8090614886731406,
+    "ci_hi": -0.08090614886731573,
+    "excludes_zero": true
+   },
+   "direction_ratio": -0.3025073483566415
+  },
+  "tuned_L0": {
+   "forward": {
+    "value_pts": 19.338731443994604,
+    "ci_lo": 16.868602579031016,
+    "ci_hi": 21.808367071524966,
+    "excludes_zero": true
+   },
+   "backward": {
+    "value_pts": -1.604638619201726,
+    "ci_lo": -3.4115426105717357,
+    "ci_hi": 0.3509304207119745,
+    "excludes_zero": false
+   },
+   "direction_ratio": -0.08297538149535791
+  },
+  "mono_all": {
+   "forward": {
+    "value_pts": 19.460188933873145,
+    "ci_lo": 16.68016194331984,
+    "ci_hi": 22.01271078180888,
+    "excludes_zero": true
+   },
+   "backward": {
+    "value_pts": -0.8899676375404564,
+    "ci_lo": -2.858683926645089,
+    "ci_hi": 1.038295577130527,
+    "excludes_zero": false
+   },
+   "direction_ratio": -0.045732733662793214
+  },
+  "cons_lam3": {
+   "forward": {
+    "value_pts": 20.87719298245614,
+    "ci_lo": 18.070147050474084,
+    "ci_hi": 23.48975188781014,
+    "excludes_zero": true
+   },
+   "backward": {
+    "value_pts": 0.620280474649404,
+    "ci_lo": -1.5641855447680655,
+    "ci_hi": 2.805083603020496,
+    "excludes_zero": false
+   },
+   "direction_ratio": 0.029710913491610105
+  },
+  "tuned_X1": {
+   "forward": {
+    "value_pts": 17.354925775978405,
+    "ci_lo": 14.979350749135612,
+    "ci_hi": 19.727953074433657,
+    "excludes_zero": true
+   },
+   "backward": {
+    "value_pts": 1.6316073354908311,
+    "ci_lo": 0.10787486515642097,
+    "ci_hi": 3.1957928802588964,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.09401407741825087
+  }
+ },
+ "reading": "3 of 5 arms have a NEGATIVE direction ratio (formatonly, tuned_L0, mono_all): they bought forward accuracy by losing backward competence. A ratio is a ratio of small differences and is reported with its components, never alone."
+}
