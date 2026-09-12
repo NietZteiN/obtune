@@ -11,16 +11,18 @@ the ~45 s/cell observed on h200 for a 7B multi-LoRA grid.
 
 ## What exists today
 
-| model | base | clean LoRA | breadth (all obf.) | anchored | family | 5 specialists | merges | router | ICL |
-|---|---|---|---|---|---|---|---|---|---|
-| CodeLlama-7B | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ (5) | ✅ | ✅ |
-| CodeLlama-13B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| CodeLlama-34B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Llama-3.1-8B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| StarCoder2-15B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Gemma-3-12B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| CodeGemma-7B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Granite-3.1-8B | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+*Re-derived from disk by `scripts/paper/coverage_matrix.py`; do not hand-edit — regenerate.*
+
+| model | ladder+family | seen stacks | unseen stacks | ICL | reverse | specialists | merges | router |
+|---|---|---|---|---|---|---|---|---|
+| CodeLlama-7B | ✅ | ✅ | ✅ | ✅ | ✅ | 5/5 | ✅ | ✅ |
+| CodeLlama-13B | ✅ | ❌ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
+| CodeLlama-34B | ✅ | ✅ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
+| Llama-3.1-8B | ✅ | ✅ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
+| StarCoder2-15B | ✅ | ✅ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
+| Gemma-3-12B | ✅ | ✅ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
+| CodeGemma-7B | ✅ | ❌ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
+| Granite-3.1-8B | ✅ | ✅ | ✅ | ❌ | ❌ | 0/5 | ❌ | ❌ |
 
 **Routing, merging and ICL exist on one model of eight.** Everything else in the requested table is
 one evaluation away; those three need training first, and that is where the cost is.
