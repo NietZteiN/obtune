@@ -1,0 +1,64 @@
+{
+ "script": "55_grid_agreement.py",
+ "generated_utc": "2026-09-12T01:57:34+00:00",
+ "phase": "panel_core",
+ "n_resamples": 2000,
+ "seed": 17,
+ "published_source": "docs/RQ_SUMMARY.md (fixed before panel_core existed)",
+ "models": {
+  "codellama-7b": {
+   "R1": {
+    "published": -3.79,
+    "uniform": -3.70675453047776,
+    "ci_lo": -5.926047958996889,
+    "ci_hi": -1.5637860082304555,
+    "abs_delta": 0.08324546952223999,
+    "published_inside_ci": true
+   },
+   "R2": {
+    "published": 4.59,
+    "uniform": 5.436573311367379,
+    "ci_lo": 3.3744855967078213,
+    "ci_hi": 7.413509060955517,
+    "abs_delta": 0.8465733113673792,
+    "published_inside_ci": true
+   },
+   "R3": {
+    "published": -0.3,
+    "uniform": -0.5389221556886259,
+    "ci_lo": -1.978446936511977,
+    "ci_hi": 1.0771992818671472,
+    "abs_delta": 0.2389221556886259,
+    "published_inside_ci": true
+   }
+  },
+  "codellama-13b": {
+   "R1": {
+    "published": -4.28,
+    "uniform": -4.036243822075786,
+    "ci_lo": -6.255144032921811,
+    "ci_hi": -1.8945634266886335,
+    "abs_delta": 0.24375617792421433,
+    "published_inside_ci": true
+   },
+   "R2": {
+    "published": 3.95,
+    "uniform": 3.8714991762767714,
+    "ci_lo": 2.059308072487645,
+    "ci_hi": 5.770816158285241,
+    "abs_delta": 0.07850082372322875,
+    "published_inside_ci": true
+   },
+   "R3": {
+    "published": -0.6,
+    "uniform": -0.7185628742514993,
+    "ci_lo": -2.2782116238622807,
+    "ci_hi": 0.8982170470323596,
+    "abs_delta": 0.11856287425149936,
+    "published_inside_ci": true
+   }
+  }
+ },
+ "max_abs_delta_pts": 0.8465733113673792,
+ "verdict": "the uniform grid reproduces every published value it was checked against"
+}
