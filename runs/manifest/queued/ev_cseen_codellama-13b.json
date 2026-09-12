@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_cseen_codellama-13b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/composite_seen_core.yaml",
+    "--model",
+    "codellama-13b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 112,
+  "meta": {
+    "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  }
+}

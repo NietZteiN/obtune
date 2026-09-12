@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_icl_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/basecheck_1shot.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 107,
+  "meta": {
+    "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  }
+}

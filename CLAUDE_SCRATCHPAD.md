@@ -1853,3 +1853,42 @@ reads are reported per model with no cross-model claim.
 
 **Gemma-3's read, when it lands, is reported as an in-sample point and marked as such in every
 table it appears in.**
+
+---
+
+## 2026-09-12 — F1 (routing and merging on stacks): rules PRE-REGISTERED before submission
+
+No `mole_generic` or `composite_generic` cell exists for any of these systems on any composite
+(verified: `results/cells/composite_generic/codellama-7b/python` holds only `base`, `tuned_L0`,
+`mono_all`, `cons_lam3`, `tuned_S2`). CodeLlama-7b, the ten composites (six depth-2 seen + four
+depth-3/4), `eval_source: heldout`, program-clustered bootstrap (2,000 resamples, seed 17), on the
+common subset of the ten.
+
+**Why it matters.** RQ1 claims inference-time routing and weight merging fail to compose. On this
+panel both were measured on **single transforms only**, where the router is saturated (100 % route
+accuracy, entropy ~1e-6) and beats a random gate by exactly +0.0000. A stack genuinely contains two
+mechanisms, so a hard router must pick one and be wrong while a soft mixture can blend — the
+condition the hypothesis predicts, and one that has never been evaluated.
+
+**Rules:**
+- **H-F1-route** — routing adds nothing over a random gate on stacks. CONFIRMED iff
+  `mole_router − mole_random` pooled over the ten composites is TOST-equivalent at **±1.0**;
+  REFUTED iff ci_lo > +1.0.
+- **H-F1-route-vs-breadth** — a router over specialists does not reach breadth on stacks.
+  CONFIRMED iff `mole_router − mono_all` pooled ci_hi < 0.
+- **H-F1-merge** — merging is at or below the clean-code control on stacks. CONFIRMED iff
+  `merge_dare_ties − tuned_L0` pooled ci_hi ≤ 0. All five merges reported; the two `l0merge_*` rows
+  are the "is it the merge or the specialists" control.
+- **H-F1-mixture** — the *mixture* is worth something even if the routing is not. Descriptive:
+  `mole_uniform − base` pooled, reported beside H-F1-route.
+- **H-F3-order** — stacking destroys a structural specialist's cue. CONFIRMED iff
+  [`tuned_S1 − tuned_L0` on `C_L1r_S1`] − [same on `C_S1_L1r`] has ci_lo > 0, paired by program.
+  `C_S1_L1r` renames the `_st_` state variables S1 emits; `C_L1r_S1` leaves them intact.
+
+**Stated in advance:**
+- The **ladder** numbers this replaces sat on the 145–176-program `testset` grid because
+  `_base_eval.yaml` leaves `eval_source` unset; both new configs set `heldout` explicitly. A
+  comparison against the published single-transform routing numbers is therefore **across grids**
+  and must say so.
+- `mole_*` runs through the HF path, not vLLM, and is slower per cell. Budget 2× the vLLM rate.
+- H-F1-route's ±1.0 TOST margin is the same one used on singles, chosen before that read.

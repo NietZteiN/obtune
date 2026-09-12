@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_icl_codellama-34b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/basecheck_1shot.yaml",
+    "--model",
+    "codellama-34b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 106,
+  "meta": {
+    "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  }
+}

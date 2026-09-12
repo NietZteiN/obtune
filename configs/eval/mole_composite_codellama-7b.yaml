@@ -1,0 +1,58 @@
+# C4 / F1 — ROUTING on STACKED inputs, CodeLlama-7b (2026-09-12).
+#
+# WHY THIS IS THE EXPERIMENT RQ1 IS MISSING. The claim "inference-time routing fails on stacks" has
+# never been measured on this panel: routing was read on SINGLE transforms only, where the router is
+# saturated (100 % route accuracy, gate entropy ~1e-6) and beats a RANDOM gate by exactly +0.0000.
+# A stacked input genuinely contains two mechanisms, so a hard router must pick one and be wrong
+# while a soft mixture can blend. That is the condition the hypothesis predicts and it does not
+# exist anywhere in the current corpus.
+#
+# THE CONTROLS ARE THE POINT, as on the ladder: `mole_uniform` mixes the experts with a fixed
+# uniform gate and `mole_random` with a random one, so "the mixture is worth something" and "the
+# ROUTING is worth something" are separable. `mole_hardrouter` is the argmax variant.
+#
+# GRID A EXPLICITLY (`eval_source: heldout`). `_base_eval.yaml` leaves it unset and the default is
+# the 145-176 program testset, which is how the published mole_* numbers ended up on a different
+# program set from every RQ1/RQ2 headline. Cell paths key on (phase, system, condition) and not on
+# grid, so that mistake is invisible until someone compares sample sizes.
+#
+# Ten composites: the six depth-2 SEEN stacks and the four depth-3/4 ones.
+_extends: _base_eval.yaml
+
+phase: mole_generic
+experiment_id: rq1_mole_composite
+run_tag: mole_composite_codellama-7b
+model: codellama-7b
+language: python
+eval_source: heldout
+
+experts:
+  L0:   runs/adapters/codellama-7b/python/L0_r32_s17/best
+  L1b:  runs/adapters/codellama-7b/python/L1b_r32_s17/best
+  L1r:  runs/adapters/codellama-7b/python/L1r_r32_s17/best
+  L2:   runs/adapters/codellama-7b/python/L2_r32_s17/best
+  S1:   runs/adapters/codellama-7b/python/S1_r32_s17/best
+  S2:   runs/adapters/codellama-7b/python/S2_r32_s17/best
+  S3:   runs/adapters/codellama-7b/python/S3_r32_s17/best
+  S4:   runs/adapters/codellama-7b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+gate_checkpoint: runs/mole/codellama-7b/python/routerlora_codellama7b_s17/gate.pt
+
+engine:
+  seed: 17
+  dtype: bfloat16
+  batch_size: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: mole_uniform, arch: mole_uniform, train_cond: mix}
+  - {name: mole_random, arch: mole_random, train_cond: mix}
+  - {name: mole_router, arch: mole_router, train_cond: mix}
+  - {name: mole_hardrouter, arch: mole_hardrouter, train_cond: mix}
+
+arm_modes: {}
+eval_conditions: [C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4]

@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_inv_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_core.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 101,
+  "meta": {
+    "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  }
+}

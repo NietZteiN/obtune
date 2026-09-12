@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_inv_granite31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_core.yaml",
+    "--model",
+    "granite31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 104,
+  "meta": {
+    "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  }
+}

@@ -1,0 +1,29 @@
+# C3 — the six SEEN depth-2 composites, on the four arms every panel model has (2026-09-12).
+#
+# WHY. `composite_generic.yaml` carries `tuned_S2`, a per-condition specialist that exists for
+# CodeLlama-7b and for no other panel model. The seen-stack column therefore exists on one model of
+# eight, while the UNSEEN-containing stacks (f2_divergence_core) now exist on all eight — so the
+# seen-vs-unseen stack dissociation, which is the paper's RQ1 headline, can only be read per model
+# on one model. This closes that asymmetry with evaluation alone.
+_extends: _base_eval.yaml
+
+phase: composite_generic
+experiment_id: composite_seen_core
+run_tag: composite_seen_core
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+
+eval_conditions: [C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3]
