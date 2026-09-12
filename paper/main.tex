@@ -171,7 +171,42 @@ than varying the \emph{condition} does.}
 \section{RQ2 --- What is learned, and why it does not compose}
 \label{sec:rq2}
 
-\slot{the five instruments, from docs/PAPER_DRAFT.md 6}
+Four instruments, sharing no machinery, point the same way.
+
+\paragraph{1. The ladder cannot discriminate.} Mean off-diagonal transfer ratio is $0.906$
+[$0.878$, $0.932$], and after BH-FDR correction \textbf{1 of 30} per-condition specialist cells
+beats clean-code-only tuning. Whatever a specialist learns about its own transform, tuning on clean
+code alone has largely already learned. The seen ladder is therefore not a test of invariance; only
+an unseen family is, which is what motivates the held-out design in \S\ref{sec:setup}.
+
+\paragraph{2. The family is not the unit.} Splitting the held-out family into its arithmetic and
+string-encoding halves, neither half transfers to the other's condition ($+1.49$ [$-0.95$, $+3.93$]
+and $-0.10$ [$-2.38$, $+2.19$]). Yet \textbf{either half alone recovers about 90\,\%} of the whole
+adapter's gain on the full family ($+4.12$ / $+4.20$ against $+4.61$). That is not additive, so it
+is not ``arithmetic skill plus string skill''. \emph{What it is instead we do not claim}: the
+discriminating test --- scoring each half-adapter on programs containing \emph{none} of the
+mechanism it trained on, the only place a shared-surface account can act alone --- returned
+\textsc{undecided} on all three of its pre-registered rules.
+
+\paragraph{3. Breadth polarises rather than degrades.} The breadth arm's log-probability of the gold
+answer sits about 4 nats below the clean-code control on \emph{every} condition, and the entire
+deficit lives in the items it gets \emph{wrong}: where it is right it is \emph{more} confident
+($-0.16$ vs $-0.33$), where it is wrong it is roughly \emph{twice as far} from the gold ($-12.95$
+vs $-7.00$). Sharpening is free on conditions it has seen and expensive on a family where its
+decisions are more often wrong. This supplies the mechanism for the tax in
+Table~\ref{tab:panel}, and the anchored arm sits on the clean-code arm's profile on both sides.
+
+\paragraph{4. The competence is direction-specific.} The same adapters, the same programs, asked
+backwards --- given a program and a return value, produce a call that yields it, graded by
+execution. The arm that gains $+18.09$ forwards \emph{loses} $1.67$ [$-3.29$, $-0.04$] backwards.
+At most a tenth of any forward gain survives the flip. \slot{panel-wide reverse-task numbers once
+the eight-model inverse grids land}
+
+\paragraph{Secondary, and weak by construction.} Tuning moves models \emph{away} from human
+difficulty orderings ($\Delta\rho = -0.303$ [$-0.575$, $-0.028$]); the untuned model tracks the
+human gradient at $+0.82$ and every tuned arm inverts it. One trial per cell over 98 cells, and the
+one interval that clears zero does so at $-0.028$. The power ceiling is a property of the human
+study's design and cannot be raised by compute.
 
 Breadth's advantage on a stack depends on the stack containing an \textbf{identifier} transform.
 We establish this as a difference rather than as an ordering, because one interval excluding zero
@@ -263,7 +298,26 @@ the remaining divergence reads land}
 
 % =======================================================================================
 \section{Threats to validity}
-\slot{from docs/PAPER_DRAFT.md 9}
+\paragraph{Single language.} Every headline is Python. The JavaScript corpus exists and the
+cross-language replication runs on it, but the toolchain needed to \emph{regenerate} it is absent
+on our cluster, so no new JavaScript condition could be built. We report the replication and do not
+generalise beyond it.
+
+\paragraph{The held-out family is a proxy.} Its evaluation budget was spent under a pre-registered
+two-pass discipline, so every held-out number here is measured on a trainable sibling calibrated
+against it ($r = 0.9992$, mean absolute difference 0.48 points, on arms trained on neither).
+Transfer between them was lossless (0.08 points) for arms trained on the sibling. That calibration
+is itself a result and is reported as one; it is not an assumption.
+
+\paragraph{Coverage is not uniform, and contrasts are paired.} Structural transforms decline on
+some programs by design and the held-out family requires a minimum number of sites, so conditions
+cover different program sets. Every contrast in this paper runs on a subset recorded \emph{before}
+any system was evaluated, and where two groups are compared the program set is intersected first.
+Where that intersection moves an estimate, we report both.
+
+\paragraph{Eight models is a small sample for a claim about models.} \S\ref{sec:rq3} declines to
+make one. The lineage pattern there is reported as a methodological warning with its arithmetic
+attached, because with $n=8$ and vendor confounded with lineage it cannot support more.
 
 \paragraph{Instrument failures we report rather than omit.} The causal attention instrument is
 inert: an identifier knockout moves gold log-probability by under 0.5\% for every arm on every

@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_cseen_granite31-8b",
+  "job_id": "ev_cseen_gemma3-12b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,14 +7,21 @@
     "--config",
     "eval/composite_seen_core.yaml",
     "--model",
-    "granite31-8b",
+    "gemma3-12b",
     "--language",
     "python"
   ],
   "raw": false,
   "est_gpu_h": 0.6,
-  "priority": 118,
+  "priority": 116,
   "meta": {
     "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  },
+  "slurm": {
+    "job_id": "391424",
+    "node": "g-08-13",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T18:01:01.698703+00:00"
   }
 }
