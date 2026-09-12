@@ -1,6 +1,6 @@
 {
  "script": "55_grid_agreement.py",
- "generated_utc": "2026-09-12T01:57:34+00:00",
+ "generated_utc": "2026-09-12T02:24:07+00:00",
  "phase": "panel_core",
  "n_resamples": 2000,
  "seed": 17,
@@ -55,6 +55,32 @@
     "ci_lo": -2.2782116238622807,
     "ci_hi": 0.8982170470323596,
     "abs_delta": 0.11856287425149936,
+    "published_inside_ci": true
+   }
+  },
+  "codellama-34b": {
+   "R1": {
+    "published": -2.64,
+    "uniform": -2.718286655683688,
+    "ci_lo": -5.020679520816809,
+    "ci_hi": -0.49423393739703714,
+    "abs_delta": 0.07828665568368809,
+    "published_inside_ci": true
+   },
+   "R2": {
+    "published": 3.38,
+    "uniform": 3.624382207578253,
+    "ci_lo": 1.4003294892915963,
+    "ci_hi": 5.76143551569142,
+    "abs_delta": 0.24438220757825313,
+    "published_inside_ci": true
+   },
+   "R3": {
+    "published": 0.42,
+    "uniform": 0.4790419161676662,
+    "ci_lo": -0.8378216636744429,
+    "ci_hi": 1.797483523067711,
+    "abs_delta": 0.05904191616766624,
     "published_inside_ci": true
    }
   }

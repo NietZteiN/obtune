@@ -265,9 +265,42 @@ family's sibling. Combined with the teacher ablation, the correct claim is: **an
 breadth's recombination benefit at no cost, and no new invariance.** A reviewer who extracts that
 under duress has extracted our own sentence.
 
-❑ **Gap, and it is the one that would decide the question.** No stack containing an unseen family
-has been evaluated. That is where breadth's two behaviours collide, and it is the natural test of
-whether anchoring is structural or a better-behaved heuristic (F2).
+**The gap is now closed, and the answer is partial (F2, 2026-09-11).** Six composites were built,
+each containing the unseen family as a component, and nine systems were evaluated on the 287
+programs all six share, recorded before any system ran. Five rules and RQ4's reading **in both
+directions** were committed before the first cell existed.
+
+| level | stimulus | `mono_all − tuned_L0` | `cons_lam3 − tuned_L0` | `cons_lam3 − mono_all` |
+|---|---|---:|---:|---:|
+| d0 | depth-2, all seen | **+3.49** [+2.04, +5.01] | — | +0.87 [−0.59, +2.33] |
+| d1 | depth-3/4, all seen | **+4.15** [+2.37, +5.91] | **+5.02** [+3.41, +6.69] | +0.87 (pooled with d0) |
+| **d2** | depth-2, **contains unseen** | −1.71 [−3.60, +0.31] | **+2.13** [+0.66, +3.60] | **+3.84** [+1.90, +5.70] |
+| **d3** | depth-3, **contains unseen** | −0.35 [−2.67, +1.86] | **+3.26** [+0.81, +5.92] | **+3.60** [+1.40, +5.81] |
+
+- **What the pre-registered mapping returns: *undecided*.** It required *both* anchoring holding
+  *and* breadth falling below the control, and only the first is established — d2's interval
+  straddles zero. That verdict is reported as the verdict, first, in the paper's own voice.
+- **What is established is stronger than "no tax".** On stacks containing an unseen family
+  `cons_lam3` is **significantly above** the clean-code control and **significantly above breadth**.
+  Read beside the seen stacks, where it merely *matches* breadth (+0.87, n.s.), the clean statement
+  is: **anchoring's advantage over breadth appears only once the input diverges from what breadth
+  was trained on.** That ordering was recorded as a prediction before these numbers existed.
+- **Breadth's collapse is heterogeneous, and by the rule that predicts it.** The d2 pool averages
+  three *significantly negative* cells with one *significantly positive* one. Splitting them by
+  F3a's rule — committed 91 minutes before the first F2 cell, checkable in git — the
+  identifier-containing group sits at +1.98 [−0.12, +4.18] and the structural-containing group at
+  **−3.88** [−6.08, −1.71], a difference of **+5.85** [+3.10, +8.72] against +3.39 on seen stacks.
+  So breadth is not uniformly broken by an unseen component; it is broken where the stack gives it
+  no identifier surface to key on.
+- **Family exposure remains the largest effect in the table:** `tuned_X1 − tuned_L0` **+5.93**, and
+  `mono_allX − mono_all` **+6.28** — adding the family to breadth rescues breadth entirely.
+
+**Scope, and it goes in the sentence rather than a footnote.** F2 is CodeLlama-7b alone, the model
+the objective was developed on, and the panel has since shown R2 to be model-dependent (replicated
+on 2 of 4 new models, refuted on Granite). The licensed claim is *"on the model where the objective
+was developed, anchoring's advantage survives — and grows — when an unseen component enters the
+stack."* ❑ Generalising needs the divergence ladder on one non-Meta-lineage model; StarCoder2 is the
+candidate and its `tuned_X1`/`mono_allX` arms do not exist yet.
 
 ## 9. §7 Threats to validity
 
@@ -298,8 +331,10 @@ whether anchoring is structural or a better-behaved heuristic (F2).
 
 ## 11. Figures
 
-- **Fig. 1 — the dissociation.** Paired bars, seen-composite gain vs unseen-family tax, at 7B/13B/34B,
-  with a second row for training volume (¼, ½, full). The paper's memorable image.
+- **Fig. 1 — the dissociation, now with the divergence ladder.** Paired bars, seen-composite gain vs
+  unseen-family tax, at 7B/13B/34B, with a second row for training volume (¼, ½, full). Add a third
+  row: breadth and anchoring across **d0 → d1 → d2 → d3**, where breadth crosses zero and anchoring
+  does not. That crossing is the paper's memorable image and it now exists as data.
 - **Fig. 2 — composition, three ways.** Router (vs random gate), merges, breadth, each against the
   clean-code control, on singles and on stacks. ❑ *stacks need F1.*
 - **Fig. 3 — what is learned.** X1-split 2×2 (each half → each condition); breadth's stack gain
@@ -321,9 +356,14 @@ whether anchoring is structural or a better-behaved heuristic (F2).
 - "Consistent performance on the reverse task" — it is undamaged, not improved.
 - Any causal attention story — the knockout is inert.
 - Anything about H1 beyond the calibration figure.
-- "Failures worsen with divergence" — until F2 runs. *(F2's stimulus is built and its eval is in
-  flight; the five decision rules and RQ4's reading in both directions were committed before any
-  cell existed, so neither answer may be chosen after the numbers land.)*
+- **"Failures worsen with divergence"** — F2 ran. Breadth's gain flips sign once an unseen
+  component enters (+3.49 / +4.15 seen → −1.71 / −0.35 unseen-containing), but the d2 interval
+  straddles zero, so the pre-registered rule is **INCONCLUSIVE**. Say the sign flips and that the
+  drop is not individually significant when pooled; the significant version is the
+  identifier-vs-structural split, not the level.
+- **"Anchoring is robust to unseen transformation families in stacks"** — say it about *the model
+  the objective was developed on*, with the scope in the sentence. One model, and R2 is already
+  known to be model-dependent.
 - **"What transfers is the family's scaffolding/surface"** — the discriminating test came back
   **undecided** (E6 item split, 2026-09-11). Say the halves do not decompose, name the surface
   account as the leading hypothesis, and cite E5b as what would settle it.
