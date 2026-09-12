@@ -1,23 +1,76 @@
 
+\section{RQ4: Does the anchored model generalise?}
+\label{sec:rq4}
 
-\section{RQ4: Is it robustness, or a better surface heuristic?}
+Section~\ref{sec:rq1} committed to two tests before any method was on the table. This section runs
+the same two on the anchored model. If the diagnosis was right --- that adaptation fails because it
+anchors on a surface the transform can change --- then anchoring to something the transform cannot
+change should move the outcome of both tests, and it should do so \emph{specifically} where the
+input has left the training distribution.
 
-We state our claims at their true strength: the paired-consistency objective generalises along every axis we can test except the one that would demonstrate genuinely new capability. 
+\subsection{The composition test, re-run}
 
-\begin{table}[ht]
-\centering
-\caption{Stress tests evaluating generalisation vs. surface heuristics.}
-\begin{tabular}{@{}llp{6cm}@{}}
-\toprule
-\textbf{Stress Test} & \textbf{Result} & \textbf{Reading} \\
-\midrule
-Deeper stacks & \texttt{cons\_lam3} $-$ \texttt{tuned\_L0}: +5.02 & Holds; does not decay with depth. \\
-Second language & Best arm on all 12 JS columns & Replicates and amplifies. \\
-Reverse task & \texttt{cons\_lam3} $-$ \texttt{base}: +0.49 & Does no harm (undamaged). \\
-Confidence profile & Matches clean-code log $P(\text{gold})$ & Not a new over-committing heuristic. \\
-Unseen family (X1) & $\approx$ clean-code control ($-0.30$) & The bound. \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{tables/rq4_ladder}
 
-The anchored model handles deeper stacks smoothly, replicates well into JavaScript, and is the only SFT-family arm undamaged on the reverse task. However, on the unseen family, it merely equals the clean-code control. We are explicit in our conclusion: anchoring buys breadth's recombination benefit at no cost, but provides no new invariance. It is not magical robustness; it is simply a safer heuristic.
+Table~\ref{tab:rq4_ladder} is the divergence ladder: stacks ordered by how far they sit from what
+breadth was trained on, from all-seen depth-2 composites (d0) to stacks containing a family the
+model has never seen (d2, d3). The stimulus at d2 and d3 did not exist before this work; every
+composite in the prior literature, and in our own earlier experiments, is built from transforms the
+model has seen.
+
+Two things happen once an unseen component enters the stack. Breadth's advantage over the
+clean-code control \textbf{flips sign}, from $+3.49$ and $+4.15$ on seen stacks to $-1.71$ and
+$-0.35$. And anchoring, which merely \emph{matches} breadth on seen stacks ($+0.87$
+[$-0.59$, $+2.33$] pooled), rises \textbf{above the clean-code control} ($+2.13$, $+3.26$) and
+\textbf{above breadth} ($+3.84$, $+3.60$). The anchored model's advantage appears only where the
+input diverges from training, which is the signature the diagnosis predicted and the opposite of
+what a better surface heuristic would show.
+
+\paragraph{The pre-registered verdict, stated first.} We fixed the decision rule and both readings
+of the outcome before any cell existed. The rule required \emph{both} that anchoring hold \emph{and}
+that breadth fall below the clean-code control; only the first is established, because the pooled
+interval at d2 spans zero. By that rule the outcome is \textsc{undecided}, and we report it as such
+before the richer reading.
+
+\paragraph{Breadth's collapse is not uniform.} The pooled d2 figure averages significantly negative
+cells with a significantly positive one. Split by the identifier rule of
+Section~\ref{sec:rq2} --- committed 91 minutes before the first d2 cell was written --- the
+identifier-containing stacks sit at $+1.98$ [$-0.12$, $+4.18$] and the structural-containing stacks
+at $-3.88$ [$-6.08$, $-1.71$]. Breadth is not broken by an unseen component as such; it is broken
+where the stack leaves it no identifier surface to key on. The mechanism from
+Section~\ref{sec:rq2} holds on stimulus it was never fit to.
+
+\input{tables/rq4_by_model}
+
+Table~\ref{tab:rq4_by_model} runs the same read across the panel. The anchoring advantage on
+unseen-containing stacks replicates on five of eight models, is inconclusive on three, and is
+refuted on none. The three inconclusive models are the three whose ladder-level benefit was itself
+weakest or negative, and on Granite --- the model where the repair reverses --- the advantage is
+negative here too. Family exposure, by contrast, is significant on all eight and is the largest
+single effect in the table.
+
+\subsection{The reversal test, re-run}
+
+Returning to Table~\ref{tab:direction_ratio}: every adaptation method that fits the forward task
+directly has a negative direction ratio. Anchoring's is $+0.03$. It is the only arm in the
+supervised-fine-tuning family whose forward gain cost nothing backwards, and its backward
+accuracy is the best of that family.
+
+We state precisely what that does and does not mean. Anchoring does \textbf{not} acquire backward
+competence: against the untuned model it is $+0.62$ [$-1.56$, $+2.81$] backwards --- undamaged, not
+improved. The claim the data supports is that \emph{every existing method pays backward competence
+for its forward gain, and anchoring is the first that does not}. The one arm in the panel that gains
+in both directions is the one trained on the unseen family's sibling ($+0.09$; $+1.63$
+[$+0.11$, $+3.20$] backwards). Exposure to a \emph{family} transfers in a way exposure to
+\emph{transforms} does not, which is the memorisation account stated from the other side.
+
+\subsection{The bound}
+
+We state it in this section rather than leave a reviewer to extract it. On the unseen family
+\emph{alone}, the anchored model is as robust as clean-code tuning and no more: $-0.30$ at 7B,
+$-0.33$ at 13B, $+0.74$ at 34B against the control, seventh of thirty-three arms on that column.
+Every arm that beats it there was trained on that family's sibling. Combined with the teacher
+ablation, the correct statement is: anchoring buys breadth's recombination benefit at little cost,
+extends it to composed inputs the model has never seen, and stops paying the backward price every
+other method pays --- and it does not add the capability breadth lacks. It is a repair of what
+adaptation breaks, not a route to invariance.

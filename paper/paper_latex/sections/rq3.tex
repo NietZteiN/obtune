@@ -1,12 +1,67 @@
 
 \section{RQ3: Anchoring to clean-code behaviour}
+\label{sec:rq3}
 
-If surface anchoring is the root of the generalisation failure, we must anchor to something stable. We propose anchoring the student model to clean-code behaviour without losing the obfuscated surface exposure. We optimize a paired-consistency objective:
+Section~\ref{sec:rq2} ended with a requirement rather than a proposal: anchor the model to something
+a semantics-preserving transform cannot change. Exactly one such object is available for every
+training row, by construction --- the model's own behaviour on the unobfuscated parent of the same
+program. We supervise against it directly:
 
 \begin{equation}
-    \mathcal{L} = \text{CE}(y \mid x_{\text{obf}}) + \lambda \cdot \text{KL} \big( p_{\text{teacher}}(\cdot \mid x_{\text{L0parent}}) \parallel p_{\text{student}}(\cdot \mid x_{\text{obf}}) \big)
+    \mathcal{L} = \text{CE}(y \mid x_{\text{obf}})
+      + \lambda \cdot \text{KL} \big( p_{\text{teacher}}(\cdot \mid x_{\text{L0parent}})
+      \parallel p_{\text{student}}(\cdot \mid x_{\text{obf}}) \big)
 \end{equation}
 
-Here, the teacher is a clean-code-tuned adapter reading the unobfuscated parent of the same program. Setting $\lambda = 3$, this objective completely removes breadth's unseen-family costs, achieving a +4.59 gain over breadth on the unseen family at 7B scale ($q = 0.0049$) while incurring no clean-code penalty. 
+at the answer tokens, where the teacher is a frozen clean-code-tuned adapter reading the
+unobfuscated parent, and $\lambda = 3$ is a plateau from a sweep on the trainable grid. The student
+never sees the parent; only the frozen teacher does. Consequently the objective trains on
+\emph{exactly} the rows breadth trains on --- 26{,}841 rows, 1{,}257 steps for both --- and at
+$\lambda = 0$ it reduces to breadth identically. Breadth is therefore not merely a comparable
+baseline but the exact data-matched control, which is what lets the difference between them be read
+as the objective rather than as extra exposure.
 
-Ablating the teacher reveals the core contribution: when using an untuned base model as a teacher, the arm collapses; when using the breadth model, it inherits the tax. The unseen-family performance is therefore distilled directly from the clean-code teacher. This method is strictly a Pareto repair, providing a mechanism to preserve SFT gains without sacrificing out-of-distribution stability.
+\subsection{The ablation is the contribution}
+
+The objective's mechanism is best shown by varying the one ingredient the diagnosis in
+Section~\ref{sec:rq2} says should matter. Replacing the clean-code-tuned teacher with an untuned
+base model makes the arm \textbf{collapse} ($-8.98$ [$-11.44$, $-6.43$] against breadth on the
+unseen family). Replacing it with the breadth model makes the arm \textbf{inherit breadth's tax}
+($-4.20$ [$-6.27$, $-2.14$] against the clean-code teacher) while matching on seen conditions.
+Across all three teachers, the student lands at roughly the teacher's unseen-family level plus one
+point.
+
+The seen-condition gain therefore comes from the supervised term and is teacher-independent; the
+unseen-family behaviour is \emph{distilled from the teacher}. The method is ``distil from a
+clean-code-\emph{tuned} model on the clean parent'', and we name it as such rather than claiming a
+new form of invariance.
+
+\subsection{What it repairs, and on which models}
+
+\input{tables/rq3_panel}
+
+Table~\ref{tab:rq3_panel} reads all eight models from a single evaluation phase. Before reading it
+we recomputed each previously published contrast through the same configuration and required the
+published point to fall inside the new interval; all four incumbents pass, with a largest
+disagreement of 0.85 points, so a departure below is a property of the model rather than of the
+measurement.
+
+Three readings, at the strength the panel supports:
+
+\begin{itemize}[leftmargin=*, topsep=2pt, itemsep=1pt]
+  \item \textbf{Breadth's unseen-family tax is the robust finding.} Its sign is the same on
+        \emph{every} model --- six significantly, none contradicting --- across four lineages and
+        7B--34B.
+  \item \textbf{The repair holds on six of eight models and reverses on one.} On Granite-3.1-8B the
+        anchored arm is \emph{worse} than breadth on the unseen family. We name that model rather
+        than relegating it.
+  \item \textbf{The clean-code claim is conditional.} ``Anchoring pays no clean-code cost'' holds on
+        five of eight. It was discovered on four models of one lineage and holds on all four of them.
+\end{itemize}
+
+Every failure above falls outside the lineage the findings were discovered on, and all three are
+four-of-four inside it. We report that as a \emph{methodological} warning and not as a claim about
+lineages: Fisher's exact on the sharpest split gives $p = 0.0714$ one-sided with $n = 8$ models, and
+the two models of one vendor account for two of the three failures of the same finding, so vendor
+and lineage are confounded. What it does establish is that single-lineage evaluation would have
+hidden all of it.

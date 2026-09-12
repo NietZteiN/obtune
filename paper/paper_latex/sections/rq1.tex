@@ -1,43 +1,70 @@
 
-\section{RQ1: Does single-transform adaptation compose?}
+\section{RQ1: Do current adaptation methods generalise, or memorise?}
+\label{sec:rq1}
 
-Our primary claim is that only composition present in the training data works, and it only works within the bounds of what that data covered. 
+Adapting a code model to obfuscated input works, and works easily. Tuning on output prediction over
+obfuscated programs gains roughly \textbf{19 points} over the untuned model on the transforms it was
+trained on. The question this paper asks is what that number is made of. Adaptation can raise
+forward accuracy two ways: by teaching the model to \emph{read} the program better, or by teaching
+it the surface a particular transform leaves behind. Only the first deserves to be called
+robustness.
 
-When attempting composition at the inference level via a learned router over per-transform specialists, the mixture yields zero benefit over a random gate (+0.0000). At the weight level, merging strategies such as TIES and DARE land at or below the clean-code-only control. However, at the data level, training breadth generalises to stacked inputs (+3.49, +2.90, and +3.05 points across three model scales). 
+We separate them with two tests. Both ask the same question --- does the competence survive leaving
+the distribution it was fit to? --- and they share no machinery.
 
-\begin{table}[ht]
-\centering
-\caption{Performance of composition strategies on stacked inputs.}
-\begin{tabular}{@{}llp{8cm}@{}}
-\toprule
-\textbf{Level} & \textbf{Mechanism} & \textbf{Result} \\
-\midrule
-Inference & Learned router & +0.0000 [$-0.0081$, $+0.0081$] vs random gate. \\
-Weights & TIES / DARE merges & Below clean-code control ($-3.13$ [$-4.78$, $-1.40$]). \\
-Data & Breadth (\texttt{mono\_all}) & +3.49 / +2.90 / +3.05 on depth-2 composites; $-3.79$ / $-4.28$ / $-2.64$ on the unseen family.\\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{itemize}[leftmargin=*, topsep=2pt, itemsep=1pt]
+  \item \textbf{Composition.} Real obfuscators stack transforms. Does competence on single
+        transforms survive being stacked with a transform family the model has never seen?
+  \item \textbf{Reversal.} Does it survive the task being run backwards --- given a return value,
+        produce a call that yields it? No adapter is ever trained on this direction, so any
+        backward gain is transferred program understanding rather than task fitting.
+\end{itemize}
 
-\begin{table}[ht]
-\centering
-\caption{Master Summary of Interventions. Performance is measured as the point difference ($\Delta$) compared to the clean-code-tuned baseline (\texttt{tuned\_L0}). The final column summarizes the percent of original (clean) code competence regained on obfuscated inputs without sacrificing generalization.}
-\label{tab:master_summary}
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-\textbf{Intervention} & \textbf{Clean Code} & \textbf{Stacked Seen} & \textbf{Unseen Family} & \textbf{\% of Clean Regained} \\
-\midrule
-\textbf{Baseline (Clean Code)} & Reference & Reference & Reference & 100\% (Reference) \\
-\midrule
-\textbf{RQ1: Simple Approaches} & & & & \\
-\quad Inference Routing & -- & $+0.00$ & -- & 0\% (vs random gate) \\
-\quad Task-Vector Merging & -- & $-3.13$ & -- & Negative (below baseline) \\
-\quad Training Breadth & $-2.60$ & $+3.49$ & $-3.79$ & Gains stacked; loses unseen \\
-\midrule
-\textbf{RQ2: Loss Objective} & & & & \\
-\quad Paired-Consistency ($\lambda=3$) & $-0.30$ & $+4.76$ & $-0.30$ & Recovers stacked at zero cost \\
-\bottomrule
-\end{tabular}
-\end{table}
+We apply both to the field's existing answers: inference-time routing over per-transform
+specialists, weight-space merging of those specialists, and simply training on a breadth of
+transforms. These are baselines, not proposals. They fail both tests, and they fail in the same
+direction.
 
-Crucially, this breadth creates a dissociation: its gain on seen composites saturates by a quarter of the training corpus, while its tax on unseen families grows monotonically with data volume (scaling from $-0.49$ to $-3.79$ at full corpus). Providing more data buys nothing on covered domains while costing more on unseen ones. It is important to clarify that this is not a blanket failure of composition, but rather a rigid boundary on where data-driven composition succeeds.
+\subsection{The composition test}
+
+Routing and merging do not compose at all. A learned router over per-transform specialists beats a
+\emph{random} gate by $+0.0000$ [$-0.0081$, $+0.0081$]: the mixture is worth something and the
+routing is worth nothing. Task-vector merging (TIES, DARE-TIES, DARE-linear) lands at or below the
+clean-code-only control, $-3.13$ [$-4.78$, $-1.40$], while the specialists being merged contribute
+$+2.47$ [$+1.32$, $+3.70$] individually.
+
+Training breadth is the one that appears to work, and it is the interesting case. It composes on
+stacks built from transforms it saw --- and the advantage evaporates the moment a stack contains a
+family it did not. We state this as a \emph{difference} rather than as two separate levels, because
+one interval being positive while another is negative is not a test of the difference between them,
+and on four of the six models the unseen-side interval straddles zero on its own.
+
+\input{tables/rq1_dissociation}
+
+Table~\ref{tab:rq1_dissociation} is the core measurement. Breadth's advantage over clean-code tuning
+is \textbf{2.7 to 5.3 points larger} on stacks built from seen transforms than on stacks containing
+an unseen family, and the gap is significant on \textbf{every one of the six models} we could
+measure it on, spanning four model lineages. What breadth buys is recombination of what the training
+data covered, bounded exactly by that coverage.
+
+\subsection{The reversal test}
+
+The second test is independent of the first and gives the same answer. We evaluate the same
+adapters, on the same programs, asked backwards, and grade by execution: a prediction is correct if
+the produced call actually returns the gold value.
+
+\input{tables/direction_ratio}
+
+Table~\ref{tab:direction_ratio} reports the \emph{direction ratio} --- backward gain divided by
+forward gain, both measured against the untuned model. A negative ratio means the arm bought forward
+accuracy by \emph{losing} backward competence on the very same programs. \textbf{Every method that
+fits the forward task directly is negative}: the format-only control at $-0.30$, clean-code tuning
+at $-0.08$, breadth at $-0.05$. At most a tenth of any forward gain survives the flip, and for these
+arms the surviving fraction is negative.
+
+\subsection{What the two tests agree on}
+
+A model that had learned to read obfuscated programs would keep that competence when the program is
+stacked with something new, and when the question is asked from the other end. These adapters keep
+neither. Both tests point at the same explanation: what is acquired is competence at \emph{this
+task on these surfaces}. Section~\ref{sec:rq2} establishes what that surface is.

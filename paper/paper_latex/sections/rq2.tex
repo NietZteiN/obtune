@@ -1,8 +1,61 @@
 
-\section{RQ2: What is learned, and why it does not compose}
+\section{RQ2: What is memorised?}
+\label{sec:rq2}
 
-Adaptation fundamentally anchors on the surface a transform leaves, not the underlying semantics. We validate this through five independent instruments. 
+Section~\ref{sec:rq1} established that adaptation does not survive leaving its training
+distribution, in either direction. This section identifies what it latches onto instead, because
+that is what determines the fix: if adaptation anchors on something a transform can change, the
+remedy is to anchor it on something a transform cannot.
 
-First, the ladder itself cannot discriminate; specialist models show an off-diagonal transfer ratio of 0.906, meaning whatever a specialist learns, clean-code tuning already captures. Second, when splitting the unseen family into its component mechanisms (MBA vs. string encoding), we find they do not transfer to each other, yet either half alone recovers approximately 90\% of the full adapter's gain on stacked inputs. This proves the models are learning shared scaffolding rather than additive skills.
+Three instruments, sharing no machinery, converge on the same answer.
 
-Third, breadth's stacking gain is heavily dependent on identifier recognition. The performance gain on composites drops from +6.6 for identifier-heavy stacks down to +1.1 for structural-only stacks. Fourth, breadth causes the model to polarize rather than smoothly degrade: it becomes slightly more confident when correct, but twice as far from the answer when wrong. Finally, the competence is heavily direction-specific. When evaluating the exact same programs backwards (asking for the call that produces a specific value), the model loses all forward gains, suffering a $-1.67$ point penalty. 
+\subsection{The gain tracks identifier surface}
+
+Breadth's advantage on a stack depends on the stack still containing an \emph{identifier} transform
+--- renaming, which leaves recognisable token-level residue --- rather than on the stack's depth or
+the number of mechanisms in it.
+
+\input{tables/rq2_identifier}
+
+We report this as a contrast rather than an ordering. The rule defining the split (identifier
+present versus absent) was fixed \emph{before} the unseen-containing stimulus existed, which makes
+the second row of Table~\ref{tab:rq2_identifier} an out-of-sample test of it. The difference is
+$+3.39$ on all-seen stacks and grows to $+5.85$ on stacks containing the unseen family: on the
+inputs furthest from training, breadth helps only where an identifier surface remains to key on.
+
+\subsection{The unit of transfer is a surface, not a mechanism}
+
+Splitting the held-out family into its two mechanisms --- arithmetic rewriting and string encoding
+--- gives a result that no account based on composable skills survives. The two halves
+\textbf{do not transfer to each other} ($+1.49$ [$-0.95$, $+3.93$] and $-0.10$ [$-2.38$, $+2.19$]),
+yet \textbf{either half alone recovers about 90\,\%} of the whole adapter's gain on the full family
+($+4.12$ and $+4.20$ against $+4.61$). If the adapter had learned ``arithmetic skill'' and ``string
+skill'', each half would deliver roughly half. It does not; each half delivers nearly all of it.
+
+We are deliberate about what this does \emph{not} establish. The natural reading is that what
+transfers is the scaffolding both halves share. The test that discriminates that reading from a
+weakest-link alternative --- scoring each half-adapter on programs containing \emph{none} of its own
+mechanism, the only place a shared-surface account can act alone --- returned \textsc{undecided} on
+all three of its pre-registered rules. We report that the halves do not decompose, name shared
+surface as the leading hypothesis, and stop there.
+
+\subsection{Adaptation polarises rather than deepens}
+
+Breadth's log-probability of the gold answer sits about 4 nats below the clean-code control on
+\emph{every} condition, and the entire deficit lives in the items it gets \emph{wrong}: where it is
+right it is \emph{more} confident ($-0.16$ versus $-0.33$), where it is wrong it is roughly
+\emph{twice as far} from the gold ($-12.95$ versus $-7.00$). Sharpening is free on conditions the
+model has seen and expensive on a family where its decisions are more often wrong. This is the
+mechanism behind the unseen-family tax in Table~\ref{tab:rq1_dissociation}: breadth does not become
+a worse reader, it becomes a more committed guesser.
+
+\subsection{What to anchor to}
+
+The three instruments agree: adaptation anchors on the surface a transform leaves behind. That
+surface is, by construction, exactly what an obfuscator is free to change --- which is why
+competence built on it does not survive a new transform family or a reversed question.
+
+The remedy follows directly. Anchor the model to something the transform \emph{cannot} change: its
+own behaviour on the unobfuscated parent of the same program. The parent exists for every training
+row by construction, and it is the one thing a semantics-preserving transform leaves invariant.
+Section~\ref{sec:rq3} is that objective.

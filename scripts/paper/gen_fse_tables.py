@@ -138,7 +138,7 @@ the difference between them.}
 
 def t_rq3_panel():
     d = load("panel_replication_final.json") or {}
-    mark = {"REPLICATED": r"\checkmark", "REFUTED": r"$\times$", "INCONCLUSIVE": r"$\circ$"}
+    mark = {"REPLICATED": r"$\surd$", "REFUTED": r"$\times$", "INCONCLUSIVE": r"$\circ$"}
     rows, tal = [], {r: {} for r in ("R1", "R2", "R3")}
     for m in ORDER:
         e = d.get(m)
@@ -155,7 +155,7 @@ def t_rq3_panel():
     body = (r"""\begin{table*}[ht]
 \centering
 \caption{\textbf{RQ3: the three findings across eight models and four lineages}, all read from one
-evaluation phase. \checkmark\ replicated, $\circ$ inconclusive, $\times$ refuted. R1 is breadth's
+evaluation phase. $\surd$\ replicated, $\circ$ inconclusive, $\times$ refuted. R1 is breadth's
 unseen-family tax (\texttt{mono\_all} $-$ \texttt{tuned\_L0} on the held-out family); R2 is
 anchoring removing it (\texttt{cons\_lam3} $-$ \texttt{mono\_all}); R3 is anchoring's clean-code
 cost (\texttt{cons\_lam3} $-$ \texttt{tuned\_L0} on clean code). Bold intervals exclude zero.}

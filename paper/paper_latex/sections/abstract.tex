@@ -1,1 +1,19 @@
-Fine-tuning helps code models process obfuscated programs, but this adaptation is fragile. While training on a wide variety of single obfuscations helps models handle combinations of those seen transforms, it actively degrades their performance on unseen obfuscation families, and other composition methods like routing or task-vector merging fail completely. Ultimately, models do not learn to see through obfuscation to understand the preserved underlying semantics of the code. Instead, adaptation simply memorizes the surface-level features of the specific transforms they were trained on. To address this, we introduce a paired-consistency objective that anchors the student model to a clean-code-tuned teacher on unobfuscated data. This approach eliminates the performance drop on both unseen transforms and clean code by successfully inheriting the teacher's baseline capabilities rather than by teaching the model new semantic invariance.
+Fine-tuning a code model on obfuscated programs raises its accuracy on those programs by roughly
+nineteen points. We ask what that number is made of: competence at reading the program, or
+competence at the surface a particular transform leaves behind. We separate the two with tests that
+share no machinery --- whether the gain survives being stacked with a transform family the model has
+never seen, and whether it survives the task being run backwards. The field's existing answers,
+inference-time routing, weight-space merging, and training on a breadth of transforms, fail both.
+Breadth composes on stacks built from what it saw and loses that advantage the moment an unseen
+family enters, a gap significant on every one of six models across four lineages; and every method
+that fits the forward task buys its gain by losing backward competence on the very same programs.
+Three further instruments locate what is learned instead: the surface a transform leaves, which is
+exactly what an obfuscator is free to change. That diagnosis names its own remedy. We anchor the
+model to the one thing a semantics-preserving transform leaves invariant, its own behaviour on the
+unobfuscated parent of each program, through a paired-consistency objective that trains on exactly
+the rows breadth trains on. Re-running the same two tests, the anchored model is the only one whose
+advantage \emph{grows} as input diverges from training, rising above the clean-code control on
+stacks containing an unseen family, and the only one whose forward gain costs nothing backwards. Its
+repair holds on six of eight models and reverses on one, and on the unseen family alone it is as
+robust as clean-code tuning and no more. Adaptation to obfuscated code buys recombination of what
+the data covered; anchoring recovers what that costs; neither buys invariance.
