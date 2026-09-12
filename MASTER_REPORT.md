@@ -1,6 +1,6 @@
 # obtune — master results report
 
-*Last updated: 2026-09-08*
+*Last updated: 2026-09-12*
 
 **Everything run to date, in one frame.**
 
@@ -5795,7 +5795,284 @@ same standing as the numbers: **in a long campaign, re-test a blocker before bel
 
 ---
 
+## 30. The eight-model uniform grid, the divergence ladder, and four analysis-only closures
+
+**Written 2026-09-12.** Everything in §18–§29 rests on four models of one lineage (CodeLlama ×3 +
+Llama-3.1-8B) and on three separate evaluation campaigns stitched together. This section replaces
+both: **one phase, one config, eight models**, plus the first stimulus in the project that stacks a
+transform the arms have never seen.
+
+### 30.1 The grid is validated before the table is read
+
+The four new panel models were read through `panel_core`, a config written 2026-09-10; the four
+incumbents were published out of `x1_generic` / `rq2_generic` / `objectives_scale`. If the new
+config measured differently, every departure below would be an artefact. `scripts/analysis/
+55_grid_agreement.py` recomputes each incumbent's **published** R1–R3 through the new grid and asks
+whether the published point falls **inside** the new interval — the question of whether the two are
+the same measurement, not whether they round alike.
+
+| model | R1 pub → grid | R2 pub → grid | R3 pub → grid | largest Δ |
+|---|---|---|---|---:|
+| codellama-7b | −3.79 → −3.71 | +4.59 → +5.44 | −0.30 → −0.54 | 0.85 |
+| codellama-13b | −4.28 → −4.04 | +3.95 → +3.87 | −0.60 → −0.72 | 0.24 |
+| codellama-34b | −2.64 → −2.72 | +3.38 → +3.62 | +0.42 → +0.48 | 0.24 |
+| llama31-8b | −2.88 → −2.72 | +3.46 → +3.38 | +0.00 → −0.30 | 0.30 |
+
+**4 of 4, every published value inside the new interval, largest disagreement 0.85 pts.** The
+incumbents' `tuned_X1` arms were retrained overnight for exactly this, so the table below is one
+measurement rather than three campaigns aligned by hand.
+
+### 30.2 R1 holds everywhere; R3 does not
+
+Five arms × seven conditions per model, program-clustered bootstrap (2,000 resamples, seed 17).
+No H1 — its budget is spent (§3.2 of the charter) and the held-out column is X1.
+
+| model | lineage | R1 `mono_all−tuned_L0` @X1 | R2 `cons_lam3−mono_all` @X1 | R3 `cons_lam3−tuned_L0` @L0 |
+|---|---|---:|---:|---:|
+| codellama-7b | Meta | **−3.71** [−5.93, −1.56] | **+5.44** [+3.37, +7.41] | −0.54 [−1.98, +1.08] |
+| codellama-13b | Meta | **−4.04** [−6.26, −1.89] | **+3.87** [+2.06, +5.77] | −0.72 [−2.28, +0.90] |
+| codellama-34b | Meta | **−2.72** [−5.02, −0.49] | **+3.62** [+1.40, +5.76] | +0.48 [−0.84, +1.80] |
+| llama31-8b | Meta | **−2.72** [−4.70, −0.91] | **+3.38** [+1.57, +5.36] | −0.30 [−1.98, +1.26] |
+| starcoder2-15b | BigCode | **−2.72** [−4.94, −0.58] | **+2.31** [+0.58, +4.03] | −0.96 [−2.51, +0.60] |
+| gemma3-12b | Google | **−4.70** [−6.93, −2.55] | **+2.64** [+0.91, +4.53] | **−1.80** [−3.53, −0.06] ✗ |
+| codegemma-7b | Google | −1.98 [−3.95, +0.16] | −0.41 [−2.39, +1.49] | **−2.04** [−3.77, −0.18] ✗ |
+| granite31-8b | IBM | −0.91 [−2.97, +1.15] | **−1.89** [−3.54, −0.25] ✗ | **−3.41** [−5.39, −1.26] ✗ |
+| **tally** | | **6 repl / 2 inc / 0 ref** | **6 repl / 1 inc / 1 ref** | **5 repl / 0 inc / 3 ref** |
+
+- **R1 is the project's most robust claim.** Breadth's unseen-family tax has the right sign on
+  **every model in the panel** — six significantly, two with intervals spanning zero, **not one
+  contradiction** — across three lineages and 7B–34B.
+- **R2 survives at 6 of 8 and is *reversed* on Granite**, where the anchored arm is worse than
+  breadth on the unseen family. That is a refutation, not an absence, and it is named.
+- **R3 must become conditional.** "Anchoring pays no clean-code tax" holds on 5 of 8. It was
+  discovered on four Meta-lineage models and holds on all four.
+
+### 30.3 The lineage pattern — a warning, not a result
+
+| | Meta lineage (4) | other lineages (4) |
+|---|---|---|
+| R1 | 4 repl / 0 inc / 0 ref | 2 / 2 / 0 |
+| R2 | 4 / 0 / 0 | 2 / 1 / **1** |
+| R3 | 4 / 0 / 0 | 1 / 0 / **3** |
+
+All three findings are **4 of 4 inside the lineage they were discovered on** and degrade outside it,
+R3 most. **And it is not established.** Fisher's exact on the R3 split (4/4 vs 1/4) is
+**p = 0.0714** one-sided — the strongest of the three; R1 and R2 give 0.2143. With **n = 8 models** a
+4-versus-4 split cannot carry a claim about lineages. Worse, "non-Meta" is three lineages —
+BigCode (1), Google (2), IBM (1) — and **both Google models refute R3**, so a Google-family effect
+and a lineage effect are perfectly confounded. The reportable statement is: *these findings
+replicate uniformly on the lineage they were found on and unevenly off it, and single-lineage
+evaluation would have hidden that.*
+
+**StarCoder2 is the counter-example that keeps this honest.** It is the only non-Meta model to
+replicate all three, it is the panel's strongest model, and it is the one the untuned screening gate
+scored **0.0000** and would have rejected (`docs/MODEL_AND_DATA_SELECTION.md` §5b). Dropping it would
+have made the lineage pattern look *cleaner* and be *more wrong*. Kept as the standing argument
+against untuned capability screening.
+
+### 30.4 F2 — the divergence ladder, the first stacks containing an unseen family
+
+Every composite in the corpus before 2026-09-11 was built from transforms the trainable arms had
+seen, so RQ1′'s closing claim ("failures worsen as the stack diverges from training") and RQ4′'s
+headline had **no stimulus at all**. Six new composites each contain X1 (never H1 — the charter
+forbids stacking it and its budget is spent). Caps were calibrated on a 40-program build at cap 60
+so nothing was clipped, then set at p95 × 1.25. Nine systems on CodeLlama-7b, **287 programs common
+to all six recorded before any system ran**. Five rules **and RQ4's reading in both directions** were
+committed before the first cell existed.
+
+| level | stimulus | `mono_all−tuned_L0` | `cons_lam3−tuned_L0` | `cons_lam3−mono_all` | `tuned_X1−tuned_L0` |
+|---|---|---:|---:|---:|---:|
+| d0 | depth-2, all SEEN | **+3.49** [+2.04, +5.01] | — | +0.87 [−0.59, +2.33] | — |
+| d1 | depth-3/4, all SEEN | **+4.15** [+2.37, +5.91] | **+5.02** [+3.41, +6.69] | (pooled with d0) | — |
+| **d2** | depth-2, **unseen inside** | −1.71 [−3.60, +0.31] | **+2.13** [+0.66, +3.60] | **+3.84** [+1.90, +5.70] | **+5.93** [+4.10, +7.78] |
+| **d3** | depth-3, **unseen inside** | −0.35 [−2.67, +1.86] | **+3.26** [+0.81, +5.92] | **+3.60** [+1.40, +5.81] | **+5.70** [+3.14, +8.27] |
+
+**Verdicts, as the pre-registered mapping returns them:** cons-no-tax **CONFIRMED**, cons-vs-breadth
+**CONFIRMED**, family-stacks **CONFIRMED**; breadth-monotone and merge **INCONCLUSIVE**. RQ4's own
+reading is therefore **"undecided"** — it required *both* anchoring holding *and* breadth falling
+below the control, and only the first is established. **That is the verdict of record.**
+
+What is nonetheless established is stronger than "no tax": on unseen-containing stacks `cons_lam3`
+is **significantly above** the clean-code control and **significantly above breadth**. Read against
+the seen stacks, where it merely *matches* breadth (+0.87, n.s. — §30.6), the statement is:
+**anchoring's advantage over breadth appears only once the input diverges from what breadth was
+trained on.**
+
+**Breadth's collapse is heterogeneous, and the split is not post-hoc.** d2 pools three
+*significantly negative* cells with one *significantly positive* one:
+
+| composite | parts | `mono_all−tuned_L0` |
+|---|---|---:|
+| `C_L1r_X1` | identifier → unseen | **+2.67** [+0.35, +5.11] |
+| `C_L1r_X1m` | identifier → unseen (MBA half) | +1.28 [−1.16, +3.72] |
+| `C3_L1r_S1_X1` | identifier → structural → unseen | −0.35 [−2.67, +1.86] |
+| `C_S2_X1` | structural → unseen | **−3.60** [−6.40, −0.58] |
+| `C_S1_X1s` | structural → unseen (string half) | **−3.84** [−6.75, −0.93] |
+| `C_X1_S1` | unseen → structural | **−4.19** [−7.09, −1.28] |
+
+Split by **F3a's rule**, committed at 19:15:53 and **91 minutes before the first F2 cell** (checkable
+in git), the identifier group sits at +1.98 [−0.12, +4.18] and the structural group at **−3.88**
+[−6.08, −1.71] — a difference of **+5.85** [+3.10, +8.72] against +3.39 on seen stacks. Breadth is
+not uniformly broken by an unseen component; **it is broken where the stack leaves it no identifier
+surface to key on.** Pooling opposite-signed significant effects and reporting "inconclusive" is the
+wrong summary of that level, and the rule as written produced exactly that.
+
+**Truncation, as pre-registered:** exactly **1 over-long prompt dropped per cell in all 54 cells**,
+the same program each time. Prompt length does not depend on the adapter, so the drop is uniform and
+every paired comparison is intact.
+
+### 30.5 F2 beyond the lineage of discovery — first result, and it does not replicate
+
+All four arms the F2 rules need already existed for the three non-Meta models, so the ladder
+generalises for the cost of evaluation and **no new training**. Rules and the *prediction* were
+pre-registered before submission, because CodeLlama-7b's result was already known and a replication
+with no stated prediction is not a test.
+
+| quantity @ d2 | codellama-7b (in-sample) | starcoder2-15b |
+|---|---:|---:|
+| `mono_all − tuned_L0` | −1.71 [−3.60, +0.31] | −1.01 [−2.76, +0.81] |
+| `cons_lam3 − tuned_L0` | **+2.13** [+0.66, +3.60] | +0.35 [−1.13, +1.86] |
+| **`cons_lam3 − mono_all`** | **+3.84** [+1.90, +5.70] | +1.36 [−0.08, +2.71] |
+| `tuned_X1 − tuned_L0` | **+5.93** [+4.10, +7.78] | **+3.64** [+1.90, +5.35] |
+
+**The headline does not replicate on StarCoder2.** `cons_lam3 − mono_all` is +1.36 with an interval
+that just includes zero — right sign, about a third the size, **INCONCLUSIVE**. Family exposure
+replicates cleanly. By the mapping fixed before submission, three of three would have let RQ4's
+scope qualifier go; **it stays.** Granite (the model that refuted R2) and Gemma-3 are in flight.
+
+**A rule-design flaw this exposed, recorded rather than patched away.** H-F2-cons-no-tax asks only
+that `cons_lam3 − tuned_L0` have ci_hi ≥ 0 — which a **null satisfies trivially**. On CodeLlama-7b it
+was met by a significantly positive result; on StarCoder2 by one indistinguishable from zero. Both
+print CONFIRMED and they do not mean the same thing. Any future no-cost rule needs a TOST margin,
+not a one-sided bound.
+
+### 30.6 Four analysis-only closures, no compute
+
+- **F1b — merging's stated mechanism is refuted on the live panel.** Task-vector geometry on
+  CodeLlama-7b: the five specialists a merge is built from are the **most aligned, least conflicting,
+  highest-retention** bank measured (mean cosine **0.653**, sign conflict **0.323**, TIES keeping
+  **0.916**) — and merging them still loses to them (−3.13 vs the specialists' +2.47). A mechanism
+  predicting cancellation cannot explain a failure occurring where cancellation is lowest. **Seed
+  dominates condition:** varying seed alone drops mean cosine to **0.119** (near-orthogonal) while
+  varying condition leaves it at 0.653; in a mixed bank the most-aligned pair is same-seed and the
+  least cross-seed. Qwen said the same in `REPORT_2026-08-17` §3, so **two independent lineages
+  agree** and this moves from caveat to finding. Caveat carried: the seed-only bank mixes two
+  checkpoint lengths, so "near-orthogonal" is the precision the claim supports.
+- **F3a — breadth's stack gain depends on an identifier transform, by direct contrast.** On seen
+  depth-3 stacks: **+5.00** [+3.02, +6.88] with an identifier part vs **+1.61** [−1.02, +4.23]
+  without, **difference +3.39** [+0.82, +6.16] on one bootstrap over the 394 programs all four
+  stacks share. The difference was computed because *one interval excluding zero while another does
+  not is not a test of the difference between them* — the structural-only interval reaches +4.07 and
+  overlaps every significant one. **Not claimed:** that structural transforms contribute nothing;
+  n = 1 structural-only stack, its point estimate is positive.
+- **F9 — on SEEN stacks anchoring matches breadth, it does not beat it.** `cons_lam3 − mono_all`
+  pooled over the depth-3/4 stacks is **+0.87** [−0.59, +2.33]; three of four straddle zero, one with
+  a negative point. The depth-4 cell's +2.03 [+0.17, +3.82] is one significant result of four with no
+  multiplicity correction and was recorded as a **directional observation** — with the reading
+  committed in advance that a positive F2 d2 result would turn it into support and a flat one would
+  make it noise. F2 came back **+3.84**.
+- **E6 — weakest-link vs surface is UNDECIDED, and reported as such.** X1's heldout programs split
+  by which mechanism is actually present (177 arithmetic-only, 51 string-only, 156 both, 21
+  expansion-only), which lets a half-adapter be scored where **none** of its mechanism appears — the
+  only place surface can act alone. All three pre-registered rules returned INCONCLUSIVE: no interval
+  excludes zero *and* none is TOST-equivalent to it. The lean is toward surface (all four
+  cross-mechanism estimates positive: +2.64, +1.96, +5.44, +4.05, two excluding zero, where strict
+  weakest-link predicts zero) but that is four of four with no correction over twenty contrasts, in
+  groups as small as 49. **Both limits registered in advance bit as predicted.** Outside the rules:
+  breadth is negative on every group and significantly so on string-only programs (**−6.54**
+  [−11.76, −1.31]) — its X1 tax concentrates on the mechanism furthest from anything in the six seen
+  transforms.
+
+### 30.7 Measurement and infrastructure defects found while running this
+
+Recorded here at the same standing as the numbers, per §29.8's precedent.
+
+- **A named adapter that was not on disk silently evaluated the BASE model under the arm's name.**
+  Caught by hand on F2's config: merges have no `best/` subdirectory. Generation proceeded with
+  nothing applied and the only trace was the literal `"missing"` in `adapter_sha256`, which no
+  analysis reads — the charter's silent-failure #2 arriving in `results/cells/` as a number. The
+  direction is the dangerous one: **a merge arm reading exactly like `base` would have confirmed
+  what the paper already claims.** `eval_vllm` now raises before generating. **No published cell is
+  affected**, established by the right instrument: every cell records the adapter it used and the
+  hash computed at run time — **3,895 cells, 3,062 with a named adapter, zero missing.** The first
+  attempt at that check scanned configs and expanding `{model}` against every model on disk invented
+  **122 failures that do not exist**; the metadata nobody reads is the record that settles it.
+- **A per-composite / pooled program-set mismatch in the F3a script.** Pooled rows used the common
+  394; per-composite rows went through a helper intersecting only the two cells handed to it. One
+  table, two program sets — the exact confound that entry's own text warns about. Largest error 0.66
+  pts; the headline +3.39 is byte-identical because the group rows were always on the common set.
+  **Invisible on the seen stacks** (which nearly share their programs) and obvious on F2's (405 vs
+  287): two scripts disagreed on one contrast and only one could be right.
+- **The cluster's 4-job cap is a QOS pool spanning `h200` AND `normal`, not an h200 limit.** The
+  share guard counted per partition, read "2 of 2" and "0 of unlimited" — both green — with the pool
+  full, and CPU analyses blocked the GPU training the panel needed. It now resolves a partition to
+  its QOS and counts the group, and ignores dependency-blocked jobs. `dev` (`juno-dev`) is the one
+  separate pool.
+- **`g-06-01` runs training and does not run vLLM.** `VLLM_WORKER_MULTIPROC_METHOD=spawn` really did
+  fix `Engine core initialization failed` — and with the engine up, `generate()` never returns: 35
+  min of walltime for **19 s of CPU**, node load 0.51, **zero file writes anywhere**. Six vLLM jobs
+  there have failed or hung; every non-vLLM job has completed, including a 15B training run at 22
+  s/it. **The error was reasoning forward from a mechanism** — the documented fix for the documented
+  error was applied, the error stopped appearing, the node was declared usable — instead of asking
+  `sacct` whether a vLLM job had ever succeeded there, which answers in three seconds. *A fix that
+  removes an error message is not a fix that produces a result.* `submit.py` now auto-excludes the
+  node for `eval_vllm` only. Cost: 35 min and no data, because not one cell had been written.
+- **Over-requesting host memory delays scheduling by a day.** Three evals were submitted with
+  `--mem 128G` copied from an earlier chain; SLURM scheduled them a day out. The partition had free
+  cards and idle CPUs, but its busy nodes were down to 1.4–15 GB free RAM, so **memory, not the GPU,
+  was binding**. The tool default of 64 G is right: weights go to the GPU and the host holds the
+  safetensors read plus ~5 G of cached LoRAs.
+
+### 30.8 What this section changes in the paper
+
+- **RQ1′** gains its unseen-in-stack leg (§30.4) and the identifier mechanism behind breadth's
+  behaviour on stacks (§30.4, §30.6).
+- **RQ2′** loses one sentence: *"what transfers is the scaffolding both halves share"* is the
+  surface reading, and §30.6's E6 test declined to support it. The draft now says the halves do not
+  decompose, names surface as the leading hypothesis, and cites E5b as what would settle it.
+- **RQ3′**'s claim becomes **conditional** — 5 of 8 on the clean-code half, with the three failures
+  named — and the merging paragraph reports the failure **without** the interference mechanism.
+- **RQ4′**'s deciding gap is closed and its answer is *undecided by the pre-registered mapping*,
+  with the richer picture reported beneath it and the scope qualifier **retained** (§30.5).
+
+---
+
 ## Changelog
+
+- **2026-09-12 (rev 20, §30)** — **the panel is eight models read from one phase, and the first
+  stacks containing an unseen family exist.** §18–§29 rest on four models of one lineage and three
+  campaigns aligned by hand; §30 replaces both. **The grid is validated before the table is read:**
+  all four incumbents reproduce their published R1–R3 through the new config, every published value
+  inside the new interval, largest disagreement **0.85 pts** — so a departure is the model, not the
+  measurement. **R1 is the project's most robust claim**: breadth's unseen-family tax has the right
+  sign on **every model in the panel**, six significantly and **not one contradiction**, across three
+  lineages and 7B–34B. **R2 survives at 6 of 8 and is reversed on Granite. R3 holds on 5 of 8**, so
+  "anchoring pays no clean-code tax" becomes conditional. Every failure is outside the lineage of
+  discovery and all three findings are 4-of-4 inside it — **reported as a warning about
+  single-lineage evaluation, not a result about lineages**: Fisher's exact on the sharpest split is
+  p = 0.0714 with n = 8, and both Google models refute R3, so a family effect and a lineage effect
+  are perfectly confounded. **StarCoder2 is the counter-example that keeps it honest** — the only
+  non-Meta model to replicate all three, the panel's strongest, and the one an untuned gate scored
+  0.0000 and would have rejected. **F2, the divergence ladder:** six composites each containing X1
+  (never H1), 287 programs fixed before any system ran, five rules and RQ4's reading in both
+  directions committed before the first cell. Breadth's gain flips sign the moment an unseen
+  component enters (**+3.49 / +4.15 seen → −1.71 / −0.35 unseen-containing**) while anchoring rises
+  **above** the clean-code control (+2.13, +3.26) and **above breadth** (+3.84, +3.60). RQ4's mapping
+  nonetheless returns **undecided** — it needed breadth to fall below the control *and* anchoring to
+  hold, and only the second is established; that is the verdict of record. Breadth's collapse is
+  **heterogeneous** and splits by F3a's rule, committed **91 minutes before the first F2 cell**:
+  identifier-containing +1.98 vs structural-containing **−3.88**, a difference of **+5.85** against
+  +3.39 on seen stacks. **First result beyond the lineage: StarCoder2 does NOT replicate the
+  headline** (`cons_lam3 − mono_all` +1.36 [−0.08, +2.71], inconclusive), so RQ4's scope qualifier
+  **stays**. **Four analysis-only closures:** F1b refutes merging's stated interference mechanism on
+  the live panel (the merged specialists are the *most* aligned bank measured, and seed dominates
+  condition 0.653 → 0.119); F3a establishes the identifier dependence by direct contrast (+3.39, and
+  +5.85 out-of-sample); F9 shows anchoring only *matches* breadth on seen stacks (+0.87, n.s.); E6's
+  weakest-link-vs-surface test returns **undecided** and the draft loses the sentence it did not
+  support. **Five measurement/infrastructure defects are recorded at the same standing as the
+  numbers** (§30.7), the worst being that a named adapter missing from disk silently evaluated the
+  **base model under the arm's name** — verified across **3,895 cells, zero affected**, by the
+  run-time hash rather than by a config scan that invented 122 failures that do not exist.
 
 - **2026-09-08 (§2.2b)** — **the live panel finally has a whole-panel table.** §2.2 is Qwen-only by its own (correct) no-7B-rows rule, so the CodeLlama/Llama era had none — §26 ranks 83 systems per condition, but a leaderboard is not a matrix. §2.2b adds **116 systems across five model × language blocks, 96 of them CodeLlama-7b Python**, generated by `scripts/analysis/49_master_panel_table.py` from the per-cell parquets with the `settings` column derived from each cell's own `adapter_id`. Models are blocked, never interleaved. `X1` gets the summary slot rather than `H1` (36 systems against 14, and H1's budget is spent; no stimulus is read). **A generator bug is recorded rather than quietly fixed:** "largest n, then newest" silently selected the `inverse_generic` cell — the *input-prediction* task — for `tuned_L0` on `L0`, reporting 0.324 instead of 0.428, because that cell has one more row. Filtering inverse prompts, the T = 0.7 sampling phase, testset grids and the hf-mole engine took cross-phase disagreements above 0.5 pts from **253 to 3**.
 - **2026-09-08 (§2.2 summary columns and §2.2.1)** — §2.2's master table gains **three** summary columns — **`mean single`** (the five single transforms `L1b`…`S2`), **`unseen (H1)`** and **`mean composed`** (the six stacked `C_*` conditions) — so seen, unseen and stacked performance can be read off one row instead of being averaged together. Each is blank rather than partial when its group is incomplete, so the columns stay comparable between rows (144 / 74 / 106 of 169 rows qualify). Computed from the displayed cells, so they audit against the rows they summarise; **no existing number changed.** New **§2.2.1** lists one best row per family — 16 sections, split into a Grid A block and a Grid B block because the two program sets are disjoint — selected by `mean single`, with the caveat that the other two columns are that row's scores and not the family's best. The split immediately earns itself: on Grid B `mole_router` leads `mean single` at 0.496 while the clean-code control `tuned_L0` leads `unseen (H1)` at 0.400, and on Grid A every family winner falls in 0.378–0.396 with the control inside that band.
