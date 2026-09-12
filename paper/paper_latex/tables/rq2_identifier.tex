@@ -1,0 +1,21 @@
+% GENERATED 2026-09-12 23:16 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/f3a_stack_identifier_{depth_seen,f2_unseen}_codellama7b.json
+% Do not edit by hand -- regenerate. Supersedes the hand-written '+6.6 down to +1.1', which was an ordering, not a contrast.
+\begin{table*}[ht]
+\centering
+\caption{\textbf{RQ2: breadth's stack gain depends on an identifier transform being present.}
+Breadth over the clean-code control, split by whether the stack contains an identifier transform,
+with the \emph{difference} between the groups. The rule defining the split was fixed before the
+unseen-containing stimulus existed, which makes the second row an out-of-sample test of it. We
+report the difference because one interval excluding zero while another does not is not a test of
+the difference between them.}
+\label{tab:rq2_identifier}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Stimulus} & \textbf{With identifier} & \textbf{Structural only} & \textbf{Difference} \\
+\midrule
+All-seen depth-3/4 stacks (in-sample) & \textbf{$+5.00$ [$+3.02$, $+6.88$]} & $+1.61$ [$-1.02$, $+4.23$] & \textbf{$+3.39$ [$+0.82$, $+6.16$]} \\
+Stacks containing the unseen family (out-of-sample) & $+1.98$ [$-0.12$, $+4.18$] & \textbf{$-3.88$ [$-6.08$, $-1.71$]} & \textbf{$+5.85$ [$+3.10$, $+8.72$]} \\
+\bottomrule
+\end{tabular}
+\end{table*}
