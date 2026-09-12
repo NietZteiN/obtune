@@ -62,8 +62,12 @@ export VLLM_LOGGING_LEVEL="${VLLM_LOGGING_LEVEL:-WARNING}"
 # few seconds of start-up on the partitions that were fine anyway.
 export VLLM_WORKER_MULTIPROC_METHOD="${VLLM_WORKER_MULTIPROC_METHOD:-spawn}"
 
-# Share of the h200 partition obtune may hold. The account is shared with another project and
-# h200 imposes QoS=juno (MaxJobsPU=4), so holding all four squeezes them out entirely.
+# Share of the juno QOS POOL obtune may hold. The account is shared with another project and the
+# juno QOS allows 4 running jobs per user, so holding all four squeezes them out entirely.
+# THE POOL IS NOT ONE PARTITION: `h200` and `normal` are both QoS=juno, so a CPU analysis blocks a
+# GPU training job and moving work to `normal` frees nothing (corrected 2026-09-11). `dev` is
+# QoS=juno-dev, a separate pool. The authority is configs/compute.yaml::share_limits; this
+# variable is legacy and inert for submission (see the note there).
 # scripts/slurm/submit.py REFUSES an h200 submission above this, rather than relying on whoever
 # is submitting to count first — which failed within an hour of the share being agreed.
 # h100 and a30 carry no QOS (`scontrol show partition`), so work there is unaffected.

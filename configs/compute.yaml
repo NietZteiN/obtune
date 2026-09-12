@@ -100,17 +100,30 @@ exec_pool:
 # isolation, and CUDA_VISIBLE_DEVICES is set for us. src/obtune/sched/,
 # src/obtune/gpu_alloc.py, scripts/launch_workers.sh and scripts/supervise.sh are
 # superseded by sbatch wrappers.
-# Per-partition cap on how many jobs OBTUNE may hold, so a shared account is not monopolised.
-# The account is shared with another project; h200 imposes QoS=juno (MaxJobsPU=4), so obtune
-# holding all four squeezes them out. scripts/slurm/submit.py REFUSES a submission above these.
+# Cap on how many jobs OBTUNE may hold in a QOS POOL, so a shared account is not monopolised.
+# The account is shared with another project, and the juno QOS allows 4 running jobs per user.
+# scripts/slurm/submit.py REFUSES a submission above these.
+#
+# THE POOL SPANS PARTITIONS -- corrected 2026-09-11. `scontrol show partition` gives QoS=juno for
+# BOTH `h200` and `normal`, so the four slots are one pool covering a GPU partition and the CPU
+# partition. Four jobs across the two produced QOSMaxJobsPerUserLimit on a GPU training job the
+# eight-model panel needs while two CPU analyses held slots. Keys below are still written as
+# partitions because that is how work is submitted, but submit.py resolves the partition to its
+# QOS and counts every partition sharing it. The practical consequence is the opposite of the
+# obvious remedy: moving a job from `h200` to `normal` does NOT free a slot.
+#   `dev` is QoS=juno-dev, a SEPARATE pool (MaxJobsPU=1, 2 h limit) -- one short CPU analysis can
+#   run there for free. `h100` and `a30` carry no QOS at all and stay unlimited.
+#
+# A job PENDING on an unmet dependency is not counted: it cannot start, so it is not contesting
+# the slot the neighbour would use. Every other pending reason counts.
 #
 # It lives here, not in an environment variable, because the variable form was inert: it was set
 # in scripts/env.sh, which the SBATCH SCRIPT sources but the SUBMITTING SHELL does not, so the
 # guard defaulted to "no limit" in the one place that decides whether a job is created. A policy
 # that depends on the submitter's shell being set up correctly is not a policy.
-# h100 and a30 carry no QOS (`scontrol show partition`) and are deliberately unlimited.
 share_limits:
   h200: 2
+  normal: 2      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
   retired: 2026-08-28

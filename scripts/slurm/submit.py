@@ -139,8 +139,38 @@ def _walltime(job: Job | None, override: str | None, default: str) -> str:
     return f"{hours:02d}:00:00"
 
 
+def qos_pool(partition: str) -> tuple[str | None, set[str]]:
+    """The QOS a partition runs under, and every partition sharing that QOS.
+
+    THE CAP IS NOT PER PARTITION. `scontrol show partition` gives `QoS=juno` for BOTH `h200`
+    and `normal` (and `dev` gets its own, `juno-dev`), and `sacctmgr show qos` gives juno
+    MaxJobsPU=4. So the four slots are one pool spanning a GPU partition and the CPU partition,
+    and a CPU analysis job blocks a GPU training job. Counting only `h200`, as this module did
+    until 2026-09-11, reports 2 of 2 free while the pool is actually full -- and it silently
+    encourages exactly the wrong remedy, "move it to `normal`, that is free".
+
+    Returns (qos_name, partitions_in_that_pool). A partition with no QOS returns (None, {p}),
+    which keeps `h100` and `a30` uncapped as they always were.
+    """
+    import subprocess as _sp
+    out = _sp.run(["scontrol", "show", "partition"], capture_output=True, text=True).stdout
+    by_part: dict[str, str | None] = {}
+    name = None
+    for line in out.splitlines():
+        line = line.strip()
+        if line.startswith("PartitionName="):
+            name = line.split("=", 1)[1].split()[0]
+        if name and "QoS=" in line:
+            q = line.split("QoS=", 1)[1].split()[0]
+            by_part[name] = None if q in ("N/A", "(null)") else q
+    mine = by_part.get(partition)
+    if mine is None:
+        return None, {partition}
+    return mine, {p for p, q in by_part.items() if q == mine}
+
+
 def obtune_jobs_on(partition: str) -> int:
-    """How many jobs obtune already holds on `partition`, running or queued.
+    """How many jobs obtune already holds in `partition`'s QOS POOL, running or queued.
 
     Exists because a share agreed with the other project on this account was enforced by
     arithmetic-before-submitting, and that failed inside an hour: a panel eval went to h200
@@ -151,19 +181,35 @@ def obtune_jobs_on(partition: str) -> int:
     would use, so submitting three and letting the scheduler sort it out is precisely what the
     share forbids.
 
+    THE POOL, NOT THE PARTITION -- see qos_pool(). On 2026-09-11 four obtune/neighbour jobs were
+    running across h200 and normal and SLURM reported QOSMaxJobsPerUserLimit on a GPU training
+    job the eight-model panel needs, while two CPU geometry analyses held slots. Both partitions
+    are QoS=juno.
+
     Obtune's jobs are recognised by this submitter's own name prefixes. Another project's jobs on
     this shared account are never counted and never touched.
     """
     import subprocess as _sp
-    out = _sp.run(["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j %P %T"],
+    _, pool = qos_pool(partition)
+    out = _sp.run(["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j|%P|%T|%r"],
                   capture_output=True, text=True).stdout
-    mine = ("tr", "ck", "ev", "pk", "pkck", "os", "an", "bld", "dl", "gate", "lm")
+    mine = ("tr", "ck", "ev", "pk", "pkck", "os", "an", "bld", "dl", "gate", "lm",
+            "build", "geom", "probe")
     n = 0
     for line in out.splitlines():
-        f = line.split()
-        if len(f) >= 3 and f[1] == partition and f[2] in ("RUNNING", "PENDING") \
-           and f[0].split("_")[0] in mine:
-            n += 1
+        f = [x.strip() for x in line.split("|")]
+        if len(f) < 4 or f[1] not in pool or f[0].split("_")[0] not in mine:
+            continue
+        if f[2] not in ("RUNNING", "PENDING"):
+            continue
+        # A job blocked on an unmet dependency cannot start, so it is not contesting the slot the
+        # neighbour would use -- counting it made the guard refuse everything the moment three
+        # chained analyses were queued, which is a false positive with a real cost (it pushes work
+        # to a partition that shares the same pool anyway). Every OTHER pending reason does count:
+        # Priority, Resources and QOSMaxJobsPerUserLimit all mean "ready, waiting for a slot".
+        if f[2] == "PENDING" and f[3].startswith("Dependency"):
+            continue
+        n += 1
     return n
 
 
@@ -309,8 +355,11 @@ def main() -> int:
     if a.share_limit and not a.ignore_share_limit:
         held = obtune_jobs_on(a.partition)
         if held >= a.share_limit:
-            print(f"REFUSING: obtune already holds {held} job(s) on {a.partition}; the agreed "
-                  f"share is {a.share_limit}. Use h100/a30 (no QOS cap), wait, or pass "
+            qos, pool = qos_pool(a.partition)
+            print(f"REFUSING: obtune already holds {held} job(s) in the "
+                  f"{qos or a.partition} pool ({', '.join(sorted(pool))}); the agreed share is "
+                  f"{a.share_limit}. NOTE the pool spans partitions -- moving this to `normal` "
+                  f"does not free a slot. Use h100/a30 or dev (different QOS), wait, or pass "
                   f"--ignore-share-limit deliberately.", file=sys.stderr)
             return 2
 
