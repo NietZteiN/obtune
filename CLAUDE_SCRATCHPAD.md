@@ -1619,3 +1619,47 @@ verdicts), `baseline_relative_2026-09-11.json` and `..._inverse_2026-09-11.json`
 gemma3 and granite; starcoder2 and codegemma are still queued and unverified. If either logs steps
 without `kl_loss`, its arm is plain SFT again and its R2/R3 must not be read
 (`log/setup/2026-09-10_cons-arms-ran-as-plain-sft.md`).
+
+---
+
+## 2026-09-11 — F2 divergence ladder: decision rules, PRE-REGISTERED before submission
+
+Committed before `ev_f2_divergence` is submitted, as every read since 2026-09-02 has been. Nine
+systems × six composites on CodeLlama-7b, `configs/eval/f2_divergence.yaml`, phase `f2_divergence`.
+
+**Fixed in advance:**
+- **Common subset = 287 programs**, `data/manifests/f2_divergence_common_subset.json`, computed
+  from the emitted items before any system ran. Every contrast below runs on it.
+- Program-clustered bootstrap, 2,000 resamples, seed 17. BH-FDR across the rules as one family.
+- **Levels.** d0 = six depth-2 seen composites (`composite_generic`); d1 = depth-3/4 seen
+  (`composite_depth`); **d2 = `C_L1r_X1`, `C_X1_S1`, `C_S2_X1`** (one unseen component, depth 2);
+  **d3 = `C3_L1r_S1_X1`**; d4 = X1 alone. `C_L1r_X1m` / `C_S1_X1s` are single-mechanism halves,
+  reported beside d2 and **not pooled into it**.
+- **No H1.** The unseen component is X1 throughout.
+
+**Rules:**
+- **H-F2-breadth-monotone** — breadth's advantage falls as the stack diverges. CONFIRMED iff
+  `mono_all − tuned_L0` has ci_lo > 0 at d0 (already known: +3.49 [+2.04, +5.01]) **and** ci_hi < 0
+  pooled over the three d2 stacks. INCONCLUSIVE if d2 straddles zero. The d3 point is reported; a
+  "worsens further" reading additionally needs d3's ci_hi below d2's point estimate.
+- **H-F2-cons-no-tax** — anchoring pays no tax at any divergence level. CONFIRMED iff
+  `cons_lam3 − tuned_L0` ci_hi ≥ 0 at d2 and at d3.
+- **H-F2-cons-vs-breadth** — anchoring beats breadth where the two collide. CONFIRMED iff
+  `cons_lam3 − mono_all` ci_lo > 0 pooled at d2.
+- **H-F2-family-stacks** — family exposure survives stacking with seen transforms. CONFIRMED iff
+  `tuned_X1 − tuned_L0` ci_lo > 0 pooled at d2. `mono_allX − mono_all` is reported beside it.
+- **H-F2-merge** — merging is at or below the clean-code control on unseen-containing stacks.
+  CONFIRMED iff `merge_dare_ties − tuned_L0` ci_hi ≤ 0 pooled at d2.
+
+**What this decides.** RQ4. If `cons_lam3` holds `tuned_L0`'s level at d2/d3 while `mono_all` drops
+below it, the paper's Fig 1 exists. If `cons_lam3` drops with breadth, RQ4's answer is **"a better
+heuristic, not genuine robustness"** and is reported that way. Both outcomes are publishable and
+the entry is written before the numbers exist so neither can be chosen after the fact.
+
+**Stated in advance so it cannot be discovered later:**
+- `C_S2_X1` is the long condition by construction (S2 emits dead code, X1 then encodes it). ~2 % of
+  built cells exceed 1800 tokens against a 2048 limit; truncation is reported, not capped away.
+- Any contrast involving the **X1s level** is secondary: only 122 of the 287 common programs have
+  X1s items. `C_S1_X1s` as a stack is unaffected.
+- `mole_router` is absent — it runs through the HF path and needs its own config. H-F2-route is
+  therefore NOT opened here and stays with F1.

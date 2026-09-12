@@ -180,7 +180,12 @@ class TrialRow(BaseModel):
                    "basecheck_1shot",
                    # 2026-09-10: the panel's four core arms (tuned_L0 / tuned_X1 / mono_all /
                    # cons_lam3) on the six ladder conditions plus the held-out family X1.
-                   "panel_core"]
+                   "panel_core",
+                   # 2026-09-11: F2, the divergence ladder -- stacks CONTAINING the unseen family
+                   # (X1, never H1). Its own phase so an unseen-in-stack cell can never be pooled
+                   # with the all-seen composites of `composite_generic`/`composite_depth`, which
+                   # is the whole distinction the experiment exists to draw.
+                   "f2_divergence"]
     experiment_id: str
     base_model: str
     # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned

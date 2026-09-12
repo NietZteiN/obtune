@@ -1,0 +1,51 @@
+# F2 — the divergence ladder: stacks that CONTAIN AN UNSEEN FAMILY (docs/PAPER_EXPERIMENTS.md §7).
+#
+# WHY THIS EXISTS. Every composite in the corpus before 2026-09-11 was built from transforms the
+# trainable arms have SEEN, so RQ1's closing claim ("failures worsen as the stack diverges from
+# training") and RQ4's headline ("stacks containing unseen transformation families") had no
+# stimulus at all. The six codes here each contain X1 (or one of its mechanism halves).
+#
+# THE UNSEEN COMPONENT IS X1, NEVER H1. H1's two-read budget is spent (CLAUDE.md §3.2) and no H1
+# number may now select or rank anything; CLAUDE.md §3.1 also forbids stacking it. X1 is the
+# trainable sibling built for exactly this, reproducing H1's level at r = 0.9992.
+#
+# THE DIVERGENCE LEVELS. d0 = the six depth-2 SEEN composites (composite_generic); d1 = the
+# depth-3/4 seen stacks (composite_depth); d2 = C_L1r_X1 / C_X1_S1 / C_S2_X1 here; d3 =
+# C3_L1r_S1_X1; d4 = X1 alone. C_L1r_X1m and C_S1_X1s sit beside d2 as single-mechanism halves.
+#
+# COMMON SUBSET. Coverage differs per composite -- X1's three-site bar is the binding constraint,
+# not any size cap -- so every contrast runs on the 287 programs recorded BEFORE this config was
+# evaluated, in data/manifests/f2_divergence_common_subset.json. Note X1s is the exception: only
+# 122 of the 287 have X1s items, so any contrast involving the X1s LEVEL is secondary and must say
+# so; C_S1_X1s as a STACK is fine, it has its own 418.
+#
+# `mole_router` is not here. It runs through the HF path, not vLLM, and needs its own config.
+_extends: _base_eval.yaml
+
+phase: f2_divergence
+experiment_id: f2_divergence
+run_tag: f2_divergence
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+  # Family exposure: tuned_X1 has seen the unseen component ALONE but never stacked; mono_allX has
+  # seen it alongside the ladder. Together they separate "knows the family" from "knows the stack".
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+  - {name: mono_allX, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2-X1_r32_s17/best", arch: per_type, train_cond: mixX}
+  # The single-structural control the depth-2 and depth-3 runs both carried, kept for comparability.
+  - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
+  - {name: merge_dare_ties, adapter: "runs/adapters/{model}/{language}/merge_dare_ties_r32_s17/best", arch: per_type, train_cond: merge}
+  - {name: x1_resample, adapter: "runs/adapters_objectives/{model}/{language}/X1_r32_s17/best", arch: obj_resample, train_cond: X1}
+
+eval_conditions: [C_L1r_X1, C_X1_S1, C_S2_X1, C_L1r_X1m, C_S1_X1s, C3_L1r_S1_X1]
