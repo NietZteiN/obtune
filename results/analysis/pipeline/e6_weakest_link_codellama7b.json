@@ -1,0 +1,308 @@
+{
+ "script": "54_e6_weakest_link.py",
+ "generated_utc": "2026-09-12T00:28:28+00:00",
+ "model": "codellama-7b",
+ "eval_condition": "X1",
+ "n_resamples": 2000,
+ "seed": 17,
+ "eq_margin_pts": 1.5,
+ "group_sizes": {
+  "expansion_only": 21,
+  "mba_first": 49,
+  "mba_only": 177,
+  "str_first": 107,
+  "str_only": 51
+ },
+ "by_group": {
+  "expansion_only": {
+   "tuned_X1 - tuned_L0": {
+    "label": "tuned_X1 - tuned_L0",
+    "n_programs": 21,
+    "n_items": 63,
+    "value_pts": -3.1746031746031744,
+    "ci_lo": -11.11111111111111,
+    "ci_hi": 4.761904761904762,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1m - tuned_L0": {
+    "label": "tuned_X1m - tuned_L0",
+    "n_programs": 21,
+    "n_items": 63,
+    "value_pts": 1.5873015873015872,
+    "ci_lo": -6.349206349206349,
+    "ci_hi": 11.11111111111111,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1s - tuned_L0": {
+    "label": "tuned_X1s - tuned_L0",
+    "n_programs": 21,
+    "n_items": 63,
+    "value_pts": 4.761904761904762,
+    "ci_lo": -6.349206349206349,
+    "ci_hi": 15.873015873015872,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "mono_all - tuned_L0": {
+    "label": "mono_all - tuned_L0",
+    "n_programs": 21,
+    "n_items": 63,
+    "value_pts": -1.5873015873015872,
+    "ci_lo": -7.936507936507936,
+    "ci_hi": 4.761904761904762,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   }
+  },
+  "mba_first": {
+   "tuned_X1 - tuned_L0": {
+    "label": "tuned_X1 - tuned_L0",
+    "n_programs": 49,
+    "n_items": 147,
+    "value_pts": 6.802721088435374,
+    "ci_lo": 2.040816326530612,
+    "ci_hi": 12.244897959183671,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1m - tuned_L0": {
+    "label": "tuned_X1m - tuned_L0",
+    "n_programs": 49,
+    "n_items": 147,
+    "value_pts": 6.122448979591838,
+    "ci_lo": 2.040816326530612,
+    "ci_hi": 10.8843537414966,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1s - tuned_L0": {
+    "label": "tuned_X1s - tuned_L0",
+    "n_programs": 49,
+    "n_items": 147,
+    "value_pts": 5.4421768707483,
+    "ci_lo": 0.6802721088435382,
+    "ci_hi": 10.8843537414966,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "mono_all - tuned_L0": {
+    "label": "mono_all - tuned_L0",
+    "n_programs": 49,
+    "n_items": 147,
+    "value_pts": -4.081632653061224,
+    "ci_lo": -8.16326530612245,
+    "ci_hi": 0.0,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   }
+  },
+  "mba_only": {
+   "tuned_X1 - tuned_L0": {
+    "label": "tuned_X1 - tuned_L0",
+    "n_programs": 177,
+    "n_items": 530,
+    "value_pts": 4.150943396226414,
+    "ci_lo": 0.9369826877276165,
+    "ci_hi": 7.939508506616255,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1m - tuned_L0": {
+    "label": "tuned_X1m - tuned_L0",
+    "n_programs": 177,
+    "n_items": 530,
+    "value_pts": 4.528301886792452,
+    "ci_lo": 0.9370184899845907,
+    "ci_hi": 8.286643215009061,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1s - tuned_L0": {
+    "label": "tuned_X1s - tuned_L0",
+    "n_programs": 177,
+    "n_items": 530,
+    "value_pts": 2.6415094339622636,
+    "ci_lo": -0.7532956685499081,
+    "ci_hi": 5.871212121212121,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "mono_all - tuned_L0": {
+    "label": "mono_all - tuned_L0",
+    "n_programs": 177,
+    "n_items": 530,
+    "value_pts": -3.9622641509433953,
+    "ci_lo": -7.561436672967864,
+    "ci_hi": 0.0,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   }
+  },
+  "str_first": {
+   "tuned_X1 - tuned_L0": {
+    "label": "tuned_X1 - tuned_L0",
+    "n_programs": 107,
+    "n_items": 321,
+    "value_pts": 5.919003115264795,
+    "ci_lo": 2.492211838006228,
+    "ci_hi": 9.657320872274141,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1m - tuned_L0": {
+    "label": "tuned_X1m - tuned_L0",
+    "n_programs": 107,
+    "n_items": 321,
+    "value_pts": 4.049844236760122,
+    "ci_lo": 0.9345794392523364,
+    "ci_hi": 7.788161993769468,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1s - tuned_L0": {
+    "label": "tuned_X1s - tuned_L0",
+    "n_programs": 107,
+    "n_items": 321,
+    "value_pts": 5.295950155763237,
+    "ci_lo": 1.2461059190031154,
+    "ci_hi": 9.657320872274141,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "mono_all - tuned_L0": {
+    "label": "mono_all - tuned_L0",
+    "n_programs": 107,
+    "n_items": 321,
+    "value_pts": -2.492211838006231,
+    "ci_lo": -6.853582554517132,
+    "ci_hi": 1.5576323987538943,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   }
+  },
+  "str_only": {
+   "tuned_X1 - tuned_L0": {
+    "label": "tuned_X1 - tuned_L0",
+    "n_programs": 51,
+    "n_items": 153,
+    "value_pts": 4.575163398692811,
+    "ci_lo": 0.0,
+    "ci_hi": 9.150326797385622,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1m - tuned_L0": {
+    "label": "tuned_X1m - tuned_L0",
+    "n_programs": 51,
+    "n_items": 153,
+    "value_pts": 1.9607843137254888,
+    "ci_lo": -1.9607843137254917,
+    "ci_hi": 6.5359477124183,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "tuned_X1s - tuned_L0": {
+    "label": "tuned_X1s - tuned_L0",
+    "n_programs": 51,
+    "n_items": 153,
+    "value_pts": 5.882352941176472,
+    "ci_lo": 1.307189542483661,
+    "ci_hi": 10.457516339869283,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "mono_all - tuned_L0": {
+    "label": "mono_all - tuned_L0",
+    "n_programs": 51,
+    "n_items": 153,
+    "value_pts": -6.535947712418302,
+    "ci_lo": -11.76470588235294,
+    "ci_hi": -1.3071895424836597,
+    "excludes_zero": true,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   }
+  }
+ },
+ "order_test": {
+  "label": "tuned_X1m gain: mba_first - str_first",
+  "n_mba_first": 49,
+  "n_str_first": 107,
+  "value_pts": 2.0726047428317163,
+  "ci_lo": -3.395002860957466,
+  "ci_hi": 7.771155191048375,
+  "excludes_zero": false
+ },
+ "hypotheses": [
+  {
+   "id": "H-E6-surface-a",
+   "rule": "tuned_X1s - tuned_L0 on mba_only: SURFACE iff ci_lo>0, MECHANISM iff TOST-equivalent at +/-1.5",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "label": "tuned_X1s - tuned_L0",
+    "n_programs": 177,
+    "n_items": 530,
+    "value_pts": 2.6415094339622636,
+    "ci_lo": -0.7532956685499081,
+    "ci_hi": 5.871212121212121,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "limit": "tuned_X1s pays the campaign's largest L0 cost (-4.37) and is the only arm trained at a 4,096-token window; that global deficit biases this test toward zero, so a null here is weak evidence and a positive is strong."
+  },
+  {
+   "id": "H-E6-surface-b",
+   "rule": "tuned_X1m - tuned_L0 on str_only: same rule",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "label": "tuned_X1m - tuned_L0",
+    "n_programs": 51,
+    "n_items": 153,
+    "value_pts": 1.9607843137254888,
+    "ci_lo": -1.9607843137254917,
+    "ci_hi": 6.5359477124183,
+    "excludes_zero": false,
+    "equivalent": false,
+    "eq_margin_pts": 1.5
+   },
+   "limit": "str_only has 51 programs; underpowered, so a null here means little."
+  },
+  {
+   "id": "H-E6-order",
+   "rule": "tuned_X1m gain larger on mba_first than str_first: WEAKEST-LINK iff ci_lo>0",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "label": "tuned_X1m gain: mba_first - str_first",
+    "n_mba_first": 49,
+    "n_str_first": 107,
+    "value_pts": 2.0726047428317163,
+    "ci_lo": -3.395002860957466,
+    "ci_hi": 7.771155191048375,
+    "excludes_zero": false
+   }
+  }
+ ],
+ "verdict": "undecided"
+}
