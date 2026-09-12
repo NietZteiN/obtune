@@ -1,6 +1,6 @@
 {
  "script": "55_grid_agreement.py",
- "generated_utc": "2026-09-12T02:24:07+00:00",
+ "generated_utc": "2026-09-12T02:33:15+00:00",
  "phase": "panel_core",
  "n_resamples": 2000,
  "seed": 17,
@@ -81,6 +81,32 @@
     "ci_lo": -0.8378216636744429,
     "ci_hi": 1.797483523067711,
     "abs_delta": 0.05904191616766624,
+    "published_inside_ci": true
+   }
+  },
+  "llama31-8b": {
+   "R1": {
+    "published": -2.88,
+    "uniform": -2.718286655683691,
+    "ci_lo": -4.699384423565644,
+    "ci_hi": -0.906076907953165,
+    "abs_delta": 0.16171334431630902,
+    "published_inside_ci": true
+   },
+   "R2": {
+    "published": 3.46,
+    "uniform": 3.3772652388797395,
+    "ci_lo": 1.5650419319191038,
+    "ci_hi": 5.358725536609719,
+    "abs_delta": 0.08273476112026046,
+    "published_inside_ci": true
+   },
+   "R3": {
+    "published": 0.0,
+    "uniform": -0.2994011976047928,
+    "ci_lo": -1.976047904191619,
+    "ci_hi": 1.2582951095357304,
+    "abs_delta": 0.2994011976047928,
     "published_inside_ci": true
    }
   }
