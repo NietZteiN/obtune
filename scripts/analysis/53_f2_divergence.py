@@ -40,6 +40,15 @@ HALVES = ["C_L1r_X1m", "C_S1_X1s"]
 N_BOOT, SEED = 2000, 17
 
 # (label, treat, control) for every rule; pooled over a level's composites.
+#
+# CORE vs FULL. `--core` restricts this list to the arms every panel model has, which is exactly the
+# set `configs/eval/f2_divergence_core.yaml` evaluates. It is NOT a degraded read: the five
+# pre-registered F2 rules reference only `mono_all`, `tuned_L0`, `cons_lam3` and `tuned_X1`, so the
+# core set answers every one of them. The extra arms in the full config exist for CodeLlama-7b
+# alone and carry the "reported beside it" lines (`mono_allX`, `merge_dare_ties`), not verdicts.
+# The distinction matters because the script REFUSES an incomplete grid, and a deliberately smaller
+# system set must not be mistaken for a grid that failed to finish.
+CORE_SYSTEMS = {"base", "tuned_L0", "mono_all", "cons_lam3", "tuned_X1"}
 CONTRASTS = [
     ("mono_all - tuned_L0", "mono_all", "tuned_L0"),
     ("cons_lam3 - tuned_L0", "cons_lam3", "tuned_L0"),
@@ -89,14 +98,20 @@ def pooled(cells, treat, control, conds, progs):
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model", default="codellama-7b")
+    ap.add_argument("--core", action="store_true",
+                    help="read the four-arm core grid (f2_divergence_core.yaml). Answers all five "
+                         "pre-registered rules; drops only the reported-beside lines.")
     ap.add_argument("--out", default=None)
     a = ap.parse_args()
+
+    contrasts = ([c for c in CONTRASTS if c[1] in CORE_SYSTEMS and c[2] in CORE_SYSTEMS]
+                 if a.core else CONTRASTS)
 
     sub = json.loads((ROOT / "data/manifests/f2_divergence_common_subset.json").read_text())
     progs = set(sub["common_subset"])
 
     conds = D2 + D3 + HALVES
-    systems = sorted({s for _, t, c in CONTRASTS for s in (t, c)})
+    systems = sorted({s for _, t, c in contrasts for s in (t, c)})
     cells, missing = {}, []
     for cond in conds:
         for s in systems:
@@ -114,6 +129,7 @@ def main() -> int:
     levels = {"d2": D2, "d3": D3, "C_L1r_X1m": ["C_L1r_X1m"], "C_S1_X1s": ["C_S1_X1s"]}
     out = {
         "script": "53_f2_divergence.py",
+        "grid": "core" if a.core else "full",
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "model": a.model, "phase": PHASES[0],
         "n_programs_common": len(progs), "n_resamples": N_BOOT, "seed": SEED,
@@ -121,10 +137,10 @@ def main() -> int:
         "by_level": {}, "per_composite": {},
     }
     for lvl, cs in levels.items():
-        out["by_level"][lvl] = {lab: pooled(cells, t, c, cs, progs) for lab, t, c in CONTRASTS}
+        out["by_level"][lvl] = {lab: pooled(cells, t, c, cs, progs) for lab, t, c in contrasts}
     for cond in conds:
         out["per_composite"][cond] = {
-            lab: pooled(cells, t, c, [cond], progs) for lab, t, c in CONTRASTS}
+            lab: pooled(cells, t, c, [cond], progs) for lab, t, c in contrasts}
 
     # ---- the pre-registered rules, restated verbatim -------------------------------------
     d2, d3 = out["by_level"]["d2"], out["by_level"]["d3"]
@@ -164,11 +180,12 @@ def main() -> int:
          "rule": "CONFIRMED iff tuned_X1 - tuned_L0 ci_lo > 0 pooled at d2.",
          "verdict": verdict(d2["tuned_X1 - tuned_L0"], confirm_lo=0.0),
          "evidence": {"d2": d2["tuned_X1 - tuned_L0"],
-                      "mono_allX_minus_mono_all_d2": d2["mono_allX - mono_all"]}},
+                      "mono_allX_minus_mono_all_d2": d2.get("mono_allX - mono_all")}},
         {"id": "H-F2-merge",
          "rule": "CONFIRMED iff merge_dare_ties - tuned_L0 ci_hi <= 0 pooled at d2.",
-         "verdict": verdict(d2["merge_dare_ties - tuned_L0"], confirm_hi=0.0),
-         "evidence": {"d2": d2["merge_dare_ties - tuned_L0"]}},
+         "verdict": (verdict(d2["merge_dare_ties - tuned_L0"], confirm_hi=0.0)
+                     if "merge_dare_ties - tuned_L0" in d2 else "NOT EVALUATED (core grid)"),
+         "evidence": {"d2": d2.get("merge_dare_ties - tuned_L0")}},
     ]
     out["hypotheses"] = hyps
 
@@ -184,14 +201,15 @@ def main() -> int:
         "undecided by F2: breadth does not fall below the clean-code control at d2")
 
     dst = Path(a.out) if a.out else (
-        ROOT / "results/analysis/pipeline" / f"f2_divergence_{a.model.replace('-', '')}.json")
+        ROOT / "results/analysis/pipeline" /
+        f"f2_divergence_{'core_' if a.core else ''}{a.model.replace('-', '')}.json")
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(json.dumps(out, indent=1))
 
     print(f"model {a.model}   common subset {len(progs)} programs\n")
     for lvl in ["d2", "d3", "C_L1r_X1m", "C_S1_X1s"]:
         print(f"--- {lvl} ({', '.join(levels[lvl])}) ---")
-        for lab, _, _ in CONTRASTS:
+        for lab, _, _ in contrasts:
             c = out["by_level"][lvl][lab]
             star = "*" if c["excludes_zero"] else " "
             print(f"   {lab:30s} {c['value_pts']:+6.2f} [{c['ci_lo']:+6.2f}, {c['ci_hi']:+6.2f}]{star}")
