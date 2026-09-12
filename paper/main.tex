@@ -137,6 +137,21 @@ departure in Table~\ref{tab:panel} is a property of the model and not of the con
 \section{RQ1 --- Does single-transform adaptation compose?}
 \label{sec:rq1}
 
+\paragraph{Composition in the data works, and only within what the data covered.} Breadth training
+gains on stacks built from transforms it saw and does not on stacks containing a family it did not.
+We state that as a \emph{difference} rather than as two levels, because one interval being positive
+while another is negative is not a test of the difference between them --- and on most models here
+the unseen-side interval straddles zero on its own. The two halves are paired on the programs common
+to every cell of both groups, so the difference carries an interval.
+
+\begin{table}[t]\centering\small
+\caption{RQ1's dissociation, within model, on one program set. The \emph{difference} is the
+measured quantity; the levels are context. StarCoder2 is the clearest case: both of its levels
+straddle zero and its difference does not.}
+\label{tab:dissoc}
+\input{tables/stack_dissociation}
+\end{table}
+
 \slot{routing and merging results on stacks, from the modularity thread}
 
 Weight-space merging fails, and we report that failure \textbf{without} the mechanism usually

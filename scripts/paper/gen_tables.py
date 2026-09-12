@@ -216,6 +216,34 @@ model & lineage & \textsc{cons}$-$\textsc{mono} & \textsc{cons}$-$\textsc{clean}
           "divergence by model", "tab:divmodels")
 
 
+def t_dissociation():
+    """RQ1's headline: the seen/unseen stack difference, WITHIN model, on one program set."""
+    d = load("pipeline/stack_dissociation.json")
+    ms = (d or {}).get("models", {})
+    rows, n = [], None
+    for m in ORDER:
+        e = ms.get(m)
+        if not e:
+            rows.append(f"{NICE[m]} & {LINEAGE[m]} & {PENDING} & {PENDING} & {PENDING}" + r" \\")
+            continue
+        n = e["n_programs"]
+        rows.append(f"{NICE[m]} & {LINEAGE[m]} & " + ci(e["seen"]) + " & "
+                    + ci(e["unseen_containing"]) + " & " + ci(e["difference"]) + r" \\")
+    tal = (d or {}).get("tally", {})
+    foot = (f"\\multicolumn{{4}}{{l}}{{\\emph{{difference significant on}}}} & "
+            f"{tal.get('difference_significant','?')} of {tal.get('models_read','?')} read \\\\"
+            if tal else "")
+    body = (r"""\begin{tabular}{llccc}
+\toprule
+model & lineage & seen stacks & unseen inside & \textbf{difference} \\
+\midrule
+""" + "\n".join(rows) + ("\n\\midrule\n" + foot if foot else "") + r"""
+\bottomrule
+\end{tabular}""")
+    write("stack_dissociation.tex", body, "results/analysis/pipeline/stack_dissociation.json",
+          "stack dissociation", "tab:dissoc")
+
+
 def t_geometry():
     banks = [("5 specialists, one seed", "condition only", "spec_s17"),
              ("clean-code arm, 3 seeds", "seed only", "L0_crossseed"),
@@ -242,7 +270,7 @@ adapter bank & what varies & mean cosine & sign conflict & TIES kept \\
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    for f in (t_panel, t_grid, t_ladder, t_split, t_models, t_geometry):
+    for f in (t_panel, t_grid, t_ladder, t_split, t_models, t_dissociation, t_geometry):
         f()
     n = sum(PENDING in (OUT / p.name).read_text() for p in OUT.glob("*.tex"))
     print(f"\n{len(list(OUT.glob('*.tex')))} tables; {n} contain \\pending (holes are visible, not filled)")
