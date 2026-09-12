@@ -60,6 +60,13 @@ export VLLM_LOGGING_LEVEL="${VLLM_LOGGING_LEVEL:-WARNING}"
 # the difference is several jobs sharing one physical card through MIG slices, where a CUDA
 # context already exists when the engine forks. `spawn` is the documented remedy and costs a
 # few seconds of start-up on the partitions that were fine anyway.
+# CONSEQUENCE FOR ANY SCRIPT THAT BUILDS AN `LLM` (learned 2026-09-11, 19 wasted minutes):
+# spawn makes vLLM's engine-core subprocess RE-IMPORT the entry module, so a script whose engine
+# construction sits at module level builds another engine in every child, recursively. The tell is
+# the script's own first print appearing twice. `src/obtune/eval_vllm.py` and `objectives.py` both
+# guard with `if __name__ == "__main__":` and are unaffected; an ad-hoc probe did not, and the
+# symptom -- a job that starts, reports a healthy GPU and then never finishes -- is easy to misread
+# as the node still being broken, which is exactly what that probe was testing for.
 export VLLM_WORKER_MULTIPROC_METHOD="${VLLM_WORKER_MULTIPROC_METHOD:-spawn}"
 
 # Share of the juno QOS POOL obtune may hold. The account is shared with another project and the
