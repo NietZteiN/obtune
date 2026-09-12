@@ -117,8 +117,14 @@ answered only over *tuned* systems.
 | Do merges retain per-type gains? | no | merging costs −3.13 [−4.78, −1.40] while specialists contribute +2.47 [+1.32, +3.70] |
 | Is there hidden complementary capability? | **no** | oracle over 10 systems sits **52.9 pts below** a marginal-preserving permutation null |
 | Does oracle *prompting* substitute for tuning? | no | ~9 pts worse than the clean-code adapter |
+| Is merging's failure explained by **contrasting task-vector geometries**? | **no** (F1b, 2026-09-11) | the five specialists the merge is built from are the most aligned, least conflicting bank measured — cosine **0.653**, sign conflict **0.323**, TIES keeping **0.916** — and merging them still loses to them. **Seed dominates condition:** varying seed alone drops cosine to **0.119**, varying condition leaves it at 0.653 |
 
-**RQ2 is closed, negatively, by elimination rather than assumption.**
+**RQ2 is closed, negatively, by elimination rather than assumption.** The merging result stands and
+its stated *mechanism* does not: a mechanism that predicts cancellation cannot explain a failure
+that happens where cancellation is at its lowest. Qwen said the same thing
+(`REPORT_2026-08-17` §3), so two independent lineages now agree, which makes it a finding rather
+than a caveat. Details and the one caveat (the seed-only bank mixes two checkpoint lengths) in
+`log/modularity/2026-09-11_f1b-task-vector-geometry.md`.
 
 ### RQ3 — Mechanism (attention)
 
@@ -407,6 +413,7 @@ and every arm's L0 cost classified (`an_l0cost`).
 | is the family or the *mechanism* the unit | `tuned_X1m − tuned_L0` on **X1s**; `tuned_X1s − tuned_L0` on **X1m** | +1.49 [−0.95, +3.93]; −0.10 [−2.38, +2.19] | **H-family-unit REFUTED** (`an_x1split`, 2026-09-08): the halves do not reach each other |
 | does either half carry the whole | `tuned_X1m − tuned_X1`, `tuned_X1s − tuned_X1` on **X1** | −0.49 [−2.06, +1.07]; −0.41 [−2.39, +1.57] | **H-whole-ge-parts CONFIRMED** — and, unanticipated, either half alone gives +4.12 / +4.20 on X1 against the whole's +4.61: ~90 % of the stacked gain from one mechanism, non-additive |
 | breadth's tax on the halves | `mono_all − tuned_L0` on **X1m** / **X1s** | −4.94 [−7.44, −2.47] / −3.93 [−6.64, −1.35] | the tax is not specific to the stacked form |
+| does the stack need an identifier transform | `mono_all − tuned_L0` on depth-3 stacks **with** vs **without** an identifier part | **+5.00** [+3.02, +6.88] vs +1.61 [−1.02, +4.23]; **difference +3.39** [+0.82, +6.16] | **H-stack-identifier CONFIRMED** (F3a, 2026-09-11) on the direct contrast, not just on one interval straddling zero |
 | a *hard* second family | — | *not run* | E5b: generator not written |
 
 Reading: transfer follows the family, not the transform (six seen transforms do not reach H1;
@@ -415,8 +422,19 @@ grain *inside* a family is now read (`an_x1split`): X1's MBA half and string hal
 each other, yet either half alone recovers ~90 % of the whole adapter's X1 gain. Six seen transforms do
 not reach X1; either half of X1 does; the halves do not reach each other. The reading that fits all
 three — and lossless X1→H1, and null X2→Y2 — is that transfer follows shared *surface* (the family's
-scaffolding and prompt distribution), not shared mechanism and not invariance. Untested alternative:
-a weakest-link gain on stacked items; separable at item level from existing trials (not run).
+scaffolding and prompt distribution), not shared mechanism and not invariance.
+
+**The weakest-link alternative was tested on 2026-09-11 and is UNDECIDED** (`an_e6_weakest`,
+`log/transfer/2026-09-11_e6-weakest-link-undecided.md`). X1's heldout programs split by which
+mechanism is actually present — 177 arithmetic-only, 51 string-only, 156 with both — so a
+half-adapter can be scored on programs containing *none* of the mechanism it trained on, where only
+surface can help. All three pre-registered rules came back INCONCLUSIVE: no interval excludes zero
+*and* none is TOST-equivalent to it. The lean is toward surface — all four cross-mechanism point
+estimates are positive (+2.64, +1.96, +5.44, +4.05, two excluding zero), and a strict weakest-link
+reading predicts zero — but that is four of four with no correction over twenty contrasts, in groups
+as small as 49 programs, and both limits registered in advance bit as predicted. **The surface
+reading is not licensed by this.** E5b (a hard second family with a different surface) remains the
+experiment that would settle it.
 
 ### 6.3 RQ5′ — bidirectional: does output prediction also teach input prediction?
 
