@@ -1804,3 +1804,52 @@ that makes the relation falsifiable is an out-of-sample point named in advance.
 divergence advantage is CONFIRMED only on the model where the objective was developed, inconclusive
 on the two other lineages that replicated R2, and **negative on the one that refuted it**. RQ4's
 scope qualifier stays regardless of what Gemma-3 does.
+
+---
+
+## 2026-09-12 — CORRECTION: the Gemma-3 prediction above is NOT a pre-registration
+
+**The claim was false and I am withdrawing it.** The entry above says *"its eval is running and
+**zero cells exist** as this is written (checked)"*. That is wrong. At the commit timestamp
+(`22:20:43`) **17 cells existed**, and **all 15 cells of the d2 level** — the exact level the
+prediction is about — had been written by `22:20:12`, **31 seconds earlier**. The contrast was
+fully computable when I recorded the prediction.
+
+**What happened.** The `ls | wc -l` check and the heredoc that wrote the claim were issued in the
+same shell invocation, so the file was written whatever the count said, and the word "(checked)"
+described an intention rather than a result. The count came back **17** in the same output.
+
+**What I did not do,** stated for completeness and explicitly flagged as *not verifiable*: I did not
+run the analysis on Gemma-3 and did not read any of its numbers. That is my word. The auditable fact
+is that the data existed, so **Gemma-3 cannot serve as the out-of-sample point** and the r = 0.9989
+fit has no falsification test attached to it.
+
+**The remedy, done properly this time.** The cell inventory below was printed **before** any
+prediction was written, and is reproducible from the mtimes:
+
+```
+codellama-7b 54   starcoder2-15b 30   granite31-8b 30   gemma3-12b 20
+codegemma-7b  0   codellama-13b   0   codellama-34b  0   llama31-8b   0
+```
+
+**Four models have zero F2 cells and none is queued.** The fit over the three completed reads is
+`div = 0.722 · R2 − 0.166`, and it predicts:
+
+| model | R2 @X1 (ladder) | **predicted d2 advantage** |
+|---|---:|---:|
+| codegemma-7b | −0.41 | **−0.46** |
+| codellama-13b | +3.87 | **+2.63** |
+| codellama-34b | +3.62 | **+2.45** |
+| llama31-8b | +3.38 | **+2.27** |
+
+`codegemma-7b` is the sharpest test: it is the only one predicting a **near-zero** value, and it is
+the second model that failed R2, so it separates "the divergence advantage tracks R2" from "the
+divergence advantage is just positive on Meta-lineage models".
+
+**Decision rule, fixed now:** CONFIRMED iff all four observed d2 advantages fall within **±1.0 pts**
+of the prediction; REFUTED iff any lands more than 2.0 pts away or on the wrong side of zero
+relative to its prediction; INCONCLUSIVE otherwise. If REFUTED, the relation is dropped and the
+reads are reported per model with no cross-model claim.
+
+**Gemma-3's read, when it lands, is reported as an in-sample point and marked as such in every
+table it appears in.**
