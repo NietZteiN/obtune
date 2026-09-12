@@ -72,7 +72,7 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--submit", action="store_true")
     a = ap.parse_args()
-    n = 0
+    n_ck = n_mg = 0
     live = subprocess.run(["squeue", "-u", __import__("os").environ.get("USER", ""), "-h", "-o", "%j"],
                           capture_output=True, text=True).stdout.split()
     for m in MODELS:
@@ -93,7 +93,7 @@ def main() -> int:
                      f"runs/adapters/{m}/python/{c}_r32_s17"],
                     capture_output=True, text=True, cwd=ROOT)
                 print(f"      {((r.stdout or r.stderr).strip().splitlines() or [''])[-1]}")
-                n += 1
+                n_ck += 1
         if not (ok and a.submit):
             continue
         for name, comb, cfg in ARMS:
@@ -108,9 +108,9 @@ def main() -> int:
                 capture_output=True, text=True, cwd=ROOT)
             line = (r.stdout or r.stderr).strip().splitlines()[-1:] or [""]
             print(f"      {line[0]}")
-            n += 1
+            n_mg += 1
     if a.submit:
-        print(f"\n  submitted {n} merge job(s)")
+        print(f"\n  submitted {n_ck} checkpoint-select and {n_mg} merge job(s)")
     return 0
 
 
