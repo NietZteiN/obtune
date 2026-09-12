@@ -1,0 +1,111 @@
+{
+ "script": "57_stack_dissociation.py",
+ "generated_utc": "2026-09-12T17:51:57+00:00",
+ "n_resamples": 2000,
+ "seed": 17,
+ "groups": {
+  "seen": [
+   "C_L1b_S1",
+   "C_L1r_S1",
+   "C_S1_L1r",
+   "C_L2_S4",
+   "C_L1r_S3",
+   "C_S4_S3"
+  ],
+  "unseen_containing": [
+   "C_L1r_X1",
+   "C_X1_S1",
+   "C_S2_X1"
+  ]
+ },
+ "models": {
+  "codellama-7b": {
+   "n_programs": 319,
+   "seen": {
+    "value_pts": 3.36471408647141,
+    "ci_lo": 1.570639553988041,
+    "ci_hi": 5.270804124953448,
+    "excludes_zero": true
+   },
+   "unseen_containing": {
+    "value_pts": -1.91771269177127,
+    "ci_lo": -3.696052122353902,
+    "ci_hi": -0.13975874521167306,
+    "excludes_zero": true
+   },
+   "difference": {
+    "value_pts": 5.28242677824268,
+    "ci_lo": 3.20358760013932,
+    "ci_hi": 7.541321319349846,
+    "excludes_zero": true
+   }
+  },
+  "codellama-34b": {
+   "n_programs": 319,
+   "seen": {
+    "value_pts": 2.2663877266387744,
+    "ci_lo": 0.43538836642285084,
+    "ci_hi": 4.09319351355132,
+    "excludes_zero": true
+   },
+   "unseen_containing": {
+    "value_pts": -0.7670850767085069,
+    "ci_lo": -2.615062761506276,
+    "ci_hi": 1.1169577163847662,
+    "excludes_zero": false
+   },
+   "difference": {
+    "value_pts": 3.0334728033472813,
+    "ci_lo": 0.783283709989817,
+    "ci_hi": 5.277044995474876,
+    "excludes_zero": true
+   }
+  },
+  "llama31-8b": {
+   "n_programs": 319,
+   "seen": {
+    "value_pts": 2.3012552301255207,
+    "ci_lo": 0.47069900053776886,
+    "ci_hi": 4.149341533585983,
+    "excludes_zero": true
+   },
+   "unseen_containing": {
+    "value_pts": -1.0460251046025104,
+    "ci_lo": -2.7225130890052354,
+    "ci_hi": 0.6276150627615052,
+    "excludes_zero": false
+   },
+   "difference": {
+    "value_pts": 3.347280334728031,
+    "ci_lo": 1.4977359804945993,
+    "ci_hi": 5.299214476558823,
+    "excludes_zero": true
+   }
+  },
+  "starcoder2-15b": {
+   "n_programs": 319,
+   "seen": {
+    "value_pts": 1.4993026499302675,
+    "ci_lo": -0.017452922616009447,
+    "ci_hi": 3.00202375807178,
+    "excludes_zero": false
+   },
+   "unseen_containing": {
+    "value_pts": -1.1854951185495122,
+    "ci_lo": -2.925809822361547,
+    "ci_hi": 0.4881578274807027,
+    "excludes_zero": false
+   },
+   "difference": {
+    "value_pts": 2.68479776847978,
+    "ci_lo": 0.7662835249042157,
+    "ci_hi": 4.649947753396027,
+    "excludes_zero": true
+   }
+  }
+ },
+ "tally": {
+  "models_read": 4,
+  "difference_significant": 4
+ }
+}

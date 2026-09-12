@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_cseen_gemma3-12b",
+  "job_id": "ev_cseen_starcoder2-15b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,14 +7,21 @@
     "--config",
     "eval/composite_seen_core.yaml",
     "--model",
-    "gemma3-12b",
+    "starcoder2-15b",
     "--language",
     "python"
   ],
   "raw": false,
   "est_gpu_h": 0.6,
-  "priority": 116,
+  "priority": 115,
   "meta": {
     "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  },
+  "slurm": {
+    "job_id": "391417",
+    "node": "g-08-13",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T17:46:33.585089+00:00"
   }
 }
