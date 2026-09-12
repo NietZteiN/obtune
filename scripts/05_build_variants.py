@@ -127,15 +127,38 @@ def main() -> int:
         print(f"  common subset (all {len(args.conditions)} conditions): {len(common)}/{n}")
 
         declines: dict[str, list[str]] = {}
+        # A CRASH IS NOT A DECLINE, and printing them alike hid a real bug for one build.
+        # `builder.build_variants` catches a worker exception and files it as status=failed with
+        # the traceback in `notes`, which is honest -- but this summary only ever read `gate` and
+        # `skipped_constructs`, both empty for a crash, so it printed the bare word "declined".
+        # On 2026-09-11 the six F2 composites came back 0/40 with that message and the reject
+        # dump EMPTY, which reads as "the transform refuses every program" -- a coverage property
+        # of the stimulus. The real cause was one missing entry in `schema.py::CompositeCondition`,
+        # so every `Variant(...)` raised a pydantic literal error. Crashes are now counted and
+        # printed separately, with the exception line, because the two need opposite responses:
+        # a decline is data, a crash is a bug.
+        crashes: dict[str, list[str]] = {}
         for key, rec in report.entries.items():
             if rec["status"] == "ok":
                 continue
             pid, cond = key.rsplit("::", 1)
             gate = rec.get("gate") or {}
             failed = [c for c, v in (gate.get("checks") or {}).items() if v is False]
+            notes = rec.get("notes") or []
+            crashed = [n for n in notes if "worker crashed" in n or "raised:" in n or "gate raised:" in n]
+            if crashed and not failed and not rec.get("skipped_constructs"):
+                last = crashed[-1].strip().splitlines()[-1]
+                crashes.setdefault(cond, []).append(f"{pid}: {last}")
+                continue
             declines.setdefault(cond, []).append(f"{pid}: {failed or rec.get('skipped_constructs') or 'declined'}")
         for cond, items in sorted(declines.items()):
             print(f"  {cond} declined {len(items)}: {items[0][:90]}" + (" ..." if len(items) > 1 else ""))
+        for cond, items in sorted(crashes.items()):
+            print(f"  {cond} CRASHED {len(items)} (a bug, not a decline): {items[0][:160]}"
+                  + (" ..." if len(items) > 1 else ""))
+        if crashes:
+            print(f"  !! {sum(len(v) for v in crashes.values())} cell(s) crashed -- "
+                  f"fix the exception before reading any coverage number from this build")
 
         if not args.dry_run:
             for cond in args.conditions:

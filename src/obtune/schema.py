@@ -36,6 +36,9 @@ CompositeCondition = Literal[
     "C_L1r_S1", "C_S1_L1r", "C_L1b_S1", "C_L2_S4", "C_L1r_S3", "C_S4_S3",
     # depth 3 / 4 (RQ-C, 2026-09-07) -- see conditions_composite.yaml
     "C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4", "C4_L1r_S1_S3_S4",
+    # F2, the divergence ladder (2026-09-11): stacks containing the UNSEEN family. X1 is the
+    # component, never H1 -- H1's read budget is spent and CLAUDE.md 3.1 forbids stacking it.
+    "C_L1r_X1", "C_X1_S1", "C_S2_X1", "C_L1r_X1m", "C_S1_X1s", "C3_L1r_S1_X1",
 ]
 
 #: Anything that may appear as a variant/eval label, ladder or composite.

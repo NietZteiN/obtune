@@ -133,3 +133,83 @@ composite_conditions:
     trainable: true
     size_cap: 18.0
     size_cap_floor_chars: 2200
+
+  # --- F2: the divergence ladder (2026-09-11) ----------------------------------------------
+  # Every stack above is built from transforms the trainable arms have SEEN. RQ1's closing
+  # claim ("failures worsen as the stack diverges from training") and RQ4's headline ("stacks
+  # containing unseen transformation families") have no stimulus at all without a stack that
+  # contains an unseen component, so these six add one.
+  #
+  # THE UNSEEN COMPONENT IS X1, NEVER H1. H1's two-read budget is spent (CLAUDE.md §3.2) and
+  # rule 3 forbids using it to select or rank anything; X1 is the trainable sibling built for
+  # exactly this, reproducing H1's level at r = 0.9992 on arms trained on neither. Stacking H1
+  # would also violate §3.1's "never stacked" line, which X1 does not, because X1 lives in its
+  # own namespace outside the ladder's transfer matrix just as these composites do.
+  #
+  # SIZE CAPS ARE CALIBRATED, NOT GUESSED — see the header. X1 is the growth stage here (its
+  # own cap is 12.0 against S1's 6.0), and it runs LAST in four of the six, so it expands
+  # material the earlier stage already expanded. The caps below are set from a 40-program
+  # calibration build at cap 60.0 (so nothing was clipped while measuring), set to p95 x 1.25
+  # rounded up to the next 2.0. A cap must never be the binding constraint on a program the
+  # transform can legitimately handle -- a too-tight cap silently selects for short programs.
+  # Measured ratios (n = programs that built AND passed the gate, of 40 sampled with seed 17):
+  #   C_L1r_X1     33/40  median 4.27  p95  6.72  max  9.74  -> 10.0
+  #   C_X1_S1      26/40  median 6.48  p95  9.34  max  9.41  -> 12.0
+  #   C_S2_X1      40/40  median 7.97  p95 17.07  max 20.04  -> 22.0
+  #   C_L1r_X1m    29/40  median 3.83  p95  6.78  max  9.53  -> 10.0
+  #   C_S1_X1s     30/40  median 7.05  p95 10.23  max 12.93  -> 14.0
+  #   C3_L1r_S1_X1 30/40  median 8.39  p95 12.21  max 14.61  -> 16.0
+  # Common subset across all six: 23/40 (57.5%). The binding constraint is X1's own site bar
+  # (>= 3 mba+string sites), not the caps, which is why C_L1r_X1m -- the MBA-only half -- is the
+  # scarcest: 11 of 40 programs have too few sites.
+  # TRUNCATION (CLAUDE.md 4, item 8). Token lengths on CodeLlama's tokenizer: medians 515-1130,
+  # p90 703-1417, and 3 of 188 built cells exceed 1800 tokens against a 2048 max_seq_len.
+  # C_S2_X1 is the long one by construction -- S2 emits dead code and X1 then encodes that too.
+  # ~2% is reported, not capped away, for the reason in the paragraph above.
+  C_L1r_X1:
+    parts: [L1r, X1]
+    family: composite
+    trainable: true
+    size_cap: 10.0
+    size_cap_floor_chars: 1400
+
+  # X1 FIRST, then structural: the only ordering where the unseen material is itself flattened.
+  C_X1_S1:
+    parts: [X1, S1]
+    family: composite
+    trainable: true
+    size_cap: 12.0
+    size_cap_floor_chars: 1800
+
+  # S2 emits inert material; X1 then encodes it too, so this is the "unseen family applied to
+  # dead code" cell.
+  C_S2_X1:
+    parts: [S2, X1]
+    family: composite
+    trainable: true
+    size_cap: 22.0
+    size_cap_floor_chars: 1800
+
+  # Single-mechanism unseen halves (E6's ablation carried into a stack): does a stack with HALF
+  # an unseen family sit between the seen stacks and the full-X1 ones?
+  C_L1r_X1m:
+    parts: [L1r, X1m]
+    family: composite
+    trainable: true
+    size_cap: 10.0
+    size_cap_floor_chars: 1400
+
+  C_S1_X1s:
+    parts: [S1, X1s]
+    family: composite
+    trainable: true
+    size_cap: 14.0
+    size_cap_floor_chars: 1800
+
+  # d3: one unseen component at depth three.
+  C3_L1r_S1_X1:
+    parts: [L1r, S1, X1]
+    family: composite
+    trainable: true
+    size_cap: 16.0
+    size_cap_floor_chars: 2200
