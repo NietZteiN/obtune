@@ -35,6 +35,8 @@ The six **unseen-containing** composites are complete for all eight (done 2026-0
 
 *Live as of the last regeneration; re-derive with `scripts/paper/coverage_matrix.py` and `squeue`.*
 
+> **Advancing P1 is one command:** `python scripts/merge/build_ready_merges.py --submit` checkpoint-selects any specialist that has finished training and merges any model whose five are selected. It is readiness-driven rather than dependency-chained, because chaining five merges behind five trainings across seven models is 35 edges maintained by hand.
+
 | work | running | pending | note |
 |---|---|---|---|
 | reverse task | 0 | 7 | |
@@ -86,11 +88,12 @@ nothing to route between or merge. Measured cost, per model, for all five:
 | # | experiment | cost |
 |---|---|---|
 | **C5** | 5 specialists × 7 models | **30 GPU-h** |
-| **C6** | TIES / DARE-TIES / DARE-linear / two L0-anchored merges, 7 models — CPU from C5's weights | **0** |
+| **C5b** | **checkpoint-select each specialist.** *Missing from the first version of this plan:* training leaves `checkpoint-*/` and `final/`, not `best/`, and `merge_adapters.py` defaults to `best`. Every merge would have failed on a missing path. ~6 min GPU each, 35 adapters | **~3.5 GPU-h** |
+| **C6** | TIES / DARE-TIES / DARE-linear / two L0-anchored merges, 7 models — CPU from C5b's weights | **0** |
 | **C7** | routing gate × 7 models, then the routing arms | **~7.5 GPU-h** |
 | **C8** | evaluate C5–C7 on all conditions + stacks | **~10 GPU-h** |
 
-**P1 total ≈ 48 GPU-h.** This is the price of "routing, merging and breadth on all models".
+**P1 total ≈ 51 GPU-h** (48 + the checkpoint-select stage C5b, which the first version of this plan omitted). This is the price of "routing, merging and breadth on all models".
 
 > **Recommendation: do P1 on a 3-model subset first** — Llama-3.1-8B, StarCoder2-15B and
 > Granite-3.1-8B (2.5 + 3.6 + 3.5 = **9.6 GPU-h** of training). They span three lineages and
