@@ -1699,3 +1699,30 @@ order positive → **weakest-link**; anything else → **undecided**, reported a
   mechanism reading. A null there is therefore weak evidence; a positive there is strong.
 - `str_only` has **51 programs**. H-E6-surface-b is underpowered and a null there means little.
 - So neither sub-rule is decisive alone, and the verdict mapping requires both.
+
+### Addendum to the F2 pre-registration, added 2026-09-11 BEFORE any `f2_divergence` cell existed
+
+Added after the four new panel models were read and before the F2 eval produced anything (verified:
+`results/cells/f2_divergence` did not exist when this was written).
+
+**F2 runs on CodeLlama-7b alone, and the panel has just shown that the claims F2 tests are
+model-dependent.** R2 (anchoring removes breadth's unseen-family tax) replicated on 2 of 4 new
+models, was inconclusive on 1 and was **refuted** on Granite; R3 (no clean-code tax) held on 1 of 4.
+When F2 was designed on 2026-09-09 the record was four Meta-lineage models agreeing, and a
+single-model divergence read looked like a reasonable basis for RQ4. It is a weaker basis than that
+now.
+
+This does not change any rule above — changing a rule after seeing an adjacent result is exactly
+what pre-registration forbids. It changes what the *result* is allowed to say:
+
+- A CONFIRMED H-F2-cons-no-tax on CodeLlama-7b licenses **"on the model where the anchoring
+  objective was developed, the advantage survives an unseen component in the stack"** — not "the
+  objective is robust". The scope qualifier goes in the sentence, not a footnote.
+- A REFUTED one is **stronger** evidence than a confirmation, because it fails on the model most
+  favourable to the claim.
+- Either way, the paper's RQ4 sentence needs the divergence read on **at least one non-Meta-lineage
+  model** before it generalises. StarCoder2 is the candidate: it replicated all three panel results
+  and is the model the untuned gate wrongly rejected. Its `tuned_X1` and `mono_allX` arms do not
+  exist yet, so this is a cost (~2 training runs + 1 eval), not a free extension.
+
+Recorded now so that a single-model CONFIRMED cannot later be written up as a general claim.
