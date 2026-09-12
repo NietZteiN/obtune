@@ -31,9 +31,27 @@ Coverage by *condition*: the six-rung ladder and the held-out family (X1) are co
 models. The six **seen** depth-2 composites and the depth-3/4 stacks exist for CodeLlama-7B only.
 The six **unseen-containing** composites are complete for all eight (done 2026-09-12).
 
+## In flight right now
+
+*Live as of the last regeneration; re-derive with `scripts/paper/coverage_matrix.py` and `squeue`.*
+
+| work | running | pending | note |
+|---|---|---|---|
+| reverse task | 0 | 7 | |
+| in-context (1-shot) | 0 | 7 | |
+| seen composites | 0 | 2 | |
+| routing / merging (F1) | 0 | 2 | |
+| specialist training | 1 | 0 | |
+| analysis | 0 | 1 | |
+
+**25 manifests** still waiting in `runs/manifest/queued/`. A feeder keeps obtune's two slots in the
+shared QOS pool full and tops up the uncapped partition, so these drain without hand-submitting.
+
 ---
 
 ## P0 — evaluation only, no training, completes most of the requested table
+
+**Status: submitted in full, draining.** C3 has already produced RQ1's headline — the seen/unseen stack dissociation is now significant on **6 of 6 models across four lineages** (`log/transfer/2026-09-12b_stack-dissociation-six-models.md`), which was readable on one model before these grids landed.
 
 | # | experiment | what it adds | cost |
 |---|---|---|---|
@@ -48,6 +66,8 @@ merging and ICL on the seven models that have no specialists.
 ---
 
 ## P1 — the training that routing and merging on all models actually requires
+
+**Status: started on the three-model subset.** Two specialists trained (`granite31-8b`, `llama31-8b` — L1b), 13 queued. Measured cost is coming in **below** the estimate below: 22-31 min per adapter against the 30-42 min implied, so the three-model subset looks like ~8 GPU-h rather than 9.6.
 
 Routing and merging are *built from* the five per-condition specialists. Without them there is
 nothing to route between or merge. Measured cost, per model, for all five:

@@ -1,0 +1,25 @@
+{
+  "job_id": "tr_L1b_llama31-8b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_L1b_panel.yaml",
+    "--model",
+    "llama31-8b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 200,
+  "meta": {
+    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  },
+  "slurm": {
+    "job_id": "391514",
+    "node": "g-07-08",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T18:39:49.381445+00:00"
+  }
+}
