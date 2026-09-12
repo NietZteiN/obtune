@@ -755,6 +755,24 @@ def run_cell(
     else:
         adapters = [system.adapter] * len(items)
 
+    # A NAMED ADAPTER THAT IS NOT ON DISK IS A HARD ERROR, not a metadata note. Until 2026-09-11
+    # a bad path fell through to generation: the engine has no adapter to apply, so the cell
+    # silently measures the BASE model and files it under the arm's name, with the only trace a
+    # literal "missing" in `adapter_sha256`. That is CLAUDE.md 4's silent-failure #2 ("adapter not
+    # applied") reaching results. It was caught by hand on f2_divergence.yaml, where
+    # `merge_dare_ties` pointed at `.../merge_dare_ties_r32_s17/best` -- merges have no training
+    # run and therefore no checkpoint subdirectory, so the weights sit at the directory itself.
+    # Failing here costs one queue slot; not failing costs a published number that is the base
+    # model wearing another arm's label.
+    for _a in sorted({a for a in adapters if a}):
+        _p = resolve_path(_a)
+        if not (_p / "adapter_model.safetensors").exists() and not (_p / "adapter_model.bin").exists():
+            raise FileNotFoundError(
+                f"system '{system.name}': no adapter weights at {_p}. The cell would have "
+                f"evaluated the BASE model under this system's name. Check the config's adapter "
+                f"path -- a merge has no 'best/' subdirectory, a trained adapter does."
+            )
+
     t0 = time.time()
     outs, ntoks = engine.generate(texts, cfg.get("sampling", {}), adapters)
     elapsed = time.time() - t0

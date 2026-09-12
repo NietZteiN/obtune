@@ -45,7 +45,10 @@ systems:
   - {name: mono_allX, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2-X1_r32_s17/best", arch: per_type, train_cond: mixX}
   # The single-structural control the depth-2 and depth-3 runs both carried, kept for comparability.
   - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
-  - {name: merge_dare_ties, adapter: "runs/adapters/{model}/{language}/merge_dare_ties_r32_s17/best", arch: per_type, train_cond: merge}
+  # NO `/best` HERE. A merge has no training run and therefore no checkpoints -- the adapter
+  # weights sit at the directory itself. `h1_confirm_codellama.yaml` addresses l0merge the
+  # same way. Pointing at `best/` resolves to nothing and the arm is silently skipped.
+  - {name: merge_dare_ties, adapter: "runs/adapters/{model}/{language}/merge_dare_ties_r32_s17", arch: per_type, train_cond: merge}
   - {name: x1_resample, adapter: "runs/adapters_objectives/{model}/{language}/X1_r32_s17/best", arch: obj_resample, train_cond: X1}
 
 eval_conditions: [C_L1r_X1, C_X1_S1, C_S2_X1, C_L1r_X1m, C_S1_X1s, C3_L1r_S1_X1]
