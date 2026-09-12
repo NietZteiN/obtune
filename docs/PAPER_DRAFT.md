@@ -275,9 +275,14 @@ measurement.
   gate scored 0.0000 and would have rejected. Dropping it would have made the lineage pattern look
   *cleaner* and be *more wrong*.
 
-❑ **Gap.** The consistency arm sees two views per row; no compute-matched control exists (F4,
-`cons_lam0` — paired SFT without the KL term — is specified and would separate the objective from
-the extra exposure).
+~~❑ **Gap.** The consistency arm sees two views per row; no compute-matched control exists (F4).~~
+**Struck 2026-09-12: the gap was written on a false premise.** The student never sees two views —
+with λ = 0 the loss returns `outputs.loss` unchanged, the collator pops the teacher's tokens before
+the batch reaches the student, and the teacher runs under `no_grad` on its own device. Both arms
+train on **26,841 rows / 1,257 steps**, and a λ = 0 run tracks `mono_all`'s logged losses to 3
+significant figures. **`cons_lam0` *is* `mono_all`**, which is already the data-matched control in
+every comparison here. The question F4 meant to ask — *is it the KL or the teacher?* — is the
+teacher ablation above, and it is answered.
 
 ## 8. §6 RQ4 — is it robustness, or a better surface heuristic?
 

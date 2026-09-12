@@ -335,7 +335,7 @@ proxy.
 | **F2** | RQ1 divergence gradient · RQ4 unseen-in-stack | build 6 composites containing X1/X1m/X1s; evaluate 10 systems | none | ~1.5 h | ~0.5 h |
 | **F1** | RQ1 routing + merging on stacks | 4 MoLE arms, 5 merges, 3 specialists on the 10 existing composites; router decision dump | none | ~2 h | — |
 | **F3** | RQ2 "stacking destroys the cue" | analysis over F1's specialist cells + cue-survival regex; **F3a** closes H-stack-identifier from existing JSON | none | — | ~2 h |
-| **F4** | RQ3 compute-matched control | `cons_lam0` (paired SFT, λ = 0) at 7B; 3 seeds if the first clears | 3 × 4.4 h | ~14 h | — |
+| ~~**F4**~~ | ~~RQ3 compute-matched control~~ | **STRUCK 2026-09-12 — `cons_lam0` *is* `mono_all`; the premise ("two views per row") is false. See `log/transfer/2026-09-12_f4-is-vacuous-as-specified.md`.** | none | **0** | — |
 | **F5** | RQ4 surface-perturbation | X1 + two X1 composites rebuilt at obfuscation seeds 101/202/303; 6 systems | none | ~1 h | ~1 h |
 | **F1b** | RQ1 merging mechanism | task-vector geometry on CodeLlama-7b, cross-seed and same-seed banks | none | — | ~1 h |
 | **F7** | RQ4 reverse task at scale | inverse eval for base/`tuned_L0`/`mono_all`/`cons_lam3` at 13B and 34B | none | ~2.5 h | — |
@@ -344,7 +344,8 @@ proxy.
 
 **Order.** F2 first — it is the cheapest experiment and the one both RQ1's last sentence and RQ4's
 headline depend on. F1 second (eval-only). F3/F3a/F1b are CPU work that runs while GPU jobs queue.
-F4 is the one new training arm the paper cannot go out without. F5, F7, F8 harden; F6 stays
+~~F4 is the one new training arm the paper cannot go out without.~~ **F4 is struck (2026-09-12): its
+premise was false and `cons_lam0` is `mono_all`.** F5, F7, F8 harden; F6 stays
 design-gated. Total: **~22 GPU-h without F8/F6, ~37 GPU-h with** — a week of submit-and-return at
 current `h200` queue behaviour.
 
@@ -452,7 +453,16 @@ against +6.10* on `C3_L1r_S1_S4` and +5.17* on the depth-4 stack. The rule as op
 if structural-only stacks show no breadth gain at depth 3") is met; write the read and move the
 hypothesis to resolved. No compute.
 
-### F4. Compute-matched control for anchoring — is it the KL or the second view?
+### ~~F4. Compute-matched control for anchoring~~ — **STRUCK 2026-09-12, premise false**
+> `cons_lam0` is `mono_all`: with λ = 0 the loss returns unchanged, the collator pops the
+> teacher's tokens before the student's forward, and the teacher runs under `no_grad` — the
+> student never sees the parent view. Both arms train on 26,841 rows / 1,257 steps and a λ = 0
+> run matches `mono_all`'s losses to 3 s.f. 13 GPU-h not spent; the question it meant to ask is
+> answered by **E4** (teacher variation). Full account:
+> [`log/transfer/2026-09-12_f4-is-vacuous-as-specified.md`](../log/transfer/2026-09-12_f4-is-vacuous-as-specified.md).
+> The original specification is kept below, unaltered, as the record of what was planned.
+
+#### (original specification, superseded)
 **Question.** `cons_lam3` sees two views per row (the obfuscated input and the clean parent through
 the teacher). Nothing has matched that budget without the KL term, so "gains stem from the clean-code
 anchor" has a teacher ablation (E4) and a view ablation (`cons_same`) but no *data-exposure* control.
@@ -499,7 +509,7 @@ scales; **H-F7-vs-sft** — CONFIRMED iff `cons_lam3 − tuned_L0` @ obf ci_lo >
 ### F8. Second seed at 13B
 `cons_lam3_s42` and `mono_all_s42` at 13B (6.5 h + 5.2 h). Turns the 13B column of RQ3 from one draw
 into a band. Rule: `cons_lam3 − mono_all` @ X1 ci_lo > 0 at s42 (H-E3 at a second seed).
-**~13 GPU-h**; run only after F2/F1/F4 are queued.
+**~13 GPU-h**; run only after F2/F1 are queued (F4 is struck).
 
 ### F9. Analysis-only closures (no compute)
 - Depth-3 structural-only breadth gain → H-stack-identifier resolved (F3a).
@@ -547,6 +557,17 @@ and, like X1, are never pooled with H1 or compared to it.
 ---
 
 ## Changelog
+- **2026-09-12** — **F4 STRUCK, premise false.** It was the plan's one blocking training arm, costed
+  at 13 GPU-h, on the premise that "the consistency arm sees two views per row". The student never
+  sees two views: with λ = 0 `objectives.py` returns `outputs.loss` unchanged, the collator pops the
+  teacher's tokens before the student's forward, and the teacher runs under `no_grad`. Both arms
+  train on **26,841 rows / 1,257 steps**, and a λ = 0 run tracks `mono_all`'s logged losses to 3
+  significant figures — so **`cons_lam0` *is* `mono_all`**, already the data-matched control in
+  every comparison. The question F4 meant to ask is answered by **E4**. Also: **F2 ran** (six
+  composites containing the unseen family, five rules pre-registered) and **the divergence ladder
+  reached four models for the cost of evaluation alone**, because every arm its rules need already
+  existed. See `log/transfer/2026-09-12_f4-is-vacuous-as-specified.md` and
+  `log/transfer/2026-09-11_f2-divergence-ladder.md`.
 - **2026-09-09 (b)** — Scope: no Chinese-origin models. F10 (panel extension, five non-Chinese models
   across three lineages + a pretrained checkpoint) and F11 (evaluation-only dataset additions D1–D5) added.
 - **2026-09-09 (RQ1–RQ4 plan)** — §7 added: experiments **F1–F9** for the four-RQ framing in
