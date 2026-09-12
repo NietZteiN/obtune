@@ -1,0 +1,265 @@
+% ---------------------------------------------------------------------------------------
+% obtune -- "Does fine-tuning teach semantic invariance?" -- FSE research-track draft v0.1
+%
+% 2026-09-12. STATUS: SKELETON. Argument is committed; several claims are still \slot.
+%
+% HOUSE RULE, inherited from paper_modularity/main.tex: NO NUMBER IS TYPED INTO THIS FILE.
+% Every table under tables/ is emitted by scripts/paper/gen_tables.py from a JSON under
+% results/analysis/, which is itself computed from the per-cell parquets in results/cells/.
+% MASTER_REPORT.md and docs/ are an index of where to look, NOT a source; where a report and
+% a result file disagree, the file wins. Regenerate with:
+%     python scripts/paper/gen_tables.py
+%
+% TWO MACROS CARRY THE DRAFT STATE:
+%   \pending -- a result that does not exist yet. NEVER replace with a plausible value.
+%   \slot    -- a place where the argument needs a claim we have not earned yet.
+% `grep -c 'pending\|slot' main.tex tables/*.tex` is the submission checklist; both reach zero.
+%
+% THREE THINGS THIS PAPER MUST NOT CLAIM, enforced by review against docs/PAPER_DRAFT.md 12:
+%   1. that merging fails through task-vector interference  -- refuted, Table \ref{tab:geom}
+%   2. that anchoring pays no clean-code cost               -- 5 of 8 models, Table \ref{tab:panel}
+%   3. anything causal about model lineage                  -- n=8, p=0.07 at best, confounded
+% ---------------------------------------------------------------------------------------
+
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+\acmConference[FSE '27]{Under review}{}{}
+\setcopyright{none}
+
+% acmart already loads booktabs, amsmath and newtxmath; adding amssymb here collides with
+% newtxmath on \Bbbk and halts the engine. Do not re-add it.
+\usepackage{xcolor}
+
+% --- draft-state macros ---------------------------------------------------------------
+\newcommand{\pending}{\textcolor{gray}{\textit{--}}}
+\newcommand{\slot}[1]{\textbf{[CLAIM SLOT: #1]}}
+
+% --- verdict marks used inside the generated tables ------------------------------------
+% NB: these are \vok/\vrefuted/\vinc, NOT \ok/\ref/\inc. `\ref` is LaTeX's cross-reference
+% command; redefining it makes every \ref{tab:...} in the prose render as a verdict mark.
+\newcommand{\vok}{\textsuperscript{\checkmark}}
+\newcommand{\vrefuted}{\textsuperscript{\texttimes}}
+\newcommand{\vinc}{\textsuperscript{$\circ$}}
+
+\begin{document}
+
+\title{Does fine-tuning teach semantic invariance?\\
+       Composition, anchoring, and what adaptation to obfuscated code actually learns}
+
+\author{Anonymous Author(s)}
+\affiliation{\institution{Under review}\country{}}
+
+\begin{abstract}
+Fine-tuning a code model on obfuscated programs raises its accuracy on those programs. We ask
+whether that buys \emph{invariance} to meaning-preserving transformation or merely
+\emph{memorisation} of the transforms seen in training, and we separate the two by never training
+or evaluating on recovery: every evaluation is on code that stays obfuscated.
+
+Across \textbf{eight models spanning four lineages} we find a dissociation that single-lineage
+evaluation hides. Training on a \emph{breadth} of transforms composes on stacks built from those
+same transforms, and pays a measurable tax on a held-out transform family --- a tax whose sign is
+the same on every model we tested, with no contradiction. A paired-consistency objective that
+anchors the model's answer distribution to its own behaviour on the unobfuscated parent removes
+that tax on six of eight models, and \emph{reverses} on one. Its clean-code cost is likewise
+model-dependent, holding on five of eight.
+
+We then build the stimulus the question needs and that the literature lacks: stacks that contain a
+transform family the model has never seen. Breadth's advantage flips sign the moment such a
+component enters, while anchoring rises above the clean-code control. That flip is not uniform:
+it is concentrated in stacks that leave the model no identifier surface to key on, which we
+establish with a rule fixed before the stimulus existed. \slot{one-sentence takeaway once the
+out-of-sample divergence reads complete}
+\end{abstract}
+
+\maketitle
+
+% =======================================================================================
+\section{Introduction}
+\slot{the five moves, from docs/PAPER_DRAFT.md 3}
+
+The paper's separation from the DOBF lineage is a design decision rather than a framing: we never
+train or evaluate on deobfuscation. Evaluation is always output prediction over code that remains
+obfuscated, so what we measure is semantic competence \emph{under} transformation and not the
+ability to undo it.
+
+% =======================================================================================
+\section{Setup}
+\label{sec:setup}
+
+\paragraph{Condition ladder.} Conditions are \textbf{single-transform from the clean parent, never
+stacked}, with identical semantics in Python and JavaScript: identifier-level (adversarial
+renaming, random renaming, sequential minification) and structural (control-flow flattening, opaque
+predicates with dead code). A held-out family --- string encoding plus guarded mixed
+boolean-arithmetic rewriting --- is never trained on. Because its evaluation budget is spent, every
+held-out number in this paper is measured on \textbf{X1}, a trainable sibling built from a
+different surface scheme that reproduces the held-out family's difficulty level
+($r=0.9992$).\footnote{The sibling's calibration and the quarantine discipline behind it are in the
+supplement; no number here reads the quarantined family.}
+
+\paragraph{Systems.} \textsc{clean} tunes on the unobfuscated parent only. \textsc{mono} tunes on
+the breadth of all six ladder conditions. \textsc{cons} adds a paired-consistency term,
+\[
+\mathcal{L} = \mathrm{CE}(y \mid x_{\text{obf}})
+  + \lambda\,\mathrm{KL}\!\left(p_{T}(\cdot \mid x_{\text{parent}}) \,\|\, p_{S}(\cdot \mid x_{\text{obf}})\right)
+\]
+at answer tokens, where $T$ is a \emph{frozen clean-code-tuned} adapter reading the unobfuscated
+parent of the same program and case. \textsc{fam} tunes on the held-out family's sibling.
+\textbf{\textsc{mono} is the exact data-matched control for \textsc{cons}}: both train on the same
+26{,}841 rows for the same 1{,}257 steps, and with $\lambda=0$ the objective reduces to
+\textsc{mono} identically --- the student never sees the parent view, only the frozen teacher does.
+
+\paragraph{Statistics.} Every contrast is a program-clustered bootstrap (2{,}000 resamples, seed
+17); programs rather than items are the resampling unit because one program contributes several
+correlated input cases. Intervals are 95\%. Coverage differs by condition, so every contrast runs
+on a common subset of programs \textbf{recorded before any system is evaluated}.
+
+% =======================================================================================
+\section{The measurement, before the results}
+\label{sec:grid}
+
+All eight models are read from a single evaluation phase with one configuration. That configuration
+is newer than the four models published earlier, so before reading it we recompute each of those
+models' previously published contrasts through it and ask whether the published point falls
+\emph{inside} the new interval --- whether the two are the same measurement, not whether they round
+alike.
+
+\begin{table}[t]\centering\small
+\caption{The uniform grid reproduces every previously published value it was checked against, so a
+departure in Table~\ref{tab:panel} is a property of the model and not of the configuration.}
+\label{tab:grid}
+\input{tables/grid_agreement}
+\end{table}
+
+% =======================================================================================
+\section{RQ1 --- Does single-transform adaptation compose?}
+\label{sec:rq1}
+
+\slot{routing and merging results on stacks, from the modularity thread}
+
+Weight-space merging fails, and we report that failure \textbf{without} the mechanism usually
+offered for it. The adapters a merge is built from are the \emph{most} aligned and \emph{least}
+conflicting bank we measured, and merging them still loses to them --- a mechanism predicting
+cancellation cannot explain a failure that occurs where cancellation is lowest. What dominates the
+geometry is not the task but the seed.
+
+\begin{table}[t]\centering\small
+\caption{Task-vector geometry. Varying the \emph{seed} alone moves the update direction far more
+than varying the \emph{condition} does.}
+\label{tab:geom}
+\input{tables/geometry}
+\end{table}
+
+% =======================================================================================
+\section{RQ2 --- What is learned, and why it does not compose}
+\label{sec:rq2}
+
+\slot{the five instruments, from docs/PAPER_DRAFT.md 6}
+
+Breadth's advantage on a stack depends on the stack containing an \textbf{identifier} transform.
+We establish this as a difference rather than as an ordering, because one interval excluding zero
+while another does not is not a test of the difference between them.
+
+\begin{table}[t]\centering\small
+\caption{Breadth's gain over the clean-code control, per composite, on stacks containing the
+held-out family; and the identifier-versus-structural difference on two independent stimulus sets.
+The rule defining the split was fixed \textbf{before} the unseen-containing stimulus existed.}
+\label{tab:split}
+\input{tables/identifier_split}
+\end{table}
+
+\paragraph{What we do not claim.} That structural transforms contribute nothing: the established
+quantity is the \emph{difference} between the groups. And that what transfers within a family is
+its surface scaffolding --- the test that discriminates the surface reading from a weakest-link
+reading returned \textsc{undecided} on every one of its three pre-registered rules.
+
+% =======================================================================================
+\section{RQ3 --- Anchoring to clean-code behaviour}
+\label{sec:rq3}
+
+\begin{table*}[t]\centering\small
+\caption{Eight models, four lineages, one evaluation phase. \vok\ replicated, \vinc\ inconclusive,
+\vrefuted\ refuted. Bold intervals exclude zero.}
+\label{tab:panel}
+\input{tables/panel_replication}
+\end{table*}
+
+Three readings, at the strength the panel supports.
+
+\paragraph{The breadth tax is the robust one.} Its sign is the same on \emph{every} model, six
+significantly and none contradicting, across four lineages and 7B--34B.
+
+\paragraph{Anchoring's repair is conditional.} It holds on six models and \textbf{reverses} on one,
+where the anchored arm is worse than breadth on the held-out family. We name that model rather than
+relegating it.
+
+\paragraph{The clean-code claim is conditional too.} ``Anchoring pays no clean-code cost'' holds on
+five of eight. It was discovered on four models of one lineage and holds on all four of them.
+
+\paragraph{A warning, not a result.} Every failure above falls outside the lineage the findings were
+discovered on, and all three are four-of-four inside it. We report this as a \emph{methodological}
+warning and not as a claim about lineages: Fisher's exact on the sharpest split gives $p=0.0714$
+one-sided with $n=8$ models, and the two models of one vendor both account for failures of the same
+finding, so vendor and lineage are perfectly confounded. The strongest non-lineage model in the
+panel is also the one an untuned capability screen scored at zero and would have discarded ---
+removing it would have made this pattern look \emph{cleaner} and be \emph{more wrong}.
+
+% =======================================================================================
+\section{RQ4 --- Robustness, or a better surface heuristic?}
+\label{sec:rq4}
+
+Every composite stimulus in the prior literature, and in our own earlier work, is built from
+transforms the model has seen. The question RQ4 asks cannot be answered with such a stimulus. We
+build six composites that each contain a component from the held-out family, fix the program subset
+and five decision rules in advance, and commit \textbf{both} readings of the outcome before running.
+
+\begin{table}[t]\centering\small
+\caption{The divergence ladder. Breadth's gain flips sign once the stack contains a family the
+model has never seen; anchoring rises above the clean-code control.}
+\label{tab:ladder}
+\input{tables/divergence_ladder}
+\end{table}
+
+\paragraph{The pre-registered verdict is \textsc{undecided}.} The mapping required \emph{both} that
+anchoring hold \emph{and} that breadth fall below the clean-code control; only the first is
+established, because the pooled interval at the critical level spans zero. We report that verdict
+first.
+
+\paragraph{What is established is stronger than ``no cost''.} On stacks containing an unseen family
+the anchored arm is significantly above the clean-code control \emph{and} significantly above
+breadth. Read against seen stacks, where it merely matches breadth, the statement is that
+\textbf{anchoring's advantage appears only once the input diverges from what breadth was trained
+on}.
+
+\paragraph{And breadth's collapse is not uniform.} The pooled figure averages significantly negative
+cells with a significantly positive one, split by identifier content (Table~\ref{tab:split}).
+
+\begin{table}[t]\centering\small
+\caption{The divergence result across models, at the critical level. \pending\ marks a read that
+does not exist yet.}
+\label{tab:divmodels}
+\input{tables/divergence_by_model}
+\end{table}
+
+\paragraph{Scope, in the sentence rather than a footnote.} \slot{final cross-model statement, once
+the remaining divergence reads land}
+
+% =======================================================================================
+\section{Threats to validity}
+\slot{from docs/PAPER_DRAFT.md 9}
+
+\paragraph{Instrument failures we report rather than omit.} The causal attention instrument is
+inert: an identifier knockout moves gold log-probability by under 0.5\% for every arm on every
+condition, and both of its pre-registered hypotheses were refuted. The attention account is
+therefore correlational and is labelled as such.
+
+% =======================================================================================
+\section{Related work}
+\slot{from docs/PAPER_DRAFT.md 10}
+
+\section{Conclusion}
+\slot{once RQ4's cross-model statement is final}
+
+\end{document}
