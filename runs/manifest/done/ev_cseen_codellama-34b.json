@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_cseen_llama31-8b",
+  "job_id": "ev_cseen_codellama-34b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,14 +7,21 @@
     "--config",
     "eval/composite_seen_core.yaml",
     "--model",
-    "llama31-8b",
+    "codellama-34b",
     "--language",
     "python"
   ],
   "raw": false,
   "est_gpu_h": 0.6,
-  "priority": 114,
+  "priority": 113,
   "meta": {
     "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  },
+  "slurm": {
+    "job_id": "391385",
+    "node": "g-08-05",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T16:54:40.152763+00:00"
   }
 }

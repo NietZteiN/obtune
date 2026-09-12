@@ -49,6 +49,10 @@ CELLS = ROOT / "results" / "cells"
 SINGLE = ["L1b", "L1r", "L2", "S1", "S2"]
 CORE = ["L0"] + SINGLE + ["X1", "H1"]
 COMP = ["C_L1b_S1", "C_L1r_S1", "C_S1_L1r", "C_L2_S4", "C_L1r_S3", "C_S4_S3"]
+#: Stacks that CONTAIN the unseen family (2026-09-11). Kept apart from COMP because the two answer
+#: opposite questions: COMP is "does breadth compose on what it saw", COMP_X1 is "does it compose
+#: when something it never saw is in the stack". Averaging them would hide the sign flip between.
+COMP_X1 = ["C_L1r_X1", "C_X1_S1", "C_S2_X1", "C_L1r_X1m", "C_S1_X1s", "C3_L1r_S1_X1"]
 EXTRA = ["S3", "S4", "X1m", "X1s", "X2", "Y2",
          "C3_L1r_S1_S4", "C3_L1r_S3_S4", "C3_S1_S3_S4", "C4_L1r_S1_S3_S4",
          "T_L0", "T_L1", "T_L1b", "T_L2", "T_L3"]
@@ -189,10 +193,24 @@ def main() -> int:
     panel, dupes = collect()
     out: list[str] = []
 
-    blocks = [("codellama-7b", "python", CORE + COMP, "CodeLlama-7b · Python — the live panel"),
-              ("codellama-13b", "python", CORE + COMP, "CodeLlama-13b · Python"),
-              ("codellama-34b", "python", CORE + COMP, "CodeLlama-34b · Python"),
-              ("llama31-8b", "python", CORE + COMP, "Llama-3.1-8B · Python — the cross-family replicate"),
+    # THE PANEL IS EIGHT MODELS, NOT FOUR. The four added on 2026-09-09 (three further lineages plus
+    # a pretrained checkpoint) had no block here, so the whole-panel table showed the Meta lineage
+    # only -- which is precisely the blind spot the eight-model read exposed. Blocked, never
+    # interleaved: 7B roughly doubles accuracy on every condition, so one row from another scale in
+    # a shared table would be a model effect wearing a system's name.
+    #
+    # UNSEEN-IN-STACK columns (COMP_X1) are new on 2026-09-11 and exist for all eight; the SEEN
+    # composites (COMP) exist for CodeLlama-7b and are being filled for the rest. A condition with
+    # no cells renders as an em dash, so listing them costs nothing and makes the hole visible.
+    blocks = [("codellama-7b", "python", CORE + COMP + COMP_X1, "CodeLlama-7b · Python — the live panel"),
+              ("codellama-13b", "python", CORE + COMP + COMP_X1, "CodeLlama-13b · Python"),
+              ("codellama-34b", "python", CORE + COMP + COMP_X1, "CodeLlama-34b · Python"),
+              ("llama31-8b", "python", CORE + COMP + COMP_X1, "Llama-3.1-8B · Python — the cross-family replicate"),
+              ("starcoder2-15b", "python", CORE + COMP + COMP_X1, "StarCoder2-15B · Python — BigCode lineage"),
+              ("gemma3-12b", "python", CORE + COMP + COMP_X1, "Gemma-3-12B · Python — Google lineage"),
+              ("codegemma-7b", "python", CORE + COMP + COMP_X1, "CodeGemma-7B · Python — Google lineage"),
+              ("granite31-8b", "python", CORE + COMP + COMP_X1, "Granite-3.1-8B · Python — IBM lineage"),
+              ("llama31-8b-base", "python", CORE, "Llama-3.1-8B base · Python — pretrained, one-shot only"),
               ("codellama-7b", "javascript", ["L0"] + SINGLE + COMP,
                "CodeLlama-7b · JavaScript — the cross-language grid (E13)")]
     summaries = {}
