@@ -1,0 +1,108 @@
+{
+ "script": "52_f3a_stack_identifier.py",
+ "stimulus": "depth_seen",
+ "rule_committed": "acfe301, 2026-09-11 19:15:53 -- before f2_divergence's first cell at 20:47, so f2_unseen is out-of-sample for this rule",
+ "generated_utc": "2026-09-12T02:09:48+00:00",
+ "model": "codellama-7b",
+ "n_programs": 394,
+ "n_resamples": 2000,
+ "seed": 17,
+ "groups": {
+  "with_identifier": [
+   "C3_L1r_S3_S4",
+   "C3_L1r_S1_S4",
+   "C4_L1r_S1_S3_S4"
+  ],
+  "structural_only": [
+   "C3_S1_S3_S4"
+  ]
+ },
+ "per_composite": {
+  "C3_L1r_S3_S4": {
+   "label": "mono_all - tuned_L0 @ C3_L1r_S3_S4",
+   "value_pts": 3.7257,
+   "ci_lo": 1.2712,
+   "ci_hi": 6.1017,
+   "n_programs": 394,
+   "n_items": 1181,
+   "acc_treatment": 0.3743,
+   "acc_control": 0.337,
+   "excludes_zero": true,
+   "equivalent": null,
+   "eq_margin_pts": null,
+   "verdict": ""
+  },
+  "C3_L1r_S1_S4": {
+   "label": "mono_all - tuned_L0 @ C3_L1r_S1_S4",
+   "value_pts": 6.0965,
+   "ci_lo": 3.641,
+   "ci_hi": 8.5452,
+   "n_programs": 394,
+   "n_items": 1181,
+   "acc_treatment": 0.3421,
+   "acc_control": 0.2811,
+   "excludes_zero": true,
+   "equivalent": null,
+   "eq_margin_pts": null,
+   "verdict": ""
+  },
+  "C4_L1r_S1_S3_S4": {
+   "label": "mono_all - tuned_L0 @ C4_L1r_S1_S3_S4",
+   "value_pts": 5.1651,
+   "ci_lo": 2.5402,
+   "ci_hi": 7.7122,
+   "n_programs": 394,
+   "n_items": 1181,
+   "acc_treatment": 0.3268,
+   "acc_control": 0.2752,
+   "excludes_zero": true,
+   "equivalent": null,
+   "eq_margin_pts": null,
+   "verdict": ""
+  },
+  "C3_S1_S3_S4": {
+   "label": "mono_all - tuned_L0 @ C3_S1_S3_S4",
+   "value_pts": 1.6088,
+   "ci_lo": -1.019,
+   "ci_hi": 4.2301,
+   "n_programs": 394,
+   "n_items": 1181,
+   "acc_treatment": 0.3683,
+   "acc_control": 0.3522,
+   "excludes_zero": false,
+   "equivalent": null,
+   "eq_margin_pts": null,
+   "verdict": ""
+  }
+ },
+ "pooled": {
+  "with_identifier": {
+   "value_pts": 4.9957662997459735,
+   "ci_lo": 3.0193338978267015,
+   "ci_hi": 6.881843944805726,
+   "excludes_zero": true
+  },
+  "structural_only": {
+   "value_pts": 1.6088060965283646,
+   "ci_lo": -1.0190211936103653,
+   "ci_hi": 4.2301184433164165,
+   "excludes_zero": false
+  },
+  "difference_of_differences": {
+   "value_pts": 3.386960203217609,
+   "ci_lo": 0.8171178793006234,
+   "ci_hi": 6.158192090395481,
+   "excludes_zero": true
+  }
+ },
+ "hypotheses": [
+  {
+   "id": "H-stack-identifier",
+   "rule_as_opened": "CONFIRM if structural-only stacks show no breadth gain at depth 3",
+   "verdict_by_rule_as_opened": "CONFIRMED",
+   "rule_direct": "CONFIRM iff [breadth gain on L1r-containing stacks] - [breadth gain on structural-only] has ci_lo > 0",
+   "verdict_direct": "CONFIRMED",
+   "note": "The direct contrast is the one the claim needs. Where the two disagree, the paper reports the direct verdict and says the rule as opened was weaker."
+  }
+ ]
+}

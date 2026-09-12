@@ -27,6 +27,7 @@ reported beside it, and they are allowed to disagree.
 """
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import json
 import sys
@@ -42,11 +43,35 @@ from cellkit import load_cell  # noqa: E402
 from obtune.control_relative import bootstrap_delta  # noqa: E402
 
 MODEL = "codellama-7b"
-PHASES = ["composite_depth", "composite_generic", "rq2_generic", "x1_generic"]
-WITH_ID = ["C3_L1r_S3_S4", "C3_L1r_S1_S4", "C4_L1r_S1_S3_S4"]
-STRUCT_ONLY = ["C3_S1_S3_S4"]
 TREAT, CONTROL = "mono_all", "tuned_L0"
 N_BOOT, SEED = 2000, 17
+
+# TWO STIMULUS SETS, ONE RULE.
+#
+# `depth_seen` is the original: depth-3/4 composites built entirely from SEEN transforms, three of
+# which contain `L1r` and one of which is structural-only.
+#
+# `f2_unseen` is an OUT-OF-SAMPLE test of the same rule. F2's six composites each contain the
+# unseen family, and the rule being applied -- "breadth's stack gain is larger when an identifier
+# transform is present" -- was committed at 2026-09-11 19:15:53 (`acfe301`), 91 minutes BEFORE
+# F2's first cell was written at 20:47. That ordering is checkable in git and is what makes this a
+# test rather than a description: the hypothesis could not have been shaped by these numbers.
+# `C3_L1r_S1_X1` carries BOTH an identifier and a structural transform, so it belongs to neither
+# group; it is reported beside the contrast and excluded from it.
+STIMULI = {
+    "depth_seen": {
+        "phases": ["composite_depth", "composite_generic", "rq2_generic", "x1_generic"],
+        "with_id": ["C3_L1r_S3_S4", "C3_L1r_S1_S4", "C4_L1r_S1_S3_S4"],
+        "structural": ["C3_S1_S3_S4"],
+        "both": [],
+    },
+    "f2_unseen": {
+        "phases": ["f2_divergence"],
+        "with_id": ["C_L1r_X1", "C_L1r_X1m"],
+        "structural": ["C_X1_S1", "C_S2_X1", "C_S1_X1s"],
+        "both": ["C3_L1r_S1_X1"],
+    },
+}
 
 
 def _by_program(df):
@@ -57,8 +82,15 @@ def _by_program(df):
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--stimulus", choices=sorted(STIMULI), default="depth_seen")
+    a = ap.parse_args()
+    spec = STIMULI[a.stimulus]
+    PHASES, WITH_ID, STRUCT_ONLY = spec["phases"], spec["with_id"], spec["structural"]
+    BOTH = spec["both"]
+
     cells = {}
-    for cond in WITH_ID + STRUCT_ONLY:
+    for cond in WITH_ID + STRUCT_ONLY + BOTH:
         for sysname in (TREAT, CONTROL):
             df = load_cell(PHASES, MODEL, sysname, cond)
             if df is None:
@@ -100,6 +132,9 @@ def main() -> int:
 
     out = {
         "script": "52_f3a_stack_identifier.py",
+        "stimulus": a.stimulus,
+        "rule_committed": ("acfe301, 2026-09-11 19:15:53 -- before f2_divergence's first cell at "
+                           "20:47, so f2_unseen is out-of-sample for this rule"),
         "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "model": MODEL, "n_programs": len(progs),
         "n_resamples": N_BOOT, "seed": SEED,
@@ -107,8 +142,16 @@ def main() -> int:
         "per_composite": {},
         "pooled": {},
     }
-    for cond in WITH_ID + STRUCT_ONLY:
-        c = bootstrap_delta(cells[(TREAT, cond)], cells[(CONTROL, cond)],
+    for cond in WITH_ID + STRUCT_ONLY + BOTH:
+        # ON THE COMMON SUBSET, like the pooled rows. `bootstrap_delta` intersects only the two
+        # cells it is handed, which is each composite's OWN full set -- 405 programs for
+        # `C_L1r_X1` against the 287 every composite shares. Mixing the two in one table is the
+        # exact confound this script's docstring warns about, and on the `depth_seen` stimulus it
+        # was invisible because all four composites happened to share 394 programs anyway. On F2's
+        # composites, whose coverage differs sharply, it moved `C_L1r_X1` from +2.67 to +1.48 and
+        # would have printed per-composite rows that do not add up to the pooled row beneath them.
+        c = bootstrap_delta(cells[(TREAT, cond)][cells[(TREAT, cond)]["snippet_id"].isin(progs)],
+                            cells[(CONTROL, cond)][cells[(CONTROL, cond)]["snippet_id"].isin(progs)],
                             f"{TREAT} - {CONTROL} @ {cond}", n_resamples=N_BOOT, seed=SEED)
         out["per_composite"][cond] = c.to_dict()
 
@@ -125,8 +168,12 @@ def main() -> int:
     }
 
     dd = out["pooled"]["difference_of_differences"]
+    # "The rule as opened" asked only that the structural-only stack show no breadth gain, and it
+    # exists only for the stimulus it was written against. On the out-of-sample set there is no
+    # single structural-only stack, so it is not evaluated there and the DIRECT contrast -- which
+    # is the one the claim needs, and the reason this script exists -- carries the verdict alone.
     rule_as_opened = ("CONFIRMED" if not out["per_composite"]["C3_S1_S3_S4"]["excludes_zero"]
-                      else "REFUTED")
+                      else "REFUTED") if "C3_S1_S3_S4" in out["per_composite"] else "N/A"
     direct = ("CONFIRMED" if dd["ci_lo"] > 0 else
               "REFUTED" if dd["ci_hi"] < 0 else "INCONCLUSIVE")
     out["hypotheses"] = [{
@@ -140,12 +187,13 @@ def main() -> int:
                  "paper reports the direct verdict and says the rule as opened was weaker."),
     }]
 
-    dst = ROOT / "results" / "analysis" / "pipeline" / "f3a_stack_identifier_codellama7b.json"
+    dst = (ROOT / "results" / "analysis" / "pipeline" /
+           f"f3a_stack_identifier_{a.stimulus}_codellama7b.json")
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(json.dumps(out, indent=1))
 
-    print(f"programs common to all 8 cells: {len(progs)}")
-    for cond in WITH_ID + STRUCT_ONLY:
+    print(f"stimulus={a.stimulus}   programs common to every cell: {len(progs)}")
+    for cond in WITH_ID + STRUCT_ONLY + BOTH:
         c = out["per_composite"][cond]
         star = "*" if c["excludes_zero"] else " "
         print(f"  {cond:18s} {c['value_pts']:+6.2f} [{c['ci_lo']:+6.2f}, {c['ci_hi']:+6.2f}]{star}")
