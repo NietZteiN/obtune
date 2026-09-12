@@ -218,11 +218,29 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
                  nodelist: str | None = None, exclude: str | None = None,
                  dependency: str | None = None, qos: str | None = None) -> str:
     command = "python " + " ".join(shlex.quote(a) for a in argv)
+    # See the g-06-01 note below: vLLM hangs there, training does not. Rather than rely on
+    # every future submission remembering, exclude the node automatically for anything that
+    # builds an engine. An explicit --exclude/--nodelist still wins, so the decision can be
+    # revisited deliberately (e.g. after a driver upgrade) without editing this file.
+    if "obtune.eval_vllm" in argv and partition == "h100" and not exclude and not nodelist:
+        exclude = "g-06-01"
     # Node selection is not cosmetic on juno: `h100` is heterogeneous and g-06-01
     # advertises 3g.47gb MIG slices, not whole cards. On 2026-08-28 the alignment
     # lambda-sweep's mismatch control ran 2.03 s/it on g-04-02 and 5.7 s/it on
     # g-06-01, and the lambda=10 cell died at 217/222 steps on walltime -- a result
     # lost to node assignment, which read as a lambda effect. Pin or exclude.
+    #
+    # g-06-01 RUNS TRAINING AND DOES NOT RUN vLLM. Established 2026-09-11 over six jobs:
+    # every non-vLLM job on that node has COMPLETED (three neighbour jobs, plus
+    # tr_llama31-8b_X1 at 22 s/it) and every vLLM job has failed or hung. With the default
+    # fork start method, three checkpoint-selects died at 27-39 min in
+    # `wait_for_engine_startup`. With VLLM_WORKER_MULTIPROC_METHOD=spawn the engine now
+    # CONSTRUCTS -- weights load in 2.3 s and the per-cell telemetry line prints -- and then
+    # `generate()` never returns: 35 min of walltime for 19 s of CPU, node load 0.51, and
+    # ZERO file writes anywhere on disk. So spawn fixed the symptom that was reported and
+    # not the one that matters, and "the engine started" is not evidence the node works.
+    # The auto-exclude below is deliberately narrow: it fires on the eval entry point only,
+    # so training keeps a node it demonstrably uses.
     # Dependencies are what make an unattended pipeline possible: a stage that must not
     # start until its inputs exist (train -> ckpt-select -> eval) is expressed to SLURM
     # rather than by a process sitting in a loop waiting. `afterok` means a failed stage
