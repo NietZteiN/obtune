@@ -1,5 +1,5 @@
 {
-  "job_id": "tr_L1r_llama31-8b",
+  "job_id": "tr_L1r_granite31-8b",
   "kind": "train",
   "argv": [
     "-m",
@@ -7,12 +7,19 @@
     "--config",
     "train/grid_py_L1r_panel.yaml",
     "--model",
-    "llama31-8b"
+    "granite31-8b"
   ],
   "raw": false,
-  "est_gpu_h": 0.5,
+  "est_gpu_h": 0.7,
   "priority": 201,
   "meta": {
     "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  },
+  "slurm": {
+    "job_id": "391553",
+    "node": "g-07-08",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T19:25:05.284305+00:00"
   }
 }
