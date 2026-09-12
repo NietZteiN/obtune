@@ -1,0 +1,8 @@
+
+\section{RQ2: What is learned, and why it does not compose}
+
+Adaptation fundamentally anchors on the surface a transform leaves, not the underlying semantics. We validate this through five independent instruments. 
+
+First, the ladder itself cannot discriminate; specialist models show an off-diagonal transfer ratio of 0.906, meaning whatever a specialist learns, clean-code tuning already captures. Second, when splitting the unseen family into its component mechanisms (MBA vs. string encoding), we find they do not transfer to each other, yet either half alone recovers approximately 90\% of the full adapter's gain on stacked inputs. This proves the models are learning shared scaffolding rather than additive skills.
+
+Third, breadth's stacking gain is heavily dependent on identifier recognition. The performance gain on composites drops from +6.6 for identifier-heavy stacks down to +1.1 for structural-only stacks. Fourth, breadth causes the model to polarize rather than smoothly degrade: it becomes slightly more confident when correct, but twice as far from the answer when wrong. Finally, the competence is heavily direction-specific. When evaluating the exact same programs backwards (asking for the call that produces a specific value), the model loses all forward gains, suffering a $-1.67$ point penalty. 
