@@ -5935,10 +5935,42 @@ with no stated prediction is not a test.
 | **`cons_lam3 − mono_all`** | **+3.84** [+1.90, +5.70] | +1.36 [−0.08, +2.71] |
 | `tuned_X1 − tuned_L0` | **+5.93** [+4.10, +7.78] | **+3.64** [+1.90, +5.35] |
 
-**The headline does not replicate on StarCoder2.** `cons_lam3 − mono_all` is +1.36 with an interval
-that just includes zero — right sign, about a third the size, **INCONCLUSIVE**. Family exposure
-replicates cleanly. By the mapping fixed before submission, three of three would have let RQ4's
-scope qualifier go; **it stays.** Granite (the model that refuted R2) and Gemma-3 are in flight.
+**All four reads, at d2:**
+
+| model | lineage | `cons_lam3 − mono_all` | `cons_lam3 − tuned_L0` | `tuned_X1 − tuned_L0` |
+|---|---|---:|---:|---:|
+| codellama-7b | Meta | **+3.84** [+1.90, +5.70] | **+2.13** [+0.66, +3.60] | **+5.93** [+4.10, +7.78] |
+| gemma3-12b | Google | **+2.44** [+0.97, +3.99] | −0.08 [−1.67, +1.51] | **+5.35** [+3.21, +7.37] |
+| starcoder2-15b | BigCode | +1.36 [−0.08, +2.71] | +0.35 [−1.13, +1.86] | **+3.64** [+1.90, +5.35] |
+| granite31-8b | IBM | **−1.47** [−2.99, **+0.00**] | −1.86 [−3.80, +0.12] | **+7.29** [+5.19, +9.65] |
+
+**2 of 4 replicate the headline; 1 is inconclusive; 1 is negative.** By the mapping fixed before
+submission, three of three would have let RQ4's scope qualifier go — **it stays.** But the advantage
+is no longer CodeLlama-only: **Gemma-3 replicates it significantly**, on a different lineage.
+Granite's interval is `[−2.99, +0.00]`, so it is INCONCLUSIVE *by the letter* (ci_hi is not < 0) and
+**negative in substance** — the same direction as its R2 refutation on the ladder.
+
+**Family exposure replicates on all four**, and Granite's is the **largest in the panel** (+7.29).
+So on the model where anchoring reverses, training on the family still works — the two are not the
+same capability.
+
+**A relation across models, and its status.** `cons_lam3 − mono_all` at d2 tracks the same contrast
+on the ladder's X1 column (R2) almost exactly — fit `div = 0.722 · R2 − 0.166` over the first three
+reads, |err| 0.08 / 0.15 / 0.06, and Gemma-3 at 0.70. **It has no out-of-sample validation.** The fit
+was built on three points, and Gemma-3's cells already existed when it was recorded — see the
+withdrawal in `CLAUDE_SCRATCHPAD.md`. Predictions for the four models with **verified-empty** cell
+directories (`codegemma-7b` −0.46, `codellama-13b` +2.63, `codellama-34b` +2.45, `llama31-8b` +2.27)
+were recorded before those evals were submitted, with a ±1.0 confirm / 2.0 refute rule.
+`codegemma-7b` is the sharpest: the only near-zero prediction, and the second model that failed R2.
+
+**Two rule-design flaws this exposed, recorded rather than patched away.**
+1. **H-F2-cons-no-tax asks only for ci_hi ≥ 0 — which a NULL satisfies, and so does a negative
+   result whose interval reaches zero.** It prints CONFIRMED for Granite on a point of **−1.86**. On
+   CodeLlama it was met by a significantly *positive* result. Both read CONFIRMED and they do not
+   mean the same thing. A no-cost rule needs a **TOST margin**, not a one-sided bound.
+2. **`excludes_zero` is `ci_lo > 0 or ci_hi < 0`, so an interval ending exactly at `+0.00` counts as
+   spanning zero.** Granite's does. The verdict is correct by the letter and the substance has to be
+   said in words beside it.
 
 **A rule-design flaw this exposed, recorded rather than patched away.** H-F2-cons-no-tax asks only
 that `cons_lam3 − tuned_L0` have ci_hi ≥ 0 — which a **null satisfies trivially**. On CodeLlama-7b it
