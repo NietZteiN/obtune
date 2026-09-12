@@ -18,6 +18,7 @@ is regenerated on exactly the items it is scored on. These tests keep it that wa
 """
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
@@ -98,6 +99,20 @@ def test_h1_is_never_an_icl_demo_source() -> None:
     `pick_demos` also refuses at runtime; this catches it at config-review time."""
     for s in _load("configs/eval/icl_cross_h1_qwen1.5b.yaml")["systems"]:
         assert "H1" not in (s.get("icl_source") or []), f"{s['name']} sources demos from H1"
+
+
+def test_every_eval_config_passes_the_schema_validator():
+    """`scripts/validate_eval_configs.py` must report zero errors over `configs/eval/`.
+
+    This subsumes the narrower checks around it. Three configs in one day passed every check that
+    existed and failed at run time on three DIFFERENT keys (phase, a merge adapter path, task), and
+    each fix afterwards was narrower than the fault class. The validator is the schema; this test
+    is the gate.
+    """
+    import subprocess
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "validate_eval_configs.py"),
+                        "--quiet-warnings"], capture_output=True, text=True)
+    assert r.returncode == 0, "eval config validation failed:\n" + r.stderr
 
 
 def test_every_eval_config_task_key_is_valid():
