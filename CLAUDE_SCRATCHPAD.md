@@ -1772,3 +1772,35 @@ seed 17, on the 287-program common subset already recorded):
 **Stated in advance:** Granite is expected to be the one that breaks, because it already refuted R2
 on the ladder. If it replicates here while having refuted R2 there, that is a contradiction inside
 the panel and the priority becomes explaining it, not reporting either.
+
+---
+
+## 2026-09-12 — a prediction for Gemma-3, committed before its cells exist
+
+Three of the four divergence reads are in. `cons_lam3 − mono_all` on the **unseen-containing d2
+stacks** tracks the same contrast on the **ladder's X1 column** (R2) almost exactly:
+
+| model | R2 @X1 (ladder) | d2 divergence advantage |
+|---|---:|---:|
+| codellama-7b | +5.44 | +3.84 |
+| starcoder2-15b | +2.31 | +1.36 |
+| granite31-8b | **−1.89** | **−1.47** |
+
+Pearson **r = 0.9989** over three points, fit `div = 0.722 · R2 − 0.166`.
+
+**Gemma-3 has R2 = +2.64, so the fit predicts a d2 advantage of +1.74.** Its eval is running and
+**zero cells exist** as this is written (checked). Recording it because n = 3 makes an r of 0.999
+nearly meaningless on its own — three points define a line almost regardless — and the only thing
+that makes the relation falsifiable is an out-of-sample point named in advance.
+
+**What each outcome means, fixed now:**
+- **Near +1.74 (say within ±1.0):** the divergence advantage is not a separate property of the
+  objective. It is R2 measured on a harder stimulus, and the paper should say so — one mechanism,
+  two stimuli, rather than two findings.
+- **Far from it, or the wrong sign:** the relation is an artefact of three points and must be
+  dropped. Report the four divergence reads per model and make no cross-model claim.
+
+**Independently of the fit,** the per-model verdicts already say the weaker version: anchoring's
+divergence advantage is CONFIRMED only on the model where the objective was developed, inconclusive
+on the two other lineages that replicated R2, and **negative on the one that refuted it**. RQ4's
+scope qualifier stays regardless of what Gemma-3 does.
