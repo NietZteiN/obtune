@@ -140,12 +140,17 @@ paper and Fig. 2 exists for it.
 - It is **not** true that all three strategies fail. Breadth succeeds on stacked-seen inputs at
   every scale tested. The finding is a *dissociation*, and stating it as blanket failure would be
   both wrong and less interesting.
-- We do **not** attribute merging's failure to task-vector interference. Measured on the frozen
-  panel, three adapters trained on **byte-identical data** at different seeds are near-orthogonal
-  (cosine 0.053, sign conflict 0.487 — a coin flip) and merge *fine*, while eight adapters trained
-  on completely different transforms are 0.59-aligned. Geometry there is initialisation, not
-  knowledge. ❑ *that measurement is on a model panel this paper no longer reports; F1b repeats it
-  on the current panel, and until it lands the paper reports merging's failure without a mechanism.*
+- We do **not** attribute merging's failure to task-vector interference, and this is now measured
+  on **the panel the paper reports** (F1b, 2026-09-11). The five specialists a merge is built from
+  are the **most aligned, least conflicting** bank we measured — mean cosine **0.653**, coordinate
+  sign conflict **0.323**, TIES retaining **91.6 %** of coordinates — and merging them still loses
+  to them. A mechanism that predicts cancellation cannot explain a failure occurring where
+  cancellation is lowest. The dominant axis is not the task at all: varying the **seed** alone drops
+  mean cosine to **0.119** (near-orthogonal) while varying the **condition** alone leaves it at
+  0.653, and in a mixed bank the most-aligned pair is same-seed, the least cross-seed. Geometry
+  encodes initialisation, not knowledge. Two independent lineages now agree, which makes this a
+  finding rather than a caveat. Caveat carried into the text: the seed-only bank mixes two
+  checkpoint lengths, so "near-orthogonal" is the precision that claim supports.
 
 ❑ **Gaps.** Routing and merging have been measured on *stacks* only on a panel this paper no longer
 uses (F1). No stack containing an *unseen* family has been built, so "failure worsens as the stack
@@ -166,12 +171,27 @@ Five independent instruments, sharing no machinery:
    string-encoding half: `tuned_X1m` reaches X1s at **+1.49** [−0.95, +3.93], `tuned_X1s` reaches
    X1m at **−0.10** [−2.38, +2.19] — they do not transfer to each other. Yet **either half alone
    recovers ~90 %** of the whole adapter's gain on stacked X1 (+4.12 / +4.20 against +4.61). Not
-   additive, so not "MBA skill plus string skill": what transfers is the scaffolding both halves
-   share. Consistent with X1 → H1 being *lossless* (0.08 points) across genuinely different
-   surfaces that force the same reading operation.
-3. **Breadth's stacking gain is identifier recognition.** Per-composite, the gain is ordered by how
-   much of the stack is an identifier transform: +6.6 / +5.6 for identifier+`S1` down to +1.1 for
-   structural-only, and a depth-3 structural-only stack is null (+1.61 [−1.02, +4.31]).
+   additive, so not "MBA skill plus string skill". Consistent with X1 → H1 being *lossless* (0.08
+   points) across genuinely different surfaces that force the same reading operation.
+   ⚠ **The scaffolding reading is the natural one and it is NOT established.** The discriminating
+   test ran on 2026-09-11 and came back **undecided**: classifying X1 programs by which mechanism is
+   actually present lets a half-adapter be scored where none of its mechanism appears, and all three
+   pre-registered rules returned INCONCLUSIVE — no interval excludes zero *and* none is equivalent
+   to it. The lean is toward surface (all four cross-mechanism estimates positive: +2.64, +1.96,
+   +5.44, +4.05, two excluding zero, where strict weakest-link predicts zero) but that is four of
+   four with no correction over twenty contrasts, in groups as small as 49 programs. **The paper
+   must say the halves do not decompose and stop there**, naming the surface account as the leading
+   hypothesis and E5b as what would settle it. Writing "what transfers is the scaffolding" as fact
+   is the one sentence in this section the evidence does not carry.
+3. **Breadth's stacking gain is identifier recognition**, by a measured contrast rather than an
+   ordering (F3a, 2026-09-11). On depth-3 stacks, breadth's gain over the clean-code control is
+   **+5.00** [+3.02, +6.88] when the stack contains an identifier transform and **+1.61**
+   [−1.02, +4.23] when it does not, and the **difference of differences is +3.39** [+0.82, +6.16],
+   on one bootstrap over the 394 programs all four stacks share. We compute the difference because
+   "one interval excludes zero and another does not" is not a test of the difference between them —
+   the structural-only interval reaches +4.07 and overlaps every significant one. What may *not* be
+   said, and the text says so: n = 1 structural-only stack, whose point estimate is positive, so the
+   claim is about the difference and not about structural transforms contributing nothing.
 4. **Breadth polarizes rather than degrades.** `mono_all`'s clean log P(gold) is ~4 nats below the
    control on *every* condition, and the whole deficit is in items it gets **wrong**: where right
    it is *more* confident (−0.16 vs −0.33), where wrong it is **twice as far** (−12.95 vs −7.00).
@@ -191,9 +211,11 @@ and every tuned arm inverts it. Weak instrument (98 cells, one trial each) and l
 knockout — is **inert**: it moves gold log-probability by < 0.5 % for every arm on every condition,
 and both pre-registered hypotheses were refuted. We report that rather than omit it.
 
-❑ **Gap.** "Stacking destroys the cue" is an inference. The order pair `C_L1r_S1` / `C_S1_L1r`
-(renaming *after* flattening destroys the state-variable names a structural specialist keys on) is
-the direct test and needs specialists evaluated on composites (F3).
+❑ **Gap, now narrower.** F3a establishes that breadth's stack gain *depends on an identifier
+transform being present*, by direct contrast. It does not establish the causal step — that stacking
+**destroys** a structural specialist's cue. The order pair `C_L1r_S1` / `C_S1_L1r` (renaming *after*
+flattening removes the state-variable names a structural specialist keys on) is that test, and it
+still needs specialists evaluated on composites (F3).
 
 ## 7. §5 RQ3 — anchoring to clean-code behaviour
 
@@ -280,8 +302,10 @@ whether anchoring is structural or a better-behaved heuristic (F2).
   with a second row for training volume (¼, ½, full). The paper's memorable image.
 - **Fig. 2 — composition, three ways.** Router (vs random gate), merges, breadth, each against the
   clean-code control, on singles and on stacks. ❑ *stacks need F1.*
-- **Fig. 3 — what is learned.** X1-split 2×2 (each half → each condition); per-composite breadth
-  gain ordered by identifier content; forward vs inverse per arm.
+- **Fig. 3 — what is learned.** X1-split 2×2 (each half → each condition); breadth's stack gain
+  with vs without an identifier transform **as a paired contrast with its difference annotated**
+  (+5.00 / +1.61, difference +3.39 [+0.82, +6.16]), not a per-composite ordering; forward vs inverse
+  per arm.
 - **Fig. 4 — polarization.** log P(gold) distributions on right and wrong items, control vs breadth
   vs anchored.
 - **Fig. 5 — the ablation.** Student X1 accuracy against teacher X1 accuracy for the three teachers,
@@ -290,12 +314,24 @@ whether anchoring is structural or a better-behaved heuristic (F2).
 ## 12. What must not be claimed
 
 - "All three composition strategies fail" — breadth succeeds on stacked-seen at every scale.
-- "Merging fails through task-vector interference" — not supported on this panel.
+- "Merging fails through task-vector interference" — **refuted on this panel** (F1b): the merged
+  specialists are the most aligned, least conflicting bank measured. Say the failure without a
+  mechanism, and report that seed dominates condition in the geometry.
 - "Consistency training improves robustness" — it removes a cost; say Pareto.
 - "Consistent performance on the reverse task" — it is undamaged, not improved.
 - Any causal attention story — the knockout is inert.
 - Anything about H1 beyond the calibration figure.
-- "Failures worsen with divergence" — until F2 runs.
+- "Failures worsen with divergence" — until F2 runs. *(F2's stimulus is built and its eval is in
+  flight; the five decision rules and RQ4's reading in both directions were committed before any
+  cell existed, so neither answer may be chosen after the numbers land.)*
+- **"What transfers is the family's scaffolding/surface"** — the discriminating test came back
+  **undecided** (E6 item split, 2026-09-11). Say the halves do not decompose, name the surface
+  account as the leading hypothesis, and cite E5b as what would settle it.
+- "Anchoring beats breadth on stacked inputs" — on seen stacks it *matches* breadth (+0.87
+  [−0.59, +2.33] pooled); only the depth-4 cell separates, at one significant result of four with no
+  multiplicity correction.
+- "Structural transforms contribute nothing to breadth's stack gain" — F3a measures a *difference*
+  (+3.39), on n = 1 structural-only stack whose own estimate is positive.
 
 ---
 
