@@ -1,0 +1,18 @@
+{
+  "job_id": "tr_L1b_starcoder2-15b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_L1b_panel.yaml",
+    "--model",
+    "starcoder2-15b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.72,
+  "priority": 200,
+  "meta": {
+    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  }
+}

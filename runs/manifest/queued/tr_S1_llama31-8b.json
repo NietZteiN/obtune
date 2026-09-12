@@ -1,0 +1,18 @@
+{
+  "job_id": "tr_S1_llama31-8b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_S1_panel.yaml",
+    "--model",
+    "llama31-8b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 203,
+  "meta": {
+    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  }
+}

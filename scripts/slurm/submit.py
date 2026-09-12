@@ -199,14 +199,19 @@ def obtune_jobs_on(partition: str) -> int:
     """
     import subprocess as _sp
     _, pool = qos_pool(partition)
-    out = _sp.run(["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j|%P|%T|%r"],
+    # OWNERSHIP IS THE WORKING DIRECTORY, NOT THE JOB NAME. The account is shared with sibling
+    # projects under the same Unix user, and name prefixes stopped discriminating on 2026-09-12
+    # when a neighbour queued `tr_sql_llama32-3b` from ../bidirectional -- which this guard counted
+    # as obtune's and then refused an obtune submission over. `squeue -o %Z` gives each job's
+    # submission directory, and obtune's jobs are the ones submitted from OBTUNE_ROOT, which is
+    # exact rather than heuristic. Verified: 19 obtune jobs, 12 ../bidirectional, 1 ../probing.
+    root = str(Path(os.environ.get("OBTUNE_ROOT", Path(__file__).resolve().parents[2])).resolve())
+    out = _sp.run(["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j|%P|%T|%r|%Z"],
                   capture_output=True, text=True).stdout
-    mine = ("tr", "ck", "ev", "pk", "pkck", "os", "an", "bld", "dl", "gate", "lm",
-            "build", "geom", "probe")
     n = 0
     for line in out.splitlines():
         f = [x.strip() for x in line.split("|")]
-        if len(f) < 4 or f[1] not in pool or f[0].split("_")[0] not in mine:
+        if len(f) < 5 or f[1] not in pool or f[4] != root:
             continue
         if f[2] not in ("RUNNING", "PENDING"):
             continue
@@ -402,6 +407,24 @@ def main() -> int:
         print("nothing queued")
         return 0
     jobs = [(Job.load(p), p) for p in paths]
+    if a.queued:
+        # `--queued` IS NOT IDEMPOTENT WITHOUT THIS. The manifest lifecycle moves INSIDE the sbatch
+        # script (CLAUDE.md 1), which is what makes a job that never starts stay queued -- correct,
+        # and it means a manifest sits in queued/ from submission until the job actually STARTS.
+        # Two `--queued` calls a minute apart therefore submit the same work twice. On 2026-09-12
+        # that produced six duplicate evals across a 19-job drain. Skip any manifest whose job name
+        # is already RUNNING or PENDING for this user; SLURM's own queue is the authority on what is
+        # already submitted, not the manifest directory.
+        import subprocess as _sp
+        _root = str(Path(os.environ.get("OBTUNE_ROOT", Path(__file__).resolve().parents[2])).resolve())
+        live = {ln.split("|")[0].strip() for ln in _sp.run(
+            ["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j|%Z"],
+            capture_output=True, text=True).stdout.splitlines()
+            if ln.strip() and ln.split("|")[-1].strip() == _root}
+        before = len(jobs)
+        jobs = [(j, p) for j, p in jobs if j.job_id not in live]
+        if before != len(jobs):
+            print(f"skipping {before - len(jobs)} manifest(s) already queued or running", file=sys.stderr)
     jobs.sort(key=lambda t: (t[0].priority, t[0].job_id))  # lower priority runs first
     if a.limit:
         jobs = jobs[: a.limit]

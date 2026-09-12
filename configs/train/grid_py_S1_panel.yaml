@@ -1,0 +1,20 @@
+# Per-condition specialist S1, PANEL variant — batch shape from models.yaml, not hard-coded.
+#
+# WHY THIS EXISTS. `grid_py_S1.yaml` hard-codes 16 x 4, which was chosen for CodeLlama-7b on an
+# H200 and is wrong for half the panel: models.yaml carries 8 x 8 for starcoder2-15b, gemma3-12b and
+# codellama-13b, and 4 x 16 for codellama-34b — the last of those set after CodeGemma OOM'd at
+# 30.52 GiB because a KL objective holds logits over a 256k vocabulary. Running the hard-coded shape
+# across the panel would OOM some models hours into a queued job.
+#
+# Setting the two keys to null is the same pattern as `grid_py_X1_<model>.yaml`, which trained all
+# three incumbent X1 arms overnight on 2026-09-11 without an OOM.
+#
+# Serves every model: pass `--model <key>`. Adapter paths already namespace by model, so the
+# output lands at runs/adapters/<model>/python/S1_r32_s17/ and nothing collides.
+_extends: grid_py_S1.yaml
+
+run_tag: grid_py_S1_panel
+
+train:
+  per_device_batch: null
+  grad_accum: null

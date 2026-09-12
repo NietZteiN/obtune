@@ -1,20 +1,27 @@
 {
-  "job_id": "ev_cseen_codellama-34b",
+  "job_id": "ev_inv_llama31-8b",
   "kind": "eval",
   "argv": [
     "-m",
     "obtune.eval_vllm",
     "--config",
-    "eval/composite_seen_core.yaml",
+    "eval/inverse_core.yaml",
     "--model",
-    "codellama-34b",
+    "llama31-8b",
     "--language",
     "python"
   ],
   "raw": false,
   "est_gpu_h": 0.6,
-  "priority": 113,
+  "priority": 100,
   "meta": {
     "note": "P0 of docs/EXPERIMENT_CHECKLIST.md -- evaluation only, no training"
+  },
+  "slurm": {
+    "job_id": "391383",
+    "node": "g-08-05",
+    "partition": "h200",
+    "exit_code": 1,
+    "finished_utc": "2026-09-12T16:27:29.975158+00:00"
   }
 }

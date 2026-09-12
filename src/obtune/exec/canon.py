@@ -102,7 +102,16 @@ def canon(value: Any, _depth: int = 0) -> str:
     if isinstance(value, (list, tuple)):
         return "[" + ",".join(canon(v, _depth + 1) for v in value) + "]"
     if isinstance(value, dict):
-        items = sorted((_key(k), v) for k, v in value.items())
+        # Sort by the KEY, with the value's canonical form as a deterministic tie-break.
+        # `sorted((_key(k), v) ...)` sorted whole tuples, so two distinct dict keys that map to
+        # the same string -- 1 and "1" both give "1" -- fell through to comparing the VALUES,
+        # and `{1: [], "1": 0}` raised
+        #     TypeError: '<' not supported between instances of 'list' and 'int'
+        # from inside canon(). Found 2026-09-12 scoring CRUXEval reverse in bidirectional; it
+        # would equally crash obtune's own exec scoring on such an output, and where the values
+        # happened to be comparable it made the canonical string depend on their order.
+        items = sorted(((_key(k), v) for k, v in value.items()),
+                       key=lambda kv: (kv[0], canon(kv[1], _depth + 1)))
         return "{" + ",".join(f"{_escape(k)}:{canon(v, _depth + 1)}" for k, v in items) + "}"
     if isinstance(value, (set, frozenset)):
         raise Unserializable("set/frozenset in output position: iteration order is not stable")
