@@ -1,0 +1,37 @@
+# F4 — the compute-matched control for the consistency objective (2026-09-12).
+#
+# WHAT F4 WAS SPECIFIED TO TEST. docs/PAPER_EXPERIMENTS.md §7 records the gap as "the consistency
+# arm sees two views per row; no compute-matched control exists", and PAPER_DRAFT §5 calls it the
+# one new training arm the paper cannot go out without. `cons_lam0` is paired SFT with the KL term
+# switched off, so any residual advantage would be the extra exposure rather than the objective.
+#
+# WHY THIS CONFIG EXISTS AS A *PROBE* AND NOT A FULL ARM. Reading the code, the premise looks
+# false. `objectives.py::compute_loss` returns `outputs.loss` unchanged when `lam <= 0`, the
+# collator POPS `t_ids` before the batch reaches the student, and the teacher runs under `no_grad`
+# on its own device -- so the STUDENT never sees the parent view at all; only the frozen teacher
+# does. And the two arms train on identical data: `n_train = 26,841`, `steps = 1,257` for BOTH
+# `mono_all` and `cons_lam3`, with the loader RAISING on a missing parent rather than silently
+# reducing the set. If that reading is right, `cons_lam0` IS `mono_all` and 13 GPU-h of F4 would
+# re-derive a number already on disk.
+#
+# THE PROBE SETTLES IT EMPIRICALLY RATHER THAN BY CODE-READING. Same seed, same shape, ~60 steps;
+# compare the logged losses against `mono_all`'s own trainer_state at the same steps (step 20:
+# 2.269211006164551, step 40: 0.6310351371765137, step 60: 0.5674618721008301). Identical losses
+# mean the arms are the same arm and F4 is vacuous as specified; a divergence means the student IS
+# getting something extra and F4 must be run in full.
+_extends: obj_cons_codellama7b_py.yaml
+
+run_tag: obj_cons_lam0_probe
+
+objective:
+  mode: consistency
+  lam: 0.0
+  teacher_view: parent
+  teacher_adapter: runs/adapters/codellama-7b/python/L0_r32_s17/best
+
+train:
+  per_device_batch: 16
+  grad_accum: 4
+  train_size: 30000
+  seed: 17
+  max_steps: 61
