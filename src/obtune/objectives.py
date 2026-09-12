@@ -512,7 +512,12 @@ def train(cfg: Mapping[str, Any], args: argparse.Namespace) -> int:
         per_device_eval_batch_size=int(tcfg["per_device_batch"]),
         logging_steps=int(tcfg.get("logging_steps", 20)),
         seed=seed, data_seed=seed, report_to=[], use_cpu=not use_cuda,
-        max_steps=args.max_steps if args.max_steps is not None else -1,
+        # CONFIG *OR* CLI. Every other knob here reads `tcfg` (the config's `train:` block) with a
+        # default; `max_steps` read the CLI flag alone, so `train.max_steps` in a config was
+        # accepted by the loader and then silently ignored. On 2026-09-12 that turned a 61-step
+        # probe into the full 1,257-step run, which hit its 1.5 h walltime at step 226 -- the
+        # config was not wrong, it was unread. CLI still wins so a one-off override works.
+        max_steps=int(args.max_steps if args.max_steps is not None else tcfg.get("max_steps", -1)),
         dataloader_num_workers=2,
         remove_unused_columns=False,
         # TRL 1.9 defaults to loss_type="chunked_nll", which patches the model forward to skip
