@@ -98,3 +98,22 @@ def test_h1_is_never_an_icl_demo_source() -> None:
     `pick_demos` also refuses at runtime; this catches it at config-review time."""
     for s in _load("configs/eval/icl_cross_h1_qwen1.5b.yaml")["systems"]:
         assert "H1" not in (s.get("icl_source") or []), f"{s['name']} sources demos from H1"
+
+
+def test_every_eval_config_task_key_is_valid():
+    """`task:` names the prediction direction and takes output|input.
+
+    On 2026-09-12 a config was written with `task: inverse` -- the name of the EXPERIMENT rather
+    than a value the runner accepts. It passed config load, passed the adapter-resolution check,
+    was queued across seven models, and failed at run time. `eval_vllm` fast-fails on it in three
+    seconds with a clear message, which is the behaviour we want; this test moves the same failure
+    to commit time, where it costs nothing at all.
+    """
+    import yaml
+    bad = []
+    for p in sorted((ROOT / "configs" / "eval").glob("*.yaml")):
+        raw = yaml.safe_load(p.read_text()) or {}
+        t = raw.get("task")
+        if t is not None and t not in ("output", "input"):
+            bad.append(f"{p.name}: task={t!r}")
+    assert not bad, "task must be output|input: " + "; ".join(bad)

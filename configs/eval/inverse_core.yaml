@@ -18,7 +18,11 @@ experiment_id: inverse_core
 run_tag: inverse_core
 language: python
 eval_source: heldout
-task: inverse
+# `input`, NOT `inverse`. The task key names the PREDICTION DIRECTION and takes output|input;
+# "inverse" is the name of the experiment, not a value the runner accepts. Writing the experiment's
+# name here cost one job, which failed in 3 s with a clear message -- the fast-fail path doing
+# exactly its job, since the alternative is discovering it after an engine has loaded.
+task: input
 
 engine:
   gpu_memory_utilization: 0.85
