@@ -1,6 +1,6 @@
 # Research questions, approaches, and answers — one page
 
-*Last updated: 2026-09-09*
+*Last updated: 2026-09-12*
 
 A compressed index of everything the project has asked and what came back. Full numbers and
 provenance are in [`../MASTER_REPORT.md`](../MASTER_REPORT.md); the forward plan is in
@@ -501,6 +501,47 @@ runs at 13B/34B; if `cons_lam3` does not beat `mono_all` on X1 at either scale, 
 observation and is reported as such. Refuted hypotheses are reported as refuted.
 
 ---
+
+## 6.4 The eight-model uniform grid, and the divergence ladder (2026-09-12)
+
+Full numbers and provenance: [`../MASTER_REPORT.md`](../MASTER_REPORT.md) §30.
+
+**The grid is validated before the table is read.** All four incumbents reproduce their published
+R1–R3 through the new config, every published value inside the new interval, largest disagreement
+**0.85 pts** — so a departure is the model, not the measurement.
+
+| finding | over 8 models | Meta lineage (4) | other lineages (4) |
+|---|---|---|---|
+| **R1** breadth's unseen-family tax | **6 repl / 2 inc / 0 ref** | 4 / 0 / 0 | 2 / 2 / 0 |
+| **R2** anchoring removes it | **6 repl / 1 inc / 1 ref** | 4 / 0 / 0 | 2 / 1 / **1** |
+| **R3** no clean-code tax | **5 repl / 0 inc / 3 ref** | 4 / 0 / 0 | 1 / 0 / **3** |
+
+- **R1 is the project's most robust claim** — right sign on every model, no contradiction, three
+  lineages, 7B–34B. **R2 is reversed on Granite. R3 becomes conditional** at 5 of 8.
+- The lineage pattern is a **warning about single-lineage evaluation, not a result about lineages**:
+  Fisher p = 0.0714 at best, n = 8, and both Google models refute R3 so family and lineage are
+  confounded. **StarCoder2** — the only non-Meta model to replicate all three, the panel's strongest,
+  and the one an untuned gate scored 0.0000 and would have rejected — is what keeps that honest.
+
+**F2, the divergence ladder** (first stacks containing an unseen family; X1 throughout, never H1;
+287 programs and all five rules fixed before any cell existed):
+
+| level | `mono_all−tuned_L0` | `cons_lam3−tuned_L0` | `cons_lam3−mono_all` |
+|---|---:|---:|---:|
+| d0/d1 — all SEEN | **+3.49** / **+4.15** | — / **+5.02** | +0.87 [−0.59, +2.33] |
+| **d2/d3 — unseen inside** | −1.71 / −0.35 | **+2.13** / **+3.26** | **+3.84** / **+3.60** |
+
+Breadth's gain **flips sign** once an unseen component enters; anchoring rises **above** the
+clean-code control and **above breadth**. RQ4's pre-registered mapping nonetheless returns
+**undecided** (it needed breadth to fall below the control *and* anchoring to hold; only the second
+is established) — that is the verdict of record. Breadth's collapse is **heterogeneous**: split by
+F3a's rule, committed 91 min before the first F2 cell, identifier-containing +1.98 vs
+structural-containing **−3.88**, difference **+5.85** [+3.10, +8.72].
+
+**Beyond the lineage of discovery:** StarCoder2 does **not** replicate the headline
+(`cons_lam3 − mono_all` +1.36 [−0.08, +2.71], inconclusive), so RQ4's scope qualifier **stays**.
+Granite and Gemma-3 in flight.
+
 
 ## 7. Master tables — every approach × every condition, per model
 
