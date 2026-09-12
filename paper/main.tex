@@ -326,7 +326,38 @@ therefore correlational and is labelled as such.
 
 % =======================================================================================
 \section{Related work}
-\slot{from docs/PAPER_DRAFT.md 10}
+
+We join three conversations and contribute a negative to one of them.
+
+\paragraph{Deobfuscation.} A substantial line of work trains models to \emph{recover} obfuscated
+code --- to undo renaming, to reconstruct identifiers, to normalise structure --- and measures
+success by how close the recovery is to the original. Our separation is a design decision rather
+than a framing: we never train or evaluate on recovery. Evaluation is always output prediction over
+code that stays obfuscated, so what we measure is semantic competence \emph{under} transformation.
+The distinction matters for the question, not only for the setup: a model that recovers well may do
+so by pattern-matching the obfuscator, which is exactly the hypothesis we are trying to separate
+from invariance.
+
+\paragraph{Model merging and modular adaptation.} Task-vector arithmetic, TIES- and DARE-style
+merging, mixtures of LoRA experts, and learned routing over adapters all propose that capabilities
+trained separately can be combined after the fact. We contribute a negative with an unusually strong
+control. Our router is compared not only against a uniform mixture but against a \emph{random}
+gate, and on single transforms it beats that random gate by $+0.0000$ --- the mixture is worth
+something and the routing is worth nothing. We also contribute a warning about the usual
+explanation: merging's failure here is \emph{not} accompanied by the interference signature that is
+supposed to cause it. Table~\ref{tab:geom} shows the adapters being merged are the most aligned and
+least conflicting bank we measured, and that varying the random seed moves the update direction far
+more than varying the task does. Any account of merging that reasons from task-vector geometry
+should first check whether that geometry encodes the task at all. \slot{routing and merging on
+stacked inputs, once those cells land}
+
+\paragraph{Robustness to semantics-preserving transformation.} Work on adversarial and
+semantics-preserving perturbation of code --- renaming, dead-code insertion, control-flow rewriting
+--- generally asks whether a model's prediction survives the edit. We ask a sharper version: whether
+\emph{adaptation} to such edits generalises past the edits it saw. Our answer is the dissociation in
+Table~\ref{tab:dissoc}. Separately, our reverse-task result is a value-level replication of
+direction specificity in code understanding: the same adapter that gains substantially at predicting
+a program's output loses at predicting an input that produces a given output.
 
 \section{Conclusion}
 \slot{once RQ4's cross-model statement is final}
