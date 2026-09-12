@@ -1,0 +1,25 @@
+{
+  "job_id": "tr_L1r_starcoder2-15b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_L1r_panel.yaml",
+    "--model",
+    "starcoder2-15b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.72,
+  "priority": 201,
+  "meta": {
+    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  },
+  "slurm": {
+    "job_id": "391633",
+    "node": "g-07-11",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T23:00:46.435888+00:00"
+  }
+}

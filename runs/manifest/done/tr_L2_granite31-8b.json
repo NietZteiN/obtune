@@ -1,0 +1,25 @@
+{
+  "job_id": "tr_L2_granite31-8b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_L2_panel.yaml",
+    "--model",
+    "granite31-8b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.7,
+  "priority": 202,
+  "meta": {
+    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  },
+  "slurm": {
+    "job_id": "391886",
+    "node": "g-07-04",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-12T23:08:12.799767+00:00"
+  }
+}
