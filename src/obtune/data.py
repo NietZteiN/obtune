@@ -188,9 +188,14 @@ def load_eval_items(
     return items
 
 
+#: The date H1's two-read budget was declared fully spent (CLAUDE.md changelog, 2026-09-05).
+#: Set to None only if a new, re-registered budget is granted.
+_BUDGET_SPENT_UTC = "2026-09-05"
+
+
 def load_h1_items(
     language: str, purpose: Optional[str], script: str = "unknown", note: str = "",
-    source: str = DEFAULT_EVAL_SOURCE,
+    source: str = DEFAULT_EVAL_SOURCE, allow_after_budget_spent: bool = False,
 ) -> list[EvalItem]:
     """Read the held-out condition. CLAUDE.md §3.2 rule 3: every read is logged.
 
@@ -202,6 +207,26 @@ def load_h1_items(
             "H1 may only be read with h1_access_purpose in {'pilot_eval','final_eval'}; "
             f"got {purpose!r}. H1 is never used for training, checkpoint selection, "
             "router training or merge tuning (CLAUDE.md §3.2)."
+        )
+    # THE BUDGET IS SPENT, AND UNTIL 2026-09-12 NOTHING ENFORCED THAT. The purpose check above
+    # rejects an unsanctioned purpose, but both sanctioned passes have been taken (CLAUDE.md
+    # changelog, 2026-09-05: pilot 09-02, repaired 09-04; final 09-05, jobs 378518/378519). Twelve
+    # committed configs still carry `h1_access_purpose: final_eval`; queueing any of them would read
+    # H1 again, append a log line, and spend a budget that is gone -- and the failure would be
+    # invisible, because every layer would report success.
+    #
+    # The fence is a DATE, not a counter: the log records one row per CELL, not per pass, so 135
+    # rows is two passes and counting rows would misread its granularity. Any read after the
+    # spend date is refused unless the caller passes the override explicitly, which is what makes
+    # a deliberate future read (a new panel, a re-registered pass) possible and an accidental one
+    # impossible.
+    if not allow_after_budget_spent and _BUDGET_SPENT_UTC is not None:
+        raise paths.QuarantineViolation(
+            f"H1's two-read budget was spent on {_BUDGET_SPENT_UTC} (CLAUDE.md §3.2 rule 3 and the "
+            f"changelog). This read would be a THIRD pass. No H1 number may now select, tune, rank "
+            f"or choose anything; use X1, the trainable sibling calibrated at r=0.9992. If a new "
+            f"pass is genuinely authorised, re-register it first and pass "
+            f"allow_after_budget_spent=True at the call site so the decision is in the diff."
         )
     p = h1_path(language, source)
     if not p.exists():
