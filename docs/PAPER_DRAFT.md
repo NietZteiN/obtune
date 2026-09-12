@@ -219,14 +219,18 @@ still needs specialists evaluated on composites (F3).
 
 ## 7. §5 RQ3 — anchoring to clean-code behaviour
 
-**Claim.** Anchoring removes breadth's costs; it does not add the capability breadth lacks.
+**Claim.** Anchoring removes breadth's costs **on most models**; it does not add the capability
+breadth lacks. The qualifier is load-bearing and is established below: across eight models the
+tax-removal holds on six and reverses on one, and the no-clean-code-cost half holds on five.
 
 **Objective.** `L = CE(y | x_obf) + λ · KL( p_teacher(· | x_L0parent) ‖ p_student(· | x_obf) )` at
 answer tokens. The teacher is a clean-code-tuned adapter reading the *unobfuscated parent* of the
 same program; λ = 3 is a plateau from a sweep on the trainable grid.
 
-**Result.** `cons_lam3 − mono_all` on the unseen family: **+4.59** [+3.16, +5.99] at 7B across three
-seeds, **+3.95** at 13B, **+3.38** at 34B, **+3.46** on Llama-3.1-8B — and **q = 0.0049** in a
+**Result** (values below are the published reads; the uniform grid reproduces each to within
+0.85 pts — see the panel check below). `cons_lam3 − mono_all` on the unseen family: **+4.59**
+[+3.16, +5.99] at 7B across three seeds, **+3.95** at 13B, **+3.38** at 34B, **+3.46** on
+Llama-3.1-8B — and **q = 0.0049** in a
 203-test, breadth-controlled FDR family. No clean-code tax (−0.30 [−1.80, +1.32]). It keeps
 breadth's stacked-seen gain (+4.76 / +4.26 / +5.63 over the control at three scales) and beats
 breadth there at 13B and 34B. In JavaScript it is best on all twelve columns and *amplifies*
@@ -241,6 +245,35 @@ breadth there at 13B and 34B. In JavaScript it is best on all twelve columns and
 So the seen-condition gain comes from the SFT term and is teacher-independent; the unseen-family
 number is **distilled from the teacher**. The method is "distil from a clean-code-*tuned* model on
 the clean parent", and the paper says exactly that.
+
+**The panel breadth check, and it is the section's biggest change (eight-model uniform grid,
+2026-09-12).** All eight models were re-read from **one phase, one config**, and the grid was
+validated before the table: all four incumbents reproduce their published values through it, every
+one inside the new interval, largest disagreement **0.85 pts**. So a departure is the model, not the
+measurement.
+
+| finding | tally over 8 models | Meta lineage (4) | other lineages (4) |
+|---|---|---|---|
+| **R1** breadth's unseen-family tax | **6 replicated, 2 inconclusive, 0 refuted** | 4 / 0 / 0 | 2 / 2 / 0 |
+| **R2** anchoring removes it | **6 replicated, 1 inconclusive, 1 refuted** | 4 / 0 / 0 | 2 / 1 / 1 |
+| **R3** no clean-code tax | **5 replicated, 0 inconclusive, 3 refuted** | 4 / 0 / 0 | 1 / 0 / 3 |
+
+- **R1 is the paper's most robust claim** and should be stated as such: breadth's tax has the right
+  sign on **every model in the panel**, across three lineages and 7B–34B, with **no contradiction**.
+- **R2 survives at 6 of 8**, and is **reversed on Granite**, where the anchored arm is *worse* than
+  breadth on the unseen family. That reversal is named in the text, not relegated.
+- **R3 must become conditional.** "Anchoring pays no clean-code tax" holds on 5 of 8 and fails on
+  three. It was discovered on four Meta-lineage models and holds on all four.
+- **The lineage pattern is reported as a warning, not a result.** Every failure is outside the
+  lineage of discovery, and all three findings are 4-of-4 within it. But Fisher's exact on the R3
+  split is **p = 0.0714** one-sided (R1 and R2: 0.2143), **n = 8 models**, and "non-Meta" is three
+  lineages in which *both Google models* refute R3 — so a Google-family effect and a lineage effect
+  are perfectly confounded. The paper says: these findings replicate uniformly on the lineage they
+  were found on and unevenly off it, and **single-lineage evaluation would have hidden that**.
+- **StarCoder2 is the counter-example that keeps it honest** and belongs in the text: the only
+  non-Meta model to replicate all three, the panel's strongest, and the one an untuned screening
+  gate scored 0.0000 and would have rejected. Dropping it would have made the lineage pattern look
+  *cleaner* and be *more wrong*.
 
 ❑ **Gap.** The consistency arm sees two views per row; no compute-matched control exists (F4,
 `cons_lam0` — paired SFT without the KL term — is specified and would separate the objective from
@@ -363,7 +396,13 @@ candidate and its `tuned_X1`/`mono_allX` arms do not exist yet.
   identifier-vs-structural split, not the level.
 - **"Anchoring is robust to unseen transformation families in stacks"** — say it about *the model
   the objective was developed on*, with the scope in the sentence. One model, and R2 is already
-  known to be model-dependent.
+  known to be model-dependent. *(The divergence ladder is queued on StarCoder2, Gemma-3 and
+  Granite with the rules and the prediction pre-registered; three of three would let the qualifier
+  go.)*
+- **"Anchoring pays no clean-code tax"** — **5 of 8 models.** Conditional, with the three failures
+  named.
+- **Anything causal about model lineage** — n = 8, p = 0.07 at best, and Google/non-Meta are
+  confounded. It is a warning about single-lineage evaluation, not a result about lineages.
 - **"What transfers is the family's scaffolding/surface"** — the discriminating test came back
   **undecided** (E6 item split, 2026-09-11). Say the halves do not decompose, name the surface
   account as the leading hypothesis, and cite E5b as what would settle it.
