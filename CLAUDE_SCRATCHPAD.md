@@ -1663,3 +1663,39 @@ the entry is written before the numbers exist so neither can be chosen after the
   X1s items. `C_S1_X1s` as a stack is unaffected.
 - `mole_router` is absent — it runs through the HF path and needs its own config. H-F2-route is
   therefore NOT opened here and stays with F1.
+
+---
+
+## 2026-09-11 — E6 weakest-link vs surface, item-level: rules PRE-REGISTERED before the split is computed
+
+Closes the open question left by
+[`log/transfer/2026-09-08_x1-split-mechanism-not-family.md`](log/transfer/2026-09-08_x1-split-mechanism-not-family.md):
+either half of X1 recovers ~90 % of the whole adapter's gain on stacked X1 while transferring
+almost nothing to the other half's condition. Two readings were named there and neither was
+testable from those cells: **(i) weakest-link** — relieving whichever mechanism the model meets
+first unlocks most items; **(ii) surface** — the gain is adaptation to the family's scaffolding,
+which either half's training data carries. Analysis only, existing `x1_split` cells, no GPU, no H1.
+
+**The classification** (per program, on the X1 heldout source, after the fixed helper preamble):
+`mba_only` = `_ar_*` calls and no `_rs(`; `str_only` = the reverse; `both` split by which call comes
+first; `expansion_only` = neither helper called, i.e. int-literal expansion alone. Counts are fixed
+by the stimulus and are recorded before any accuracy is read: **177 / 51 / 49 mba-first / 107
+str-first / 21**.
+
+**Rules** (program-clustered bootstrap, 2,000 resamples, seed 17; control is `tuned_L0` throughout):
+- **H-E6-surface-a** — `tuned_X1s − tuned_L0` on `mba_only` programs, where X1s saw *none* of the
+  mechanism present. SURFACE iff ci_lo > 0; MECHANISM iff the interval is TOST-equivalent to zero
+  at ±1.5.
+- **H-E6-surface-b** — `tuned_X1m − tuned_L0` on `str_only` programs, the mirror. Same rule.
+- **H-E6-order** (the reading registered on 09-08) — among `both` programs,
+  [`tuned_X1m − tuned_L0` on mba-first] − [same on str-first]. WEAKEST-LINK iff ci_lo > 0.
+
+**Verdict mapping, fixed now:** a-and-b positive → **surface**; a-and-b equivalent to zero with
+order positive → **weakest-link**; anything else → **undecided**, reported as such.
+
+**Two limits stated before the numbers, because each cuts one way:**
+- `tuned_X1s` is the arm trained with a 4,096-token window and it pays the campaign's largest L0
+  cost (−4.37). That global deficit biases **H-E6-surface-a toward zero**, i.e. toward the
+  mechanism reading. A null there is therefore weak evidence; a positive there is strong.
+- `str_only` has **51 programs**. H-E6-surface-b is underpowered and a null there means little.
+- So neither sub-rule is decisive alone, and the verdict mapping requires both.
