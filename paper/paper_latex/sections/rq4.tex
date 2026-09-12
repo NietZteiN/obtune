@@ -1,0 +1,23 @@
+
+
+\section{RQ4: Is it robustness, or a better surface heuristic?}
+
+We state our claims at their true strength: the paired-consistency objective generalises along every axis we can test except the one that would demonstrate genuinely new capability. 
+
+\begin{table}[ht]
+\centering
+\caption{Stress tests evaluating generalisation vs. surface heuristics.}
+\begin{tabular}{@{}llp{6cm}@{}}
+\toprule
+\textbf{Stress Test} & \textbf{Result} & \textbf{Reading} \\
+\midrule
+Deeper stacks & \texttt{cons\_lam3} $-$ \texttt{tuned\_L0}: +5.02 & Holds; does not decay with depth. \\
+Second language & Best arm on all 12 JS columns & Replicates and amplifies. \\
+Reverse task & \texttt{cons\_lam3} $-$ \texttt{base}: +0.49 & Does no harm (undamaged). \\
+Confidence profile & Matches clean-code log $P(\text{gold})$ & Not a new over-committing heuristic. \\
+Unseen family (X1) & $\approx$ clean-code control ($-0.30$) & The bound. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The anchored model handles deeper stacks smoothly, replicates well into JavaScript, and is the only SFT-family arm undamaged on the reverse task. However, on the unseen family, it merely equals the clean-code control. We are explicit in our conclusion: anchoring buys breadth's recombination benefit at no cost, but provides no new invariance. It is not magical robustness; it is simply a safer heuristic.

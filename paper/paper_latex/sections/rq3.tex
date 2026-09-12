@@ -1,0 +1,12 @@
+
+\section{RQ3: Anchoring to clean-code behaviour}
+
+If surface anchoring is the root of the generalisation failure, we must anchor to something stable. We propose anchoring the student model to clean-code behaviour without losing the obfuscated surface exposure. We optimize a paired-consistency objective:
+
+\begin{equation}
+    \mathcal{L} = \text{CE}(y \mid x_{\text{obf}}) + \lambda \cdot \text{KL} \big( p_{\text{teacher}}(\cdot \mid x_{\text{L0parent}}) \parallel p_{\text{student}}(\cdot \mid x_{\text{obf}}) \big)
+\end{equation}
+
+Here, the teacher is a clean-code-tuned adapter reading the unobfuscated parent of the same program. Setting $\lambda = 3$, this objective completely removes breadth's unseen-family costs, achieving a +4.59 gain over breadth on the unseen family at 7B scale ($q = 0.0049$) while incurring no clean-code penalty. 
+
+Ablating the teacher reveals the core contribution: when using an untuned base model as a teacher, the arm collapses; when using the breadth model, it inherits the tax. The unseen-family performance is therefore distilled directly from the clean-code teacher. This method is strictly a Pareto repair, providing a mechanism to preserve SFT gains without sacrificing out-of-distribution stability.
