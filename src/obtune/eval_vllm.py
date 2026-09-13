@@ -479,6 +479,8 @@ class _UnroutedCell(RuntimeError):
 
 
 class Engine:
+    # vLLM has no mixture path; `obtune.mole.eval_mole.HFEngine` sets this True (run_cell guard).
+    supports_mixture = False
     """Thin wrapper over `vllm.LLM` with a per-adapter LoRARequest registry.
 
     `--stub` swaps generation for a deterministic no-model echo so the plumbing
@@ -672,6 +674,17 @@ def _load_route_map(path: str) -> dict[str, str]:
     return {str(k): str(v) for k, v in m.items()}
 
 
+def assert_engine_implements(engine, system) -> None:
+    """Refuse a mixture architecture on an engine that has no mixture path (see run_cell)."""
+    if system.arch.startswith("mole_") and not getattr(engine, "supports_mixture", False):
+        raise ValueError(
+            f"system '{system.name}': arch={system.arch!r} is a mixture architecture and this "
+            f"engine ({type(engine).__name__}) does not implement one -- it would apply NO adapter "
+            f"and write the base model under this system's name. Use `python -m "
+            f"obtune.mole.eval_mole` instead."
+        )
+
+
 def run_cell(
     engine: Engine,
     items: Sequence[EvalItem],
@@ -761,12 +774,11 @@ def run_cell(
     # contents were the UNTUNED MODEL, and the analysis reported `mole_router - mole_random` as
     # +0.00 with a ZERO-WIDTH interval over 2,000 resamples, which it read as CONFIRMED. The
     # telemetry below already said `0 with a LoRA` on every one of them. Refuse instead.
-    if system.arch.startswith("mole_"):
-        raise ValueError(
-            f"system '{system.name}': arch={system.arch!r} is a mixture architecture and this "
-            f"engine (vLLM) does not implement one -- it would apply NO adapter and write the base "
-            f"model under this system's name. Use `python -m obtune.mole.eval_mole` instead."
-        )
+    # The check is on the ENGINE, not the entry point: `eval_mole` reuses this run_cell with its
+    # HFEngine, and the first version of this guard keyed on the arch alone, so it refused the one
+    # engine that does implement mixtures (job 392173, 2026-09-13, after the base cell had been
+    # written). An engine declares `supports_mixture`; vLLM's `Engine` below says False.
+    assert_engine_implements(engine, system)
 
     # A NAMED ADAPTER THAT IS NOT ON DISK IS A HARD ERROR, not a metadata note. Until 2026-09-11
     # a bad path fell through to generation: the engine has no adapter to apply, so the cell

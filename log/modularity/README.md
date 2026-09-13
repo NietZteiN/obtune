@@ -143,3 +143,5 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`../../paper_modularity/`](../../paper_modularity/) — the FSE manuscript this thread feeds, with
   `CLAIM_LADDER.md` recording which pending run licenses which headline
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
+
+- [`2026-09-13_mixture-guard-refused-the-mixture-engine.md`](2026-09-13_mixture-guard-refused-the-mixture-engine.md) — the arch-keyed guard refused `HFEngine` too; now keyed on `engine.supports_mixture`, tested, F1 chain resubmitted (392638).

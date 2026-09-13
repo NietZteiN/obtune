@@ -37,6 +37,8 @@ from obtune.mole.model import MoLEModel
 
 
 class HFEngine:
+    # The one engine with a mixture path; `eval_vllm.run_cell` refuses `mole_*` arches elsewhere.
+    supports_mixture = True
     """`eval_vllm.Engine`'s surface, backed by a mixture model.
 
     Contract, as `run_cell` uses it: `.tokenizer`, `.ecfg`, `.stub`,
