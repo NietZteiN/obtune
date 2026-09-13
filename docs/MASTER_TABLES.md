@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-13 12:26 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-13 12:32 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 

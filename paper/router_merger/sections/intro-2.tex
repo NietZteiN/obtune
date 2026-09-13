@@ -75,9 +75,8 @@ obfuscations, hoping that knowledge learned separately will recombine
 when transformations are stacked. We systematically evaluate these
 three strategies and find that none provides the desired robustness.
 The learned router is worth about a point over a random routing policy
-and nothing over breadth training; merging specialized models gains less
-than broader training on stacks of seen transformations, though it keeps that
-smaller gain when an unseen family enters; and broader training, although effective on stacks assembled
+and nothing over breadth training; merging specialized models performs at
+or below the clean-code-tuned control; and broader training, although effective on stacks assembled
 from transformations represented during training, introduces a
 substantial performance penalty on an unseen obfuscation
 family. Thus, broader exposure can improve recombination within the

@@ -41,6 +41,7 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-13_tables-updated-story-held.md`](2026-09-13_tables-updated-story-held.md) — tables track the results, prose held at the pre-merging state by user instruction; the resulting RQ1 contradiction is marked in the source and is the user's to resolve.
 - [`2026-09-13_master-tables-in-the-paper.md`](2026-09-13_master-tables-in-the-paper.md) — **master tables generated into the paper**: per-model grids over every condition and all 16 stacks with raw acc / Δ / % of clean, cross-model summary, and the models / dataset / taxonomy / stacks setup tables; appendix A. Gate semantics stated per cell.
 - [`2026-09-10_paper-draft.md`](2026-09-10_paper-draft.md) — **argument and flow for RQ1–RQ4** in `docs/PAPER_DRAFT.md`. Spine: surface-anchored competence composes only within what it has seen. Three stated findings adjusted to the evidence; RQ4's bound written in the paper's own voice; every gap marked with the experiment that closes it.
 - [`2026-09-09_model-and-data-selection.md`](2026-09-09_model-and-data-selection.md) — **no Chinese-origin models; FSE panel + dataset plan.** Qwen barred and withdrawn from evidence; five-model non-Chinese panel across three lineages plus a pretrained checkpoint; evaluation-only dataset columns D1–D5; JS unblockable with a user-space node binary.
