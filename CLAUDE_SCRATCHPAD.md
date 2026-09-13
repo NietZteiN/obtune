@@ -1916,3 +1916,22 @@ same held-out items. Read on the program subset common to every cell; clustered 
   stacks are REPORTED.
 Prediction: CONFIRMED. Every expert in the mixture was trained on a seen transform; no gate can route to
 competence that no expert has, so the mixture should sit where breadth sits, below the clean-code control.
+
+## 2026-09-13 — H-merge-panel PRE-REGISTERED before submission (merging on Granite, Llama-3.1-8B, StarCoder2)
+
+**Cell inventory printed before this prediction: 0 merge cells on granite31-8b, llama31-8b, starcoder2-15b.**
+Stimulus: `configs/eval/merge_panel.yaml` (phase `merge_panel`): base + three merges + five specialists on
+L0…S2, X1, six depth-2 seen stacks, four X1-containing stacks. Paired on the common program subset per
+model; clustered bootstrap 2,000 / seed 17. `tuned_L0` and `mono_all` for the contrasts come from
+`panel_core` (ladder, X1) and `composite_generic` / `f2_divergence` (stacks) on the same held-out items.
+
+**Rules, per model, the same as H-F1-merge on CodeLlama-7B, so the three verdicts add to it:**
+- **H-merge-panel-a** ("merging does not beat the clean control on seen stacks"): CONFIRMED iff the best of the
+  three merges − `tuned_L0`, pooled over the six seen stacks, has ci_hi ≤ +1.0; REFUTED iff ci_lo > +1.0.
+- **H-merge-panel-b** ("merging stays below breadth"): CONFIRMED iff best merge − `mono_all` pooled over the six
+  seen stacks has ci_hi < 0; REFUTED iff ci_lo > 0.
+- Unseen stacks, the ladder, and the specialists' own stack numbers are REPORTED (they feed the master
+  tables and the per-model routing/merging grids), not tested.
+Prediction: a CONFIRMED on both for all three models, with DARE-linear the worst arm by a wide margin, as on 7B.
+"Best of three" is chosen on the same stacks it is tested on, which biases toward the merge; the rule is
+therefore conservative for the CONFIRMED direction and is stated as such.
