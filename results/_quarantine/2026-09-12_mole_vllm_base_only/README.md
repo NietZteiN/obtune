@@ -27,3 +27,10 @@ obtune.eval_vllm`. The correct entry point is `obtune.mole.eval_mole`.
 
 Kept rather than deleted: they are the evidence for
 `log/modularity/2026-09-12_routing-cells-were-the-base-model.md`.
+
+**Added 2026-09-12 23:30.** `f1_routing_merging_codellama7b.WITHDRAWN.json` is the analysis
+output computed over these base-model cells (generated 19:37). It sat unmarked at
+`results/analysis/pipeline/` after the verdicts were withdrawn, where any later table
+generator would have read it as the routing result. Moved here so the only F1 file at that
+path is the one `an_f1` (job 392174) writes after `ev_f1_mole` (392173) runs through
+`obtune.mole.eval_mole`.
