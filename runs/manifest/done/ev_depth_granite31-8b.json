@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_depth_starcoder2-15b",
+  "job_id": "ev_depth_granite31-8b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,7 +7,7 @@
     "--config",
     "eval/composite_depth_panel.yaml",
     "--model",
-    "starcoder2-15b",
+    "granite31-8b",
     "--language",
     "python"
   ],
@@ -16,5 +16,12 @@
   "priority": 100,
   "meta": {
     "note": "master table: depth-3/4 stacks for every model, incl. the family arm"
+  },
+  "slurm": {
+    "job_id": "393505",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:18:36.598850+00:00"
   }
 }

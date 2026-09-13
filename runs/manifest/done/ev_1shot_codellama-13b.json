@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_1shot_llama31-8b",
+  "job_id": "ev_1shot_codellama-13b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,7 +7,7 @@
     "--config",
     "eval/basecheck_1shot_panel.yaml",
     "--model",
-    "llama31-8b",
+    "codellama-13b",
     "--language",
     "python"
   ],
@@ -16,5 +16,12 @@
   "priority": 110,
   "meta": {
     "note": "master table: ICL column on X1 and all stacks (format gate expected to bite off 7B)"
+  },
+  "slurm": {
+    "job_id": "393549",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:29:16.428478+00:00"
   }
 }

@@ -591,6 +591,20 @@ stacks) REFUTED on Llama, inconclusive elsewhere; rule b (merge < breadth) confi
 
 CodeLlama-7B, four X1-containing stacks, 319 programs: `mole_router − mono_all` **+2.88 [+1.33, +4.41]**, `− tuned_L0` **+1.39 [+0.26, +2.51]**, `− mole_random` −0.03, `− cons_lam3` −0.86 n.s. The mixture avoids the tax; the gate adds nothing. Together with §6.5b: keeping specialists separate (mixing or merging) avoids the unseen-family tax that one breadth adapter pays. `log/modularity/2026-09-13_f2-route-read.md`.
 
+### 6.5d The merge is the best arm backwards (2026-09-13, H-merge-backward REFUTED)
+
+CodeLlama-7B, 317 programs, pooled over L0-S2 and X1, against the untuned model:
+
+| arm | forward | backward | direction ratio |
+|---|---|---|---|
+| `merge_dare_ties` | **+18.87** | **+3.21 [+1.52, +4.85]** | **+0.17** |
+| `merge_ties` | **+12.95** | -0.30 | -0.02 |
+| `mono_all` | **+18.68** | -0.74 | -0.04 |
+| `cons_lam3` | **+19.95** | +0.39 | +0.02 |
+| `tuned_X1` | **+18.86** | +1.70 | +0.09 |
+
+The paper's "every method that fits the forward task buys its gain by losing backward competence" is false as written: DARE-TIES matches breadth forward and gains backwards. One model; the other three are queued and may be format-gated. `log/modularity/2026-09-13_merging-gains-backward.md`.
+
 ## 7. Master tables — every approach × every condition, per model
 
 *Added 2026-09-08.* §1 lists the approaches and says what each one bought in words. This is the same
@@ -723,3 +737,4 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-13** — §6.5: F1 routing/merging on stacks read (router = breadth, +1.3 over random; best merge = clean control). H-F2-route submitted.
 - **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.
 - **2026-09-13** — §6.5c: H-F2-route refuted; the specialist mixture is +2.88 above breadth on unseen-containing stacks.
+- **2026-09-13** - §6.5d: H-merge-backward refuted; the DARE-TIES merge has the highest direction ratio measured (+0.17).

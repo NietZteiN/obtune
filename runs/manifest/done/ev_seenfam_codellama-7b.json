@@ -16,5 +16,12 @@
   "priority": 105,
   "meta": {
     "note": "master table: tuned_X1 on the six seen stacks, missing on 7B only"
+  },
+  "slurm": {
+    "job_id": "393539",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:23:13.134612+00:00"
   }
 }

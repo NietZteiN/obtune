@@ -16,5 +16,12 @@
   "priority": 130,
   "meta": {
     "note": "H-merge-backward (pre-registered): the backward task for the merge arm; fills the master table's backward merge column"
+  },
+  "slurm": {
+    "job_id": "393616",
+    "node": "g-08-06",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:28:51.143268+00:00"
   }
 }
