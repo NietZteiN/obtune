@@ -276,6 +276,47 @@ routing arms' names and was withdrawn.}
           "Supersedes the +0.0000 router number and the ladder-level -3.13 merge number in the draft.")
 
 
+def t_rq1_merge_panel():
+    """H-merge-panel: DARE-TIES merging against the clean control, breadth and anchoring, per model."""
+    NAMES = [("codellama7b", "CodeLlama-7B"), ("granite318b", "Granite-3.1-8B"), ("llama318b", "Llama-3.1-8B"), ("starcoder215b", "StarCoder2-15B")]
+    rows = []
+    for key, nice in NAMES:
+        d = load(f"pipeline/merge_panel_{key}.json")
+        if d is None:
+            continue
+        lv = d.get("by_level", {})
+        rows.append(r"\multicolumn{6}{@{}l}{\textbf{" + nice + r"}} \\")
+        for lvl, lab in (("seen6", "seen (6)"), ("unseen4", "unseen inside (4)")):
+            b = lv.get(lvl)
+            if not b:
+                rows.append(f"\\quad {lab} & {DASH} & {DASH} & {DASH} & {DASH} & {DASH} \\\\")
+                continue
+            rows.append(f"\\quad {lab} & {iv(b.get('merge_dare_ties - tuned_L0'))} & {iv(b.get('merge_dare_ties - mono_all'))} & "
+                        f"{iv(b.get('merge_dare_ties - cons_lam3'))} & {iv(b.get('mono_all - tuned_L0'))} & {iv(b.get('cons_lam3 - tuned_L0'))} \\\\")
+        rows.append(r"\addlinespace[2pt]")
+    if rows and rows[-1].startswith(r"\addlinespace"):
+        rows.pop()
+    body = (r"""\begin{table*}[ht]
+\centering\scriptsize\setlength{\tabcolsep}{2.5pt}
+\caption{\textbf{Weight-space merging on the panel.} The best merge (DARE-TIES of the clean adapter and
+the five specialists) against the clean-code control, breadth and the anchored objective, pooled over
+the six seen stacks and the four stacks containing the unseen family; breadth and anchoring against the
+control in the last two columns. Points, paired on the programs common to every cell, program-clustered
+bootstrap. Bold intervals exclude zero. Pre-registered per model: merging does not beat the control on
+seen stacks (CONFIRMED iff $\mathrm{ci}_{hi} \le +1$) and stays below breadth ($\mathrm{ci}_{hi} < 0$).}
+\label{tab:rq1_merge_panel}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Stacks} & \texttt{merge}$-$\texttt{clean} & \texttt{merge}$-$\texttt{mono} & \texttt{merge}$-$\texttt{cons} & \texttt{mono}$-$\texttt{clean} & \texttt{cons}$-$\texttt{clean} \\
+\midrule
+""" + "\n".join(rows) + r"""
+\bottomrule
+\end{tabular}
+\end{table*}""")
+    write("rq1_merge_panel.tex", body, "results/analysis/pipeline/merge_panel_*.json",
+          "New 2026-09-13: merging on the panel, pre-registered as H-merge-panel.")
+
+
 def t_rq4_by_model():
     rows = []
     for m in ORDER:
@@ -344,7 +385,7 @@ Bold intervals exclude zero; the ratio is descriptive and is read with its compo
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    for f in (t_rq1_dissociation, t_rq1_composition, t_rq2_identifier, t_rq3_panel, t_rq4_ladder,
+    for f in (t_rq1_dissociation, t_rq1_composition, t_rq1_merge_panel, t_rq2_identifier, t_rq3_panel, t_rq4_ladder,
               t_rq4_by_model, t_direction_ratio):
         f()
     print(f"\n  {len(list(OUT.glob('*.tex')))} tables in paper/paper_latex/tables/")

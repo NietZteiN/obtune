@@ -1,0 +1,36 @@
+% GENERATED 2026-09-13 12:26 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/granite31-8b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, Granite-3.1-8B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_granite318b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.285 & 100 & 0.383 & $+9.8$ & 134 & 0.433 & $+14.8$ & 152 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & 0.266 & 93 & 0.315 & $+4.9$ & 110 & 0.350 & $+8.4$ & 123 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & 0.268 & 94 & 0.353 & $+8.5$ & 124 & 0.384 & $+11.6$ & 135 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & 0.251 & 88 & 0.342 & $+9.0$ & 120 & 0.378 & $+12.6$ & 133 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & 0.254 & 89 & 0.323 & $+6.9$ & 113 & 0.371 & $+11.7$ & 130 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & 0.272 & 96 & 0.358 & $+8.5$ & 125 & 0.402 & $+13.0$ & 141 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & 0.147 & 51 & 0.199 & $+5.3$ & 70 & 0.231 & $+8.4$ & 81 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.219 & 77 & 0.247 & $+2.9$ & 87 & 0.279 & $+6.0$ & 98 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & 0.204 & 72 & 0.266 & $+6.1$ & 93 & 0.301 & $+9.7$ & 106 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.224 & 79 & 0.262 & $+3.8$ & 92 & 0.293 & $+6.9$ & 103 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L2\_S4} & 0.242 & 85 & 0.319 & $+7.7$ & 112 & 0.351 & $+10.9$ & 123 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & 0.259 & 91 & 0.324 & $+6.5$ & 114 & 0.365 & $+10.6$ & 128 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S4\_S3} & 0.270 & 95 & 0.353 & $+8.3$ & 124 & 0.394 & $+12.4$ & 138 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.136 & 48 & 0.153 & $+1.7$ & 54 & 0.173 & $+3.7$ & 61 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & 0.153 & 54 & 0.200 & $+4.7$ & 70 & 0.244 & $+9.1$ & 86 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & 0.209 & 73 & 0.246 & $+3.7$ & 86 & 0.272 & $+6.3$ & 95 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.167 & 59 & 0.204 & $+3.7$ & 72 & 0.217 & $+5.0$ & 76 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

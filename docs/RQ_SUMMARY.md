@@ -570,6 +570,22 @@ single-condition, saturated-gate read and stand for the ladder only. Routing on 
 unseen family is submitted as H-F2-route (rule pre-registered in `CLAUDE_SCRATCHPAD.md`); routing on
 any other panel model is not measured.
 
+### 6.5b Merging on the panel (2026-09-13, pre-registered H-merge-panel)
+
+DARE-TIES of the clean adapter and five specialists, three models, paired on common programs:
+
+| model | stacks | merge − clean | merge − breadth | merge − anchored |
+|---|---|---|---|---|
+| CodeLlama-7B | seen (6) / unseen-containing (4) | **+0.83** / +0.86 | **−2.80** / **+2.35** | **−4.01** / **−1.39** |
+| Granite-3.1-8B | seen / unseen | **+1.57** / **+2.09** | **−3.23** / **+2.20** | **−2.32** / **+2.98** |
+| Llama-3.1-8B | seen / unseen | **+2.31** / **+2.56** | −0.85 / **+3.09** | **−2.80** / +0.81 |
+
+Merging gains less than breadth or anchoring on seen stacks and keeps its gain when the unseen family
+enters — above breadth on 3/3 models there, above anchoring on Granite. Rule a (merge ≤ control on seen
+stacks) REFUTED on Llama, inconclusive elsewhere; rule b (merge < breadth) confirmed on 7B and Granite.
+"Merging fails both tests" is withdrawn from the paper; the backward test for merges is unmeasured.
+`log/modularity/2026-09-13_merging-on-the-panel.md`.
+
 ## 7. Master tables — every approach × every condition, per model
 
 *Added 2026-09-08.* §1 lists the approaches and says what each one bought in words. This is the same
@@ -700,3 +716,4 @@ is the project's central finding, and it is why these columns are kept apart.
   the Qwen panel and had never been read as a group, and the `mono_all − tuned_L0` sign flip
   between stacked and unseen conditions had not been noticed anywhere in the project.
 - **2026-09-13** — §6.5: F1 routing/merging on stacks read (router = breadth, +1.3 over random; best merge = clean control). H-F2-route submitted.
+- **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.

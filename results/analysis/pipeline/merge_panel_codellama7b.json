@@ -1,0 +1,199 @@
+{
+ "script": "60_merge_panel.py",
+ "generated_utc": "2026-09-13T12:23:57+00:00",
+ "model": "codellama-7b",
+ "n_resamples": 2000,
+ "seed": 17,
+ "by_level": {
+  "seen6": {
+   "merge_dare_ties - tuned_L0": {
+    "value_pts": 0.8266666666666644,
+    "ci_lo": 0.013343741659996161,
+    "ci_hi": 1.6253663735678106,
+    "n_programs": 417,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - mono_all": {
+    "value_pts": -2.8000000000000025,
+    "ci_lo": -4.433916666666668,
+    "ci_hi": -1.18664295230482,
+    "n_programs": 417,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - cons_lam3": {
+    "value_pts": -4.013333333333335,
+    "ci_lo": -5.293560618172129,
+    "ci_hi": -2.704223820943244,
+    "n_programs": 417,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - base": {
+    "value_pts": 18.37333333333333,
+    "ci_lo": 16.159989858553512,
+    "ci_hi": 20.630757939685076,
+    "n_programs": 417,
+    "excludes_zero": true
+   },
+   "mono_all - tuned_L0": {
+    "value_pts": 3.626666666666667,
+    "ci_lo": 1.9581390887290193,
+    "ci_hi": 5.267227551292299,
+    "n_programs": 417,
+    "excludes_zero": true
+   },
+   "cons_lam3 - tuned_L0": {
+    "value_pts": 4.84,
+    "ci_lo": 3.493000000000004,
+    "ci_hi": 6.213457699492926,
+    "n_programs": 417,
+    "excludes_zero": true
+   },
+   "_n_programs": 417
+  },
+  "unseen4": {
+   "merge_dare_ties - tuned_L0": {
+    "value_pts": 0.862970711297073,
+    "ci_lo": -0.052301255230124966,
+    "ci_hi": 1.7763845350052239,
+    "n_programs": 319,
+    "excludes_zero": false
+   },
+   "merge_dare_ties - mono_all": {
+    "value_pts": 2.3535564853556483,
+    "ci_lo": 0.6282722513089033,
+    "ci_hi": 3.970845739169215,
+    "n_programs": 319,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - cons_lam3": {
+    "value_pts": -1.3859832635983227,
+    "ci_lo": -2.7168234064785746,
+    "ci_hi": -0.05235602094241225,
+    "n_programs": 319,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - base": {
+    "value_pts": 14.513598326359833,
+    "ci_lo": 12.329867213835076,
+    "ci_hi": 16.710467601640406,
+    "n_programs": 319,
+    "excludes_zero": true
+   },
+   "mono_all - tuned_L0": {
+    "value_pts": -1.4905857740585753,
+    "ci_lo": -3.0825496342737706,
+    "ci_hi": 0.07836990595611326,
+    "n_programs": 319,
+    "excludes_zero": false
+   },
+   "cons_lam3 - tuned_L0": {
+    "value_pts": 2.2489539748953957,
+    "ci_lo": 0.86385175469342,
+    "ci_hi": 3.6089757506381432,
+    "n_programs": 319,
+    "excludes_zero": true
+   },
+   "_n_programs": 319
+  },
+  "ladder": {
+   "merge_dare_ties - tuned_L0": {
+    "value_pts": -0.7422402159244279,
+    "ci_lo": -1.5789793568199315,
+    "ci_hi": 0.09488114532685134,
+    "n_programs": 412,
+    "excludes_zero": false
+   },
+   "merge_dare_ties - mono_all": {
+    "value_pts": -1.0121457489878527,
+    "ci_lo": -2.487344880668353,
+    "ci_hi": 0.5823371107048272,
+    "n_programs": 412,
+    "excludes_zero": false
+   },
+   "merge_dare_ties - cons_lam3": {
+    "value_pts": -2.2807017543859667,
+    "ci_lo": -3.63030296568,
+    "ci_hi": -0.9702378142489265,
+    "n_programs": 412,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - base": {
+    "value_pts": 18.596491228070175,
+    "ci_lo": 16.09919028340081,
+    "ci_hi": 21.012732072900697,
+    "n_programs": 412,
+    "excludes_zero": true
+   },
+   "mono_all - tuned_L0": {
+    "value_pts": 0.2699055330634248,
+    "ci_lo": -1.3509037579616725,
+    "ci_hi": 1.810096418624407,
+    "n_programs": 412,
+    "excludes_zero": false
+   },
+   "cons_lam3 - tuned_L0": {
+    "value_pts": 1.5384615384615385,
+    "ci_lo": 0.3238800885709417,
+    "ci_hi": 2.771188158961878,
+    "n_programs": 412,
+    "excludes_zero": true
+   },
+   "_n_programs": 412
+  }
+ },
+ "format_fail": {
+  "merge_dare_ties": {
+   "C_L1b_S1": 0.0223463687150838,
+   "C_L1r_S1": 0.0223463687150838,
+   "C_S1_L1r": 0.020750199521149242,
+   "C_L2_S4": 0.029394121175764846,
+   "C_L1r_S3": 0.025149700598802394,
+   "C_S4_S3": 0.026394721055788842,
+   "C_L1r_X1": 0.03706754530477759,
+   "C_X1_S1": 0.01975051975051975,
+   "C_S2_X1": 0.028245192307692308,
+   "C3_L1r_S1_X1": 0.0216,
+   "L0": 0.019161676646706587,
+   "L1b": 0.024728588661037394,
+   "L1r": 0.01976047904191617,
+   "L2": 0.023952095808383235,
+   "S1": 0.02165196471531676,
+   "S2": 0.028794241151769647
+  }
+ },
+ "skipped_levels": {
+  "X1": [
+   "merge_dare_ties__X1",
+   "base__X1"
+  ]
+ },
+ "hypotheses": [
+  {
+   "id": "H-merge-panel-a",
+   "best_merge": "merge_dare_ties",
+   "rule": "CONFIRMED iff best merge - tuned_L0 pooled over the six seen stacks has ci_hi <= +1.0; REFUTED iff ci_lo > +1.0",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "value_pts": 0.8266666666666644,
+    "ci_lo": 0.013343741659996161,
+    "ci_hi": 1.6253663735678106,
+    "n_programs": 417,
+    "excludes_zero": true
+   }
+  },
+  {
+   "id": "H-merge-panel-b",
+   "best_merge": "merge_dare_ties",
+   "rule": "CONFIRMED iff best merge - mono_all pooled over the six seen stacks has ci_hi < 0; REFUTED iff ci_lo > 0",
+   "verdict": "CONFIRMED",
+   "evidence": {
+    "value_pts": -2.8000000000000025,
+    "ci_lo": -4.433916666666668,
+    "ci_hi": -1.18664295230482,
+    "n_programs": 417,
+    "excludes_zero": true
+   }
+  }
+ ],
+ "format_gate_note": "merges with a cell over the 0.25 format gate: [] (their cells are reported, not read; the best merge is merge_dare_ties)"
+}

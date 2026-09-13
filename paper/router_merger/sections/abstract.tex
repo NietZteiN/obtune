@@ -3,7 +3,7 @@ nineteen points. We ask what that number is made of: competence at reading the p
 competence at the surface a particular transform leaves behind. We separate the two with tests that
 share no machinery --- whether the gain survives being stacked with a transform family the model has
 never seen, and whether it survives the task being run backwards. The field's existing answers,
-inference-time routing, weight-space merging, and training on a breadth of transforms, fail both --- merging outright, routing by matching breadth wherever the two are measured together.
+inference-time routing, weight-space merging, and training on a breadth of transforms, fall short: breadth fails both, routing matches breadth wherever the two are measured together, and merging composes less than breadth on seen stacks though it keeps that smaller gain under an unseen family.
 Breadth composes on stacks built from what it saw and loses that advantage the moment an unseen
 family enters, a gap significant on every one of six models across four lineages; and every method
 that fits the forward task buys its gain by losing backward competence on the very same programs.

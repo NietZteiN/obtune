@@ -1,0 +1,30 @@
+% GENERATED 2026-09-13 12:27 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/merge_panel_*.json
+% Do not edit by hand -- regenerate. New 2026-09-13: merging on the panel, pre-registered as H-merge-panel.
+\begin{table*}[ht]
+\centering\scriptsize\setlength{\tabcolsep}{2.5pt}
+\caption{\textbf{Weight-space merging on the panel.} The best merge (DARE-TIES of the clean adapter and
+the five specialists) against the clean-code control, breadth and the anchored objective, pooled over
+the six seen stacks and the four stacks containing the unseen family; breadth and anchoring against the
+control in the last two columns. Points, paired on the programs common to every cell, program-clustered
+bootstrap. Bold intervals exclude zero. Pre-registered per model: merging does not beat the control on
+seen stacks (CONFIRMED iff $\mathrm{ci}_{hi} \le +1$) and stays below breadth ($\mathrm{ci}_{hi} < 0$).}
+\label{tab:rq1_merge_panel}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Stacks} & \texttt{merge}$-$\texttt{clean} & \texttt{merge}$-$\texttt{mono} & \texttt{merge}$-$\texttt{cons} & \texttt{mono}$-$\texttt{clean} & \texttt{cons}$-$\texttt{clean} \\
+\midrule
+\multicolumn{6}{@{}l}{\textbf{CodeLlama-7B}} \\
+\quad seen (6) & \textbf{$+0.83$ [$+0.01$, $+1.63$]} & \textbf{$-2.80$ [$-4.43$, $-1.19$]} & \textbf{$-4.01$ [$-5.29$, $-2.70$]} & \textbf{$+3.63$ [$+1.96$, $+5.27$]} & \textbf{$+4.84$ [$+3.49$, $+6.21$]} \\
+\quad unseen inside (4) & $+0.86$ [$-0.05$, $+1.78$] & \textbf{$+2.35$ [$+0.63$, $+3.97$]} & \textbf{$-1.39$ [$-2.72$, $-0.05$]} & $-1.49$ [$-3.08$, $+0.08$] & \textbf{$+2.25$ [$+0.86$, $+3.61$]} \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{Granite-3.1-8B}} \\
+\quad seen (6) & \textbf{$+1.57$ [$+0.76$, $+2.46$]} & \textbf{$-3.23$ [$-4.92$, $-1.52$]} & \textbf{$-2.32$ [$-4.01$, $-0.61$]} & \textbf{$+4.80$ [$+3.05$, $+6.53$]} & \textbf{$+3.89$ [$+2.12$, $+5.67$]} \\
+\quad unseen inside (4) & \textbf{$+2.09$ [$+1.10$, $+3.09$]} & \textbf{$+2.20$ [$+0.50$, $+3.84$]} & \textbf{$+2.98$ [$+1.28$, $+4.65$]} & $-0.10$ [$-1.78$, $+1.62$] & $-0.89$ [$-2.59$, $+0.89$] \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{Llama-3.1-8B}} \\
+\quad seen (6) & \textbf{$+2.31$ [$+1.27$, $+3.38$]} & $-0.85$ [$-2.41$, $+0.72$] & \textbf{$-2.80$ [$-4.26$, $-1.35$]} & \textbf{$+3.16$ [$+1.52$, $+4.84$]} & \textbf{$+5.11$ [$+3.63$, $+6.58$]} \\
+\quad unseen inside (4) & \textbf{$+2.56$ [$+1.49$, $+3.61$]} & \textbf{$+3.09$ [$+1.54$, $+4.60$]} & $+0.81$ [$-0.47$, $+2.12$] & $-0.52$ [$-2.07$, $+1.02$] & \textbf{$+1.75$ [$+0.39$, $+3.11$]} \\
+\bottomrule
+\end{tabular}
+\end{table*}
