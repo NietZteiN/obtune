@@ -1,0 +1,52 @@
+% GENERATED 2026-09-13 17:08 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* for llama31-8b (raw accuracies only)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{2.5pt}
+\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B.} Raw accuracy (strict exact match) of each system on each condition and stack, forward (output prediction) and, for the ladder, backward (input prediction). \emph{untuned} is the base model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of the specialists (system keys, in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). $\dagger$: format-failure rate above 0.25, the cell measures the prompt contract rather than the task. `--': not run.}
+\label{tab:master_abs_llama318b}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \textbf{untuned} & \textbf{ICL} & \textbf{clean LoRA} & \textbf{breadth} & \textbf{anchored} & \textbf{family} & \textbf{mixture} & \textbf{merge} \\
+\midrule
+\multicolumn{9}{@{}l}{\emph{Forward: output prediction}} \\
+\texttt{L0} & 0.258 & 0.320 & 0.448 & 0.426 & 0.445 & 0.459 & -- & 0.462 \\
+\texttt{L1b} & 0.222 & 0.276 & 0.361 & 0.387 & 0.407 & 0.369 & -- & 0.386 \\
+\texttt{L1r} & 0.242 & 0.284 & 0.387 & 0.387 & 0.405 & 0.378 & -- & 0.398 \\
+\texttt{L2} & 0.215 & 0.278 & 0.391 & 0.386 & 0.409 & 0.387 & -- & 0.396 \\
+\texttt{S1} & 0.213 & 0.256 & 0.395 & 0.391 & 0.413 & 0.409 & -- & 0.412 \\
+\texttt{S2} & 0.205 & 0.272 & 0.413 & 0.413 & 0.445 & 0.438 & -- & 0.437 \\
+\texttt{X1} & 0.132 & -- & 0.249 & 0.222 & 0.255 & 0.332 & -- & 0.266 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.152 & -- & 0.279 & 0.338 & 0.368 & 0.305 & -- & 0.307 \\
+\texttt{C\_L1r\_S1} & 0.162 & -- & 0.303 & 0.352 & 0.363 & 0.314 & -- & 0.328 \\
+\texttt{C\_S1\_L1r} & 0.159 & -- & 0.277 & 0.338 & 0.354 & 0.305 & -- & 0.306 \\
+\texttt{C\_L2\_S4} & 0.205 & -- & 0.349 & 0.386 & 0.401 & 0.350 & -- & 0.383 \\
+\texttt{C\_L1r\_S3} & 0.198 & -- & 0.367 & 0.382 & 0.398 & 0.369 & -- & 0.387 \\
+\texttt{C\_S4\_S3} & 0.214 & -- & 0.421 & 0.411 & 0.444 & 0.431 & -- & 0.437 \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.100 & -- & 0.165 & 0.181 & 0.207 & 0.257 & -- & 0.184 \\
+\texttt{C\_X1\_S1} & 0.130 & -- & 0.271 & 0.225 & 0.253 & 0.300 & -- & 0.296 \\
+\texttt{C\_S2\_X1} & 0.170 & -- & 0.296 & 0.284 & 0.317 & 0.360 & -- & 0.317 \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.115 & -- & 0.184 & 0.216 & 0.232 & 0.291 & -- & -- \\
+\texttt{C\_S1\_X1s} & 0.193 & -- & 0.341 & 0.299 & 0.335 & 0.355 & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.105 & -- & 0.194 & 0.207 & 0.224 & 0.251 & -- & 0.215 \\
+\midrule
+\multicolumn{9}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
+\texttt{L0} & 0.424 & -- & 0.393 & 0.202$^{\dagger}$ & 0.204$^{\dagger}$ & 0.408 & -- & -- \\
+\texttt{L1b} & 0.322 & -- & 0.330 & 0.163$^{\dagger}$ & 0.162$^{\dagger}$ & 0.334 & -- & -- \\
+\texttt{L1r} & 0.369 & -- & 0.385 & 0.195$^{\dagger}$ & 0.200$^{\dagger}$ & 0.375 & -- & -- \\
+\texttt{L2} & 0.363 & -- & 0.387 & 0.130$^{\dagger}$ & 0.128$^{\dagger}$ & 0.358 & -- & -- \\
+\texttt{S1} & 0.348 & -- & 0.402 & 0.125$^{\dagger}$ & 0.159$^{\dagger}$ & 0.401 & -- & -- \\
+\texttt{S2} & 0.368 & -- & 0.390 & 0.176$^{\dagger}$ & 0.190$^{\dagger}$ & 0.409 & -- & -- \\
+\texttt{X1} & 0.279 & -- & 0.310 & 0.105$^{\dagger}$ & 0.131$^{\dagger}$ & 0.343 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

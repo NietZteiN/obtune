@@ -1,0 +1,52 @@
+% GENERATED 2026-09-13 17:08 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* for gemma3-12b (raw accuracies only)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{2.5pt}
+\caption{\textbf{Every method against every obfuscation, Gemma-3-12B.} Raw accuracy (strict exact match) of each system on each condition and stack, forward (output prediction) and, for the ladder, backward (input prediction). \emph{untuned} is the base model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of the specialists (system keys, in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). $\dagger$: format-failure rate above 0.25, the cell measures the prompt contract rather than the task. `--': not run.}
+\label{tab:master_abs_gemma312b}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \textbf{untuned} & \textbf{ICL} & \textbf{clean LoRA} & \textbf{breadth} & \textbf{anchored} & \textbf{family} & \textbf{mixture} & \textbf{merge} \\
+\midrule
+\multicolumn{9}{@{}l}{\emph{Forward: output prediction}} \\
+\texttt{L0} & 0.334$^{\dagger}$ & 0.340$^{\dagger}$ & 0.520 & 0.507 & 0.502 & 0.506 & -- & -- \\
+\texttt{L1b} & 0.262$^{\dagger}$ & 0.274$^{\dagger}$ & 0.441 & 0.475 & 0.488 & 0.402 & -- & -- \\
+\texttt{L1r} & 0.273$^{\dagger}$ & 0.283$^{\dagger}$ & 0.459 & 0.463 & 0.472 & 0.447 & -- & -- \\
+\texttt{L2} & 0.269$^{\dagger}$ & 0.281$^{\dagger}$ & 0.456 & 0.471 & 0.478 & 0.441 & -- & -- \\
+\texttt{S1} & 0.269$^{\dagger}$ & 0.289$^{\dagger}$ & 0.456 & 0.457 & 0.483 & 0.452 & -- & -- \\
+\texttt{S2} & 0.290$^{\dagger}$ & 0.308$^{\dagger}$ & 0.500 & 0.503 & 0.504 & 0.489 & -- & -- \\
+\texttt{X1} & 0.152 & -- & 0.310 & 0.263 & 0.289 & 0.376 & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.195$^{\dagger}$ & -- & 0.333 & 0.406 & 0.420 & 0.330 & -- & -- \\
+\texttt{C\_L1r\_S1} & 0.200$^{\dagger}$ & -- & 0.336 & 0.389 & 0.416 & 0.344 & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.181$^{\dagger}$ & -- & 0.334 & 0.393 & 0.414 & 0.329 & -- & -- \\
+\texttt{C\_L2\_S4} & 0.249$^{\dagger}$ & -- & 0.438 & 0.460 & 0.469 & 0.424 & -- & -- \\
+\texttt{C\_L1r\_S3} & 0.260$^{\dagger}$ & -- & 0.438 & 0.462 & 0.469 & 0.423 & -- & -- \\
+\texttt{C\_S4\_S3} & 0.297$^{\dagger}$ & -- & 0.491 & 0.506 & 0.503 & 0.481 & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & -- & -- & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.102 & -- & 0.195 & 0.206 & 0.224 & 0.285 & -- & -- \\
+\texttt{C\_X1\_S1} & 0.172 & -- & 0.317 & 0.271 & 0.296 & 0.358 & -- & -- \\
+\texttt{C\_S2\_X1} & 0.201 & -- & 0.368 & 0.349 & 0.364 & 0.412 & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.108$^{\dagger}$ & -- & 0.220 & 0.235 & 0.244 & 0.312 & -- & -- \\
+\texttt{C\_S1\_X1s} & 0.255 & -- & 0.395 & 0.374 & 0.395 & 0.401 & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.136 & -- & 0.225 & 0.236 & 0.258 & 0.260 & -- & -- \\
+\midrule
+\multicolumn{9}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
+\texttt{L0} & 0.491 & -- & 0.344 & 0.452 & 0.185$^{\dagger}$ & 0.474 & -- & -- \\
+\texttt{L1b} & 0.411 & -- & 0.244$^{\dagger}$ & 0.439 & 0.127$^{\dagger}$ & 0.417 & -- & -- \\
+\texttt{L1r} & 0.440 & -- & 0.350 & 0.423 & 0.129$^{\dagger}$ & 0.439 & -- & -- \\
+\texttt{L2} & 0.409 & -- & 0.335 & 0.414 & 0.137$^{\dagger}$ & 0.440 & -- & -- \\
+\texttt{S1} & 0.417 & -- & 0.294$^{\dagger}$ & 0.445 & 0.164$^{\dagger}$ & 0.446 & -- & -- \\
+\texttt{S2} & 0.458 & -- & 0.388 & 0.463 & 0.161$^{\dagger}$ & 0.472 & -- & -- \\
+\texttt{X1} & 0.317 & -- & 0.290 & 0.340 & 0.147$^{\dagger}$ & 0.374 & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

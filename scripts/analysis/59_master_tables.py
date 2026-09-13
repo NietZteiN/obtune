@@ -559,15 +559,19 @@ def abs_table(m):
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
     return "\n".join(L)
 
-for m in ["codellama-7b"]:
+# One absolute table per model. The body carries CodeLlama-7B (every arm exists there); the rest go
+# to the appendix and fill in as the backfill lands -- a cell that has not run renders as `--`.
+for m in MODELS:
     write(f"master_abs_{m.replace('-','')}.tex", abs_table(m), "results/cells/* for " + m + " (raw accuracies only)")
 
 # markdown twin
-out.append("\n## 6. Absolute master table — every method × every obfuscation, CodeLlama-7B (raw accuracy)\n")
-out.append("| condition | " + " | ".join(n for n,_ in ABS_SYS) + " |"); out.append("|---|" + "---:|"*len(ABS_SYS))
-for c in ABS_ROWS:
-    out.append(f"| {c} | " + " | ".join(abs_fmt(*abs_cell("codellama-7b", sy, c), tex=False) for _,sy in ABS_SYS) + " |")
-out.append("| *backward* | " + " | ".join("" for _ in ABS_SYS) + " |")
-for c in LADDER:
-    out.append(f"| {c} (bwd) | " + " | ".join(("--" if sy in ("base_1shot","mole_router","merge_dare_ties") else abs_fmt(*abs_cell("codellama-7b", sy, c, bwd=True), tex=False)) for _,sy in ABS_SYS) + " |")
+out.append("\n## 6. Absolute master tables — every method × every obfuscation, raw accuracy\n")
+out.append("Raw exact-match accuracy; no deltas, no percentages. `†` marks a cell over the 0.25 format gate, `--` a cell not run.\n")
+for m in MODELS:
+    out.append(f"\n### {NICE[m]}\n")
+    out.append("| condition | " + " | ".join(n for n,_ in ABS_SYS) + " |"); out.append("|---|" + "---:|"*len(ABS_SYS))
+    for c in ABS_ROWS:
+        out.append(f"| {c} | " + " | ".join(abs_fmt(*abs_cell(m, sy, c), tex=False) for _,sy in ABS_SYS) + " |")
+    for c in LADDER:
+        out.append(f"| {c} (bwd) | " + " | ".join(("--" if sy in ("base_1shot","mole_router","merge_dare_ties") else abs_fmt(*abs_cell(m, sy, c, bwd=True), tex=False)) for _,sy in ABS_SYS) + " |")
 (ROOT/"docs/MASTER_TABLES.md").write_text("\n".join(out) + "\n")
