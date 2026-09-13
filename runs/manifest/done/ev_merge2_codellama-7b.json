@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_merge2_llama31-8b",
+  "job_id": "ev_merge2_codellama-7b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,7 +7,7 @@
     "--config",
     "eval/merge_panel.yaml",
     "--model",
-    "llama31-8b",
+    "codellama-7b",
     "--language",
     "python"
   ],
@@ -16,5 +16,12 @@
   "priority": 120,
   "meta": {
     "note": "master table: the six conditions merge_panel did not cover (4 depth + 2 half-unseen); resume skips the 153 cells already written"
+  },
+  "slurm": {
+    "job_id": "393577",
+    "node": "g-08-07",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:38:30.386990+00:00"
   }
 }
