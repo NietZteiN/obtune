@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_depth_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/composite_depth_panel.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 100,
+  "meta": {
+    "note": "master table: depth-3/4 stacks for every model, incl. the family arm"
+  },
+  "slurm": {
+    "job_id": "393533",
+    "node": "g-08-07",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T17:49:44.247738+00:00"
+  }
+}

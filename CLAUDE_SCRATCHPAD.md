@@ -1935,3 +1935,28 @@ model; clustered bootstrap 2,000 / seed 17. `tuned_L0` and `mono_all` for the co
 Prediction: a CONFIRMED on both for all three models, with DARE-linear the worst arm by a wide margin, as on 7B.
 "Best of three" is chosen on the same stacks it is tested on, which biases toward the merge; the rule is
 therefore conservative for the CONFIRMED direction and is stated as such.
+
+## 2026-09-13 — H-merge-backward PRE-REGISTERED before submission
+
+**Cell inventory printed before this prediction: 0 backward cells for any merge or mixture arm, on any model.**
+
+RQ1's standing claim is that *every* method fitting the forward task pays backward competence for it
+(direction ratio negative for formatonly −0.30, tuned_L0 −0.08, mono_all −0.05; anchoring +0.03 is the
+exception). Merging was never measured backwards, and it is now known to behave unlike breadth forward
+(above the clean control on seen stacks on 4/4 models, above breadth on unseen-containing stacks on 4/4).
+
+Stimulus: `configs/eval/inverse_merge.yaml`, phase `inverse_generic`, one-shot, graded by execution, on
+the seven ladder conditions, for the four models that have merges. Controls (`base`, `tuned_L0`,
+`mono_all`, `cons_lam3`, `tuned_X1`) already exist in that phase on the same items. Read on the common
+program subset; clustered bootstrap 2,000 / seed 17. Cells over the 0.25 format gate are excluded.
+
+**Rule, on CodeLlama-7B (the only model whose backward cells all pass the gate), pooled over L0–S2 and X1:**
+- **CONFIRMED** ("merging pays the backward price too") iff the direction ratio of `merge_dare_ties` is
+  negative AND `merge_dare_ties − base` backwards has ci_hi < 0.
+- **REFUTED** iff `merge_dare_ties − base` backwards has ci_lo > 0.
+- otherwise INCONCLUSIVE. The other three models are REPORTED, gate permitting.
+Prediction: CONFIRMED. Merging is a weight-space average of adapters each fitted to the forward task, so
+it should inherit their backward cost; nothing in its construction preserves the untuned behaviour the
+way the anchored objective's KL term does. I have been wrong twice today predicting merging behaves like
+breadth, so I state the alternative explicitly: if merging turns out backward-neutral, the paper's
+"every method pays" sentence is false as written and anchoring loses its uniqueness claim.
