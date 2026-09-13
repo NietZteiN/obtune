@@ -56,3 +56,4 @@
 - [`2026-09-13_a30-holds-7-8b-only.md`](2026-09-13_a30-holds-7-8b-only.md) — full a30 cards are 23.5 GB; 13B/12B/15B/34B do not fit. Drain script restricted; per-partition size table.
 - [`2026-09-13_a30-cannot-serve-what-it-can-train.md`](2026-09-13_a30-cannot-serve-what-it-can-train.md) — a30 trains 7-8B but cannot serve 8.5B under vLLM (KV cache floor); drain pass split by workload.
 - [`2026-09-13_codegemma-vocab-breaks-the-size-rule.md`](2026-09-13_codegemma-vocab-breaks-the-size-rule.md) — parameter count mis-predicts placement; CodeGemma's 256k vocab OOMs a30 where Llama-3.1-8B fits.
+- [`2026-09-13_34b-is-h200-only.md`](2026-09-13_34b-is-h200-only.md) — 34B serves only on h200; consolidated train-vs-serve placement table for every size on every partition.

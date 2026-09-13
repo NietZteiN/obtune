@@ -11,7 +11,7 @@ cd /work/jvl210002/migration/obtune
 source scripts/env.sh
 mine() { squeue -h -u "$USER" -o "%j %T %Z" | awk -v r="$PWD" '$3==r' ; }
 while true; do
-  left=$(ls runs/manifest/queued/*.json 2>/dev/null | wc -l)
+  left=$(ls runs/manifest/queued/*.json runs/manifest/queued_34b/*.json 2>/dev/null | wc -l)
   run=$(mine | grep -c RUNNING); pend=$(mine | grep -c PENDING)
   # a failed manifest is worth a line: it is the only signal a job died
   for f in $(ls -t runs/manifest/failed/*.json 2>/dev/null | head -3); do
@@ -47,6 +47,14 @@ while true; do
     # a30 also cannot SERVE these models: vLLM on an 8.5B model leaves 0.92 GiB for
     # the KV cache against the 3.5 GiB an 8192-token context needs, and the engine refuses to start
     # (ev_1shot_codegemma-7b, 2026-09-13). Training fits because there is no KV cache to reserve.
+    # 34B IS h200-ONLY, for serving as well as training: its 68 GB of bf16 weights leave no room for a
+    # KV cache on an 80 GB h100 card (ev_depth_codellama-34b, 2026-09-13), and a30 is far too small.
+    # Its manifests are parked in queued_34b/, which the --queued passes above cannot see, and are
+    # submitted by name here with the memory 34B needs.
+    for j in $(ls runs/manifest/queued_34b/*.json 2>/dev/null | head -1); do
+      out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition h200 --mem 128G 2>&1 | grep -E "^submitted|FAILED")
+      [ -n "$out" ] && echo "$out" | sed "s/^/[h200-34b] /"
+    done
     for j in $(ls runs/manifest/queued/tr_*.json 2>/dev/null | grep -E "codellama-7b|llama31-8b|granite31-8b" | head -2); do
       out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition a30 --mem 64G 2>&1 | grep -E "^submitted|FAILED")
       [ -n "$out" ] && echo "$out" | sed "s/^/[a30] /"

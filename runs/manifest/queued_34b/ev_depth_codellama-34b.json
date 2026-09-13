@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_depth_codellama-34b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/composite_depth_panel.yaml",
+    "--model",
+    "codellama-34b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 100,
+  "meta": {
+    "note": "master table: depth-3/4 stacks for every model, incl. the family arm | REQUEUED 2026-09-13: vLLM found no room for KV cache on an 80 GB h100 card -- 34B bf16 is ~68 GB of weights, and 0.85 utilisation of 80 GB is 68 GB. The earlier 34B evals ran on h200 (141 GB). 34B is h200-only for serving as well as training."
+  },
+  "previous_slurm": {
+    "job_id": "393503",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-13T18:09:02.969202+00:00"
+  }
+}
