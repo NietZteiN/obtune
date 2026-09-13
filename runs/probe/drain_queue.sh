@@ -81,6 +81,22 @@ while true; do
       echo "[merge-track] queued ev_merge_$m (merges are built)"
     fi
   done
+  # Router gates: readiness-driven like the merges. A gate needs all EIGHT experts with best/
+  # (L0..S2 plus S3 and S4); until S3/S4 land the config cannot run, so this checks rather than chains.
+  for m in codellama-13b llama31-8b starcoder2-15b gemma3-12b codegemma-7b granite31-8b codellama-34b; do
+    have=0
+    for c in L0 L1b L1r L2 S1 S2 S3 S4; do
+      [ -f "runs/adapters/$m/python/${c}_r32_s17/best/adapter_model.safetensors" ] && have=$((have+1))
+    done
+    tag="routerlora_$(echo $m | tr -d '-')"
+    mf=runs/manifest/queued/tr_gate_$m.json
+    if [ "$have" -eq 8 ] && [ ! -f "runs/mole/$m/python/$tag/gate.pt" ] && [ ! -f "$mf" ] \
+       && ! ls runs/manifest/{running,done}/tr_gate_$m.json >/dev/null 2>&1 \
+       && ! squeue -h -u "$USER" -o "%j" | grep -qx "tr_gate_$m"; then
+      printf '{"job_id":"tr_gate_%s","kind":"train","argv":["-m","obtune.mole.train_mole","--config","mole/routerlora_%s.yaml"],"raw":false,"est_gpu_h":3.0,"priority":280,"meta":{"note":"master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"}}\n' "$m" "$m" > "$mf"
+      echo "[mixture] queued tr_gate_$m (8/8 experts ready)"
+    fi
+  done
   echo "[status] queued=$left running=$run pending=$pend"
   sleep 240
 done
