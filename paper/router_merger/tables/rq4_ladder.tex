@@ -1,0 +1,24 @@
+% GENERATED 2026-09-12 23:48 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/{f2_divergence_codellama7b,composite_depth_codellama7b}.json
+% Do not edit by hand -- regenerate. New: the stimulus this table describes did not exist when the draft was written.
+\begin{table*}[ht]
+\centering
+\caption{\textbf{RQ4: the divergence ladder.} Composites that contain a transform family the model
+has never seen. Breadth's advantage flips sign the moment such a component enters, while anchoring
+rises \emph{above} the clean-code control. The pre-registered rule required both that anchoring hold
+and that breadth fall below the control; only the first is established, since the pooled interval at
+d2 straddles zero. CodeLlama-7B, 287 programs common to all six composites, fixed before any system
+was evaluated.}
+\label{tab:rq4_ladder}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Level} & \textbf{Stimulus} & \texttt{mono}$-$\texttt{clean} & \texttt{cons}$-$\texttt{clean} & \texttt{cons}$-$\texttt{mono} \\
+\midrule
+d0 & depth 2, all seen & \textbf{$+3.49$ [$+2.04$, $+5.01$]} & -- & $+0.87$ [$-0.59$, $+2.33$] \\
+d1 & depth 3--4, all seen & \textbf{$+4.15$ [$+2.37$, $+5.91$]} & \textbf{$+5.02$ [$+3.41$, $+6.69$]} & $+0.87$ [$-0.59$, $+2.33$] \\
+\midrule
+d2 & depth 2, \textbf{unseen inside} & $-1.71$ [$-3.60$, $+0.31$] & \textbf{$+2.13$ [$+0.66$, $+3.60$]} & \textbf{$+3.84$ [$+1.90$, $+5.70$]} \\
+d3 & depth 3, \textbf{unseen inside} & $-0.35$ [$-2.67$, $+1.86$] & \textbf{$+3.26$ [$+0.81$, $+5.92$]} & \textbf{$+3.60$ [$+1.40$, $+5.81$]} \\
+\bottomrule
+\end{tabular}
+\end{table*}

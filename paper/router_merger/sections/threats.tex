@@ -1,0 +1,37 @@
+\section{Threats to Validity}
+
+\paragraph{The held-out family is a proxy.} Every unseen-family number in this paper is measured on
+X1, a trainable sibling of the quarantined family H1, whose evaluation budget was spent under a
+pre-registered two-pass discipline. The sibling reproduces H1's difficulty at $r = 0.9992$ with a
+mean absolute difference of 0.48 points on arms trained on neither, and transfer between them was
+lossless (0.08 points) for arms trained on the sibling. That calibration is a result and is reported
+as one, but it is a single family pair, and a second hard family with a different surface is the
+experiment that would settle whether ``family'' means ``surface family''.
+
+\paragraph{Coverage is not uniform, and contrasts are paired.} Structural transforms decline on
+some programs by design and the held-out family requires a minimum number of sites, so conditions
+cover different program sets. Every contrast runs on a subset recorded before any system was
+evaluated, and where two groups are compared the program set is intersected first. Where that
+intersection moves an estimate we report both; on the composition test it moves one model's
+unseen-side level from non-significant to significant, and the paired difference is unaffected.
+
+\paragraph{Eight models is a small sample for a claim about models.} Section~\ref{sec:rq3} declines
+to make one. Every finding replicates uniformly on the lineage it was discovered on and unevenly off
+it, and with $n = 8$ and vendor confounded with lineage that supports a warning about
+single-lineage evaluation, not a result about lineages. The panel's strongest non-lineage model is
+also the one an untuned capability screen scored at zero and would have discarded; removing it
+would have made the lineage pattern look cleaner and be more wrong.
+
+\paragraph{The reversal test is one model deep.} The direction ratio is measured on CodeLlama-7B;
+the panel-wide backward grids are in flight and are not reported here.
+
+\paragraph{Instrument failures we report rather than omit.} The causal attention instrument is
+inert: an identifier knockout moves the gold log-probability by under 0.5\,\% for every arm on every
+condition, and both of its pre-registered hypotheses were refuted. The attention account is
+correlational and is labelled as such. Separately, the test that would discriminate the
+shared-surface reading in Section~\ref{sec:rq2} from a weakest-link alternative returned undecided
+on all three of its rules; we report the leading hypothesis as a hypothesis.
+
+\paragraph{Single language.} Every headline is Python. The JavaScript corpus exists and a
+cross-language replication runs on it, but the toolchain to regenerate it is absent on our cluster,
+so no new JavaScript condition could be built.

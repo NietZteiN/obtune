@@ -1,0 +1,25 @@
+% GENERATED 2026-09-12 23:48 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/f2_divergence{,_core}_*.json
+% Do not edit by hand -- regenerate. New: shows anchoring's advantage is conditional on the model.
+\begin{table*}[ht]
+\centering
+\caption{\textbf{RQ4: the divergence result across the panel}, on stacks containing the unseen
+family. \texttt{cons}$-$\texttt{mono} is anchoring's advantage over breadth; \texttt{fam} is an arm
+trained on the unseen family's trainable sibling, included because family exposure is the largest
+effect in the table and replicates on every model. Bold intervals exclude zero.}
+\label{tab:rq4_by_model}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Model} & \textbf{Lineage} & \texttt{cons}$-$\texttt{mono} & \texttt{cons}$-$\texttt{clean} & \texttt{fam}$-$\texttt{clean} \\
+\midrule
+CodeLlama-7B & Meta & \textbf{$+3.84$ [$+1.90$, $+5.70$]} & \textbf{$+2.13$ [$+0.66$, $+3.60$]} & \textbf{$+5.93$ [$+4.10$, $+7.78$]} \\
+CodeLlama-13B & Meta & \textbf{$+3.22$ [$+1.74$, $+4.65$]} & \textbf{$+2.02$ [$+0.58$, $+3.53$]} & \textbf{$+5.97$ [$+4.11$, $+7.91$]} \\
+CodeLlama-34B & Meta & \textbf{$+3.95$ [$+2.13$, $+5.81$]} & \textbf{$+3.10$ [$+1.63$, $+4.58$]} & \textbf{$+4.19$ [$+2.48$, $+5.94$]} \\
+Llama-3.1-8B & Meta & \textbf{$+2.87$ [$+1.20$, $+4.62$]} & \textbf{$+1.86$ [$+0.27$, $+3.53$]} & \textbf{$+6.67$ [$+4.58$, $+8.71$]} \\
+StarCoder2-15B & BigCode & $+1.36$ [$-0.08$, $+2.71$] & $+0.35$ [$-1.13$, $+1.86$] & \textbf{$+3.64$ [$+1.90$, $+5.35$]} \\
+Gemma-3-12B & Google & \textbf{$+2.44$ [$+0.97$, $+3.99$]} & $-0.08$ [$-1.67$, $+1.51$] & \textbf{$+5.35$ [$+3.21$, $+7.37$]} \\
+CodeGemma-7B & Google & $-1.59$ [$-3.26$, $+0.12$] & \textbf{$-2.40$ [$-4.11$, $-0.85$]} & \textbf{$+5.23$ [$+3.25$, $+7.21$]} \\
+Granite-3.1-8B & IBM & $-1.47$ [$-2.99$, $+0.00$] & $-1.86$ [$-3.80$, $+0.12$] & \textbf{$+7.29$ [$+5.19$, $+9.65$]} \\
+\bottomrule
+\end{tabular}
+\end{table*}

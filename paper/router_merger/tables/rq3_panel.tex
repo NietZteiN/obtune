@@ -1,0 +1,28 @@
+% GENERATED 2026-09-12 23:48 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/panel_replication_final.json
+% Do not edit by hand -- regenerate. Supersedes the single-scale claim that anchoring 'completely removes' the cost.
+\begin{table*}[ht]
+\centering
+\caption{\textbf{RQ3: the three findings across eight models and four lineages}, all read from one
+evaluation phase. $\surd$\ replicated, $\circ$ inconclusive, $\times$ refuted. R1 is breadth's
+unseen-family tax (\texttt{mono\_all} $-$ \texttt{tuned\_L0} on the held-out family); R2 is
+anchoring removing it (\texttt{cons\_lam3} $-$ \texttt{mono\_all}); R3 is anchoring's clean-code
+cost (\texttt{cons\_lam3} $-$ \texttt{tuned\_L0} on clean code). Bold intervals exclude zero.}
+\label{tab:rq3_panel}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Model} & \textbf{Lineage} & \textbf{R1} unseen tax & \textbf{R2} anchoring repair & \textbf{R3} clean-code cost \\
+\midrule
+CodeLlama-7B & Meta & \textbf{$-3.71$ [$-5.93$, $-1.56$]} $\surd$ & \textbf{$+5.44$ [$+3.37$, $+7.41$]} $\surd$ & $-0.54$ [$-1.98$, $+1.08$] $\surd$ \\
+CodeLlama-13B & Meta & \textbf{$-4.04$ [$-6.26$, $-1.89$]} $\surd$ & \textbf{$+3.87$ [$+2.06$, $+5.77$]} $\surd$ & $-0.72$ [$-2.28$, $+0.90$] $\surd$ \\
+CodeLlama-34B & Meta & \textbf{$-2.72$ [$-5.02$, $-0.49$]} $\surd$ & \textbf{$+3.62$ [$+1.40$, $+5.76$]} $\surd$ & $+0.48$ [$-0.84$, $+1.80$] $\surd$ \\
+Llama-3.1-8B & Meta & \textbf{$-2.72$ [$-4.70$, $-0.91$]} $\surd$ & \textbf{$+3.38$ [$+1.57$, $+5.36$]} $\surd$ & $-0.30$ [$-1.98$, $+1.26$] $\surd$ \\
+StarCoder2-15B & BigCode & \textbf{$-2.72$ [$-4.94$, $-0.58$]} $\surd$ & \textbf{$+2.31$ [$+0.58$, $+4.03$]} $\surd$ & $-0.96$ [$-2.51$, $+0.60$] $\surd$ \\
+Gemma-3-12B & Google & \textbf{$-4.70$ [$-6.93$, $-2.55$]} $\surd$ & \textbf{$+2.64$ [$+0.91$, $+4.53$]} $\surd$ & \textbf{$-1.80$ [$-3.53$, $-0.06$]} $\times$ \\
+CodeGemma-7B & Google & $-1.98$ [$-3.95$, $+0.16$] $\circ$ & $-0.41$ [$-2.39$, $+1.49$] $\circ$ & \textbf{$-2.04$ [$-3.77$, $-0.18$]} $\times$ \\
+Granite-3.1-8B & IBM & $-0.91$ [$-2.97$, $+1.15$] $\circ$ & \textbf{$-1.89$ [$-3.54$, $-0.25$]} $\times$ & \textbf{$-3.41$ [$-5.39$, $-1.26$]} $\times$ \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{replicated / inconclusive / refuted}} & 6 / 2 / 0 & 6 / 1 / 1 & 5 / 0 / 3 \\
+\bottomrule
+\end{tabular}
+\end{table*}
