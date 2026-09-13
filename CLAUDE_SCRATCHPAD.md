@@ -1892,3 +1892,27 @@ condition the hypothesis predicts, and one that has never been evaluated.
   and must say so.
 - `mole_*` runs through the HF path, not vLLM, and is slower per cell. Budget 2× the vLLM rate.
 - H-F1-route's ±1.0 TOST margin is the same one used on singles, chosen before that read.
+
+## 2026-09-13 — H-F2-route PRE-REGISTERED before submission (routing on unseen-containing stacks)
+
+F1 landed (392638 → 392641, via `obtune.mole.eval_mole`, 394 common programs): router − random
++1.34 [+0.48, +2.17]; router − mono_all −0.28 [−1.57, +1.09]; hardrouter − router +0.03 [−0.13, +0.19];
+uniform − base +19.79; merge_dare_ties − tuned_L0 +0.52 [−0.15, +1.20]; merge_ties −5.50; dare_linear
+−20.56; l0merge_ties −3.14; l0merge_dare_ties −1.74; order test −0.68 [−3.30, +2.12]. All five
+registered verdicts INCONCLUSIVE/REPORTED by their rules. Routing on a stack containing an unseen
+family is still unmeasured (H-F2-route was left with F1 on 09-11).
+
+**Cell inventory printed before this prediction: 0 `mole_*` cells on any X1-containing composite.**
+
+Stimulus: the six F2 composites, four routing arms + base (`configs/eval/mole_f2_codellama-7b.yaml`,
+phase `mole_generic`). Controls `mono_all`, `tuned_L0`, `cons_lam3` come from `f2_divergence` on the
+same held-out items. Read on the program subset common to every cell; clustered bootstrap 2,000 / seed 17.
+
+**Decision rule, on the four fully-unseen-containing stacks (C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1), pooled:**
+- **CONFIRMED** ("routing inherits breadth's unseen failure") iff `mole_router − mono_all` is TOST-equivalent
+  at ±1.5 pts AND `mole_router − tuned_L0` ci_hi < 0.
+- **REFUTED** ("routing composes where breadth does not") iff `mole_router − tuned_L0` ci_lo > 0.
+- otherwise INCONCLUSIVE. `mole_router − mole_random`, `mole_router − cons_lam3` and the two half-unseen
+  stacks are REPORTED.
+Prediction: CONFIRMED. Every expert in the mixture was trained on a seen transform; no gate can route to
+competence that no expert has, so the mixture should sit where breadth sits, below the clean-code control.
