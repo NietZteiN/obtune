@@ -433,8 +433,8 @@ ROUTING = [("router","mole_router"),("hard router","mole_hardrouter"),("uniform"
 MERGING = [("TIES","merge_ties"),("DARE-TIES","merge_dare_ties"),("DARE-linear","merge_dare_linear"),
            ("L0-anch. TIES","l0merge_ties"),("L0-anch. DARE-TIES","l0merge_dare_ties")]
 R_PH = ["mole_generic"]
-M_PH = ["rq2_generic","composite_generic","composite_depth","f2_divergence"]
-B_PH = ["mole_generic","rq2_generic","panel_core","composite_generic","composite_depth","f2_divergence"]
+M_PH = ["merge_panel","rq2_generic","composite_generic","composite_depth","f2_divergence"]   # merge_panel: the 2026-09-13 panel merges
+B_PH = ["merge_panel","mole_generic","rq2_generic","panel_core","composite_generic","composite_depth","f2_divergence"]
 RM_ROWS = LADDER[:6] + ["X1"] + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
 
 def rm_grid(m, systems, phases):
