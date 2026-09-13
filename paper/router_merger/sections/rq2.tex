@@ -33,3 +33,12 @@ All three agree: adaptation anchors on the surface a transform leaves behind, wh
 an obfuscator is free to change. The remedy follows: anchor the model to something the transform
 \emph{cannot} change, its own behaviour on the unobfuscated parent of the same program, which exists
 for every training row by construction.
+
+\begin{takeaway}{Takeaway: RQ2}
+Adaptation anchors on the surface a transform leaves behind. Breadth's gain tracks identifier surface
+($+3.39$ on seen stacks, $+5.85$ on unseen-containing ones); the two halves of the unseen family do not
+transfer to each other yet each alone recovers about 90\,\% of the whole adapter's gain; and breadth
+becomes a more committed guesser rather than a better reader. That surface is exactly what an
+obfuscator is free to change, so the remedy is to anchor to what it cannot: the model's behaviour on
+the unobfuscated parent.
+\end{takeaway}

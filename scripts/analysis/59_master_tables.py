@@ -511,3 +511,63 @@ for m, (r, g) in RM.items():
     mk = m.replace("-","")
     if r: write(f"master_routing_{mk}.tex", rm_tex(m, ROUTING, r, "routing", f"tab:routing_{mk}"), "results/cells/mole_generic/"+m)
     if g: write(f"master_merging_{mk}.tex", rm_tex(m, MERGING, g, "merging", f"tab:merging_{mk}"), "results/cells/{rq2_generic,composite_generic,f2_divergence}/"+m)
+
+# ---------------- 6. ABSOLUTE master table for one model: every method x every obfuscation ----------------
+# Raw accuracy only -- no deltas, no percentages (user, 2026-09-13: "I don't like this relative reporting").
+ABS_SYS = [("untuned","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("anchored","cons_lam3"),
+           ("family","tuned_X1"),("mixture","mole_router"),("merge","merge_dare_ties")]
+ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_all":None, "cons_lam3":None, "tuned_X1":None,
+          "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
+ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
+
+def abs_cell(m, sysn, c, bwd=False):
+    if bwd:
+        a, ff = acc(["inverse_generic"], m, sysn, c)
+    else:
+        ph = ABS_PH.get(sysn) or PHASES[KIND[c]]
+        a, ff = acc(ph, m, sysn, c)
+        if a is None and ABS_PH.get(sysn) is None: a, ff = acc(B_PH, m, sysn, c)
+    return a, ff
+
+def abs_fmt(a, ff, tex=True):
+    if a is None: return "--"
+    gated = (ff or 0) > FMT_MAX
+    return (f"{a:.3f}" + (r"$^{\dagger}$" if gated else "")) if tex else (f"{a:.3f}" + ("†" if gated else ""))
+
+def abs_table(m):
+    L = [r"\begin{table*}[ht]", r"\centering\footnotesize\setlength{\tabcolsep}{2.5pt}",
+         r"\caption{\textbf{Every method against every obfuscation, " + NICE[m] + r".} Raw accuracy (strict exact match) of each "
+         r"system on each condition and stack, forward (output prediction) and, for the ladder, backward (input prediction). "
+         r"\emph{untuned} is the base model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; "
+         r"\emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on "
+         r"the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the "
+         r"DARE-TIES merge of the specialists (system keys, in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, "
+         r"\texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). $\dagger$: format-failure rate above 0.25, the cell measures the prompt contract rather "
+         r"than the task. `--': not run.}",
+         r"\label{tab:master_abs_" + m.replace("-","") + "}",
+         r"\begin{tabular}{@{}l" + "r"*len(ABS_SYS) + "@{}}", r"\toprule",
+         r"\textbf{Condition} & " + " & ".join(r"\textbf{" + n + "}" for n,_ in ABS_SYS) + r" \\", r"\midrule",
+         r"\multicolumn{" + str(1+len(ABS_SYS)) + r"}{@{}l}{\emph{Forward: output prediction}} \\"]
+    prev=None
+    for c in ABS_ROWS:
+        k=KIND[c]
+        if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
+        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(abs_fmt(*abs_cell(m, sy, c)) for _,sy in ABS_SYS) + r" \\"); prev=k
+    L.append(r"\midrule"); L.append(r"\multicolumn{" + str(1+len(ABS_SYS)) + r"}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\")
+    for c in LADDER:
+        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(("--" if sy in ("base_1shot","mole_router","merge_dare_ties") else abs_fmt(*abs_cell(m, sy, c, bwd=True))) for _,sy in ABS_SYS) + r" \\")
+    L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
+    return "\n".join(L)
+
+for m in ["codellama-7b"]:
+    write(f"master_abs_{m.replace('-','')}.tex", abs_table(m), "results/cells/* for " + m + " (raw accuracies only)")
+
+# markdown twin
+out.append("\n## 6. Absolute master table — every method × every obfuscation, CodeLlama-7B (raw accuracy)\n")
+out.append("| condition | " + " | ".join(n for n,_ in ABS_SYS) + " |"); out.append("|---|" + "---:|"*len(ABS_SYS))
+for c in ABS_ROWS:
+    out.append(f"| {c} | " + " | ".join(abs_fmt(*abs_cell("codellama-7b", sy, c), tex=False) for _,sy in ABS_SYS) + " |")
+out.append("| *backward* | " + " | ".join("" for _ in ABS_SYS) + " |")
+for c in LADDER:
+    out.append(f"| {c} (bwd) | " + " | ".join(("--" if sy in ("base_1shot","mole_router","merge_dare_ties") else abs_fmt(*abs_cell("codellama-7b", sy, c, bwd=True), tex=False)) for _,sy in ABS_SYS) + " |")
+(ROOT/"docs/MASTER_TABLES.md").write_text("\n".join(out) + "\n")

@@ -1,16 +1,16 @@
-\section{Every intervention against every obfuscation}
+\section{Every method against every obfuscation}
 \label{sec:master}
 
-Table~\ref{tab:master_summary} puts every intervention against every kind of obfuscation across the
-panel; Appendix~\ref{app:master} gives the per-model grids. Each cell carries the raw accuracy, the
-change against the untuned model, and that accuracy as a percentage of the untuned model's clean-code
-accuracy --- how much of the original the intervention brings back. The untuned model keeps 66--81\%
-of its clean accuracy on single seen transforms, 46\% on the unseen family and 35--58\% on depth-3/4
-stacks (CodeLlama-7B). Every intervention more than restores clean accuracy on seen transforms and
-seen stacks, so those columns do not separate them; the unseen-family columns do: breadth 91\%,
-clean-code control 102\%, anchored 99\%, family 128\% of clean accuracy (panel mean), in the same
-order on the stacks containing the family. Backward cells survive the format gate almost only on
-CodeLlama-7B, where the family adapter never loses backward accuracy, anchoring stays within 2.3
-points of the untuned model and breadth loses up to 3.9.
+Table~\ref{tab:master_abs_codellama7b} is the reference the research questions draw on: the raw
+accuracy of every method on every condition and stack for CodeLlama-7B, the one model on which every
+arm exists, forward and, for the ladder, backward. Every number is a strict exact-match accuracy on the
+held-out programs of that condition; nothing is normalised. The untuned model scores 0.257 on clean code,
+0.168--0.207 on the single seen transforms, 0.119 on the unseen family and 0.089--0.186 on the stacks.
+Every tuned arm lands between 0.35 and 0.43 on the single seen transforms and their stacks; the
+columns separate on the unseen family (0.231 breadth, 0.269 clean LoRA, 0.286 anchored, 0.316 family)
+and on the stacks that contain it. The backward block is read on this model only, because the one-shot
+inverse template collapses the format on most other panel models; the per-model grids for the whole
+panel, and the routing and merging arms on every model that has them, are in
+Appendices~\ref{app:master} and \ref{app:routing}.
 
-\input{tables/master_summary}
+\input{tables/master_abs_codellama7b}

@@ -41,6 +41,7 @@
 - Oracle prompting at 7B+ — the RQ2 "know how but not when" branch is a scale question.
 
 ## Entries
+- [`2026-09-13_takeaways-one-table-per-rq-absolute-master.md`](2026-09-13_takeaways-one-table-per-rq-absolute-master.md) — takeaway boxes, one table per RQ, absolute master table up front.
 - [`2026-09-13_shortened-to-the-page-limit.md`](2026-09-13_shortened-to-the-page-limit.md) — RQ prose halved, subsections removed, Setup unified; tables and claims untouched.
 - [`2026-09-13_tables-updated-story-held.md`](2026-09-13_tables-updated-story-held.md) — tables track the results, prose held at the pre-merging state by user instruction; the resulting RQ1 contradiction is marked in the source and is the user's to resolve.
 - [`2026-09-13_master-tables-in-the-paper.md`](2026-09-13_master-tables-in-the-paper.md) — **master tables generated into the paper**: per-model grids over every condition and all 16 stacks with raw acc / Δ / % of clean, cross-model summary, and the models / dataset / taxonomy / stacks setup tables; appendix A. Gate semantics stated per cell.

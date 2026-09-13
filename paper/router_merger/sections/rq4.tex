@@ -17,11 +17,10 @@ the first is established, because the pooled d2 interval spans zero, so by that 
 \textsc{undecided}. Split by RQ2's identifier rule, committed before the first d2 cell was written,
 identifier-containing stacks sit at $+1.98$ [$-0.12$, $+4.18$] and structural-containing stacks at
 $-3.88$ [$-6.08$, $-1.71$]: breadth is broken where the stack leaves it no identifier surface to key
-on. Across the panel (Table~\ref{tab:rq4_by_model}) the anchoring advantage on unseen-containing
+on. Across the panel (Table~\ref{tab:rq4_by_model}, Appendix~\ref{app:supp}) the anchoring advantage on unseen-containing
 stacks replicates on five of eight models, is inconclusive on three and refuted on none; family
 exposure is significant on all eight and is the largest effect in the table.
 
-\input{tables/rq4_by_model}
 
 \textbf{Reversal.} In Table~\ref{tab:direction_ratio}, anchoring's direction ratio is $+0.03$: the
 only arm in the supervised-fine-tuning family whose forward gain cost nothing backwards. It does
@@ -37,3 +36,11 @@ arms), and every arm that beats it there was trained on the family's sibling. An
 breadth's recombination benefit at little cost, extends it to composed inputs the model has never
 seen, and stops paying the backward price --- and it does not add the capability breadth lacks. It
 is a repair of what adaptation breaks, not a route to invariance.
+
+\begin{takeaway}{Takeaway: RQ4}
+The anchored model's advantage appears only where the input diverges from training: level with breadth
+on seen stacks, above the clean-code control and above breadth once an unseen family enters (five of
+eight models replicate, none refute; the strict pre-registered rule is undecided), and a direction
+ratio of $+0.03$ where every other supervised arm is negative. On the unseen family alone it is as
+robust as clean-code tuning and no more: a repair of what adaptation breaks, not a route to invariance.
+\end{takeaway}

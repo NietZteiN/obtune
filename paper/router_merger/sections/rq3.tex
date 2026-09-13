@@ -26,3 +26,10 @@ on five of eight. Every failure falls outside the lineage the findings were disc
 three are four-of-four; with $n = 8$ and vendor confounded with lineage (Fisher's exact $p = 0.0714$
 one-sided) that is a warning that single-lineage evaluation would have hidden all of it, not a claim
 about lineages.
+
+\begin{takeaway}{Takeaway: RQ3}
+Distilling from a clean-code-\emph{tuned} teacher on the unobfuscated parent, on exactly the rows
+breadth trains on, removes breadth's unseen-family tax on six of eight models and reverses it on one
+(Granite-3.1-8B), at no clean-code cost on five of eight. The teacher ablation shows where the effect
+lives: the seen-condition gain is teacher-independent, the unseen-family behaviour is the teacher's.
+\end{takeaway}

@@ -103,6 +103,7 @@
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 \usepackage[skins]{tcolorbox}
+\newtcolorbox{takeaway}[1]{colback=black!4,colframe=black!55,coltitle=white,title=#1,fonttitle=\bfseries,boxrule=0.5pt,arc=2pt,left=5pt,right=5pt,top=3pt,bottom=3pt,before skip=6pt,after skip=6pt}
 \usepackage{xcolor}
 \usepackage{multicol}
 \usepackage{soul}
@@ -620,11 +621,11 @@
 \input{sections/intro-2}
 \input{sections/rqs}
 \input{sections/setup}
+\input{sections/master}
 \input{sections/rq1}
 \input{sections/rq2}
 \input{sections/rq3}
 \input{sections/rq4}
-\input{sections/master}
 \input{sections/related}
 \input{sections/threats}
 
@@ -670,6 +671,17 @@ Every routing and merging system on every condition and stack that has it, for t
 \input{tables/master_merging_granite318b}
 \input{tables/master_merging_llama318b}
 \input{tables/master_merging_starcoder215b}
+
+\section{Supplementary tables}
+\label{app:supp}
+
+The contrast tables referenced from the research questions that are not the one table each question carries in the body: routing and merging on stacks (Table~\ref{tab:rq1_composition}), merging across the panel (Table~\ref{tab:rq1_merge_panel}), the direction ratio (Table~\ref{tab:direction_ratio}), the anchoring advantage by model (Table~\ref{tab:rq4_by_model}), and the cross-model summary in relative terms (Table~\ref{tab:master_summary}).
+
+\input{tables/rq1_composition}
+\input{tables/rq1_merge_panel}
+\input{tables/direction_ratio}
+\input{tables/rq4_by_model}
+\input{tables/master_summary}
 
 \end{document}
 \endinput
