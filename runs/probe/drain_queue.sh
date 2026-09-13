@@ -24,7 +24,14 @@ while true; do
     echo "queue drained: nothing queued, running or pending"; break
   fi
   if [ "$((run+pend))" -lt 8 ] && [ "$left" -gt 0 ]; then
-    for spec in "h100 3 64G" "a30 2 64G" "h200 1 96G"; do
+    # 34B needs 128 G of host memory (the earlier 34B runs used it); everything else gets 64-96 G,
+    # because over-requesting is not free -- 128 G on a memory-starved h200 once scheduled a job a
+    # day out. So the h200 pass asks for 128 G only while a 34B manifest is next in line.
+    h200mem=96G
+    next34b=$(ls runs/manifest/queued/*.json 2>/dev/null | xargs -r -n1 basename 2>/dev/null | grep -c 34b)
+    only34b=$(ls runs/manifest/queued/*.json 2>/dev/null | wc -l)
+    [ "$next34b" -gt 0 ] && [ "$next34b" -eq "$only34b" ] && h200mem=128G
+    for spec in "h100 3 64G" "a30 2 64G" "h200 1 $h200mem"; do
       set -- $spec
       out=$(timeout 300 python scripts/slurm/submit.py --queued --partition "$1" --limit "$2" --mem "$3" 2>&1 | grep -E "^submitted|FAILED|REFUSING" | grep -v REFUSING)
       [ -n "$out" ] && echo "$out" | sed "s/^/[$1] /"

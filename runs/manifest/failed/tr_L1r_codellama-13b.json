@@ -1,5 +1,5 @@
 {
-  "job_id": "tr_L1r_codellama-34b",
+  "job_id": "tr_L1r_codellama-13b",
   "kind": "train",
   "argv": [
     "-m",
@@ -7,20 +7,19 @@
     "--config",
     "train/grid_py_L1r_panel.yaml",
     "--model",
-    "codellama-34b"
+    "codellama-13b"
   ],
   "raw": false,
-  "est_gpu_h": 2.0,
+  "est_gpu_h": 1.0,
   "priority": 250,
   "meta": {
     "note": "master table: specialists so merges (and later the mixture) exist on every model"
   },
   "slurm": {
-    "job_id": "393484",
+    "job_id": "393483",
     "node": "g-02-01",
     "partition": "a30",
-    "exit_code": 124,
-    "finished_utc": "2026-09-13T17:02:03.999351+00:00",
-    "reason": "killed before the command returned (walltime or node failure)"
+    "exit_code": 1,
+    "finished_utc": "2026-09-13T17:03:38.419120+00:00"
   }
 }
