@@ -185,7 +185,7 @@ class TrialRow(BaseModel):
                    # (X1, never H1). Its own phase so an unseen-in-stack cell can never be pooled
                    # with the all-seen composites of `composite_generic`/`composite_depth`, which
                    # is the whole distinction the experiment exists to draw.
-                   "f2_divergence"]
+                   "f2_divergence", "merge_panel"]
     experiment_id: str
     base_model: str
     # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned
