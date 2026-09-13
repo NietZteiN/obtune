@@ -123,6 +123,12 @@ def main() -> int:
             continue
         for name, comb, cfg in ARMS:
             out = f"runs/adapters/{m}/python/{name}_r32_s17"
+            # A merge that is QUEUED has no output directory yet, so `ready()` still says "no
+            # merges" on the next tick and this loop submitted StarCoder2's three merges twice
+            # (393020-22 and 393034-36, 2026-09-13) while they waited on dev's one-job cap.
+            # Live job names are the idempotency test, as for checkpoint-select above.
+            if f"mg_{name}_{m}" in live or (ROOT / out / "adapter_model.safetensors").exists():
+                continue
             r = subprocess.run(
                 [sys.executable, str(ROOT / "scripts/slurm/submit.py"),
                  "--name", f"mg_{name}_{m}", "--partition", "dev", "--gres", "none",
