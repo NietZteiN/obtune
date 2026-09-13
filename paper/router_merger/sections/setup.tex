@@ -5,3 +5,16 @@ Because negative-leaning results are frequently attacked at their experimental f
 To test true invariance, we employ a held-out family (H1) and its trainable proxy (X1). H1 is strictly quarantined behind four independent enforcement layers, meaning every unseen-family measurement reported in our exploration relies on X1, which reproduces H1's difficulty with extreme fidelity ($r = 0.9992$). 
 
 Our correctness machinery utilizes program-level splits and enforces a strict normalised exact match criterion, explicitly rejecting containment matching to avoid false positives. We support these measurements with robust statistics, primarily program-clustered bootstraps with 2,000 resamples to account for correlated input cases. Finally, we establish an important measurement finding regarding model evaluation: untuned format failure fundamentally measures a model's adherence to the prompt contract, rather than its inherent capability. Screening base models by untuned format failure is therefore structurally unsound.
+
+\subsection{Models}
+Table~\ref{tab:models} lists the panel: eight instruct models from four lineages (Meta, BigCode, Google, IBM), code-specialised and general, 7B to 34B, plus one pretrained checkpoint used only for the one-shot baseline. Every adapter is a LoRA with the same rank and target modules on every model, so a difference between models is a difference in the model, not in the recipe. Chat templates differ in whether they accept a system role; the prompt builder is shared by training, evaluation and attention extraction, so the same rendering reaches every path.
+\input{tables/setup_models}
+
+\subsection{Dataset}
+Table~\ref{tab:dataset} summarises the corpus. The split is by program, never by row, so no obfuscated variant of a training program can appear in evaluation; three input cases per program are fixed and their gold outputs are executed from the clean parent, which makes the grader independent of any transform. Coverage differs by condition because structural transforms decline some programs by design and the unseen family needs enough encodable sites; every paired contrast is therefore computed on the programs common to the cells it compares, fixed before evaluation.
+\input{tables/setup_dataset}
+
+\subsection{Obfuscation taxonomy}
+Tables~\ref{tab:taxonomy} and \ref{tab:stacks} give the full taxonomy. Single transforms (Table~\ref{tab:taxonomy}) fall into three families: identifier (L1b, L1r, L2), structural (S1, S2, and S2's two halves S3 and S4), and encoding (X1 and its halves). H1 is the quarantined held-out obfuscator; its evaluation budget is spent and every unseen-family number in this paper is measured on X1, which reproduces H1's difficulty at $r = 0.9992$. Stacks (Table~\ref{tab:stacks}) are a separate namespace built by applying parts to the clean parent in order; order matters, and no system is ever trained on a stack. Ten stacks contain only seen transforms, at depth two (six) and depth three to four (four); six contain the unseen family or one of its halves. The unseen-containing stacks are the stimulus RQ4 turns on.
+\input{tables/setup_taxonomy}
+\input{tables/setup_stacks}

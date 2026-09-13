@@ -1,0 +1,56 @@
+% GENERATED 2026-09-13 04:43 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-7b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Master grid, CodeLlama-7B.} Every condition and every stack, forward (output prediction) and backward (input prediction, ladder only). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the same condition; \% accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of the original accuracy the system brings back (100 = the untuned model on clean code). \emph{fmt}: format-failure rate above 0.25, the cell measures the prompt contract rather than the task and enters no mean. Pooled rows average the stacks above them. `--': cell not run.}
+\label{tab:master_codellama7b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{ICL}} & \multicolumn{3}{c|}{\textbf{clean LoRA}} & \multicolumn{3}{c|}{\textbf{breadth}} & \multicolumn{3}{c|}{\textbf{anchored}} & \multicolumn{3}{c}{\textbf{family}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{base\_1shot}} & \multicolumn{3}{c|}{\texttt{tuned\_L0}} & \multicolumn{3}{c|}{\texttt{mono\_all}} & \multicolumn{3}{c|}{\texttt{cons\_lam3}} & \multicolumn{3}{c}{\texttt{tuned\_X1}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\multicolumn{18}{@{}l}{\emph{Forward: output prediction}} \\
+\texttt{L0} & 0.257 & 100 & 0.302 & $+4.5$ & 117 & 0.427 & $+17.0$ & 166 & 0.413 & $+15.6$ & 161 & 0.422 & $+16.5$ & 164 & 0.413 & $+15.6$ & 161 \\
+\texttt{L1b} & 0.198 & 77 & 0.255 & $+5.7$ & 99 & 0.358 & $+16.0$ & 139 & 0.388 & $+19.0$ & 151 & 0.402 & $+20.4$ & 156 & 0.346 & $+14.8$ & 135 \\
+\texttt{L1r} & 0.207 & 81 & 0.265 & $+5.8$ & 103 & 0.378 & $+17.1$ & 147 & 0.387 & $+18.0$ & 151 & 0.395 & $+18.8$ & 154 & 0.360 & $+15.3$ & 140 \\
+\texttt{L2} & 0.202 & 79 & 0.272 & $+7.0$ & 106 & 0.382 & $+18.0$ & 149 & 0.378 & $+17.7$ & 147 & 0.398 & $+19.6$ & 155 & 0.354 & $+15.2$ & 138 \\
+\texttt{S1} & 0.168 & 66 & 0.216 & $+4.7$ & 84 & 0.379 & $+21.0$ & 147 & 0.389 & $+22.1$ & 151 & 0.400 & $+23.2$ & 156 & 0.370 & $+20.2$ & 144 \\
+\texttt{S2} & 0.193 & 75 & fmt & fmt & fmt & 0.389 & $+19.6$ & 152 & 0.403 & $+20.9$ & 157 & 0.415 & $+22.2$ & 162 & 0.383 & $+19.0$ & 149 \\
+\texttt{X1} & 0.119 & 46 & -- & -- & -- & 0.269 & $+14.9$ & 105 & 0.231 & $+11.2$ & 90 & 0.286 & $+16.6$ & 111 & 0.316 & $+19.7$ & 123 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.141 & 55 & -- & -- & -- & 0.279 & $+13.7$ & 108 & 0.345 & $+20.4$ & 134 & 0.360 & $+21.9$ & 140 & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & 0.131 & 51 & -- & -- & -- & 0.294 & $+16.3$ & 114 & 0.350 & $+21.9$ & 136 & 0.356 & $+22.5$ & 139 & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.135 & 53 & -- & -- & -- & 0.285 & $+15.0$ & 111 & 0.326 & $+19.2$ & 127 & 0.349 & $+21.4$ & 136 & -- & -- & -- \\
+\texttt{C\_L2\_S4} & 0.176 & 68 & -- & -- & -- & 0.355 & $+17.9$ & 138 & 0.385 & $+20.9$ & 150 & 0.392 & $+21.7$ & 153 & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & 0.172 & 67 & -- & -- & -- & 0.360 & $+18.8$ & 140 & 0.380 & $+20.8$ & 148 & 0.387 & $+21.5$ & 151 & -- & -- & -- \\
+\texttt{C\_S4\_S3} & 0.186 & 72 & -- & -- & -- & 0.392 & $+20.6$ & 153 & 0.403 & $+21.7$ & 157 & 0.422 & $+23.6$ & 164 & -- & -- & -- \\
+\emph{seen stacks, pooled (6)} & 0.157 & 61 & -- & -- & -- & 0.327 & $+17.1$ & 127 & 0.365 & $+20.8$ & 142 & 0.378 & $+22.1$ & 147 & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & 0.150 & 58 & -- & -- & -- & 0.340 & $+19.0$ & 132 & 0.377 & $+22.7$ & 147 & 0.380 & $+23.0$ & 148 & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & 0.128 & 50 & -- & -- & -- & 0.354 & $+22.6$ & 138 & 0.369 & $+24.1$ & 144 & 0.385 & $+25.7$ & 150 & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & 0.126 & 49 & -- & -- & -- & 0.289 & $+16.3$ & 112 & 0.353 & $+22.7$ & 137 & 0.354 & $+22.7$ & 138 & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.089 & 35 & -- & -- & -- & 0.278 & $+18.8$ & 108 & 0.336 & $+24.7$ & 131 & 0.356 & $+26.7$ & 139 & -- & -- & -- \\
+\emph{depth-3/4 stacks, pooled (4)} & 0.123 & 48 & -- & -- & -- & 0.315 & $+19.2$ & 123 & 0.359 & $+23.5$ & 140 & 0.369 & $+24.5$ & 144 & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.102 & 40 & -- & -- & -- & 0.184 & $+8.2$ & 72 & 0.199 & $+9.6$ & 77 & 0.222 & $+12.0$ & 87 & 0.254 & $+15.2$ & 99 \\
+\texttt{C\_X1\_S1} & 0.104 & 40 & -- & -- & -- & 0.274 & $+17.0$ & 107 & 0.230 & $+12.6$ & 89 & 0.267 & $+16.3$ & 104 & 0.326 & $+22.2$ & 127 \\
+\texttt{C\_S2\_X1} & 0.145 & 57 & -- & -- & -- & 0.313 & $+16.8$ & 122 & 0.285 & $+13.9$ & 111 & 0.332 & $+18.6$ & 129 & 0.347 & $+20.2$ & 135 \\
+\emph{unseen-containing stacks, pooled (3)} & 0.117 & 46 & -- & -- & -- & 0.257 & $+14.0$ & 100 & 0.238 & $+12.1$ & 93 & 0.274 & $+15.7$ & 107 & 0.309 & $+19.2$ & 120 \\
+\texttt{C\_L1r\_X1m} & 0.112 & 44 & -- & -- & -- & 0.220 & $+10.7$ & 85 & 0.232 & $+12.0$ & 90 & 0.249 & $+13.7$ & 97 & 0.281 & $+16.9$ & 110 \\
+\texttt{C\_S1\_X1s} & 0.151 & 59 & -- & -- & -- & 0.334 & $+18.3$ & 130 & 0.302 & $+15.1$ & 117 & 0.355 & $+20.4$ & 138 & 0.341 & $+19.0$ & 133 \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.104 & 40 & -- & -- & -- & 0.219 & $+11.5$ & 85 & 0.222 & $+11.8$ & 86 & 0.250 & $+14.6$ & 97 & 0.271 & $+16.7$ & 106 \\
+\midrule
+\multicolumn{18}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
+\texttt{L0} & 0.285 & 100 & -- & -- & -- & 0.324 & $+3.9$ & 114 & 0.276 & $-0.8$ & 97 & 0.297 & $+1.3$ & 104 & 0.312 & $+2.7$ & 109 \\
+\texttt{L1b} & 0.265 & 93 & -- & -- & -- & 0.251 & $-1.3$ & 88 & 0.279 & $+1.4$ & 98 & 0.294 & $+2.9$ & 103 & 0.265 & $+0.1$ & 93 \\
+\texttt{L1r} & 0.315 & 111 & -- & -- & -- & 0.327 & $+1.1$ & 115 & 0.276 & $-3.9$ & 97 & 0.293 & $-2.3$ & 103 & 0.327 & $+1.1$ & 115 \\
+\texttt{L2} & 0.282 & 99 & -- & -- & -- & 0.324 & $+4.2$ & 114 & 0.276 & $-0.6$ & 97 & 0.275 & $-0.7$ & 97 & 0.324 & $+4.2$ & 114 \\
+\texttt{S1} & 0.261 & 92 & -- & -- & -- & fmt & fmt & fmt & 0.262 & $+0.1$ & 92 & 0.280 & $+1.9$ & 98 & 0.280 & $+1.8$ & 98 \\
+\texttt{S2} & 0.330 & 116 & -- & -- & -- & fmt & fmt & fmt & 0.294 & $-3.6$ & 103 & 0.332 & $+0.2$ & 117 & 0.330 & $+0.0$ & 116 \\
+\texttt{X1} & 0.257 & 90 & -- & -- & -- & fmt & fmt & fmt & 0.237 & $-2.0$ & 83 & 0.281 & $+2.5$ & 99 & 0.291 & $+3.4$ & 102 \\
+\bottomrule
+\end{tabular}
+\end{table*}

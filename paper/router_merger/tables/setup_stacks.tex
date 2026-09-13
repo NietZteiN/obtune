@@ -1,0 +1,34 @@
+% GENERATED 2026-09-13 04:43 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: configs/conditions_composite.yaml, data/eval/heldout/items/*
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize
+\caption{\textbf{Stacked composites.} A separate namespace from the ladder: parts are applied to the clean parent left to right, and order matters because composition does not commute. Size caps were calibrated on a 40-program build at cap 60 (p95 $\times$ 1.25) so that the cap is never the binding constraint. No system is ever trained on a stack; the breadth and family adapters see single transforms only.}
+\label{tab:stacks}
+\setlength{\tabcolsep}{2.5pt}\begin{tabular}{@{}llrlrrlp{0.17\linewidth}@{}}
+\toprule
+\textbf{Code} & \textbf{Parts, in order} & \textbf{Depth} & \textbf{X1 inside} & \textbf{Cap} & \textbf{Prog.\,/\,items} & \textbf{Group} & \textbf{Purpose} \\
+\midrule
+\texttt{C\_L1b\_S1} & L1b$\to$S1 & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & does L1b's specialist advantage survive stacking? \\
+\texttt{C\_L1r\_S1} & L1r$\to$S1 & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & headline identifier $\otimes$ structural stack \\
+\texttt{C\_S1\_L1r} & S1$\to$L1r & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & order control for C\_L1r\_S1 (renames S1's state variables) \\
+\texttt{C\_L2\_S4} & L2$\to$S4 & 2 & no & 5.0$\times$ & 556 / 1668 & seen d2 & identifier $\otimes$ the reason-about-it half of S2 \\
+\texttt{C\_L1r\_S3} & L1r$\to$S3 & 2 & no & 5.0$\times$ & 557 / 1671 & seen d2 & identifier $\otimes$ the ignore-it half of S2 \\
+\texttt{C\_S4\_S3} & S4$\to$S3 & 2 & no & 5.0$\times$ & 556 / 1668 & seen d2 & positive control: reconstructs S2 by composition \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & L1r$\to$S3$\to$S4 & 3 & no & 10.0$\times$ & 556 / 1668 & seen d3--4 & depth 3, identifier first \\
+\texttt{C3\_S1\_S3\_S4} & S1$\to$S3$\to$S4 & 3 & no & 14.0$\times$ & 395 / 1185 & seen d3--4 & depth 3, structural only \\
+\texttt{C3\_L1r\_S1\_S4} & L1r$\to$S1$\to$S4 & 3 & no & 14.0$\times$ & 418 / 1254 & seen d3--4 & depth 3, identifier first, flattening inside \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & L1r$\to$S1$\to$S3$\to$S4 & 4 & no & 18.0$\times$ & 418 / 1254 & seen d3--4 & depth 4 \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & L1r$\to$X1 & 2 & yes & 10.0$\times$ & 405 / 1215 & unseen d2 & unseen family last, after renaming \\
+\texttt{C\_X1\_S1} & X1$\to$S1 & 2 & yes & 12.0$\times$ & 321 / 963 & unseen d2 & unseen material itself flattened \\
+\texttt{C\_S2\_X1} & S2$\to$X1 & 2 & yes & 22.0$\times$ & 555 / 1665 & unseen d2 & unseen family applied to dead code too \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & L1r$\to$X1m & 2 & yes & 10.0$\times$ & 351 / 1053 & half-unseen d2 & half an unseen family (arithmetic) \\
+\texttt{C\_S1\_X1s} & S1$\to$X1s & 2 & yes & 14.0$\times$ & 418 / 1254 & half-unseen d2 & half an unseen family (strings) \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & L1r$\to$S1$\to$X1 & 3 & yes & 16.0$\times$ & 417 / 1251 & unseen d3 & one unseen component at depth 3 \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,26 @@
+% GENERATED 2026-09-13 04:43 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: configs/conditions.yaml, data/eval/heldout/items/*
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize
+\caption{\textbf{Single transforms.} Each is applied to the clean parent and never stacked. \emph{Cap} is the maximum growth factor over the parent above which a program is declined rather than clipped; \emph{programs / items} is held-out coverage. H1 is the quarantined held-out obfuscator whose evaluation budget is spent; X1 is its trainable sibling and carries every unseen-family number.}
+\label{tab:taxonomy}
+\setlength{\tabcolsep}{3pt}\begin{tabular}{@{}llp{0.30\linewidth}lrrl@{}}
+\toprule
+\textbf{Code} & \textbf{Family} & \textbf{Transform} & \textbf{Trainable} & \textbf{Cap} & \textbf{Programs / items} & \textbf{Role} \\
+\midrule
+L0 & none & normalised original: comments and docstrings stripped, 4-space indent & yes & 1.2$\times$ & 557 / 1671 & clean reference \\
+L1b & identifier & adversarial renaming of all bindings incl. the entry function, from semantic-inversion tables (max$\rightarrow$min) and an unrelated domain vocabulary & yes & 2.0$\times$ & 553 / 1659 & ladder \\
+L1r & identifier & random hex renaming of all bindings (v\_a3f2, f\_9c1e) & yes & 2.0$\times$ & 557 / 1671 & ladder \\
+L2 & identifier & sequential minification of all bindings (a, b, …, aa) plus type-annotation stripping & yes & 1.5$\times$ & 557 / 1671 & ladder \\
+S1 & structural & control-flow flattening of the entry function into a dispatch loop with randomised state ids and shuffled cases & yes & 6.0$\times$ & 416 / 1248 & ladder \\
+S2 & structural & opaque predicates (computed always-true/false guards) plus never-called dead helpers & yes & 4.0$\times$ & 556 / 1668 & ladder \\
+S3 & structural & dead-code insertion only: 1--2 never-called module-level helpers (must be ignored) & yes & 4.0$\times$ & 557 / 1671 & stacks only \\
+S4 & structural & opaque predicates only: 1--3 computed guards at statement boundaries (must be reasoned about) & yes & 4.0$\times$ & 556 / 1668 & stacks only \\
+X1 & encoding & every string literal through an inline XOR decoder, every + $-$ \^{} through a type-guarded algebraic identity, int literals expanded & yes & 12.0$\times$ & 405 / 1215 & \textbf{unseen family} \\
+X1m & encoding & X1's arithmetic half only (mechanisms: [mba]) & yes & 12.0$\times$ & 351 / 1053 & mechanism ablation \\
+X1s & encoding & X1's string half only (mechanisms: [str]); site bar 1 & yes & 12.0$\times$ & 246 / 738 & mechanism ablation \\
+H1 & heldout & string encoding (base64 / RC4 string array) plus guarded mixed-boolean-arithmetic rewriting & never & 12.0$\times$ & -- & quarantined \\
+\bottomrule
+\end{tabular}
+\end{table*}

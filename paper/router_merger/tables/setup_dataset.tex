@@ -1,0 +1,24 @@
+% GENERATED 2026-09-13 04:43 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: data/train/base/python.jsonl, data/splits/python.json, data/eval/heldout/items/*
+% Do not edit by hand -- regenerate. 
+\begin{table}[ht]
+\centering\small
+\caption{\textbf{The dataset.} One Python corpus, split by program so no obfuscated variant of a training program can reach evaluation.}
+\label{tab:dataset}
+\begin{tabular}{@{}p{0.34\linewidth}p{0.6\linewidth}@{}}
+\toprule
+\textbf{Property} & \textbf{Value} \\
+\midrule
+Base programs (Python) & 2231: apps 1584, cruxeval 543, humaneval 104 \\
+Split & by program, seed 17: train 1563 / val 111 / held-out 557 \\
+Input cases per program & 3, gold output executed from the clean parent \\
+Program length & mean 8.4 LOC, max 57 \\
+Held-out eval, clean & 557 programs $\times$ 3 cases = 1671 items \\
+Coverage per condition & Tables~\ref{tab:taxonomy} and \ref{tab:stacks}; structural transforms decline some programs by design, the unseen family needs $\geq 3$ encodable sites \\
+Training rows per adapter & one condition's train split $\times$ 3 cases (4689); breadth pools the five seen conditions \\
+Paired contrasts & on the programs common to every cell in the contrast, fixed before evaluation; program-clustered bootstrap, 2{,}000 resamples \\
+JavaScript & 168 held-out programs (504 items), transferred intact; not regenerable on the cluster \\
+Grading & strict normalised exact match, no containment; the backward task executes the produced call against the clean parent \\
+\bottomrule
+\end{tabular}
+\end{table}

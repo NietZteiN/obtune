@@ -625,6 +625,7 @@
 \input{sections/rq2}
 \input{sections/rq3}
 \input{sections/rq4}
+\input{sections/master}
 \input{sections/related}
 \input{sections/threats}
 
@@ -643,6 +644,22 @@ Data/code is available in {\color{black}{project's website~\cite{}}}.
 \bibliographystyle{ACM-Reference-Format}
 
 \bibliography{references,references-codesteer}
+
+\clearpage
+\appendix
+\section{Per-model master grids}
+\label{app:master}
+
+One table per panel model: every condition and every stack, forward and backward, with the raw accuracy, the change against the untuned model, and the percentage of the untuned model's clean-code accuracy. Cells marked \emph{fmt} exceed the pre-registered format-failure gate (0.25) and enter no mean; the gate is applied per cell, which is stricter than the pooled registration. The untuned CodeLlama-34B sits at 0.254 on clean code, a hair over the bar, which gates its percentage column while its deltas stand. Rows marked `--' are cells not yet run at the time of generation.
+
+\input{tables/master_codellama7b}
+\input{tables/master_codellama13b}
+\input{tables/master_codellama34b}
+\input{tables/master_llama318b}
+\input{tables/master_starcoder215b}
+\input{tables/master_gemma312b}
+\input{tables/master_codegemma7b}
+\input{tables/master_granite318b}
 
 \end{document}
 \endinput
