@@ -31,6 +31,10 @@ systems:
   - {name: tuned_S1, adapter: "runs/adapters/{model}/{language}/S1_r32_s17/best", arch: per_type, train_cond: S1}
   - {name: tuned_S2, adapter: "runs/adapters/{model}/{language}/S2_r32_s17/best", arch: per_type, train_cond: S2}
 
+# WIDENED 2026-09-13 to the master table's full 23 conditions: the four depth-3/4 stacks and the two
+# half-unseen stacks were absent, so the merge column had holes at depth and at the mechanism halves
+# on every model. Same phase, so the cells already written are resumed past.
 eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
                   C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
-                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1]
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]
