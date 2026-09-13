@@ -88,13 +88,27 @@ while true; do
     for c in L0 L1b L1r L2 S1 S2 S3 S4; do
       [ -f "runs/adapters/$m/python/${c}_r32_s17/best/adapter_model.safetensors" ] && have=$((have+1))
     done
-    tag="routerlora_$(echo $m | tr -d '-')"
+    # train_mole appends the seed to run_tag: the 7B gate lives in routerlora_codellama7b_s17/.
+    tag="routerlora_$(echo $m | tr -d '-')_s17"
     mf=runs/manifest/queued/tr_gate_$m.json
     if [ "$have" -eq 8 ] && [ ! -f "runs/mole/$m/python/$tag/gate.pt" ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/tr_gate_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "tr_gate_$m"; then
       printf '{"job_id":"tr_gate_%s","kind":"train","argv":["-m","obtune.mole.train_mole","--config","mole/routerlora_%s.yaml"],"raw":false,"est_gpu_h":3.0,"priority":280,"meta":{"note":"master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"}}\n' "$m" "$m" > "$mf"
       echo "[mixture] queued tr_gate_$m (8/8 experts ready)"
+    fi
+  done
+  # Mixture evaluation, once a gate exists. Runs through obtune.mole.eval_mole -- vLLM has no mixture
+  # path and refuses these arches (the guard that cost a day on 2026-09-12/13).
+  for m in codellama-13b llama31-8b starcoder2-15b gemma3-12b codegemma-7b granite31-8b codellama-34b; do
+    tag="routerlora_$(echo $m | tr -d '-')_s17"
+    cells=$(ls -d results/cells/mole_generic/$m/python/mole_* 2>/dev/null | wc -l)
+    mf=runs/manifest/queued/ev_mole_$m.json
+    if [ -f "runs/mole/$m/python/$tag/gate.pt" ] && [ "$cells" -eq 0 ] && [ ! -f "$mf" ] \
+       && ! ls runs/manifest/{running,done}/ev_mole_$m.json >/dev/null 2>&1 \
+       && ! squeue -h -u "$USER" -o "%j" | grep -qx "ev_mole_$m"; then
+      printf '{"job_id":"ev_mole_%s","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_%s.yaml","--model","%s","--language","python"],"raw":false,"est_gpu_h":1.5,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}\n' "$m" "$m" "$m" > "$mf"
+      echo "[mixture] queued ev_mole_$m (gate is trained)"
     fi
   done
   echo "[status] queued=$left running=$run pending=$pend"
