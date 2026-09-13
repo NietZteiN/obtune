@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_depth_codellama-13b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/composite_depth_panel.yaml",
+    "--model",
+    "codellama-13b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 100,
+  "meta": {
+    "note": "master table: depth-3/4 stacks for every model, incl. the family arm"
+  }
+}

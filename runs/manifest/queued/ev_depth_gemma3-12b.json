@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_depth_gemma3-12b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/composite_depth_panel.yaml",
+    "--model",
+    "gemma3-12b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 100,
+  "meta": {
+    "note": "master table: depth-3/4 stacks for every model, incl. the family arm"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_1shot_gemma3-12b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/basecheck_1shot_panel.yaml",
+    "--model",
+    "gemma3-12b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 110,
+  "meta": {
+    "note": "master table: ICL column on X1 and all stacks (format gate expected to bite off 7B)"
+  }
+}

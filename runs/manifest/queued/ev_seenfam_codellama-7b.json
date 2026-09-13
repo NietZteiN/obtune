@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_seenfam_codellama-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/composite_seen_panel.yaml",
+    "--model",
+    "codellama-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.3,
+  "priority": 105,
+  "meta": {
+    "note": "master table: tuned_X1 on the six seen stacks, missing on 7B only"
+  }
+}

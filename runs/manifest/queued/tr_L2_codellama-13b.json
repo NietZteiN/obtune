@@ -1,0 +1,18 @@
+{
+  "job_id": "tr_L2_codellama-13b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_L2_panel.yaml",
+    "--model",
+    "codellama-13b"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 250,
+  "meta": {
+    "note": "master table: specialists so merges (and later the mixture) exist on every model"
+  }
+}

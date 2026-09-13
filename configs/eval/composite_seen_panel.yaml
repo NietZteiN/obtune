@@ -1,0 +1,25 @@
+# THE FAMILY ARM ON SEEN STACKS (2026-09-13). Every panel model has tuned_X1 on the six depth-2 seen
+# stacks except CodeLlama-7B, where the master table's `family` row is empty. Same phase as
+# composite_generic.yaml, so the existing cells are resumed past and only the gaps are filled.
+_extends: _base_eval.yaml
+
+phase: composite_generic
+experiment_id: composite_seen_panel
+run_tag: composite_seen_panel
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+
+eval_conditions: [C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3]

@@ -1,0 +1,18 @@
+{
+  "job_id": "tr_S2_codellama-34b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_S2_panel.yaml",
+    "--model",
+    "codellama-34b"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 260,
+  "meta": {
+    "note": "master table: specialists so merges (and later the mixture) exist on every model | 34B: h200 only, --mem 128G (a30/h100 cannot hold it)"
+  }
+}

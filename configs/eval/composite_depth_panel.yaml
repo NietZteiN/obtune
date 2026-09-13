@@ -1,0 +1,32 @@
+# DEPTH-3/4 STACKS ACROSS THE PANEL (2026-09-13). The master table's depth rows existed only for
+# CodeLlama-7B; this fills them for every model, and adds the family arm (tuned_X1) everywhere,
+# including 7B where it was missing.
+#
+# SAME PHASE as composite_depth.yaml on purpose: cells key on (phase, system, condition), so the
+# 7B cells already written are resumed past and only the new ones are generated.
+#
+# tuned_S2 is DELIBERATELY ABSENT. The depth config carries it, but the S2 specialist exists on
+# only four of eight models and a named adapter that is not on disk is a hard error (2026-09-11).
+# The five systems here exist on all eight models; the specialist arms are covered by merge_panel.
+_extends: _base_eval.yaml
+
+phase: composite_depth
+experiment_id: composite_depth_panel
+run_tag: composite_depth_panel
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix}
+  - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1}
+
+eval_conditions: [C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4]
