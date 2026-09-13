@@ -259,7 +259,7 @@ def t_rq1_composition():
             rows.append(f"{label} & {cell('all_ten', key)} & {cell('depth2', key)} & {cell('depth34', key)} & {cell('unseen4', key)} \\\\")
     n = d.get("n_programs_common", "?")
     body = (r"""\begin{table*}[ht]
-\centering\scriptsize\setlength{\tabcolsep}{2pt}
+\centering\scriptsize\setlength{\tabcolsep}{1.2pt}
 \caption{\textbf{RQ1: routing and merging on stacks of seen transforms.} Paired differences in
 points on the ten stacks (six depth-2, four depth-3/4), CodeLlama-7B, """ + str(n) + r""" programs common to
 every cell; the last column repeats the contrasts on the four stacks that contain the unseen family
