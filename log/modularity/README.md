@@ -145,6 +145,7 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
 
 - [`2026-09-13_mixture-guard-refused-the-mixture-engine.md`](2026-09-13_mixture-guard-refused-the-mixture-engine.md) — the arch-keyed guard refused `HFEngine` too; now keyed on `engine.supports_mixture`, tested, F1 chain resubmitted (392638 → 392641).
+- [`2026-09-13_merging-seven-models.md`](2026-09-13_merging-seven-models.md) — **the series result**: merge above the clean control on 5/7 seen-stack reads, above breadth on 6/7 unseen-stack reads, and level with anchoring on 4/7.
 - [`2026-09-13_merging-codegemma.md`](2026-09-13_merging-codegemma.md) — fifth model; the unseen-stack advantage is 4/5, not universal, and vanishes where breadth pays no tax.
 - [`2026-09-13_merge-backward-four-models.md`](2026-09-13_merge-backward-four-models.md) — **two gain, one loses, one undefined**; merging neither reliably pays nor reliably escapes the backward cost.
 - [`2026-09-13_starcoder2-has-no-backward-baseline.md`](2026-09-13_starcoder2-has-no-backward-baseline.md) — untuned backward accuracy is 0.000 by format failure; contrasts undefined, absolute values only.

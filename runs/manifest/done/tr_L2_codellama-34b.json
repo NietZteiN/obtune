@@ -1,11 +1,11 @@
 {
-  "job_id": "tr_S2_codellama-34b",
+  "job_id": "tr_L2_codellama-34b",
   "kind": "train",
   "argv": [
     "-m",
     "obtune.train_sft",
     "--config",
-    "train/grid_py_S2_panel.yaml",
+    "train/grid_py_L2_panel.yaml",
     "--model",
     "codellama-34b"
   ],
@@ -14,5 +14,12 @@
   "priority": 260,
   "meta": {
     "note": "master table: specialists so merges (and later the mixture) exist on every model | 34B: h200 only, --mem 128G (a30/h100 cannot hold it)"
+  },
+  "slurm": {
+    "job_id": "393929",
+    "node": "g-07-03",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T22:26:44.465655+00:00"
   }
 }
