@@ -1,0 +1,21 @@
+% GENERATED 2026-09-13 22:00 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/gemma3-12b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, Gemma-3-12B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_gemma312b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & fmt & fmt & 0.481 & fmt & fmt & 0.523 & fmt & fmt & 0.268 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & fmt & fmt & 0.399 & fmt & fmt & 0.464 & fmt & fmt & 0.203 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & fmt & fmt & 0.419 & fmt & fmt & 0.474 & fmt & fmt & 0.192 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & fmt & fmt & 0.414 & fmt & fmt & 0.465 & fmt & fmt & 0.228 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & fmt & fmt & 0.420 & fmt & fmt & 0.479 & fmt & fmt & 0.220 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

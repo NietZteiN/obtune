@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_merge_codegemma-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_panel.yaml",
+    "--model",
+    "codegemma-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 115,
+  "meta": {
+    "note": "master table: the merge column, queued automatically once the three merges were built"
+  },
+  "slurm": {
+    "job_id": "393902",
+    "node": "g-05-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T21:57:36.691589+00:00"
+  }
+}

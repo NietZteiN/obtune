@@ -284,7 +284,9 @@ routing arms' names and was withdrawn.}
 
 def t_rq1_merge_panel():
     """H-merge-panel: DARE-TIES merging against the clean control, breadth and anchoring, per model."""
-    NAMES = [("codellama7b", "CodeLlama-7B"), ("granite318b", "Granite-3.1-8B"), ("llama318b", "Llama-3.1-8B"), ("starcoder215b", "StarCoder2-15B")]
+    NAMES = [("codellama7b", "CodeLlama-7B"), ("codellama13b", "CodeLlama-13B"), ("codellama34b", "CodeLlama-34B"),
+             ("llama318b", "Llama-3.1-8B"), ("starcoder215b", "StarCoder2-15B"), ("gemma312b", "Gemma-3-12B"),
+             ("codegemma7b", "CodeGemma-7B"), ("granite318b", "Granite-3.1-8B")]
     rows = []
     for key, nice in NAMES:
         d = load(f"pipeline/merge_panel_{key}.json")

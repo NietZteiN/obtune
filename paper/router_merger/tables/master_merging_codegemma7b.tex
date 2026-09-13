@@ -1,0 +1,44 @@
+% GENERATED 2026-09-13 22:00 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/codegemma-7b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, CodeGemma-7B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_codegemma7b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.239 & 101 & 0.359 & $+12.0$ & 152 & 0.465 & $+22.6$ & 196 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & 0.186 & 79 & 0.288 & $+10.1$ & 122 & 0.391 & $+20.5$ & 165 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & 0.210 & 89 & 0.320 & $+11.0$ & 135 & 0.411 & $+20.1$ & 174 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & 0.207 & 88 & 0.307 & $+10.0$ & 130 & 0.406 & $+19.9$ & 172 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & 0.196 & 83 & 0.307 & $+11.1$ & 130 & 0.414 & $+21.7$ & 175 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & 0.193 & 82 & 0.332 & $+13.9$ & 140 & 0.448 & $+25.5$ & 189 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & 0.138 & 59 & 0.208 & $+6.9$ & 88 & 0.274 & $+13.6$ & 116 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.149 & 63 & 0.214 & $+6.5$ & 90 & 0.302 & $+15.3$ & 128 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & 0.144 & 61 & 0.229 & $+8.5$ & 97 & 0.318 & $+17.5$ & 135 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.132 & 56 & 0.217 & $+8.5$ & 92 & 0.300 & $+16.8$ & 127 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L2\_S4} & 0.176 & 75 & 0.289 & $+11.2$ & 122 & 0.391 & $+21.5$ & 165 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & 0.184 & 78 & 0.301 & $+11.7$ & 127 & 0.393 & $+20.9$ & 166 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S4\_S3} & 0.202 & 85 & 0.349 & $+14.8$ & 148 & 0.445 & $+24.4$ & 188 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & 0.157 & 66 & 0.276 & $+11.9$ & 117 & 0.372 & $+21.5$ & 157 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & 0.159 & 67 & 0.270 & $+11.1$ & 114 & 0.378 & $+21.9$ & 160 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & 0.126 & 53 & 0.196 & $+7.0$ & 83 & 0.303 & $+17.7$ & 128 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.124 & 52 & 0.198 & $+7.4$ & 84 & 0.303 & $+18.0$ & 128 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.116 & 49 & 0.135 & $+1.9$ & 57 & 0.184 & $+6.8$ & 78 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & 0.144 & 61 & 0.196 & $+5.2$ & 83 & 0.288 & $+14.3$ & 122 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & 0.185 & 78 & 0.260 & $+7.5$ & 110 & 0.340 & $+15.4$ & 144 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.131 & 55 & 0.142 & $+1.0$ & 60 & 0.201 & $+6.9$ & 85 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_X1s} & 0.186 & 79 & 0.255 & $+6.9$ & 108 & 0.358 & $+17.2$ & 152 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.134 & 57 & 0.158 & $+2.3$ & 67 & 0.224 & $+9.0$ & 95 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

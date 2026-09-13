@@ -1,0 +1,25 @@
+% GENERATED 2026-09-13 22:00 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/codellama-13b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, CodeLlama-13B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_codellama13b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.252 & 100 & 0.408 & $+15.6$ & 162 & 0.477 & $+22.5$ & 189 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & 0.222 & 88 & 0.338 & $+11.6$ & 134 & 0.400 & $+17.9$ & 159 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & 0.225 & 89 & 0.374 & $+14.9$ & 148 & 0.425 & $+20.0$ & 169 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & 0.228 & 90 & 0.365 & $+13.7$ & 145 & 0.421 & $+19.3$ & 167 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & 0.213 & 85 & 0.368 & $+15.5$ & 146 & 0.435 & $+22.1$ & 172 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & 0.184 & 73 & 0.353 & $+16.9$ & 140 & 0.441 & $+25.7$ & 175 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & 0.149 & 59 & 0.241 & $+9.2$ & 96 & 0.306 & $+15.7$ & 121 & 0.080 & $-6.9$ & 32 & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.183 & 72 & 0.288 & $+10.5$ & 114 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
