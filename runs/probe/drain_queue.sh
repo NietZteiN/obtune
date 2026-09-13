@@ -67,6 +67,19 @@ while true; do
   # Only real submissions are events; the script's own "submitted 0 ... and 0 ..." summary is not.
   adv=$(timeout 600 python scripts/merge/build_ready_merges.py --submit 2>&1 | grep -E "^ +submitted [0-9]+ +(ckb_|mg_)")
   [ -n "$adv" ] && echo "$adv" | sed "s/^ */[merge-track] /"
+  # As soon as a model's three merges exist, queue its merge evaluation. Without this the merges sit
+  # built-but-unmeasured until someone notices, which is the same stall the checkpoint-select step had.
+  for m in codellama-13b gemma3-12b codegemma-7b codellama-34b; do
+    built=$(ls -d runs/adapters/$m/python/merge_*_r32_s17/adapter_model.safetensors 2>/dev/null | wc -l)
+    cells=$(ls results/cells/merge_panel/$m/python 2>/dev/null | wc -l)
+    mf=runs/manifest/queued/ev_merge_$m.json
+    if [ "$built" -ge 3 ] && [ "$cells" -eq 0 ] && [ ! -f "$mf" ] \
+       && ! ls runs/manifest/{running,done}/ev_merge_$m.json >/dev/null 2>&1 \
+       && ! squeue -h -u "$USER" -o "%j" | grep -qx "ev_merge_$m"; then
+      printf '{"job_id":"ev_merge_%s","kind":"eval","argv":["-m","obtune.eval_vllm","--config","eval/merge_panel.yaml","--model","%s","--language","python"],"raw":false,"est_gpu_h":0.6,"priority":115,"meta":{"note":"master table: the merge column, queued automatically once the three merges were built"}}\n' "$m" "$m" > "$mf"
+      echo "[merge-track] queued ev_merge_$m (merges are built)"
+    fi
+  done
   echo "[status] queued=$left running=$run pending=$pend"
   sleep 240
 done
