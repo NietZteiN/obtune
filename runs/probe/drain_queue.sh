@@ -31,10 +31,17 @@ while true; do
     next34b=$(ls runs/manifest/queued/*.json 2>/dev/null | xargs -r -n1 basename 2>/dev/null | grep -c 34b)
     only34b=$(ls runs/manifest/queued/*.json 2>/dev/null | wc -l)
     [ "$next34b" -gt 0 ] && [ "$next34b" -eq "$only34b" ] && h200mem=128G
-    for spec in "h100 3 64G" "a30 2 64G" "h200 1 $h200mem"; do
+    # a30 cards are 23.5 GB. 13B bf16 needs ~26 GB and OOM'd two minutes in on 2026-09-13; 12B and
+    # 15B do not fit either. Only the 7-8B models go there, one named manifest at a time, because
+    # `--queued` drains by priority and cannot filter. h100 and h200 take anything.
+    for spec in "h100 3 64G" "h200 1 $h200mem"; do
       set -- $spec
       out=$(timeout 300 python scripts/slurm/submit.py --queued --partition "$1" --limit "$2" --mem "$3" 2>&1 | grep -E "^submitted|FAILED|REFUSING" | grep -v REFUSING)
       [ -n "$out" ] && echo "$out" | sed "s/^/[$1] /"
+    done
+    for j in $(ls runs/manifest/queued/*.json 2>/dev/null | grep -E "codellama-7b|llama31-8b|codegemma-7b|granite31-8b" | head -2); do
+      out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition a30 --mem 64G 2>&1 | grep -E "^submitted|FAILED")
+      [ -n "$out" ] && echo "$out" | sed "s/^/[a30] /"
     done
   fi
   echo "[status] queued=$left running=$run pending=$pend"

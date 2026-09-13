@@ -53,3 +53,4 @@
 - [`../../data/DATA_SOURCES.md`](../../data/DATA_SOURCES.md)
 
 - [`2026-09-13_walltime-kill-filed-as-done.md`](2026-09-13_walltime-kill-filed-as-done.md) — the EXIT trap saw `$?`=0 on a walltime kill; `CMD_STATUS` sentinel fixes it; one manifest (Llama S2) requeued at 3 h.
+- [`2026-09-13_a30-holds-7-8b-only.md`](2026-09-13_a30-holds-7-8b-only.md) — full a30 cards are 23.5 GB; 13B/12B/15B/34B do not fit. Drain script restricted; per-partition size table.

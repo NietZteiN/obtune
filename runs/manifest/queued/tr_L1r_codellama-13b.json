@@ -13,9 +13,9 @@
   "est_gpu_h": 1.0,
   "priority": 250,
   "meta": {
-    "note": "master table: specialists so merges (and later the mixture) exist on every model"
+    "note": "master table: specialists so merges (and later the mixture) exist on every model | REQUEUED 2026-09-13: OOM on a30 (23.5 GB card, 13B bf16 needs ~26 GB). a30 holds 7-8B only."
   },
-  "slurm": {
+  "previous_slurm": {
     "job_id": "393483",
     "node": "g-02-01",
     "partition": "a30",
