@@ -23,7 +23,10 @@ while true; do
   if [ "$left" -eq 0 ] && [ "$run" -eq 0 ] && [ "$pend" -eq 0 ]; then
     echo "queue drained: nothing queued, running or pending"; break
   fi
-  if [ "$((run+pend))" -lt 8 ] && [ "$left" -gt 0 ]; then
+  # Hold more work in SLURM'"'"'s queue than in ours. h100 and a30 are uncapped, so a pending job there
+  # costs nothing and buys a better backfill position; only h200 is share-limited, and submit.py
+  # refuses past the share on its own. 8 was too tight while another user held six h100 jobs.
+  if [ "$((run+pend))" -lt 14 ] && [ "$left" -gt 0 ]; then
     # 34B needs 128 G of host memory (the earlier 34B runs used it); everything else gets 64-96 G,
     # because over-requesting is not free -- 128 G on a memory-starved h200 once scheduled a job a
     # day out. So the h200 pass asks for 128 G only while a 34B manifest is next in line.
