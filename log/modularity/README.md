@@ -144,4 +144,5 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   `CLAIM_LADDER.md` recording which pending run licenses which headline
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
 
-- [`2026-09-13_mixture-guard-refused-the-mixture-engine.md`](2026-09-13_mixture-guard-refused-the-mixture-engine.md) — the arch-keyed guard refused `HFEngine` too; now keyed on `engine.supports_mixture`, tested, F1 chain resubmitted (392638).
+- [`2026-09-13_mixture-guard-refused-the-mixture-engine.md`](2026-09-13_mixture-guard-refused-the-mixture-engine.md) — the arch-keyed guard refused `HFEngine` too; now keyed on `engine.supports_mixture`, tested, F1 chain resubmitted (392638 → 392641).
+- [`2026-09-13_an-f1-resubmission-correction.md`](2026-09-13_an-f1-resubmission-correction.md) — correction: `an_f1` was refused on both CPU partitions because ad-hoc submissions carry a default `--gres gpu:1`; resubmitted with `--gres ""`.

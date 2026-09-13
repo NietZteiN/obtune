@@ -372,6 +372,12 @@ def main() -> int:
     ap.add_argument("--name", default="adhoc", help="job name for --argv submissions")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    # A GPU request on a CPU partition is refused outright ("Requested node configuration is not
+    # available"), and the message names neither the partition nor the gres, so the 2026-09-13
+    # `an_f1` resubmission was tried on two partitions before the default `gpu:1` was suspected.
+    # An ad-hoc job on `normal`/`dev` that did not ask for a gres gets none.
+    if a.partition in ("normal", "dev") and a.gres == d["gres"]:
+        a.gres = ""
 
     # Share guard: refuse rather than quietly exceed an agreed allocation on a contested
     # partition. See obtune_jobs_on() for why this is code and not care.
