@@ -13,6 +13,14 @@
   "est_gpu_h": 0.8,
   "priority": 265,
   "meta": {
-    "note": "master table: the mixture arm needs eight experts (L0-S4); every model but CodeLlama-7B lacks S3 and S4"
+    "note": "master table: the mixture arm needs eight experts (L0-S4); every model but CodeLlama-7B lacks S3 and S4 | REQUEUED 2026-09-13: OOM on a30 (23.5 GB). Every 8B model has now failed there -- Granite-3.1-8B and Llama-3.1-8B on S3, CodeGemma on L2, CodeLlama-13B on L1r. Only CodeLlama-7B (6.7B) fits. a30 is restricted to that model."
+  },
+  "previous_slurm": {
+    "job_id": "394176",
+    "node": "g-02-01",
+    "partition": "a30",
+    "exit_code": 124,
+    "finished_utc": "2026-09-13T23:07:46.243538+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
   }
 }
