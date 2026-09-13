@@ -44,7 +44,10 @@ gate_checkpoint: runs/mole/codellama-7b/python/routerlora_codellama7b_s17/gate.p
 engine:
   seed: 17
   dtype: bfloat16
-  batch_size: 32
+  # 16, not the seen-stack config's 32: the X1 composites are the long prompts (medians 515-1130
+  # tokens, C_S2_X1 up to ~1800) and batch 32 ran a 47 GB MIG slice out of memory 17 min in
+  # (job 392884, 2026-09-13). Submitted with --exclude g-06-01 as well.
+  batch_size: 16
 
 systems:
   - {name: base, arch: none}
