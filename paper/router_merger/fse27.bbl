@@ -1,0 +1,249 @@
+%%% -*-BibTeX-*-
+%%% Do NOT edit. File created by BibTeX with style
+%%% ACM-Reference-Format-Journals [18-Jan-2012].
+
+\begin{thebibliography}{11}
+
+%%% ====================================================================
+%%% NOTE TO THE USER: you can override these defaults by providing
+%%% customized versions of any of these macros before the \bibliography
+%%% command.  Each of them MUST provide its own final punctuation,
+%%% except for \shownote{} and \showURL{}.  The latter two
+%%% do not use final punctuation, in order to avoid confusing it with
+%%% the Web address.
+%%%
+%%% To suppress output of a particular field, define its macro to expand
+%%% to an empty string, or better, \unskip, like this:
+%%%
+%%% \newcommand{\showURL}[1]{\unskip}   % LaTeX syntax
+%%%
+%%% \def \showURL #1{\unskip}           % plain TeX syntax
+%%%
+%%% ====================================================================
+
+\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi
+\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi
+\ifx \showISBNxiii \undefined \def \showISBNxiii  #1{\unskip}     \fi
+\ifx \showISSN     \undefined \def \showISSN      #1{\unskip}     \fi
+\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi
+\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi
+\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi
+\ifx \showURL      \undefined \def \showURL       {\relax}        \fi
+% The following commands are used for tagged output and should be
+% invisible to TeX
+\providecommand\bibfield[2]{#2}
+\providecommand\bibinfo[2]{#2}
+\providecommand\natexlab[1]{#1}
+\providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Chen et~al\mbox{.}(2021)]%
+        {chen2021evaluatinglargelanguagemodels}
+\bibfield{author}{\bibinfo{person}{Mark Chen}, \bibinfo{person}{Jerry Tworek},
+  \bibinfo{person}{Heewoo Jun}, \bibinfo{person}{Qiming Yuan},
+  \bibinfo{person}{Henrique~Ponde de Oliveira~Pinto}, \bibinfo{person}{Jared
+  Kaplan}, \bibinfo{person}{Harri Edwards}, \bibinfo{person}{Yuri Burda},
+  \bibinfo{person}{Nicholas Joseph}, \bibinfo{person}{Greg Brockman},
+  \bibinfo{person}{Alex Ray}, \bibinfo{person}{Raul Puri},
+  \bibinfo{person}{Gretchen Krueger}, \bibinfo{person}{Michael Petrov},
+  \bibinfo{person}{Heidy Khlaaf}, \bibinfo{person}{Girish Sastry},
+  \bibinfo{person}{Pamela Mishkin}, \bibinfo{person}{Brooke Chan},
+  \bibinfo{person}{Scott Gray}, \bibinfo{person}{Nick Ryder},
+  \bibinfo{person}{Mikhail Pavlov}, \bibinfo{person}{Alethea Power},
+  \bibinfo{person}{Lukasz Kaiser}, \bibinfo{person}{Mohammad Bavarian},
+  \bibinfo{person}{Clemens Winter}, \bibinfo{person}{Philippe Tillet},
+  \bibinfo{person}{Felipe~Petroski Such}, \bibinfo{person}{Dave Cummings},
+  \bibinfo{person}{Matthias Plappert}, \bibinfo{person}{Fotios Chantzis},
+  \bibinfo{person}{Elizabeth Barnes}, \bibinfo{person}{Ariel Herbert-Voss},
+  \bibinfo{person}{William~Hebgen Guss}, \bibinfo{person}{Alex Nichol},
+  \bibinfo{person}{Alex Paino}, \bibinfo{person}{Nikolas Tezak},
+  \bibinfo{person}{Jie Tang}, \bibinfo{person}{Igor Babuschkin},
+  \bibinfo{person}{Suchir Balaji}, \bibinfo{person}{Shantanu Jain},
+  \bibinfo{person}{William Saunders}, \bibinfo{person}{Christopher Hesse},
+  \bibinfo{person}{Andrew~N. Carr}, \bibinfo{person}{Jan Leike},
+  \bibinfo{person}{Josh Achiam}, \bibinfo{person}{Vedant Misra},
+  \bibinfo{person}{Evan Morikawa}, \bibinfo{person}{Alec Radford},
+  \bibinfo{person}{Matthew Knight}, \bibinfo{person}{Miles Brundage},
+  \bibinfo{person}{Mira Murati}, \bibinfo{person}{Katie Mayer},
+  \bibinfo{person}{Peter Welinder}, \bibinfo{person}{Bob McGrew},
+  \bibinfo{person}{Dario Amodei}, \bibinfo{person}{Sam McCandlish},
+  \bibinfo{person}{Ilya Sutskever}, {and} \bibinfo{person}{Wojciech Zaremba}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{Evaluating Large Language Models Trained on Code}.
+\newblock
+\showeprint[arxiv]{2107.03374}~[cs.LG]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2107.03374}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Collberg et~al\mbox{.}(1997)]%
+        {collberg1997taxonomy}
+\bibfield{author}{\bibinfo{person}{Christian Collberg}, \bibinfo{person}{Clark
+  Thomborson}, {and} \bibinfo{person}{Douglas Low}.}
+  \bibinfo{year}{1997}\natexlab{}.
+\newblock \showarticletitle{A Taxonomy of Obfuscating Transformations}.
+\newblock \bibinfo{journal}{\emph{Technical Report}} (\bibinfo{year}{1997}).
+\newblock
+
+
+\bibitem[Collberg et~al\mbox{.}(1998)]%
+        {collberg2002manufacturing}
+\bibfield{author}{\bibinfo{person}{Christian Collberg}, \bibinfo{person}{Clark
+  Thomborson}, {and} \bibinfo{person}{Douglas Low}.}
+  \bibinfo{year}{1998}\natexlab{}.
+\newblock \showarticletitle{Manufacturing cheap, resilient, and stealthy opaque
+  constructs}. In \bibinfo{booktitle}{\emph{Proceedings of the 25th ACM
+  SIGPLAN-SIGACT Symposium on Principles of Programming Languages}} (San Diego,
+  California, USA) \emph{(\bibinfo{series}{POPL '98})}.
+  \bibinfo{publisher}{Association for Computing Machinery},
+  \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{184–196}.
+\newblock
+\showISBNx{0897919793}
+\href{https://doi.org/10.1145/268946.268962}{doi:\nolinkurl{10.1145/268946.268962}}
+
+
+\bibitem[Feng et~al\mbox{.}(2020)]%
+        {li2022codebert}
+\bibfield{author}{\bibinfo{person}{Zhangyin Feng}, \bibinfo{person}{Daya Guo},
+  \bibinfo{person}{Duyu Tang}, \bibinfo{person}{Nan Duan},
+  \bibinfo{person}{Xiaocheng Feng}, \bibinfo{person}{Ming Gong},
+  \bibinfo{person}{Linjun Shou}, \bibinfo{person}{Bing Qin},
+  \bibinfo{person}{Ting Liu}, \bibinfo{person}{Daxin Jiang}, {and}
+  \bibinfo{person}{Ming Zhou}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{{C}ode{BERT}: A Pre-Trained Model for Programming
+  and Natural Languages}. In \bibinfo{booktitle}{\emph{Findings of the
+  Association for Computational Linguistics: EMNLP 2020}},
+  \bibfield{editor}{\bibinfo{person}{Trevor Cohn}, \bibinfo{person}{Yulan He},
+  {and} \bibinfo{person}{Yang Liu}} (Eds.). \bibinfo{publisher}{Association for
+  Computational Linguistics}, \bibinfo{address}{Online},
+  \bibinfo{pages}{1536--1547}.
+\newblock
+\href{https://doi.org/10.18653/v1/2020.findings-emnlp.139}{doi:\nolinkurl{10.18653/v1/2020.findings-emnlp.139}}
+
+
+\bibitem[Guo et~al\mbox{.}(2021)]%
+        {guo2021graphcodebert}
+\bibfield{author}{\bibinfo{person}{Daya Guo}, \bibinfo{person}{Shuo Ren},
+  \bibinfo{person}{Shuai Lu}, \bibinfo{person}{Zhangyin Feng},
+  \bibinfo{person}{Duyu Tang}, \bibinfo{person}{Shujie LIU},
+  \bibinfo{person}{Long Zhou}, \bibinfo{person}{Nan Duan},
+  \bibinfo{person}{Alexey Svyatkovskiy}, \bibinfo{person}{Shengyu Fu},
+  \bibinfo{person}{Michele Tufano}, \bibinfo{person}{Shao~Kun Deng},
+  \bibinfo{person}{Colin Clement}, \bibinfo{person}{Dawn Drain},
+  \bibinfo{person}{Neel Sundaresan}, \bibinfo{person}{Jian Yin},
+  \bibinfo{person}{Daxin Jiang}, {and} \bibinfo{person}{Ming Zhou}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{GraphCode{\{}BERT{\}}: Pre-training Code
+  Representations with Data Flow}. In \bibinfo{booktitle}{\emph{International
+  Conference on Learning Representations}}.
+\newblock
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=jLoC4ez43PZ}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Li et~al\mbox{.}(2022)]%
+        {Competition-level-code-generation-with-AlphaCode}
+\bibfield{author}{\bibinfo{person}{Yujia Li}, \bibinfo{person}{David Choi},
+  \bibinfo{person}{Junyoung Chung}, \bibinfo{person}{Nate Kushman},
+  \bibinfo{person}{Julian Schrittwieser}, \bibinfo{person}{Rémi Leblond},
+  \bibinfo{person}{Tom Eccles}, \bibinfo{person}{James Keeling},
+  \bibinfo{person}{Felix Gimeno}, \bibinfo{person}{Agustin Dal~Lago},
+  \bibinfo{person}{Thomas Hubert}, \bibinfo{person}{Peter Choy},
+  \bibinfo{person}{Cyprien de Masson~d’Autume}, \bibinfo{person}{Igor
+  Babuschkin}, \bibinfo{person}{Xinyun Chen}, \bibinfo{person}{Po-Sen Huang},
+  \bibinfo{person}{Johannes Welbl}, \bibinfo{person}{Sven Gowal},
+  \bibinfo{person}{Alexey Cherepanov}, \bibinfo{person}{James Molloy},
+  \bibinfo{person}{Daniel~J. Mankowitz}, \bibinfo{person}{Esme
+  Sutherland~Robson}, \bibinfo{person}{Pushmeet Kohli}, \bibinfo{person}{Nando
+  de Freitas}, \bibinfo{person}{Koray Kavukcuoglu}, {and}
+  \bibinfo{person}{Oriol Vinyals}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Competition-level code generation with AlphaCode}.
+\newblock \bibinfo{journal}{\emph{Science}} \bibinfo{volume}{378},
+  \bibinfo{number}{6624} (\bibinfo{date}{Dec.} \bibinfo{year}{2022}),
+  \bibinfo{pages}{1092–1097}.
+\newblock
+\showISSN{1095-9203}
+\href{https://doi.org/10.1126/science.abq1158}{doi:\nolinkurl{10.1126/science.abq1158}}
+
+
+\bibitem[Nguyen et~al\mbox{.}(2026)]%
+        {nguyen2026effectcodeobfuscationhuman}
+\bibfield{author}{\bibinfo{person}{Anh H.~N. Nguyen}, \bibinfo{person}{Jack
+  Le}, \bibinfo{person}{Ilse~Lahnstein Coronado}, {and}
+  \bibinfo{person}{Tien~N. Nguyen}.} \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{The Effect of Code Obfuscation on Human Program
+  Comprehension}.
+\newblock
+\showeprint[arxiv]{2603.07668}~[cs.SE]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2603.07668}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Nijkamp et~al\mbox{.}(2023)]%
+        {roziere2023codegen}
+\bibfield{author}{\bibinfo{person}{Erik Nijkamp}, \bibinfo{person}{Bo Pang},
+  \bibinfo{person}{Hiroaki Hayashi}, \bibinfo{person}{Lifu Tu},
+  \bibinfo{person}{Huan Wang}, \bibinfo{person}{Yingbo Zhou},
+  \bibinfo{person}{Silvio Savarese}, {and} \bibinfo{person}{Caiming Xiong}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{CodeGen: An Open Large Language Model for Code with
+  Multi-Turn Program Synthesis}.
+\newblock
+\showeprint[arxiv]{2203.13474}~[cs.LG]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2203.13474}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Nikiema et~al\mbox{.}(2025)]%
+        {nikiema2025codebarrierllmsactually}
+\bibfield{author}{\bibinfo{person}{Serge~Lionel Nikiema},
+  \bibinfo{person}{Jordan Samhi}, \bibinfo{person}{Abdoul~Kader Kaboré},
+  \bibinfo{person}{Jacques Klein}, {and} \bibinfo{person}{Tegawendé~F.
+  Bissyandé}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{The Code Barrier: What LLMs Actually Understand?}
+\newblock
+\showeprint[arxiv]{2504.10557}~[cs.SE]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2504.10557}
+\showURL{%
+\tempurl}
+
+
+\bibitem[O'Kane et~al\mbox{.}(2011)]%
+        {Obfuscation-The-Hidden-Malware}
+\bibfield{author}{\bibinfo{person}{Philip O'Kane}, \bibinfo{person}{Sakir
+  Sezer}, {and} \bibinfo{person}{Kieran McLaughlin}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Obfuscation: The Hidden Malware}.
+\newblock \bibinfo{journal}{\emph{IEEE Security and Privacy}}
+  \bibinfo{volume}{9}, \bibinfo{number}{5} (\bibinfo{year}{2011}),
+  \bibinfo{pages}{41--47}.
+\newblock
+\href{https://doi.org/10.1109/MSP.2011.98}{doi:\nolinkurl{10.1109/MSP.2011.98}}
+
+
+\bibitem[Votipka et~al\mbox{.}(2019)]%
+  {An-Observational-Investigation-of-Reverse-Engineers-Process-and-Mental-Models}
+\bibfield{author}{\bibinfo{person}{Daniel Votipka}, \bibinfo{person}{Seth
+  Rabin}, \bibinfo{person}{Kristopher Micinski}, \bibinfo{person}{Jeffrey~S.
+  Foster}, {and} \bibinfo{person}{Michelle~L. Mazurek}.}
+  \bibinfo{year}{2019}\natexlab{}.
+\newblock \showarticletitle{An Observational Investigation of Reverse
+  Engineers' Process and Mental Models}. In \bibinfo{booktitle}{\emph{Extended
+  Abstracts of the 2019 CHI Conference on Human Factors in Computing Systems}}
+  (Glasgow, Scotland Uk) \emph{(\bibinfo{series}{CHI EA '19})}.
+  \bibinfo{publisher}{Association for Computing Machinery},
+  \bibinfo{address}{New York, NY, USA}, \bibinfo{pages}{1–6}.
+\newblock
+\showISBNx{9781450359719}
+\href{https://doi.org/10.1145/3290607.3313040}{doi:\nolinkurl{10.1145/3290607.3313040}}
+
+
+\end{thebibliography}

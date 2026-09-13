@@ -14,5 +14,12 @@
   "priority": 203,
   "meta": {
     "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+  },
+  "slurm": {
+    "job_id": "391934",
+    "node": "g-07-02",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T02:36:06.351376+00:00"
   }
 }

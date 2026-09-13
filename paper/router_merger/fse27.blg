@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: fse27.aux
+The style file: ACM-Reference-Format.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: references.bib
+Database file #2: references-codesteer.bib
+Warning--I didn't find a database entry for "ase26"
+Warning--I didn't find a database entry for ""
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--no number and no volume in collberg1997taxonomy
+Warning--page numbers missing in both pages and numpages fields in collberg1997taxonomy
+Warning--empty publisher in guo2021graphcodebert
+Warning--empty address in guo2021graphcodebert
+Warning--page numbers missing in both pages and numpages fields in guo2021graphcodebert
+You've used 11 entries,
+            6273 wiz_defined-function locations,
+            1612 strings with 23101 characters,
+and the built_in function-call counts, 17043 in all, are:
+= -- 1785
+> -- 1240
+< -- 0
++ -- 454
+- -- 435
+* -- 1756
+:= -- 2074
+add.period$ -- 50
+call.type$ -- 11
+change.case$ -- 192
+chr.to.int$ -- 11
+cite$ -- 16
+duplicate$ -- 1068
+empty$ -- 738
+format.name$ -- 479
+if$ -- 3719
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 32
+newline$ -- 151
+num.names$ -- 79
+pop$ -- 505
+preamble$ -- 1
+purify$ -- 276
+quote$ -- 0
+skip$ -- 429
+stack$ -- 0
+substring$ -- 814
+swap$ -- 120
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 288
+warning$ -- 5
+while$ -- 42
+width$ -- 0
+write$ -- 270
+(There were 7 warnings)

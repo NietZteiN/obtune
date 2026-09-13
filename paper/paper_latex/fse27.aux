@@ -1,0 +1,81 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{collberg1997taxonomy,collberg2002manufacturing,Obfuscation-The-Hidden-Malware,An-Observational-Investigation-of-Reverse-Engineers-Process-and-Mental-Models}
+\citation{nguyen2026effectcodeobfuscationhuman}
+\citation{chen2021evaluatinglargelanguagemodels,li2022codebert,guo2021graphcodebert,roziere2023codegen,Competition-level-code-generation-with-AlphaCode}
+\citation{ase26}
+\citation{nikiema2025codebarrierllmsactually}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{eq:paired_consistency}{{1}{2}{Introduction}{equation.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background}{4}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Setup}{4}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}RQ1: Do current adaptation methods generalise, or memorise?}{4}{section.4}\protected@file@percent }
+\newlabel{sec:rq1}{{4}{4}{RQ1: Do current adaptation methods generalise, or memorise?}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}The composition test}{4}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {RQ1: the dissociation, measured within model on one program set.} Breadth (\texttt  {mono\_all}) against the clean-code control (\texttt  {tuned\_L0}) on stacks built from \emph  {seen} transforms and on stacks containing an \emph  {unseen} family. The \emph  {difference} is the measured quantity; the two levels are context, and on most models the unseen-side interval straddles zero on its own. Both halves are paired on the 319 programs common to every cell of both groups. Bold intervals exclude zero.}}{5}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:rq1_dissociation}{{1}{5}{\textbf {RQ1: the dissociation, measured within model on one program set.} Breadth (\texttt {mono\_all}) against the clean-code control (\texttt {tuned\_L0}) on stacks built from \emph {seen} transforms and on stacks containing an \emph {unseen} family. The \emph {difference} is the measured quantity; the two levels are context, and on most models the unseen-side interval straddles zero on its own. Both halves are paired on the 319 programs common to every cell of both groups. Bold intervals exclude zero}{table.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}The reversal test}{5}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {The direction ratio: how much of a forward gain survives the task being run backwards.} Forward is output prediction; backward is input prediction on the same programs, graded by execution. No adapter is trained on the backward task, so any backward gain is transferred program understanding rather than task fitting. $\mathrm  {DR} < 0$ means the arm bought forward accuracy by \emph  {losing} backward competence. Every adaptation method that fits the forward task directly is negative; only anchoring and family exposure are not. Both directions use the same 412 programs and the same six conditions. Bold intervals exclude zero; the ratio is descriptive and is read with its components.}}{5}{table.caption.2}\protected@file@percent }
+\newlabel{tab:direction_ratio}{{2}{5}{\textbf {The direction ratio: how much of a forward gain survives the task being run backwards.} Forward is output prediction; backward is input prediction on the same programs, graded by execution. No adapter is trained on the backward task, so any backward gain is transferred program understanding rather than task fitting. $\mathrm {DR} < 0$ means the arm bought forward accuracy by \emph {losing} backward competence. Every adaptation method that fits the forward task directly is negative; only anchoring and family exposure are not. Both directions use the same 412 programs and the same six conditions. Bold intervals exclude zero; the ratio is descriptive and is read with its components}{table.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}What the two tests agree on}{6}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}RQ2: What is memorised?}{6}{section.5}\protected@file@percent }
+\newlabel{sec:rq2}{{5}{6}{RQ2: What is memorised?}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The gain tracks identifier surface}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \textbf  {RQ2: breadth's stack gain depends on an identifier transform being present.} Breadth over the clean-code control, split by whether the stack contains an identifier transform, with the \emph  {difference} between the groups. The rule defining the split was fixed before the unseen-containing stimulus existed, which makes the second row an out-of-sample test of it. We report the difference because one interval excluding zero while another does not is not a test of the difference between them.}}{6}{table.caption.3}\protected@file@percent }
+\newlabel{tab:rq2_identifier}{{3}{6}{\textbf {RQ2: breadth's stack gain depends on an identifier transform being present.} Breadth over the clean-code control, split by whether the stack contains an identifier transform, with the \emph {difference} between the groups. The rule defining the split was fixed before the unseen-containing stimulus existed, which makes the second row an out-of-sample test of it. We report the difference because one interval excluding zero while another does not is not a test of the difference between them}{table.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}The unit of transfer is a surface, not a mechanism}{6}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Adaptation polarises rather than deepens}{7}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}What to anchor to}{7}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}RQ3: Anchoring to clean-code behaviour}{7}{section.6}\protected@file@percent }
+\newlabel{sec:rq3}{{6}{7}{RQ3: Anchoring to clean-code behaviour}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}The ablation is the contribution}{7}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}What it repairs, and on which models}{8}{subsection.6.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \textbf  {RQ3: the three findings across eight models and four lineages}, all read from one evaluation phase. $\surd  $\ replicated, $\circ $ inconclusive, $\times $ refuted. R1 is breadth's unseen-family tax (\texttt  {mono\_all} $-$ \texttt  {tuned\_L0} on the held-out family); R2 is anchoring removing it (\texttt  {cons\_lam3} $-$ \texttt  {mono\_all}); R3 is anchoring's clean-code cost (\texttt  {cons\_lam3} $-$ \texttt  {tuned\_L0} on clean code). Bold intervals exclude zero.}}{8}{table.caption.4}\protected@file@percent }
+\newlabel{tab:rq3_panel}{{4}{8}{\textbf {RQ3: the three findings across eight models and four lineages}, all read from one evaluation phase. $\surd $\ replicated, $\circ $ inconclusive, $\times $ refuted. R1 is breadth's unseen-family tax (\texttt {mono\_all} $-$ \texttt {tuned\_L0} on the held-out family); R2 is anchoring removing it (\texttt {cons\_lam3} $-$ \texttt {mono\_all}); R3 is anchoring's clean-code cost (\texttt {cons\_lam3} $-$ \texttt {tuned\_L0} on clean code). Bold intervals exclude zero}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}RQ4: Does the anchored model generalise?}{8}{section.7}\protected@file@percent }
+\newlabel{sec:rq4}{{7}{8}{RQ4: Does the anchored model generalise?}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}The composition test, re-run}{8}{subsection.7.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces \textbf  {RQ4: the divergence ladder.} Composites that contain a transform family the model has never seen. Breadth's advantage flips sign the moment such a component enters, while anchoring rises \emph  {above} the clean-code control. The pre-registered rule required both that anchoring hold and that breadth fall below the control; only the first is established, since the pooled interval at d2 straddles zero. CodeLlama-7B, 287 programs common to all six composites, fixed before any system was evaluated.}}{9}{table.caption.5}\protected@file@percent }
+\newlabel{tab:rq4_ladder}{{5}{9}{\textbf {RQ4: the divergence ladder.} Composites that contain a transform family the model has never seen. Breadth's advantage flips sign the moment such a component enters, while anchoring rises \emph {above} the clean-code control. The pre-registered rule required both that anchoring hold and that breadth fall below the control; only the first is established, since the pooled interval at d2 straddles zero. CodeLlama-7B, 287 programs common to all six composites, fixed before any system was evaluated}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{The pre-registered verdict, stated first.}{9}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Breadth's collapse is not uniform.}{9}{section*.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces \textbf  {RQ4: the divergence result across the panel}, on stacks containing the unseen family. \texttt  {cons}$-$\texttt  {mono} is anchoring's advantage over breadth; \texttt  {fam} is an arm trained on the unseen family's trainable sibling, included because family exposure is the largest effect in the table and replicates on every model. Bold intervals exclude zero.}}{9}{table.caption.8}\protected@file@percent }
+\newlabel{tab:rq4_by_model}{{6}{9}{\textbf {RQ4: the divergence result across the panel}, on stacks containing the unseen family. \texttt {cons}$-$\texttt {mono} is anchoring's advantage over breadth; \texttt {fam} is an arm trained on the unseen family's trainable sibling, included because family exposure is the largest effect in the table and replicates on every model. Bold intervals exclude zero}{table.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}The reversal test, re-run}{10}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}The bound}{10}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Related Work}{10}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Threats to Validity}{10}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The held-out family is a proxy.}{10}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Coverage is not uniform, and contrasts are paired.}{10}{section*.10}\protected@file@percent }
+\citation{}
+\@writefile{toc}{\contentsline {paragraph}{Eight models is a small sample for a claim about models.}{11}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The reversal test is one model deep.}{11}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Instrument failures we report rather than omit.}{11}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Single language.}{11}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Data Availability}{11}{section.10}\protected@file@percent }
+\bibstyle{ACM-Reference-Format}
+\bibdata{references,references-codesteer}
+\bibcite{chen2021evaluatinglargelanguagemodels}{{1}{2021}{{Chen et~al\mbox  {.}}}{{}}}
+\bibcite{collberg1997taxonomy}{{2}{1997}{{Collberg et~al\mbox  {.}}}{{}}}
+\bibcite{collberg2002manufacturing}{{3}{1998}{{Collberg et~al\mbox  {.}}}{{}}}
+\bibcite{li2022codebert}{{4}{2020}{{Feng et~al\mbox  {.}}}{{}}}
+\bibcite{guo2021graphcodebert}{{5}{2021}{{Guo et~al\mbox  {.}}}{{}}}
+\bibcite{Competition-level-code-generation-with-AlphaCode}{{6}{2022}{{Li et~al\mbox  {.}}}{{}}}
+\bibcite{nguyen2026effectcodeobfuscationhuman}{{7}{2026}{{Nguyen et~al\mbox  {.}}}{{}}}
+\bibcite{roziere2023codegen}{{8}{2023}{{Nijkamp et~al\mbox  {.}}}{{}}}
+\bibcite{nikiema2025codebarrierllmsactually}{{9}{2025}{{Nikiema et~al\mbox  {.}}}{{}}}
+\bibcite{Obfuscation-The-Hidden-Malware}{{10}{2011}{{O'Kane et~al\mbox  {.}}}{{}}}
+\bibcite{An-Observational-Investigation-of-Reverse-Engineers-Process-and-Mental-Models}{{11}{2019}{{Votipka et~al\mbox  {.}}}{{}}}
+\newlabel{tocindent-1}{0pt}
+\newlabel{tocindent0}{0pt}
+\newlabel{tocindent1}{4.65pt}
+\newlabel{tocindent2}{11.49998pt}
+\newlabel{tocindent3}{0pt}
+\newlabel{tocindent4}{0pt}
+\newlabel{tocindent5}{0pt}
+\@writefile{toc}{\contentsline {section}{References}{12}{section*.16}\protected@file@percent }
+\newlabel{TotPages}{{12}{12}{}{page.12}{}}
+\gdef \@abspage@last{12}
