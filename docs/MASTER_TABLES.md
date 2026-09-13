@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-13 12:32 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-13 13:43 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -486,6 +486,12 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | C3_S1_S3_S4 | 0.128 | 50 | 0.377 | +24.8 | 147 | 0.378 | +24.9 | 147 | 0.367 | +23.8 | 143 | 0.367 | +23.9 | 143 |
 | C3_L1r_S1_S4 | 0.126 | 49 | 0.325 | +19.9 | 126 | 0.326 | +20.0 | 127 | 0.306 | +18.0 | 119 | 0.305 | +17.9 | 119 |
 | C4_L1r_S1_S3_S4 | 0.089 | 35 | 0.334 | +24.5 | 130 | 0.336 | +24.7 | 131 | 0.296 | +20.7 | 115 | 0.298 | +20.9 | 116 |
+| C_L1r_X1 | 0.102 | 40 | 0.189 | +8.7 | 74 | 0.186 | +8.4 | 72 | 0.194 | +9.2 | 76 | 0.190 | +8.8 | 74 |
+| C_X1_S1 | 0.104 | 40 | 0.291 | +18.7 | 113 | 0.286 | +18.2 | 111 | 0.293 | +18.9 | 114 | 0.295 | +19.1 | 115 |
+| C_S2_X1 | 0.145 | 56 | 0.326 | +18.1 | 127 | 0.328 | +18.3 | 128 | 0.329 | +18.4 | 128 | 0.329 | +18.4 | 128 |
+| C_L1r_X1m | 0.114 | 44 | 0.227 | +11.3 | 88 | 0.224 | +11.0 | 87 | 0.221 | +10.7 | 86 | 0.221 | +10.6 | 86 |
+| C_S1_X1s | 0.148 | 58 | 0.350 | +20.2 | 136 | 0.348 | +20.0 | 135 | 0.344 | +19.6 | 134 | 0.343 | +19.5 | 134 |
+| C3_L1r_S1_X1 | 0.102 | 40 | 0.242 | +14.0 | 94 | 0.245 | +14.3 | 95 | 0.234 | +13.2 | 91 | 0.239 | +13.8 | 93 |
 
 **Merging (forward)**
 
@@ -538,6 +544,31 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | C_X1_S1 | 0.130 | 50 | 0.233 | +10.3 | 90 | 0.296 | +16.6 | 115 | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
 | C_S2_X1 | 0.169 | 66 | 0.263 | +9.4 | 102 | 0.317 | +14.8 | 123 | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
 | C3_L1r_S1_X1 | 0.105 | 41 | 0.170 | +6.6 | 66 | 0.215 | +11.0 | 83 | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+
+### StarCoder2-15B
+
+
+**Merging (forward)**
+
+| condition | base acc | base % | TIES acc | Δ | % | DARE-TIES acc | Δ | % | DARE-linear acc | Δ | % | L0-anch. TIES acc | Δ | % | L0-anch. DARE-TIES acc | Δ | % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| L0 | fmt | fmt | 0.484 | fmt | fmt | 0.539 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| L1b | fmt | fmt | 0.366 | fmt | fmt | 0.426 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| L1r | fmt | fmt | 0.414 | fmt | fmt | 0.476 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| L2 | fmt | fmt | 0.401 | fmt | fmt | 0.466 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| S1 | fmt | fmt | 0.451 | fmt | fmt | 0.487 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| S2 | fmt | fmt | 0.440 | fmt | fmt | 0.518 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| X1 | fmt | fmt | 0.283 | fmt | fmt | 0.343 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_L1b_S1 | fmt | fmt | 0.321 | fmt | fmt | 0.354 | fmt | fmt | 0.063 | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_L1r_S1 | fmt | fmt | 0.344 | fmt | fmt | 0.389 | fmt | fmt | 0.047 | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_S1_L1r | fmt | fmt | 0.346 | fmt | fmt | 0.387 | fmt | fmt | 0.041 | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_L2_S4 | fmt | fmt | 0.381 | fmt | fmt | 0.438 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_L1r_S3 | fmt | fmt | 0.390 | fmt | fmt | 0.459 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_S4_S3 | fmt | fmt | 0.442 | fmt | fmt | 0.506 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_L1r_X1 | fmt | fmt | 0.215 | fmt | fmt | 0.259 | fmt | fmt | 0.058 | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_X1_S1 | fmt | fmt | 0.295 | fmt | fmt | 0.371 | fmt | fmt | 0.067 | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C_S2_X1 | fmt | fmt | 0.341 | fmt | fmt | 0.403 | fmt | fmt | fmt | fmt | fmt | -- | -- | -- | -- | -- | -- |
+| C3_L1r_S1_X1 | fmt | fmt | 0.241 | fmt | fmt | 0.286 | fmt | fmt | 0.058 | fmt | fmt | -- | -- | -- | -- | -- | -- |
 
 ### Granite-3.1-8B
 

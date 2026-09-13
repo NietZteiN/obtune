@@ -2,47 +2,31 @@
 \label{sec:rqs}
 
 Fine-tuning a code model on obfuscated programs raises its accuracy on those programs by roughly
-nineteen points. Every question below asks what that number is made of. We structure the
-investigation as one diagnosis applied twice: two tests of whether learned competence survives
-leaving the distribution it was fit to, run first on the field's existing adaptation strategies and
-then on our own.
+nineteen points. Every question below asks what that number is made of. Adaptation can raise forward
+accuracy by teaching the model to \emph{read} the program better, or by teaching it the surface a
+particular transform leaves behind; only the first deserves to be called robustness. We separate them
+with two tests that share no machinery, committed before any method was on the table:
+\begin{itemize}[leftmargin=*, topsep=2pt, itemsep=1pt]
+  \item \textbf{Composition.} Does competence on single transforms survive being stacked with a
+        transform family the model has never seen?
+  \item \textbf{Reversal.} Does it survive the task being run backwards --- given a return value,
+        produce a call that yields it? No adapter is trained on this direction, so any backward gain
+        is transferred program understanding rather than task fitting.
+\end{itemize}
 
-\vspace{0.5em}
-\noindent
-\textbf{RQ1: Do standard adaptation methods generalise, or memorise?} \\
-Real-world obfuscated programs, particularly in malware analysis, rarely employ a single
-transformation in isolation. We commit to two tests before any method is on the table: whether
-competence survives being \emph{stacked} with a transformation family the model has never seen,
-and whether it survives the task being run \emph{backwards} (given a return value, produce a call
-that yields it). We apply both to the three standard strategies --- inference-time routing,
-weight-space model merging, and broad multi-transformation fine-tuning --- treated as baselines
-rather than as proposals.
+\noindent\textbf{RQ1: Do standard adaptation methods generalise, or memorise?} We apply both tests to
+the field's existing strategies --- inference-time routing over per-transform specialists,
+weight-space merging of those specialists, and broad multi-transform fine-tuning --- treated as
+baselines rather than proposals.
 
-\vspace{0.5em}
-\noindent
-\textbf{RQ2: What is memorised?} \\
-Given that the baselines fail both tests, this question locates what adaptation latches onto
-instead, because that determines the remedy. Through complementary analyses --- reliance on
-identifier cues, transferability between mechanisms within one obfuscation family, and the model's
-confidence profile --- we test whether fine-tuning learns programmatic semantics or the surface
-regularities a particular transformation leaves behind. The section ends by naming what to anchor
-to.
+\noindent\textbf{RQ2: What is memorised?} Given the baselines' failure, this question locates what
+adaptation latches onto instead, because that determines the remedy.
 
-\vspace{0.5em}
-\noindent
-\textbf{RQ3: Does anchoring to clean-code behaviour repair what adaptation breaks?} \\
-The diagnosis in RQ2 names its own remedy: anchor the model to something a semantics-preserving
-transformation cannot change, its own behaviour on the unobfuscated parent of each program. We
-derive a paired-consistency objective from that requirement, isolate its mechanism by ablating the
-teacher, and measure across eight models and four lineages whether it retains the benefits of broad
-training while removing broad training's degradation on unseen families and on clean code --- and
-on how many models it does so.
+\noindent\textbf{RQ3: Does anchoring to clean-code behaviour repair what adaptation breaks?} The
+diagnosis names its own remedy: anchor the model to its own behaviour on the unobfuscated parent of
+each program. We derive a paired-consistency objective, isolate its mechanism by ablating the
+teacher, and measure it across eight models and four lineages.
 
-\vspace{0.5em}
-\noindent
-\textbf{RQ4: Does the anchored model generalise?} \\
-Finally, we re-run RQ1's two tests on the anchored model and state the bound. On a divergence
-ladder of stacks that contain an unseen transformation family, and on the reversed task, we ask
-whether the objective instils a new capability to handle arbitrary unseen obfuscation, or whether
-it acts strictly as a preservation mechanism that protects the teacher's existing competence from
-being destroyed by surface-level change.
+\noindent\textbf{RQ4: Does the anchored model generalise?} We re-run RQ1's two tests on the anchored
+model and state the bound: a new capability on unseen obfuscation, or a preservation mechanism that
+protects the teacher's competence from surface-level change.

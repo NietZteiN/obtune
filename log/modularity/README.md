@@ -145,6 +145,8 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
 
 - [`2026-09-13_mixture-guard-refused-the-mixture-engine.md`](2026-09-13_mixture-guard-refused-the-mixture-engine.md) — the arch-keyed guard refused `HFEngine` too; now keyed on `engine.supports_mixture`, tested, F1 chain resubmitted (392638 → 392641).
+- [`2026-09-13_f2-route-read.md`](2026-09-13_f2-route-read.md) — **H-F2-route REFUTED**: the specialist mixture beats breadth by +2.88 on unseen-containing stacks, level with anchoring; the gate itself is worth nothing there.
+- [`2026-09-13_merging-on-the-panel-starcoder2.md`](2026-09-13_merging-on-the-panel-starcoder2.md) — fourth model: both rules confirmed on seen stacks, yet DARE-TIES above breadth on unseen-containing stacks (now 4/4).
 - [`2026-09-13_merging-on-the-panel.md`](2026-09-13_merging-on-the-panel.md) — **DARE-TIES above the clean control on seen stacks on 3/3 models and above breadth on unseen-containing stacks on 3/3**; Llama refutes rule a. Merging is the baseline without the tax.
 - [`2026-09-13_merge-panel-phase-missing-from-schema.md`](2026-09-13_merge-panel-phase-missing-from-schema.md) — schema phase literal lacked `merge_panel`; validator caught it, I truncated its output; fixed, resubmitted.
 - [`2026-09-13_f2-route-oom-on-the-mig-node.md`](2026-09-13_f2-route-oom-on-the-mig-node.md) — H-F2-route OOM on the MIG slice at batch 32; resubmitted 392996 at batch 16, node excluded.

@@ -222,6 +222,11 @@ def t_rq1_composition():
     if d is None:
         return
     lv = d.get("by_level", {})
+    # Fourth column, 2026-09-13: the same contrasts on the four stacks that contain the unseen family
+    # (routing from f2_route, merges from merge_panel; both CodeLlama-7B, 319 common programs).
+    fr = (load("pipeline/f2_route_codellama7b.json") or {}).get("by_level", {}).get("unseen4", {})
+    fm = (load("pipeline/merge_panel_codellama7b.json") or {}).get("by_level", {}).get("unseen4", {})
+    lv = dict(lv); lv["unseen4"] = {**fm, **fr}
     def cell(level, key):
         blk = lv.get(level, {})
         c = blk.get(key)
@@ -249,24 +254,25 @@ def t_rq1_composition():
     rows = []
     for label, key in ROWS:
         if key is None:
-            rows.append(r"\multicolumn{4}{@{}l}{\emph{" + label + r"}} \\")
+            rows.append(r"\multicolumn{5}{@{}l}{\emph{" + label + r"}} \\")
         else:
-            rows.append(f"{label} & {cell('all_ten', key)} & {cell('depth2', key)} & {cell('depth34', key)} \\\\")
+            rows.append(f"{label} & {cell('all_ten', key)} & {cell('depth2', key)} & {cell('depth34', key)} & {cell('unseen4', key)} \\\\")
     n = d.get("n_programs_common", "?")
     body = (r"""\begin{table*}[ht]
-\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\centering\scriptsize\setlength{\tabcolsep}{2pt}
 \caption{\textbf{RQ1: routing and merging on stacks of seen transforms.} Paired differences in
 points on the ten stacks (six depth-2, four depth-3/4), CodeLlama-7B, """ + str(n) + r""" programs common to
-every cell. Routing is worth about a point over a random gate and nothing over breadth; the mixture
+every cell; the last column repeats the contrasts on the four stacks that contain the unseen family
+(319 programs; merges other than DARE-TIES have no cells there). Routing is worth about a point over a random gate and nothing over breadth; the mixture
 itself carries the gain (\texttt{mole\_uniform} $-$ \texttt{base}); a hard argmax router is
 indistinguishable from the soft one. The best merge (DARE-TIES) matches the clean-code control and
 the other four fall below it. Bold intervals exclude zero. Every arm ran through the mixture engine
 (\texttt{obtune.mole.eval\_mole}); an earlier run through vLLM had written the untuned model under the
 routing arms' names and was withdrawn.}
 \label{tab:rq1_composition}
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-\textbf{Contrast} & \textbf{all ten} & \textbf{depth 2} & \textbf{depth 3--4} \\
+\textbf{Contrast} & \textbf{all ten seen} & \textbf{depth 2} & \textbf{depth 3--4} & \textbf{unseen inside} \\
 \midrule
 """ + "\n".join(rows) + r"""
 \bottomrule

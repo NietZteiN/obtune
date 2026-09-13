@@ -1,27 +1,6 @@
 \section{Setup}
 \label{sec:setup}
 
-\subsection{Research questions and the two tests}
-Fine-tuning a code model on obfuscated programs raises its accuracy on those programs by roughly
-nineteen points. Every question below asks what that number is made of. Adaptation can raise forward
-accuracy by teaching the model to \emph{read} the program better, or by teaching it the surface a
-particular transform leaves behind; only the first deserves to be called robustness. We separate them
-with two tests that share no machinery, committed before any method was on the table:
-\begin{itemize}[leftmargin=*, topsep=2pt, itemsep=1pt]
-  \item \textbf{Composition.} Does competence on single transforms survive being stacked with a
-        transform family the model has never seen?
-  \item \textbf{Reversal.} Does it survive the task being run backwards --- given a return value,
-        produce a call that yields it? No adapter is trained on this direction, so any backward gain
-        is transferred program understanding rather than task fitting.
-\end{itemize}
-\textbf{RQ1} applies both to the field's existing strategies --- inference-time routing over
-per-transform specialists, weight-space merging of those specialists, and broad multi-transform
-fine-tuning --- treated as baselines. \textbf{RQ2} locates what adaptation latches onto instead,
-because that determines the remedy. \textbf{RQ3} derives the remedy, a paired-consistency objective
-anchored to the model's behaviour on the unobfuscated parent, isolates its mechanism by ablating the
-teacher, and measures it across eight models. \textbf{RQ4} re-runs the two tests on the anchored
-model and states the bound.
-
 \subsection{Models}
 Table~\ref{tab:models} lists the panel: eight instruct models from four lineages (Meta, BigCode,
 Google, IBM), code-specialised and general, 7B to 34B, plus one pretrained checkpoint used only for

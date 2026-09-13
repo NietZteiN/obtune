@@ -1,0 +1,36 @@
+% GENERATED 2026-09-13 13:43 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/starcoder2-15b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, StarCoder2-15B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_starcoder215b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & fmt & fmt & 0.484 & fmt & fmt & 0.539 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & fmt & fmt & 0.366 & fmt & fmt & 0.426 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & fmt & fmt & 0.414 & fmt & fmt & 0.476 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & fmt & fmt & 0.401 & fmt & fmt & 0.466 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & fmt & fmt & 0.451 & fmt & fmt & 0.487 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & fmt & fmt & 0.440 & fmt & fmt & 0.518 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & fmt & fmt & 0.283 & fmt & fmt & 0.343 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & fmt & fmt & 0.321 & fmt & fmt & 0.354 & fmt & fmt & 0.063 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & fmt & fmt & 0.344 & fmt & fmt & 0.389 & fmt & fmt & 0.047 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & fmt & fmt & 0.346 & fmt & fmt & 0.387 & fmt & fmt & 0.041 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L2\_S4} & fmt & fmt & 0.381 & fmt & fmt & 0.438 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & fmt & fmt & 0.390 & fmt & fmt & 0.459 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S4\_S3} & fmt & fmt & 0.442 & fmt & fmt & 0.506 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & fmt & fmt & 0.215 & fmt & fmt & 0.259 & fmt & fmt & 0.058 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & fmt & fmt & 0.295 & fmt & fmt & 0.371 & fmt & fmt & 0.067 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & fmt & fmt & 0.341 & fmt & fmt & 0.403 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & fmt & fmt & 0.241 & fmt & fmt & 0.286 & fmt & fmt & 0.058 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

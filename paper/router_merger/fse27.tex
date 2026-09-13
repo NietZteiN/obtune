@@ -618,6 +618,7 @@
 
 \input{sections/abstract}
 \input{sections/intro-2}
+\input{sections/rqs}
 \input{sections/setup}
 \input{sections/rq1}
 \input{sections/rq2}
@@ -662,12 +663,13 @@ One table per panel model: every condition and every stack, forward and backward
 \section{Routing and merging grids}
 \label{app:routing}
 
-Every routing and merging system on every condition and stack that has it, for the models on which those arms exist (routing: CodeLlama-7B; merging: CodeLlama-7B, Granite-3.1-8B, Llama-3.1-8B), with the same three numbers as Appendix~\ref{app:master}. The routing arms are MoLE mixtures of the eight per-transform experts; \emph{uniform} and \emph{random} gates separate the mixture's worth from the routing's. Every routing cell ran through the mixture engine.
+Every routing and merging system on every condition and stack that has it, for the models on which those arms exist (routing: CodeLlama-7B; merging: CodeLlama-7B, Granite-3.1-8B, Llama-3.1-8B, StarCoder2-15B), with the same three numbers as Appendix~\ref{app:master}. The routing arms are MoLE mixtures of the eight per-transform experts; \emph{uniform} and \emph{random} gates separate the mixture's worth from the routing's. Every routing cell ran through the mixture engine.
 
 \input{tables/master_routing_codellama7b}
 \input{tables/master_merging_codellama7b}
 \input{tables/master_merging_granite318b}
 \input{tables/master_merging_llama318b}
+\input{tables/master_merging_starcoder215b}
 
 \end{document}
 \endinput
