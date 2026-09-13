@@ -15,6 +15,13 @@
   "est_gpu_h": 0.6,
   "priority": 110,
   "meta": {
-    "note": "master table: ICL column on X1 and all stacks (format gate expected to bite off 7B)"
+    "note": "master table: ICL column on X1 and all stacks (format gate expected to bite off 7B) | REQUEUED 2026-09-13: vLLM engine would not start on a30 -- 8.5B weights leave 0.92 GiB for the KV cache against the 3.5 GiB an 8192-token context needs. a30 trains 7-8B but does not SERVE them."
+  },
+  "previous_slurm": {
+    "job_id": "393506",
+    "node": "g-02-01",
+    "partition": "a30",
+    "exit_code": 1,
+    "finished_utc": "2026-09-13T17:15:26.752205+00:00"
   }
 }

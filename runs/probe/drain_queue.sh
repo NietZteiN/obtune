@@ -39,7 +39,10 @@ while true; do
       out=$(timeout 300 python scripts/slurm/submit.py --queued --partition "$1" --limit "$2" --mem "$3" 2>&1 | grep -E "^submitted|FAILED|REFUSING" | grep -v REFUSING)
       [ -n "$out" ] && echo "$out" | sed "s/^/[$1] /"
     done
-    for j in $(ls runs/manifest/queued/*.json 2>/dev/null | grep -E "codellama-7b|llama31-8b|codegemma-7b|granite31-8b" | head -2); do
+    # a30 takes 7-8B TRAININGS only. It cannot SERVE them: vLLM on an 8.5B model leaves 0.92 GiB for
+    # the KV cache against the 3.5 GiB an 8192-token context needs, and the engine refuses to start
+    # (ev_1shot_codegemma-7b, 2026-09-13). Training fits because there is no KV cache to reserve.
+    for j in $(ls runs/manifest/queued/tr_*.json 2>/dev/null | grep -E "codellama-7b|llama31-8b|codegemma-7b|granite31-8b" | head -2); do
       out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition a30 --mem 64G 2>&1 | grep -E "^submitted|FAILED")
       [ -n "$out" ] && echo "$out" | sed "s/^/[a30] /"
     done
