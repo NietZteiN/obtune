@@ -10,9 +10,16 @@
     "llama31-8b"
   ],
   "raw": false,
-  "est_gpu_h": 0.5,
+  "est_gpu_h": 1.5,
   "priority": 204,
   "meta": {
-    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging"
+    "note": "P1/C5 of docs/EXPERIMENT_CHECKLIST.md -- specialists for routing+merging | REQUEUED 2026-09-13: job 392121 hit its 1 h walltime at step 178/222 on the MIG node (17 s/step; S2 prompts are the long ones) and the walltime kill was filed under done/ with exit_code 0. est_gpu_h raised 0.5 -> 1.5 so the 2x rule gives 3 h.",
+    "previous_slurm": {
+      "job_id": "392121",
+      "node": "g-06-01",
+      "partition": "h100",
+      "exit_code": 0,
+      "finished_utc": "2026-09-13T06:57:35.807244+00:00"
+    }
   }
 }

@@ -51,3 +51,5 @@
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md) (§9 records deviations from the v0.1 brief)
 - [`../../docs/CHECKLIST.md`](../../docs/CHECKLIST.md)
 - [`../../data/DATA_SOURCES.md`](../../data/DATA_SOURCES.md)
+
+- [`2026-09-13_walltime-kill-filed-as-done.md`](2026-09-13_walltime-kill-filed-as-done.md) — the EXIT trap saw `$?`=0 on a walltime kill; `CMD_STATUS` sentinel fixes it; one manifest (Llama S2) requeued at 3 h.

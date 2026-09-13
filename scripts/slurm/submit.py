@@ -81,8 +81,17 @@ else
   CLAIM=""
 fi
 
+# CMD_STATUS is set only when the command RETURNS. At walltime SLURM SIGTERMs the script while
+# it is waiting on the python child; bash finishes the wait, then acts on the signal and runs the
+# EXIT trap WITHOUT executing the next line -- so `$?` inside the trap is the status of the last
+# command that did complete, the `echo` above the command, which is 0. On 2026-09-13 a specialist
+# training killed at its 1 h limit (392121, step 178/222) was therefore filed under done/ with
+# exit_code 0 and no adapter, and the merge feeder counted the model at 4/5 specialists. An empty
+# CMD_STATUS in the trap means "killed before the command returned" and files under failed/.
+CMD_STATUS=""
 finish() {{
   rc=$?
+  if [[ -z "$CMD_STATUS" ]]; then rc=124; else rc=$CMD_STATUS; fi
   if [[ -n "$CLAIM" && -f "$CLAIM" ]]; then
     if [[ $rc -eq 0 ]]; then dest="$DONE_DIR"; else dest="$FAIL_DIR"; fi
     mkdir -p "$dest"
@@ -96,6 +105,7 @@ d.setdefault("slurm", {{}}).update({{
     "partition": os.environ.get("SLURM_JOB_PARTITION"),
     "exit_code": rc,
     "finished_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    **({{"reason": "killed before the command returned (walltime or node failure)"}} if rc == 124 else {{}}),
 }})
 json.dump(d, open(dst, "w"), indent=2)
 os.remove(src)
@@ -113,6 +123,7 @@ echo "# argv: {argv_display}"
 echo
 
 {command}
+CMD_STATUS=$?
 """
 
 
