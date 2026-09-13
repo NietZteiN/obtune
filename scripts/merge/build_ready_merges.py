@@ -55,9 +55,15 @@ def gpu_partition() -> str:
         idle = subprocess.run(["sinfo", "-h", "-p", "h200", "-t", "idle", "-o", "%D"],
                               capture_output=True, text=True).stdout.strip()
         idle_n = sum(int(x) for x in idle.split() if x.isdigit())
-        q = subprocess.run(["squeue", "-h", "-u", os.environ.get("USER", ""), "-o", "%q %Z"],
+        # COUNT BY PARTITION, NOT BY `%q`. squeue's %q is the job's QOS ("normal" here), not the
+        # partition's QoS=juno, so the original test matched nothing and this function always chose
+        # h200 -- which is how obtune came to hold three h200 jobs against an agreed share of two on
+        # 2026-09-13. The juno pool is the h200 and normal partitions; submit.py::qos_pool is the
+        # authority and refuses on its own, but these jobs go through raw sbatch and bypass it.
+        q = subprocess.run(["squeue", "-h", "-u", os.environ.get("USER", ""), "-o", "%P|%Z"],
                            capture_output=True, text=True).stdout.splitlines()
-        held = sum(1 for l in q if l.startswith("juno ") and l.split(" ", 1)[1].strip() == str(ROOT))
+        held = sum(1 for l in q if l.split("|")[0] in ("h200", "normal")
+                   and l.split("|", 1)[1].strip() == str(ROOT))
     except Exception:
         return "h100"
     return "h200" if (idle_n > 0 and share and held < share) else "h100"

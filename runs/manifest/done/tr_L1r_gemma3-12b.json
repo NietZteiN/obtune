@@ -1,18 +1,25 @@
 {
-  "job_id": "tr_S2_codellama-13b",
+  "job_id": "tr_L1r_gemma3-12b",
   "kind": "train",
   "argv": [
     "-m",
     "obtune.train_sft",
     "--config",
-    "train/grid_py_S2_panel.yaml",
+    "train/grid_py_L1r_panel.yaml",
     "--model",
-    "codellama-13b"
+    "gemma3-12b"
   ],
   "raw": false,
   "est_gpu_h": 1.0,
   "priority": 250,
   "meta": {
     "note": "master table: specialists so merges (and later the mixture) exist on every model"
+  },
+  "slurm": {
+    "job_id": "393639",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T19:41:01.981851+00:00"
   }
 }

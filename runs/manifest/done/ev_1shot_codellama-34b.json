@@ -16,5 +16,12 @@
   "priority": 110,
   "meta": {
     "note": "master table: ICL column on X1 and all stacks (format gate expected to bite off 7B)"
+  },
+  "slurm": {
+    "job_id": "393747",
+    "node": "g-07-02",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T19:16:07.337667+00:00"
   }
 }

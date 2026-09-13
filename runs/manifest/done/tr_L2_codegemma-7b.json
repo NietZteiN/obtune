@@ -1,0 +1,32 @@
+{
+  "job_id": "tr_L2_codegemma-7b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_L2_panel.yaml",
+    "--model",
+    "codegemma-7b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 250,
+  "meta": {
+    "note": "master table: specialists so merges (and later the mixture) exist on every model | REQUEUED 2026-09-13: OOM on a30. CodeGemma is 8.5B with a 256k vocabulary, so TRL's logits chunk (h.float() @ w.float().t()) alone asks for 2.93 GiB on top of 22.5 GiB already resident. a30 trains 7-8B models with ordinary vocabularies, not this one."
+  },
+  "previous_slurm": {
+    "job_id": "393541",
+    "node": "g-02-01",
+    "partition": "a30",
+    "exit_code": 1,
+    "finished_utc": "2026-09-13T17:39:37.327932+00:00"
+  },
+  "slurm": {
+    "job_id": "393640",
+    "node": "g-05-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T19:20:21.769945+00:00"
+  }
+}

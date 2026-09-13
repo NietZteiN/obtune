@@ -58,3 +58,4 @@
 - [`2026-09-13_codegemma-vocab-breaks-the-size-rule.md`](2026-09-13_codegemma-vocab-breaks-the-size-rule.md) — parameter count mis-predicts placement; CodeGemma's 256k vocab OOMs a30 where Llama-3.1-8B fits.
 - [`2026-09-13_34b-is-h200-only.md`](2026-09-13_34b-is-h200-only.md) — 34B serves only on h200; consolidated train-vs-serve placement table for every size on every partition.
 - [`2026-09-13_transient-enospc-on-scratch.md`](2026-09-13_transient-enospc-on-scratch.md) — shared /scratch filled briefly; evals write hub metadata they do not need. HF_HUB_OFFLINE proposed for the eval path.
+- [`2026-09-13_share-overrun-from-a-wrong-qos-field.md`](2026-09-13_share-overrun-from-a-wrong-qos-field.md) — two places computed the juno share and the non-authoritative one used the wrong squeue field; h200 over-held 3 of 2.

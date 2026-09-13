@@ -51,7 +51,8 @@ while true; do
     # KV cache on an 80 GB h100 card (ev_depth_codellama-34b, 2026-09-13), and a30 is far too small.
     # Its manifests are parked in queued_34b/, which the --queued passes above cannot see, and are
     # submitted by name here with the memory 34B needs.
-    for j in $(ls runs/manifest/queued_34b/*.json 2>/dev/null | head -1); do
+    # Two per tick, matching obtune's h200 share; submit.py refuses past it, so this cannot overrun.
+    for j in $(ls runs/manifest/queued_34b/*.json 2>/dev/null | head -2); do
       out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition h200 --mem 128G 2>&1 | grep -E "^submitted|FAILED")
       [ -n "$out" ] && echo "$out" | sed "s/^/[h200-34b] /"
     done

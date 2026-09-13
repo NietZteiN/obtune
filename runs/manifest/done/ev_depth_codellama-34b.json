@@ -23,5 +23,12 @@
     "partition": "h100",
     "exit_code": 1,
     "finished_utc": "2026-09-13T18:09:02.969202+00:00"
+  },
+  "slurm": {
+    "job_id": "393762",
+    "node": "g-07-03",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T19:49:40.936251+00:00"
   }
 }
