@@ -64,8 +64,12 @@ def write(name, body, source, note=""):
     hdr = (f"% GENERATED {dt.datetime.now(dt.timezone.utc):%Y-%m-%d %H:%M} UTC by "
            f"scripts/paper/gen_fse_tables.py\n% SOURCE: {source}\n"
            f"% Do not edit by hand -- regenerate. {note}\n")
-    (OUT / name).write_text(hdr + body + "\n")
-    print(f"  wrote paper/paper_latex/tables/{name}")
+    # Both drafts carry the generated tables: paper_latex (the 12-page build) and router_merger
+    # (the deliverable built from the user's upload, 2026-09-13).
+    for out in (OUT, ROOT / "paper" / "router_merger" / "tables"):
+        out.mkdir(parents=True, exist_ok=True)
+        (out / name).write_text(hdr + body + "\n")
+    print(f"  wrote paper/{{paper_latex,router_merger}}/tables/{name}")
 
 
 def t_rq1_dissociation():
@@ -81,7 +85,7 @@ def t_rq1_dissociation():
                     f"& {iv(e['difference'])} \\\\")
     tal = (d or {}).get("tally", {})
     body = (r"""\begin{table*}[ht]
-\centering
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \caption{\textbf{RQ1: the dissociation, measured within model on one program set.} Breadth
 (\texttt{mono\_all}) against the clean-code control (\texttt{tuned\_L0}) on stacks built from
 \emph{seen} transforms and on stacks containing an \emph{unseen} family. The \emph{difference} is
@@ -115,7 +119,7 @@ def t_rq2_identifier():
         rows.append(f"{lbl} ({note}) & {iv(p.get('with_identifier'))} & "
                     f"{iv(p.get('structural_only'))} & {iv(p.get('difference_of_differences'))} \\\\")
     body = (r"""\begin{table*}[ht]
-\centering
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \caption{\textbf{RQ2: breadth's stack gain depends on an identifier transform being present.}
 Breadth over the clean-code control, split by whether the stack contains an identifier transform,
 with the \emph{difference} between the groups. The rule defining the split was fixed before the
@@ -153,7 +157,7 @@ def t_rq3_panel():
     t = " & ".join(f"{x.get('REPLICATED',0)} / {x.get('INCONCLUSIVE',0)} / {x.get('REFUTED',0)}"
                    for x in (tal["R1"], tal["R2"], tal["R3"]))
     body = (r"""\begin{table*}[ht]
-\centering
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \caption{\textbf{RQ3: the three findings across eight models and four lineages}, all read from one
 evaluation phase. $\surd$\ replicated, $\circ$ inconclusive, $\times$ refuted. R1 is breadth's
 unseen-family tax (\texttt{mono\_all} $-$ \texttt{tuned\_L0} on the held-out family); R2 is
@@ -191,7 +195,7 @@ def t_rq4_ladder():
         f"{iv(lv.get('d3',{}).get('cons_lam3 - tuned_L0'))} & {iv(lv.get('d3',{}).get('cons_lam3 - mono_all'))} \\\\",
     ]
     body = (r"""\begin{table*}[ht]
-\centering
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \caption{\textbf{RQ4: the divergence ladder.} Composites that contain a transform family the model
 has never seen. Breadth's advantage flips sign the moment such a component enters, while anchoring
 rises \emph{above} the clean-code control. The pre-registered rule required both that anchoring hold
@@ -212,6 +216,66 @@ was evaluated.}
           "New: the stimulus this table describes did not exist when the draft was written.")
 
 
+def t_rq1_composition():
+    """F1: routing and merging on the ten seen stacks, CodeLlama-7B, by depth."""
+    d = load("pipeline/f1_routing_merging_codellama7b.json")
+    if d is None:
+        return
+    lv = d.get("by_level", {})
+    def cell(level, key):
+        blk = lv.get(level, {})
+        c = blk.get(key)
+        if c is None and isinstance(blk, dict):
+            for k, v in blk.items():
+                if k.replace(" ", "") == key.replace(" ", ""):
+                    c = v
+        return iv(c)
+    ROWS = [
+        ("Routing", None),
+        (r"\texttt{mole\_router} $-$ \texttt{mole\_random}", "mole_router - mole_random"),
+        (r"\texttt{mole\_router} $-$ \texttt{mole\_uniform}", "mole_router - mole_uniform"),
+        (r"\texttt{mole\_hardrouter} $-$ \texttt{mole\_router}", "mole_hardrouter - mole_router"),
+        (r"\texttt{mole\_router} $-$ \texttt{mono\_all}", "mole_router - mono_all"),
+        (r"\texttt{mole\_uniform} $-$ \texttt{base}", "mole_uniform - base"),
+        ("Merging", None),
+        (r"\texttt{merge\_dare\_ties} $-$ \texttt{tuned\_L0}", "merge_dare_ties - tuned_L0"),
+        (r"\texttt{merge\_ties} $-$ \texttt{tuned\_L0}", "merge_ties - tuned_L0"),
+        (r"\texttt{merge\_dare\_linear} $-$ \texttt{tuned\_L0}", "merge_dare_linear - tuned_L0"),
+        (r"\texttt{l0merge\_ties} $-$ \texttt{tuned\_L0}", "l0merge_ties - tuned_L0"),
+        (r"\texttt{l0merge\_dare\_ties} $-$ \texttt{tuned\_L0}", "l0merge_dare_ties - tuned_L0"),
+        ("Breadth, for reference", None),
+        (r"\texttt{mono\_all} $-$ \texttt{tuned\_L0}", "mono_all - tuned_L0"),
+    ]
+    rows = []
+    for label, key in ROWS:
+        if key is None:
+            rows.append(r"\multicolumn{4}{@{}l}{\emph{" + label + r"}} \\")
+        else:
+            rows.append(f"{label} & {cell('all_ten', key)} & {cell('depth2', key)} & {cell('depth34', key)} \\\\")
+    n = d.get("n_programs_common", "?")
+    body = (r"""\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{RQ1: routing and merging on stacks of seen transforms.} Paired differences in
+points on the ten stacks (six depth-2, four depth-3/4), CodeLlama-7B, """ + str(n) + r""" programs common to
+every cell. Routing is worth about a point over a random gate and nothing over breadth; the mixture
+itself carries the gain (\texttt{mole\_uniform} $-$ \texttt{base}); a hard argmax router is
+indistinguishable from the soft one. The best merge (DARE-TIES) matches the clean-code control and
+the other four fall below it. Bold intervals exclude zero. Every arm ran through the mixture engine
+(\texttt{obtune.mole.eval\_mole}); an earlier run through vLLM had written the untuned model under the
+routing arms' names and was withdrawn.}
+\label{tab:rq1_composition}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Contrast} & \textbf{all ten} & \textbf{depth 2} & \textbf{depth 3--4} \\
+\midrule
+""" + "\n".join(rows) + r"""
+\bottomrule
+\end{tabular}
+\end{table*}""")
+    write("rq1_composition.tex", body, "results/analysis/pipeline/f1_routing_merging_codellama7b.json",
+          "Supersedes the +0.0000 router number and the ladder-level -3.13 merge number in the draft.")
+
+
 def t_rq4_by_model():
     rows = []
     for m in ORDER:
@@ -223,7 +287,7 @@ def t_rq4_by_model():
         rows.append(f"{NICE[m]} & {LIN[m]} & {iv(b['cons_lam3 - mono_all'])} & "
                     f"{iv(b['cons_lam3 - tuned_L0'])} & {iv(b['tuned_X1 - tuned_L0'])} \\\\")
     body = (r"""\begin{table*}[ht]
-\centering
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \caption{\textbf{RQ4: the divergence result across the panel}, on stacks containing the unseen
 family. \texttt{cons}$-$\texttt{mono} is anchoring's advantage over breadth; \texttt{fam} is an arm
 trained on the unseen family's trainable sibling, included because family exposure is the largest
@@ -255,7 +319,7 @@ def t_direction_ratio():
         rows.append(f"{NAME[a]} & \\texttt{{{a.replace('_', chr(92) + '_')}}} & "
                     f"{iv(e['forward'])} & {iv(e['backward'])} & {num(e['direction_ratio'])} \\\\")
     body = (r"""\begin{table*}[ht]
-\centering
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
 \caption{\textbf{The direction ratio: how much of a forward gain survives the task being run
 backwards.} Forward is output prediction; backward is input prediction on the same programs, graded
 by execution. No adapter is trained on the backward task, so any backward gain is transferred
@@ -280,7 +344,7 @@ Bold intervals exclude zero; the ratio is descriptive and is read with its compo
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
-    for f in (t_rq1_dissociation, t_rq2_identifier, t_rq3_panel, t_rq4_ladder,
+    for f in (t_rq1_dissociation, t_rq1_composition, t_rq2_identifier, t_rq3_panel, t_rq4_ladder,
               t_rq4_by_model, t_direction_ratio):
         f()
     print(f"\n  {len(list(OUT.glob('*.tex')))} tables in paper/paper_latex/tables/")

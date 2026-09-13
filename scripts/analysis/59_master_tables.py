@@ -427,3 +427,87 @@ for k in SEEN_STACKS+DEPTH_STACKS+UNSEEN_STACKS+HALF_STACKS+D3_STACKS:
     prevk = KIND[k]
 L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
 write("setup_stacks.tex", "\n".join(L), "configs/conditions_composite.yaml, data/eval/heldout/items/*")
+
+# ---------------- 5. routing and merging (models that have them) ----------------
+ROUTING = [("router","mole_router"),("hard router","mole_hardrouter"),("uniform","mole_uniform"),("random","mole_random")]
+MERGING = [("TIES","merge_ties"),("DARE-TIES","merge_dare_ties"),("DARE-linear","merge_dare_linear"),
+           ("L0-anch. TIES","l0merge_ties"),("L0-anch. DARE-TIES","l0merge_dare_ties")]
+R_PH = ["mole_generic"]
+M_PH = ["rq2_generic","composite_generic","composite_depth","f2_divergence"]
+B_PH = ["mole_generic","rq2_generic","panel_core","composite_generic","composite_depth","f2_divergence"]
+RM_ROWS = LADDER[:6] + ["X1"] + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
+
+def rm_grid(m, systems, phases):
+    refF = fwd(m, "base", ["L0"]); out = []
+    for c in RM_ROWS:
+        row = {"label": c, "iv": {}}
+        # the untuned model on the same items: prefer the system's own phase, then the standard ones
+        bf = None
+        for ph in phases + B_PH:
+            a, ff = acc([ph], m, "base", c)
+            if a is not None: bf = "fmt" if (ff or 0) > FMT_MAX else a; break
+        row["base"] = triple(bf, bf, refF)[::2]
+        any_cell = False
+        for name, sysn in systems:
+            a = pooled(phases, m, sysn, [c]); row["iv"][name] = triple(a, bf, refF); any_cell |= a is not None
+        if any_cell: out.append(row)
+    return out
+
+RM = {}
+for m in MODELS:
+    r = rm_grid(m, ROUTING, R_PH); g = rm_grid(m, MERGING, M_PH)
+    if r or g: RM[m] = (r, g)
+
+def rm_md(title, systems, rows):
+    o = [f"\n**{title}**\n", "| condition | base acc | base % | " + " | ".join(f"{n} acc | Δ | %" for n,_ in systems) + " |",
+         "|---|---:|---:|" + "---:|---:|---:|"*len(systems)]
+    for r in rows:
+        cells = [r["label"], fa(r["base"][0]), fp(r["base"][1])]
+        for n,_ in systems: t = r["iv"][n]; cells += [fa(t[0]), fd(t[1]), fp(t[2])]
+        o.append("| " + " | ".join(cells) + " |")
+    return o
+
+out.append("\n## 5. Routing and merging — every model that has them\n")
+out.append("Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-transform experts (L0, L1b, L1r, L2, S1, S2, S3, S4): "
+           "`router` = trained gate, `hard router` = its argmax, `uniform` = fixed uniform gate, `random` = gate frozen at random init; "
+           "the last two separate 'the mixture is worth something' from 'the routing is worth something'. Merges combine the specialists "
+           "in weight space (TIES, DARE-TIES, DARE-linear) or anchor the merge on the clean-code adapter. Every routing cell ran through "
+           "`obtune.mole.eval_mole`; the 2026-09-12 vLLM run that wrote the untuned model under these names is quarantined.\n")
+for m, (r, g) in RM.items():
+    out.append(f"\n### {NICE[m]}\n")
+    if r: out += rm_md("Routing (forward)", ROUTING, r)
+    if g: out += rm_md("Merging (forward)", MERGING, g)
+
+md = "\n".join(out) + "\n"
+(ROOT/"docs/MASTER_TABLES.md").write_text(md)
+
+def rm_tex(m, systems, rows, kind, label):
+    L = [r"\begin{table*}[p]", r"\centering\scriptsize\setlength{\tabcolsep}{1.7pt}"]
+    if kind == "routing":
+        cap = (r"\textbf{Routing, " + NICE[m] + r".} MoLE mixtures of the eight per-transform experts on every condition and stack that has "
+               r"them: \emph{router} = trained gate, \emph{hard router} = its argmax, \emph{uniform} = fixed uniform gate, \emph{random} = gate "
+               r"frozen at random initialisation. Per system: raw accuracy, $\Delta$ points against the untuned model on the same items, and "
+               r"\% of the untuned model's clean-code accuracy. Every cell ran through the mixture engine.")
+    else:
+        cap = (r"\textbf{Merging, " + NICE[m] + r".} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and "
+               r"two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.")
+    L.append(r"\caption{" + cap + "}"); L.append(r"\label{" + label + "}")
+    L.append(r"\begin{tabular}{@{}lrr" + "|rrr"*len(systems) + "@{}}"); L.append(r"\toprule")
+    mc = lambda i, txt: r"\multicolumn{3}{c" + ("|" if i < len(systems)-1 else "") + "}{" + txt + "}"
+    L.append(r"\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & " + " & ".join(mc(i, r"\textbf{" + n + "}") for i,(n,_) in enumerate(systems)) + r" \\")
+    L.append(r" & \multicolumn{2}{c|}{\texttt{base}} & " + " & ".join(mc(i, r"\texttt{" + tex_esc(sy) + "}") for i,(n,sy) in enumerate(systems)) + r" \\")
+    L.append(" & acc & \\% & " + " & ".join(r"acc & $\Delta$ & \%" for _ in systems) + r" \\"); L.append(r"\midrule")
+    prev = None
+    for r in rows:
+        k = KIND[r["label"]]
+        if prev is not None and k != prev: L.append(r"\addlinespace[2pt]")
+        cells = [r"\texttt{" + tex_esc(r["label"]) + "}", ta(r["base"][0]), tp(r["base"][1])]
+        for n,_ in systems: t = r["iv"][n]; cells += [ta(t[0]), td(t[1]), tp(t[2])]
+        L.append(" & ".join(cells) + r" \\"); prev = k
+    L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
+    return "\n".join(L)
+
+for m, (r, g) in RM.items():
+    mk = m.replace("-","")
+    if r: write(f"master_routing_{mk}.tex", rm_tex(m, ROUTING, r, "routing", f"tab:routing_{mk}"), "results/cells/mole_generic/"+m)
+    if g: write(f"master_merging_{mk}.tex", rm_tex(m, MERGING, g, "merging", f"tab:merging_{mk}"), "results/cells/{rq2_generic,composite_generic,f2_divergence}/"+m)

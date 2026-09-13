@@ -1,6 +1,6 @@
 # Research questions, approaches, and answers — one page
 
-*Last updated: 2026-09-12*
+*Last updated: 2026-09-13*
 
 A compressed index of everything the project has asked and what came back. Full numbers and
 provenance are in [`../MASTER_REPORT.md`](../MASTER_REPORT.md); the forward plan is in
@@ -543,6 +543,33 @@ structural-containing **−3.88**, difference **+5.85** [+3.10, +8.72].
 Granite and Gemma-3 in flight.
 
 
+## 6.5 Routing and merging on stacks — F1 read (2026-09-13)
+
+The composition claim slot in RQ1 now has evidence. CodeLlama-7B, ten stacks of seen transforms
+(six depth-2, four depth-3/4), 394 programs common to every cell, all routing arms through
+`obtune.mole.eval_mole` (the 09-12 vLLM run that wrote the untuned model under these names is
+quarantined). Points, paired, clustered bootstrap.
+
+| contrast | all ten | reading |
+|---|---|---|
+| `mole_router − mole_random` | **+1.34 [+0.48, +2.17]** | routing is worth about a point |
+| `mole_router − mole_uniform` | **+1.40 [+0.52, +2.25]** | same |
+| `mole_hardrouter − mole_router` | +0.03 [−0.13, +0.19] | hard argmax = soft mixture: no blending advantage on a two-mechanism input |
+| `mole_router − mono_all` | −0.28 [−1.57, +1.09] | **routing = breadth** |
+| `mole_uniform − base` | **+19.79 [+17.40, +22.23]** | the mixture carries the whole gain |
+| `merge_dare_ties − tuned_L0` | +0.52 [−0.15, +1.20] | best merge = clean control |
+| `merge_ties`, `l0merge_ties`, `l0merge_dare_ties` − `tuned_L0` | **−5.50**, **−3.14**, **−1.74** | below the control |
+| `merge_dare_linear − tuned_L0` | **−20.56 [−22.88, −18.25]** | collapse |
+| `mono_all − tuned_L0` | **+3.67 [+2.02, +5.24]** | breadth, for reference |
+| order test (`tuned_S1` gain, cue-intact − cue-destroyed) | −0.68 [−3.30, +2.12] | no surface-cue dependence |
+
+All five pre-registered verdicts are INCONCLUSIVE/REPORTED by their rules (`log/modularity/2026-09-13_f1-routing-and-merging-on-stacks.md`).
+The sentence the paper can carry: **routing composes exactly as far as breadth does; merging does not
+compose.** The §2 rows above that say "routing is worth exactly zero anywhere" (+0.0000) are the
+single-condition, saturated-gate read and stand for the ladder only. Routing on a stack containing an
+unseen family is submitted as H-F2-route (rule pre-registered in `CLAUDE_SCRATCHPAD.md`); routing on
+any other panel model is not measured.
+
 ## 7. Master tables — every approach × every condition, per model
 
 *Added 2026-09-08.* §1 lists the approaches and says what each one bought in words. This is the same
@@ -672,3 +699,4 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-07** — Created. §4 is new analysis, not a restatement: the composite cells existed on
   the Qwen panel and had never been read as a group, and the `mono_all − tuned_L0` sign flip
   between stacked and unseen conditions had not been noticed anywhere in the project.
+- **2026-09-13** — §6.5: F1 routing/merging on stacks read (router = breadth, +1.3 over random; best merge = clean control). H-F2-route submitted.

@@ -661,6 +661,14 @@ One table per panel model: every condition and every stack, forward and backward
 \input{tables/master_codegemma7b}
 \input{tables/master_granite318b}
 
+\section{Routing and merging grids}
+\label{app:routing}
+
+Every routing and merging system on every condition and stack that has it, for the model on which those arms exist (CodeLlama-7B), with the same three numbers as Appendix~\ref{app:master}. The routing arms are MoLE mixtures of the eight per-transform experts; \emph{uniform} and \emph{random} gates separate the mixture's worth from the routing's. Every routing cell ran through the mixture engine.
+
+\input{tables/master_routing_codellama7b}
+\input{tables/master_merging_codellama7b}
+
 \end{document}
 \endinput
 %%

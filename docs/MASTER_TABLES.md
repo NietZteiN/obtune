@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-13 06:01 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-13 09:46 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -457,3 +457,59 @@ A separate namespace: order matters (composition does not commute), every stack 
 | C_L1r_X1m | L1r → X1m | 2 | yes | 10.0× | 351 / 1053 | half-unseen, depth 2 (mechanism) | half an unseen family (arithmetic) |
 | C_S1_X1s | S1 → X1s | 2 | yes | 14.0× | 418 / 1254 | half-unseen, depth 2 (mechanism) | half an unseen family (strings) |
 | C3_L1r_S1_X1 | L1r → S1 → X1 | 3 | yes | 16.0× | 417 / 1251 | unseen inside, depth 3 (RQ4 ladder d3) | one unseen component at depth 3 |
+
+## 5. Routing and merging — every model that has them
+
+Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-transform experts (L0, L1b, L1r, L2, S1, S2, S3, S4): `router` = trained gate, `hard router` = its argmax, `uniform` = fixed uniform gate, `random` = gate frozen at random init; the last two separate 'the mixture is worth something' from 'the routing is worth something'. Merges combine the specialists in weight space (TIES, DARE-TIES, DARE-linear) or anchor the merge on the clean-code adapter. Every routing cell ran through `obtune.mole.eval_mole`; the 2026-09-12 vLLM run that wrote the untuned model under these names is quarantined.
+
+
+### CodeLlama-7B
+
+
+**Routing (forward)**
+
+| condition | base acc | base % | router acc | Δ | % | hard router acc | Δ | % | uniform acc | Δ | % | random acc | Δ | % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| L0 | 0.258 | 100 | 0.429 | +17.1 | 167 | 0.428 | +17.0 | 167 | 0.428 | +16.9 | 166 | 0.433 | +17.5 | 169 |
+| L1b | 0.196 | 76 | 0.381 | +18.5 | 148 | 0.384 | +18.8 | 149 | 0.371 | +17.5 | 144 | 0.375 | +17.9 | 146 |
+| L1r | 0.205 | 80 | 0.383 | +17.7 | 149 | 0.381 | +17.6 | 148 | 0.390 | +18.4 | 152 | 0.391 | +18.6 | 152 |
+| L2 | 0.198 | 77 | 0.386 | +18.8 | 150 | 0.384 | +18.6 | 149 | 0.392 | +19.3 | 152 | 0.393 | +19.5 | 153 |
+| S1 | 0.167 | 65 | 0.395 | +22.8 | 154 | 0.393 | +22.6 | 153 | 0.395 | +22.8 | 154 | 0.394 | +22.7 | 153 |
+| S2 | 0.191 | 74 | 0.421 | +23.0 | 164 | 0.421 | +22.9 | 164 | 0.415 | +22.3 | 161 | 0.411 | +22.0 | 160 |
+| C_L1b_S1 | 0.141 | 55 | 0.325 | +18.4 | 126 | 0.324 | +18.3 | 126 | 0.310 | +16.8 | 121 | 0.312 | +17.1 | 121 |
+| C_L1r_S1 | 0.131 | 51 | 0.346 | +21.5 | 135 | 0.339 | +20.8 | 132 | 0.318 | +18.7 | 124 | 0.320 | +18.9 | 125 |
+| C_S1_L1r | 0.135 | 53 | 0.318 | +18.4 | 124 | 0.324 | +18.9 | 126 | 0.302 | +16.8 | 118 | 0.303 | +16.8 | 118 |
+| C_L2_S4 | 0.176 | 68 | 0.383 | +20.8 | 149 | 0.379 | +20.3 | 148 | 0.380 | +20.4 | 148 | 0.379 | +20.3 | 147 |
+| C_L1r_S3 | 0.172 | 67 | 0.391 | +21.9 | 152 | 0.389 | +21.7 | 151 | 0.383 | +21.1 | 149 | 0.380 | +20.8 | 148 |
+| C_S4_S3 | 0.185 | 72 | 0.415 | +22.9 | 161 | 0.413 | +22.7 | 161 | 0.409 | +22.4 | 159 | 0.409 | +22.4 | 159 |
+| C3_L1r_S3_S4 | 0.150 | 58 | 0.375 | +22.5 | 146 | 0.376 | +22.6 | 146 | 0.365 | +21.5 | 142 | 0.363 | +21.3 | 141 |
+| C3_S1_S3_S4 | 0.128 | 50 | 0.377 | +24.8 | 147 | 0.378 | +24.9 | 147 | 0.367 | +23.8 | 143 | 0.367 | +23.9 | 143 |
+| C3_L1r_S1_S4 | 0.126 | 49 | 0.325 | +19.9 | 126 | 0.326 | +20.0 | 127 | 0.306 | +18.0 | 119 | 0.305 | +17.9 | 119 |
+| C4_L1r_S1_S3_S4 | 0.089 | 35 | 0.334 | +24.5 | 130 | 0.336 | +24.7 | 131 | 0.296 | +20.7 | 115 | 0.298 | +20.9 | 116 |
+
+**Merging (forward)**
+
+| condition | base acc | base % | TIES acc | Δ | % | DARE-TIES acc | Δ | % | DARE-linear acc | Δ | % | L0-anch. TIES acc | Δ | % | L0-anch. DARE-TIES acc | Δ | % |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| L0 | 0.257 | 100 | 0.367 | +11.0 | 143 | 0.422 | +16.5 | 164 | fmt | fmt | fmt | 0.394 | +13.7 | 153 | 0.413 | +15.6 | 161 |
+| L1b | 0.197 | 77 | 0.301 | +10.4 | 117 | 0.370 | +17.3 | 144 | fmt | fmt | fmt | 0.331 | +13.4 | 129 | 0.349 | +15.1 | 136 |
+| L1r | 0.207 | 81 | 0.324 | +11.7 | 126 | 0.381 | +17.4 | 148 | fmt | fmt | fmt | 0.338 | +13.1 | 132 | 0.352 | +14.5 | 137 |
+| L2 | 0.202 | 79 | 0.318 | +11.6 | 124 | 0.375 | +17.3 | 146 | fmt | fmt | fmt | 0.337 | +13.5 | 131 | 0.355 | +15.3 | 138 |
+| S1 | 0.168 | 66 | 0.321 | +15.2 | 125 | 0.374 | +20.6 | 146 | fmt | fmt | fmt | 0.342 | +17.3 | 133 | 0.365 | +19.6 | 142 |
+| S2 | 0.193 | 75 | 0.341 | +14.8 | 133 | 0.396 | +20.3 | 154 | fmt | fmt | fmt | 0.365 | +17.2 | 142 | 0.379 | +18.5 | 147 |
+| C_L1b_S1 | 0.141 | 55 | 0.245 | +10.4 | 95 | 0.298 | +15.7 | 116 | fmt | fmt | fmt | 0.269 | +12.8 | 105 | 0.280 | +13.9 | 109 |
+| C_L1r_S1 | 0.131 | 51 | 0.252 | +12.1 | 98 | 0.301 | +17.0 | 117 | fmt | fmt | fmt | 0.277 | +14.6 | 108 | 0.283 | +15.2 | 110 |
+| C_S1_L1r | 0.135 | 53 | 0.240 | +10.5 | 94 | 0.302 | +16.8 | 118 | fmt | fmt | fmt | 0.273 | +13.8 | 106 | 0.282 | +14.7 | 110 |
+| C_L2_S4 | 0.176 | 68 | 0.298 | +12.2 | 116 | 0.367 | +19.1 | 143 | fmt | fmt | fmt | 0.325 | +14.9 | 126 | 0.349 | +17.3 | 136 |
+| C_L1r_S3 | 0.172 | 67 | 0.306 | +13.4 | 119 | 0.367 | +19.5 | 143 | fmt | fmt | fmt | 0.326 | +15.4 | 127 | 0.338 | +16.6 | 131 |
+| C_S4_S3 | 0.186 | 72 | 0.336 | +15.0 | 131 | 0.395 | +20.9 | 154 | fmt | fmt | fmt | 0.367 | +18.1 | 143 | 0.385 | +19.9 | 150 |
+| C3_L1r_S3_S4 | 0.150 | 58 | 0.296 | +14.6 | 115 | 0.353 | +20.3 | 137 | fmt | fmt | fmt | 0.313 | +16.3 | 122 | 0.328 | +17.8 | 128 |
+| C3_S1_S3_S4 | 0.128 | 50 | 0.274 | +14.5 | 107 | 0.340 | +21.1 | 132 | fmt | fmt | fmt | 0.295 | +16.6 | 115 | 0.315 | +18.7 | 123 |
+| C3_L1r_S1_S4 | 0.126 | 49 | 0.239 | +11.3 | 93 | 0.298 | +17.2 | 116 | fmt | fmt | fmt | 0.272 | +14.6 | 106 | 0.283 | +15.7 | 110 |
+| C4_L1r_S1_S3_S4 | 0.089 | 35 | 0.214 | +12.5 | 83 | 0.291 | +20.1 | 113 | fmt | fmt | fmt | 0.243 | +15.4 | 95 | 0.256 | +16.7 | 100 |
+| C_L1r_X1 | 0.102 | 40 | -- | -- | -- | 0.192 | +9.0 | 75 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| C_X1_S1 | 0.104 | 40 | -- | -- | -- | 0.287 | +18.3 | 112 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| C_S2_X1 | 0.145 | 57 | -- | -- | -- | 0.316 | +17.1 | 123 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| C_L1r_X1m | 0.112 | 44 | -- | -- | -- | 0.212 | +10.0 | 83 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| C_S1_X1s | 0.151 | 59 | -- | -- | -- | 0.336 | +18.5 | 131 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| C3_L1r_S1_X1 | 0.104 | 40 | -- | -- | -- | 0.234 | +13.0 | 91 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
