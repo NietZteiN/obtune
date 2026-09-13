@@ -154,38 +154,37 @@ program changes.
 
 {\em Contributions.} This paper makes the following main contributions:
 
-\textbf{1. A systematic study and empirical evaluation of compositional robustness to
-stacked obfuscation.}
-    We investigate whether capabilities learned from individual
-    semantics-preserving transformations compose when multiple
-    transformations are stacked, a setting representative of practical
-    obfuscation and malware analysis.
+\textbf{1. A two-test diagnostic for whether obfuscation adaptation generalises or
+memorises, and its verdict on the existing composition strategies.}
+    We ask whether competence learned on individual semantics-preserving transformations
+    survives leaving the distribution it was fit to, in two independent ways: being stacked
+    with a transformation family the model has never seen, and being asked backwards (given a
+    return value, produce a call that yields it). Inference-time routing, weight-space
+    merging, and broad multi-transformation training all fail both. Breadth's advantage on
+    stacks of seen transformations vanishes once an unseen family enters --- a gap significant
+    on six of six models across four lineages --- and every method that fits the forward task
+    buys its gain by losing backward competence on the same programs.
 
-    %\item \textbf{An empirical evaluation of three natural composition strategies.}
-    %We study inference-time routing, weight-space model merging, and broad multi-transformation training. We show that routing provides essentially no advantage over random selection, merging fails to combine specialist capabilities, and breadth training improves reasoning over seen transformation combinations but significantly degrades performance on an unseen obfuscation family.
+\textbf{2. An empirical characterisation of what adaptation learns instead.}
+    With complementary analyses across transformation mechanisms, identifier dependence, and
+    confidence behaviour, we show that obfuscation adaptation predominantly learns the surface
+    regularities a transformation leaves behind rather than an invariance to semantics-preserving
+    change. Because that surface is exactly what an obfuscator is free to alter, the diagnosis
+    names its own remedy.
 
-\textbf{2. An empirical characterization of why adaptation
-    fails to compose.}
-    With complementary analyses across transformation mechanisms,
-    identifier dependence, reasoning direction, and confidence
-    behavior, we show that obfuscation adaptation predominantly learns
-    transformation-specific surface regularities rather than a general
-    invariance to semantics-preserving transformations.
+\textbf{3. A clean-behaviour anchoring objective, derived from that diagnosis.}
+    We introduce a paired-consistency objective that anchors an obfuscated-code student to a
+    clean-code-tuned teacher reading the unobfuscated parent of the same program --- the one thing
+    a semantics-preserving transformation leaves invariant. The objective trains on exactly the rows
+    breadth training uses, so breadth is its data-matched control. Across eight models and four
+    lineages it removes breadth's unseen-family degradation on six and reverses on one, and its
+    clean-code cost is absent on five; we report both qualifiers rather than the unconditional
+    claim.
 
-\textbf{3. A clean-behavior anchoring objective for robust
-    obfuscation adaptation.}
-    We introduce a paired-consistency training objective that minimizes
-    the KL divergence between a clean-code teacher and an
-    obfuscated-code student. The approach preserves the gains of broad
-    obfuscation training while eliminating its degradation on unseen
-    transformation families and clean code, outperforming routing,
-    merging, and breadth-only adaptation.
-
-\textbf{4. Stress testing and characterization of the resulting
-    robustness.} We evaluate the anchored model under deeper obfuscation stacks, a
-    second programming language, unseen transformations, and reversed
-    reasoning tasks. 
-    
-    %These experiments clarify both the benefits and the limits of the proposed approach: anchoring preserves the teacher's semantic reasoning capability under obfuscation rather than creating unsupported new invariance.
-
-%\end{itemize}
+\textbf{4. The same two tests, re-run on the anchored model, with the bound stated.}
+    On a new divergence ladder of stacks that contain an unseen transformation family --- a
+    stimulus absent from prior work --- the anchored model's advantage \emph{grows} as the input
+    diverges from training, rising above the clean-code control where breadth falls, and it is the
+    only supervised-fine-tuning arm whose forward gain costs nothing backwards. It does not acquire
+    backward competence, and on the unseen family alone it is as robust as clean-code tuning and no
+    more: anchoring repairs what adaptation breaks rather than creating new invariance.
