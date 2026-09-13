@@ -1,0 +1,25 @@
+{
+  "job_id": "tr_S1_codellama-13b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_S1_panel.yaml",
+    "--model",
+    "codellama-13b"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 250,
+  "meta": {
+    "note": "master table: specialists so merges (and later the mixture) exist on every model"
+  },
+  "slurm": {
+    "job_id": "393655",
+    "node": "g-05-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T20:31:55.209910+00:00"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "job_id": "tr_S2_codegemma-7b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_S2_panel.yaml",
+    "--model",
+    "codegemma-7b"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 250,
+  "meta": {
+    "note": "master table: specialists so merges (and later the mixture) exist on every model"
+  },
+  "slurm": {
+    "job_id": "393682",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T20:10:45.712811+00:00"
+  }
+}

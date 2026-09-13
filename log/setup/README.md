@@ -59,3 +59,4 @@
 - [`2026-09-13_34b-is-h200-only.md`](2026-09-13_34b-is-h200-only.md) — 34B serves only on h200; consolidated train-vs-serve placement table for every size on every partition.
 - [`2026-09-13_transient-enospc-on-scratch.md`](2026-09-13_transient-enospc-on-scratch.md) — shared /scratch filled briefly; evals write hub metadata they do not need. HF_HUB_OFFLINE proposed for the eval path.
 - [`2026-09-13_share-overrun-from-a-wrong-qos-field.md`](2026-09-13_share-overrun-from-a-wrong-qos-field.md) — two places computed the juno share and the non-authoritative one used the wrong squeue field; h200 over-held 3 of 2.
+- [`2026-09-13_scratch-quota-exhausted-cache-moved-to-work.md`](2026-09-13_scratch-quota-exhausted-cache-moved-to-work.md) — scratch quota exhausted while df looks healthy; cache back on /work; empty refs/main is the silent aftermath to check for.

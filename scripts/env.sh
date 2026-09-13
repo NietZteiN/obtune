@@ -46,7 +46,22 @@ export PYTHONPATH="$OBTUNE_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 # NB: the hub TOKEN lives at $HF_HOME/token, so it must travel with the cache. Moving HF_HOME
 # without it breaks every gated repo (gemma-3, codegemma, both Llamas) with a 401 GatedRepoError
 # at the first hub call -- even when the weights are already present locally.
-export OBTUNE_HF_STORE="${OBTUNE_HF_STORE:-/scratch/juno/$USER/hf_home}"
+# HF_HOME MOVED BACK TO /work ON 2026-09-13, reversing the 09-10 move above for one of its two reasons.
+# THE SCRATCH QUOTA IS EXHAUSTED FOR THIS ACCOUNT. Every write under /scratch/juno/$USER fails with
+# ENOSPC -- a 40-byte file included -- while `df` reports 27 T free and 1 % inodes: a quota the
+# filesystem does not expose through statfs. It is persistent, not a burst. Two jobs died writing
+# `hub/models--*/refs/main.tmp`, a revision-pointer refresh for weights already cached, and two models
+# (CodeLlama-13B, Gemma-3-12B) were left with EMPTY refs/main, which also defeats HF_HUB_OFFLINE
+# because an empty ref cannot resolve to a snapshot.
+#
+# The 09-10 move had two reasons. SPACE is now the opposite way round: /work has 99 T free and
+# /scratch will not accept a byte. OWNERSHIP still stands as a risk -- a sibling project deleted
+# CodeLlama-13B and 34B from the /work cache once before, which is why both were re-copied here today
+# (88 G, from the scratch copy, which is left intact). If that happens again the answer is the same.
+# The SPEED advantage of /scratch (14 GB/s vs 1.3 GB/s) is real and is what we are giving up.
+#
+# REVERSIBLE IN ONE LINE: export OBTUNE_HF_STORE=/scratch/juno/$USER/hf_home once the quota is cleared.
+export OBTUNE_HF_STORE="${OBTUNE_HF_STORE:-/work/jvl210002/migration/hf_home}"
 export HF_HOME="${HF_HOME:-$OBTUNE_HF_STORE}"
 export TMPDIR="${TMPDIR:-$OBTUNE_SCRATCH/tmp}"
 export TORCHINDUCTOR_CACHE_DIR="${TORCHINDUCTOR_CACHE_DIR:-$OBTUNE_SCRATCH/cache/inductor}"
