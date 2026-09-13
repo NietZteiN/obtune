@@ -41,6 +41,28 @@ ARMS = [("merge_ties", "ties", "merge/ties_v1.yaml"),
         ("merge_dare_linear", "dare_linear", "merge/ties_v1.yaml")]
 
 
+def gpu_partition() -> str:
+    """h200 when it has an idle node and obtune's juno share has room, else h100.
+
+    2026-09-13: three ~12-minute checkpoint-selects sat on h100 behind the sibling projects for
+    hours while h200 showed six idle nodes and obtune held none of its two juno-pool slots. h100
+    is uncapped but contended; h200 is capped (configs/compute.yaml::share_limits) but often idle.
+    The share is counted on this user's RUNNING+PENDING juno-QoS jobs whose WorkDir is this
+    project, the same ownership test submit.py uses."""
+    import os
+    share = int(os.environ.get("OBTUNE_H200_SHARE", "2") or 0)
+    try:
+        idle = subprocess.run(["sinfo", "-h", "-p", "h200", "-t", "idle", "-o", "%D"],
+                              capture_output=True, text=True).stdout.strip()
+        idle_n = sum(int(x) for x in idle.split() if x.isdigit())
+        q = subprocess.run(["squeue", "-h", "-u", os.environ.get("USER", ""), "-o", "%q %Z"],
+                           capture_output=True, text=True).stdout.splitlines()
+        held = sum(1 for l in q if l.startswith("juno ") and l.split(" ", 1)[1].strip() == str(ROOT))
+    except Exception:
+        return "h100"
+    return "h200" if (idle_n > 0 and share and held < share) else "h100"
+
+
 def needs_ckpt_select(m: str) -> list[str]:
     """Specialists that finished training but have no `best/` yet."""
     d = ROOT / "runs/adapters" / m / "python"
@@ -89,7 +111,7 @@ def main() -> int:
         job = f"ckb_{m}"
         if pend and job not in live and a.submit:
             r = subprocess.run(
-                ["sbatch", "--parsable", "-p", "h100", "--gres=gpu:1", "-c", "8", "--mem", "96G",
+                ["sbatch", "--parsable", "-p", gpu_partition(), "--gres=gpu:1", "-c", "8", "--mem", "96G",
                  "-t", "2:00:00", "-J", job, "--exclude", "g-06-01",
                  "-o", f"runs/logs/slurm/%j_{job}.out",
                  "--wrap", f"bash {ROOT}/runs/probe/ckpt_select_batch.sh {m}"],
