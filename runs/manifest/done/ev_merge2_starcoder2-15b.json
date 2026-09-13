@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_merge2_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_panel.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 120,
+  "meta": {
+    "note": "master table: the six conditions merge_panel did not cover (4 depth + 2 half-unseen); resume skips the 153 cells already written"
+  },
+  "slurm": {
+    "job_id": "393615",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:59:43.766082+00:00"
+  }
+}

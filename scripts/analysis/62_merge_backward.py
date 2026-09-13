@@ -65,6 +65,23 @@ def run(model):
     if not arms:
         print(f"{model}: every merge arm has a format-gated backward cell ({gated[:6]}) -- not read", file=sys.stderr); return None
     conds = [c for c in LADDER if all((sy, c) in bwd for sy in arms + ["base"])]
+    # THE UNTUNED MODEL CAN BE ABSENT. StarCoder2's backward `base` cells are format-failure 1.00 on
+    # every condition -- the untuned model emits nothing parseable in this direction -- so every
+    # contrast against it, and the direction ratio with it in the denominator, is undefined. Report
+    # the merge arms' absolute accuracy and say so, rather than dividing by a zero that is a prompt
+    # contract failure and not a capability (CLAUDE.md 4, item 6).
+    if not conds:
+        out = {"script": "62_merge_backward.py", "model": model,
+               "generated_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+               "no_untuned_reference": "every backward `base` cell exceeds the format gate; no contrast or "
+                                       "direction ratio is defined on this model",
+               "format_gated_cells": gated,
+               "absolute_backward_accuracy": {f"{sy}__{c}": float(df["correct"].mean())
+                                              for (sy, c), df in bwd.items() if sy in arms}}
+        print(f"\n=== {model} ===\n  no untuned backward reference: every `base` cell is format-gated.")
+        for k, v in sorted(out["absolute_backward_accuracy"].items()): print(f"    {k:28s} {v:.3f}")
+        p = ROOT / "results/analysis/pipeline" / f"merge_backward_{model.replace('-', '')}.json"
+        p.write_text(json.dumps(out, indent=1)); print("  wrote", p.relative_to(ROOT)); return out
     progs = None
     for sy in arms + ["base"]:
         for c in conds:

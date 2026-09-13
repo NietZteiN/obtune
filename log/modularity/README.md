@@ -145,6 +145,7 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
 
 - [`2026-09-13_mixture-guard-refused-the-mixture-engine.md`](2026-09-13_mixture-guard-refused-the-mixture-engine.md) — the arch-keyed guard refused `HFEngine` too; now keyed on `engine.supports_mixture`, tested, F1 chain resubmitted (392638 → 392641).
+- [`2026-09-13_starcoder2-has-no-backward-baseline.md`](2026-09-13_starcoder2-has-no-backward-baseline.md) — untuned backward accuracy is 0.000 by format failure; contrasts undefined, absolute values only.
 - [`2026-09-13_merge-backward-reverses-on-granite.md`](2026-09-13_merge-backward-reverses-on-granite.md) — **reverses on Granite** (DR −0.68): merging is not backward-safe; the cost is model-dependent.
 - [`2026-09-13_merging-gains-backward.md`](2026-09-13_merging-gains-backward.md) — **the merge gains backwards** (+3.21, DR +0.17, best of any arm); "every method pays" is false as written.
 - [`2026-09-13_f2-route-read.md`](2026-09-13_f2-route-read.md) — **H-F2-route REFUTED**: the specialist mixture beats breadth by +2.88 on unseen-containing stacks, level with anchoring; the gate itself is worth nothing there.
