@@ -1,0 +1,43 @@
+{
+  "run_id": "mole_generic__codellama-7b__python__mole_random__C_L2_S4",
+  "run_ts": "2026-09-12T23:40:26.025658+00:00",
+  "seed": 17,
+  "phase": "mole_generic",
+  "eval_source": "heldout",
+  "experiment_id": "rq1_mole_composite",
+  "base_model": "codellama/CodeLlama-7b-Instruct-hf",
+  "model_family": "coder",
+  "adapter_id": null,
+  "h1_access_purpose": null,
+  "gpu_id": "0",
+  "config_sha": "38eee38beee8d2edcca8ae4214308a6860dc885b058fa9df85994e8235ea022b",
+  "script_sha": "0f06cfc73ce0307c6e7ff3f0fbacbcc4657dfea94735b9d3812d9fcf6e3a6232",
+  "git_commit": "f591b88b7d4f00e2d8dbb1e421baa79ede800db1",
+  "task": "output",
+  "prompt_id": "base_v1",
+  "prompt_template_sha256": "c1e8fe28c30873d7daec2e5cbcb0cbc28b1bf4d6f1b5924ebb03b209bec51958",
+  "prompt_version": "v1",
+  "system": "mole_random",
+  "adapter_arch": "mole_random",
+  "n_skipped_no_adapter": 0,
+  "adapter_paths": [],
+  "adapter_sha256": {},
+  "engine": "vllm-0.26.0",
+  "sampling": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 64,
+    "stop": [
+      "\n\n",
+      "```",
+      "<end_of_turn>"
+    ]
+  },
+  "n_items": 1667,
+  "eval_cond": "C_L2_S4",
+  "elapsed_s": 9.57,
+  "gen_tokens": 22959,
+  "tokens_per_sec": 2399.97,
+  "accuracy": 0.175765,
+  "format_fail_rate": 0.152969
+}

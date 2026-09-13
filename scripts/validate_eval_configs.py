@@ -91,6 +91,13 @@ def check(path: Path, model: str | None) -> tuple[list[str], list[str]]:
             errs.append(f"{rel}: duplicate system name {nm!r} -- cells key on it and would collide")
         seen.add(nm)
         arch = s.get("arch", "none")
+        # A MIXTURE CONFIG MUST NOT BE RUN THROUGH vLLM. That engine has no mixture path and, until
+        # 2026-09-12, accepted these arches and wrote the BASE model under the arm's name -- 40
+        # cells, and an analysis that read the resulting zero-width interval as CONFIRMED.
+        if arch.startswith("mole_"):
+            warns.append(f"{rel}: system {nm!r} is a mixture arch ({arch}) -- this config must be "
+                         f"run with `python -m obtune.mole.eval_mole`, NOT obtune.eval_vllm, which "
+                         f"would silently evaluate the base model")
         if arch not in ARCH_EXACT and not arch.startswith(ARCH_PREFIX):
             warns.append(f"{rel}: system {nm!r} has arch={arch!r}, which the runner does not branch "
                          f"on -- it will behave as a plain adapter")

@@ -755,6 +755,19 @@ def run_cell(
     else:
         adapters = [system.adapter] * len(items)
 
+    # AN ARCHITECTURE THIS ENGINE DOES NOT IMPLEMENT IS A HARD ERROR. vLLM has no mixture path --
+    # `obtune.mole.eval_mole` does, through `HFEngine` -- but nothing here rejected `arch:
+    # mole_router`. On 2026-09-12 that produced 40 cells labelled as four routing arms whose
+    # contents were the UNTUNED MODEL, and the analysis reported `mole_router - mole_random` as
+    # +0.00 with a ZERO-WIDTH interval over 2,000 resamples, which it read as CONFIRMED. The
+    # telemetry below already said `0 with a LoRA` on every one of them. Refuse instead.
+    if system.arch.startswith("mole_"):
+        raise ValueError(
+            f"system '{system.name}': arch={system.arch!r} is a mixture architecture and this "
+            f"engine (vLLM) does not implement one -- it would apply NO adapter and write the base "
+            f"model under this system's name. Use `python -m obtune.mole.eval_mole` instead."
+        )
+
     # A NAMED ADAPTER THAT IS NOT ON DISK IS A HARD ERROR, not a metadata note. Until 2026-09-11
     # a bad path fell through to generation: the engine has no adapter to apply, so the cell
     # silently measures the BASE model and files it under the arm's name, with the only trace a

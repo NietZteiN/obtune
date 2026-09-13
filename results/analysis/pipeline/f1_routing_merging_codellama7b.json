@@ -1,0 +1,357 @@
+{
+ "script": "56_f1_routing_merging.py",
+ "generated_utc": "2026-09-13T00:35:06+00:00",
+ "model": "codellama-7b",
+ "n_programs_common": 394,
+ "n_resamples": 2000,
+ "seed": 17,
+ "grid": "heldout (NOT the testset grid the published single-transform routing numbers sit on -- any comparison to those is across grids)",
+ "by_level": {
+  "all_ten": {
+   "mole_router - mole_random": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false,
+    "equivalent": true,
+    "eq_margin_pts": 1.0
+   },
+   "mole_router - mono_all": {
+    "value_pts": -21.464860287891618,
+    "ci_lo": -24.019928378605286,
+    "ci_hi": -18.915088617396542,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "mole_router - mole_uniform": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "mole_uniform - base": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "mole_hardrouter - mole_router": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "merge_ties - tuned_L0": {
+    "value_pts": -5.495342929720576,
+    "ci_lo": -6.8559322033898304,
+    "ci_hi": -4.131967127829048,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - tuned_L0": {
+    "value_pts": 0.5165114309906849,
+    "ci_lo": -0.15228748758902524,
+    "ci_hi": 1.2035504316154773,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "merge_dare_linear - tuned_L0": {
+    "value_pts": -20.55884843353091,
+    "ci_lo": -22.877176487275257,
+    "ci_hi": -18.245625412257308,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "l0merge_ties - tuned_L0": {
+    "value_pts": -3.141405588484336,
+    "ci_lo": -4.208420550424014,
+    "ci_hi": -2.116805354377191,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "l0merge_dare_ties - tuned_L0": {
+    "value_pts": -1.735817104149029,
+    "ci_lo": -2.567899495253665,
+    "ci_hi": -0.907510347249603,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "mono_all - tuned_L0": {
+    "value_pts": 3.666384419983065,
+    "ci_lo": 2.0235397322005197,
+    "ci_hi": 5.237388955065372,
+    "n_programs": 394,
+    "excludes_zero": true
+   }
+  },
+  "depth2": {
+   "mole_router - mole_random": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false,
+    "equivalent": true,
+    "eq_margin_pts": 1.0
+   },
+   "mole_router - mono_all": {
+    "value_pts": -20.39232289020604,
+    "ci_lo": -23.023087050694112,
+    "ci_hi": -17.794594976009034,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "mole_router - mole_uniform": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "mole_uniform - base": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "mole_hardrouter - mole_router": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "merge_ties - tuned_L0": {
+    "value_pts": -5.193338978267004,
+    "ci_lo": -6.593169381216849,
+    "ci_hi": -3.767993226079591,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - tuned_L0": {
+    "value_pts": 0.6068303697431554,
+    "ci_lo": -0.15537052610898078,
+    "ci_hi": 1.4112633170204283,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "merge_dare_linear - tuned_L0": {
+    "value_pts": -20.60400790290714,
+    "ci_lo": -23.003457521874118,
+    "ci_hi": -18.218990593209938,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "l0merge_ties - tuned_L0": {
+    "value_pts": -2.8083545018346037,
+    "ci_lo": -3.9799465760993877,
+    "ci_hi": -1.6666313858312163,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "l0merge_dare_ties - tuned_L0": {
+    "value_pts": -1.397121083827263,
+    "ci_lo": -2.300310471351963,
+    "ci_hi": -0.4653130287648076,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "mono_all - tuned_L0": {
+    "value_pts": 3.3446232006773933,
+    "ci_lo": 1.6087720693266614,
+    "ci_hi": 5.038456110640701,
+    "n_programs": 394,
+    "excludes_zero": true
+   }
+  },
+  "depth34": {
+   "mole_router - mole_random": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false,
+    "equivalent": true,
+    "eq_margin_pts": 1.0
+   },
+   "mole_router - mono_all": {
+    "value_pts": -23.073666384419983,
+    "ci_lo": -25.846570810248558,
+    "ci_hi": -20.431472081218278,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "mole_router - mole_uniform": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "mole_uniform - base": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "mole_hardrouter - mole_router": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "merge_ties - tuned_L0": {
+    "value_pts": -5.948348856900932,
+    "ci_lo": -7.470343432876807,
+    "ci_hi": -4.441624365482233,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "merge_dare_ties - tuned_L0": {
+    "value_pts": 0.3810330228619818,
+    "ci_lo": -0.4662259427683987,
+    "ci_hi": 1.2489415749364963,
+    "n_programs": 394,
+    "excludes_zero": false
+   },
+   "merge_dare_linear - tuned_L0": {
+    "value_pts": -20.491109229466552,
+    "ci_lo": -22.862510584250636,
+    "ci_hi": -18.14720812182741,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "l0merge_ties - tuned_L0": {
+    "value_pts": -3.6409822184589324,
+    "ci_lo": -4.907145315323068,
+    "ci_hi": -2.4132091447925497,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "l0merge_dare_ties - tuned_L0": {
+    "value_pts": -2.243861134631664,
+    "ci_lo": -3.2571912013536375,
+    "ci_hi": -1.2277730736663828,
+    "n_programs": 394,
+    "excludes_zero": true
+   },
+   "mono_all - tuned_L0": {
+    "value_pts": 4.149026248941579,
+    "ci_lo": 2.3473349715624128,
+    "ci_hi": 5.911421034314497,
+    "n_programs": 394,
+    "excludes_zero": true
+   }
+  }
+ },
+ "order_test": {
+  "label": "tuned_S1 gain: cue-intact (C_L1r_S1) - cue-destroyed (C_S1_L1r)",
+  "value_pts": -0.6773920406435154,
+  "ci_lo": -3.302286198137172,
+  "ci_hi": 2.1151039942920256,
+  "n_programs": 394,
+  "excludes_zero": false
+ },
+ "hypotheses": [
+  {
+   "id": "H-F1-route",
+   "rule": "CONFIRMED iff mole_router - mole_random is TOST-equivalent at +/-1.0 pooled over the ten composites; REFUTED iff ci_lo > +1.0",
+   "verdict": "CONFIRMED",
+   "evidence": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false,
+    "equivalent": true,
+    "eq_margin_pts": 1.0
+   }
+  },
+  {
+   "id": "H-F1-route-vs-breadth",
+   "rule": "CONFIRMED iff mole_router - mono_all pooled ci_hi < 0",
+   "verdict": "CONFIRMED",
+   "evidence": {
+    "value_pts": -21.464860287891618,
+    "ci_lo": -24.019928378605286,
+    "ci_hi": -18.915088617396542,
+    "n_programs": 394,
+    "excludes_zero": true
+   }
+  },
+  {
+   "id": "H-F1-merge",
+   "rule": "CONFIRMED iff merge_dare_ties - tuned_L0 pooled ci_hi <= 0",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "merge_ties - tuned_L0": {
+     "value_pts": -5.495342929720576,
+     "ci_lo": -6.8559322033898304,
+     "ci_hi": -4.131967127829048,
+     "n_programs": 394,
+     "excludes_zero": true
+    },
+    "merge_dare_ties - tuned_L0": {
+     "value_pts": 0.5165114309906849,
+     "ci_lo": -0.15228748758902524,
+     "ci_hi": 1.2035504316154773,
+     "n_programs": 394,
+     "excludes_zero": false
+    },
+    "merge_dare_linear - tuned_L0": {
+     "value_pts": -20.55884843353091,
+     "ci_lo": -22.877176487275257,
+     "ci_hi": -18.245625412257308,
+     "n_programs": 394,
+     "excludes_zero": true
+    },
+    "l0merge_ties - tuned_L0": {
+     "value_pts": -3.141405588484336,
+     "ci_lo": -4.208420550424014,
+     "ci_hi": -2.116805354377191,
+     "n_programs": 394,
+     "excludes_zero": true
+    },
+    "l0merge_dare_ties - tuned_L0": {
+     "value_pts": -1.735817104149029,
+     "ci_lo": -2.567899495253665,
+     "ci_hi": -0.907510347249603,
+     "n_programs": 394,
+     "excludes_zero": true
+    }
+   }
+  },
+  {
+   "id": "H-F1-mixture",
+   "rule": "descriptive: mole_uniform - base pooled",
+   "verdict": "REPORTED",
+   "evidence": {
+    "value_pts": 0.0,
+    "ci_lo": 0.0,
+    "ci_hi": 0.0,
+    "n_programs": 394,
+    "excludes_zero": false
+   }
+  },
+  {
+   "id": "H-F3-order",
+   "rule": "CONFIRMED iff [tuned_S1 - tuned_L0 on C_L1r_S1] - [same on C_S1_L1r] ci_lo > 0",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "label": "tuned_S1 gain: cue-intact (C_L1r_S1) - cue-destroyed (C_S1_L1r)",
+    "value_pts": -0.6773920406435154,
+    "ci_lo": -3.302286198137172,
+    "ci_hi": 2.1151039942920256,
+    "n_programs": 394,
+    "excludes_zero": false
+   }
+  }
+ ]
+}
