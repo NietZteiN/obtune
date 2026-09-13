@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_merge2_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_panel.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 120,
+  "meta": {
+    "note": "master table: the six conditions merge_panel did not cover (4 depth + 2 half-unseen); resume skips the 153 cells already written"
+  },
+  "slurm": {
+    "job_id": "393614",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-13T18:47:24.796970+00:00"
+  }
+}

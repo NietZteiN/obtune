@@ -63,7 +63,8 @@ while true; do
   # Advance the routing/merging track too: training a specialist leaves checkpoint-*/ and final/, not
   # best/, and merge_adapters.py defaults to best. This checkpoint-selects whatever is ready and merges
   # any model whose five specialists are selected -- readiness-driven, so it is safe to call every tick.
-  adv=$(timeout 600 python scripts/merge/build_ready_merges.py --submit 2>&1 | grep -E "submitted [0-9]+")
+  # Only real submissions are events; the script's own "submitted 0 ... and 0 ..." summary is not.
+  adv=$(timeout 600 python scripts/merge/build_ready_merges.py --submit 2>&1 | grep -E "^ +submitted [0-9]+ +(ckb_|mg_)")
   [ -n "$adv" ] && echo "$adv" | sed "s/^ */[merge-track] /"
   echo "[status] queued=$left running=$run pending=$pend"
   sleep 240
