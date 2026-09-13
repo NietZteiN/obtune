@@ -603,7 +603,7 @@ CodeLlama-7B, 317 programs, pooled over L0-S2 and X1, against the untuned model:
 | `cons_lam3` | **+19.95** | +0.39 | +0.02 |
 | `tuned_X1` | **+18.86** | +1.70 | +0.09 |
 
-**Granite-3.1-8B reverses it**: `merge_dare_ties` there is **-7.66 [-10.08, -5.17]** backwards, DR **-0.68**, with 25 of its backward cells format-gated so only `base` and the merges are readable. Merging is therefore *not* backward-safe; the cost is model-dependent and large in either direction. The paper's "every method that fits the forward task buys its gain by losing backward competence" is false as written: DARE-TIES matches breadth forward and gains backwards. One model; the other three are queued and may be format-gated. `log/modularity/2026-09-13_merging-gains-backward.md`.
+Across the four models with merges: CodeLlama-7B **+3.21** (DR +0.17), Llama-3.1-8B **+2.91** (DR +0.17; its `merge_ties` is **+3.11**, DR **+0.26**), StarCoder2 undefined (untuned backward is format-failure 1.00), and **Granite-3.1-8B reverses it**: `merge_dare_ties` there is **-7.66 [-10.08, -5.17]** backwards, DR **-0.68**, with 25 of its backward cells format-gated so only `base` and the merges are readable. Merging is therefore *not* backward-safe; the cost is model-dependent and large in either direction. The paper's "every method that fits the forward task buys its gain by losing backward competence" is false as written: DARE-TIES matches breadth forward and gains backwards. One model; the other three are queued and may be format-gated. `log/modularity/2026-09-13_merging-gains-backward.md`.
 
 ## 7. Master tables — every approach × every condition, per model
 

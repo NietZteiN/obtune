@@ -1,0 +1,102 @@
+{
+ "script": "62_merge_backward.py",
+ "generated_utc": "2026-09-13T19:56:39+00:00",
+ "model": "llama31-8b",
+ "conditions_read": [
+  "L0",
+  "L1b",
+  "L1r",
+  "L2",
+  "S1",
+  "S2",
+  "X1"
+ ],
+ "format_gated_cells": [
+  "mono_all__L0",
+  "mono_all__L1b",
+  "mono_all__L1r",
+  "mono_all__L2",
+  "mono_all__S1",
+  "mono_all__S2",
+  "mono_all__X1",
+  "cons_lam3__L0",
+  "cons_lam3__L1b",
+  "cons_lam3__L1r",
+  "cons_lam3__L2",
+  "cons_lam3__S1",
+  "cons_lam3__S2",
+  "cons_lam3__X1"
+ ],
+ "n_resamples": 2000,
+ "seed": 17,
+ "arms": {
+  "merge_dare_ties": {
+   "backward_vs_base": {
+    "value_pts": 2.9142256271593836,
+    "ci_lo": 0.7957788793750975,
+    "ci_hi": 5.10778128286015,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 17.533834586466167,
+    "ci_lo": 15.353007518796993,
+    "ci_hi": 19.826132771338248,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.16620583551123413
+  },
+  "merge_ties": {
+   "backward_vs_base": {
+    "value_pts": 3.109508787742227,
+    "ci_lo": 1.2464323268739699,
+    "ci_hi": 5.032672374943668,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 11.834586466165412,
+    "ci_lo": 9.973711882229233,
+    "ci_hi": 13.759951930298934,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.2627475659273928
+  },
+  "tuned_L0": {
+   "backward_vs_base": {
+    "value_pts": 1.066546492414,
+    "ci_lo": -1.126633618747186,
+    "ci_hi": 3.2154123479044574,
+    "n_programs": 317,
+    "excludes_zero": false
+   },
+   "forward_vs_base": {
+    "value_pts": 16.105263157894736,
+    "ci_lo": 13.849695215957876,
+    "ci_hi": 18.326679870022055,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.06622347501916993
+  },
+  "tuned_X1": {
+   "backward_vs_base": {
+    "value_pts": 1.832657353162087,
+    "ci_lo": -0.4806970106654651,
+    "ci_hi": 4.071278353612738,
+    "n_programs": 317,
+    "excludes_zero": false
+   },
+   "forward_vs_base": {
+    "value_pts": 18.10526315789474,
+    "ci_lo": 15.608681080995428,
+    "ci_hi": 20.586676075045652,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.10122235380837108
+  }
+ }
+}

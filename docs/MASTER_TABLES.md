@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-13 19:08 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-13 19:57 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -117,11 +117,11 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 | C_L1r_S3 | 0.169 | fmt | -- | -- | -- | 0.451 | +28.1 | fmt | 0.454 | +28.5 | fmt | 0.482 | +31.3 | fmt | 0.437 | +26.8 | fmt |
 | C_S4_S3 | 0.199 | fmt | -- | -- | -- | 0.482 | +28.3 | fmt | 0.487 | +28.7 | fmt | 0.521 | +32.2 | fmt | 0.476 | +27.7 | fmt |
 | *seen stacks, pooled (6)* | 0.180 | fmt | -- | -- | -- | 0.401 | +22.1 | fmt | 0.432 | +25.2 | fmt | 0.459 | +27.9 | fmt | 0.404 | +22.4 | fmt |
-| C3_L1r_S3_S4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| C3_S1_S3_S4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| C3_L1r_S1_S4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| C4_L1r_S1_S3_S4 | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| *depth-3/4 stacks, pooled (4)* | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |
+| C3_L1r_S3_S4 | 0.148 | fmt | -- | -- | -- | 0.416 | +26.8 | fmt | 0.452 | +30.4 | fmt | 0.473 | +32.5 | fmt | 0.424 | +27.5 | fmt |
+| C3_S1_S3_S4 | 0.128 | fmt | -- | -- | -- | 0.428 | +30.1 | fmt | 0.454 | +32.7 | fmt | 0.472 | +34.5 | fmt | 0.440 | +31.2 | fmt |
+| C3_L1r_S1_S4 | 0.147 | fmt | -- | -- | -- | 0.338 | +19.2 | fmt | 0.390 | +24.3 | fmt | 0.412 | +26.5 | fmt | 0.359 | +21.2 | fmt |
+| C4_L1r_S1_S3_S4 | 0.105 | fmt | -- | -- | -- | 0.316 | +21.1 | fmt | 0.372 | +26.7 | fmt | 0.413 | +30.8 | fmt | 0.354 | +24.9 | fmt |
+| *depth-3/4 stacks, pooled (4)* | 0.132 | fmt | -- | -- | -- | 0.375 | +24.3 | fmt | 0.417 | +28.5 | fmt | 0.442 | +31.1 | fmt | 0.394 | +26.2 | fmt |
 | C_L1r_X1 | 0.115 | fmt | -- | -- | -- | 0.226 | +11.0 | fmt | 0.249 | +13.3 | fmt | 0.278 | +16.2 | fmt | 0.275 | +16.0 | fmt |
 | C_X1_S1 | 0.125 | fmt | -- | -- | -- | 0.317 | +19.2 | fmt | 0.290 | +16.5 | fmt | 0.339 | +21.4 | fmt | 0.372 | +24.7 | fmt |
 | C_S2_X1 | 0.176 | fmt | -- | -- | -- | 0.372 | +19.6 | fmt | 0.355 | +17.9 | fmt | 0.403 | +22.7 | fmt | 0.395 | +21.9 | fmt |
@@ -374,13 +374,13 @@ Means over the cells that exist and pass the format gate; `n` counts them, `fmt`
 | intervention | dir | clean | seen | unseen family | seen stacks | unseen-containing stacks |
 |---|---|---:|---:|---:|---:|---:|
 | ICL | fwd | +3.8 / 115% (n=3, 5 fmt) | +3.2 / 97% (n=16, 24 fmt) | -- | -- | -- |
-| clean LoRA | fwd | +19.0 / 175% (n=5, 3 fmt) | +18.5 (n=30, 10 fmt) / 152% (n=25, 15 fmt) | +13.7 (n=7, 1 fmt) / 102% (n=5, 3 fmt) | +16.2 (n=56, 20 fmt) / 129% (n=50, 26 fmt) | +11.5 (n=28, 4 fmt) / 95% (n=20, 12 fmt) |
+| clean LoRA | fwd | +19.0 / 175% (n=5, 3 fmt) | +18.5 (n=30, 10 fmt) / 152% (n=25, 15 fmt) | +13.7 (n=7, 1 fmt) / 102% (n=5, 3 fmt) | +16.7 (n=60, 20 fmt) / 129% (n=50, 30 fmt) | +11.5 (n=28, 4 fmt) / 95% (n=20, 12 fmt) |
 | clean LoRA | bwd | -3.8 / 93% (n=4, 4 fmt) | -0.2 / 91% (n=17, 23 fmt) | +0.2 / 65% (n=3, 5 fmt) | -- | -- |
-| breadth | fwd | +17.0 / 167% (n=5, 3 fmt) | +19.7 (n=30, 10 fmt) / 157% (n=25, 15 fmt) | +10.7 (n=7, 1 fmt) / 91% (n=5, 3 fmt) | +20.4 (n=56, 20 fmt) / 146% (n=50, 26 fmt) | +10.9 (n=28, 4 fmt) / 93% (n=20, 12 fmt) |
+| breadth | fwd | +17.0 / 167% (n=5, 3 fmt) | +19.7 (n=30, 10 fmt) / 157% (n=25, 15 fmt) | +10.7 (n=7, 1 fmt) / 91% (n=5, 3 fmt) | +20.9 (n=60, 20 fmt) / 146% (n=50, 30 fmt) | +10.9 (n=28, 4 fmt) / 93% (n=20, 12 fmt) |
 | breadth | bwd | -2.4 / 95% (n=2, 6 fmt) | -2.1 / 89% (n=12, 28 fmt) | +0.2 / 76% (n=2, 6 fmt) | -- | -- |
-| anchored | fwd | +17.6 / 169% (n=5, 3 fmt) | +21.0 (n=30, 10 fmt) / 161% (n=25, 15 fmt) | +13.1 (n=7, 1 fmt) / 99% (n=5, 3 fmt) | +21.3 (n=56, 20 fmt) / 148% (n=50, 26 fmt) | +12.8 (n=28, 4 fmt) / 98% (n=20, 12 fmt) |
+| anchored | fwd | +17.6 / 169% (n=5, 3 fmt) | +21.0 (n=30, 10 fmt) / 161% (n=25, 15 fmt) | +13.1 (n=7, 1 fmt) / 99% (n=5, 3 fmt) | +22.0 (n=60, 20 fmt) / 148% (n=50, 30 fmt) | +12.8 (n=28, 4 fmt) / 98% (n=20, 12 fmt) |
 | anchored | bwd | +1.3 / 104% (n=1, 7 fmt) | +0.4 / 103% (n=5, 35 fmt) | +2.5 / 99% (n=1, 7 fmt) | -- | -- |
-| family | fwd | +18.5 / 173% (n=5, 3 fmt) | +17.8 (n=30, 10 fmt) / 150% (n=25, 15 fmt) | +20.1 (n=7, 1 fmt) / 128% (n=5, 3 fmt) | +16.9 (n=56, 20 fmt) / 132% (n=50, 26 fmt) | +16.8 (n=28, 4 fmt) / 116% (n=20, 12 fmt) |
+| family | fwd | +18.5 / 173% (n=5, 3 fmt) | +17.8 (n=30, 10 fmt) / 150% (n=25, 15 fmt) | +20.1 (n=7, 1 fmt) / 128% (n=5, 3 fmt) | +17.5 (n=60, 20 fmt) / 132% (n=50, 30 fmt) | +16.8 (n=28, 4 fmt) / 116% (n=20, 12 fmt) |
 | family | bwd | -5.5 / 88% (n=5, 3 fmt) | -1.2 / 89% (n=20, 20 fmt) | +5.2 / 86% (n=3, 5 fmt) | -- | -- |
 
 ## 2. Models
@@ -706,10 +706,10 @@ Raw exact-match accuracy; no deltas, no percentages. `†` marks a cell over the
 | C_L2_S4 | 0.191 | 0.045† | 0.431 | 0.454 | 0.478 | 0.431 | -- | -- |
 | C_L1r_S3 | 0.169 | 0.041† | 0.451 | 0.454 | 0.482 | 0.437 | -- | -- |
 | C_S4_S3 | 0.199 | 0.041† | 0.482 | 0.487 | 0.521 | 0.476 | -- | -- |
-| C3_L1r_S3_S4 | -- | 0.017† | -- | -- | -- | -- | -- | -- |
-| C3_S1_S3_S4 | -- | 0.042† | -- | -- | -- | -- | -- | -- |
-| C3_L1r_S1_S4 | -- | 0.041† | -- | -- | -- | -- | -- | -- |
-| C4_L1r_S1_S3_S4 | -- | 0.033† | -- | -- | -- | -- | -- | -- |
+| C3_L1r_S3_S4 | 0.148 | 0.017† | 0.416 | 0.452 | 0.473 | 0.424 | -- | -- |
+| C3_S1_S3_S4 | 0.128 | 0.042† | 0.428 | 0.454 | 0.472 | 0.440 | -- | -- |
+| C3_L1r_S1_S4 | 0.147 | 0.041† | 0.338 | 0.390 | 0.412 | 0.359 | -- | -- |
+| C4_L1r_S1_S3_S4 | 0.105 | 0.033† | 0.316 | 0.372 | 0.413 | 0.354 | -- | -- |
 | C_L1r_X1 | 0.115 | 0.044† | 0.226 | 0.249 | 0.278 | 0.275 | -- | -- |
 | C_X1_S1 | 0.125 | 0.064† | 0.317 | 0.290 | 0.339 | 0.372 | -- | -- |
 | C_S2_X1 | 0.176 | 0.099† | 0.372 | 0.355 | 0.403 | 0.395 | -- | -- |
