@@ -1,0 +1,18 @@
+{
+  "job_id": "tr_S3_codellama-34b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/grid_py_S3_panel.yaml",
+    "--model",
+    "codellama-34b"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 270,
+  "meta": {
+    "note": "master table: the mixture arm needs eight experts (L0-S4); every model but CodeLlama-7B lacks S3 and S4"
+  }
+}

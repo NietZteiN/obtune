@@ -1,0 +1,9 @@
+# S4 specialist for the panel models (2026-09-13). The mixture arm needs EIGHT experts
+# (L0, L1b, L1r, L2, S1, S2, S3, S4) to match CodeLlama-7B's router; every other panel model has only
+# the first six, so the mixture column of the master table is empty everywhere but 7B. Same shape as
+# the other _panel specialist configs: batch geometry comes from models.yaml per model.
+_extends: grid_py_S4.yaml
+run_tag: grid_py_S4_panel
+train:
+  per_device_batch: null
+  grad_accum: null
