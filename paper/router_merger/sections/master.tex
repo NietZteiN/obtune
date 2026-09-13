@@ -1,8 +1,16 @@
 \section{Every intervention against every obfuscation}
 \label{sec:master}
 
-The research questions above each isolate one contrast. Table~\ref{tab:master_summary} puts every intervention against every kind of obfuscation across the whole panel, and Appendix~\ref{app:master} gives the per-model grids with raw numbers. Three numbers describe each cell: the raw accuracy, the change in points against the untuned model on the same condition, and that accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of the original accuracy the intervention brings back. The untuned model on clean code is 100 by definition; on obfuscated code it shows what the obfuscation removed, and an intervention above 100 has more than restored it.
-
-Three things the grid makes visible that no single research question does. First, the obfuscation cost is large: the untuned model keeps 66--81\% of its clean accuracy on the single seen transforms, 46\% on the unseen family, 51--72\% on the depth-2 seen stacks and 35--58\% on the depth-3/4 ones (CodeLlama-7B, Table~\ref{tab:master_codellama7b}). Second, every intervention more than restores clean accuracy on the seen transforms (135--162\% on CodeLlama-7B; 150--161\% panel mean) and on the seen stacks (108--164\%), so those columns do not separate the interventions; the unseen-family columns do. Third, on the unseen family, breadth falls below the clean-code control (91\% against 102\% of clean accuracy, panel mean), anchoring closes most of that gap (99\%), and the family adapter, which has seen the family, is the ceiling (128\%); the ordering is the same on the stacks that contain the family (93, 95, 98 and 116\%). The backward columns survive the format gate almost only on CodeLlama-7B, where the family adapter is the only system that never loses backward accuracy, anchoring stays within 2.3 points of the untuned model on every condition, and breadth loses up to 3.9; on the other panel models the one-shot inverse template collapses the format, and those cells are marked rather than read.
+Table~\ref{tab:master_summary} puts every intervention against every kind of obfuscation across the
+panel; Appendix~\ref{app:master} gives the per-model grids. Each cell carries the raw accuracy, the
+change against the untuned model, and that accuracy as a percentage of the untuned model's clean-code
+accuracy --- how much of the original the intervention brings back. The untuned model keeps 66--81\%
+of its clean accuracy on single seen transforms, 46\% on the unseen family and 35--58\% on depth-3/4
+stacks (CodeLlama-7B). Every intervention more than restores clean accuracy on seen transforms and
+seen stacks, so those columns do not separate them; the unseen-family columns do: breadth 91\%,
+clean-code control 102\%, anchored 99\%, family 128\% of clean accuracy (panel mean), in the same
+order on the stacks containing the family. Backward cells survive the format gate almost only on
+CodeLlama-7B, where the family adapter never loses backward accuracy, anchoring stays within 2.3
+points of the untuned model and breadth loses up to 3.9.
 
 \input{tables/master_summary}
