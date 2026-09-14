@@ -12,8 +12,8 @@
   ],
   "raw": false,
   "est_gpu_h": 0.6,
-  "priority": 61,
+  "priority": 299,
   "meta": {
-    "note": "SECOND SEED, Llama-3.1-8B: the clean-code adapter, from the same config as its s17 twin (train/grid_py_L0.yaml). Priority one above the specialists because the anchored arm's s42 teacher depends on it."
+    "note": "SECOND SEED, Llama-3.1-8B: the clean-code adapter, from the same config as its s17 twin (train/grid_py_L0.yaml). Priority one above the specialists because the anchored arm's s42 teacher depends on it. | priority 61 -> 299 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse."
   }
 }

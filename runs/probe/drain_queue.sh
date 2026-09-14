@@ -11,6 +11,12 @@
 # Emits one line per submission, per failure, and a periodic status; exits when the queue is empty
 # AND nothing of ours is left running, so the watch ends by itself.
 #
+# PRIORITY IS ASCENDING: submit.py sorts queued manifests by (priority, job_id) and submits the
+# LOWEST number first (its own comment: 'lower priority runs first'). So the values this script writes
+# -- merges 115, mixture grids 125, gates 280 -- mean merges before grids before gates, which is what a
+# tick should do since a gate is a 6-12 h job. On 2026-09-14 ten seed-42 trainings were queued at 60
+# on the assumption that HIGHER ran first, and they jumped ahead of two requeued mixture grids at 122.
+# Fixed in the manifests (grids 10, trainings 300). If you add a manifest by hand: small = urgent.
 # PARTITION POLICY. h100 and a30 carry no QOS and take the bulk; h200 is capped at obtune's agreed
 # share of 2 and submit.py refuses above it, so the h200 pass is limited and its refusal is not an
 # error. 34B jobs go to h200 only, at 96-128 G: a30's 24 GB cards and the default 64 G cannot hold

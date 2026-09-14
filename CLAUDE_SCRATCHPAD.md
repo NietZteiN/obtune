@@ -2184,3 +2184,9 @@ the panel, so this is the model most likely to REFUTE the collapse ordering by s
 
 The anchored arm at s42 needs the s42 L0 teacher (`objectives.py train --seed 42`), so it is queued
 only once `L0_r32_s42` exists; merges likewise once the six specialists do.
+
+**Correction, same day:** `submit.py --queued` submits the LOWEST `priority` first. Every priority I set
+today (122 for grids, 60 for the Llama s42 trainings, 126/128 for the ladder repairs) assumed the
+reverse, and the drain therefore ran the ten cheap trainings ahead of the two mixture grids they were
+meant to backfill behind. Queued manifests corrected: grids 10, trainings 300. The two OOM'd grids
+were submitted by name to skip the queue. Small number = urgent, from here on.

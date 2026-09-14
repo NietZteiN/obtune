@@ -13,9 +13,9 @@
   ],
   "raw": false,
   "est_gpu_h": 2.5,
-  "priority": 125,
+  "priority": 10,
   "meta": {
-    "note": "master table: the mixture column, queued automatically once the router gate existed | REQUEUED 2026-09-14: walltime-killed (rc 124) at 63 of 115 cells after 3 h at est 1.5 (3 h walltime). eval_vllm resumes per cell, so this finishes the remaining 52; est 2.5 -> 5 h, against the ~2.9 h the first 63 took."
+    "note": "master table: the mixture column, queued automatically once the router gate existed | REQUEUED 2026-09-14: walltime-killed (rc 124) at 63 of 115 cells after 3 h at est 1.5 (3 h walltime). eval_vllm resumes per cell, so this finishes the remaining 52; est 2.5 -> 5 h, against the ~2.9 h the first 63 took. | priority 125 -> 10 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse."
   },
   "previous_slurm": {
     "job_id": "396481",
