@@ -160,3 +160,4 @@
 - [`2026-09-14_format-failure-is-forward-collapse.md`](2026-09-14_format-failure-is-forward-collapse.md) — backward format failure on tuned arms = answering forward, verified by exact match to the gold output. The gate was excluding a result.
 - [`2026-09-14_backward-on-stacks.md`](2026-09-14_backward-on-stacks.md) — backward on all 16 stacks; breadth's degradation with divergence appears in the reverse direction too.
 - [`2026-09-14_backward-dissociation-replicates.md`](2026-09-14_backward-dissociation-replicates.md) — the dissociation, backwards, on two models; collapse is weaker on harder input.
+- [`2026-09-14_backward-stacks-third-model.md`](2026-09-14_backward-stacks-third-model.md) — 34B: breadth unreadable, merge strongest backward arm measured.

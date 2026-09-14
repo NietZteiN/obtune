@@ -1,0 +1,34 @@
+{
+  "job_id": "ev_invstack_codellama-34b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_stacks.yaml",
+    "--model",
+    "codellama-34b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.2,
+  "priority": 90,
+  "meta": {
+    "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack | REQUEUED 2026-09-14: the config carried the `formatonly` control, which exists only for CodeLlama-7B; the missing-adapter guard refused it on every other model. Arm removed."
+  },
+  "previous_slurm": {
+    "job_id": "394623",
+    "node": "g-07-11",
+    "partition": "h200",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T03:35:38.264817+00:00"
+  },
+  "slurm": {
+    "job_id": "394759",
+    "node": "g-07-11",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T07:10:54.752150+00:00"
+  }
+}
