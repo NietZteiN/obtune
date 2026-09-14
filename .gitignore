@@ -56,3 +56,10 @@ results/**/trials.jsonl
 # belong in history. The dist-info beside it records the exact pin (py_spy 0.4.2), so the tool
 # stays reproducible via pip without carrying a 7.7 MB blob.
 env/vendor_tools/bin/
+
+# A SEPARATE PROJECT THAT LIVES IN THIS DIRECTORY BUT IS NOT PART OF IT.
+# `LLM-Attention-Fixation_gitready/` appeared in the repo root on 2026-09-14 and a `git add -A`
+# swept all 8,211 of its files into commit e6617e0 and pushed them. It is someone else's codebase,
+# it carries an anonymous-artifact mirror URL, and 37 MB of it does not belong in obtune's history.
+# Ignored so no future `add -A` can repeat that. The files stay on disk, untouched.
+LLM-Attention-Fixation_gitready/
