@@ -654,9 +654,13 @@ it twice, against untuned levels of 0.000–0.283.
 
 | `base` | `merge_ties` | `merge_dare_ties` | `tuned_X1` | `tuned_L0` | `mono_all` | `cons_lam3` |
 |---|---|---|---|---|---|---|
-| 0.007 | **0.000** | **0.001** | 0.060 | 0.066 | 0.081 | **0.186** |
+| 0.007 | **0.000** | **0.001** | 0.052 | 0.059 | 0.070 | **0.172** |
 
-> These are the **corrected** figures, on the sixteen stack conditions only. The first version of
+> **FINAL**, on all 23 backward conditions, after the `inverse_1shot` repair landed on all eight
+> models. The stacks-only cross-check (0.060 / 0.066 / 0.081 / 0.186) agrees closely, which is what
+> says the stopgap was not itself distorting anything. Superseded reading below, kept for the record.
+>
+> These were the **corrected** figures, on the sixteen stack conditions only. The first version of
 > this row pooled the stacks with the backward ladder, which on seven of eight models was evaluated
 > zero-shot, and the missing demo inflates collapse enormously (CodeGemma's `mono_all` 0.777
 > zero-shot against 0.029 one-shot). Ordering identical, every qualitative claim unchanged,
@@ -803,6 +807,7 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.
 - **2026-09-13** — §6.5c: H-F2-route refuted; the specialist mixture is +2.88 above breadth on unseen-containing stacks.
 - **2026-09-13** - §6.5d: H-merge-backward refuted; the DARE-TIES merge has the highest direction ratio measured (+0.17).
+- **2026-09-14 (final)** - §6.5e(c) on ALL 23 conditions, repair complete on 8/8, no mixed-prompt arm left: untuned 0.007, merges 0.000/0.001, family 0.052, clean 0.059, breadth 0.070, anchored 0.172. StarCoder2 gains a backward contrast for the first time (its untuned model clears the gate one-shot where it cleared none zero-shot) and every arm there is positive, merges highest. Across 8 merge-by-model backward cells the merges are significant-positive on 6, null on 2, negative on none; breadth is significant-negative on 3 of 4.
 - **2026-09-14 (latest)** - §6.5d's reversal RETIRED: Granite's backward merge cost was the missing one-shot demo. Repaired, it is -0.27 [-2.33, +1.83] (null) against the published -7.66, and its merge_ties is +6.94. The prompt bias ran AGAINST the merge, not for it, correcting the direction asserted in the morning's correction note.
 - **2026-09-14 (later)** - §6.5e(c)'s collapse row CORRECTED: the first version pooled stack cells with zero-shot ladder cells. Recomputed on stacks only: untuned 0.007, merges 0.000/0.001, family 0.060, clean 0.066, breadth 0.081, anchored 0.186. Ordering identical, magnitudes roughly halved.
 - **2026-09-14** - §6.5d carries a CORRECTION: its cross-model numbers contrast one-shot merge cells against zero-shot baselines (`inverse_core.yaml` carried no one-shot demo), so Granite's reversal is partly a prompt difference; the CodeLlama-7B row is unaffected. New §6.5e: on stacks, where every arm shares one prompt, the merge's drop never differs from the untuned model's in either direction on eight models, it matches breadth's forward accuracy on all eight, and forward collapse is the mechanism — both merges at the untuned floor (0.000/0.001) against breadth 0.198 and the KL-anchored arm 0.312.
