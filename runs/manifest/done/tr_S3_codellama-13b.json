@@ -1,18 +1,25 @@
 {
-  "job_id": "tr_S4_gemma3-12b",
+  "job_id": "tr_S3_codellama-13b",
   "kind": "train",
   "argv": [
     "-m",
     "obtune.train_sft",
     "--config",
-    "train/grid_py_S4_panel.yaml",
+    "train/grid_py_S3_panel.yaml",
     "--model",
-    "gemma3-12b"
+    "codellama-13b"
   ],
   "raw": false,
   "est_gpu_h": 1.0,
   "priority": 265,
   "meta": {
     "note": "master table: the mixture arm needs eight experts (L0-S4); every model but CodeLlama-7B lacks S3 and S4"
+  },
+  "slurm": {
+    "job_id": "394166",
+    "node": "g-05-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T00:17:24.351489+00:00"
   }
 }

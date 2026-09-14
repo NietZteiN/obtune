@@ -54,6 +54,10 @@ while true; do
     # submitted by name here with the memory 34B needs.
     # Two per tick, matching obtune's h200 share; submit.py refuses past it, so this cannot overrun.
     for j in $(ls runs/manifest/queued_34b/*.json 2>/dev/null | head -2); do
+      # A manifest stays in queued_34b until its job STARTS, so without this the next tick submits it
+      # again -- two 2-hour 34B jobs for one piece of work (tr_S4_codellama-34b, 2026-09-13). The
+      # --queued passes are idempotent on live job names already; this by-name path was not.
+      squeue -h -u "$USER" -o "%j" | grep -qx "$(basename "$j" .json)" && continue
       out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition h200 --mem 128G 2>&1 | grep -E "^submitted|FAILED")
       [ -n "$out" ] && echo "$out" | sed "s/^/[h200-34b] /"
     done
