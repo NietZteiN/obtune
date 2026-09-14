@@ -63,7 +63,9 @@ gate_checkpoint: runs/mole/codellama-34b/python/routerlora_codellama34b_s17/gate
 engine:
   seed: 17
   dtype: bfloat16
-  batch_size: 32
+  # BATCH 16 (2026-09-14), pre-emptively: three models' mixture grids OOM'd at 32 on 80-93 GB cards, and 34B's
+  # 68 GB of weights plus eight experts leave a 141 GB H200 no more headroom than a 7B leaves an H100. A 6-12 h
+  # grid dying at X1 is the failure to avoid; batch 16 costs time, not correctness.N
 
 systems:
   - {name: base, arch: none, one_shot: true}

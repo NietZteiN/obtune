@@ -1,0 +1,1 @@
+{"job_id":"ev_mole_codellama-34b","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_codellama-34b.yaml","--model","codellama-34b","--language","python"],"raw":false,"est_gpu_h":3.0,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}

@@ -47,3 +47,11 @@ scheduler silently mis-reads.
 into the estimate. Every number here was available from `sacct` before it was needed. A helper that
 derives `est_gpu_h` from the measured per-cell rate for that (kind, model) would end this class of
 failure rather than correcting it one hardcoded constant at a time — noted, not built.
+
+## Addendum, later the same day: the 34B gate finished with four minutes to spare
+
+`tr_gate_codellama-34b` completed at **11:56:00 against a 12:00:00 walltime** — healthy (0 NaN
+tensors of 50, tau 0.54–0.93), but 233 seconds from a second timeout. The est of 6 h (→ 12 h) that
+replaced the 3 h one was itself barely enough at 34B. If that gate is ever retrained, `est_gpu_h: 8`
+(16 h). Its two mixture grids are queued at batch 16 pre-emptively, for the reason recorded in
+their configs.
