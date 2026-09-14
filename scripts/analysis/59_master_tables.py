@@ -514,11 +514,26 @@ for m, (r, g) in RM.items():
 
 # ---------------- 6. ABSOLUTE master table for one model: every method x every obfuscation ----------------
 # Raw accuracy only -- no deltas, no percentages (user, 2026-09-13: "I don't like this relative reporting").
-ABS_SYS = [("untuned","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("anchored","cons_lam3"),
+ABS_SYS = [("base","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("anchored","cons_lam3"),
            ("family","tuned_X1"),("mixture","mole_router"),("merge","merge_dare_ties")]
 ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_all":None, "cons_lam3":None, "tuned_X1":None,
           "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
 ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
+
+def args_exact(m, sysn, c):
+    """Share of items whose produced call recovers the GOLD ARGUMENTS, not merely a call that returns
+    the gold value. The backward task is graded by execution and inversion is many-to-one, so
+    `exchange_sort([1,2,3]) -> 0` scores as correct against any program whose answer is 0. Measured
+    2026-09-13: 64-69 % of every system's backward `correct` answers are degenerate in this way, and
+    the untuned model's 0.279 exec-match is 0.086 by exact arguments. Both are reported."""
+    p = CELLS/"inverse_generic"/m/"python"/f"{sysn}__{c}"/"trials.parquet"
+    if not p.exists(): return None
+    try:
+        import pandas as pd
+        d = pd.read_parquet(p, columns=["args_exact"])
+        return float(d["args_exact"].mean())
+    except Exception:
+        return None
 
 def abs_cell(m, sysn, c, bwd=False):
     if bwd:
@@ -534,44 +549,115 @@ def abs_fmt(a, ff, tex=True):
     gated = (ff or 0) > FMT_MAX
     return (f"{a:.3f}" + (r"$^{\dagger}$" if gated else "")) if tex else (f"{a:.3f}" + ("†" if gated else ""))
 
+BWD_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
+
+def pct_of_base(a, b):
+    """`a` as a percentage of the base model's accuracy on the SAME condition."""
+    if a is None or b is None or a == "fmt" or b == "fmt" or not b: return None
+    return a/b*100.0
+
 def abs_table(m):
-    L = [r"\begin{table*}[ht]", r"\centering\footnotesize\setlength{\tabcolsep}{2.5pt}",
-         r"\caption{\textbf{Every method against every obfuscation, " + NICE[m] + r".} Raw accuracy (strict exact match) of each "
-         r"system on each condition and stack, forward (output prediction) and, for the ladder, backward (input prediction). "
-         r"\emph{untuned} is the base model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; "
-         r"\emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on "
-         r"the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the "
-         r"DARE-TIES merge of the specialists (system keys, in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, "
-         r"\texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). $\dagger$: format-failure rate above 0.25, the cell measures the prompt contract rather "
-         r"than the task. `--': not run.}",
+    ncol = 1 + 2*len(ABS_SYS)
+    L = [r"\begin{table*}[p]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}",
+         r"\caption{\textbf{Every method against every obfuscation, " + NICE[m] + r".} Raw accuracy (strict exact match), "
+         r"with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. "
+         r"\emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; "
+         r"\emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained "
+         r"on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is "
+         r"the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, "
+         r"\texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). "
+         r"\textbf{The backward block is reported twice.} \emph{by execution} accepts any call that returns the gold value, and "
+         r"inversion is many-to-one, so a guess that lands on a common return value scores; \emph{by exact arguments} requires the "
+         r"gold call. Measured on CodeLlama-7B, 64--69\,\% of every system's backward successes are of the first kind, which is why "
+         r"the untuned model appears to read backwards almost as well as forwards. $\dagger$: format-failure rate above 0.25. "
+         r"`--': not run.}",
          r"\label{tab:master_abs_" + m.replace("-","") + "}",
-         r"\begin{tabular}{@{}l" + "r"*len(ABS_SYS) + "@{}}", r"\toprule",
-         r"\textbf{Condition} & " + " & ".join(r"\textbf{" + n + "}" for n,_ in ABS_SYS) + r" \\", r"\midrule",
-         r"\multicolumn{" + str(1+len(ABS_SYS)) + r"}{@{}l}{\emph{Forward: output prediction}} \\"]
+         r"\begin{tabular}{@{}l" + "rr"*len(ABS_SYS) + "@{}}", r"\toprule",
+         r"\textbf{Condition} & " + " & ".join(r"\multicolumn{2}{c}{\textbf{" + n + "}}" for n,_ in ABS_SYS) + r" \\",
+         " & " + " & ".join(r"acc & \%\,b" for _ in ABS_SYS) + r" \\", r"\midrule",
+         r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Forward: output prediction}} \\"]
+
+    def row(c, bwd=False, strict=False):
+        if strict:
+            b = args_exact(m, "base", c)
+            cells = []
+            for _, sy in ABS_SYS:
+                if sy in ("base_1shot", "mole_router"):
+                    cells += ["--", "--"]; continue
+                a = args_exact(m, sy, c)
+                cells += ["--" if a is None else f"{a:.3f}", fp(pct_of_base(a, b))]
+            return cells
+        ba, bf = abs_cell(m, "base", c, bwd)
+        base_ok = ba if isinstance(ba, float) and (bf or 0) <= FMT_MAX else None
+        cells = []
+        for _, sy in ABS_SYS:
+            if bwd and sy in ("base_1shot", "mole_router"):
+                cells += ["--", "--"]; continue
+            a, ff = abs_cell(m, sy, c, bwd)
+            cells += [abs_fmt(a, ff), fp(pct_of_base(a if isinstance(a, float) and (ff or 0) <= FMT_MAX else None, base_ok))]
+        return cells
+
     prev=None
     for c in ABS_ROWS:
         k=KIND[c]
         if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
-        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(abs_fmt(*abs_cell(m, sy, c)) for _,sy in ABS_SYS) + r" \\"); prev=k
-    L.append(r"\midrule"); L.append(r"\multicolumn{" + str(1+len(ABS_SYS)) + r"}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\")
-    for c in LADDER:
-        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(("--" if sy in ("base_1shot","mole_router","merge_dare_ties") else abs_fmt(*abs_cell(m, sy, c, bwd=True))) for _,sy in ABS_SYS) + r" \\")
+        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c)) + r" \\"); prev=k
+    L.append(r"\midrule"); L.append(r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\")
+    prev=None
+    for c in BWD_ROWS:
+        if abs_cell(m, "base", c, True)[0] is None: continue
+        k=KIND[c]
+        if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
+        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c, bwd=True)) + r" \\"); prev=k
+    L.append(r"\midrule"); L.append(r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\")
+    prev=None
+    for c in BWD_ROWS:
+        if args_exact(m, "base", c) is None: continue
+        k=KIND[c]
+        if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
+        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c, strict=True)) + r" \\"); prev=k
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
     return "\n".join(L)
 
 # One absolute table per model. The body carries CodeLlama-7B (every arm exists there); the rest go
 # to the appendix and fill in as the backfill lands -- a cell that has not run renders as `--`.
 for m in MODELS:
-    write(f"master_abs_{m.replace('-','')}.tex", abs_table(m), "results/cells/* for " + m + " (raw accuracies only)")
+    write(f"master_abs_{m.replace('-','')}.tex", abs_table(m), "results/cells/* for " + m + " (raw accuracies, and % of base)")
 
 # markdown twin
-out.append("\n## 6. Absolute master tables — every method × every obfuscation, raw accuracy\n")
-out.append("Raw exact-match accuracy; no deltas, no percentages. `†` marks a cell over the 0.25 format gate, `--` a cell not run.\n")
+out.append("\n## 6. Absolute master tables — every method × every obfuscation\n")
+out.append("Raw exact-match accuracy, with `%b` after each system: its accuracy as a percentage of `base`'s on the same condition. "
+           "`†` marks a cell over the 0.25 format gate; `--` a cell not run.\n\n"
+           "**The backward block is reported twice.** *By execution* accepts any call that returns the gold value — inversion is "
+           "many-to-one, so a guess landing on a common return value scores. *By exact arguments* requires the gold call. "
+           "64–69% of every system's backward successes on CodeLlama-7B are of the first kind, which is why the untuned model looks "
+           "almost as good backwards as forwards (0.279 by execution, 0.086 by arguments).\n")
+def md_row(m, c, bwd=False, strict=False):
+    if strict:
+        b=args_exact(m,"base",c); cells=[]
+        for _,sy in ABS_SYS:
+            if sy in ("base_1shot","mole_router"): cells += ["--","--"]; continue
+            a=args_exact(m,sy,c); cells += ["--" if a is None else f"{a:.3f}", fp(pct_of_base(a,b))]
+        return cells
+    ba,bf=abs_cell(m,"base",c,bwd); base_ok = ba if isinstance(ba,float) and (bf or 0)<=FMT_MAX else None
+    cells=[]
+    for _,sy in ABS_SYS:
+        if bwd and sy in ("base_1shot","mole_router"): cells += ["--","--"]; continue
+        a,ff=abs_cell(m,sy,c,bwd)
+        cells += [abs_fmt(a,ff,tex=False), fp(pct_of_base(a if isinstance(a,float) and (ff or 0)<=FMT_MAX else None, base_ok))]
+    return cells
 for m in MODELS:
     out.append(f"\n### {NICE[m]}\n")
-    out.append("| condition | " + " | ".join(n for n,_ in ABS_SYS) + " |"); out.append("|---|" + "---:|"*len(ABS_SYS))
+    hdr = "| condition | " + " | ".join(f"{n} | %b" for n,_ in ABS_SYS) + " |"
+    out.append(hdr); out.append("|---|" + "---:|"*(2*len(ABS_SYS)))
     for c in ABS_ROWS:
-        out.append(f"| {c} | " + " | ".join(abs_fmt(*abs_cell(m, sy, c), tex=False) for _,sy in ABS_SYS) + " |")
-    for c in LADDER:
-        out.append(f"| {c} (bwd) | " + " | ".join(("--" if sy in ("base_1shot","mole_router","merge_dare_ties") else abs_fmt(*abs_cell(m, sy, c, bwd=True), tex=False)) for _,sy in ABS_SYS) + " |")
+        out.append(f"| {c} | " + " | ".join(md_row(m,c)) + " |")
+    out.append(f"| *backward, by execution* |" + " |"*(2*len(ABS_SYS)))
+    for c in BWD_ROWS:
+        if abs_cell(m,"base",c,True)[0] is None: continue
+        out.append(f"| {c} | " + " | ".join(md_row(m,c,bwd=True)) + " |")
+    out.append(f"| *backward, by exact arguments* |" + " |"*(2*len(ABS_SYS)))
+    for c in BWD_ROWS:
+        if args_exact(m,"base",c) is None: continue
+        out.append(f"| {c} | " + " | ".join(md_row(m,c,strict=True)) + " |")
 (ROOT/"docs/MASTER_TABLES.md").write_text("\n".join(out) + "\n")

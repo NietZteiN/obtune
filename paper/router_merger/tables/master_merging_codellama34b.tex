@@ -1,0 +1,25 @@
+% GENERATED 2026-09-14 02:14 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/codellama-34b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, CodeLlama-34B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_codellama34b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & fmt & fmt & 0.484 & fmt & fmt & 0.527 & fmt & fmt & 0.253 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & 0.205 & fmt & 0.401 & $+19.6$ & fmt & 0.429 & $+22.4$ & fmt & 0.184 & $-2.1$ & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & 0.220 & fmt & 0.420 & $+20.0$ & fmt & 0.467 & $+24.7$ & fmt & 0.181 & $-3.8$ & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & 0.231 & fmt & 0.403 & $+17.2$ & fmt & 0.463 & $+23.2$ & fmt & 0.195 & $-3.5$ & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & 0.222 & fmt & 0.419 & $+19.6$ & fmt & 0.456 & $+23.4$ & fmt & 0.246 & $+2.4$ & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & 0.191 & fmt & 0.439 & $+24.8$ & fmt & 0.484 & $+29.3$ & fmt & 0.202 & $+1.1$ & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & 0.135 & fmt & 0.299 & $+16.4$ & fmt & 0.328 & $+19.3$ & fmt & 0.178 & $+4.3$ & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.156 & fmt & 0.295 & $+13.9$ & fmt & 0.331 & $+17.5$ & fmt & 0.195 & $+3.8$ & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}

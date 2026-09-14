@@ -1,1 +1,0 @@
-{"job_id":"ev_merge_codellama-34b","kind":"eval","argv":["-m","obtune.eval_vllm","--config","eval/merge_panel.yaml","--model","codellama-34b","--language","python"],"raw":false,"est_gpu_h":0.6,"priority":115,"meta":{"note":"master table: the merge column, queued automatically once the three merges were built"}}

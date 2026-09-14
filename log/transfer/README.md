@@ -154,3 +154,4 @@
 
 ## Doc / results links
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
+- [`2026-09-13_backward-task-is-many-to-one.md`](2026-09-13_backward-task-is-many-to-one.md) — the inverse task's execution grader accepts any call returning the gold value; two thirds of successes are degenerate. Strict `args_exact` reported alongside.

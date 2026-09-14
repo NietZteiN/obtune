@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_invstack_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_stacks.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.2,
+  "priority": 90,
+  "meta": {
+    "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack"
+  }
+}
