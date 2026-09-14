@@ -107,6 +107,72 @@ def drop(seen_map, unseen_map, progs):
     return 100.0 * (b - a) / a, float(a), float(b)
 
 
+
+def level_vs_base(models, metric):
+    """SECOND TABLE: does the arm READ BACKWARDS BETTER THAN THE UNTUNED MODEL AT ALL?
+
+    The drop table above asks whether an arm degrades faster than the untuned model when a stack
+    contains an unseen family. That is the brittleness question, and an arm can pass it by being
+    uniformly bad. This asks the level question on the same cells: pooled over ALL NINE stacks, is
+    the arm above `base`? Same program set, same program-clustered bootstrap, same format gate --
+    only the contrast changes.
+
+    It is reported because the drop table understates what the merge does. A method whose drop
+    merely matches the untuned model's reads as "no tax"; a method that is also ABOVE the untuned
+    model everywhere is doing something else.
+    """
+    print(f"\n\narm - base, pooled over all nine stacks, {metric}, points\n")
+    print(f"{'model':15s} " + " ".join(f"{a[:11]:>19s}" for a in SYSTEMS if a != "base"))
+    out = {}
+    for m in models:
+        cells_by = read(m)
+        if "base" not in cells_by:
+            continue
+        b = cells_by["base"]
+        fb = float(pd.concat(list(b.values()))["format_fail"].mean())
+        row = []
+        for arm in SYSTEMS:
+            if arm == "base":
+                continue
+            if arm not in cells_by:
+                row.append(f"{'--':>19s}")
+                continue
+            a = cells_by[arm]
+            fa = float(pd.concat(list(a.values()))["format_fail"].mean())
+            progs = sorted(set.intersection(*[set(d["snippet_id"])
+                                              for d in list(a.values()) + list(b.values())]))
+            A, B = {}, {}
+            for grp, conds in (("seen", SEEN), ("unseen", UNSEEN)):
+                for c in conds:
+                    for src, dst in ((a[(grp, c)], A), (b[(grp, c)], B)):
+                        src = src[src["snippet_id"].isin(progs)]
+                        for p_, g in src.groupby("snippet_id"):
+                            dst.setdefault(p_, []).append(g[metric].to_numpy(dtype=float))
+            A = {k: np.concatenate(v) for k, v in A.items()}
+            B = {k: np.concatenate(v) for k, v in B.items()}
+            rng = np.random.default_rng(SEED)
+            idx = np.arange(len(progs))
+            draws = np.array([
+                (np.concatenate([A[progs[j]] for j in pk]).mean()
+                 - np.concatenate([B[progs[j]] for j in pk]).mean()) * 100.0
+                for pk in (rng.choice(idx, len(progs), True) for _ in range(N_BOOT))])
+            pt = (np.concatenate([A[p_] for p_ in progs]).mean()
+                  - np.concatenate([B[p_] for p_ in progs]).mean()) * 100.0
+            lo, hi = np.percentile(draws, [2.5, 97.5])
+            star = "*" if (lo > 0) == (hi > 0) else " "
+            tag = "g" if fa > FMT_GATE else " "
+            out.setdefault(m, {})[arm] = {"delta_pts": round(float(pt), 2),
+                                          "ci": [round(float(lo), 2), round(float(hi), 2)],
+                                          "significant": star == "*", "arm_gated": fa > FMT_GATE}
+            row.append(f"{pt:+6.2f}[{lo:+5.1f},{hi:+5.1f}]{star}{tag}")
+        print(f"{m:15s} " + " ".join(row) + ("   <- base GATED" if fb > FMT_GATE else ""))
+        out.setdefault(m, {})["_base_gated"] = fb > FMT_GATE
+    print("\n  g = the ARM itself is over the 0.25 format gate. `<- base GATED` means the untuned "
+          "model is, in\n  which case the sign still reads (the arm is above a model that cannot "
+          "answer) but the size does not.")
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -193,6 +259,8 @@ def main() -> int:
           "`--` = a cell of the grid is missing.\n  Where the untuned model is itself gated "
           "(StarCoder2, Granite) no contrast is formed and no star can appear: the other systems' "
           "levels stand alone.")
+
+    out["level_vs_base"] = level_vs_base(MODELS, a.metric)
 
     p = Path(a.out) if a.out else ROOT / "results/analysis/pipeline" / f"backward_stacks_{a.metric}.json"
     p.parent.mkdir(parents=True, exist_ok=True)

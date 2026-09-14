@@ -1,6 +1,6 @@
 {
   "script": "65_backward_stacks.py",
-  "generated_utc": "2026-09-14T13:17:43+00:00",
+  "generated_utc": "2026-09-14T13:52:53+00:00",
   "metric": "args_exact",
   "n_resamples": 2000,
   "seed": 17,
@@ -90,6 +90,19 @@
             9.87
           ],
           "vs_base_sig": false
+        },
+        "merge_ties": {
+          "format_fail_max": 0.0557,
+          "gated": false,
+          "seen_acc": 0.0855,
+          "unseen_acc": 0.0669,
+          "drop_pct": -21.79,
+          "vs_base_pts": -6.81,
+          "vs_base_ci": [
+            -15.92,
+            1.77
+          ],
+          "vs_base_sig": false
         }
       },
       "base_gated": false
@@ -148,6 +161,19 @@
           "vs_base_ci": [
             -10.9,
             13.23
+          ],
+          "vs_base_sig": false
+        },
+        "merge_ties": {
+          "format_fail_max": 0.0505,
+          "gated": false,
+          "seen_acc": 0.0944,
+          "unseen_acc": 0.0822,
+          "drop_pct": -12.92,
+          "vs_base_pts": 3.85,
+          "vs_base_ci": [
+            -4.91,
+            12.91
           ],
           "vs_base_sig": false
         }
@@ -548,9 +574,456 @@
           "seen_acc": 0.0707,
           "unseen_acc": 0.0568,
           "drop_pct": -19.7
+        },
+        "merge_ties": {
+          "format_fail_max": 0.1132,
+          "gated": false,
+          "seen_acc": 0.0902,
+          "unseen_acc": 0.077,
+          "drop_pct": -14.67
         }
       },
       "base_gated": true
+    }
+  },
+  "level_vs_base": {
+    "codellama-7b": {
+      "mono_all": {
+        "delta_pts": -1.47,
+        "ci": [
+          -2.53,
+          -0.5
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "cons_lam3": {
+        "delta_pts": -0.08,
+        "ci": [
+          -1.31,
+          1.09
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "tuned_X1": {
+        "delta_pts": 1.38,
+        "ci": [
+          0.45,
+          2.36
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_L0": {
+        "delta_pts": -1.99,
+        "ci": [
+          -3.02,
+          -1.0
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "merge_dare_ties": {
+        "delta_pts": 1.39,
+        "ci": [
+          0.67,
+          2.17
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_ties": {
+        "delta_pts": 0.42,
+        "ci": [
+          -0.1,
+          0.94
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "_base_gated": false
+    },
+    "codellama-13b": {
+      "mono_all": {
+        "delta_pts": -7.67,
+        "ci": [
+          -9.36,
+          -6.08
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "cons_lam3": {
+        "delta_pts": -3.15,
+        "ci": [
+          -4.6,
+          -1.82
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "tuned_X1": {
+        "delta_pts": -5.54,
+        "ci": [
+          -6.99,
+          -4.18
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "tuned_L0": {
+        "delta_pts": 1.34,
+        "ci": [
+          0.3,
+          2.41
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_dare_ties": {
+        "delta_pts": 3.16,
+        "ci": [
+          2.16,
+          4.31
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_ties": {
+        "delta_pts": 0.7,
+        "ci": [
+          0.08,
+          1.31
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "_base_gated": false
+    },
+    "codellama-34b": {
+      "mono_all": {
+        "delta_pts": -5.79,
+        "ci": [
+          -7.4,
+          -4.3
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "cons_lam3": {
+        "delta_pts": -2.37,
+        "ci": [
+          -3.8,
+          -1.04
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_X1": {
+        "delta_pts": -2.43,
+        "ci": [
+          -3.77,
+          -1.17
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_L0": {
+        "delta_pts": 0.27,
+        "ci": [
+          -0.85,
+          1.28
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "merge_dare_ties": {
+        "delta_pts": 3.43,
+        "ci": [
+          2.4,
+          4.42
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "_base_gated": false
+    },
+    "llama31-8b": {
+      "mono_all": {
+        "delta_pts": -0.63,
+        "ci": [
+          -1.82,
+          0.57
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "cons_lam3": {
+        "delta_pts": -0.45,
+        "ci": [
+          -1.64,
+          0.69
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "tuned_X1": {
+        "delta_pts": 1.29,
+        "ci": [
+          0.22,
+          2.39
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_L0": {
+        "delta_pts": 0.02,
+        "ci": [
+          -0.88,
+          1.02
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "merge_dare_ties": {
+        "delta_pts": 2.36,
+        "ci": [
+          1.59,
+          3.13
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_ties": {
+        "delta_pts": 1.25,
+        "ci": [
+          0.74,
+          1.79
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "_base_gated": false
+    },
+    "starcoder2-15b": {
+      "mono_all": {
+        "delta_pts": 0.46,
+        "ci": [
+          -0.62,
+          1.52
+        ],
+        "significant": false,
+        "arm_gated": true
+      },
+      "cons_lam3": {
+        "delta_pts": 4.12,
+        "ci": [
+          3.03,
+          5.34
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_X1": {
+        "delta_pts": 1.96,
+        "ci": [
+          1.03,
+          2.86
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "tuned_L0": {
+        "delta_pts": 4.6,
+        "ci": [
+          3.49,
+          5.74
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "merge_dare_ties": {
+        "delta_pts": 7.72,
+        "ci": [
+          6.25,
+          9.36
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "_base_gated": true
+    },
+    "gemma3-12b": {
+      "mono_all": {
+        "delta_pts": 0.96,
+        "ci": [
+          0.08,
+          1.87
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "cons_lam3": {
+        "delta_pts": -3.41,
+        "ci": [
+          -4.75,
+          -2.08
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "tuned_X1": {
+        "delta_pts": 2.43,
+        "ci": [
+          1.61,
+          3.34
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_L0": {
+        "delta_pts": 0.78,
+        "ci": [
+          -0.01,
+          1.59
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "merge_dare_ties": {
+        "delta_pts": 2.36,
+        "ci": [
+          1.59,
+          3.12
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_ties": {
+        "delta_pts": 0.94,
+        "ci": [
+          0.51,
+          1.39
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "_base_gated": false
+    },
+    "codegemma-7b": {
+      "mono_all": {
+        "delta_pts": 3.69,
+        "ci": [
+          2.68,
+          4.73
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "cons_lam3": {
+        "delta_pts": -1.72,
+        "ci": [
+          -2.62,
+          -0.81
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "tuned_X1": {
+        "delta_pts": 1.95,
+        "ci": [
+          1.13,
+          2.8
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "tuned_L0": {
+        "delta_pts": 4.09,
+        "ci": [
+          3.12,
+          5.07
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_dare_ties": {
+        "delta_pts": 3.83,
+        "ci": [
+          2.84,
+          4.84
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "merge_ties": {
+        "delta_pts": -2.76,
+        "ci": [
+          -3.66,
+          -1.99
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "_base_gated": false
+    },
+    "granite31-8b": {
+      "mono_all": {
+        "delta_pts": -2.12,
+        "ci": [
+          -3.27,
+          -0.91
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "cons_lam3": {
+        "delta_pts": -4.69,
+        "ci": [
+          -5.9,
+          -3.44
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "tuned_X1": {
+        "delta_pts": -0.58,
+        "ci": [
+          -1.86,
+          0.88
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "tuned_L0": {
+        "delta_pts": -1.87,
+        "ci": [
+          -3.12,
+          -0.55
+        ],
+        "significant": true,
+        "arm_gated": true
+      },
+      "merge_dare_ties": {
+        "delta_pts": 0.37,
+        "ci": [
+          -0.82,
+          1.65
+        ],
+        "significant": false,
+        "arm_gated": false
+      },
+      "merge_ties": {
+        "delta_pts": 2.35,
+        "ci": [
+          1.53,
+          3.29
+        ],
+        "significant": true,
+        "arm_gated": false
+      },
+      "_base_gated": false
     }
   }
 }

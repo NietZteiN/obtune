@@ -1,6 +1,6 @@
 {
   "script": "66_three_methods.py",
-  "generated_utc": "2026-09-14T13:28:06+00:00",
+  "generated_utc": "2026-09-14T13:47:00+00:00",
   "n_resamples": 2000,
   "seed": 17,
   "format_gate": 0.25,
@@ -291,7 +291,19 @@
             ],
             "vs_base_sig": false
           },
-          "router": null
+          "router": {
+            "gated": false,
+            "fmt": 0.0216,
+            "seen": 0.3794,
+            "unseen": 0.273,
+            "drop": -28.03,
+            "vs_base_pts": 0.33,
+            "vs_base_ci": [
+              -8.45,
+              8.51
+            ],
+            "vs_base_sig": false
+          }
         }
       },
       "backward": {
