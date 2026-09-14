@@ -158,7 +158,7 @@ completes the set.
 
 \subsection{Measurement}
 Forward accuracy is strict normalised exact match on the produced output, with no containment
-matching; the backward task is graded by executing the produced call against the clean parent.
+matching; the backward task is graded by executing the produced call against the program as the model was shown it --- the obfuscated variant, not the clean parent --- and accepting any arguments that return the gold value, which is what the prompt asks for. We also report the stricter rate at which the \emph{gold} arguments are recovered.
 Every contrast is a paired difference on the program subset common to its cells, with a
 program-clustered bootstrap of 2{,}000 resamples; bold intervals exclude zero. Decision rules were
 pre-registered before submission and are reported by their verdicts even when inconclusive. A cell
