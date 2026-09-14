@@ -169,9 +169,16 @@ out.append("Forward = output prediction (what the adapters were trained on). Bac
            "of the untuned model's clean-code accuracy in the same direction — how much of the original accuracy the system brings "
            "back; the untuned model on clean code is 100 by definition, on obfuscated code it shows what the obfuscation removed, "
            "above 100 means more than restored). In-context learning has no backward run and no X1/stack run. **`fmt`** marks a "
-           "cell whose format-failure rate exceeds 0.25: its responses are mostly unparseable, so it measures the prompt contract, "
-           "not the task, and is excluded from every mean. The backward and in-context templates were written for CodeLlama-7B; "
-           "they pass the gate on nearly every cell there and fail it on most cells of the other panel models.\n")
+           "cell whose format-failure rate exceeds 0.25, and it is excluded from every mean.\n\n"
+           "**Two cautions about `fmt` in the backward block, both established 2026-09-14.** First, it does NOT mean "
+           "\"mostly unparseable\": that bucket holds four different failures, and on several cells the majority are replies "
+           "that are exactly the gold FORWARD answer — the arm answering the other question, which is a result and not a "
+           "broken template. §6 marks those `‡` rather than `†`; the per-cell decomposition is "
+           "`scripts/analysis/67_backward_failure_modes.py`. Second, the earlier note here — that the backward template was "
+           "written for CodeLlama-7B and fails on the other models — described a ZERO-SHOT prompt that only those seven "
+           "models ever received (`inverse_core.yaml` carried no one-shot demo while every other backward config did). "
+           "That is withdrawn and is being re-run into phase `inverse_1shot`; see "
+           "`log/transfer/2026-09-14_two-prompts-one-phase.md`.\n")
 hdr = ("| condition | base acc | base % | " + " | ".join(f"{n} acc | Δ | %" for n,_ in INTERV) + " |")
 sep = "|---|---:|---:|" + "---:|---:|---:|"*len(INTERV)
 for m in MODELS:

@@ -1,10 +1,12 @@
 # Master tables
 
-*Generated 2026-09-14 13:26 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-14 13:33 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
-Forward = output prediction (what the adapters were trained on). Backward = input prediction on the same programs, graded by execution; no adapter is trained on it. Both directions now cover the same rows, ladder and stacks alike. Each system shows three numbers: **acc** (raw accuracy), **Δ** (points against the untuned model on the same condition), and **%** (accuracy as a percentage of the untuned model's clean-code accuracy in the same direction — how much of the original accuracy the system brings back; the untuned model on clean code is 100 by definition, on obfuscated code it shows what the obfuscation removed, above 100 means more than restored). In-context learning has no backward run and no X1/stack run. **`fmt`** marks a cell whose format-failure rate exceeds 0.25: its responses are mostly unparseable, so it measures the prompt contract, not the task, and is excluded from every mean. The backward and in-context templates were written for CodeLlama-7B; they pass the gate on nearly every cell there and fail it on most cells of the other panel models.
+Forward = output prediction (what the adapters were trained on). Backward = input prediction on the same programs, graded by execution; no adapter is trained on it. Both directions now cover the same rows, ladder and stacks alike. Each system shows three numbers: **acc** (raw accuracy), **Δ** (points against the untuned model on the same condition), and **%** (accuracy as a percentage of the untuned model's clean-code accuracy in the same direction — how much of the original accuracy the system brings back; the untuned model on clean code is 100 by definition, on obfuscated code it shows what the obfuscation removed, above 100 means more than restored). In-context learning has no backward run and no X1/stack run. **`fmt`** marks a cell whose format-failure rate exceeds 0.25, and it is excluded from every mean.
+
+**Two cautions about `fmt` in the backward block, both established 2026-09-14.** First, it does NOT mean "mostly unparseable": that bucket holds four different failures, and on several cells the majority are replies that are exactly the gold FORWARD answer — the arm answering the other question, which is a result and not a broken template. §6 marks those `‡` rather than `†`; the per-cell decomposition is `scripts/analysis/67_backward_failure_modes.py`. Second, the earlier note here — that the backward template was written for CodeLlama-7B and fails on the other models — described a ZERO-SHOT prompt that only those seven models ever received (`inverse_core.yaml` carried no one-shot demo while every other backward config did). That is withdrawn and is being re-run into phase `inverse_1shot`; see `log/transfer/2026-09-14_two-prompts-one-phase.md`.
 
 
 ### CodeLlama-7B
@@ -756,6 +758,7 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | C4_L1r_S1_S3_S4 | 0.131 | 51 | 0.342 | +21.1 | 133 | 0.341 | +21.0 | 132 | 0.306 | +17.5 | 118 | 0.308 | +17.7 | 119 |
 | C_L1r_X1 | 0.100 | 39 | 0.204 | +10.5 | 79 | 0.208 | +10.8 | 80 | 0.192 | +9.2 | 74 | 0.192 | +9.2 | 74 |
 | C_X1_S1 | 0.131 | 51 | 0.294 | +16.3 | 114 | 0.295 | +16.4 | 114 | 0.307 | +17.6 | 119 | 0.306 | +17.5 | 118 |
+| C_S2_X1 | 0.170 | 66 | 0.336 | +16.6 | 130 | -- | -- | -- | 0.341 | +17.1 | 132 | 0.339 | +16.9 | 131 |
 
 **Merging (forward)**
 
@@ -793,7 +796,7 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | condition | base acc | base % | router acc | Δ | % | hard router acc | Δ | % | uniform acc | Δ | % | random acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | fmt | fmt | 0.546 | fmt | fmt | 0.547 | fmt | fmt | 0.550 | fmt | fmt | 0.551 | fmt | fmt |
-| L1b | fmt | fmt | -- | -- | -- | -- | -- | -- | 0.451 | fmt | fmt | 0.448 | fmt | fmt |
+| L1b | fmt | fmt | 0.489 | fmt | fmt | 0.489 | fmt | fmt | 0.451 | fmt | fmt | 0.448 | fmt | fmt |
 
 **Merging (forward)**
 
@@ -1205,7 +1208,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C4_L1r_S1_S3_S4 | 0.140 | 100 | 0.191 | 137 | 0.263 | 189 | 0.335 | 240 | 0.358 | 256 | 0.294 | 210 | 0.342 | 245 | 0.310 | 222 |
 | C_L1r_X1 | 0.100 | 100 | 0.118 | 117 | 0.165 | 164 | 0.181 | 180 | 0.207 | 206 | 0.257 | 256 | 0.204 | 203 | 0.184 | 183 |
 | C_X1_S1 | 0.130 | 100 | 0.179 | 138 | 0.271 | 209 | 0.225 | 173 | 0.253 | 194 | 0.300 | 231 | 0.294 | 226 | 0.296 | 228 |
-| C_S2_X1 | 0.170 | 100 | 0.212 | 124 | 0.296 | 174 | 0.284 | 167 | 0.317 | 187 | 0.360 | 212 | -- | -- | 0.317 | 187 |
+| C_S2_X1 | 0.170 | 100 | 0.212 | 124 | 0.296 | 174 | 0.284 | 167 | 0.317 | 187 | 0.360 | 212 | 0.336 | 198 | 0.317 | 187 |
 | C_L1r_X1m | 0.115 | 100 | 0.148 | 129 | 0.184 | 160 | 0.216 | 188 | 0.232 | 202 | 0.291 | 253 | -- | -- | 0.217 | 188 |
 | C_S1_X1s | 0.193 | 100 | 0.231 | 119 | 0.341 | 176 | 0.299 | 155 | 0.335 | 174 | 0.355 | 184 | -- | -- | 0.349 | 181 |
 | C3_L1r_S1_X1 | 0.105 | 100 | 0.156 | 149 | 0.194 | 185 | 0.207 | 198 | 0.224 | 214 | 0.251 | 240 | -- | -- | 0.215 | 205 |
@@ -1263,7 +1266,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | family | %b | mixture | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.000† | -- | 0.008† | -- | 0.542 | -- | 0.529 | -- | 0.532 | -- | 0.513 | -- | 0.546 | -- | 0.539 | -- |
-| L1b | 0.000† | -- | 0.000† | -- | 0.431 | -- | 0.487 | -- | 0.510 | -- | 0.402 | -- | -- | -- | 0.426 | -- |
+| L1b | 0.000† | -- | 0.000† | -- | 0.431 | -- | 0.487 | -- | 0.510 | -- | 0.402 | -- | 0.489 | -- | 0.426 | -- |
 | L1r | 0.000† | -- | 0.000† | -- | 0.483 | -- | 0.485 | -- | 0.509 | -- | 0.448 | -- | -- | -- | 0.476 | -- |
 | L2 | 0.000† | -- | 0.002† | -- | 0.479 | -- | 0.486 | -- | 0.503 | -- | 0.437 | -- | -- | -- | 0.466 | -- |
 | S1 | 0.000† | -- | 0.010† | -- | 0.508 | -- | 0.487 | -- | 0.501 | -- | 0.470 | -- | -- | -- | 0.487 | -- |
