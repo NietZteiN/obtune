@@ -1,1 +1,16 @@
-{"job_id":"tr_gate_starcoder2-15b","kind":"train","argv":["-m","obtune.mole.train_mole","--config","mole/routerlora_starcoder2-15b.yaml"],"raw":false,"est_gpu_h":3.0,"priority":280,"meta":{"note":"master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"}}
+{
+  "job_id": "tr_gate_starcoder2-15b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_starcoder2-15b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 6.0,
+  "priority": 280,
+  "meta": {
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | est raised to 6 h (walltime 12 h) after CodeLlama-13B's gate projected 6h19 against a 6 h limit."
+  }
+}

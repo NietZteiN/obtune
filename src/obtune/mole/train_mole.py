@@ -347,6 +347,19 @@ def main(argv: Optional[list[str]] = None) -> int:
                     print(f"[mole.train] epoch {epoch} step {step} "
                           f"loss {task.item():.4f}"
                           + (f" aux {aux.item():.4f}" if aux_coef else ""), flush=True)
+                # PERIODIC SAVE. The gate was written once, after the last step, so a walltime kill
+                # threw away the whole run: CodeLlama-13B's gate was 71 % done at 4h30 against a 6 h
+                # limit on 2026-09-14 and a 34B gate is a six-hour job. The gate is ~13-25 M
+                # parameters, so this costs well under a second and the file is complete at every
+                # write. `gate_partial.pt` records the step, so a recovered gate can never be
+                # mistaken for a finished one.
+                if step and step % 200 == 0:
+                    _d = Path(cfg.get("out_dir") or (RUNS_DIR / "mole" / cfg["model"] / cfg["language"]
+                                                     / f"{cfg.get('run_tag', 'routerlora')}_s{seed}"))
+                    _d.mkdir(parents=True, exist_ok=True)
+                    torch.save({"gate": holder.gate.state_dict(), "summary": holder.summary,
+                                "partial_at_step": int(step), "epoch": int(epoch)},
+                               _d / "gate_partial.pt")
 
     out_dir = Path(cfg.get("out_dir") or (RUNS_DIR / "mole" / cfg["model"] / cfg["language"]
                                           / f"{cfg.get('run_tag', 'routerlora')}_s{seed}"))
