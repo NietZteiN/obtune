@@ -2165,3 +2165,22 @@ nine stacks, common programs:
   backward task's gold calls are short (p99 = 64 tokens) and its failure modes are mostly formatting
   and enumeration, which supervision on the exact target should remove; I do not expect it to make the
   model *reason* about inversion, so I expect it well under the forward numbers and well over 0.13.
+
+---
+
+## 2026-09-14 · Second seed on a second model — Llama-3.1-8B, registered before any adapter exists
+
+Ten trainings queued at seed 42 (L0, L1b, L1r, L2, S1, S2, S3, S4, X1, breadth), low priority, h100
+backfill. Cell inventory: no `_s42` adapter exists for `llama31-8b` in `runs/adapters/` or
+`runs/adapters_objectives/`; phases `seed42_generic` / `seed42_inverse` hold no Llama cell.
+
+**H-seed42 applies unchanged on this model** (rules in the CodeLlama-7B registration above): the
+merge's backward gain over base on stacks reproduces (s17 on Llama: +2.36 [+1.6, +3.1]); breadth's
+seen→unseen drop exceeds base's (s17: −42.2 % vs −15.1 %); both merges at the collapse floor with the
+anchored arm highest (s17 Llama: merges 0.000, `cons_lam3` 0.025 — the *smallest* anchored value on
+the panel, so this is the model most likely to REFUTE the collapse ordering by seed noise alone).
+**Prediction: merge and breadth-tax CONFIRMED; collapse ordering INCONCLUSIVE on this model** — at
+0.025 the anchored arm's margin over `mono_all` (0.021) is within what a seed can move.
+
+The anchored arm at s42 needs the s42 L0 teacher (`objectives.py train --seed 42`), so it is queued
+only once `L0_r32_s42` exists; merges likewise once the six specialists do.

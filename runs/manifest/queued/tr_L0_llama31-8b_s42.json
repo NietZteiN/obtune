@@ -1,0 +1,19 @@
+{
+  "job_id": "tr_L0_llama31-8b_s42",
+  "kind": "train",
+  "argv": [
+    "src/obtune/train_sft.py",
+    "--config",
+    "train/grid_py_L0.yaml",
+    "--model",
+    "llama31-8b",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 61,
+  "meta": {
+    "note": "SECOND SEED, Llama-3.1-8B: the clean-code adapter, from the same config as its s17 twin (train/grid_py_L0.yaml). Priority one above the specialists because the anchored arm's s42 teacher depends on it."
+  }
+}
