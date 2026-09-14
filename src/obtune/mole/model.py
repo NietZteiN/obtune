@@ -227,6 +227,22 @@ def _make_hook(holder: MoLEModel, layer: int) -> Callable:
     return hook
 
 
+
+def _hidden_size(config) -> int:
+    """The text tower's hidden size.
+
+    Gemma-3 is a multimodal architecture: `Gemma3Config` has no `hidden_size` at the top level, it
+    lives on `config.text_config`, and reading it directly raises `AttributeError` twelve minutes into
+    a gate run, after the weights are loaded (2026-09-14). Every text-only model in the panel keeps it
+    at the top level, so this is a fallback and not a change for them.
+    """
+    h = getattr(config, "hidden_size", None)
+    if h is None:
+        h = getattr(getattr(config, "text_config", None), "hidden_size", None)
+    if h is None:
+        raise AttributeError(f"{type(config).__name__} exposes no hidden_size, directly or on text_config")
+    return int(h)
+
 def build_mole_model(
     model_key: str,
     expert_paths: Mapping[str, str],
@@ -254,7 +270,7 @@ def build_mole_model(
         any_bank = next(iter(banks.values()))
         cfg = GateConfig(
             n_experts=any_bank.n_experts,
-            hidden_size=int(base.config.hidden_size),
+            hidden_size=int(_hidden_size(base.config)),
             n_layers=len(_decoder_layers(base)),
             d_router=d_router,
             shared_query=shared_query,

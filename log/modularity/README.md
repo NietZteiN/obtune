@@ -158,3 +158,4 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`2026-09-13_f2-route-oom-on-the-mig-node.md`](2026-09-13_f2-route-oom-on-the-mig-node.md) — H-F2-route OOM on the MIG slice at batch 32; resubmitted 392996 at batch 16, node excluded.
 - [`2026-09-13_f1-routing-and-merging-on-stacks.md`](2026-09-13_f1-routing-and-merging-on-stacks.md) — **F1 read**: router +1.34 over random, = breadth; hard = soft; mixture +19.8; best merge = clean control, others below. H-F2-route submitted.
 - [`2026-09-13_an-f1-resubmission-correction.md`](2026-09-13_an-f1-resubmission-correction.md) — correction: `an_f1` was refused on both CPU partitions because ad-hoc submissions carry a default `--gres gpu:1`; resubmitted with `--gres ""`.
+- [`2026-09-14_gate-training-two-portability-bugs.md`](2026-09-14_gate-training-two-portability-bugs.md) — raw chat template and a multimodal config broke every non-CodeLlama gate; both fixed.

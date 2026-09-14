@@ -38,6 +38,7 @@ import sys
 from pathlib import Path
 from typing import Any, Optional
 
+from obtune import prompts
 from obtune.config import PROJECT_ROOT, RUNS_DIR, load_config
 
 
@@ -51,11 +52,19 @@ def _mask_prompt(tokenizer, prompt: str, full: str, max_len: int) -> tuple[list[
 
 
 def render_pair(tokenizer, record) -> tuple[str, str]:
-    """(prompt_text, prompt+completion_text) for one record, via the chat template."""
-    prompt = tokenizer.apply_chat_template(record["prompt"], tokenize=False,
-                                           add_generation_prompt=True)
-    full = tokenizer.apply_chat_template(list(record["prompt"]) + list(record["completion"]),
-                                         tokenize=False)
+    """(prompt_text, prompt+completion_text) for one record, via the chat template.
+
+    THROUGH `prompts.adapt_messages`, NOT THE RAW TEMPLATE. CodeGemma and StarCoder2 refuse a system
+    role -- their Jinja template raises `TemplateError: System role not supported` -- and a pretrained
+    checkpoint has no template at all. `train_sft.py` has routed around this since 2026-09-09 via the
+    one adaptation layer in prompts.py; this module never did, so every gate on a merged-template
+    model died about twelve minutes in (CodeGemma and Gemma-3, 2026-09-14). In "system" mode
+    `adapt_messages` is the identity, so CodeLlama's gates are byte-identical to before.
+    """
+    prompt_msgs = prompts.adapt_messages(record["prompt"], tokenizer)
+    full_msgs = prompts.adapt_messages(list(record["prompt"]) + list(record["completion"]), tokenizer)
+    prompt = tokenizer.apply_chat_template(prompt_msgs, tokenize=False, add_generation_prompt=True)
+    full = tokenizer.apply_chat_template(full_msgs, tokenize=False)
     return prompt, full
 
 
@@ -172,6 +181,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     from torch.utils.data import DataLoader
     from transformers import AutoTokenizer
 
+    from obtune import prompts
     from obtune.mole.model import build_mole_model
     from obtune.seedutil import set_seed
     from obtune.train_sft import measure_truncation
@@ -238,8 +248,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         # §4 silent-failure #4: prompt tokens MUST be -100, or the model trains on its own
         # prompt and the loss curve looks entirely healthy.
         r = records[0]
-        p_text = tokenizer.apply_chat_template(r["prompt"], tokenize=False,
-                                               add_generation_prompt=True)
+        p_text = tokenizer.apply_chat_template(prompts.adapt_messages(r["prompt"], tokenizer),
+                                               tokenize=False, add_generation_prompt=True)
         _, full = render_pair(tokenizer, r)
         ids, labels = _mask_prompt(tokenizer, p_text, full, max_len)
         n_masked = sum(1 for x in labels if x == -100)
