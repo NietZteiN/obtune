@@ -448,13 +448,15 @@ def _balanced_take(rows: Sequence[TrainPair], n: int, seed: int) -> list[TrainPa
 
 def to_sft_records(
     rows: Sequence[TrainPair], oracle: bool = False, one_shot: bool = False,
-    completions: Optional[Sequence[str]] = None,
+    completions: Optional[Sequence[str]] = None, task: str = "output",
 ) -> list[dict[str, Any]]:
     """`completions` (trace arm) supplies one assistant turn per row in order; None keeps
-    the plain `output_repr` completion."""
+    the plain `output_repr` completion. `task="input"` trains the BACKWARD task: inverse
+    prompt, gold call as the completion (prompts.build_example)."""
     if completions is None:
         return [
-            prompts.build_example(r.model_dump(), oracle=oracle, one_shot=one_shot) for r in rows
+            prompts.build_example(r.model_dump(), oracle=oracle, one_shot=one_shot, task=task)
+            for r in rows
         ]
     if len(completions) != len(rows):
         raise DataContractError("completions must be parallel to rows")
@@ -502,6 +504,9 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     oracle = bool(pcfg.get("oracle", False))
     one_shot = bool(pcfg.get("one_shot", False))
     trace = bool(pcfg.get("trace", False))
+    task = str(pcfg.get("task", "output"))
+    if task == "input" and trace:
+        raise DataContractError("prompt.task='input' and prompt.trace are incompatible")
     if trace and bool(tcfg.get("shuffle_labels", False)):
         raise DataContractError("prompt.trace and train.shuffle_labels are incompatible")
 
@@ -575,7 +580,7 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
 
     out = {
         "train": Dataset.from_list(
-            to_sft_records(train_rows, oracle, one_shot, completions=train_completions)
+            to_sft_records(train_rows, oracle, one_shot, completions=train_completions, task=task)
         ),
         "meta": {
             "language": language,
@@ -595,7 +600,7 @@ def build_sft_splits(config: Mapping[str, Any]) -> dict[str, Any]:
     }
     out["val"] = (
         Dataset.from_list(
-            to_sft_records(val_rows, oracle, one_shot, completions=val_completions)
+            to_sft_records(val_rows, oracle, one_shot, completions=val_completions, task=task)
         )
         if val_rows else None
     )

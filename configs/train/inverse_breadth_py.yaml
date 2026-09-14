@@ -1,0 +1,33 @@
+# THE BACKWARD-TRAINED CONTROL (2026-09-14). Identical to the breadth adapter's recipe -- same six
+# conditions, same rows, same rank, same seed -- with ONE change: prompt.task=input, so the model is
+# trained on the inverse prompt with the gold CALL as the completion. It is the control the backward
+# reads have needed since RQ5': every other adapter is trained forwards and asked backwards, which
+# cannot separate 'forward tuning surface-fits the forward mapping' from 'inversion is a skill no
+# forward training reaches'. If this arm reads well backwards, the second is false; if it does not,
+# the ceiling is the task. Evaluated BOTH ways: backwards (its own task) and forwards (what it costs).
+# Monolithic adapter — all six trainable conditions in one bank.
+# The RQ2 reference the merges and the router must beat.
+# MODEL-NEUTRAL: no `model:` line. The base model is supplied with `--model <key>`;
+# adapter paths already namespace by it, so one config serves the whole panel.
+_extends: _base_lora.yaml
+
+language: python
+train_conditions: [L0, L1b, L1r, L2, S1, S2]
+run_tag: inverse_breadth  # was: mono_py_all
+phase: main
+
+train:
+  train_size: 30000 # >= the union of all train-split pairs, so nothing is subsampled away
+  seed: 17
+
+prompt:
+  task: input
+  oracle: false
+  one_shot: false
+
+# SEPARATE ROOT, NOT OPTIONAL. adapter_dir() names the output by (conditions, rank, seed) and nothing
+# else, so this arm -- same six conditions, same rank, same seed as mono_all -- would resolve to
+# runs/adapters/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17 and OVERWRITE THE BREADTH ADAPTER the
+# paper's whole breadth column rests on. Same hazard as the 9-epoch probe, same remedy
+# (runs/adapters_overtrain): its own root.
+adapter_root: runs/adapters_inverse

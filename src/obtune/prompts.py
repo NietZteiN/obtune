@@ -354,6 +354,7 @@ def build_example(
     one_shot: bool = False,
     demo: Optional[Demo] = None,
     completion: Optional[str] = None,
+    task: str = "output",
 ) -> dict[str, list[dict[str, str]]]:
     """TRL 1.x conversational prompt-completion example.
 
@@ -364,6 +365,16 @@ def build_example(
     `completion` overrides the assistant turn (the trace arm passes the formatted
     trace, `trace.format_completion`) and switches the prompt to the trace template.
     """
+    # THE BACKWARD TRAINING CONTROL (2026-09-14). Every adapter in the project is trained on output
+    # prediction and then asked the input question cold; the backward numbers therefore cannot
+    # separate "forward tuning surface-fits the forward mapping" from "inversion is a different
+    # skill no amount of forward training reaches". A LoRA trained ON the backward task is the
+    # control that separates them, and until today nothing in the training path could build it:
+    # `build_prompt` knew task="input" for evaluation, this function did not, and the completion
+    # was always the return value. With task="input" the prompt is the inverse one and the
+    # completion is the gold CALL -- the same string `inverse.extract_call` grades against.
+    if task == "input" and completion is not None:
+        raise ValueError("task='input' cannot be combined with a trace completion")
     prompt = build_prompt(
         code=row["code"],
         entry_point=row["entry_point"],
@@ -374,12 +385,16 @@ def build_example(
         one_shot=one_shot,
         demo=demo,
         trace=completion is not None,
+        task=task,
+        output_repr=row.get("output_repr") if task == "input" else None,
     )
+    if task == "input":
+        target = format_call(row["entry_point"], row["args_repr"])
+    else:
+        target = row["output_repr"] if completion is None else completion
     return {
         "prompt": prompt,
-        "completion": [
-            {"role": "assistant", "content": row["output_repr"] if completion is None else completion}
-        ],
+        "completion": [{"role": "assistant", "content": target}],
     }
 
 
