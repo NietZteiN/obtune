@@ -167,3 +167,4 @@
 - [`2026-09-14_backward-stacks-eight-models-paired.md`](2026-09-14_backward-stacks-eight-models-paired.md) — 8/8 complete and paired; 3 of 4, ratios withdrawn, merge robust everywhere.
 - [`2026-09-14_three-methods-one-table.md`](2026-09-14_three-methods-one-table.md) — merge pays no tax in either direction on 8/8; breadth does; router still mostly unmeasured.
 - [`2026-09-14_two-prompts-one-phase.md`](2026-09-14_two-prompts-one-phase.md) — the backward ladder was zero-shot on 7/8 models; stack reads unaffected; repair queued.
+- [`2026-09-14_forward-locking-is-the-mechanism.md`](2026-09-14_forward-locking-is-the-mechanism.md) — merges do not forward-lock; every single-adapter arm does; anchored worst at 0.312.

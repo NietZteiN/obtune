@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_invties_codellama-13b",
+  "job_id": "ev_invties_codegemma-7b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,7 +7,7 @@
     "--config",
     "eval/inverse_stacks_ties.yaml",
     "--model",
-    "codellama-13b",
+    "codegemma-7b",
     "--language",
     "python"
   ],
@@ -16,5 +16,12 @@
   "priority": 70,
   "meta": {
     "note": "master table: merge_ties on all 16 stacks, backward. inverse_stacks.yaml carried merge_dare_ties only, so the merge column of the backward stack block rested on one recipe -- and the merge is the arm that survives everywhere (log/transfer/2026-09-14_backward-stacks-eight-models-paired.md)."
+  },
+  "slurm": {
+    "job_id": "396668",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T13:17:21.962704+00:00"
   }
 }
