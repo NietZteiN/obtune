@@ -1,0 +1,23 @@
+{
+  "job_id": "tr_gate_granite31-8b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_granite31-8b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 280,
+  "meta": {
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"
+  },
+  "slurm": {
+    "job_id": "394659",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T08:47:27.342180+00:00"
+  }
+}

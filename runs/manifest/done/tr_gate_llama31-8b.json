@@ -1,0 +1,30 @@
+{
+  "job_id": "tr_gate_llama31-8b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_llama31-8b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 280,
+  "meta": {
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | REQUEUED 2026-09-14: OOM on g-06-01's 47 GB MIG slice; gate training holds the base model plus an 8-expert bank and needs a whole card. submit.py now excludes that node for mole.train_mole."
+  },
+  "previous_slurm": {
+    "job_id": "394575",
+    "node": "g-06-01",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T02:59:34.887373+00:00"
+  },
+  "slurm": {
+    "job_id": "394663",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T08:55:13.720651+00:00"
+  }
+}
