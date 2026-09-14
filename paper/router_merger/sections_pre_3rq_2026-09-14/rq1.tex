@@ -1,4 +1,4 @@
-\section{RQ1: Do current adaptation methods generalise?}
+\section{RQ1: Do current adaptation methods generalise, or memorise?}
 \label{sec:rq1}
 
 Adapting a code model to obfuscated input works, and works easily: tuning on output prediction over
@@ -78,53 +78,13 @@ the \emph{direction ratio} --- backward gain divided by forward gain, both again
 --- for the same adapters on the same programs asked backwards. \textbf{Every method that fits the
 forward task directly is negative}: the format-only control at $-0.30$, clean-code tuning at
 $-0.08$, breadth at $-0.05$; these arms bought forward accuracy by losing backward competence on the
-very same programs. Both tests point at one explanation: what is acquired is competence at \emph{this task on these
-surfaces}. Three further instruments, sharing no machinery, say which surface. Breadth's advantage on
-a stack depends on the stack still containing an \emph{identifier} transform rather than on its depth
-or the number of mechanisms in it, and the rule defining that split was fixed before the
-unseen-containing stimulus existed, which makes its second row an out-of-sample test: the difference
-is $+3.39$ on all-seen stacks and grows to $+5.85$ on stacks containing the unseen family. Splitting
-the held-out family into its two mechanisms, the halves \textbf{do not transfer to each other}
-($+1.49$ [$-0.95$, $+3.93$] and $-0.10$ [$-2.38$, $+2.19$]) yet \textbf{either alone recovers about
-90\,\%} of the whole adapter's gain on the full family --- composable skills would deliver half each.
-And breadth's log-probability of the gold answer sits about 4 nats below the clean-code control with
-the entire deficit in the items it gets wrong: it does not become a worse reader, it becomes a more
-committed guesser. Adaptation anchors on the surface a transform leaves behind, which is exactly what
-an obfuscator is free to change. The remedy follows: anchor the model to something the transform
-\emph{cannot} change --- its own behaviour on the unobfuscated parent, which exists for every
-training row by construction. Section~\ref{sec:loss} is that objective.
-
-% >>> GENERATED TABLE rq2_identifier -- from tables/rq2_identifier.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
-% SOURCE: results/analysis/pipeline/f3a_stack_identifier_{depth_seen,f2_unseen}_codellama7b.json
-% Do not edit by hand -- regenerate. Supersedes the hand-written '+6.6 down to +1.1', which was an ordering, not a contrast.
-\begin{table*}[ht]
-\centering\footnotesize\setlength{\tabcolsep}{3pt}
-\caption{\textbf{RQ2: breadth's stack gain depends on an identifier transform being present.}
-Breadth over the clean-code control, split by whether the stack contains an identifier transform,
-with the \emph{difference} between the groups. The rule defining the split was fixed before the
-unseen-containing stimulus existed, which makes the second row an out-of-sample test of it. We
-report the difference because one interval excluding zero while another does not is not a test of
-the difference between them.}
-\label{tab:rq2_identifier}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Stimulus} & \textbf{With identifier} & \textbf{Structural only} & \textbf{Difference} \\
-\midrule
-All-seen depth-3/4 stacks (in-sample) & \textbf{$+5.00$ [$+3.02$, $+6.88$]} & $+1.61$ [$-1.02$, $+4.23$] & \textbf{$+3.39$ [$+0.82$, $+6.16$]} \\
-Stacks containing the unseen family (out-of-sample) & $+1.98$ [$-0.12$, $+4.18$] & \textbf{$-3.88$ [$-6.08$, $-1.71$]} & \textbf{$+5.85$ [$+3.10$, $+8.72$]} \\
-\bottomrule
-\end{tabular}
-\end{table*}
-% <<< GENERATED TABLE rq2_identifier
+very same programs. Both tests point at one explanation: what is acquired is competence at
+\emph{this task on these surfaces}. Section~\ref{sec:rq2} establishes what that surface is.
 
 \begin{takeaway}{Takeaway: RQ1}
-Routing, merging and breadth are baselines, and none survives leaving its training distribution
-intact.
+Routing, merging and breadth are baselines, and none survives leaving its training distribution.
 Breadth's advantage over clean-code tuning is 2.7 to 5.3 points larger on stacks of seen transforms
 than on stacks containing an unseen family, significant on six of six models across four lineages;
 and every method that fits the forward task has a negative direction ratio, buying forward accuracy
-with backward competence on the same programs. Three independent instruments locate what is learned
-instead: the surface a transform leaves behind --- which is exactly what an obfuscator is free to
-change, and which names the remedy.
+with backward competence on the same programs.
 \end{takeaway}

@@ -1,1 +1,0 @@
-{"job_id":"tr_gate_codegemma-7b","kind":"train","argv":["-m","obtune.mole.train_mole","--config","mole/routerlora_codegemma-7b.yaml"],"raw":false,"est_gpu_h":3.0,"priority":280,"meta":{"note":"master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"}}

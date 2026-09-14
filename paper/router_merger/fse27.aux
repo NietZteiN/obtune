@@ -17,7 +17,7 @@
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph  {Chat template}: \emph  {system} accepts a system role; \emph  {merged} folds the system text into the user turn; \emph  {plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model.}}{4}{table.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:models}{{1}{4}{\textbf {The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph {Chat template}: \emph {system} accepts a system role; \emph {merged} folds the system text into the user turn; \emph {plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model}{table.caption.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Dataset}{5}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Dataset}{4}{subsection.3.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {The dataset.} One Python corpus, split by program so no obfuscated variant of a training program can reach evaluation.}}{5}{table.caption.2}\protected@file@percent }
 \newlabel{tab:dataset}{{2}{5}{\textbf {The dataset.} One Python corpus, split by program so no obfuscated variant of a training program can reach evaluation}{table.caption.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Obfuscation taxonomy}{5}{subsection.3.3}\protected@file@percent }
@@ -29,18 +29,16 @@
 \newlabel{tab:stacks}{{4}{7}{\textbf {Stacked composites.} A separate namespace from the ladder: parts are applied to the clean parent left to right, and order matters because composition does not commute. Size caps were calibrated on a 40-program build at cap 60 (p95 $\times $ 1.25) so that the cap is never the binding constraint. No system is ever trained on a stack; the breadth and family adapters see single transforms only}{table.caption.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Every method against every obfuscation}{7}{section.4}\protected@file@percent }
 \newlabel{sec:master}{{4}{7}{Every method against every obfuscation}{section.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}RQ1: Do current adaptation methods generalise, or memorise?}{8}{section.5}\protected@file@percent }
-\newlabel{sec:rq1}{{5}{8}{RQ1: Do current adaptation methods generalise, or memorise?}{section.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}RQ2: What is memorised?}{9}{section.6}\protected@file@percent }
-\newlabel{sec:rq2}{{6}{9}{RQ2: What is memorised?}{section.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}RQ3: Anchoring to clean-code behaviour}{9}{section.7}\protected@file@percent }
-\newlabel{sec:rq3}{{7}{9}{RQ3: Anchoring to clean-code behaviour}{section.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}RQ4: Does the anchored model generalise?}{10}{section.8}\protected@file@percent }
-\newlabel{sec:rq4}{{8}{10}{RQ4: Does the anchored model generalise?}{section.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}RQ1: Do current adaptation methods generalise?}{8}{section.5}\protected@file@percent }
+\newlabel{sec:rq1}{{5}{8}{RQ1: Do current adaptation methods generalise?}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}RQ2: Anchoring to clean-code behaviour}{9}{section.6}\protected@file@percent }
+\newlabel{sec:loss}{{6}{9}{RQ2: Anchoring to clean-code behaviour}{section.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}RQ3: Does the anchored model survive the same tests?}{9}{section.7}\protected@file@percent }
+\newlabel{sec:stress}{{7}{9}{RQ3: Does the anchored model survive the same tests?}{section.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Related Work}{10}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Threats to Validity}{10}{section.9}\protected@file@percent }
 \citation{}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Related Work}{11}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {10}Threats to Validity}{11}{section.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {11}Data Availability}{11}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Data Availability}{11}{section.10}\protected@file@percent }
 \bibstyle{ACM-Reference-Format}
 \bibdata{references,references-codesteer}
 \bibcite{chen2021evaluatinglargelanguagemodels}{{1}{2021}{{Chen et~al\mbox  {.}}}{{}}}

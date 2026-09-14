@@ -1,0 +1,167 @@
+\section{Setup}
+\label{sec:setup}
+
+\subsection{Models}
+Table~\ref{tab:models} lists the panel: eight instruct models from four lineages (Meta, BigCode,
+Google, IBM), code-specialised and general, 7B to 34B, plus one pretrained checkpoint used only for
+the one-shot baseline. Every adapter is a LoRA with the same rank and target modules on every model,
+and one prompt builder serves training, evaluation and attention extraction.
+% >>> GENERATED TABLE setup_models -- from tables/setup_models.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: configs/models.yaml
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\scriptsize\setlength{\tabcolsep}{2.4pt}
+\caption{\textbf{The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph{Chat template}: \emph{system} accepts a system role; \emph{merged} folds the system text into the user turn; \emph{plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model.}
+\label{tab:models}
+\begin{tabular}{@{}llllrrrl@{}}
+\toprule
+\textbf{Model} & \textbf{Checkpoint} & \textbf{Lineage} & \textbf{Type} & \textbf{Params (B)} & \textbf{Layers} & \textbf{Hidden} & \textbf{Chat template} \\
+\midrule
+CodeLlama-7B & \texttt{\scriptsize codellama/CodeLlama-7b-Instruct-hf} & Meta & coder & 6.7 & 32 & 4096 & system \\
+CodeLlama-13B & \texttt{\scriptsize codellama/CodeLlama-13b-Instruct-hf} & Meta & coder & 13.0 & 40 & 5120 & system \\
+CodeLlama-34B & \texttt{\scriptsize codellama/CodeLlama-34b-Instruct-hf} & Meta & coder & 33.7 & 48 & 8192 & system \\
+Llama-3.1-8B & \texttt{\scriptsize meta-llama/Llama-3.1-8B-Instruct} & Meta & instruct & 8.0 & 32 & 4096 & system \\
+StarCoder2-15B & \texttt{\scriptsize bigcode/starcoder2-15b-instruct-v0.1} & BigCode & coder & 15.5 & 40 & 6144 & merged \\
+Gemma-3-12B & \texttt{\scriptsize google/gemma-3-12b-it} & Google & instruct & 12.2 & 48 & 3840 & system \\
+CodeGemma-7B & \texttt{\scriptsize google/codegemma-7b-it} & Google & coder & 8.5 & 28 & 3072 & merged \\
+Granite-3.1-8B & \texttt{\scriptsize ibm-granite/granite-3.1-8b-instruct} & IBM & instruct & 8.2 & 40 & 4096 & system \\
+Llama-3.1-8B (base) & \texttt{\scriptsize meta-llama/Llama-3.1-8B} & Meta & pretrained & 8.0 & 32 & 4096 & plain \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE setup_models
+
+\subsection{Dataset}
+Table~\ref{tab:dataset} summarises the corpus. The split is by program, never by row; three input
+cases per program are fixed and their gold outputs executed from the clean parent, so the grader is
+independent of any transform. Coverage differs by condition because structural transforms decline
+some programs by design and the unseen family needs enough encodable sites; every paired contrast is
+computed on the programs common to the cells it compares, fixed before evaluation.
+% >>> GENERATED TABLE setup_dataset -- from tables/setup_dataset.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: data/train/base/python.jsonl, data/splits/python.json, data/eval/heldout/items/*
+% Do not edit by hand -- regenerate. 
+\begin{table}[ht]
+\centering\small
+\caption{\textbf{The dataset.} One Python corpus, split by program so no obfuscated variant of a training program can reach evaluation.}
+\label{tab:dataset}
+\begin{tabular}{@{}p{0.34\linewidth}p{0.6\linewidth}@{}}
+\toprule
+\textbf{Property} & \textbf{Value} \\
+\midrule
+Base programs (Python) & 2231: apps 1584, cruxeval 543, humaneval 104 \\
+Split & by program, seed 17: train 1563 / val 111 / held-out 557 \\
+Input cases per program & 3, gold output executed from the clean parent \\
+Program length & mean 8.4 LOC, max 57 \\
+Held-out eval, clean & 557 programs $\times$ 3 cases = 1671 items \\
+Coverage per condition & Tables~\ref{tab:taxonomy} and \ref{tab:stacks}; structural transforms decline some programs by design, the unseen family needs $\geq 3$ encodable sites \\
+Training rows per adapter & one condition's train split $\times$ 3 cases (4689); breadth pools the five seen conditions \\
+Paired contrasts & on the programs common to every cell in the contrast, fixed before evaluation; program-clustered bootstrap, 2{,}000 resamples \\
+JavaScript & 168 held-out programs (504 items), transferred intact; not regenerable on the cluster \\
+Grading & strict normalised exact match, no containment; the backward task executes the produced call against the clean parent \\
+\bottomrule
+\end{tabular}
+\end{table}
+% <<< GENERATED TABLE setup_dataset
+
+\subsection{Obfuscation taxonomy}
+Single transforms (Table~\ref{tab:taxonomy}) fall into three families: identifier (L1b, L1r, L2),
+structural (S1, S2, and S2's two halves S3 and S4) and encoding (X1 and its halves). Each is applied
+to the clean parent and never stacked during training. H1 is the quarantined held-out obfuscator; its
+evaluation budget was spent under a pre-registered two-pass discipline, and every unseen-family number
+in this paper is measured on its trainable sibling X1, which reproduces H1's difficulty at
+$r = 0.9992$ (mean absolute difference 0.48 points). Stacks (Table~\ref{tab:stacks}) are a separate
+namespace built by applying parts to the parent in order; order matters, and no system is trained on
+a stack. Ten stacks contain only seen transforms (six at depth two, four at depth three to four); six
+contain the unseen family or one of its halves and are the stimulus RQ4 turns on.
+% >>> GENERATED TABLE setup_taxonomy -- from tables/setup_taxonomy.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: configs/conditions.yaml, data/eval/heldout/items/*
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize
+\caption{\textbf{Single transforms.} Each is applied to the clean parent and never stacked. \emph{Cap} is the maximum growth factor over the parent above which a program is declined rather than clipped; \emph{programs / items} is held-out coverage. H1 is the quarantined held-out obfuscator whose evaluation budget is spent; X1 is its trainable sibling and carries every unseen-family number.}
+\label{tab:taxonomy}
+\setlength{\tabcolsep}{3pt}\begin{tabular}{@{}llp{0.30\linewidth}lrrl@{}}
+\toprule
+\textbf{Code} & \textbf{Family} & \textbf{Transform} & \textbf{Trainable} & \textbf{Cap} & \textbf{Programs / items} & \textbf{Role} \\
+\midrule
+L0 & none & normalised original: comments and docstrings stripped, 4-space indent & yes & 1.2$\times$ & 557 / 1671 & clean reference \\
+L1b & identifier & adversarial renaming of all bindings incl. the entry function, from semantic-inversion tables (max$\rightarrow$min) and an unrelated domain vocabulary & yes & 2.0$\times$ & 553 / 1659 & ladder \\
+L1r & identifier & random hex renaming of all bindings (v\_a3f2, f\_9c1e) & yes & 2.0$\times$ & 557 / 1671 & ladder \\
+L2 & identifier & sequential minification of all bindings (a, b, …, aa) plus type-annotation stripping & yes & 1.5$\times$ & 557 / 1671 & ladder \\
+S1 & structural & control-flow flattening of the entry function into a dispatch loop with randomised state ids and shuffled cases & yes & 6.0$\times$ & 416 / 1248 & ladder \\
+S2 & structural & opaque predicates (computed always-true/false guards) plus never-called dead helpers & yes & 4.0$\times$ & 556 / 1668 & ladder \\
+S3 & structural & dead-code insertion only: 1--2 never-called module-level helpers (must be ignored) & yes & 4.0$\times$ & 557 / 1671 & stacks only \\
+S4 & structural & opaque predicates only: 1--3 computed guards at statement boundaries (must be reasoned about) & yes & 4.0$\times$ & 556 / 1668 & stacks only \\
+X1 & encoding & every string literal through an inline XOR decoder, every + $-$ \^{} through a type-guarded algebraic identity, int literals expanded & yes & 12.0$\times$ & 405 / 1215 & \textbf{unseen family} \\
+X1m & encoding & X1's arithmetic half only (mechanisms: [mba]) & yes & 12.0$\times$ & 351 / 1053 & mechanism ablation \\
+X1s & encoding & X1's string half only (mechanisms: [str]); site bar 1 & yes & 12.0$\times$ & 246 / 738 & mechanism ablation \\
+H1 & heldout & string encoding (base64 / RC4 string array) plus guarded mixed-boolean-arithmetic rewriting & never & 12.0$\times$ & -- & quarantined \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE setup_taxonomy
+% >>> GENERATED TABLE setup_stacks -- from tables/setup_stacks.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: configs/conditions_composite.yaml, data/eval/heldout/items/*
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize
+\caption{\textbf{Stacked composites.} A separate namespace from the ladder: parts are applied to the clean parent left to right, and order matters because composition does not commute. Size caps were calibrated on a 40-program build at cap 60 (p95 $\times$ 1.25) so that the cap is never the binding constraint. No system is ever trained on a stack; the breadth and family adapters see single transforms only.}
+\label{tab:stacks}
+\setlength{\tabcolsep}{2.5pt}\begin{tabular}{@{}llrlrrlp{0.17\linewidth}@{}}
+\toprule
+\textbf{Code} & \textbf{Parts, in order} & \textbf{Depth} & \textbf{X1 inside} & \textbf{Cap} & \textbf{Prog.\,/\,items} & \textbf{Group} & \textbf{Purpose} \\
+\midrule
+\texttt{C\_L1b\_S1} & L1b$\to$S1 & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & does L1b's specialist advantage survive stacking? \\
+\texttt{C\_L1r\_S1} & L1r$\to$S1 & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & headline identifier $\otimes$ structural stack \\
+\texttt{C\_S1\_L1r} & S1$\to$L1r & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & order control for C\_L1r\_S1 (renames S1's state variables) \\
+\texttt{C\_L2\_S4} & L2$\to$S4 & 2 & no & 5.0$\times$ & 556 / 1668 & seen d2 & identifier $\otimes$ the reason-about-it half of S2 \\
+\texttt{C\_L1r\_S3} & L1r$\to$S3 & 2 & no & 5.0$\times$ & 557 / 1671 & seen d2 & identifier $\otimes$ the ignore-it half of S2 \\
+\texttt{C\_S4\_S3} & S4$\to$S3 & 2 & no & 5.0$\times$ & 556 / 1668 & seen d2 & positive control: reconstructs S2 by composition \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & L1r$\to$S3$\to$S4 & 3 & no & 10.0$\times$ & 556 / 1668 & seen d3--4 & depth 3, identifier first \\
+\texttt{C3\_S1\_S3\_S4} & S1$\to$S3$\to$S4 & 3 & no & 14.0$\times$ & 395 / 1185 & seen d3--4 & depth 3, structural only \\
+\texttt{C3\_L1r\_S1\_S4} & L1r$\to$S1$\to$S4 & 3 & no & 14.0$\times$ & 418 / 1254 & seen d3--4 & depth 3, identifier first, flattening inside \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & L1r$\to$S1$\to$S3$\to$S4 & 4 & no & 18.0$\times$ & 418 / 1254 & seen d3--4 & depth 4 \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & L1r$\to$X1 & 2 & yes & 10.0$\times$ & 405 / 1215 & unseen d2 & unseen family last, after renaming \\
+\texttt{C\_X1\_S1} & X1$\to$S1 & 2 & yes & 12.0$\times$ & 321 / 963 & unseen d2 & unseen material itself flattened \\
+\texttt{C\_S2\_X1} & S2$\to$X1 & 2 & yes & 22.0$\times$ & 555 / 1665 & unseen d2 & unseen family applied to dead code too \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & L1r$\to$X1m & 2 & yes & 10.0$\times$ & 351 / 1053 & half-unseen d2 & half an unseen family (arithmetic) \\
+\texttt{C\_S1\_X1s} & S1$\to$X1s & 2 & yes & 14.0$\times$ & 418 / 1254 & half-unseen d2 & half an unseen family (strings) \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & L1r$\to$S1$\to$X1 & 3 & yes & 16.0$\times$ & 417 / 1251 & unseen d3 & one unseen component at depth 3 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE setup_stacks
+
+\subsection{Systems}
+Every system is a LoRA on the same base model, evaluated on still-obfuscated code. \emph{Clean LoRA}
+(\texttt{tuned\_L0}) is tuned on unobfuscated programs and is the control throughout; one
+\emph{specialist} per seen transform; \emph{breadth} (\texttt{mono\_all}) is one adapter trained on
+all five seen transforms pooled; \emph{family} (\texttt{tuned\_X1}) is trained on the unseen family's
+sibling and is the ceiling for that family. \emph{Routing} mixes the specialists with a learned gate
+(\texttt{mole\_router}), its argmax, a fixed uniform gate or a gate frozen at random initialisation;
+the last two separate what the mixture is worth from what the routing is worth. \emph{Merging}
+combines the specialists in weight space (TIES, DARE-TIES, DARE-linear) or anchors the merge on the
+clean adapter. The \emph{anchored} objective (\texttt{cons\_lam3}) is Eq.~\ref{eq:paired_consistency}
+with $\lambda = 3$, a plateau from a sweep on the trainable grid: the teacher is a frozen clean-code-tuned
+adapter reading the unobfuscated parent, the student never sees the parent, and the objective trains on
+exactly the rows breadth trains on (26{,}841 rows, 1{,}257 steps for both); at $\lambda = 0$ it reduces
+to breadth identically, which makes breadth the data-matched control. A one-shot in-context baseline
+completes the set.
+
+\subsection{Measurement}
+Forward accuracy is strict normalised exact match on the produced output, with no containment
+matching; the backward task is graded by executing the produced call against the clean parent.
+Every contrast is a paired difference on the program subset common to its cells, with a
+program-clustered bootstrap of 2{,}000 resamples; bold intervals exclude zero. Decision rules were
+pre-registered before submission and are reported by their verdicts even when inconclusive. A cell
+whose format-failure rate exceeds 0.25 measures the prompt contract rather than the task and enters
+no mean; untuned format failure measures adherence to that contract, not capability, so screening
+base models by it is unsound.

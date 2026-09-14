@@ -1,0 +1,66 @@
+\section{RQ2: What is memorised?}
+\label{sec:rq2}
+
+Three instruments, sharing no machinery, locate what adaptation latches onto.
+
+\textbf{The gain tracks identifier surface.} Breadth's advantage on a stack depends on the stack
+still containing an identifier transform --- renaming, which leaves token-level residue --- rather
+than on depth or the number of mechanisms (Table~\ref{tab:rq2_identifier}). The rule defining the
+split was fixed before the unseen-containing stimulus existed, so its second row is an out-of-sample
+test: the difference is $+3.39$ on all-seen stacks and grows to $+5.85$ on stacks containing the
+unseen family. On the inputs furthest from training, breadth helps only where an identifier surface
+remains to key on.
+
+% >>> GENERATED TABLE rq2_identifier -- from tables/rq2_identifier.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/f3a_stack_identifier_{depth_seen,f2_unseen}_codellama7b.json
+% Do not edit by hand -- regenerate. Supersedes the hand-written '+6.6 down to +1.1', which was an ordering, not a contrast.
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{RQ2: breadth's stack gain depends on an identifier transform being present.}
+Breadth over the clean-code control, split by whether the stack contains an identifier transform,
+with the \emph{difference} between the groups. The rule defining the split was fixed before the
+unseen-containing stimulus existed, which makes the second row an out-of-sample test of it. We
+report the difference because one interval excluding zero while another does not is not a test of
+the difference between them.}
+\label{tab:rq2_identifier}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Stimulus} & \textbf{With identifier} & \textbf{Structural only} & \textbf{Difference} \\
+\midrule
+All-seen depth-3/4 stacks (in-sample) & \textbf{$+5.00$ [$+3.02$, $+6.88$]} & $+1.61$ [$-1.02$, $+4.23$] & \textbf{$+3.39$ [$+0.82$, $+6.16$]} \\
+Stacks containing the unseen family (out-of-sample) & $+1.98$ [$-0.12$, $+4.18$] & \textbf{$-3.88$ [$-6.08$, $-1.71$]} & \textbf{$+5.85$ [$+3.10$, $+8.72$]} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE rq2_identifier
+
+\textbf{The unit of transfer is a surface, not a mechanism.} Splitting the held-out family into its
+two mechanisms, arithmetic rewriting and string encoding, the halves \textbf{do not transfer to each
+other} ($+1.49$ [$-0.95$, $+3.93$] and $-0.10$ [$-2.38$, $+2.19$]), yet \textbf{either half alone
+recovers about 90\,\%} of the whole adapter's gain on the full family ($+4.12$ and $+4.20$ against
+$+4.61$). Composable skills would deliver roughly half each; each delivers nearly all. The test that
+would discriminate a shared-surface reading from a weakest-link alternative returned
+\textsc{undecided} on all three of its pre-registered rules, so shared surface is named as the
+leading hypothesis and no more.
+
+\textbf{Adaptation polarises rather than deepens.} Breadth's log-probability of the gold answer sits
+about 4 nats below the clean-code control on every condition, and the whole deficit lives in the
+items it gets wrong: right, it is more confident ($-0.16$ versus $-0.33$); wrong, it is roughly
+twice as far from the gold ($-12.95$ versus $-7.00$). Breadth does not become a worse reader; it
+becomes a more committed guesser, which is free on seen conditions and expensive on a family where
+its decisions are more often wrong.
+
+All three agree: adaptation anchors on the surface a transform leaves behind, which is exactly what
+an obfuscator is free to change. The remedy follows: anchor the model to something the transform
+\emph{cannot} change, its own behaviour on the unobfuscated parent of the same program, which exists
+for every training row by construction.
+
+\begin{takeaway}{Takeaway: RQ2}
+Adaptation anchors on the surface a transform leaves behind. Breadth's gain tracks identifier surface
+($+3.39$ on seen stacks, $+5.85$ on unseen-containing ones); the two halves of the unseen family do not
+transfer to each other yet each alone recovers about 90\,\% of the whole adapter's gain; and breadth
+becomes a more committed guesser rather than a better reader. That surface is exactly what an
+obfuscator is free to change, so the remedy is to anchor to what it cannot: the model's behaviour on
+the unobfuscated parent.
+\end{takeaway}
