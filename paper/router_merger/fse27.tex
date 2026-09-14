@@ -652,7 +652,7 @@ Data/code is available in {\color{black}{project's website~\cite{}}}.
 Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on which every arm exists. The same table for the other seven models follows; a cell that has not been evaluated renders as `--', and the mixture column exists only where a router gate has been trained.
 
 % >>> GENERATED TABLE master_abs_codellama13b -- from tables/master_abs_codellama13b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for codellama-13b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -702,6 +702,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.408 & 100 & -- & -- & 0.424 & 104 & 0.014$^{\dagger}$ & -- & 0.135$^{\dagger}$ & -- & 0.091$^{\dagger}$ & -- & -- & -- & -- & -- \\
 \texttt{S2} & 0.303 & 100 & -- & -- & 0.394 & 130 & 0.011$^{\dagger}$ & -- & 0.103$^{\dagger}$ & -- & 0.086$^{\dagger}$ & -- & -- & -- & -- & -- \\
 \texttt{X1} & 0.264 & 100 & -- & -- & 0.267 & 101 & 0.005$^{\dagger}$ & -- & 0.035$^{\dagger}$ & -- & 0.040$^{\dagger}$ & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.253 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.145 & 100 & -- & -- & 0.162 & 111 & 0.001 & 0 & 0.053 & 36 & 0.046 & 32 & -- & -- & -- & -- \\
@@ -711,12 +713,14 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.123 & 100 & -- & -- & 0.159 & 129 & 0.002 & 1 & 0.044 & 36 & 0.026 & 21 & -- & -- & -- & -- \\
 \texttt{S2} & 0.086 & 100 & -- & -- & 0.147 & 171 & 0.000 & 0 & 0.029 & 34 & 0.033 & 38 & -- & -- & -- & -- \\
 \texttt{X1} & 0.069 & 100 & -- & -- & 0.103 & 149 & 0.000 & 0 & 0.005 & 7 & 0.013 & 19 & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.080 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_codellama13b
 % >>> GENERATED TABLE master_abs_codellama34b -- from tables/master_abs_codellama34b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for codellama-34b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -739,17 +743,17 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \addlinespace[2pt]
 \texttt{C\_L1b\_S1} & 0.156 & 100 & 0.033$^{\dagger}$ & -- & 0.322 & 206 & 0.399 & 255 & 0.421 & 269 & 0.336 & 215 & -- & -- & 0.331 & 212 \\
 \texttt{C\_L1r\_S1} & 0.184 & 100 & 0.063$^{\dagger}$ & -- & 0.351 & 191 & 0.393 & 214 & 0.427 & 233 & 0.366 & 199 & -- & -- & 0.362 & 197 \\
-\texttt{C\_S1\_L1r} & 0.180 & 100 & 0.053$^{\dagger}$ & -- & 0.367 & 204 & 0.405 & 225 & 0.425 & 237 & 0.379 & 211 & -- & -- & -- & -- \\
-\texttt{C\_L2\_S4} & 0.191 & 100 & 0.045$^{\dagger}$ & -- & 0.431 & 226 & 0.454 & 238 & 0.478 & 251 & 0.431 & 226 & -- & -- & -- & -- \\
-\texttt{C\_L1r\_S3} & 0.169 & 100 & 0.041$^{\dagger}$ & -- & 0.451 & 266 & 0.454 & 268 & 0.482 & 284 & 0.437 & 258 & -- & -- & -- & -- \\
-\texttt{C\_S4\_S3} & 0.199 & 100 & 0.041$^{\dagger}$ & -- & 0.482 & 242 & 0.487 & 244 & 0.521 & 261 & 0.476 & 239 & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.180 & 100 & 0.053$^{\dagger}$ & -- & 0.367 & 204 & 0.405 & 225 & 0.425 & 237 & 0.379 & 211 & -- & -- & 0.377 & 210 \\
+\texttt{C\_L2\_S4} & 0.191 & 100 & 0.045$^{\dagger}$ & -- & 0.431 & 226 & 0.454 & 238 & 0.478 & 251 & 0.431 & 226 & -- & -- & 0.436 & 229 \\
+\texttt{C\_L1r\_S3} & 0.169 & 100 & 0.041$^{\dagger}$ & -- & 0.451 & 266 & 0.454 & 268 & 0.482 & 284 & 0.437 & 258 & -- & -- & 0.453 & 267 \\
+\texttt{C\_S4\_S3} & 0.199 & 100 & 0.041$^{\dagger}$ & -- & 0.482 & 242 & 0.487 & 244 & 0.521 & 261 & 0.476 & 239 & -- & -- & 0.488 & 245 \\
 \addlinespace[2pt]
-\texttt{C3\_L1r\_S3\_S4} & 0.148 & 100 & 0.017$^{\dagger}$ & -- & 0.416 & 281 & 0.452 & 305 & 0.473 & 319 & 0.424 & 286 & -- & -- & -- & -- \\
-\texttt{C3\_S1\_S3\_S4} & 0.128 & 100 & 0.042$^{\dagger}$ & -- & 0.428 & 336 & 0.454 & 356 & 0.472 & 370 & 0.440 & 345 & -- & -- & -- & -- \\
-\texttt{C3\_L1r\_S1\_S4} & 0.147 & 100 & 0.041$^{\dagger}$ & -- & 0.338 & 230 & 0.390 & 266 & 0.412 & 280 & 0.359 & 245 & -- & -- & -- & -- \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.105 & 100 & 0.033$^{\dagger}$ & -- & 0.316 & 302 & 0.372 & 356 & 0.413 & 395 & 0.354 & 338 & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S3\_S4} & 0.148 & 100 & 0.017$^{\dagger}$ & -- & 0.416 & 281 & 0.452 & 305 & 0.473 & 319 & 0.424 & 286 & -- & -- & 0.425 & 287 \\
+\texttt{C3\_S1\_S3\_S4} & 0.128 & 100 & 0.042$^{\dagger}$ & -- & 0.428 & 336 & 0.454 & 356 & 0.472 & 370 & 0.440 & 345 & -- & -- & 0.442 & 346 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.147 & 100 & 0.041$^{\dagger}$ & -- & 0.338 & 230 & 0.390 & 266 & 0.412 & 280 & 0.359 & 245 & -- & -- & 0.354 & 241 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.105 & 100 & 0.033$^{\dagger}$ & -- & 0.316 & 302 & 0.372 & 356 & 0.413 & 395 & 0.354 & 338 & -- & -- & 0.351 & 336 \\
 \addlinespace[2pt]
-\texttt{C\_L1r\_X1} & 0.115 & 100 & 0.044$^{\dagger}$ & -- & 0.226 & 196 & 0.249 & 216 & 0.278 & 241 & 0.275 & 239 & -- & -- & -- & -- \\
+\texttt{C\_L1r\_X1} & 0.115 & 100 & 0.044$^{\dagger}$ & -- & 0.226 & 196 & 0.249 & 216 & 0.278 & 241 & 0.275 & 239 & -- & -- & 0.236 & 205 \\
 \texttt{C\_X1\_S1} & 0.125 & 100 & 0.064$^{\dagger}$ & -- & 0.317 & 254 & 0.290 & 233 & 0.339 & 272 & 0.372 & 298 & -- & -- & -- & -- \\
 \texttt{C\_S2\_X1} & 0.176 & 100 & 0.099$^{\dagger}$ & -- & 0.372 & 211 & 0.355 & 202 & 0.403 & 229 & 0.395 & 225 & -- & -- & -- & -- \\
 \addlinespace[2pt]
@@ -766,6 +770,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.405 & 100 & -- & -- & 0.312$^{\dagger}$ & -- & 0.237$^{\dagger}$ & -- & 0.108$^{\dagger}$ & -- & 0.319 & 79 & -- & -- & -- & -- \\
 \texttt{S2} & 0.434 & 100 & -- & -- & 0.297$^{\dagger}$ & -- & 0.321 & 74 & 0.173$^{\dagger}$ & -- & 0.311 & 72 & -- & -- & -- & -- \\
 \texttt{X1} & 0.320 & 100 & -- & -- & 0.164$^{\dagger}$ & -- & 0.147$^{\dagger}$ & -- & 0.070$^{\dagger}$ & -- & 0.210$^{\dagger}$ & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.257 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.156 & 100 & -- & -- & 0.118 & 76 & 0.141 & 90 & 0.072 & 46 & 0.133 & 85 & -- & -- & -- & -- \\
@@ -775,12 +781,14 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.122 & 100 & -- & -- & 0.135 & 111 & 0.096 & 79 & 0.034 & 28 & 0.120 & 99 & -- & -- & -- & -- \\
 \texttt{S2} & 0.137 & 100 & -- & -- & 0.116 & 84 & 0.134 & 98 & 0.071 & 52 & 0.125 & 91 & -- & -- & -- & -- \\
 \texttt{X1} & 0.090 & 100 & -- & -- & 0.069 & 77 & 0.054 & 61 & 0.017 & 19 & 0.077 & 86 & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.082 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_codellama34b
 % >>> GENERATED TABLE master_abs_llama318b -- from tables/master_abs_llama318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for llama31-8b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -830,6 +838,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.348 & 100 & -- & -- & 0.402 & 116 & 0.125$^{\dagger}$ & -- & 0.159$^{\dagger}$ & -- & 0.401 & 115 & -- & -- & 0.413 & 119 \\
 \texttt{S2} & 0.368 & 100 & -- & -- & 0.390 & 106 & 0.176$^{\dagger}$ & -- & 0.190$^{\dagger}$ & -- & 0.409 & 111 & -- & -- & 0.435 & 118 \\
 \texttt{X1} & 0.279 & 100 & -- & -- & 0.310 & 111 & 0.105$^{\dagger}$ & -- & 0.131$^{\dagger}$ & -- & 0.343 & 123 & -- & -- & 0.314 & 113 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.287 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.115 & 100 & -- & -- & 0.129 & 112 & 0.062 & 54 & 0.050 & 44 & 0.132 & 115 & -- & -- & 0.146 & 127 \\
@@ -839,12 +849,14 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.092 & 100 & -- & -- & 0.113 & 123 & 0.034 & 37 & 0.036 & 39 & 0.120 & 130 & -- & -- & 0.135 & 146 \\
 \texttt{S2} & 0.100 & 100 & -- & -- & 0.126 & 126 & 0.048 & 48 & 0.047 & 47 & 0.131 & 131 & -- & -- & 0.138 & 138 \\
 \texttt{X1} & 0.059 & 100 & -- & -- & 0.095 & 161 & 0.026 & 43 & 0.029 & 49 & 0.115 & 194 & -- & -- & 0.100 & 168 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.068 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_llama318b
 % >>> GENERATED TABLE master_abs_starcoder215b -- from tables/master_abs_starcoder215b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:18 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for starcoder2-15b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -894,6 +906,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.000$^{\dagger}$ & -- & -- & -- & 0.077$^{\dagger}$ & -- & 0.065$^{\dagger}$ & -- & 0.059$^{\dagger}$ & -- & 0.132$^{\dagger}$ & -- & -- & -- & 0.424 & -- \\
 \texttt{S2} & 0.000$^{\dagger}$ & -- & -- & -- & 0.081$^{\dagger}$ & -- & 0.128$^{\dagger}$ & -- & 0.094$^{\dagger}$ & -- & 0.053$^{\dagger}$ & -- & -- & -- & 0.439 & -- \\
 \texttt{X1} & 0.000$^{\dagger}$ & -- & -- & -- & 0.026$^{\dagger}$ & -- & 0.029$^{\dagger}$ & -- & 0.025$^{\dagger}$ & -- & 0.015$^{\dagger}$ & -- & -- & -- & 0.329 & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.122$^{\dagger}$ & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.000 & -- & -- & -- & 0.046 & -- & 0.045 & -- & 0.029 & -- & 0.090 & -- & -- & -- & 0.199 & -- \\
@@ -903,12 +917,14 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.000 & -- & -- & -- & 0.022 & -- & 0.015 & -- & 0.012 & -- & 0.055 & -- & -- & -- & 0.177 & -- \\
 \texttt{S2} & 0.000 & -- & -- & -- & 0.020 & -- & 0.026 & -- & 0.017 & -- & 0.015 & -- & -- & -- & 0.191 & -- \\
 \texttt{X1} & 0.000 & -- & -- & -- & 0.007 & -- & 0.002 & -- & 0.004 & -- & 0.004 & -- & -- & -- & 0.149 & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.040 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_starcoder215b
 % >>> GENERATED TABLE master_abs_gemma312b -- from tables/master_abs_gemma312b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:18 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:27 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for gemma3-12b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -958,6 +974,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.417 & 100 & -- & -- & 0.294$^{\dagger}$ & -- & 0.445 & 107 & 0.164$^{\dagger}$ & -- & 0.446 & 107 & -- & -- & -- & -- \\
 \texttt{S2} & 0.458 & 100 & -- & -- & 0.388 & 85 & 0.463 & 101 & 0.161$^{\dagger}$ & -- & 0.472 & 103 & -- & -- & -- & -- \\
 \texttt{X1} & 0.317 & 100 & -- & -- & 0.290 & 91 & 0.340 & 107 & 0.147$^{\dagger}$ & -- & 0.374 & 118 & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.349 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.169 & 100 & -- & -- & 0.129 & 76 & 0.159 & 94 & 0.062 & 37 & 0.165 & 98 & -- & -- & -- & -- \\
@@ -967,12 +985,14 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.127 & 100 & -- & -- & 0.104 & 82 & 0.150 & 118 & 0.046 & 37 & 0.154 & 122 & -- & -- & -- & -- \\
 \texttt{S2} & 0.152 & 100 & -- & -- & 0.141 & 93 & 0.159 & 105 & 0.049 & 32 & 0.167 & 110 & -- & -- & -- & -- \\
 \texttt{X1} & 0.087 & 100 & -- & -- & 0.113 & 129 & 0.108 & 124 & 0.056 & 64 & 0.138 & 158 & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.092 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_gemma312b
 % >>> GENERATED TABLE master_abs_codegemma7b -- from tables/master_abs_codegemma7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:18 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:27 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for codegemma-7b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1022,6 +1042,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.253 & 100 & -- & -- & 0.139$^{\dagger}$ & -- & 0.036$^{\dagger}$ & -- & 0.005$^{\dagger}$ & -- & 0.080$^{\dagger}$ & -- & -- & -- & -- & -- \\
 \texttt{S2} & 0.245 & 100 & -- & -- & 0.130$^{\dagger}$ & -- & 0.055$^{\dagger}$ & -- & 0.005$^{\dagger}$ & -- & 0.067$^{\dagger}$ & -- & -- & -- & -- & -- \\
 \texttt{X1} & 0.173$^{\dagger}$ & -- & -- & -- & 0.031$^{\dagger}$ & -- & 0.013$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.045$^{\dagger}$ & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.229 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.080 & 100 & -- & -- & 0.062 & 77 & 0.017 & 21 & 0.002 & 3 & 0.019 & 24 & -- & -- & -- & -- \\
@@ -1031,12 +1053,14 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.061 & 100 & -- & -- & 0.048 & 79 & 0.011 & 18 & 0.001 & 1 & 0.028 & 46 & -- & -- & -- & -- \\
 \texttt{S2} & 0.061 & 100 & -- & -- & 0.042 & 69 & 0.016 & 25 & 0.000 & 0 & 0.019 & 30 & -- & -- & -- & -- \\
 \texttt{X1} & 0.040 & 100 & -- & -- & 0.005 & 12 & 0.002 & 4 & 0.000 & 0 & 0.014 & 35 & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.055 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_codegemma7b
 % >>> GENERATED TABLE master_abs_granite318b -- from tables/master_abs_granite318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:18 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:27 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for granite31-8b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1086,6 +1110,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.356 & 100 & -- & -- & 0.135$^{\dagger}$ & -- & 0.015$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.264 & 74 & -- & -- & 0.292 & 82 \\
 \texttt{S2} & 0.429 & 100 & -- & -- & 0.118$^{\dagger}$ & -- & 0.016$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.257$^{\dagger}$ & -- & -- & -- & 0.314 & 73 \\
 \texttt{X1} & 0.281 & 100 & -- & -- & 0.061$^{\dagger}$ & -- & 0.002$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.182$^{\dagger}$ & -- & -- & -- & 0.237 & 84 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.216 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
 \texttt{L0} & 0.121 & 100 & -- & -- & 0.044 & 36 & 0.002 & 2 & 0.000 & 0 & 0.087 & 71 & -- & -- & 0.104 & 86 \\
@@ -1095,6 +1121,8 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{S1} & 0.098 & 100 & -- & -- & 0.040 & 41 & 0.000 & 0 & 0.000 & 0 & 0.069 & 70 & -- & -- & 0.082 & 84 \\
 \texttt{S2} & 0.114 & 100 & -- & -- & 0.032 & 28 & 0.002 & 2 & 0.000 & 0 & 0.071 & 62 & -- & -- & 0.097 & 85 \\
 \texttt{X1} & 0.071 & 100 & -- & -- & 0.013 & 19 & 0.000 & 0 & 0.000 & 0 & 0.055 & 78 & -- & -- & 0.057 & 80 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.059 & 100 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1106,7 +1134,7 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 One table per panel model: every condition and every stack, forward and backward, with the raw accuracy, the change against the untuned model, and the percentage of the untuned model's clean-code accuracy. Cells marked \emph{fmt} exceed the pre-registered format-failure gate (0.25) and enter no mean; the gate is applied per cell, which is stricter than the pooled registration. The untuned CodeLlama-34B sits at 0.254 on clean code, a hair over the bar, which gates its percentage column while its deltas stand. Rows marked `--' are cells not yet run at the time of generation.
 
 % >>> GENERATED TABLE master_codellama7b -- from tables/master_codellama7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1164,7 +1192,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codellama7b
 % >>> GENERATED TABLE master_codellama13b -- from tables/master_codellama13b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-13b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1222,7 +1250,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codellama13b
 % >>> GENERATED TABLE master_codellama34b -- from tables/master_codellama34b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-34b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1280,7 +1308,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codellama34b
 % >>> GENERATED TABLE master_llama318b -- from tables/master_llama318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/llama31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1338,7 +1366,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_llama318b
 % >>> GENERATED TABLE master_starcoder215b -- from tables/master_starcoder215b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/starcoder2-15b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1396,7 +1424,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_starcoder215b
 % >>> GENERATED TABLE master_gemma312b -- from tables/master_gemma312b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/gemma3-12b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1454,7 +1482,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_gemma312b
 % >>> GENERATED TABLE master_codegemma7b -- from tables/master_codegemma7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codegemma-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1512,7 +1540,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codegemma7b
 % >>> GENERATED TABLE master_granite318b -- from tables/master_granite318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/granite31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1576,7 +1604,7 @@ One table per panel model: every condition and every stack, forward and backward
 Every routing and merging system on every condition and stack that has it, for the models on which those arms exist (routing: CodeLlama-7B; merging: CodeLlama-7B, Granite-3.1-8B, Llama-3.1-8B, StarCoder2-15B), with the same three numbers as Appendix~\ref{app:master}. The routing arms are MoLE mixtures of the eight per-transform experts; \emph{uniform} and \emph{random} gates separate the mixture's worth from the routing's. Every routing cell ran through the mixture engine.
 
 % >>> GENERATED TABLE master_routing_codellama7b -- from tables/master_routing_codellama7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/mole_generic/codellama-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1621,7 +1649,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_routing_codellama7b
 % >>> GENERATED TABLE master_merging_codellama7b -- from tables/master_merging_codellama7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/codellama-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1667,7 +1695,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_merging_codellama7b
 % >>> GENERATED TABLE master_merging_granite318b -- from tables/master_merging_granite318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/granite31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1713,7 +1741,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_merging_granite318b
 % >>> GENERATED TABLE master_merging_llama318b -- from tables/master_merging_llama318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/llama31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1759,7 +1787,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_merging_llama318b
 % >>> GENERATED TABLE master_merging_starcoder215b -- from tables/master_merging_starcoder215b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/starcoder2-15b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1951,7 +1979,7 @@ Granite-3.1-8B & IBM & $-1.47$ [$-2.99$, $+0.00$] & $-1.86$ [$-3.80$, $+0.12$] &
 \end{table*}
 % <<< GENERATED TABLE rq4_by_model
 % >>> GENERATED TABLE master_summary -- from tables/master_summary.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-14 02:17 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 04:26 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells (same phases as the per-model grids), all eight models
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]

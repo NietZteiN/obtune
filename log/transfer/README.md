@@ -158,3 +158,4 @@
 - [`2026-09-14_backward-grader-audit.md`](2026-09-14_backward-grader-audit.md) — oracle 1.000 on four conditions, negative controls clean; executes the obfuscated code; the prompt permits any pre-image, so exec-match is the faithful metric.
 - [`2026-09-14_why-input-prediction-is-hard.md`](2026-09-14_why-input-prediction-is-hard.md) — prompt and grader cleared; it is capacity. The reversal test is on the weakest backward model in the panel.
 - [`2026-09-14_format-failure-is-forward-collapse.md`](2026-09-14_format-failure-is-forward-collapse.md) — backward format failure on tuned arms = answering forward, verified by exact match to the gold output. The gate was excluding a result.
+- [`2026-09-14_backward-on-stacks.md`](2026-09-14_backward-on-stacks.md) — backward on all 16 stacks; breadth's degradation with divergence appears in the reverse direction too.
