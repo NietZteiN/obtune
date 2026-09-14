@@ -1,9 +1,9 @@
-% GENERATED 2026-09-14 19:04 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 20:59 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for llama31-8b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
-\centering\scriptsize\setlength{\tabcolsep}{2pt}
-\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{The backward block is reported twice.} \emph{by execution} accepts any call that returns the gold value, and inversion is many-to-one, so a guess that lands on a common return value scores; \emph{by exact arguments} requires the gold call. Measured on CodeLlama-7B, 64--69\,\% of every system's backward successes are of the first kind, which is why the untuned model appears to read backwards almost as well as forwards. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
 \label{tab:master_abs_llama318b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
@@ -18,26 +18,21 @@
 \texttt{S1} & 0.213 & 100 & 0.256 & 120 & 0.395 & 185 & 0.391 & 183 & 0.413 & 194 & 0.409 & 192 & 0.428 & 201 & 0.412 & 193 \\
 \texttt{S2} & 0.205 & 100 & 0.272 & 133 & 0.413 & 201 & 0.413 & 201 & 0.445 & 217 & 0.438 & 213 & 0.456 & 222 & 0.437 & 213 \\
 \texttt{X1} & 0.132 & 100 & 0.161 & 122 & 0.249 & 189 & 0.222 & 168 & 0.255 & 194 & 0.332 & 252 & 0.280 & 212 & 0.266 & 202 \\
-\addlinespace[2pt]
 \texttt{C\_L1b\_S1} & 0.152 & 100 & 0.185 & 122 & 0.279 & 184 & 0.338 & 223 & 0.368 & 243 & 0.305 & 201 & 0.369 & 243 & 0.307 & 203 \\
 \texttt{C\_L1r\_S1} & 0.162 & 100 & 0.220 & 136 & 0.303 & 187 & 0.352 & 217 & 0.363 & 224 & 0.314 & 194 & 0.366 & 226 & 0.328 & 202 \\
 \texttt{C\_S1\_L1r} & 0.159 & 100 & 0.208 & 131 & 0.277 & 174 & 0.338 & 213 & 0.354 & 223 & 0.305 & 192 & 0.347 & 219 & 0.306 & 193 \\
 \texttt{C\_L2\_S4} & 0.205 & 100 & 0.257 & 125 & 0.349 & 170 & 0.386 & 188 & 0.401 & 196 & 0.350 & 171 & 0.413 & 201 & 0.383 & 187 \\
 \texttt{C\_L1r\_S3} & 0.198 & 100 & 0.266 & 134 & 0.367 & 185 & 0.382 & 193 & 0.398 & 201 & 0.369 & 186 & 0.407 & 205 & 0.387 & 195 \\
 \texttt{C\_S4\_S3} & 0.214 & 100 & 0.269 & 126 & 0.421 & 197 & 0.411 & 192 & 0.444 & 208 & 0.431 & 202 & 0.459 & 215 & 0.437 & 204 \\
-\addlinespace[2pt]
 \texttt{C3\_L1r\_S3\_S4} & 0.183 & 100 & 0.233 & 128 & 0.329 & 180 & 0.374 & 205 & 0.391 & 214 & 0.363 & 198 & 0.399 & 218 & 0.370 & 202 \\
 \texttt{C3\_S1\_S3\_S4} & 0.160 & 100 & 0.220 & 137 & 0.359 & 224 & 0.376 & 234 & 0.393 & 245 & 0.378 & 236 & 0.415 & 258 & 0.377 & 235 \\
 \texttt{C3\_L1r\_S1\_S4} & 0.160 & 100 & 0.208 & 130 & 0.279 & 174 & 0.342 & 213 & 0.358 & 223 & 0.299 & 187 & 0.353 & 220 & 0.319 & 199 \\
 \texttt{C4\_L1r\_S1\_S3\_S4} & 0.140 & 100 & 0.191 & 137 & 0.263 & 189 & 0.335 & 240 & 0.358 & 256 & 0.294 & 210 & 0.342 & 245 & 0.310 & 222 \\
-\addlinespace[2pt]
 \texttt{C\_L1r\_X1} & 0.100 & 100 & 0.118 & 117 & 0.165 & 164 & 0.181 & 180 & 0.207 & 206 & 0.257 & 256 & 0.204 & 203 & 0.184 & 183 \\
 \texttt{C\_X1\_S1} & 0.130 & 100 & 0.179 & 138 & 0.271 & 209 & 0.225 & 173 & 0.253 & 194 & 0.300 & 231 & 0.294 & 226 & 0.296 & 228 \\
 \texttt{C\_S2\_X1} & 0.170 & 100 & 0.212 & 124 & 0.296 & 174 & 0.284 & 167 & 0.317 & 187 & 0.360 & 212 & 0.336 & 198 & 0.317 & 187 \\
-\addlinespace[2pt]
 \texttt{C\_L1r\_X1m} & 0.115 & 100 & 0.148 & 129 & 0.184 & 160 & 0.216 & 188 & 0.232 & 202 & 0.291 & 253 & -- & -- & 0.217 & 188 \\
 \texttt{C\_S1\_X1s} & 0.193 & 100 & 0.231 & 119 & 0.341 & 176 & 0.299 & 155 & 0.335 & 174 & 0.355 & 184 & -- & -- & 0.349 & 181 \\
-\addlinespace[2pt]
 \texttt{C3\_L1r\_S1\_X1} & 0.105 & 100 & 0.156 & 149 & 0.194 & 185 & 0.207 & 198 & 0.224 & 214 & 0.251 & 240 & -- & -- & 0.215 & 205 \\
 \midrule
 \multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
@@ -48,57 +43,22 @@
 \texttt{S1} & 0.375 & 100 & -- & -- & 0.325 & 87 & 0.285 & 76 & 0.291 & 78 & 0.360 & 96 & 0.316 & 84 & 0.411 & 110 \\
 \texttt{S2} & 0.378 & 100 & -- & -- & 0.345 & 91 & 0.326 & 86 & 0.325 & 86 & 0.366 & 97 & 0.366 & 97 & 0.435 & 115 \\
 \texttt{X1} & 0.263 & 100 & -- & -- & 0.267 & 101 & 0.211 & 80 & 0.228 & 87 & 0.302 & 115 & 0.258 & 98 & 0.311 & 118 \\
-\addlinespace[2pt]
 \texttt{C\_L1b\_S1} & 0.287 & 100 & -- & -- & 0.253 & 88 & 0.274 & 95 & 0.258 & 90 & 0.297 & 103 & 0.306 & 107 & 0.352 & 123 \\
-\texttt{C\_L1r\_S1} & 0.297 & 100 & -- & -- & 0.281 & 94 & 0.280 & 94 & 0.283 & 95 & 0.271 & 91 & -- & -- & 0.350 & 118 \\
-\texttt{C\_S1\_L1r} & 0.303 & 100 & -- & -- & 0.269 & 89 & 0.274 & 91 & 0.274 & 91 & 0.290 & 96 & -- & -- & 0.356 & 118 \\
-\texttt{C\_L2\_S4} & 0.320 & 100 & -- & -- & 0.275 & 86 & 0.269 & 84 & 0.286 & 89 & 0.309 & 96 & -- & -- & 0.388 & 121 \\
-\texttt{C\_L1r\_S3} & 0.342 & 100 & -- & -- & 0.297 & 87 & 0.299 & 87 & 0.303 & 89 & 0.308 & 90 & -- & -- & 0.375 & 110 \\
-\texttt{C\_S4\_S3} & 0.367 & 100 & -- & -- & 0.333 & 91 & 0.313 & 85 & 0.329 & 90 & 0.362 & 99 & -- & -- & 0.417 & 114 \\
-\addlinespace[2pt]
-\texttt{C3\_L1r\_S3\_S4} & 0.309 & 100 & -- & -- & 0.271 & 88 & 0.303 & 98 & 0.300 & 97 & 0.300 & 97 & -- & -- & 0.372 & 121 \\
-\texttt{C3\_S1\_S3\_S4} & 0.353 & 100 & -- & -- & 0.311 & 88 & 0.289 & 82 & 0.281 & 80 & 0.340 & 96 & -- & -- & 0.408 & 116 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.302 & 100 & -- & -- & 0.270 & 89 & 0.262 & 87 & 0.271 & 90 & 0.270 & 89 & -- & -- & 0.341 & 113 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.281 & 100 & -- & -- & 0.234 & 83 & 0.280 & 99 & 0.279 & 99 & 0.259 & 92 & -- & -- & 0.340 & 121 \\
-\addlinespace[2pt]
+\texttt{C\_L1r\_S1} & 0.297 & 100 & -- & -- & 0.281 & 94 & 0.280 & 94 & 0.283 & 95 & 0.271 & 91 & 0.293 & 98 & 0.350 & 118 \\
+\texttt{C\_S1\_L1r} & 0.303 & 100 & -- & -- & 0.269 & 89 & 0.274 & 91 & 0.274 & 91 & 0.290 & 96 & 0.293 & 97 & 0.356 & 118 \\
+\texttt{C\_L2\_S4} & 0.320 & 100 & -- & -- & 0.275 & 86 & 0.269 & 84 & 0.286 & 89 & 0.309 & 96 & 0.313 & 98 & 0.388 & 121 \\
+\texttt{C\_L1r\_S3} & 0.342 & 100 & -- & -- & 0.297 & 87 & 0.299 & 87 & 0.303 & 89 & 0.308 & 90 & 0.320 & 94 & 0.375 & 110 \\
+\texttt{C\_S4\_S3} & 0.367 & 100 & -- & -- & 0.333 & 91 & 0.313 & 85 & 0.329 & 90 & 0.362 & 99 & 0.363 & 99 & 0.417 & 114 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.309 & 100 & -- & -- & 0.271 & 88 & 0.303 & 98 & 0.300 & 97 & 0.300 & 97 & 0.317 & 103 & 0.372 & 121 \\
+\texttt{C3\_S1\_S3\_S4} & 0.353 & 100 & -- & -- & 0.311 & 88 & 0.289 & 82 & 0.281 & 80 & 0.340 & 96 & 0.311 & 88 & 0.408 & 116 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.302 & 100 & -- & -- & 0.270 & 89 & 0.262 & 87 & 0.271 & 90 & 0.270 & 89 & 0.276 & 91 & 0.341 & 113 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.281 & 100 & -- & -- & 0.234 & 83 & 0.280 & 99 & 0.279 & 99 & 0.259 & 92 & 0.274 & 97 & 0.340 & 121 \\
 \texttt{C\_L1r\_X1} & 0.218 & 100 & -- & -- & 0.220 & 101 & 0.193 & 88 & 0.239 & 109 & 0.265 & 122 & -- & -- & 0.275 & 126 \\
 \texttt{C\_X1\_S1} & 0.291 & 100 & -- & -- & 0.283 & 97 & 0.210 & 72 & 0.220 & 76 & 0.302 & 104 & -- & -- & 0.332 & 114 \\
 \texttt{C\_S2\_X1} & 0.323 & 100 & -- & -- & 0.288 & 89 & 0.229 & 71 & 0.241 & 75 & 0.306 & 95 & -- & -- & 0.350 & 109 \\
-\addlinespace[2pt]
 \texttt{C\_L1r\_X1m} & 0.232 & 100 & -- & -- & 0.210 & 91 & 0.217 & 93 & 0.245 & 106 & 0.258 & 111 & -- & -- & 0.274 & 118 \\
 \texttt{C\_S1\_X1s} & 0.357 & 100 & -- & -- & 0.287 & 80 & 0.205 & 57 & 0.212 & 59 & 0.330 & 92 & -- & -- & 0.376 & 105 \\
-\addlinespace[2pt]
 \texttt{C3\_L1r\_S1\_X1} & 0.268 & 100 & -- & -- & 0.234 & 87 & 0.188 & 70 & 0.194 & 73 & 0.243 & 91 & -- & -- & 0.305 & 114 \\
-\midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\
-\texttt{L0} & 0.121 & 100 & -- & -- & 0.116 & 96 & 0.095 & 78 & 0.103 & 85 & 0.127 & 105 & -- & -- & 0.143 & 118 \\
-\texttt{L1b} & 0.098 & 100 & -- & -- & 0.087 & 89 & 0.080 & 82 & 0.084 & 86 & 0.090 & 92 & -- & -- & 0.110 & 112 \\
-\texttt{L1r} & 0.095 & 100 & -- & -- & 0.086 & 90 & 0.083 & 87 & 0.083 & 87 & 0.091 & 96 & -- & -- & 0.108 & 113 \\
-\texttt{L2} & 0.090 & 100 & -- & -- & 0.086 & 96 & 0.077 & 86 & 0.084 & 93 & 0.089 & 99 & -- & -- & 0.104 & 115 \\
-\texttt{S1} & 0.099 & 100 & -- & -- & 0.103 & 103 & 0.083 & 84 & 0.087 & 87 & 0.115 & 115 & -- & -- & 0.133 & 134 \\
-\texttt{S2} & 0.116 & 100 & -- & -- & 0.113 & 97 & 0.099 & 85 & 0.103 & 89 & 0.122 & 105 & -- & -- & 0.137 & 118 \\
-\texttt{X1} & 0.072 & 100 & -- & -- & 0.081 & 111 & 0.053 & 74 & 0.067 & 93 & 0.108 & 149 & -- & -- & 0.097 & 134 \\
-\addlinespace[2pt]
-\texttt{C\_L1b\_S1} & 0.068 & 100 & -- & -- & 0.066 & 98 & 0.073 & 107 & 0.061 & 89 & 0.080 & 118 & -- & -- & 0.099 & 146 \\
-\texttt{C\_L1r\_S1} & 0.074 & 100 & -- & -- & 0.081 & 110 & 0.071 & 96 & 0.073 & 98 & 0.071 & 96 & -- & -- & 0.093 & 125 \\
-\texttt{C\_S1\_L1r} & 0.073 & 100 & -- & -- & 0.079 & 109 & 0.077 & 107 & 0.077 & 107 & 0.075 & 103 & -- & -- & 0.096 & 133 \\
-\texttt{C\_L2\_S4} & 0.079 & 100 & -- & -- & 0.071 & 89 & 0.073 & 92 & 0.082 & 103 & 0.080 & 101 & -- & -- & 0.100 & 127 \\
-\texttt{C\_L1r\_S3} & 0.086 & 100 & -- & -- & 0.076 & 89 & 0.086 & 101 & 0.084 & 99 & 0.086 & 101 & -- & -- & 0.104 & 121 \\
-\texttt{C\_S4\_S3} & 0.104 & 100 & -- & -- & 0.109 & 105 & 0.094 & 90 & 0.099 & 95 & 0.113 & 109 & -- & -- & 0.132 & 128 \\
-\addlinespace[2pt]
-\texttt{C3\_L1r\_S3\_S4} & 0.071 & 100 & -- & -- & 0.071 & 100 & 0.090 & 127 & 0.089 & 126 & 0.081 & 114 & -- & -- & 0.103 & 146 \\
-\texttt{C3\_S1\_S3\_S4} & 0.100 & 100 & -- & -- & 0.087 & 87 & 0.087 & 87 & 0.080 & 81 & 0.105 & 105 & -- & -- & 0.121 & 121 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.084 & 100 & -- & -- & 0.075 & 90 & 0.068 & 81 & 0.069 & 83 & 0.076 & 90 & -- & -- & 0.100 & 119 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.076 & 100 & -- & -- & 0.061 & 80 & 0.080 & 105 & 0.071 & 94 & 0.071 & 94 & -- & -- & 0.094 & 124 \\
-\addlinespace[2pt]
-\texttt{C\_L1r\_X1} & 0.057 & 100 & -- & -- & 0.050 & 88 & 0.036 & 64 & 0.054 & 96 & 0.067 & 117 & -- & -- & 0.064 & 113 \\
-\texttt{C\_X1\_S1} & 0.072 & 100 & -- & -- & 0.078 & 109 & 0.052 & 72 & 0.054 & 75 & 0.101 & 141 & -- & -- & 0.097 & 135 \\
-\texttt{C\_S2\_X1} & 0.083 & 100 & -- & -- & 0.077 & 93 & 0.052 & 63 & 0.059 & 71 & 0.098 & 117 & -- & -- & 0.101 & 121 \\
-\addlinespace[2pt]
-\texttt{C\_L1r\_X1m} & 0.065 & 100 & -- & -- & 0.055 & 85 & 0.057 & 88 & 0.069 & 107 & 0.079 & 122 & -- & -- & 0.078 & 121 \\
-\texttt{C\_S1\_X1s} & 0.085 & 100 & -- & -- & 0.072 & 85 & 0.052 & 61 & 0.049 & 58 & 0.104 & 123 & -- & -- & 0.096 & 114 \\
-\addlinespace[2pt]
-\texttt{C3\_L1r\_S1\_X1} & 0.054 & 100 & -- & -- & 0.044 & 82 & 0.037 & 69 & 0.034 & 63 & 0.050 & 94 & -- & -- & 0.061 & 113 \\
 \bottomrule
 \end{tabular}
 \end{table*}

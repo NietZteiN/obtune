@@ -132,3 +132,4 @@
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
 - [`2026-09-14_paper-numbers-audit.md`](2026-09-14_paper-numbers-audit.md) — prose numbers verified against the cells after a day of corrections; clean.
 - [`2026-09-14_page-budget-is-a-table-problem.md`](2026-09-14_page-budget-is-a-table-problem.md) — prose is 4.4 of 13 pages; the overflow is tables, measured.
+- [`2026-09-14_table5-execution-only.md`](2026-09-14_table5-execution-only.md) — execution grade only in Table 5; overflow fixed.

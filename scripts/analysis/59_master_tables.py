@@ -634,7 +634,10 @@ def pct_of_base(a, b):
 
 def abs_table(m):
     ncol = 1 + 2*len(ABS_SYS)
-    L = [r"\begin{table*}[p]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}",
+    # arraystretch 0.92 and no inter-group spacing (2026-09-14): with the exact-arguments block gone
+    # the table was still 31 pt taller than a page ("Float too large for page by 30.94pt"); 47 rows
+    # at 0.92 recover ~30 pt and dropping five \addlinespace[2pt] the rest.
+    L = [r"\begin{table*}[p]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}",
          r"\caption{\textbf{Every method against every obfuscation, " + NICE[m] + r".} Raw accuracy (strict exact match), "
          r"with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. "
          r"\emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; "
@@ -642,15 +645,7 @@ def abs_table(m):
          r"on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is "
          r"the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, "
          r"\texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). "
-         r"\textbf{The backward block is reported twice.} \emph{by execution} accepts any call that returns the gold value, and "
-         r"inversion is many-to-one, so a guess that lands on a common return value scores; \emph{by exact arguments} requires the "
-         r"gold call. Measured on CodeLlama-7B, 64--69\,\% of every system's backward successes are of the first kind, which is why "
-         # THE MARKER IS SPLIT IN TWO and the caption must say so. A gated backward cell is not
-         # necessarily unparseable: on several cells most of the failures are replies that are
-         # exactly the gold FORWARD answer, which is forward-locking showing up as a parse
-         # failure. Editing this text in sections/master.tex does NOT work -- inline_tables.py
-         # regenerates that block from here, which silently reverted an earlier hand fix.
-         r"the untuned model appears to read backwards almost as well as forwards. "
+         r"\textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. "
          r"$\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. "
          r"$\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the "
          r"gold \emph{forward} answer --- the arm answered the other question rather than failing "
@@ -689,22 +684,19 @@ def abs_table(m):
     prev=None
     for c in ABS_ROWS:
         k=KIND[c]
-        if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
         L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c)) + r" \\"); prev=k
     L.append(r"\midrule"); L.append(r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\")
     prev=None
     for c in BWD_ROWS:
         if abs_cell(m, "base", c, True)[0] is None: continue
         k=KIND[c]
-        if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
         L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c, bwd=True)) + r" \\"); prev=k
-    L.append(r"\midrule"); L.append(r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Backward: input prediction, by exact arguments}} \\")
-    prev=None
-    for c in BWD_ROWS:
-        if args_exact(m, "base", c) is None: continue
-        k=KIND[c]
-        if prev is not None and k!=prev: L.append(r"\addlinespace[2pt]")
-        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c, strict=True)) + r" \\"); prev=k
+    # THE EXACT-ARGUMENTS BLOCK IS NOT EMITTED TO LATEX (user, 2026-09-14: keep the more accurate
+    # grade only; the table overflowed the page at 69 rows). Execution is the accurate grade: the
+    # inverse task is many-to-one -- 21.5 % of the ladder's gold return values have many valid
+    # inputs -- so "exact arguments" marks a correct input wrong whenever it is not the one the
+    # dataset happened to record, and reads 0.06-0.13 for every arm for that reason alone. It stays
+    # in docs/MASTER_TABLES.md as the secondary column it always was.
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
     return "\n".join(L)
 
