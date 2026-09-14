@@ -1,0 +1,28 @@
+{
+  "job_id": "ev_merge_codellama-34b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/merge_panel.yaml",
+    "--model",
+    "codellama-34b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 115,
+  "meta": {
+    "note": "master table: the merge column, queued automatically once the three merges were built | REQUEUED 2026-09-14: killed at walltime with 158 of 207 cells written (est_gpu_h 0.6 -> 1.2 h walltime, and 34B is ~0.008 GPU-h per cell). eval_vllm resumes per cell, so this run finishes the remaining 49. est 1.0 -> 2 h, which is 5x the measured remainder."
+  },
+  "previous_slurm": {
+    "job_id": "394477",
+    "node": "g-07-11",
+    "partition": "h200",
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T03:28:41.449840+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  }
+}
