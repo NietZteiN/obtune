@@ -64,4 +64,13 @@ systems:
 
 arm_modes: {}
 
-eval_conditions: [L0, L1b, L1r, L2, S1, S2]
+# CORRECTED 2026-09-14. This file was generated from mole_ladder_codellama-7b.yaml, because the
+# panel config for 7B did not exist yet, and inherited that file's SIX ladder conditions instead
+# of the master table's 23. The smoke run (job 397326) passed on L0 and silently did nothing for
+# C_L1r_X1 -- `--eval-conditions` intersects with this list, so a condition absent here is
+# dropped without a word. The other seven models' inverse configs came from their panel configs
+# and were always correct.
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]

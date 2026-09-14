@@ -310,6 +310,25 @@ def main(argv: Optional[list[str]] = None) -> int:
     systems = validate_systems([SystemSpec.from_config(s) for s in cfg["systems"]])
     experts = {k: str(PROJECT_ROOT / v) for k, v in cfg["experts"].items()}
 
+    conds_cfg = list(cfg["eval_conditions"])
+
+    # CONDITION SELECTION IS VALIDATED HERE, BEFORE A MODEL IS LOADED. It used to sit after
+    # build_mole_model, which loads the base weights and eight adapters, so a typo in
+    # --eval-conditions cost that first. And the old check only fired when the intersection was
+    # EMPTY: asking for `L0,C_L1r_X1` against a config carrying only the six ladder conditions ran
+    # L0, silently skipped the other and exited 0, which is how a smoke test reported success on
+    # 2026-09-14 while covering half of what it was asked to cover. A subset flag that quietly
+    # narrows is worse than one that fails.
+    conds = list(conds_cfg)
+    if args.eval_conditions:
+        want = [c for c in args.eval_conditions.split(",") if c]
+        missing = [c for c in want if c not in conds]
+        if missing:
+            raise SystemExit(
+                f"--eval-conditions asked for {missing}, which {args.config} does not list. "
+                f"It has: {conds}. Add them to the config or drop them from the flag.")
+        conds = [c for c in conds if c in set(want)]
+
     holder = build_mole_model(
         model_key, experts,
         d_router=int((cfg.get("gate") or {}).get("d_router", 64)),
@@ -328,8 +347,6 @@ def main(argv: Optional[list[str]] = None) -> int:
     engine = HFEngine(holder, tokenizer, ecfg=ecfg, stub=args.stub,
                       batch_size=int(ecfg.get("batch_size", 32)))
 
-    conds_cfg = list(cfg["eval_conditions"])
-
     # THE TASK DIRECTION. `run_cell` takes `task` as a keyword and defaults it to "output";
     # this path never passed it, so a config asking for `task: input` was silently evaluated
     # FORWARDS and written into an inverse phase -- the failure would have looked like "the
@@ -342,13 +359,6 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     seed = int((cfg.get("engine") or {}).get("seed", 17))
     summary: list[dict[str, Any]] = []
-    conds = list(conds_cfg)
-    if args.eval_conditions:
-        want = set(args.eval_conditions.split(","))
-        conds = [c for c in conds if c in want]
-        if not conds:
-            raise SystemExit(f"--eval-conditions {args.eval_conditions!r} selected nothing "
-                             f"from {cfg['eval_conditions']}")
     for cond in conds:
         items = data.load_eval_items(
             [cond], language, h1_access_purpose=cfg.get("h1_access_purpose"),
