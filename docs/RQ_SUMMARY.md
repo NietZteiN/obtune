@@ -616,6 +616,16 @@ Across the four models with merges: CodeLlama-7B **+3.21** (DR +0.17), Llama-3.1
 > across-model sentence should not be quoted. The repair is running into phase `inverse_1shot`;
 > `62_merge_backward.py` now prints a warning when a contrast crosses the boundary.
 > See `log/transfer/2026-09-14_two-prompts-one-phase.md`.
+>
+> **RESOLVED, same day, and the direction above is wrong.** The repair ran and the numbers moved the
+> other way. The demo NEVER helps the untuned model and costs it 7–9 points on three of six models,
+> while helping the anchored arm on all six — so a one-shot merge against a zero-shot `base` was measured
+> against an **inflated** reference and the bias ran *against* the merge. Re-read on repaired cells:
+> **Granite's `merge_dare_ties` goes −7.66 [−10.08, −5.17]\* → −0.27 [−2.33, +1.83], a null**, and its
+> `merge_ties` is **+6.94 [+5.29, +8.64]**. On Llama-3.1-8B both merges are significantly positive while
+> every single-adapter arm is significantly negative. **The sentence below beginning "Merging is
+> therefore *not* backward-safe" is retired: it rested on Granite's reversal, which does not exist.**
+> `log/transfer/2026-09-14_the-reversal-was-the-prompt.md`.
 
 ### 6.5e The merge pays no brittleness tax in either direction, and forward-locking is why (2026-09-14)
 
@@ -793,5 +803,6 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.
 - **2026-09-13** — §6.5c: H-F2-route refuted; the specialist mixture is +2.88 above breadth on unseen-containing stacks.
 - **2026-09-13** - §6.5d: H-merge-backward refuted; the DARE-TIES merge has the highest direction ratio measured (+0.17).
+- **2026-09-14 (latest)** - §6.5d's reversal RETIRED: Granite's backward merge cost was the missing one-shot demo. Repaired, it is -0.27 [-2.33, +1.83] (null) against the published -7.66, and its merge_ties is +6.94. The prompt bias ran AGAINST the merge, not for it, correcting the direction asserted in the morning's correction note.
 - **2026-09-14 (later)** - §6.5e(c)'s collapse row CORRECTED: the first version pooled stack cells with zero-shot ladder cells. Recomputed on stacks only: untuned 0.007, merges 0.000/0.001, family 0.060, clean 0.066, breadth 0.081, anchored 0.186. Ordering identical, magnitudes roughly halved.
 - **2026-09-14** - §6.5d carries a CORRECTION: its cross-model numbers contrast one-shot merge cells against zero-shot baselines (`inverse_core.yaml` carried no one-shot demo), so Granite's reversal is partly a prompt difference; the CodeLlama-7B row is unaffected. New §6.5e: on stacks, where every arm shares one prompt, the merge's drop never differs from the untuned model's in either direction on eight models, it matches breadth's forward accuracy on all eight, and forward collapse is the mechanism — both merges at the untuned floor (0.000/0.001) against breadth 0.198 and the KL-anchored arm 0.312.
