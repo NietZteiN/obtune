@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 485,
+  "label": "CS_485",
+  "language": "CS",
+  "language_slug": "cs",
+  "source_file": "CS_485.cs"
+}

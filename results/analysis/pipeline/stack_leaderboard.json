@@ -1,6 +1,6 @@
 {
   "script": "69_stack_leaderboard.py",
-  "generated_utc": "2026-09-14T14:29:56+00:00",
+  "generated_utc": "2026-09-14T14:44:59+00:00",
   "metric": "forward accuracy (execution-graded output prediction)",
   "format_gate": 0.25,
   "groups": {
@@ -24,11 +24,6 @@
         "anchored": {
           "accuracy": 0.3809,
           "format_fail": 0.0165,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3291,
-          "format_fail": 0.0256,
           "gated": false
         },
         "merge": {
@@ -63,11 +58,6 @@
           "format_fail": 0.012,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3764,
-          "format_fail": 0.0264,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.3871,
           "format_fail": 0.0267,
@@ -95,11 +85,6 @@
           "format_fail": 0.0149,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.4105,
-          "format_fail": 0.0234,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.415,
           "format_fail": 0.0203,
@@ -125,11 +110,6 @@
         "anchored": {
           "accuracy": 0.3916,
           "format_fail": 0.0139,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3511,
-          "format_fail": 0.017,
           "gated": false
         },
         "merge": {
@@ -164,11 +144,6 @@
           "format_fail": 0.0136,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.4109,
-          "format_fail": 0.0177,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.4287,
           "format_fail": 0.0149,
@@ -194,11 +169,6 @@
         "anchored": {
           "accuracy": 0.4529,
           "format_fail": 0.0107,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.396,
-          "format_fail": 0.01,
           "gated": false
         },
         "merge": {
@@ -228,11 +198,6 @@
           "format_fail": 0.0136,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.355,
-          "format_fail": 0.0122,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.3656,
           "format_fail": 0.0172,
@@ -258,11 +223,6 @@
         "anchored": {
           "accuracy": 0.3594,
           "format_fail": 0.0106,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3267,
-          "format_fail": 0.0219,
           "gated": false
         },
         "merge": {
@@ -304,11 +264,6 @@
           "format_fail": 0.0164,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3216,
-          "format_fail": 0.023,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.3207,
           "format_fail": 0.0259,
@@ -341,11 +296,6 @@
           "format_fail": 0.0131,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3627,
-          "format_fail": 0.0295,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.3636,
           "format_fail": 0.0327,
@@ -373,11 +323,6 @@
           "format_fail": 0.0174,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3957,
-          "format_fail": 0.0259,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.3948,
           "format_fail": 0.0213,
@@ -403,11 +348,6 @@
         "anchored": {
           "accuracy": 0.3758,
           "format_fail": 0.0166,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3353,
-          "format_fail": 0.0172,
           "gated": false
         },
         "merge": {
@@ -442,11 +382,6 @@
           "format_fail": 0.0123,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3984,
-          "format_fail": 0.0189,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.4097,
           "format_fail": 0.0157,
@@ -472,11 +407,6 @@
         "anchored": {
           "accuracy": 0.442,
           "format_fail": 0.0125,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3778,
-          "format_fail": 0.0114,
           "gated": false
         },
         "merge": {
@@ -506,11 +436,6 @@
           "format_fail": 0.0144,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3358,
-          "format_fail": 0.0177,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.341,
           "format_fail": 0.022,
@@ -536,11 +461,6 @@
         "anchored": {
           "accuracy": 0.3511,
           "format_fail": 0.0101,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.308,
-          "format_fail": 0.0192,
           "gated": false
         },
         "merge": {
@@ -577,11 +497,6 @@
           "format_fail": 0.0245,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3125,
-          "format_fail": 0.025,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.2708,
           "format_fail": 0.0284,
@@ -614,11 +529,6 @@
           "format_fail": 0.0273,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3383,
-          "format_fail": 0.0237,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.299,
           "format_fail": 0.0359,
@@ -645,11 +555,6 @@
           "accuracy": 0.3471,
           "format_fail": 0.0263,
           "gated": false
-        },
-        "family": {
-          "accuracy": 0.3516,
-          "format_fail": 0.0281,
-          "gated": false
         }
       },
       "llama31-8b": {
@@ -671,11 +576,6 @@
         "anchored": {
           "accuracy": 0.2661,
           "format_fail": 0.0201,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3125,
-          "format_fail": 0.0177,
           "gated": false
         },
         "merge": {
@@ -710,11 +610,6 @@
           "format_fail": 0.0346,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3737,
-          "format_fail": 0.0211,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.3492,
           "format_fail": 0.0268,
@@ -740,11 +635,6 @@
         "anchored": {
           "accuracy": 0.3029,
           "format_fail": 0.0195,
-          "gated": false
-        },
-        "family": {
-          "accuracy": 0.3583,
-          "format_fail": 0.0141,
           "gated": false
         },
         "merge": {
@@ -774,11 +664,6 @@
           "format_fail": 0.031,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.3266,
-          "format_fail": 0.0172,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.2773,
           "format_fail": 0.0357,
@@ -806,11 +691,6 @@
           "format_fail": 0.019,
           "gated": false
         },
-        "family": {
-          "accuracy": 0.2857,
-          "format_fail": 0.0281,
-          "gated": false
-        },
         "merge": {
           "accuracy": 0.2336,
           "format_fail": 0.0625,
@@ -818,7 +698,10 @@
         }
       },
       "_winners": {
-        "family": 8
+        "anchored": 4,
+        "router": 1,
+        "merge": 2,
+        "clean": 1
       }
     }
   }

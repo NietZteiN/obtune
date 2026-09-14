@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 443,
+  "label": "Go_443",
+  "language": "Go",
+  "language_slug": "go",
+  "source_file": "Go_443.go"
+}

@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 264,
+  "label": "D_264",
+  "language": "D",
+  "language_slug": "d",
+  "source_file": "D_264.d"
+}

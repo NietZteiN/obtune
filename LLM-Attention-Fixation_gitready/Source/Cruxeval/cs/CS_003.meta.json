@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 3,
+  "label": "CS_003",
+  "language": "CS",
+  "language_slug": "cs",
+  "source_file": "CS_003.cs"
+}

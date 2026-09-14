@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 650,
+  "label": "Cpp_650",
+  "language": "Cpp",
+  "language_slug": "cpp",
+  "source_file": "Cpp_650.cpp"
+}

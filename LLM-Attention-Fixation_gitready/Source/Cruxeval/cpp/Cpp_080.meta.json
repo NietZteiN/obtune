@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 80,
+  "label": "Cpp_080",
+  "language": "Cpp",
+  "language_slug": "cpp",
+  "source_file": "Cpp_080.cpp"
+}

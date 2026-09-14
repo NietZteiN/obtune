@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 365,
+  "label": "Cpp_365",
+  "language": "Cpp",
+  "language_slug": "cpp",
+  "source_file": "Cpp_365.cpp"
+}

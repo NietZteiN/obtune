@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 153,
+  "label": "D_153",
+  "language": "D",
+  "language_slug": "d",
+  "source_file": "D_153.d"
+}

@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 255,
+  "label": "Cpp_255",
+  "language": "Cpp",
+  "language_slug": "cpp",
+  "source_file": "Cpp_255.cpp"
+}

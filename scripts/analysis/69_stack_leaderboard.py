@@ -40,8 +40,14 @@ DEEP = ["C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4", "C4_L1r_S1_S3_S4"]
 UNSEEN = ["C_L1r_X1", "C_X1_S1", "C_S2_X1"]
 PH = ["panel_core", "composite_generic", "composite_depth", "f2_divergence"]
 MPH = ["merge_panel", "rq2_generic", "composite_generic", "composite_depth", "f2_divergence"]
+# `tuned_X1` (the "family" adapter) is DELIBERATELY ABSENT (user, 2026-09-14: "family adapter
+# shouldn't count"). It is trained on X1, which is the held-out family's sibling, so on the
+# UNSEEN-containing group it is the one arm for which that group is not unseen at all -- it wins
+# 8/8 there by having been trained on the transform the group is defined by. Including it in a
+# leaderboard whose third row is headed "stacks containing the UNSEEN family" states something
+# false. Its numbers remain in the master tables and in 65/66, where nothing is declared a winner.
 ARMS = [("base", "base", PH), ("clean", "tuned_L0", PH), ("breadth", "mono_all", PH),
-        ("anchored", "cons_lam3", PH), ("family", "tuned_X1", PH),
+        ("anchored", "cons_lam3", PH),
         ("merge", "merge_dare_ties", MPH), ("router", "mole_router", ["mole_generic"])]
 MODELS = ["codellama-7b", "codellama-13b", "codellama-34b", "llama31-8b",
           "starcoder2-15b", "gemma3-12b", "codegemma-7b", "granite31-8b"]

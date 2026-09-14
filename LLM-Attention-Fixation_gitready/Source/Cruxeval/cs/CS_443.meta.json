@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 443,
+  "label": "CS_443",
+  "language": "CS",
+  "language_slug": "cs",
+  "source_file": "CS_443.cs"
+}

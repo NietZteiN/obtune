@@ -50,7 +50,12 @@ from cellkit import load_cell  # noqa: E402
 
 SEEN = ["C_L1b_S1", "C_L1r_S1", "C_S1_L1r", "C_L2_S4", "C_L1r_S3", "C_S4_S3"]
 UNSEEN = ["C_L1r_X1", "C_X1_S1", "C_S2_X1"]
-SYSTEMS = ["base", "mono_all", "cons_lam3", "tuned_X1", "tuned_L0",
+# `tuned_X1` REMOVED 2026-09-14 (user: "family adapter shouldn't count"). This script's quantity is
+# the drop from SEEN stacks to stacks containing the UNSEEN family, and `tuned_X1` is trained on X1 --
+# the very family that defines the second group. For that one arm the comparison is seen-vs-seen, so
+# its "drop" is not a brittleness measure and putting it in a column beside arms for which the group
+# really is unseen invites the reader to compare them. Its raw cells stay in the master tables.
+SYSTEMS = ["base", "mono_all", "cons_lam3", "tuned_L0",
            "merge_dare_ties", "merge_ties"]
 MODELS = ["codellama-7b", "codellama-13b", "codellama-34b", "llama31-8b",
           "starcoder2-15b", "gemma3-12b", "codegemma-7b", "granite31-8b"]

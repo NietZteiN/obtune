@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 768,
+  "label": "Go_768",
+  "language": "Go",
+  "language_slug": "go",
+  "source_file": "Go_768.go"
+}

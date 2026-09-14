@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 403,
+  "label": "JavaScript_403",
+  "language": "JavaScript",
+  "language_slug": "javascript",
+  "source_file": "JavaScript_403.js"
+}

@@ -1,0 +1,9 @@
+{
+  "has_input_reasoning": true,
+  "has_output_reasoning": true,
+  "id": 200,
+  "label": "JavaScript_200",
+  "language": "JavaScript",
+  "language_slug": "javascript",
+  "source_file": "JavaScript_200.js"
+}

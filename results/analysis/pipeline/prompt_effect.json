@@ -1,6 +1,6 @@
 {
   "script": "68_prompt_effect.py",
-  "generated_utc": "2026-09-14T14:18:10+00:00",
+  "generated_utc": "2026-09-14T14:34:31+00:00",
   "phases": {
     "zero_shot": "inverse_generic",
     "one_shot": "inverse_1shot"
@@ -19,78 +19,78 @@
   "models": {
     "codellama-13b": {
       "base": {
-        "n_programs": 553,
-        "n_conditions": 4,
-        "acc_zero_shot": 0.4099,
-        "acc_one_shot": 0.2932,
-        "delta_pts": -11.66,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.3613,
+        "acc_one_shot": 0.2785,
+        "delta_pts": -8.28,
         "ci": [
-          -13.79,
-          -9.64
+          -10.58,
+          -5.87
         ],
         "significant": true,
-        "fmt_zero_shot": 0.0268,
-        "fmt_one_shot": 0.0178,
+        "fmt_zero_shot": 0.0414,
+        "fmt_one_shot": 0.0245,
         "gate": "clean both"
       },
       "tuned_L0": {
-        "n_programs": 553,
-        "n_conditions": 4,
-        "acc_zero_shot": 0.403,
-        "acc_one_shot": 0.2848,
-        "delta_pts": -11.81,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.3646,
+        "acc_one_shot": 0.2693,
+        "delta_pts": -9.52,
         "ci": [
-          -13.41,
-          -10.28
+          -11.15,
+          -7.92
         ],
         "significant": true,
-        "fmt_zero_shot": 0.0743,
-        "fmt_one_shot": 0.1936,
+        "fmt_zero_shot": 0.0853,
+        "fmt_one_shot": 0.1624,
         "gate": "clean both"
       },
       "mono_all": {
-        "n_programs": 553,
-        "n_conditions": 4,
-        "acc_zero_shot": 0.0152,
-        "acc_one_shot": 0.0512,
-        "delta_pts": 3.6,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.0132,
+        "acc_one_shot": 0.0324,
+        "delta_pts": 1.92,
         "ci": [
-          2.65,
-          4.61
+          1.16,
+          2.81
         ],
         "significant": true,
-        "fmt_zero_shot": 0.9481,
-        "fmt_one_shot": 0.7797,
+        "fmt_zero_shot": 0.9478,
+        "fmt_one_shot": 0.8073,
         "gate": "gated both"
       },
       "cons_lam3": {
-        "n_programs": 553,
-        "n_conditions": 4,
-        "acc_zero_shot": 0.1305,
-        "acc_one_shot": 0.2301,
-        "delta_pts": 9.96,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.103,
+        "acc_one_shot": 0.2091,
+        "delta_pts": 10.61,
         "ci": [
-          7.81,
-          12.09
+          8.1,
+          13.17
         ],
         "significant": true,
-        "fmt_zero_shot": 0.6271,
-        "fmt_one_shot": 0.1506,
+        "fmt_zero_shot": 0.6704,
+        "fmt_one_shot": 0.1777,
         "gate": "GATE LIFTED"
       },
       "tuned_X1": {
-        "n_programs": 553,
-        "n_conditions": 4,
-        "acc_zero_shot": 0.1329,
-        "acc_one_shot": 0.0946,
-        "delta_pts": -3.83,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.1012,
+        "acc_one_shot": 0.0978,
+        "delta_pts": -0.35,
         "ci": [
-          -5.18,
-          -2.4
+          -1.77,
+          1.08
         ],
-        "significant": true,
-        "fmt_zero_shot": 0.5941,
-        "fmt_one_shot": 0.698,
+        "significant": false,
+        "fmt_zero_shot": 0.6594,
+        "fmt_one_shot": 0.6707,
         "gate": "gated both"
       }
     },
@@ -171,80 +171,97 @@
         "gate": "GATE LIFTED"
       }
     },
-    "gemma3-12b": {
+    "llama31-8b": {
       "base": {
         "n_programs": 557,
         "n_conditions": 1,
-        "acc_zero_shot": 0.4907,
-        "acc_one_shot": 0.453,
-        "delta_pts": -3.77,
+        "acc_zero_shot": 0.4243,
+        "acc_one_shot": 0.4093,
+        "delta_pts": -1.5,
         "ci": [
-          -5.92,
-          -1.56
+          -4.07,
+          0.84
         ],
-        "significant": true,
-        "fmt_zero_shot": 0.0162,
-        "fmt_one_shot": 0.0066,
+        "significant": false,
+        "fmt_zero_shot": 0.0664,
+        "fmt_one_shot": 0.0269,
+        "gate": "clean both"
+      }
+    },
+    "gemma3-12b": {
+      "base": {
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.3876,
+        "acc_one_shot": 0.3871,
+        "delta_pts": -0.05,
+        "ci": [
+          -1.46,
+          1.41
+        ],
+        "significant": false,
+        "fmt_zero_shot": 0.0332,
+        "fmt_one_shot": 0.0154,
         "gate": "clean both"
       },
       "tuned_L0": {
-        "n_programs": 557,
-        "n_conditions": 1,
-        "acc_zero_shot": 0.3441,
-        "acc_one_shot": 0.4399,
-        "delta_pts": 9.58,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.3155,
+        "acc_one_shot": 0.365,
+        "delta_pts": 4.96,
         "ci": [
-          7.12,
-          12.09
+          3.33,
+          6.58
         ],
         "significant": true,
-        "fmt_zero_shot": 0.2496,
-        "fmt_one_shot": 0.0287,
+        "fmt_zero_shot": 0.2424,
+        "fmt_one_shot": 0.0487,
         "gate": "clean both"
       },
       "mono_all": {
-        "n_programs": 557,
-        "n_conditions": 1,
-        "acc_zero_shot": 0.4518,
-        "acc_one_shot": 0.447,
-        "delta_pts": -0.48,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.4142,
+        "acc_one_shot": 0.3913,
+        "delta_pts": -2.28,
         "ci": [
-          -2.09,
-          1.32
+          -3.39,
+          -1.17
         ],
-        "significant": false,
-        "fmt_zero_shot": 0.0479,
-        "fmt_one_shot": 0.0174,
+        "significant": true,
+        "fmt_zero_shot": 0.0493,
+        "fmt_one_shot": 0.019,
         "gate": "clean both"
       },
       "cons_lam3": {
-        "n_programs": 557,
-        "n_conditions": 1,
-        "acc_zero_shot": 0.1849,
-        "acc_one_shot": 0.3549,
-        "delta_pts": 17.0,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.1427,
+        "acc_one_shot": 0.2543,
+        "delta_pts": 11.16,
         "ci": [
-          14.12,
-          19.75
+          8.95,
+          13.4
         ],
         "significant": true,
-        "fmt_zero_shot": 0.617,
-        "fmt_one_shot": 0.1855,
-        "gate": "GATE LIFTED"
+        "fmt_zero_shot": 0.6594,
+        "fmt_one_shot": 0.3138,
+        "gate": "gated both"
       },
       "tuned_X1": {
-        "n_programs": 557,
-        "n_conditions": 1,
-        "acc_zero_shot": 0.474,
-        "acc_one_shot": 0.4692,
-        "delta_pts": -0.48,
+        "n_programs": 317,
+        "n_conditions": 7,
+        "acc_zero_shot": 0.4163,
+        "acc_one_shot": 0.4155,
+        "delta_pts": -0.08,
         "ci": [
-          -2.27,
-          1.26
+          -1.13,
+          1.01
         ],
         "significant": false,
-        "fmt_zero_shot": 0.015,
-        "fmt_one_shot": 0.0126,
+        "fmt_zero_shot": 0.0173,
+        "fmt_one_shot": 0.0141,
         "gate": "clean both"
       }
     },
@@ -323,6 +340,83 @@
         "fmt_zero_shot": 0.7735,
         "fmt_one_shot": 0.1299,
         "gate": "GATE LIFTED"
+      }
+    },
+    "granite31-8b": {
+      "base": {
+        "n_programs": 553,
+        "n_conditions": 2,
+        "acc_zero_shot": 0.387,
+        "acc_one_shot": 0.274,
+        "delta_pts": -11.3,
+        "ci": [
+          -13.65,
+          -9.04
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.0664,
+        "fmt_one_shot": 0.1982,
+        "gate": "clean both"
+      },
+      "tuned_L0": {
+        "n_programs": 553,
+        "n_conditions": 2,
+        "acc_zero_shot": 0.0955,
+        "acc_one_shot": 0.1817,
+        "delta_pts": 8.62,
+        "ci": [
+          7.08,
+          10.25
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.7237,
+        "fmt_one_shot": 0.3865,
+        "gate": "gated both"
+      },
+      "mono_all": {
+        "n_programs": 553,
+        "n_conditions": 2,
+        "acc_zero_shot": 0.0235,
+        "acc_one_shot": 0.2453,
+        "delta_pts": 22.18,
+        "ci": [
+          19.95,
+          24.47
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.939,
+        "fmt_one_shot": 0.0787,
+        "gate": "GATE LIFTED"
+      },
+      "cons_lam3": {
+        "n_programs": 553,
+        "n_conditions": 2,
+        "acc_zero_shot": 0.0,
+        "acc_one_shot": 0.1175,
+        "delta_pts": 11.75,
+        "ci": [
+          10.13,
+          13.53
+        ],
+        "significant": true,
+        "fmt_zero_shot": 1.0,
+        "fmt_one_shot": 0.4099,
+        "gate": "gated both"
+      },
+      "tuned_X1": {
+        "n_programs": 553,
+        "n_conditions": 2,
+        "acc_zero_shot": 0.2559,
+        "acc_one_shot": 0.242,
+        "delta_pts": -1.39,
+        "ci": [
+          -3.07,
+          0.27
+        ],
+        "significant": false,
+        "fmt_zero_shot": 0.2219,
+        "fmt_one_shot": 0.0835,
+        "gate": "clean both"
       }
     }
   }
