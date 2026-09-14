@@ -290,7 +290,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     from obtune import data, prompts
     from obtune.config import PROJECT_ROOT, RESULTS_DIR, load_config
     from obtune.eval_vllm import (
-        SystemSpec, assert_adapter_effective, cell_dir, run_cell, validate_systems,
+        SystemSpec, assert_adapter_effective, cell_dir, run_cell, validate_phase, validate_systems,
     )
     from obtune.mole.model import build_mole_model
     from obtune.provenance import sha256_file
@@ -299,7 +299,9 @@ def main(argv: Optional[list[str]] = None) -> int:
     cfg = load_config(args.config)
     model_key = args.model or (cfg.get("models") or [cfg["model"]])[0]
     language = args.language or (cfg.get("languages") or [cfg["language"]])[0]
-    phase = cfg.get("phase", "main")
+    # Refused here, not at the first row build -- the mixture path loads a full model and a bank of
+    # eight adapters before it writes anything, so an unknown phase would cost all of that first.
+    phase = validate_phase(cfg, str(args.config))
     eval_source = cfg.get("eval_source", data.DEFAULT_EVAL_SOURCE)  # no --source flag on this CLI
     mcfg = resolve_model_cfg({"model": model_key})
     out_root = Path(args.out_root) if args.out_root else RESULTS_DIR / "cells"

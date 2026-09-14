@@ -969,6 +969,29 @@ def validate_systems(out: Sequence[SystemSpec]) -> list[SystemSpec]:
     return out
 
 
+def validate_phase(cfg, config_name: str = "<config>") -> str:
+    """Refuse an unknown `phase:` BEFORE any GPU work, and return it.
+
+    `TrialRow.phase` is a pydantic Literal whitelist, which is the right guard -- an unknown phase
+    string silently scatters cells across the results tree -- but it fires when the FIRST row is
+    constructed, i.e. after the engine has loaded and generated. On 2026-09-14 a newly added phase
+    cost 1,671 completions and five GPU-minutes before that whitelist spoke. The config knows its
+    phase before anything is allocated, so it is checked here as well. Both evaluation entry points
+    call this: `run_grid` and `mole.eval_mole.main`.
+    """
+    import typing as _t
+
+    known = _t.get_args(TrialRow.model_fields["phase"].annotation)
+    phase = str(cfg.get("phase", "main"))
+    if known and phase not in known:
+        raise ValueError(
+            f"{config_name}: phase {phase!r} is not in TrialRow's whitelist, so every row this run "
+            f"produces would be rejected after the GPU work. Add it to src/obtune/schema.py with a "
+            f"comment saying what it holds and why it is separate, or fix the typo. "
+            f"Known: {', '.join(sorted(known))}")
+    return phase
+
+
 def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     from obtune.train_sft import resolve_model_cfg
 
@@ -1000,6 +1023,7 @@ def run_grid(args: argparse.Namespace) -> dict[str, Any]:
     task = str(cfg.get("task", "output"))
     if task not in ("output", "input"):
         raise ValueError(f"{args.config}: task must be output|input, got {task!r}")
+    validate_phase(cfg, str(args.config))
     if task == "input" and "H1" in eval_conditions:
         # Rule 3 of CLAUDE.md §3.2: the H1 budget is spent; no new grid may read it.
         raise ValueError("task='input' grids may not include H1 (quarantine budget spent)")
