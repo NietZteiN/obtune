@@ -41,7 +41,10 @@ scoring:
 
 systems:
   - {name: base, arch: none, one_shot: true}
-  - {name: formatonly, adapter: "runs/adapters_formatonly/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0, one_shot: true}
+# `formatonly` is DELIBERATELY ABSENT. That control adapter was only ever trained for
+# CodeLlama-7B, and a named adapter that is not on disk is a hard error (2026-09-11), so its
+# presence failed this config on the other seven models six minutes in. 7B's formatonly
+# stack cells were written by the first run and are unaffected.
   - {name: tuned_L0, adapter: "runs/adapters/{model}/{language}/L0_r32_s17/best", arch: per_type, train_cond: L0, one_shot: true}
   - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix, one_shot: true}
   - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix, one_shot: true}

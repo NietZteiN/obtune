@@ -15,9 +15,9 @@
   "est_gpu_h": 1.2,
   "priority": 90,
   "meta": {
-    "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack"
+    "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack | REQUEUED 2026-09-14: the config carried the `formatonly` control, which exists only for CodeLlama-7B; the missing-adapter guard refused it on every other model. Arm removed."
   },
-  "slurm": {
+  "previous_slurm": {
     "job_id": "394623",
     "node": "g-07-11",
     "partition": "h200",
