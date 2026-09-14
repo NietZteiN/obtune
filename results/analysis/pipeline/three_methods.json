@@ -1,0 +1,610 @@
+{
+  "script": "66_three_methods.py",
+  "generated_utc": "2026-09-14T12:54:29+00:00",
+  "n_resamples": 2000,
+  "seed": 17,
+  "format_gate": 0.25,
+  "groups": {
+    "seen": [
+      "C_L1b_S1",
+      "C_L1r_S1",
+      "C_S1_L1r",
+      "C_L2_S4",
+      "C_L1r_S3",
+      "C_S4_S3"
+    ],
+    "unseen_containing": [
+      "C_L1r_X1",
+      "C_X1_S1",
+      "C_S2_X1"
+    ]
+  },
+  "methods": [
+    "base",
+    "breadth",
+    "merge",
+    "router"
+  ],
+  "models": {
+    "codellama-7b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.1427,
+            "seen": 0.1318,
+            "unseen": 0.1036,
+            "drop": -21.43
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0099,
+            "seen": 0.3441,
+            "unseen": 0.2294,
+            "drop": -33.33,
+            "vs_base_pts": -11.9,
+            "vs_base_ci": [
+              -22.18,
+              -2.26
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0284,
+            "seen": 0.3192,
+            "unseen": 0.2556,
+            "drop": -19.93,
+            "vs_base_pts": 1.5,
+            "vs_base_ci": [
+              -8.18,
+              10.88
+            ],
+            "vs_base_sig": false
+          },
+          "router": {
+            "gated": false,
+            "fmt": 0.0276,
+            "seen": 0.3424,
+            "unseen": 0.2619,
+            "drop": -23.52,
+            "vs_base_pts": -2.09,
+            "vs_base_ci": [
+              -12.36,
+              7.75
+            ],
+            "vs_base_sig": false
+          }
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.0872,
+            "seen": 0.0791,
+            "unseen": 0.0672,
+            "drop": -14.98
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.1447,
+            "seen": 0.0697,
+            "unseen": 0.0418,
+            "drop": -40.0,
+            "vs_base_pts": -25.02,
+            "vs_base_ci": [
+              -42.25,
+              -8.63
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0565,
+            "seen": 0.0939,
+            "unseen": 0.0794,
+            "drop": -15.4,
+            "vs_base_pts": -0.42,
+            "vs_base_ci": [
+              -11.41,
+              9.87
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      }
+    },
+    "codellama-13b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.079,
+            "seen": 0.162,
+            "unseen": 0.1308,
+            "drop": -19.27
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0159,
+            "seen": 0.3691,
+            "unseen": 0.2587,
+            "drop": -29.9,
+            "vs_base_pts": -10.63,
+            "vs_base_ci": [
+              -20.3,
+              -1.05
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0359,
+            "seen": 0.3605,
+            "unseen": 0.2856,
+            "drop": -20.79,
+            "vs_base_pts": -1.52,
+            "vs_base_ci": [
+              -10.55,
+              7.36
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.0346,
+            "seen": 0.0883,
+            "unseen": 0.0735,
+            "drop": -16.77
+          },
+          "breadth": {
+            "gated": true,
+            "fmt": 0.9461,
+            "seen": 0.0091,
+            "unseen": 0.0017,
+            "drop": -80.77
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0765,
+            "seen": 0.1212,
+            "unseen": 0.1024,
+            "drop": -15.52,
+            "vs_base_pts": 1.25,
+            "vs_base_ci": [
+              -10.9,
+              13.23
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      }
+    },
+    "codellama-34b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.1309,
+            "seen": 0.1578,
+            "unseen": 0.1269,
+            "drop": -19.56
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0164,
+            "seen": 0.3964,
+            "unseen": 0.2884,
+            "drop": -27.26,
+            "vs_base_pts": -7.7,
+            "vs_base_ci": [
+              -18.38,
+              2.55
+            ],
+            "vs_base_sig": false
+          },
+          "merge": null,
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.0385,
+            "seen": 0.0911,
+            "unseen": 0.0871,
+            "drop": -4.4
+          },
+          "breadth": {
+            "gated": true,
+            "fmt": 0.5441,
+            "seen": 0.0327,
+            "unseen": 0.03,
+            "drop": -8.51
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0552,
+            "seen": 0.1259,
+            "unseen": 0.1202,
+            "drop": -4.56,
+            "vs_base_pts": -0.16,
+            "vs_base_ci": [
+              -11.32,
+              11.25
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      }
+    },
+    "llama31-8b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.0527,
+            "seen": 0.1801,
+            "unseen": 0.129,
+            "drop": -28.36
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0135,
+            "seen": 0.3436,
+            "unseen": 0.2204,
+            "drop": -35.87,
+            "vs_base_pts": -7.51,
+            "vs_base_ci": [
+              -16.34,
+              1.18
+            ],
+            "vs_base_sig": false
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0289,
+            "seen": 0.3417,
+            "unseen": 0.2584,
+            "drop": -24.39,
+            "vs_base_pts": 3.97,
+            "vs_base_ci": [
+              -4.19,
+              12.06
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.1142,
+            "seen": 0.0775,
+            "unseen": 0.0658,
+            "drop": -15.06
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.1351,
+            "seen": 0.0784,
+            "unseen": 0.0453,
+            "drop": -42.22,
+            "vs_base_pts": -27.16,
+            "vs_base_ci": [
+              -43.72,
+              -10.54
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0656,
+            "seen": 0.1043,
+            "unseen": 0.0829,
+            "drop": -20.53,
+            "vs_base_pts": -5.47,
+            "vs_base_ci": [
+              -17.55,
+              5.75
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      }
+    },
+    "starcoder2-15b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": true,
+            "fmt": 1.0,
+            "seen": 0.0,
+            "unseen": 0.0,
+            "drop": null
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0187,
+            "seen": 0.4287,
+            "unseen": 0.3201,
+            "drop": -25.34
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0268,
+            "seen": 0.4034,
+            "unseen": 0.3434,
+            "drop": -14.87
+          },
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": true,
+            "fmt": 0.5183,
+            "seen": 0.0505,
+            "unseen": 0.0564,
+            "drop": 11.72
+          },
+          "breadth": {
+            "gated": true,
+            "fmt": 0.4494,
+            "seen": 0.0669,
+            "unseen": 0.0376,
+            "drop": -43.75
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.1259,
+            "seen": 0.1343,
+            "unseen": 0.1205,
+            "drop": -10.25
+          },
+          "router": null
+        }
+      }
+    },
+    "gemma3-12b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": true,
+            "fmt": 0.2843,
+            "seen": 0.2061,
+            "unseen": 0.1471,
+            "drop": -28.6
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.037,
+            "seen": 0.3964,
+            "unseen": 0.2594,
+            "drop": -34.56
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0385,
+            "seen": 0.3816,
+            "unseen": 0.2807,
+            "drop": -26.45
+          },
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.0677,
+            "seen": 0.1054,
+            "unseen": 0.0871,
+            "drop": -17.36
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0427,
+            "seen": 0.1189,
+            "unseen": 0.0888,
+            "drop": -25.33,
+            "vs_base_pts": -7.97,
+            "vs_base_ci": [
+              -21.42,
+              5.37
+            ],
+            "vs_base_sig": false
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0622,
+            "seen": 0.1284,
+            "unseen": 0.1118,
+            "drop": -12.89,
+            "vs_base_pts": 4.47,
+            "vs_base_ci": [
+              -5.82,
+              15.13
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      }
+    },
+    "codegemma-7b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.207,
+            "seen": 0.1452,
+            "unseen": 0.1412,
+            "drop": -2.76
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0198,
+            "seen": 0.3717,
+            "unseen": 0.2573,
+            "drop": -30.77,
+            "vs_base_pts": -28.01,
+            "vs_base_ci": [
+              -37.96,
+              -17.84
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0357,
+            "seen": 0.3346,
+            "unseen": 0.2619,
+            "drop": -21.73,
+            "vs_base_pts": -18.97,
+            "vs_base_ci": [
+              -28.97,
+              -9.19
+            ],
+            "vs_base_sig": true
+          },
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.1996,
+            "seen": 0.0495,
+            "unseen": 0.0387,
+            "drop": -21.83
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.1548,
+            "seen": 0.0996,
+            "unseen": 0.0491,
+            "drop": -50.7,
+            "vs_base_pts": -28.87,
+            "vs_base_ci": [
+              -50.28,
+              -10.66
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0565,
+            "seen": 0.0902,
+            "unseen": 0.0721,
+            "drop": -20.08,
+            "vs_base_pts": 1.75,
+            "vs_base_ci": [
+              -16.73,
+              18.96
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      }
+    },
+    "granite31-8b": {
+      "forward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": false,
+            "fmt": 0.0982,
+            "seen": 0.2252,
+            "unseen": 0.1538,
+            "drop": -31.73
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.0164,
+            "seen": 0.3347,
+            "unseen": 0.196,
+            "drop": -41.46,
+            "vs_base_pts": -9.73,
+            "vs_base_ci": [
+              -18.07,
+              -1.83
+            ],
+            "vs_base_sig": true
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.0625,
+            "seen": 0.3107,
+            "unseen": 0.2158,
+            "drop": -30.53,
+            "vs_base_pts": 1.2,
+            "vs_base_ci": [
+              -5.39,
+              7.64
+            ],
+            "vs_base_sig": false
+          },
+          "router": null
+        }
+      },
+      "backward": {
+        "n_programs": 319,
+        "methods": {
+          "base": {
+            "gated": true,
+            "fmt": 0.2776,
+            "seen": 0.0664,
+            "unseen": 0.0543,
+            "drop": -18.11
+          },
+          "breadth": {
+            "gated": false,
+            "fmt": 0.2279,
+            "seen": 0.0517,
+            "unseen": 0.0199,
+            "drop": -61.62
+          },
+          "merge": {
+            "gated": false,
+            "fmt": 0.058,
+            "seen": 0.0707,
+            "unseen": 0.0568,
+            "drop": -19.7
+          },
+          "router": null
+        }
+      }
+    }
+  }
+}
