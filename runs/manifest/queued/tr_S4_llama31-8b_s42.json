@@ -1,0 +1,19 @@
+{
+  "job_id": "tr_S4_llama31-8b_s42",
+  "kind": "train",
+  "argv": [
+    "src/obtune/train_sft.py",
+    "--config",
+    "train/grid_py_S4_panel.yaml",
+    "--model",
+    "llama31-8b",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 60,
+  "meta": {
+    "note": "SECOND SEED, Llama-3.1-8B (2026-09-14, 'maximize GPU usage'). Every panel number is s17-only. Llama-3.1-8B is the second model with a measured router and a readable backward baseline, so a full s42 replicate there turns every CodeLlama-7B seed check into a two-model one. Low priority: these backfill h100 behind the mixture grids. ~24 min each at s17 on h100/h200."
+  }
+}

@@ -1,1 +1,27 @@
-{"job_id":"ev_mole_codellama-13b","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_codellama-13b.yaml","--model","codellama-13b","--language","python"],"raw":false,"est_gpu_h":1.5,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}
+{
+  "job_id": "ev_mole_codellama-13b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_codellama-13b.yaml",
+    "--model",
+    "codellama-13b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 122,
+  "meta": {
+    "note": "master table: the mixture column, queued automatically once the router gate existed | REQUEUED 2026-09-14 at batch_size 16 after CUDA OOM on the 93 GB node; resume skips the cells already written."
+  },
+  "previous_slurm": {
+    "job_id": "397691",
+    "node": "g-05-01",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T18:55:26.702624+00:00"
+  }
+}

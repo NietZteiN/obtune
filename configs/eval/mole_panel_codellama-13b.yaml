@@ -48,7 +48,7 @@ gate_checkpoint: runs/mole/codellama-13b/python/routerlora_codellama13b_s17/gate
 engine:
   seed: 17
   dtype: bfloat16
-  batch_size: 32
+  # BATCH 16 (2026-09-14): job 397691 OOMed at L2 on the 93 GB H100 NVL node (92.31 GiB in use, needed 1.26 more). Same fix as CodeLlama-7B's grids; the run resumes past the cells already written.N
 
 systems:
   - {name: base, arch: none}
