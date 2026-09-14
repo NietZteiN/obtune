@@ -1,5 +1,13 @@
 #!/bin/bash
 # Keep the manifest queue moving while the master-table backfill runs (2026-09-13).
+#
+# ⚠️ THIS SCRIPT IS A `while true` LOOP IN ONE BASH INVOCATION, SO EDITING IT DOES NOTHING TO A
+# RUNNING INSTANCE. Bash reads the file as it executes, but the loop body is already parsed; a
+# change to a constant or a guard inside the loop is not picked up. This cost two mistakes on
+# 2026-09-14: the held-manifest veto was added while an old instance kept requeuing the job it was
+# written to block, and corrected walltime estimates sat unused while the stale ones were still in
+# memory. AFTER EDITING THIS FILE, RESTART IT. Stopping it does not touch running SLURM jobs --
+# the queue state lives in runs/manifest/, not in this process.
 # Emits one line per submission, per failure, and a periodic status; exits when the queue is empty
 # AND nothing of ours is left running, so the watch ends by itself.
 #
