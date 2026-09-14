@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-14 15:51 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-14 16:02 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -812,7 +812,8 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | C_L1r_S1 | fmt | fmt | 0.419 | fmt | fmt | 0.415 | fmt | fmt | 0.391 | fmt | fmt | 0.389 | fmt | fmt |
 | C_S1_L1r | fmt | fmt | 0.418 | fmt | fmt | 0.418 | fmt | fmt | 0.398 | fmt | fmt | 0.397 | fmt | fmt |
 | C_L2_S4 | fmt | fmt | 0.485 | fmt | fmt | 0.485 | fmt | fmt | 0.468 | fmt | fmt | 0.467 | fmt | fmt |
-| C_L1r_S3 | fmt | fmt | 0.490 | fmt | fmt | -- | -- | -- | 0.482 | fmt | fmt | 0.480 | fmt | fmt |
+| C_L1r_S3 | fmt | fmt | 0.490 | fmt | fmt | 0.490 | fmt | fmt | 0.482 | fmt | fmt | 0.480 | fmt | fmt |
+| C_S4_S3 | fmt | fmt | -- | -- | -- | -- | -- | -- | 0.520 | fmt | fmt | 0.520 | fmt | fmt |
 
 **Merging (forward)**
 
