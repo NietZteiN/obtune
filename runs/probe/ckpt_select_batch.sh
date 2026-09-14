@@ -12,14 +12,19 @@ set -u
 cd /work/jvl210002/migration/obtune
 source scripts/env.sh
 M="$1"
+# SEED IS THE SECOND ARGUMENT (2026-09-14), default 17: the second-seed panel needs best/ exactly as
+# the s17 twins did, and the hardwired seed skipped every _s42 adapter as "not trained yet". L0 and X1
+# are included because s42 must select them too; they use their own configs, not the _panel ones.
+SEED="${2:-17}"
 # S3 and S4 are here for the MIXTURE arm's eight experts; a merge needs only L1b..S2. Untrained
 # adapters are skipped below, so listing them costs nothing before they exist.
-for c in L1b L1r L2 S1 S2 S3 S4; do
-  d="runs/adapters/$M/python/${c}_r32_s17"
+for c in L0 L1b L1r L2 S1 S2 S3 S4 X1; do
+  d="runs/adapters/$M/python/${c}_r32_s${SEED}"
   [ -f "$d/training_summary.json" ] || { echo "skip $c: not trained yet"; continue; }
   [ -e "$d/best/adapter_model.safetensors" ] && { echo "skip $c: best/ already exists"; continue; }
-  echo "### checkpoint-select $M $c"
-  python -m obtune.eval_vllm --config "train/grid_py_${c}_panel.yaml" --model "$M" \
-    --mode ckpt-select --adapter-root "$d" || echo "FAILED $M $c"
+  case "$c" in L0) cfg="train/grid_py_L0.yaml" ;; X1) cfg="train/grid_py_X1.yaml" ;; *) cfg="train/grid_py_${c}_panel.yaml" ;; esac
+  echo "### checkpoint-select $M $c s$SEED"
+  python -m obtune.eval_vllm --config "$cfg" --model "$M" \
+    --mode ckpt-select --adapter-root "$d" || echo "FAILED $M $c s$SEED"
 done
 echo "### done $M"
