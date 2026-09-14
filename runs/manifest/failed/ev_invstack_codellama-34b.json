@@ -16,5 +16,12 @@
   "priority": 90,
   "meta": {
     "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack"
+  },
+  "slurm": {
+    "job_id": "394623",
+    "node": "g-07-11",
+    "partition": "h200",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T03:35:38.264817+00:00"
   }
 }

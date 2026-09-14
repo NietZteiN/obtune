@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_invstack_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_stacks.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.2,
+  "priority": 90,
+  "meta": {
+    "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack"
+  },
+  "slurm": {
+    "job_id": "394547",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T03:24:02.549418+00:00"
+  }
+}

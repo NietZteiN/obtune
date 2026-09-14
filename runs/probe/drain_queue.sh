@@ -96,7 +96,9 @@ while true; do
     done
     # train_mole appends the seed to run_tag: the 7B gate lives in routerlora_codellama7b_s17/.
     tag="routerlora_$(echo $m | tr -d '-')_s17"
-    mf=runs/manifest/queued/tr_gate_$m.json
+    # 34B gate training needs h200: the base model is ~68 GB before the eight-expert bank.
+    qdir=runs/manifest/queued; case "$m" in *34b*) qdir=runs/manifest/queued_34b ;; esac
+    mf=$qdir/tr_gate_$m.json
     if [ "$have" -eq 8 ] && [ ! -f "runs/mole/$m/python/$tag/gate.pt" ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/tr_gate_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "tr_gate_$m"; then
