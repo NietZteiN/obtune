@@ -122,8 +122,13 @@ exec_pool:
 # guard defaulted to "no limit" in the one place that decides whether a job is created. A policy
 # that depends on the submitter's shell being set up correctly is not a policy.
 share_limits:
-  h200: 2
-  normal: 2      # same juno pool as h200; the two numbers are one budget, not two
+  # RAISED 2 -> 3 ON 2026-09-14, AUTHORISED BY THE USER ("Sure do it"). The share is an agreement with
+  # the other project on this account; it was held at 2 all day while every h100 slot was saturated
+  # and 18+ h200 nodes sat mixed/idle, and the third slot is what lets the next mixture grid start
+  # now and the Gemma-3 / CodeLlama-34B grids start the moment their gates finish. Restore to 2 if
+  # the other project needs the pool back; nothing else reads this number.
+  h200: 3
+  normal: 3      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
   retired: 2026-08-28
