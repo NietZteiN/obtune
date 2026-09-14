@@ -1,6 +1,6 @@
 # Research questions, approaches, and answers — one page
 
-*Last updated: 2026-09-13*
+*Last updated: 2026-09-14*
 
 A compressed index of everything the project has asked and what came back. Full numbers and
 provenance are in [`../MASTER_REPORT.md`](../MASTER_REPORT.md); the forward plan is in
@@ -605,6 +605,55 @@ CodeLlama-7B, 317 programs, pooled over L0-S2 and X1, against the untuned model:
 
 Across the four models with merges: CodeLlama-7B **+3.21** (DR +0.17), Llama-3.1-8B **+2.91** (DR +0.17; its `merge_ties` is **+3.11**, DR **+0.26**), StarCoder2 undefined (untuned backward is format-failure 1.00), and **Granite-3.1-8B reverses it**: `merge_dare_ties` there is **-7.66 [-10.08, -5.17]** backwards, DR **-0.68**, with 25 of its backward cells format-gated so only `base` and the merges are readable. Merging is therefore *not* backward-safe; the cost is model-dependent and large in either direction. The paper's "every method that fits the forward task buys its gain by losing backward competence" is false as written: DARE-TIES matches breadth forward and gains backwards. One model; the other three are queued and may be format-gated. `log/modularity/2026-09-13_merging-gains-backward.md`.
 
+> ⚠️ **CORRECTION, 2026-09-14 — every number in 6.5d is on a confounded comparison, and the
+> CodeLlama-7B row is the only one unaffected.** This read is on the backward LADDER. On the seven
+> non-CodeLlama-7B models those `base` / `tuned_L0` / `mono_all` / `cons_lam3` / `tuned_X1` cells
+> were written by `inverse_core.yaml` with **no one-shot demo** (`prompt_id: inverse_v1`), while the
+> merge arms they are contrasted against came from `inverse_merge.yaml` **with** one
+> (`inverse_1shot_v1`). The prompt difference is larger than most effects here: CodeGemma's
+> `mono_all` sits at 0.882 format-failure zero-shot and 0.086 one-shot on a harder condition. So
+> Granite's −7.66 reversal and its "25 cells format-gated" are partly a prompt difference, and the
+> across-model sentence should not be quoted. The repair is running into phase `inverse_1shot`;
+> `62_merge_backward.py` now prints a warning when a contrast crosses the boundary.
+> See `log/transfer/2026-09-14_two-prompts-one-phase.md`.
+
+### 6.5e The merge pays no brittleness tax in either direction, and forward-locking is why (2026-09-14)
+
+Three reads, all on **stacks only**, where every arm was evaluated with the same one-shot prompt —
+so none of them inherits 6.5d's confound. Scripts: `65_backward_stacks.py`, `66_three_methods.py`,
+`67_backward_failure_modes.py`. Entries under `log/transfer/2026-09-14_*`.
+
+**(a) Relative drop, six seen depth-2 stacks → three stacks containing the unseen family**, paired on
+one 319-program set per model, bootstrap on each method's difference from the untuned model's drop:
+
+| | forward | backward |
+|---|---|---|
+| merge (DARE-TIES) | never differs from `base` on any model where `base` is readable | same, 8/8 |
+| breadth | further than `base` on **4 of 6** readable | further on **3 of 4** readable |
+| router | one model measured (CodeLlama-7B, −23.5 % vs `base` −21.4 %) | **no cell exists on any model** |
+
+On StarCoder2 and Granite the untuned model is format-gated in both directions and **the merges are
+the only readable systems at all**.
+
+**(b) The merge is not flat because it is weak.** Forward accuracy pooled over the six ladder
+conditions: the merge matches breadth on all eight models, never more than 0.013 below it and above
+it twice, against untuned levels of 0.000–0.283.
+
+**(c) Forward collapse is the mechanism.** Share of backward replies that are exactly the gold
+*forward* answer, pooled over all sixteen backward conditions, panel means:
+
+| `base` | `merge_ties` | `merge_dare_ties` | `tuned_X1` | `tuned_L0` | `mono_all` | `cons_lam3` |
+|---|---|---|---|---|---|---|
+| 0.004 | **0.000** | **0.001** | 0.110 | 0.135 | 0.198 | **0.312** |
+
+Both merges sit at the untuned floor on every one of the eight models; the largest value either
+takes anywhere is 0.002. The single-adapter arms reach 0.41–0.48 on StarCoder2, 0.25–0.81 on
+CodeGemma, 0.25–0.64 on Granite. The ordering is the objective's: `cons_lam3`'s extra term is a KL
+to the clean parent's **answer-token** distribution, it matches forward behaviour by construction,
+and it collapses hardest of all. **This also means the 0.25 format gate is not what §6.3's row says
+it is** — a gated cell is not necessarily "unparseable", and on many cells the majority of failures
+are the arm answering the other question.
+
 ## 7. Master tables — every approach × every condition, per model
 
 *Added 2026-09-08.* §1 lists the approaches and says what each one bought in words. This is the same
@@ -738,3 +787,4 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.
 - **2026-09-13** — §6.5c: H-F2-route refuted; the specialist mixture is +2.88 above breadth on unseen-containing stacks.
 - **2026-09-13** - §6.5d: H-merge-backward refuted; the DARE-TIES merge has the highest direction ratio measured (+0.17).
+- **2026-09-14** - §6.5d carries a CORRECTION: its cross-model numbers contrast one-shot merge cells against zero-shot baselines (`inverse_core.yaml` carried no one-shot demo), so Granite's reversal is partly a prompt difference; the CodeLlama-7B row is unaffected. New §6.5e: on stacks, where every arm shares one prompt, the merge's drop never differs from the untuned model's in either direction on eight models, it matches breadth's forward accuracy on all eight, and forward collapse is the mechanism — both merges at the untuned floor (0.000/0.001) against breadth 0.198 and the KL-anchored arm 0.312.
