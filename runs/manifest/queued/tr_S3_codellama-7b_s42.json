@@ -14,6 +14,14 @@
   "est_gpu_h": 0.8,
   "priority": 290,
   "meta": {
-    "note": "SECOND SEED, CodeLlama-7B (2026-09-14). First attempt OOM'd on a30 in 2-3 min: the specialist recipe (16x4 batch, 2048 ctx) needs more than a 23.5 GB card, which is also where the s17 twins were trained (h100/h200). Same recipe, same seed 42, h100 backfill; ~25-45 min each at s17."
+    "note": "SECOND SEED, CodeLlama-7B (2026-09-14). First attempt OOM'd on a30 in 2-3 min: the specialist recipe (16x4 batch, 2048 ctx) needs more than a 23.5 GB card, which is also where the s17 twins were trained (h100/h200). Same recipe, same seed 42, h100 backfill; ~25-45 min each at s17. | the a30 duplicate (cancelled by hand) filed this under failed/; restored to queued/ so the h100 twin's sbatch can move it on start."
+  },
+  "previous_slurm": {
+    "job_id": "399422",
+    "node": "g-02-01",
+    "partition": "a30",
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T22:06:22.463374+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
   }
 }
