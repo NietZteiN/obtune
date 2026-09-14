@@ -59,8 +59,12 @@ train:
   # A small head over a frozen network: train_sft's 1e-4 is far too small here.
   lr: 1.0e-3
   epochs: 2
-  per_device_batch: 8
-  grad_accum: 8          # effective 64, matching _base_lora.yaml
+  # GEMMA-3 ONLY. 12 B parameters with a 262 k vocabulary: the fp32 logits dominate, and batch 8
+  # asked for a 15.77 GiB allocation with 15.46 GiB free on an 80 GB card (2026-09-14), in
+  # backward. CodeGemma has the same vocabulary at 8.5 B and fits; this is the size that does not.
+  # Effective batch held at 64 so the gate stays comparable to the others.
+  per_device_batch: 2
+  grad_accum: 32         # effective 64, matching _base_lora.yaml
   max_seq_len: 2048
   weight_decay: 0.0
   max_grad_norm: 1.0

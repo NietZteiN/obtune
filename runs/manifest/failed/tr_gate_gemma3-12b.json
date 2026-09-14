@@ -8,16 +8,16 @@
     "mole/routerlora_gemma3-12b.yaml"
   ],
   "raw": false,
-  "est_gpu_h": 3.0,
+  "est_gpu_h": 6.0,
   "priority": 280,
   "meta": {
-    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | est raised to 6 h (walltime 12 h) after CodeLlama-13B's gate projected 6h19 against a 6 h limit."
   },
   "slurm": {
-    "job_id": "394658",
+    "job_id": "394702",
     "node": "g-04-02",
     "partition": "h100",
     "exit_code": 1,
-    "finished_utc": "2026-09-14T03:47:22.059569+00:00"
+    "finished_utc": "2026-09-14T06:44:57.320083+00:00"
   }
 }
