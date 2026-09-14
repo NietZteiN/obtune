@@ -63,3 +63,11 @@ env/vendor_tools/bin/
 # it carries an anonymous-artifact mirror URL, and 37 MB of it does not belong in obtune's history.
 # Ignored so no future `add -A` can repeat that. The files stay on disk, untouched.
 LLM-Attention-Fixation_gitready/
+
+# Submission archives for the OTHER project that shares this directory. `ase2026.zip` is 246 MB and
+# `LLM-Attention-Fixation.zip` 14 MB; both appeared on 2026-09-14 alongside the directory above.
+# Checked while looking for the paper's undefined `ase26` citation: the archive holds that project's
+# own ASE submission (Model_Steering.pdf, the attention-steering work), NOT the Rong et al. paper
+# intro-2.tex cites. So it does not resolve that reference, and it must not enter this history.
+ase2026.zip
+LLM-Attention-Fixation.zip
