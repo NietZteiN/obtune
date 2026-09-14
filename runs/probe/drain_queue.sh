@@ -56,6 +56,12 @@ while true; do
       out=$(timeout 300 python scripts/slurm/submit.py --queued --partition "$1" --limit "$2" --mem "$3" 2>&1 | grep -E "^submitted|FAILED|REFUSING" | grep -v REFUSING)
       [ -n "$out" ] && echo "$out" | sed "s/^/[$1] /"
     done
+    # a30 TAKES NOTHING FROM THIS PROJECT AT THE PANEL BATCH SHAPE (2026-09-14): four CodeLlama-7B
+    # trainings at the specialists' own 16x4 / 2048-token recipe -- S3, S4, X1 and the backward-trained
+    # breadth arm -- all OOM'd on a 23.49 GB card within three minutes of starting (322-872 MiB short).
+    # The note below was true of an earlier, smaller batch and is kept for the record; every 7B job
+    # now goes to h100 backfill. Do not spend a submission on a30 without shrinking the batch, which
+    # would make the run incomparable with its seed-17 twin.
     # a30 takes CodeLlama-7B TRAININGS ONLY. 23.5 GB holds 6.7B and nothing above it: every 8B model
     # has OOM'd there -- Granite-3.1-8B and Llama-3.1-8B on S3, CodeGemma (8.5B, 256k vocab) on L2,
     # CodeLlama-13B on L1r. The bound was raised twice on partial evidence before landing here.

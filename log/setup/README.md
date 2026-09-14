@@ -65,3 +65,4 @@
 - [`2026-09-14_walltime-estimates-from-measurement.md`](2026-09-14_walltime-estimates-from-measurement.md) — five timeouts traced to unmeasured estimates; two auto-queue constants fixed from data.
 - [`2026-09-14_gpu-maximisation.md`](2026-09-14_gpu-maximisation.md) — idle a30 → second-seed 7B panel + backward-trained control; share not raised.
 - [`2026-09-14_gpu-maximisation-round-2.md`](2026-09-14_gpu-maximisation-round-2.md) — OOM requeues; Llama-3.1-8B second seed queued.
+- [`2026-09-14_a30-cannot-train-7b.md`](2026-09-14_a30-cannot-train-7b.md) — four OOMs; a30 retired at the panel batch shape.
