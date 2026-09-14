@@ -1,7 +1,7 @@
 {
  "script": "62_merge_backward.py",
  "model": "starcoder2-15b",
- "generated_utc": "2026-09-14T12:33:39+00:00",
+ "generated_utc": "2026-09-14T13:07:24+00:00",
  "no_untuned_reference": "every backward `base` cell exceeds the format gate; no contrast or direction ratio is defined on this model",
  "format_gated_cells": [
   "base__L0",

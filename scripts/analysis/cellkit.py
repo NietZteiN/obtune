@@ -52,8 +52,52 @@ def load_cell(phases: Iterable[str], model: str, system: str, cond: str,
             df = pd.read_parquet(p)
             df["condition"] = cond
             df["_phase"] = ph
+            # Carried so `pooled` can check that everything it averages was asked the same way.
+            # See the 2026-09-14 fault below.
+            df["_prompt_id"] = _prompt_id(p.parent)
             return df
     return None
+
+
+def _prompt_id(cell: Path) -> str:
+    meta = cell / "cell_meta.json"
+    if not meta.exists():
+        return "?"
+    try:
+        return str(json.loads(meta.read_text()).get("prompt_id", "?"))
+    except Exception:
+        return "?"
+
+
+_PROMPT_WARNED: set = set()
+
+
+def check_one_prompt(frames, label: str = "") -> Optional[set]:
+    """Warn once per (label, id-set) when a pooled read averages cells asked with DIFFERENT prompts.
+
+    THE FAULT THIS EXISTS FOR (2026-09-14). Four configs wrote backward cells into the single phase
+    `inverse_generic` over three days. `inverse_core.yaml` carried no one-shot demo and the other
+    three did, so the backward LADDER was zero-shot on seven of eight models while every stack cell
+    and every merge cell was one-shot. One column of the master table mixed the two, and one
+    contrast compared zero-shot arms against one-shot merges. CodeGemma's `mono_all` sits at 0.882
+    format-failure under the first prompt and 0.086 under the second, on a HARDER condition -- so
+    the confound was larger than most effects being reported.
+
+    `cell_meta.json` records `prompt_id` precisely so this is checkable, and nothing checked it.
+    This is a warning rather than a refusal because several standing analyses legitimately pool
+    across phases; the point is that it can no longer happen silently.
+    """
+    ids = {str(f["_prompt_id"].iloc[0]) for f in frames if f is not None and "_prompt_id" in f}
+    if len(ids) <= 1:
+        return ids
+    key = (label, tuple(sorted(ids)))
+    if key not in _PROMPT_WARNED:
+        _PROMPT_WARNED.add(key)
+        print(f"[cellkit] WARNING: pooling cells with DIFFERENT prompt_id{' for ' + label if label else ''}: "
+              f"{sorted(ids)}. These were not asked the same question; the difference can exceed the "
+              f"effect being measured (log/transfer/2026-09-14_two-prompts-one-phase.md).",
+              file=sys.stderr)
+    return ids
 
 
 def load_block(phases: Iterable[str], model: str, systems: Iterable[str], conds: Iterable[str],
@@ -83,7 +127,10 @@ def load_block(phases: Iterable[str], model: str, systems: Iterable[str], conds:
 def pooled(block: dict[str, dict[str, pd.DataFrame]], system: str,
            conds: Iterable[str]) -> Optional[pd.DataFrame]:
     parts = [block[system][c] for c in conds if c in block.get(system, {})]
-    return pd.concat(parts) if parts else None
+    if not parts:
+        return None
+    check_one_prompt(parts, label=system)
+    return pd.concat(parts)
 
 
 def contrast(block, treat: str, control: str, conds: Iterable[str], label: Optional[str] = None,
