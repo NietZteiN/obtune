@@ -1,1 +1,0 @@
-{"job_id":"ev_mole_granite31-8b","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_granite31-8b.yaml","--model","granite31-8b","--language","python"],"raw":false,"est_gpu_h":1.5,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}

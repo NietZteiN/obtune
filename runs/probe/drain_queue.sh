@@ -102,7 +102,11 @@ while true; do
     if [ "$have" -eq 8 ] && [ ! -f "runs/mole/$m/python/$tag/gate.pt" ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/tr_gate_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "tr_gate_$m"; then
-      printf '{"job_id":"tr_gate_%s","kind":"train","argv":["-m","obtune.mole.train_mole","--config","mole/routerlora_%s.yaml"],"raw":false,"est_gpu_h":3.0,"priority":280,"meta":{"note":"master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"}}\n' "$m" "$m" > "$mf"
+      printf '{"job_id":"tr_gate_%s","kind":"train","argv":["-m","obtune.mole.train_mole","--config","mole/routerlora_%s.yaml"],"raw":false,"est_gpu_h":6.0,"priority":280,"meta":{"note":"master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"}}\n' "$m" "$m" > "$mf"
+      # est 6 h -> 12 h walltime. This block RECREATES the manifest, so it overwrites any
+      # estimate set by hand on a requeue: CodeLlama-34B's gate was requeued at est 6 h,
+      # regenerated here at 3 h, and timed out at exactly 06:00:26 having saved nothing
+      # (2026-09-14). Granite took 5h00 and CodeGemma 5h48, so 6 h is too tight for any of them.
       echo "[mixture] queued tr_gate_$m (8/8 experts ready)"
     fi
   done

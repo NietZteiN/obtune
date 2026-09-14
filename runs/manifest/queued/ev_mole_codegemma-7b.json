@@ -1,0 +1,1 @@
+{"job_id":"ev_mole_codegemma-7b","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_codegemma-7b.yaml","--model","codegemma-7b","--language","python"],"raw":false,"est_gpu_h":1.5,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}

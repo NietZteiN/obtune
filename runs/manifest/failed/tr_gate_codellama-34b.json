@@ -14,10 +14,11 @@
     "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"
   },
   "slurm": {
-    "job_id": "394695",
-    "node": "g-07-02",
+    "job_id": "394712",
+    "node": "g-08-01",
     "partition": "h200",
-    "exit_code": 1,
-    "finished_utc": "2026-09-14T04:15:13.774037+00:00"
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T10:25:13.373768+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
   }
 }
