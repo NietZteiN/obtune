@@ -696,6 +696,60 @@ def abs_table(m):
 for m in MODELS:
     write(f"master_abs_{m.replace('-','')}.tex", abs_table(m), "results/cells/* for " + m + " (raw accuracies, and % of base)")
 
+# ---------------- 7. FORWARD-COLLAPSE: the mechanism table ------------------------------------
+# How often each arm answers the FORWARD question when asked the BACKWARD one, pooled over every
+# backward condition. This is the metric the format gate was hiding: unlike backward accuracy it is
+# readable on every model and every arm, and the untuned models sit at the floor, so the whole range
+# is usable. Computed by 67_backward_failure_modes.py --aggregate; read from its json here so the
+# table and the analysis cannot drift apart.
+#
+# NOT WIRED INTO ANY SECTION. The prose is frozen pending a framing decision, so this writes the
+# file and stops; nothing \inputs it until someone decides where it goes.
+COLLAPSE_JSON = ROOT/"results/analysis/pipeline/backward_failure_modes_C_L1r_X1.json"
+COLLAPSE_SYS = [("untuned","base"),("TIES merge","merge_ties"),("DARE-TIES merge","merge_dare_ties"),
+                ("family","tuned_X1"),("clean LoRA","tuned_L0"),("breadth","mono_all"),
+                ("anchored","cons_lam3"),("router","mole_router")]
+
+def collapse_tex():
+    if not COLLAPSE_JSON.exists():
+        return None
+    agg = json.loads(COLLAPSE_JSON.read_text()).get("aggregate")
+    if not agg:
+        return None
+    by, means = agg["by_model"], agg["panel_mean"]
+    L = [r"\begin{table}[t]", r"\centering", r"\small",
+         r"\caption{\textbf{Forward collapse: how often an adaptation answers the question it was "
+         r"trained on when asked the other one.} Share of backward (input-prediction) replies that "
+         r"are exactly the gold \emph{forward} answer, pooled over all "
+         + str(len(agg["conditions"])) + r" backward conditions. Not a parse failure: the arm "
+         r"answered the other question. The untuned model is a floor, and both merges sit on it; "
+         r"every single-adapter arm is above it, highest for the arm whose extra loss term is a "
+         r"KL to the clean parent's answer-token distribution. \texttt{--} marks a cell not run.}",
+         r"\label{tab:forward_collapse}",
+         r"\begin{tabular}{@{}l" + "r"*len(COLLAPSE_SYS) + r"@{}}", r"\toprule",
+         "model & " + " & ".join(n for n, _ in COLLAPSE_SYS) + r" \\", r"\midrule"]
+    for m in MODELS:
+        r = by.get(m, {})
+        cells = []
+        for _, sy in COLLAPSE_SYS:
+            v = r.get(sy, {}).get("collapse_rate")
+            cells.append("--" if v is None else f"{v:.3f}")
+        L.append(tex_esc(NICE[m]) + " & " + " & ".join(cells) + r" \\")
+    L.append(r"\midrule")
+    L.append(r"\emph{panel mean} & " + " & ".join(
+        "--" if means.get(sy) is None else (r"\textbf{" + f"{means[sy]:.3f}" + "}")
+        for _, sy in COLLAPSE_SYS) + r" \\")
+    L += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    return "\n".join(L)
+
+_ct = collapse_tex()
+if _ct:
+    write("master_collapse.tex", _ct,
+          "results/analysis/pipeline/backward_failure_modes_C_L1r_X1.json (67_backward_failure_modes.py --aggregate)",
+          "Not \\input by any section yet -- prose frozen.")
+else:
+    print("  [collapse table] skipped: run 67_backward_failure_modes.py --aggregate first", file=sys.stderr)
+
 # markdown twin
 out.append("\n## 6. Absolute master tables — every method × every obfuscation\n")
 out.append("Raw exact-match accuracy, with `%b` after each system: its accuracy as a percentage of `base`'s on the same condition. "

@@ -1,0 +1,25 @@
+% GENERATED 2026-09-14 13:26 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/analysis/pipeline/backward_failure_modes_C_L1r_X1.json (67_backward_failure_modes.py --aggregate)
+% Do not edit by hand -- regenerate. Not \input by any section yet -- prose frozen.
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Forward collapse: how often an adaptation answers the question it was trained on when asked the other one.} Share of backward (input-prediction) replies that are exactly the gold \emph{forward} answer, pooled over all 16 backward conditions. Not a parse failure: the arm answered the other question. The untuned model is a floor, and both merges sit on it; every single-adapter arm is above it, highest for the arm whose extra loss term is a KL to the clean parent's answer-token distribution. \texttt{--} marks a cell not run.}
+\label{tab:forward_collapse}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+model & untuned & TIES merge & DARE-TIES merge & family & clean LoRA & breadth & anchored & router \\
+\midrule
+CodeLlama-7B & 0.000 & 0.000 & 0.001 & 0.001 & 0.081 & 0.024 & 0.003 & -- \\
+CodeLlama-13B & 0.000 & -- & 0.001 & 0.054 & 0.016 & 0.077 & 0.242 & -- \\
+CodeLlama-34B & 0.000 & -- & 0.001 & 0.025 & 0.028 & 0.032 & 0.048 & -- \\
+Llama-3.1-8B & 0.000 & 0.000 & 0.000 & 0.010 & 0.007 & 0.130 & 0.204 & -- \\
+StarCoder2-15B & 0.000 & 0.000 & 0.000 & 0.359 & 0.410 & 0.444 & 0.409 & -- \\
+Gemma-3-12B & 0.000 & 0.000 & 0.000 & 0.000 & 0.036 & 0.005 & 0.148 & -- \\
+CodeGemma-7B & 0.000 & 0.000 & 0.002 & 0.362 & 0.253 & 0.396 & 0.811 & -- \\
+Granite-3.1-8B & 0.030 & 0.000 & 0.001 & 0.069 & 0.253 & 0.475 & 0.635 & -- \\
+\midrule
+\emph{panel mean} & \textbf{0.004} & \textbf{0.000} & \textbf{0.001} & \textbf{0.110} & \textbf{0.135} & \textbf{0.198} & \textbf{0.312} & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
