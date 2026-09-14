@@ -113,12 +113,23 @@ def decompose(model, sysn, cond, gold):
 
 
 
-ALL_CONDS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1",
-             "C_L1b_S1", "C_L1r_S1", "C_S1_L1r", "C_L2_S4", "C_L1r_S3", "C_S4_S3",
-             "C_L1r_X1", "C_X1_S1", "C_S2_X1"]
+# STACKS ONLY BY DEFAULT, AND THE REASON IS A CONFOUND FOUND THE SAME DAY THIS SCRIPT WAS WRITTEN.
+# Every stack cell, on every model and arm, was evaluated with the one-shot inverse prompt. The
+# LADDER cells were not: on the seven non-CodeLlama-7B models `inverse_core.yaml` wrote them
+# zero-shot, and the missing demo inflates forward collapse enormously -- CodeGemma's `mono_all`
+# goes 0.777 zero-shot to 0.029 one-shot on the same seven conditions. Pooling the two therefore
+# measured the prompt as much as the arm. The stack set is the largest uncontaminated pool
+# available on all eight models, so it is the default; `--conds all` restores the old set and is
+# only honest once the `inverse_1shot` repair has landed everywhere.
+# See log/transfer/2026-09-14_collapse-was-half-prompt.md.
+STACK_CONDS = ["C_L1b_S1", "C_L1r_S1", "C_S1_L1r", "C_L2_S4", "C_L1r_S3", "C_S4_S3",
+               "C_L1r_X1", "C_X1_S1", "C_S2_X1", "C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4",
+               "C4_L1r_S1_S3_S4", "C_L1r_X1m", "C_S1_X1s", "C3_L1r_S1_X1"]
+LADDER_CONDS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
+ALL_CONDS = STACK_CONDS
 
 
-def aggregate(models):
+def aggregate(models, conds=None):
     """Forward-collapse rate over ALL trials, every arm, pooled over every backward condition.
 
     This is the metric the format gate was hiding, and unlike backward accuracy it is readable on
@@ -126,17 +137,18 @@ def aggregate(models):
     over conditions rather than reported per condition because the question -- does this way of
     adapting a model make it answer the other question -- is about the arm, not about one transform.
     """
+    conds = list(conds or ALL_CONDS)
     gold = {c: {(i.program_id, i.item_id): _norm(i.output_repr)
-                for i in load_eval_items([c], "python", source="heldout")} for c in ALL_CONDS}
+                for i in load_eval_items([c], "python", source="heldout")} for c in conds}
     rows, agg = {}, {}
-    print(f"\n\nforward-collapse rate, pooled over all {len(ALL_CONDS)} backward conditions: "
+    print(f"\n\nforward-collapse rate, pooled over {len(conds)} backward conditions: "
           f"how often an arm\nanswers the FORWARD question when asked the BACKWARD one\n")
     print(f"{'model':16s} " + " ".join(f"{a[:13]:>14s}" for a in ARMS))
     for m in models:
         cells = []
         for arm in ARMS:
             hits = tot = 0
-            for c in ALL_CONDS:
+            for c in conds:
                 p, _ = cell_path(m, arm, c)
                 if p is None:
                     continue
@@ -160,7 +172,7 @@ def aggregate(models):
           "single-adapter\n  arm is above it, and the anchored objective -- whose extra term is a KL "
           "to the clean parent's\n  ANSWER-TOKEN distribution -- is the highest. Forward-locking "
           "tracks how directly an objective\n  pins the output head.")
-    return {"conditions": ALL_CONDS, "by_model": rows, "panel_mean": means}
+    return {"conditions": conds, "by_model": rows, "panel_mean": means}
 
 
 
@@ -219,6 +231,10 @@ def main() -> int:
     ap.add_argument("--cond", default="C_L1r_X1",
                     help="condition to decompose (default: the hardest stack, one containing X1)")
     ap.add_argument("--models", default=None)
+    ap.add_argument("--conds", default="stacks", choices=["stacks", "ladder", "all"],
+                    help="which backward conditions the aggregate pools. Default `stacks`: the "
+                         "largest set evaluated with ONE prompt on every model. `ladder` and `all` "
+                         "mix prompts until the inverse_1shot repair has landed everywhere.")
     ap.add_argument("--aggregate", action="store_true",
                     help="also print the panel-wide forward-collapse table: every arm, every model, "
                          "pooled over all sixteen backward conditions")
@@ -256,7 +272,10 @@ def main() -> int:
           "failure the gate is meant to catch.")
 
     if a.aggregate:
-        out["aggregate"] = aggregate(models)
+        conds = {"stacks": STACK_CONDS, "ladder": LADDER_CONDS,
+                 "all": LADDER_CONDS + STACK_CONDS}[a.conds]
+        out["condition_set"] = a.conds
+        out["aggregate"] = aggregate(models, conds)
         out["mirror_control"] = mirror_control(models)
 
     p = Path(a.out) if a.out else ROOT / "results/analysis/pipeline" / f"backward_failure_modes_{a.cond}.json"
