@@ -161,7 +161,16 @@ Forward accuracy is strict normalised exact match on the produced output, with n
 matching; the backward task is graded by executing the produced call against the program as the model was shown it --- the obfuscated variant, not the clean parent --- and accepting any arguments that return the gold value, which is what the prompt asks for. We also report the stricter rate at which the \emph{gold} arguments are recovered.
 Every contrast is a paired difference on the program subset common to its cells, with a
 program-clustered bootstrap of 2{,}000 resamples; bold intervals exclude zero. Decision rules were
-pre-registered before submission and are reported by their verdicts even when inconclusive. A cell
+pre-registered before submission and are reported by their verdicts even when inconclusive.
+% >>> CONTRADICTED BY MEASUREMENT, 2026-09-14. The next sentence says a gated cell "measures the
+% prompt contract rather than the task". scripts/analysis/67_backward_failure_modes.py decomposes
+% those cells and that is false of many of them: on CodeGemma's anchored arm 96 %% of the failures
+% are replies that are exactly the gold FORWARD answer, and on StarCoder2's tuned arms 79-91 %%.
+% Those cells measure forward-locking, which is a result. Others are genuinely malformed, and a
+% few are truncation at the 128-token cap. Left unedited because the fix interacts with the
+% framing decision; log/transfer/2026-09-14_forward-locking-is-the-mechanism.md has the numbers
+% and tables/master_collapse.tex is the table, generated and not yet \input anywhere. <<<
+A cell
 whose format-failure rate exceeds 0.25 measures the prompt contract rather than the task and enters
 no mean; untuned format failure measures adherence to that contract, not capability, so screening
 base models by it is unsound.
