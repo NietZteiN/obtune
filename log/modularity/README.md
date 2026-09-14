@@ -162,3 +162,4 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`2026-09-14_gate-portability-third-bug-and-a-test.md`](2026-09-14_gate-portability-third-bug-and-a-test.md) — multimodal decoder path; portability now tested for all eight models without a GPU.
 - [`2026-09-14_anchor-site-refuted.md`](2026-09-14_anchor-site-refuted.md) — the anchor site is not the mechanism; cons_lam3 is the least forward-locked tuned arm on 7B, correcting two of my earlier claims.
 - [`2026-09-14_router-equals-random-on-the-held-out-family.md`](2026-09-14_router-equals-random-on-the-held-out-family.md) — router 0.279 vs random 0.283 vs uniform 0.283 on X1; the mixing is the effect, not the dispatch.
+- [`2026-09-14_gemma3-gate-nan.md`](2026-09-14_gemma3-gate-nan.md) — 6 h of NaN training unnoticed; cause still open, manifest held.
