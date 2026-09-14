@@ -160,3 +160,4 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`2026-09-13_an-f1-resubmission-correction.md`](2026-09-13_an-f1-resubmission-correction.md) — correction: `an_f1` was refused on both CPU partitions because ad-hoc submissions carry a default `--gres gpu:1`; resubmitted with `--gres ""`.
 - [`2026-09-14_gate-training-two-portability-bugs.md`](2026-09-14_gate-training-two-portability-bugs.md) — raw chat template and a multimodal config broke every non-CodeLlama gate; both fixed.
 - [`2026-09-14_gate-portability-third-bug-and-a-test.md`](2026-09-14_gate-portability-third-bug-and-a-test.md) — multimodal decoder path; portability now tested for all eight models without a GPU.
+- [`2026-09-14_anchor-site-refuted.md`](2026-09-14_anchor-site-refuted.md) — the anchor site is not the mechanism; cons_lam3 is the least forward-locked tuned arm on 7B, correcting two of my earlier claims.

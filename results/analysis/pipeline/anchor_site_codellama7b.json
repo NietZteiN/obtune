@@ -1,0 +1,128 @@
+{
+ "script": "64_anchor_site.py",
+ "model": "codellama-7b",
+ "generated_utc": "2026-09-14T04:10:44+00:00",
+ "collapse": {
+  "base": 0.0,
+  "tuned_L0": 0.04637600666481533,
+  "mono_all": 0.01147829306674072,
+  "cons_lam3": 0.0010182356752753865,
+  "tuned_X1": 9.256687957048968e-05,
+  "align_lam0": 0.010645191150606314,
+  "align_lam0.3": 0.12200314727390539,
+  "align_lam1": 0.21234842173470334,
+  "align_lam3": 0.3065815051374618,
+  "align_span_lam3": 0.033786911043228736,
+  "align_lam1_mm": 0.1676386189021568
+ },
+ "backward_vs_base": {
+  "tuned_L0": {
+   "value_pts": -0.15021781583295785,
+   "ci_lo": -1.4270692504130988,
+   "ci_hi": 0.9617695658705105,
+   "n_programs": 317,
+   "excludes_zero": false
+  },
+  "mono_all": {
+   "value_pts": -0.5708277001652398,
+   "ci_lo": -1.7275048820790144,
+   "ci_hi": 0.6012468078714117,
+   "n_programs": 317,
+   "excludes_zero": false
+  },
+  "cons_lam3": {
+   "value_pts": -0.1952831605828459,
+   "ci_lo": -1.652395974162535,
+   "ci_hi": 1.3068949977467332,
+   "n_programs": 317,
+   "excludes_zero": false
+  },
+  "tuned_X1": {
+   "value_pts": 1.3369385609133242,
+   "ci_lo": 0.2703920684993241,
+   "ci_hi": 2.343397926994141,
+   "n_programs": 317,
+   "excludes_zero": true
+  },
+  "align_lam0": {
+   "value_pts": 0.12017425266636628,
+   "ci_lo": -1.0815682739972952,
+   "ci_hi": 1.291873216163436,
+   "n_programs": 317,
+   "excludes_zero": false
+  },
+  "align_lam0.3": {
+   "value_pts": -5.858494817485354,
+   "ci_lo": -7.631440588853838,
+   "ci_hi": -4.1756797356166455,
+   "n_programs": 317,
+   "excludes_zero": true
+  },
+  "align_lam1": {
+   "value_pts": -7.841369986480397,
+   "ci_lo": -9.764158029142255,
+   "ci_hi": -5.963647288568424,
+   "n_programs": 317,
+   "excludes_zero": true
+  },
+  "align_lam3": {
+   "value_pts": -7.961544239146763,
+   "ci_lo": -9.884332281808623,
+   "ci_hi": -6.068799759651495,
+   "n_programs": 317,
+   "excludes_zero": true
+  },
+  "align_span_lam3": {
+   "value_pts": -2.1030494216614093,
+   "ci_lo": -3.5158479795703768,
+   "ci_hi": -0.8261979870812681,
+   "n_programs": 317,
+   "excludes_zero": true
+  },
+  "align_lam1_mm": {
+   "value_pts": -7.931500675980171,
+   "ci_lo": -9.884332281808621,
+   "ci_hi": -6.0980922337389245,
+   "n_programs": 317,
+   "excludes_zero": true
+  }
+ },
+ "hypotheses": [
+  {
+   "id": "H-anchor-site-a",
+   "best_align": "align_lam0",
+   "verdict": "REFUTED",
+   "evidence": {
+    "align": 0.010645191150606314,
+    "cons_lam3": 0.0010182356752753865,
+    "mono_all": 0.01147829306674072
+   }
+  },
+  {
+   "id": "H-anchor-site-b",
+   "best_align": "align_lam0",
+   "verdict": "INCONCLUSIVE",
+   "evidence": {
+    "align_vs_base": {
+     "value_pts": 0.12017425266636628,
+     "ci_lo": -1.0815682739972952,
+     "ci_hi": 1.291873216163436,
+     "n_programs": 317,
+     "excludes_zero": false
+    },
+    "cons_lam3_vs_base": {
+     "value_pts": -0.1952831605828459,
+     "ci_lo": -1.652395974162535,
+     "ci_hi": 1.3068949977467332,
+     "n_programs": 317,
+     "excludes_zero": false
+    }
+   }
+  }
+ ],
+ "mismatch_control": {
+  "align_lam1": 0.21234842173470334,
+  "align_lam1_mm": 0.1676386189021568,
+  "note": "if these are alike, the effect is not about aligning to the RIGHT parent"
+ }
+}
