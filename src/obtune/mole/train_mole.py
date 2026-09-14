@@ -351,6 +351,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         _gate.forward = _wrapped
 
     step = 0
+    nonfinite = 0
     for epoch in range(epochs):
         for i, batch in enumerate(loader):
             batch = {k: v.to(device) for k, v in batch.items()}
@@ -359,6 +360,23 @@ def main(argv: Optional[list[str]] = None) -> int:
                    else torch.zeros((), device=device))
             loss = (task + aux_coef * aux) / accum
             loss.backward()
+            # NON-FINITE LOSS IS FATAL, and it is fatal EARLY. gemma3-12b's gate went nan at
+            # optimizer step 90 and then trained for 5 h 56 m more, printing `loss nan` every ten
+            # steps, writing periodic checkpoints in which all 50 tensors were NaN, and finishing
+            # with nothing usable. Once the parameters are NaN no later batch recovers them, so
+            # continuing is pure waste of a shared GPU. Three consecutive non-finite steps, not
+            # one: a single inf can come from a pathological batch and be clipped away.
+            if not torch.isfinite(task):
+                nonfinite += 1
+                if nonfinite >= 3:
+                    raise SystemExit(
+                        f"[mole.train] loss non-finite for {nonfinite} consecutive steps "
+                        f"(epoch {epoch}, step {step}). The gate parameters are NaN and no later "
+                        f"batch recovers them. Nothing saved. Diagnose with --nan-probe, which "
+                        f"names the first non-finite tensor and says whether it is the base "
+                        f"model's hidden state or the gate's own output.")
+            else:
+                nonfinite = 0
             if (i + 1) % accum == 0:
                 torch.nn.utils.clip_grad_norm_(holder.trainable_parameters(),
                                                float(tcfg.get("max_grad_norm", 1.0)))
