@@ -1,0 +1,23 @@
+{
+  "job_id": "tr_gate_codellama-34b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_codellama-34b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 280,
+  "meta": {
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"
+  },
+  "slurm": {
+    "job_id": "394695",
+    "node": "g-07-02",
+    "partition": "h200",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T04:15:13.774037+00:00"
+  }
+}

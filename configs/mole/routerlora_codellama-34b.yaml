@@ -59,8 +59,11 @@ train:
   # A small head over a frozen network: train_sft's 1e-4 is far too small here.
   lr: 1.0e-3
   epochs: 2
-  per_device_batch: 8
-  grad_accum: 8          # effective 64, matching _base_lora.yaml
+  # 34B ONLY. The mixture holds the 34B base (~68 GB) plus a 1.74 B-parameter eight-expert bank,
+  # and batch 8 OOM'd on a 139.7 GB H200 four minutes in (2026-09-14), inside the expert
+  # projection. Effective batch is held at 64 so this gate is comparable to the others.
+  per_device_batch: 1
+  grad_accum: 64         # effective 64, matching _base_lora.yaml
   max_seq_len: 2048
   weight_decay: 0.0
   max_grad_norm: 1.0
