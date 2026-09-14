@@ -59,8 +59,17 @@ bf16 with gradient checkpointing. **The seven gates already trained are unaffect
 would have shown NaN in its checkpoint, and CodeLlama-13B's, checked today, has zero NaN tensors of
 42 with `tau` between 0.448 and 0.927.
 
-## Not yet done
+## Verified, then released
 
-Gemma-3's gate is still untrained and its manifest is still held. Releasing it is the next step now
-that the config's training code carries the fix; the run should show a handful of skipped steps and
-finish.
+The fix was checked before spending another twelve-hour slot, on the same deterministic step that
+killed the first run (same seed, same data order, so step 83 is step 83):
+
+```
+[nan-probe] step 82 loss 0.0702 finite=True tau[min=9.250e-01 max=9.782e-01]
+[mole.train] SKIPPED step 83: gradient norm nan is not finite (1 skipped so far).
+[nan-probe] step 83 loss 0.1061 finite=True tau[min=9.240e-01 max=9.777e-01]
+[nan-probe] step 90 loss 0.0598 finite=True tau[min=9.171e-01 max=9.759e-01]
+```
+
+**One skipped step in ninety, and training continues normally through it.** `tau` keeps its ordinary
+downward drift instead of becoming NaN. The manifest is released.

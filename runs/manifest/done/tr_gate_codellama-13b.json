@@ -1,0 +1,31 @@
+{
+  "job_id": "tr_gate_codellama-13b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_codellama-13b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 6.0,
+  "priority": 280,
+  "meta": {
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | CANCELLED 2026-09-14 at step 1400/1880 after two measurements put the finish at 6h18 against a 6 h limit -- the gate was written only at the end, so a timeout at 95% would have lost everything. Requeued at est 6 h (12 h walltime) against the periodic-checkpoint build."
+  },
+  "previous_slurm": {
+    "job_id": "394470",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T06:08:20.126208+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  },
+  "slurm": {
+    "job_id": "394957",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T16:14:26.015308+00:00"
+  }
+}
