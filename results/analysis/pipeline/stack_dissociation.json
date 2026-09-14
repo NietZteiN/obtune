@@ -1,6 +1,6 @@
 {
  "script": "57_stack_dissociation.py",
- "generated_utc": "2026-09-12T18:10:29+00:00",
+ "generated_utc": "2026-09-14T12:34:09+00:00",
  "n_resamples": 2000,
  "seed": 17,
  "groups": {
@@ -37,6 +37,27 @@
     "value_pts": 5.28242677824268,
     "ci_lo": 3.20358760013932,
     "ci_hi": 7.541321319349846,
+    "excludes_zero": true
+   }
+  },
+  "codellama-13b": {
+   "n_programs": 319,
+   "seen": {
+    "value_pts": 2.1617852161785245,
+    "ci_lo": 0.3479187521403515,
+    "ci_hi": 3.927137870855147,
+    "excludes_zero": true
+   },
+   "unseen_containing": {
+    "value_pts": -0.9414225941422605,
+    "ci_lo": -2.5426680599094365,
+    "ci_hi": 0.6973500697350034,
+    "excludes_zero": false
+   },
+   "difference": {
+    "value_pts": 3.103207810320785,
+    "ci_lo": 1.064516805535044,
+    "ci_hi": 4.998389154129665,
     "excludes_zero": true
    }
   },
@@ -124,6 +145,27 @@
     "excludes_zero": true
    }
   },
+  "codegemma-7b": {
+   "n_programs": 319,
+   "seen": {
+    "value_pts": 3.7482566248256632,
+    "ci_lo": 2.2140286321591294,
+    "ci_hi": 5.3001574684953665,
+    "excludes_zero": true
+   },
+   "unseen_containing": {
+    "value_pts": -0.6276150627615107,
+    "ci_lo": -2.3685746514342663,
+    "ci_hi": 1.1157893199558926,
+    "excludes_zero": false
+   },
+   "difference": {
+    "value_pts": 4.375871687587174,
+    "ci_lo": 2.21628908693361,
+    "ci_hi": 6.39845513641683,
+    "excludes_zero": true
+   }
+  },
   "granite31-8b": {
    "n_programs": 319,
    "seen": {
@@ -147,7 +189,7 @@
   }
  },
  "tally": {
-  "models_read": 6,
-  "difference_significant": 6
+  "models_read": 8,
+  "difference_significant": 8
  }
 }

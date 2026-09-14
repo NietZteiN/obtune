@@ -1,0 +1,23 @@
+{
+  "n_modules": 224,
+  "n_experts": 8,
+  "experts": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "rank_per_expert": 32,
+  "total_rank": 256,
+  "bank_params": 671088640,
+  "frozen_params": 8030261248,
+  "n_layers": 32,
+  "n_attached": 224,
+  "gate_params": 8405024,
+  "model": "llama31-8b",
+  "dtype": "bfloat16"
+}

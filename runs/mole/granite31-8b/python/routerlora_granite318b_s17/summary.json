@@ -1,0 +1,23 @@
+{
+  "n_modules": 280,
+  "n_experts": 8,
+  "experts": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "rank_per_expert": 32,
+  "total_rank": 256,
+  "bank_params": 791674880,
+  "frozen_params": 8170848256,
+  "n_layers": 40,
+  "n_attached": 280,
+  "gate_params": 10506280,
+  "model": "granite31-8b",
+  "dtype": "bfloat16"
+}

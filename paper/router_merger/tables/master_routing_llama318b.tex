@@ -1,0 +1,30 @@
+% GENERATED 2026-09-14 12:31 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/mole_generic/llama31-8b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Routing, Llama-3.1-8B.} MoLE mixtures of the eight per-transform experts on every condition and stack that has them: \emph{router} = trained gate, \emph{hard router} = its argmax, \emph{uniform} = fixed uniform gate, \emph{random} = gate frozen at random initialisation. Per system: raw accuracy, $\Delta$ points against the untuned model on the same items, and \% of the untuned model's clean-code accuracy. Every cell ran through the mixture engine.}
+\label{tab:routing_llama318b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{router}} & \multicolumn{3}{c|}{\textbf{hard router}} & \multicolumn{3}{c|}{\textbf{uniform}} & \multicolumn{3}{c}{\textbf{random}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{mole\_router}} & \multicolumn{3}{c|}{\texttt{mole\_hardrouter}} & \multicolumn{3}{c|}{\texttt{mole\_uniform}} & \multicolumn{3}{c}{\texttt{mole\_random}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.257 & 100 & 0.475 & $+21.8$ & 184 & 0.474 & $+21.7$ & 184 & 0.466 & $+20.8$ & 181 & 0.469 & $+21.1$ & 182 \\
+\texttt{L1b} & 0.222 & 86 & 0.422 & $+20.0$ & 163 & 0.424 & $+20.2$ & 164 & 0.402 & $+18.0$ & 156 & 0.400 & $+17.9$ & 155 \\
+\texttt{L1r} & 0.238 & 92 & 0.407 & $+16.8$ & 158 & 0.408 & $+16.9$ & 158 & 0.406 & $+16.8$ & 157 & 0.405 & $+16.6$ & 157 \\
+\texttt{L2} & 0.216 & 84 & 0.425 & $+21.0$ & 165 & 0.423 & $+20.8$ & 164 & 0.414 & $+19.9$ & 161 & 0.413 & $+19.7$ & 160 \\
+\texttt{S1} & 0.213 & 82 & 0.428 & $+21.6$ & 166 & 0.430 & $+21.7$ & 167 & 0.419 & $+20.7$ & 163 & 0.419 & $+20.6$ & 162 \\
+\texttt{S2} & 0.211 & 82 & 0.456 & $+24.5$ & 177 & 0.460 & $+25.0$ & 178 & 0.455 & $+24.4$ & 176 & 0.457 & $+24.7$ & 177 \\
+\texttt{X1} & 0.129 & 50 & 0.280 & $+15.1$ & 109 & 0.283 & $+15.3$ & 109 & 0.281 & $+15.2$ & 109 & 0.278 & $+14.9$ & 108 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.145 & 56 & 0.369 & $+22.3$ & 143 & 0.371 & $+22.6$ & 144 & 0.317 & $+17.2$ & 123 & 0.314 & $+16.8$ & 122 \\
+\texttt{C\_L1r\_S1} & 0.159 & 62 & 0.366 & $+20.8$ & 142 & 0.364 & $+20.5$ & 141 & 0.331 & $+17.2$ & 128 & 0.334 & $+17.6$ & 130 \\
+\texttt{C\_S1\_L1r} & 0.156 & 61 & 0.347 & $+19.1$ & 135 & 0.348 & $+19.2$ & 135 & 0.324 & $+16.8$ & 126 & 0.321 & $+16.4$ & 124 \\
+\texttt{C\_L2\_S4} & 0.202 & 78 & 0.413 & $+21.1$ & 160 & 0.413 & $+21.1$ & 160 & 0.397 & $+19.5$ & 154 & 0.399 & $+19.7$ & 155 \\
+\texttt{C\_L1r\_S3} & 0.201 & 78 & 0.407 & $+20.6$ & 158 & 0.405 & $+20.4$ & 157 & 0.399 & $+19.8$ & 155 & 0.397 & $+19.6$ & 154 \\
+\texttt{C\_S4\_S3} & 0.214 & 83 & 0.459 & $+24.5$ & 178 & 0.459 & $+24.5$ & 178 & 0.455 & $+24.1$ & 176 & 0.453 & $+23.9$ & 175 \\
+\bottomrule
+\end{tabular}
+\end{table*}

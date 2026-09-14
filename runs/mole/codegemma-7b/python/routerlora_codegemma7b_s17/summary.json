@@ -1,0 +1,23 @@
+{
+  "n_modules": 196,
+  "n_experts": 8,
+  "experts": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "rank_per_expert": 32,
+  "total_rank": 256,
+  "bank_params": 800063488,
+  "frozen_params": 8537680896,
+  "n_layers": 28,
+  "n_attached": 196,
+  "gate_params": 5519388,
+  "model": "codegemma-7b",
+  "dtype": "bfloat16"
+}

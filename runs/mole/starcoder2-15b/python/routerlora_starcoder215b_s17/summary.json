@@ -1,0 +1,23 @@
+{
+  "n_modules": 160,
+  "n_experts": 8,
+  "experts": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "rank_per_expert": 32,
+  "total_rank": 256,
+  "bank_params": 387973120,
+  "frozen_params": 15957889024,
+  "n_layers": 40,
+  "n_attached": 160,
+  "gate_params": 15749160,
+  "model": "starcoder2-15b",
+  "dtype": "bfloat16"
+}

@@ -1,0 +1,536 @@
+{
+  "script": "65_backward_stacks.py",
+  "generated_utc": "2026-09-14T12:39:20+00:00",
+  "metric": "correct",
+  "n_resamples": 2000,
+  "seed": 17,
+  "format_gate": 0.25,
+  "groups": {
+    "seen": [
+      "C_L1b_S1",
+      "C_L1r_S1",
+      "C_S1_L1r",
+      "C_L2_S4",
+      "C_L1r_S3",
+      "C_S4_S3"
+    ],
+    "unseen_containing": [
+      "C_L1r_X1",
+      "C_X1_S1",
+      "C_S2_X1"
+    ]
+  },
+  "supersedes": "log/transfer/2026-09-14_backward-stacks-seven-models.md (ad-hoc, unpaired)",
+  "models": {
+    "codellama-7b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.0872,
+          "gated": false,
+          "seen_acc": 0.2715,
+          "unseen_acc": 0.2591,
+          "drop_pct": -4.55
+        },
+        "mono_all": {
+          "format_fail_max": 0.1447,
+          "gated": false,
+          "seen_acc": 0.2564,
+          "unseen_acc": 0.2062,
+          "drop_pct": -19.57,
+          "vs_base_pts": -15.01,
+          "vs_base_ci": [
+            -24.91,
+            -5.22
+          ],
+          "vs_base_sig": true
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.0385,
+          "gated": false,
+          "seen_acc": 0.271,
+          "unseen_acc": 0.2703,
+          "drop_pct": -0.26,
+          "vs_base_pts": 4.3,
+          "vs_base_ci": [
+            -4.67,
+            13.56
+          ],
+          "vs_base_sig": false
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.0838,
+          "gated": false,
+          "seen_acc": 0.284,
+          "unseen_acc": 0.2501,
+          "drop_pct": -11.96,
+          "vs_base_pts": -7.4,
+          "vs_base_ci": [
+            -16.11,
+            0.91
+          ],
+          "vs_base_sig": false
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.3971,
+          "gated": true,
+          "seen_acc": 0.2106,
+          "unseen_acc": 0.1658,
+          "drop_pct": -21.26
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.0565,
+          "gated": false,
+          "seen_acc": 0.3013,
+          "unseen_acc": 0.279,
+          "drop_pct": -7.4,
+          "vs_base_pts": -2.84,
+          "vs_base_ci": [
+            -9.99,
+            3.95
+          ],
+          "vs_base_sig": false
+        }
+      },
+      "base_gated": false
+    },
+    "codellama-13b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.0346,
+          "gated": false,
+          "seen_acc": 0.287,
+          "unseen_acc": 0.2818,
+          "drop_pct": -1.82
+        },
+        "mono_all": {
+          "format_fail_max": 0.9461,
+          "gated": true,
+          "seen_acc": 0.0343,
+          "unseen_acc": 0.0098,
+          "drop_pct": -71.57
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.3021,
+          "gated": true,
+          "seen_acc": 0.1991,
+          "unseen_acc": 0.186,
+          "drop_pct": -6.56
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.7198,
+          "gated": true,
+          "seen_acc": 0.1118,
+          "unseen_acc": 0.0812,
+          "drop_pct": -27.41
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.1405,
+          "gated": false,
+          "seen_acc": 0.2959,
+          "unseen_acc": 0.2588,
+          "drop_pct": -12.54,
+          "vs_base_pts": -10.72,
+          "vs_base_ci": [
+            -18.57,
+            -2.45
+          ],
+          "vs_base_sig": true
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.0765,
+          "gated": false,
+          "seen_acc": 0.3361,
+          "unseen_acc": 0.2999,
+          "drop_pct": -10.78,
+          "vs_base_pts": -8.96,
+          "vs_base_ci": [
+            -15.97,
+            -1.74
+          ],
+          "vs_base_sig": true
+        }
+      },
+      "base_gated": false
+    },
+    "codellama-34b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.0385,
+          "gated": false,
+          "seen_acc": 0.2854,
+          "unseen_acc": 0.3048,
+          "drop_pct": 6.77
+        },
+        "mono_all": {
+          "format_fail_max": 0.5441,
+          "gated": true,
+          "seen_acc": 0.1257,
+          "unseen_acc": 0.0975,
+          "drop_pct": -22.44
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.2683,
+          "gated": true,
+          "seen_acc": 0.2173,
+          "unseen_acc": 0.2076,
+          "drop_pct": -4.49
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.268,
+          "gated": true,
+          "seen_acc": 0.2212,
+          "unseen_acc": 0.1863,
+          "drop_pct": -15.75
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.14,
+          "gated": false,
+          "seen_acc": 0.2762,
+          "unseen_acc": 0.2818,
+          "drop_pct": 2.02,
+          "vs_base_pts": -4.75,
+          "vs_base_ci": [
+            -13.64,
+            4.06
+          ],
+          "vs_base_sig": false
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.0552,
+          "gated": false,
+          "seen_acc": 0.3595,
+          "unseen_acc": 0.3445,
+          "drop_pct": -4.17,
+          "vs_base_pts": -10.94,
+          "vs_base_ci": [
+            -18.54,
+            -3.51
+          ],
+          "vs_base_sig": true
+        }
+      },
+      "base_gated": false
+    },
+    "llama31-8b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.1142,
+          "gated": false,
+          "seen_acc": 0.3065,
+          "unseen_acc": 0.2658,
+          "drop_pct": -13.3
+        },
+        "mono_all": {
+          "format_fail_max": 0.1351,
+          "gated": false,
+          "seen_acc": 0.2677,
+          "unseen_acc": 0.2055,
+          "drop_pct": -23.23,
+          "vs_base_pts": -9.93,
+          "vs_base_ci": [
+            -19.19,
+            0.1
+          ],
+          "vs_base_sig": false
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.1436,
+          "gated": false,
+          "seen_acc": 0.278,
+          "unseen_acc": 0.2261,
+          "drop_pct": -18.67,
+          "vs_base_pts": -5.38,
+          "vs_base_ci": [
+            -13.92,
+            3.13
+          ],
+          "vs_base_sig": false
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.0502,
+          "gated": false,
+          "seen_acc": 0.2933,
+          "unseen_acc": 0.28,
+          "drop_pct": -4.51,
+          "vs_base_pts": 8.78,
+          "vs_base_ci": [
+            0.29,
+            16.85
+          ],
+          "vs_base_sig": true
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.082,
+          "gated": false,
+          "seen_acc": 0.268,
+          "unseen_acc": 0.255,
+          "drop_pct": -4.87,
+          "vs_base_pts": 8.42,
+          "vs_base_ci": [
+            0.18,
+            17.04
+          ],
+          "vs_base_sig": true
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.0656,
+          "gated": false,
+          "seen_acc": 0.3561,
+          "unseen_acc": 0.3083,
+          "drop_pct": -13.45,
+          "vs_base_pts": -0.15,
+          "vs_base_ci": [
+            -6.7,
+            6.61
+          ],
+          "vs_base_sig": false
+        }
+      },
+      "base_gated": false
+    },
+    "starcoder2-15b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.5183,
+          "gated": true,
+          "seen_acc": 0.1536,
+          "unseen_acc": 0.1512,
+          "drop_pct": -1.59
+        },
+        "mono_all": {
+          "format_fail_max": 0.4494,
+          "gated": true,
+          "seen_acc": 0.2099,
+          "unseen_acc": 0.1487,
+          "drop_pct": -29.13
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.2946,
+          "gated": true,
+          "seen_acc": 0.3069,
+          "unseen_acc": 0.2271,
+          "drop_pct": -25.99
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.5098,
+          "gated": true,
+          "seen_acc": 0.2259,
+          "unseen_acc": 0.1519,
+          "drop_pct": -32.77
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.3612,
+          "gated": true,
+          "seen_acc": 0.2853,
+          "unseen_acc": 0.2219,
+          "drop_pct": -22.22
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.1259,
+          "gated": false,
+          "seen_acc": 0.3514,
+          "unseen_acc": 0.3229,
+          "drop_pct": -8.13
+        }
+      },
+      "base_gated": true
+    },
+    "gemma3-12b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.0677,
+          "gated": false,
+          "seen_acc": 0.3534,
+          "unseen_acc": 0.3072,
+          "drop_pct": -13.06
+        },
+        "mono_all": {
+          "format_fail_max": 0.0427,
+          "gated": false,
+          "seen_acc": 0.3823,
+          "unseen_acc": 0.3159,
+          "drop_pct": -17.36,
+          "vs_base_pts": -4.3,
+          "vs_base_ci": [
+            -11.24,
+            2.92
+          ],
+          "vs_base_sig": false
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.4634,
+          "gated": true,
+          "seen_acc": 0.2093,
+          "unseen_acc": 0.1494,
+          "drop_pct": -28.62
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.0137,
+          "gated": false,
+          "seen_acc": 0.3925,
+          "unseen_acc": 0.3643,
+          "drop_pct": -7.19,
+          "vs_base_pts": 5.87,
+          "vs_base_ci": [
+            -1.23,
+            12.87
+          ],
+          "vs_base_sig": false
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.1111,
+          "gated": false,
+          "seen_acc": 0.3424,
+          "unseen_acc": 0.2741,
+          "drop_pct": -19.94,
+          "vs_base_pts": -6.88,
+          "vs_base_ci": [
+            -13.87,
+            0.1
+          ],
+          "vs_base_sig": false
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.0622,
+          "gated": false,
+          "seen_acc": 0.3925,
+          "unseen_acc": 0.3351,
+          "drop_pct": -14.64,
+          "vs_base_pts": -1.58,
+          "vs_base_ci": [
+            -7.18,
+            3.77
+          ],
+          "vs_base_sig": false
+        }
+      },
+      "base_gated": false
+    },
+    "codegemma-7b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.1996,
+          "gated": false,
+          "seen_acc": 0.2003,
+          "unseen_acc": 0.1818,
+          "drop_pct": -9.22
+        },
+        "mono_all": {
+          "format_fail_max": 0.1548,
+          "gated": false,
+          "seen_acc": 0.3008,
+          "unseen_acc": 0.2027,
+          "drop_pct": -32.6,
+          "vs_base_pts": -23.38,
+          "vs_base_ci": [
+            -33.84,
+            -13.67
+          ],
+          "vs_base_sig": true
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.8558,
+          "gated": true,
+          "seen_acc": 0.1033,
+          "unseen_acc": 0.0258,
+          "drop_pct": -75.04
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.2368,
+          "gated": false,
+          "seen_acc": 0.218,
+          "unseen_acc": 0.2034,
+          "drop_pct": -6.71,
+          "vs_base_pts": 2.51,
+          "vs_base_ci": [
+            -8.83,
+            13.69
+          ],
+          "vs_base_sig": false
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.0526,
+          "gated": false,
+          "seen_acc": 0.3027,
+          "unseen_acc": 0.2609,
+          "drop_pct": -13.81,
+          "vs_base_pts": -4.59,
+          "vs_base_ci": [
+            -13.78,
+            4.46
+          ],
+          "vs_base_sig": false
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.0565,
+          "gated": false,
+          "seen_acc": 0.284,
+          "unseen_acc": 0.2459,
+          "drop_pct": -13.43,
+          "vs_base_pts": -4.21,
+          "vs_base_ci": [
+            -14.05,
+            4.97
+          ],
+          "vs_base_sig": false
+        }
+      },
+      "base_gated": false
+    },
+    "granite31-8b": {
+      "n_programs": 319,
+      "systems": {
+        "base": {
+          "format_fail_max": 0.2776,
+          "gated": true,
+          "seen_acc": 0.2544,
+          "unseen_acc": 0.216,
+          "drop_pct": -15.13
+        },
+        "mono_all": {
+          "format_fail_max": 0.2279,
+          "gated": false,
+          "seen_acc": 0.2288,
+          "unseen_acc": 0.1543,
+          "drop_pct": -32.57
+        },
+        "cons_lam3": {
+          "format_fail_max": 0.7148,
+          "gated": true,
+          "seen_acc": 0.1195,
+          "unseen_acc": 0.0481,
+          "drop_pct": -59.77
+        },
+        "tuned_X1": {
+          "format_fail_max": 0.1228,
+          "gated": false,
+          "seen_acc": 0.2268,
+          "unseen_acc": 0.2208,
+          "drop_pct": -2.61
+        },
+        "tuned_L0": {
+          "format_fail_max": 0.4585,
+          "gated": true,
+          "seen_acc": 0.1778,
+          "unseen_acc": 0.1341,
+          "drop_pct": -24.58
+        },
+        "merge_dare_ties": {
+          "format_fail_max": 0.058,
+          "gated": false,
+          "seen_acc": 0.2619,
+          "unseen_acc": 0.2362,
+          "drop_pct": -9.84
+        }
+      },
+      "base_gated": true
+    }
+  }
+}
