@@ -1,0 +1,23 @@
+{
+  "job_id": "tr_gate_codellama-34b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.mole.train_mole",
+    "--config",
+    "mole/routerlora_codellama-34b.yaml"
+  ],
+  "raw": false,
+  "est_gpu_h": 6.0,
+  "priority": 280,
+  "meta": {
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | est 6 h (12 h walltime): the previous attempt timed out at 06:00:26 because the drain regenerated this manifest at est 3 h."
+  },
+  "slurm": {
+    "job_id": "396096",
+    "node": "g-07-02",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T22:23:41.176721+00:00"
+  }
+}

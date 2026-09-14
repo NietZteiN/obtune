@@ -13,15 +13,15 @@
   ],
   "raw": false,
   "est_gpu_h": 3.0,
-  "priority": 122,
+  "priority": 10,
   "meta": {
-    "note": "master table: the mixture column, queued automatically once the router gate existed | REQUEUED 2026-09-14 at batch_size 16 after CUDA OOM on the 93 GB node; resume skips the cells already written."
+    "note": "master table: the mixture column, queued automatically once the router gate existed | REQUEUED 2026-09-14 at batch_size 16 after CUDA OOM on the 93 GB node; resume skips the cells already written. | REQUEUED 2026-09-14 (third attempt): OOM again at batch 16 on a 141 GB H200 with 136.6 GiB in use after S2 -- the longest-prompt batches, not the count. eval_mole now batches by a token budget and empties the cache between cells."
   },
   "previous_slurm": {
-    "job_id": "397691",
-    "node": "g-05-01",
-    "partition": "h100",
+    "job_id": "399426",
+    "node": "g-07-08",
+    "partition": "h200",
     "exit_code": 1,
-    "finished_utc": "2026-09-14T18:55:26.702624+00:00"
+    "finished_utc": "2026-09-14T23:02:47.278230+00:00"
   }
 }

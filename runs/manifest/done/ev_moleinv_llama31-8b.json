@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_moleinv_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_llama31-8b.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 4.0,
+  "priority": 122,
+  "meta": {
+    "note": "THE MIXTURE, BACKWARDS -- the last empty column of the master table. The router had no backward number on any model because mole/eval_mole.py never passed `task` to run_cell. Validated by smoke job 397326 (5 cells, all four mixture arms answering). `base` resumes from the existing vLLM cells, so this computes the four mixture arms on 23 conditions. Rules and prediction pre-registered in CLAUDE_SCRATCHPAD.md before any cell existed."
+  },
+  "slurm": {
+    "job_id": "397518",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T22:19:33.766210+00:00"
+  }
+}
