@@ -130,3 +130,4 @@
 - [`../../docs/MASTER_REPORT_2026-08-10.md`](../../docs/MASTER_REPORT_2026-08-10.md)
 - [`../../scripts/make_master_report.py`](../../scripts/make_master_report.py) → `results/analysis/master_report.json`
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
+- [`2026-09-14_paper-numbers-audit.md`](2026-09-14_paper-numbers-audit.md) — prose numbers verified against the cells after a day of corrections; clean.
