@@ -87,7 +87,9 @@ def cell_path(model, sysn, cond):
             meta = p.parent / "cell_meta.json"
             if meta.exists():
                 try:
-                    register_prompt(model, sysn, str(_json.loads(meta.read_text()).get("prompt_id", "?")))
+                    _m = _json.loads(meta.read_text())
+                    register_prompt(model, sysn, str(_m.get("prompt_id", "?")),
+                                    str(_m.get("task", "input")))
                 except Exception:
                     pass
             return p, ph

@@ -61,15 +61,19 @@ def allow_mixed_prompts(on: bool = True) -> None:
     _MIXED_OK = bool(on)
 
 
-def register_prompt(model: str, system: str, prompt_id: str) -> None:
+def register_prompt(model: str, system: str, prompt_id: str, task: str = "output") -> None:
+    """`task` is part of the key. Forward and backward cells for the same arm ALWAYS use different
+    prompts -- that is what the two directions are -- so keying on (model, system) alone made every
+    script that reads both directions warn on every arm. Keyed this way the warning means what it
+    says: the same arm, asked the same question, two different ways."""
     if _MIXED_OK or not prompt_id or prompt_id == "?":
         return
-    key = (model, system)
+    key = (model, system, task)
     seen = _SEEN_PROMPTS.setdefault(key, set())
     was = len(seen)
     seen.add(prompt_id)
     if was == 1 and len(seen) == 2:
-        print(f"[cellkit] WARNING: {model}/{system} has cells under TWO prompts "
+        print(f"[cellkit] WARNING: {model}/{system} (task={task}) has cells under TWO prompts "
               f"{sorted(seen)}. Anything pooling or contrasting across them measures the prompt as "
               f"well as the arm (log/transfer/2026-09-14_two-prompts-one-phase.md). Call "
               f"cellkit.allow_mixed_prompts() if that is the intent.", file=sys.stderr)
@@ -87,21 +91,23 @@ def load_cell(phases: Iterable[str], model: str, system: str, cond: str,
             df["_phase"] = ph
             # Carried so `pooled` can check that everything it averages was asked the same way.
             # See the 2026-09-14 fault below.
-            pid = _prompt_id(p.parent)
+            pid, tsk = _prompt_id(p.parent)
             df["_prompt_id"] = pid
-            register_prompt(model, system, pid)
+            register_prompt(model, system, pid, tsk)
             return df
     return None
 
 
-def _prompt_id(cell: Path) -> str:
+def _prompt_id(cell: Path) -> tuple[str, str]:
+    """(prompt_id, task) from the cell's manifest; ("?", "output") when it cannot be read."""
     meta = cell / "cell_meta.json"
     if not meta.exists():
-        return "?"
+        return "?", "output"
     try:
-        return str(json.loads(meta.read_text()).get("prompt_id", "?"))
+        d = json.loads(meta.read_text())
+        return str(d.get("prompt_id", "?")), str(d.get("task", "output"))
     except Exception:
-        return "?"
+        return "?", "output"
 
 
 _PROMPT_WARNED: set = set()

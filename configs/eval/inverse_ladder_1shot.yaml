@@ -49,5 +49,13 @@ systems:
   - {name: mono_all, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix, one_shot: true}
   - {name: cons_lam3, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best", arch: per_type, train_cond: mix, one_shot: true}
   - {name: tuned_X1, adapter: "runs/adapters/{model}/{language}/X1_r32_s17/best", arch: per_type, train_cond: X1, one_shot: true}
+# THE MERGES, ADDED 2026-09-14 (second pass). `inverse_merge.yaml` covered the backward LADDER on
+# only four of the eight models -- CodeLlama-7B, Llama-3.1-8B, StarCoder2 and Granite -- so
+# 62_merge_backward.py cannot run at all on CodeLlama-13B, CodeLlama-34B, Gemma-3 or CodeGemma, and
+# the merge is now the arm the paper's argument rests on. They were always one-shot, so adding them
+# here changes nothing about how they are asked; it just puts the whole one-shot ladder in one phase.
+# Resume skips the five arms above on models where this config has already run.
+  - {name: merge_dare_ties, adapter: "runs/adapters/{model}/{language}/merge_dare_ties_r32_s17", arch: per_type, train_cond: merge, one_shot: true}
+  - {name: merge_ties, adapter: "runs/adapters/{model}/{language}/merge_ties_r32_s17", arch: per_type, train_cond: merge, one_shot: true}
 
 eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

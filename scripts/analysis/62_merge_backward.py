@@ -36,7 +36,10 @@ MODELS = sys.argv[1:] or ["codellama-7b", "llama31-8b", "starcoder2-15b", "grani
 LADDER = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
 ARMS = ["merge_dare_ties", "merge_ties"]
 REF = ["base", "tuned_L0", "mono_all", "cons_lam3", "tuned_X1"]
-PH_B = ["inverse_generic"]; PH_F = ["merge_panel", "panel_core", "rq2_generic"]
+# inverse_1shot FIRST: it holds the ladder re-read with the one-shot prompt the merge arms always
+# had. Until the repair lands for a model, that model still reads the zero-shot cells and the
+# registry in cellkit warns -- which is the intended behaviour, not a bug to silence.
+PH_B = ["inverse_1shot", "inverse_generic"]; PH_F = ["merge_panel", "panel_core", "rq2_generic"]
 N_BOOT, SEED, FMT_MAX = 2000, 17, 0.25
 
 def fmt_rate(df):
