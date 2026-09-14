@@ -1,0 +1,20 @@
+% GENERATED 2026-09-14 19:04 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/mole_generic/codellama-13b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Routing, CodeLlama-13B.} MoLE mixtures of the eight per-transform experts on every condition and stack that has them: \emph{router} = trained gate, \emph{hard router} = its argmax, \emph{uniform} = fixed uniform gate, \emph{random} = gate frozen at random initialisation. Per system: raw accuracy, $\Delta$ points against the untuned model on the same items, and \% of the untuned model's clean-code accuracy. Every cell ran through the mixture engine.}
+\label{tab:routing_codellama13b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{router}} & \multicolumn{3}{c|}{\textbf{hard router}} & \multicolumn{3}{c|}{\textbf{uniform}} & \multicolumn{3}{c}{\textbf{random}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{mole\_router}} & \multicolumn{3}{c|}{\texttt{mole\_hardrouter}} & \multicolumn{3}{c|}{\texttt{mole\_uniform}} & \multicolumn{3}{c}{\texttt{mole\_random}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.254 & 101 & 0.477 & $+22.2$ & 189 & 0.476 & $+22.2$ & 189 & 0.477 & $+22.2$ & 189 & 0.475 & $+22.1$ & 189 \\
+\texttt{L1b} & 0.222 & 88 & 0.426 & $+20.4$ & 169 & 0.425 & $+20.3$ & 168 & 0.402 & $+18.0$ & 160 & 0.405 & $+18.3$ & 161 \\
+\texttt{L1r} & 0.225 & 89 & 0.428 & $+20.3$ & 170 & 0.431 & $+20.6$ & 171 & 0.432 & $+20.7$ & 171 & 0.428 & $+20.2$ & 170 \\
+\texttt{L2} & 0.229 & 91 & 0.424 & $+19.5$ & 168 & 0.425 & $+19.6$ & 168 & 0.431 & $+20.2$ & 171 & 0.431 & $+20.2$ & 171 \\
+\bottomrule
+\end{tabular}
+\end{table*}

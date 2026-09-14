@@ -1,6 +1,6 @@
 {
  "script": "62_merge_backward.py",
- "generated_utc": "2026-09-14T17:26:03+00:00",
+ "generated_utc": "2026-09-14T19:04:32+00:00",
  "model": "codellama-34b",
  "conditions_read": [
   "L0",
@@ -93,9 +93,9 @@
   },
   "tuned_X1": {
    "backward_vs_base": {
-    "value_pts": -9.163286765810428,
-    "ci_lo": -11.356842421511192,
-    "ci_hi": -6.894622202193181,
+    "value_pts": -8.337088778729159,
+    "ci_lo": -10.575709779179812,
+    "ci_hi": -6.1138651044013805,
     "n_programs": 317,
     "excludes_zero": true
    },
@@ -106,7 +106,7 @@
     "n_programs": 317,
     "excludes_zero": true
    },
-   "direction_ratio": -0.3588684157399255
+   "direction_ratio": -0.326511427435506
   }
  }
 }

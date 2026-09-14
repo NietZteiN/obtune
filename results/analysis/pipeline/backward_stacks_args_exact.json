@@ -1,6 +1,6 @@
 {
   "script": "65_backward_stacks.py",
-  "generated_utc": "2026-09-14T14:45:32+00:00",
+  "generated_utc": "2026-09-14T19:03:12+00:00",
   "metric": "args_exact",
   "n_resamples": 2000,
   "seed": 17,
@@ -105,14 +105,14 @@
           "drop_pct": -16.77
         },
         "mono_all": {
-          "format_fail_max": 0.9461,
+          "format_fail_max": 0.9438,
           "gated": true,
-          "seen_acc": 0.0091,
-          "unseen_acc": 0.0017,
-          "drop_pct": -80.77
+          "seen_acc": 0.0094,
+          "unseen_acc": 0.0021,
+          "drop_pct": -77.78
         },
         "cons_lam3": {
-          "format_fail_max": 0.3021,
+          "format_fail_max": 0.2995,
           "gated": true,
           "seen_acc": 0.054,
           "unseen_acc": 0.0477,
@@ -171,7 +171,7 @@
           "drop_pct": -4.4
         },
         "mono_all": {
-          "format_fail_max": 0.5441,
+          "format_fail_max": 0.5436,
           "gated": true,
           "seen_acc": 0.0327,
           "unseen_acc": 0.03,
@@ -308,7 +308,7 @@
       "n_programs": 319,
       "systems": {
         "base": {
-          "format_fail_max": 0.5183,
+          "format_fail_max": 0.5182,
           "gated": true,
           "seen_acc": 0.0505,
           "unseen_acc": 0.0564,
@@ -481,11 +481,17 @@
           "vs_base_sig": false
         },
         "merge_ties": {
-          "format_fail_max": 0.7964,
-          "gated": true,
-          "seen_acc": 0.011,
-          "unseen_acc": 0.0327,
-          "drop_pct": 198.41
+          "format_fail_max": 0.1361,
+          "gated": false,
+          "seen_acc": 0.0711,
+          "unseen_acc": 0.0526,
+          "drop_pct": -25.98,
+          "vs_base_pts": -4.15,
+          "vs_base_ci": [
+            -22.3,
+            12.47
+          ],
+          "vs_base_sig": false
         }
       },
       "base_gated": false
@@ -590,10 +596,10 @@
     },
     "codellama-13b": {
       "mono_all": {
-        "delta_pts": -7.67,
+        "delta_pts": -7.64,
         "ci": [
-          -9.36,
-          -6.08
+          -9.33,
+          -6.06
         ],
         "significant": true,
         "arm_gated": true
@@ -866,13 +872,13 @@
         "arm_gated": false
       },
       "merge_ties": {
-        "delta_pts": -2.76,
+        "delta_pts": 1.9,
         "ci": [
-          -3.66,
-          -1.99
+          1.36,
+          2.51
         ],
         "significant": true,
-        "arm_gated": true
+        "arm_gated": false
       },
       "_base_gated": false
     },

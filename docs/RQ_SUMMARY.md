@@ -648,6 +648,17 @@ Across the four models with merges: CodeLlama-7B **+3.21** (DR +0.17), Llama-3.1
 > **gains** +7.27, so breadth is not uniformly a backward cost; and Granite is DARE-TIES' one null
 > while its TIES merge gains +6.94 there, so no claim should rest on one recipe.
 > `log/modularity/2026-09-14_merge-backward-all-eight.md`.
+>
+> **Grade v2, later the same day.** Every backward cell is now read under `trials_v2.parquet` where
+> one exists: the first line of a multi-line reply, which is exactly what the `"\n"` stop string the
+> harness should have carried would have returned (`72_regrade_inverse.py`; v1 files untouched,
+> `OBTUNE_INVERSE_GRADE=v1` forces them). It moved one arm: **CodeGemma's `merge_ties`, gated → readable**,
+> 0.063 → 0.254 pooled, +1.90 [+1.4, +2.5]\* above the untuned model on stacks. With it,
+> **`merge_ties` is positive backwards on all eight models, significant on seven, gated on none** — the same
+> pattern as DARE-TIES — so the caveat above that "no claim should rest on one recipe" is now moot: the two
+> recipes agree on every model. Nothing else moved by 0.02. Truncation, keyword arguments and expressions
+> were measured and deliberately NOT changed (gold calls have p99 = 64 tokens; 38 % of truncations are
+> loops). `log/transfer/2026-09-14_input-prediction-examined-and-fixed.md`.
 
 ### 6.5e The merge pays no brittleness tax in either direction, and forward-locking is why (2026-09-14)
 
@@ -829,6 +840,7 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.
 - **2026-09-13** — §6.5c: H-F2-route refuted; the specialist mixture is +2.88 above breadth on unseen-containing stacks.
 - **2026-09-13** - §6.5d: H-merge-backward refuted; the DARE-TIES merge has the highest direction ratio measured (+0.17).
+- **2026-09-14 (grade v2)** - the backward harness never stopped at a single newline; existing cells re-graded on their first line (identical to the missing stop), all readers prefer v2. One arm moved: CodeGemma merge_ties gated → readable, +1.90 above base on stacks, so BOTH merge recipes are now positive on 8/8. Truncation (3 % of trials) measured and left: gold calls p99 = 64 tokens, 38 % of truncations are loops.
 - **2026-09-14 (final, merge)** - §6.5d superseded in full: all eight models, one prompt throughout. merge_dare_ties backward is positive on 8/8 and significant on 7 (+2.00 to +7.72), negative on none, DR +0.11-+0.29 on seven; breadth and anchoring are significantly negative on three each. Exceptions kept in view: CodeGemma's breadth GAINS +7.27, and Granite is DARE-TIES' only null while its TIES merge gains +6.94.
 - **2026-09-14 (final)** - §6.5e(c) on ALL 23 conditions, repair complete on 8/8, no mixed-prompt arm left: untuned 0.007, merges 0.000/0.001, family 0.052, clean 0.059, breadth 0.070, anchored 0.172. StarCoder2 gains a backward contrast for the first time (its untuned model clears the gate one-shot where it cleared none zero-shot) and every arm there is positive, merges highest. Across 8 merge-by-model backward cells the merges are significant-positive on 6, null on 2, negative on none; breadth is significant-negative on 3 of 4.
 - **2026-09-14 (latest)** - §6.5d's reversal RETIRED: Granite's backward merge cost was the missing one-shot demo. Repaired, it is -0.27 [-2.33, +1.83] (null) against the published -7.66, and its merge_ties is +6.94. The prompt bias ran AGAINST the merge, not for it, correcting the direction asserted in the morning's correction note.

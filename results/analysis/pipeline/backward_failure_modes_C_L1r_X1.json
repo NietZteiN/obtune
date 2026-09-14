@@ -1,6 +1,6 @@
 {
   "script": "67_backward_failure_modes.py",
-  "generated_utc": "2026-09-14T15:38:01+00:00",
+  "generated_utc": "2026-09-14T19:03:21+00:00",
   "max_tokens": 128,
   "format_gate": 0.25,
   "condition": "C_L1r_X1",
@@ -143,31 +143,31 @@
     "codellama-13b/mono_all": {
       "phase": "inverse_generic",
       "n": 1215,
-      "accuracy": 0.01316872427983539,
-      "format_fail": 0.9333333333333333,
+      "accuracy": 0.015637860082304528,
+      "format_fail": 0.9292181069958848,
       "gated": true,
       "truncation_rate_all": 0.056790123456790124,
-      "n_failures": 1134,
+      "n_failures": 1129,
       "shares": {
-        "answered_forward": 0.08112874779541446,
-        "stop_failure": 0.006172839506172839,
-        "truncated": 0.059082892416225746,
-        "malformed": 0.8536155202821869
+        "answered_forward": 0.08148804251550044,
+        "stop_failure": 0.001771479185119575,
+        "truncated": 0.05934455270150576,
+        "malformed": 0.8573959255978743
       }
     },
     "codellama-13b/cons_lam3": {
       "phase": "inverse_generic",
       "n": 1215,
-      "accuracy": 0.16872427983539096,
-      "format_fail": 0.30781893004115224,
+      "accuracy": 0.17037037037037037,
+      "format_fail": 0.30205761316872426,
       "gated": true,
       "truncation_rate_all": 0.050205761316872426,
-      "n_failures": 374,
+      "n_failures": 367,
       "shares": {
-        "answered_forward": 0.44919786096256686,
-        "stop_failure": 0.045454545454545456,
-        "truncated": 0.16310160427807488,
-        "malformed": 0.3422459893048128
+        "answered_forward": 0.45776566757493187,
+        "stop_failure": 0.027247956403269755,
+        "truncated": 0.16621253405994552,
+        "malformed": 0.34877384196185285
       }
     },
     "codellama-13b/tuned_X1": {
@@ -278,16 +278,16 @@
     "codellama-34b/tuned_X1": {
       "phase": "inverse_generic",
       "n": 1215,
-      "accuracy": 0.17860082304526748,
-      "format_fail": 0.2707818930041152,
-      "gated": true,
+      "accuracy": 0.19506172839506172,
+      "format_fail": 0.19012345679012346,
+      "gated": false,
       "truncation_rate_all": 0.08477366255144032,
-      "n_failures": 329,
+      "n_failures": 231,
       "shares": {
-        "answered_forward": 0.03951367781155015,
-        "stop_failure": 0.3069908814589666,
-        "truncated": 0.3130699088145897,
-        "malformed": 0.3404255319148936
+        "answered_forward": 0.05627705627705628,
+        "stop_failure": 0.012987012987012988,
+        "truncated": 0.4458874458874459,
+        "malformed": 0.48484848484848486
       }
     },
     "codellama-34b/merge_dare_ties": {
@@ -428,16 +428,16 @@
     "starcoder2-15b/base": {
       "phase": "inverse_generic",
       "n": 1215,
-      "accuracy": 0.12181069958847737,
-      "format_fail": 0.5481481481481482,
+      "accuracy": 0.12263374485596708,
+      "format_fail": 0.5473251028806584,
       "gated": true,
       "truncation_rate_all": 0.11358024691358025,
-      "n_failures": 666,
+      "n_failures": 665,
       "shares": {
         "answered_forward": 0.0,
-        "stop_failure": 0.06006006006006006,
-        "truncated": 0.2072072072072072,
-        "malformed": 0.7327327327327328
+        "stop_failure": 0.058646616541353384,
+        "truncated": 0.2075187969924812,
+        "malformed": 0.7338345864661654
       }
     },
     "starcoder2-15b/tuned_L0": {
@@ -728,16 +728,16 @@
     "codegemma-7b/merge_ties": {
       "phase": "inverse_generic",
       "n": 1215,
-      "accuracy": 0.05185185185185185,
-      "format_fail": 0.7168724279835391,
-      "gated": true,
+      "accuracy": 0.1588477366255144,
+      "format_fail": 0.23950617283950618,
+      "gated": false,
       "truncation_rate_all": 0.2625514403292181,
-      "n_failures": 871,
+      "n_failures": 291,
       "shares": {
         "answered_forward": 0.0,
-        "stop_failure": 0.8622273249138921,
-        "truncated": 0.1285878300803674,
-        "malformed": 0.009184845005740528
+        "stop_failure": 0.5876288659793815,
+        "truncated": 0.3848797250859107,
+        "malformed": 0.027491408934707903
       }
     },
     "granite31-8b/base": {
@@ -902,6 +902,10 @@
         "merge_ties": {
           "collapse_rate": 0.0,
           "n_trials": 32334
+        },
+        "mole_router": {
+          "collapse_rate": 0.004276178556528994,
+          "n_trials": 9588
         }
       },
       "codellama-13b": {
@@ -992,6 +996,10 @@
         "merge_ties": {
           "collapse_rate": 0.0,
           "n_trials": 32334
+        },
+        "mole_router": {
+          "collapse_rate": 0.0007464543418760885,
+          "n_trials": 12057
         }
       },
       "starcoder2-15b": {
@@ -1022,6 +1030,10 @@
         "merge_ties": {
           "collapse_rate": 0.0,
           "n_trials": 32334
+        },
+        "mole_router": {
+          "collapse_rate": 0.05845959595959596,
+          "n_trials": 7920
         }
       },
       "gemma3-12b": {
@@ -1082,6 +1094,10 @@
         "merge_ties": {
           "collapse_rate": 0.0,
           "n_trials": 32334
+        },
+        "mole_router": {
+          "collapse_rate": 0.0017730496453900709,
+          "n_trials": 9588
         }
       },
       "granite31-8b": {
@@ -1112,6 +1128,10 @@
         "merge_ties": {
           "collapse_rate": 0.0003401991711511103,
           "n_trials": 32334
+        },
+        "mole_router": {
+          "collapse_rate": 0.08500208594075928,
+          "n_trials": 9588
         }
       }
     },
@@ -1122,7 +1142,8 @@
       "cons_lam3": 0.17210985340508442,
       "tuned_X1": 0.05209299808251376,
       "merge_dare_ties": 0.0007190573390239377,
-      "merge_ties": 0.000278344776396363
+      "merge_ties": 0.000278344776396363,
+      "mole_router": 0.030051472888830078
     }
   },
   "mirror_control": {

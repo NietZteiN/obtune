@@ -2110,3 +2110,20 @@ Also early and also worth checking later: the four mixture arms are within 0.01 
 every cell, and their backward accuracy (0.287–0.341 by execution) is above `base`'s repaired
 one-shot 0.229 on L0. That is `H-mixture` again — the mixing is the effect, not the dispatch —
 appearing in the backward direction for the first time.
+
+---
+
+## 2026-09-14 · Backward grade v2 — what it is and what it is not
+
+`72_regrade_inverse.py` re-grades every backward cell on the FIRST LINE of a multi-line reply, which
+is exactly what the `"\n"` stop string the harness should have carried would have returned. It is
+not a loosening: a prose first line still fails, an expression still fails, a keyword call still
+fails. v1 files are untouched; `OBTUNE_INVERSE_GRADE=v1` reads them.
+
+Every backward reader (cellkit.load_cell, 59, 65, 66, 67, 68, 62) now prefers v2. The mixture
+backward grids running right now were launched with the old stop list, so their cells will ALSO be
+re-graded to v2 once they land — the same script, same rule, so the router is measured the same way
+as everything else. Re-run 72 after the last mixture grid finishes; that is the trigger.
+
+Numbers that should now be quoted from v2 and were previously v1: CodeGemma `merge_ties` (was
+gated everywhere backwards; now readable and +1.90 above base on stacks). Nothing else moved ≥ 0.02.
