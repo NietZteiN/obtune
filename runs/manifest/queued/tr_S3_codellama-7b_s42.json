@@ -1,0 +1,19 @@
+{
+  "job_id": "tr_S3_codellama-7b_s42",
+  "kind": "train",
+  "argv": [
+    "src/obtune/train_sft.py",
+    "--config",
+    "train/grid_py_S3.yaml",
+    "--model",
+    "codellama-7b",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 290,
+  "meta": {
+    "note": "SECOND SEED, CodeLlama-7B (2026-09-14). First attempt OOM'd on a30 in 2-3 min: the specialist recipe (16x4 batch, 2048 ctx) needs more than a 23.5 GB card, which is also where the s17 twins were trained (h100/h200). Same recipe, same seed 42, h100 backfill; ~25-45 min each at s17."
+  }
+}
