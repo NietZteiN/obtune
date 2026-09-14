@@ -62,3 +62,4 @@
 - [`2026-09-13_scratch-quota-exhausted-cache-moved-to-work.md`](2026-09-13_scratch-quota-exhausted-cache-moved-to-work.md) — scratch quota exhausted while df looks healthy; cache back on /work; empty refs/main is the silent aftermath to check for.
 - [`2026-09-13_a30-fits-codellama-7b-and-nothing-else.md`](2026-09-13_a30-fits-codellama-7b-and-nothing-else.md) — the settled a30 bound, and the habit that produced two wrong ones before it.
 - [`2026-09-14_auto-queue-overwrote-the-walltime.md`](2026-09-14_auto-queue-overwrote-the-walltime.md) — a regenerating helper reset a hand-set walltime; 6 h was too tight for every gate anyway.
+- [`2026-09-14_walltime-estimates-from-measurement.md`](2026-09-14_walltime-estimates-from-measurement.md) — five timeouts traced to unmeasured estimates; two auto-queue constants fixed from data.

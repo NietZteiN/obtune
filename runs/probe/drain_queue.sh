@@ -83,7 +83,13 @@ while true; do
     if [ "$built" -ge 3 ] && [ "$cells" -eq 0 ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/ev_merge_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "ev_merge_$m"; then
-      printf '{"job_id":"ev_merge_%s","kind":"eval","argv":["-m","obtune.eval_vllm","--config","eval/merge_panel.yaml","--model","%s","--language","python"],"raw":false,"est_gpu_h":0.6,"priority":115,"meta":{"note":"master table: the merge column, queued automatically once the three merges were built"}}\n' "$m" "$m" > "$mf"
+      # EST FROM MEASUREMENT, not from a guess (2026-09-14). merge_panel is 207 cells and the
+      # completed runs took: Llama-3.1-8B 0.45 h, Granite 0.63, StarCoder2 0.94, Gemma-3 1.02,
+      # CodeLlama-13B 1.12, CodeGemma 1.18, CodeLlama-34B ~2.9 across two attempts. The old
+      # hardcoded 0.6 (a 1.2 h walltime) was below what six of the seven needed and killed the 34B
+      # run at 2.01 h with 158 of 207 cells written.
+      mest=1.5; case "$m" in *34b*) mest=2.0 ;; esac
+      printf '{"job_id":"ev_merge_%s","kind":"eval","argv":["-m","obtune.eval_vllm","--config","eval/merge_panel.yaml","--model","%s","--language","python"],"raw":false,"est_gpu_h":%s,"priority":115,"meta":{"note":"master table: the merge column, queued automatically once the three merges were built"}}\n' "$m" "$m" "$mest" > "$mf"
       echo "[merge-track] queued ev_merge_$m (merges are built)"
     fi
   done
@@ -126,7 +132,12 @@ while true; do
     if [ -f "runs/mole/$m/python/$tag/gate.pt" ] && [ "$cells" -eq 0 ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/ev_mole_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "ev_mole_$m"; then
-      printf '{"job_id":"ev_mole_%s","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_%s.yaml","--model","%s","--language","python"],"raw":false,"est_gpu_h":1.5,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}\n' "$m" "$m" "$m" > "$mf"
+      # EST FROM MEASUREMENT (2026-09-14). The mixture grid is 115 cells and the HFEngine path is
+      # slow: measured 0.030-0.048 GPU-h per cell (Llama-3.1-8B 101 cells in 3.0 h, Granite 75 in
+      # 3.0, StarCoder2 63 in 3.0, CodeGemma 30 in 1.12), so a full grid needs 3.4-5.5 h. The old
+      # hardcoded 1.5 gave a 3 h walltime and killed THREE of these at exactly 3.0 h with a third
+      # to a half of the cells missing. 3.0 -> 6 h covers the slowest measured rate.
+      printf '{"job_id":"ev_mole_%s","kind":"eval","argv":["-m","obtune.mole.eval_mole","--config","eval/mole_panel_%s.yaml","--model","%s","--language","python"],"raw":false,"est_gpu_h":3.0,"priority":125,"meta":{"note":"master table: the mixture column, queued automatically once the router gate existed"}}\n' "$m" "$m" "$m" > "$mf"
       echo "[mixture] queued ev_mole_$m (gate is trained)"
     fi
   done
