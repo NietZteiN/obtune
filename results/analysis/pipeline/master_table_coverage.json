@@ -1,0 +1,85 @@
+{
+  "generated_utc": "2026-09-14T17:43:38+00:00",
+  "n_forward": 184,
+  "n_backward": 161,
+  "models": {
+    "codellama-7b": {
+      "forward": 184,
+      "backward": 139,
+      "forward_gaps": {},
+      "backward_gaps": {
+        "mixture": 22
+      }
+    },
+    "codellama-13b": {
+      "forward": 161,
+      "backward": 138,
+      "forward_gaps": {
+        "mixture": 23
+      },
+      "backward_gaps": {
+        "mixture": 23
+      }
+    },
+    "codellama-34b": {
+      "forward": 161,
+      "backward": 138,
+      "forward_gaps": {
+        "mixture": 23
+      },
+      "backward_gaps": {
+        "mixture": 23
+      }
+    },
+    "llama31-8b": {
+      "forward": 181,
+      "backward": 140,
+      "forward_gaps": {
+        "mixture": 3
+      },
+      "backward_gaps": {
+        "mixture": 21
+      }
+    },
+    "starcoder2-15b": {
+      "forward": 173,
+      "backward": 139,
+      "forward_gaps": {
+        "mixture": 11
+      },
+      "backward_gaps": {
+        "mixture": 22
+      }
+    },
+    "gemma3-12b": {
+      "forward": 161,
+      "backward": 138,
+      "forward_gaps": {
+        "mixture": 23
+      },
+      "backward_gaps": {
+        "mixture": 23
+      }
+    },
+    "codegemma-7b": {
+      "forward": 167,
+      "backward": 143,
+      "forward_gaps": {
+        "mixture": 17
+      },
+      "backward_gaps": {
+        "mixture": 18
+      }
+    },
+    "granite31-8b": {
+      "forward": 176,
+      "backward": 139,
+      "forward_gaps": {
+        "mixture": 8
+      },
+      "backward_gaps": {
+        "mixture": 22
+      }
+    }
+  }
+}
