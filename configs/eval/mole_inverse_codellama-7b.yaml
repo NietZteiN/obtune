@@ -53,7 +53,11 @@ gate_checkpoint: runs/mole/codellama-7b/python/routerlora_codellama7b_s17/gate.p
 engine:
   seed: 17
   dtype: bfloat16
-  batch_size: 32
+  # BATCH 16 ON THIS MODEL ONLY. The forward twin of this grid OOMed at 32 on an 80 GB H100 (job
+  # 397349) on X1, and the backward task generates 128 tokens where the forward one generates 64,
+  # so the KV cache is larger for the same batch. Granite, Llama-3.1-8B, StarCoder2 and CodeGemma
+  # cleared the forward grid at 32 and keep it; this is not a blanket reduction.
+  batch_size: 16
 
 systems:
   - {name: base, arch: none, one_shot: true}
