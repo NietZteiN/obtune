@@ -1,0 +1,39 @@
+# SECOND SEED, BACKWARD (input prediction), CodeLlama-7B (2026-09-14). Every headline number the paper quotes is s17-only,
+# and CLAUDE.md section 4 says to vary seeds before claiming an effect. This evaluates the _s42
+# replicates of the paper's arms on all 23 conditions in ONE phase, so 73_seed42.py can pair each
+# s42 cell with its s17 twin (which lives in panel_core / composite_* / f2_divergence) and report the
+# seed band on every contrast the paper makes. `base` is re-run here rather than resumed so the
+# comparison is engine-identical within the phase.
+# tuned_X1_s42, merge_*_s42 are being built (a30 398392, dev 398395/398396); the missing-adapter guard
+# refuses this config until they exist, which is the intended gate.
+_extends: _base_eval.yaml
+
+phase: seed42_inverse
+experiment_id: seed42_inverse_codellama-7b
+run_tag: seed42_inverse_codellama-7b
+model: codellama-7b
+language: python
+eval_source: heldout
+task: input
+
+sampling:
+  max_tokens: 128
+  stop: ["\n", "\n\n", "```", "<end_of_turn>"]
+
+scoring:
+  float_tol: 1.0e-6
+  exec: {timeout_s: 2.0, mem_mb: 512, workers: 16}
+
+systems:
+  - {name: base, arch: none, one_shot: true}
+  - {name: tuned_L0_s42, adapter: "runs/adapters/{model}/{language}/L0_r32_s42/best", arch: per_type, train_cond: L0, one_shot: true}
+  - {name: tuned_X1_s42, adapter: "runs/adapters/{model}/{language}/X1_r32_s42/best", arch: per_type, train_cond: X1, one_shot: true}
+  - {name: mono_all_s42, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s42/best", arch: per_type, train_cond: mix, one_shot: true}
+  - {name: cons_lam3_s42, adapter: "runs/adapters_objectives/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s42/best", arch: per_type, train_cond: mix, one_shot: true}
+  - {name: merge_ties_s42, adapter: "runs/adapters/{model}/{language}/merge_ties_r32_s42", arch: per_type, train_cond: merge, one_shot: true}
+  - {name: merge_dare_ties_s42, adapter: "runs/adapters/{model}/{language}/merge_dare_ties_r32_s42", arch: per_type, train_cond: merge, one_shot: true}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]

@@ -194,7 +194,12 @@ class TrialRow(BaseModel):
                    # would have skipped every cell it was meant to replace. Keeping both readings
                    # on disk is what makes the size of that confound measurable.
                    # See log/transfer/2026-09-14_two-prompts-one-phase.md.
-                   "inverse_1shot"]
+                   "inverse_1shot",
+                   # 2026-09-14: the SECOND-SEED replicate of the paper's arms on CodeLlama-7B, forward
+                   # and backward, each in one phase so 73_seed42.py can pair every s42 cell with its
+                   # s17 twin. Their own phases because the s17 cells are spread over panel_core,
+                   # composite_generic, composite_depth, f2_divergence and inverse_generic.
+                   "seed42_generic", "seed42_inverse"]
     experiment_id: str
     base_model: str
     # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned

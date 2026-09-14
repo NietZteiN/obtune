@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_moleinv_codellama-13b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_codellama-13b.yaml",
+    "--model",
+    "codellama-13b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 4.0,
+  "priority": 122,
+  "meta": {
+    "note": "the mixture, backwards -- queued as soon as the 13B gate finished (0 NaN tensors of 42). Launched with the corrected newline stop, so no v2 re-grade is needed for this model."
+  }
+}

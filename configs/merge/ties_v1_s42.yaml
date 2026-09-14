@@ -1,0 +1,15 @@
+# SECOND SEED of ties_v1.yaml (2026-09-14). Same recipe, same density, same six adapters -- but the
+# adapters are the _s42 specialists and DARE's Bernoulli drop mask is drawn from this seed, so both
+# the ingredients and the merge's own randomness are replicated. Built to answer the question CLAUDE.md
+# section 4 asks of every headline: does the merge result survive a seed change? Every number the paper
+# quotes for the merge is s17-only.
+# LoRA-space merge of the per-condition adapters via PEFT add_weighted_adapter.
+# (mergekit is avoided: its LoRA path is merge-into-base + SVD re-extraction and it
+# pins accelerate~=1.6, which conflicts with this env.)
+
+combination_type: ties # ties | dare_ties | dare_linear | linear | svd
+density: 0.5
+adapters: [L0, L1b, L1r, L2, S1, S2]
+weights: null # null => uniform 1/n
+density_sweep: [0.3, 0.5, 0.7] # swept on qwen25c-1.5b only; best density applied to 7B/8B
+seed: 42
