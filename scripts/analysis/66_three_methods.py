@@ -147,7 +147,16 @@ def block(model, direction, metric, out):
         if r:
             r.pop("_sm", None); r.pop("_um", None)
     out.setdefault(model, {})[direction] = {"n_programs": len(progs), "methods": info}
-    return f"{model:16s} {len(progs):4d}  " + "  ".join(cols)
+    # THE LEVEL, NOT ONLY THE DROP. A method can have a flat drop because it never learned
+    # anything, and the drop column alone cannot tell that apart from robustness. The seen-stack
+    # accuracy is printed under each row so the two readings sit together: on every model the merge
+    # matches breadth's level to within about a point while dropping like the untuned model.
+    lv = "  ".join(
+        f"{'--':>15s}" if info.get(l) is None
+        else (f"{'gated':>15s}" if info[l]["gated"] else f"{info[l]['seen']:>15.3f}")
+        for l, _, _ in METHODS)
+    return (f"{model:16s} {len(progs):4d}  " + "  ".join(cols)
+            + f"\n{'':16s} {'lvl':>4s}  " + lv)
 
 
 def main() -> int:
