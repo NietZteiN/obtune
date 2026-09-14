@@ -1,0 +1,86 @@
+{
+ "script": "62_merge_backward.py",
+ "generated_utc": "2026-09-14T17:25:41+00:00",
+ "model": "codellama-13b",
+ "conditions_read": [
+  "L0",
+  "L1b",
+  "L1r",
+  "L2",
+  "S1",
+  "S2",
+  "X1"
+ ],
+ "format_gated_cells": [
+  "tuned_L0__L2",
+  "mono_all__L0",
+  "mono_all__L1b",
+  "mono_all__L1r",
+  "mono_all__L2",
+  "mono_all__S1",
+  "mono_all__S2",
+  "mono_all__X1",
+  "tuned_X1__L0",
+  "tuned_X1__L1b",
+  "tuned_X1__L1r",
+  "tuned_X1__L2",
+  "tuned_X1__S1",
+  "tuned_X1__S2",
+  "tuned_X1__X1"
+ ],
+ "n_resamples": 2000,
+ "seed": 17,
+ "arms": {
+  "merge_dare_ties": {
+   "backward_vs_base": {
+    "value_pts": 4.176055280156227,
+    "ci_lo": 2.5086375244103953,
+    "ci_hi": 5.8885383806519425,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 21.92481203007519,
+    "ci_lo": 19.17795344525698,
+    "ci_hi": 24.974032816498568,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.19047165715390196
+  },
+  "merge_ties": {
+   "backward_vs_base": {
+    "value_pts": 0.7060237344149012,
+    "ci_lo": -0.34550097641580235,
+    "ci_hi": 1.7275048820790118,
+    "n_programs": 317,
+    "excludes_zero": false
+   },
+   "forward_vs_base": {
+    "value_pts": 14.496240601503763,
+    "ci_lo": 12.137486341496542,
+    "ci_hi": 17.020054078413697,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.04870391943837232
+  },
+  "cons_lam3": {
+   "backward_vs_base": {
+    "value_pts": -6.940063091482648,
+    "ci_lo": -9.178684091933306,
+    "ci_hi": -4.581643382905215,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 22.451127819548873,
+    "ci_lo": 19.39836183518734,
+    "ci_hi": 25.71466165413534,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": -0.3091186842488922
+  }
+ }
+}

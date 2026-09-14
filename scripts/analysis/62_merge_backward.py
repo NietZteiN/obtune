@@ -32,7 +32,12 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "analysis")); sys.path.insert(0, str(ROOT / "src"))
 from cellkit import check_one_prompt, load_cell  # noqa: E402
-MODELS = sys.argv[1:] or ["codellama-7b", "llama31-8b", "starcoder2-15b", "granite31-8b"]
+# ALL EIGHT since 2026-09-14. The default was the four models that had backward merge cells;
+# CodeLlama-13B, CodeLlama-34B, Gemma-3 and CodeGemma had none, because inverse_merge.yaml never
+# covered them, and the script refused rather than reporting a hole. Those cells were run into
+# phase inverse_1shot with the rest of the ladder repair, so the default is now the panel.
+MODELS = sys.argv[1:] or ["codellama-7b", "codellama-13b", "codellama-34b", "llama31-8b",
+                          "starcoder2-15b", "gemma3-12b", "codegemma-7b", "granite31-8b"]
 LADDER = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
 ARMS = ["merge_dare_ties", "merge_ties"]
 REF = ["base", "tuned_L0", "mono_all", "cons_lam3", "tuned_X1"]

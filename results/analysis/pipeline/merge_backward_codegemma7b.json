@@ -1,0 +1,102 @@
+{
+ "script": "62_merge_backward.py",
+ "generated_utc": "2026-09-14T17:28:21+00:00",
+ "model": "codegemma-7b",
+ "conditions_read": [
+  "L0",
+  "L1b",
+  "L1r",
+  "L2",
+  "S1",
+  "S2",
+  "X1"
+ ],
+ "format_gated_cells": [
+  "merge_ties__L0",
+  "merge_ties__L1b",
+  "merge_ties__L1r",
+  "merge_ties__L2",
+  "merge_ties__S1",
+  "merge_ties__S2",
+  "merge_ties__X1",
+  "cons_lam3__L0",
+  "cons_lam3__L1b",
+  "cons_lam3__L1r",
+  "cons_lam3__L2",
+  "cons_lam3__S1",
+  "cons_lam3__S2",
+  "cons_lam3__X1"
+ ],
+ "n_resamples": 2000,
+ "seed": 17,
+ "arms": {
+  "merge_dare_ties": {
+   "backward_vs_base": {
+    "value_pts": 6.249061138651041,
+    "ci_lo": 4.581643382905215,
+    "ci_hi": 7.841745531019981,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 21.593984962406015,
+    "ci_lo": 19.122479305519317,
+    "ci_hi": 24.176953183802496,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.28938897334282326
+  },
+  "tuned_L0": {
+   "backward_vs_base": {
+    "value_pts": 9.298482800060087,
+    "ci_lo": 7.661108607480848,
+    "ci_hi": 11.026738771218266,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 21.398496240601506,
+    "ci_lo": 18.92743528749598,
+    "ci_hi": 23.940722468632146,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.4345390767420912
+  },
+  "mono_all": {
+   "backward_vs_base": {
+    "value_pts": 7.270542286315157,
+    "ci_lo": 5.5129938410695525,
+    "ci_hi": 9.118596965600117,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 21.052631578947366,
+    "ci_lo": 18.206126515025737,
+    "ci_hi": 24.05125708593249,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.34535075859997
+  },
+  "tuned_X1": {
+   "backward_vs_base": {
+    "value_pts": -0.43563166591557845,
+    "ci_lo": -2.103424966200992,
+    "ci_hi": 1.2321616343698334,
+    "n_programs": 317,
+    "excludes_zero": false
+   },
+   "forward_vs_base": {
+    "value_pts": 22.360902255639097,
+    "ci_lo": 19.7890977443609,
+    "ci_hi": 25.007988030011933,
+    "n_programs": 317,
+    "excludes_zero": true
+   },
+   "direction_ratio": -0.019481846525478123
+  }
+ }
+}
