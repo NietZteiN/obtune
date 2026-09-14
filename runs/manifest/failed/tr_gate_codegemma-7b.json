@@ -14,10 +14,10 @@
     "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"
   },
   "slurm": {
-    "job_id": "394548",
+    "job_id": "394574",
     "node": "g-06-01",
     "partition": "h100",
     "exit_code": 1,
-    "finished_utc": "2026-09-14T02:33:11.839815+00:00"
+    "finished_utc": "2026-09-14T02:56:58.876689+00:00"
   }
 }
