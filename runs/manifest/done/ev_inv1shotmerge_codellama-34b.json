@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_inv1shotmerge_codellama-34b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_ladder_1shot.yaml",
+    "--model",
+    "codellama-34b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.5,
+  "priority": 126,
+  "meta": {
+    "note": "SECOND PASS: adds the two merge arms to the one-shot backward ladder. inverse_merge.yaml covered only four of eight models, so 62_merge_backward.py cannot run on this one at all, and the merge is the arm the paper's argument now rests on. Resume skips the five arms already written for this model."
+  },
+  "slurm": {
+    "job_id": "397187",
+    "node": "g-08-04",
+    "partition": "h200",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T14:45:50.125934+00:00"
+  }
+}

@@ -54,7 +54,12 @@ gate_checkpoint: runs/mole/codellama-7b/python/routerlora_codellama7b_s17/gate.p
 engine:
   seed: 17
   dtype: bfloat16
-  batch_size: 32
+  # BATCH 8, NOT 32. Job 397349 OOMed on an 80 GB H100 at batch 32 with 78.2 GiB in use, on X1 --
+  # the one condition this config exists to fill, and the longest prompts in the grid (string
+  # encoding plus MBA rewriting inflates the code, and one prompt was dropped as over-long in the
+  # same run). Granite, Llama-3.1-8B and StarCoder2 cleared X1 at batch 32 on the same node type,
+  # so this is 7B-specific and not worth chasing for five cells: the whole job is one condition.
+  batch_size: 8
 
 systems:
   - {name: base, arch: none}

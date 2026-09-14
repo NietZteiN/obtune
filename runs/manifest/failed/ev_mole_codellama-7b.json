@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_mole_codellama-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_codellama-7b.yaml",
+    "--model",
+    "codellama-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 124,
+  "meta": {
+    "note": "master table: the ONE hole in CodeLlama-7B's mixture column. Its 110 existing mixture cells came from three earlier configs, none of which listed X1 in eval_conditions, so the held-out family was never routed on this model. Resume skips those 110 and this computes X1 for all five arms."
+  },
+  "slurm": {
+    "job_id": "397349",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T15:26:54.728632+00:00"
+  }
+}
