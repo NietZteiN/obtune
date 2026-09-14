@@ -1,0 +1,98 @@
+{
+  "script": "68_prompt_effect.py",
+  "generated_utc": "2026-09-14T13:42:54+00:00",
+  "phases": {
+    "zero_shot": "inverse_generic",
+    "one_shot": "inverse_1shot"
+  },
+  "conditions": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "X1"
+  ],
+  "n_resamples": 2000,
+  "seed": 17,
+  "models": {
+    "codellama-34b": {
+      "base": {
+        "n_programs": 553,
+        "n_conditions": 2,
+        "acc_zero_shot": 0.4253,
+        "acc_one_shot": 0.3463,
+        "delta_pts": -7.9,
+        "ci": [
+          -9.76,
+          -6.12
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.0381,
+        "fmt_one_shot": 0.0237,
+        "gate": "clean both"
+      },
+      "tuned_L0": {
+        "n_programs": 557,
+        "n_conditions": 1,
+        "acc_zero_shot": 0.2424,
+        "acc_one_shot": 0.2597,
+        "delta_pts": 1.74,
+        "ci": [
+          -1.26,
+          4.73
+        ],
+        "significant": false,
+        "fmt_zero_shot": 0.5111,
+        "fmt_one_shot": 0.1478,
+        "gate": "GATE LIFTED"
+      },
+      "mono_all": {
+        "n_programs": 557,
+        "n_conditions": 1,
+        "acc_zero_shot": 0.3148,
+        "acc_one_shot": 0.2005,
+        "delta_pts": -11.43,
+        "ci": [
+          -13.94,
+          -8.98
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.2561,
+        "fmt_one_shot": 0.325,
+        "gate": "gated both"
+      },
+      "cons_lam3": {
+        "n_programs": 557,
+        "n_conditions": 1,
+        "acc_zero_shot": 0.1807,
+        "acc_one_shot": 0.2843,
+        "delta_pts": 10.35,
+        "ci": [
+          7.72,
+          12.99
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.5625,
+        "fmt_one_shot": 0.0497,
+        "gate": "GATE LIFTED"
+      },
+      "tuned_X1": {
+        "n_programs": 557,
+        "n_conditions": 1,
+        "acc_zero_shot": 0.3256,
+        "acc_one_shot": 0.2645,
+        "delta_pts": -6.1,
+        "ci": [
+          -8.38,
+          -3.77
+        ],
+        "significant": true,
+        "fmt_zero_shot": 0.2011,
+        "fmt_one_shot": 0.085,
+        "gate": "clean both"
+      }
+    }
+  }
+}
