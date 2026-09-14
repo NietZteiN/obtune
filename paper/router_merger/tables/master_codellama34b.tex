@@ -1,4 +1,4 @@
-% GENERATED 2026-09-14 13:33 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 13:40 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-34b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -44,32 +44,32 @@
 \texttt{C3\_L1r\_S1\_X1} & 0.118 & fmt & -- & -- & -- & 0.256 & $+13.8$ & fmt & 0.262 & $+14.4$ & fmt & 0.297 & $+17.9$ & fmt & 0.293 & $+17.5$ & fmt \\
 \midrule
 \multicolumn{18}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.466 & 100 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & 0.326 & $-14.1$ & 70 \\
-\texttt{L1b} & 0.381 & 82 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
-\texttt{L1r} & 0.414 & 89 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
-\texttt{L2} & 0.417 & 89 & -- & -- & -- & 0.371 & $-4.5$ & 80 & 0.296 & $-12.0$ & 64 & fmt & fmt & fmt & 0.314 & $-10.3$ & 67 \\
-\texttt{S1} & 0.405 & 87 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & 0.319 & $-8.7$ & 68 \\
-\texttt{S2} & 0.434 & 93 & -- & -- & -- & fmt & fmt & fmt & 0.321 & $-11.3$ & 69 & fmt & fmt & fmt & 0.311 & $-12.4$ & 67 \\
-\texttt{X1} & 0.320 & 69 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
-\texttt{C\_L1b\_S1} & 0.257 & 55 & -- & -- & -- & 0.272 & $+1.5$ & 58 & fmt & fmt & fmt & 0.258 & $+0.1$ & 55 & fmt & fmt & fmt \\
-\texttt{C\_L1r\_S1} & 0.304 & 65 & -- & -- & -- & 0.285 & $-1.8$ & 61 & fmt & fmt & fmt & 0.200 & $-10.4$ & 43 & 0.248 & $-5.6$ & 53 \\
-\texttt{C\_S1\_L1r} & 0.292 & 63 & -- & -- & -- & 0.307 & $+1.5$ & 66 & fmt & fmt & fmt & 0.216 & $-7.6$ & 46 & 0.258 & $-3.3$ & 55 \\
-\texttt{C\_L2\_S4} & 0.344 & 74 & -- & -- & -- & 0.291 & $-5.3$ & 62 & fmt & fmt & fmt & 0.273 & $-7.1$ & 59 & 0.248 & $-9.6$ & 53 \\
-\texttt{C\_L1r\_S3} & 0.333 & 72 & -- & -- & -- & 0.327 & $-0.7$ & 70 & fmt & fmt & fmt & 0.256 & $-7.7$ & 55 & 0.266 & $-6.8$ & 57 \\
-\texttt{C\_S4\_S3} & 0.352 & 75 & -- & -- & -- & 0.345 & $-0.7$ & 74 & fmt & fmt & fmt & 0.301 & $-5.1$ & 65 & 0.265 & $-8.7$ & 57 \\
-\emph{seen stacks, pooled (6)} & 0.314 & 67 & -- & -- & -- & 0.305 & $-0.9$ & 65 & fmt & fmt & fmt & 0.251 & $-6.3$ & 54 & fmt & fmt & fmt \\
-\texttt{C3\_L1r\_S3\_S4} & 0.325 & 70 & -- & -- & -- & 0.330 & $+0.5$ & 71 & fmt & fmt & fmt & 0.251 & $-7.4$ & 54 & 0.263 & $-6.2$ & 56 \\
-\texttt{C3\_S1\_S3\_S4} & 0.330 & 71 & -- & -- & -- & 0.323 & $-0.7$ & 69 & fmt & fmt & fmt & 0.288 & $-4.2$ & 62 & 0.257 & $-7.3$ & 55 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.291 & 62 & -- & -- & -- & 0.311 & $+2.0$ & 67 & fmt & fmt & fmt & 0.199 & $-9.2$ & 43 & 0.262 & $-2.9$ & 56 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.283 & 61 & -- & -- & -- & 0.333 & $+5.0$ & 72 & fmt & fmt & fmt & 0.214 & $-6.9$ & 46 & 0.262 & $-2.2$ & 56 \\
-\emph{depth-3/4 stacks, pooled (4)} & 0.307 & 66 & -- & -- & -- & 0.324 & $+1.7$ & 70 & fmt & fmt & fmt & 0.238 & $-6.9$ & 51 & 0.261 & $-4.6$ & 56 \\
-\texttt{C\_L1r\_X1} & 0.275 & 59 & -- & -- & -- & 0.240 & $-3.5$ & 52 & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
-\texttt{C\_X1\_S1} & 0.298 & 64 & -- & -- & -- & 0.275 & $-2.3$ & 59 & fmt & fmt & fmt & fmt & fmt & fmt & 0.217 & $-8.1$ & 47 \\
-\texttt{C\_S2\_X1} & 0.378 & 81 & -- & -- & -- & 0.366 & $-1.3$ & 78 & fmt & fmt & fmt & 0.288 & $-9.1$ & 62 & fmt & fmt & fmt \\
-\emph{unseen-containing stacks, pooled (3)} & 0.317 & 68 & -- & -- & -- & 0.294 & $-2.3$ & 63 & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
-\texttt{C\_L1r\_X1m} & 0.269 & 58 & -- & -- & -- & 0.230 & $-3.9$ & 49 & fmt & fmt & fmt & fmt & fmt & fmt & 0.172 & $-9.7$ & 37 \\
-\texttt{C\_S1\_X1s} & 0.346 & 74 & -- & -- & -- & 0.302 & $-4.4$ & 65 & fmt & fmt & fmt & 0.268 & $-7.8$ & 57 & 0.240 & $-10.6$ & 51 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.304 & 65 & -- & -- & -- & 0.296 & $-0.8$ & 63 & fmt & fmt & fmt & fmt & fmt & fmt & 0.216 & $-8.8$ & 46 \\
+\texttt{L0} & 0.363 & 100 & -- & -- & -- & 0.260 & $-10.3$ & 72 & fmt & fmt & fmt & fmt & fmt & fmt & 0.326 & $-3.7$ & 90 \\
+\texttt{L1b} & 0.381 & 105 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
+\texttt{L1r} & 0.414 & 114 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
+\texttt{L2} & 0.417 & 115 & -- & -- & -- & 0.371 & $-4.5$ & 102 & 0.296 & $-12.0$ & 82 & fmt & fmt & fmt & 0.314 & $-10.3$ & 86 \\
+\texttt{S1} & 0.405 & 112 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & 0.319 & $-8.7$ & 88 \\
+\texttt{S2} & 0.434 & 120 & -- & -- & -- & fmt & fmt & fmt & 0.321 & $-11.3$ & 89 & fmt & fmt & fmt & 0.311 & $-12.4$ & 86 \\
+\texttt{X1} & 0.320 & 88 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
+\texttt{C\_L1b\_S1} & 0.257 & 71 & -- & -- & -- & 0.272 & $+1.5$ & 75 & fmt & fmt & fmt & 0.258 & $+0.1$ & 71 & fmt & fmt & fmt \\
+\texttt{C\_L1r\_S1} & 0.304 & 84 & -- & -- & -- & 0.285 & $-1.8$ & 79 & fmt & fmt & fmt & 0.200 & $-10.4$ & 55 & 0.248 & $-5.6$ & 68 \\
+\texttt{C\_S1\_L1r} & 0.292 & 80 & -- & -- & -- & 0.307 & $+1.5$ & 85 & fmt & fmt & fmt & 0.216 & $-7.6$ & 60 & 0.258 & $-3.3$ & 71 \\
+\texttt{C\_L2\_S4} & 0.344 & 95 & -- & -- & -- & 0.291 & $-5.3$ & 80 & fmt & fmt & fmt & 0.273 & $-7.1$ & 75 & 0.248 & $-9.6$ & 68 \\
+\texttt{C\_L1r\_S3} & 0.333 & 92 & -- & -- & -- & 0.327 & $-0.7$ & 90 & fmt & fmt & fmt & 0.256 & $-7.7$ & 71 & 0.266 & $-6.8$ & 73 \\
+\texttt{C\_S4\_S3} & 0.352 & 97 & -- & -- & -- & 0.345 & $-0.7$ & 95 & fmt & fmt & fmt & 0.301 & $-5.1$ & 83 & 0.265 & $-8.7$ & 73 \\
+\emph{seen stacks, pooled (6)} & 0.314 & 86 & -- & -- & -- & 0.305 & $-0.9$ & 84 & fmt & fmt & fmt & 0.251 & $-6.3$ & 69 & fmt & fmt & fmt \\
+\texttt{C3\_L1r\_S3\_S4} & 0.325 & 90 & -- & -- & -- & 0.330 & $+0.5$ & 91 & fmt & fmt & fmt & 0.251 & $-7.4$ & 69 & 0.263 & $-6.2$ & 72 \\
+\texttt{C3\_S1\_S3\_S4} & 0.330 & 91 & -- & -- & -- & 0.323 & $-0.7$ & 89 & fmt & fmt & fmt & 0.288 & $-4.2$ & 79 & 0.257 & $-7.3$ & 71 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.291 & 80 & -- & -- & -- & 0.311 & $+2.0$ & 86 & fmt & fmt & fmt & 0.199 & $-9.2$ & 55 & 0.262 & $-2.9$ & 72 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.283 & 78 & -- & -- & -- & 0.333 & $+5.0$ & 92 & fmt & fmt & fmt & 0.214 & $-6.9$ & 59 & 0.262 & $-2.2$ & 72 \\
+\emph{depth-3/4 stacks, pooled (4)} & 0.307 & 85 & -- & -- & -- & 0.324 & $+1.7$ & 89 & fmt & fmt & fmt & 0.238 & $-6.9$ & 66 & 0.261 & $-4.6$ & 72 \\
+\texttt{C\_L1r\_X1} & 0.275 & 76 & -- & -- & -- & 0.240 & $-3.5$ & 66 & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
+\texttt{C\_X1\_S1} & 0.298 & 82 & -- & -- & -- & 0.275 & $-2.3$ & 76 & fmt & fmt & fmt & fmt & fmt & fmt & 0.217 & $-8.1$ & 60 \\
+\texttt{C\_S2\_X1} & 0.378 & 104 & -- & -- & -- & 0.366 & $-1.3$ & 101 & fmt & fmt & fmt & 0.288 & $-9.1$ & 79 & fmt & fmt & fmt \\
+\emph{unseen-containing stacks, pooled (3)} & 0.317 & 87 & -- & -- & -- & 0.294 & $-2.3$ & 81 & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
+\texttt{C\_L1r\_X1m} & 0.269 & 74 & -- & -- & -- & 0.230 & $-3.9$ & 63 & fmt & fmt & fmt & fmt & fmt & fmt & 0.172 & $-9.7$ & 47 \\
+\texttt{C\_S1\_X1s} & 0.346 & 95 & -- & -- & -- & 0.302 & $-4.4$ & 83 & fmt & fmt & fmt & 0.268 & $-7.8$ & 74 & 0.240 & $-10.6$ & 66 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.304 & 84 & -- & -- & -- & 0.296 & $-0.8$ & 82 & fmt & fmt & fmt & fmt & fmt & fmt & 0.216 & $-8.8$ & 60 \\
 \bottomrule
 \end{tabular}
 \end{table*}

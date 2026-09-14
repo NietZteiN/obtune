@@ -1,0 +1,28 @@
+{
+  "job_id": "ev_mole_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_llama31-8b.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 125,
+  "meta": {
+    "note": "master table: the mixture column, queued automatically once the router gate existed"
+  },
+  "slurm": {
+    "job_id": "395734",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T13:39:14.246174+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  }
+}

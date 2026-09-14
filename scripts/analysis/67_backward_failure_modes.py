@@ -163,6 +163,56 @@ def aggregate(models):
     return {"conditions": ALL_CONDS, "by_model": rows, "panel_mean": means}
 
 
+
+FWD_PHASES = {"merge_dare_ties": ["merge_panel", "rq2_generic", "composite_generic", "f2_divergence"],
+              "merge_ties": ["merge_panel", "rq2_generic", "composite_generic", "f2_divergence"]}
+FWD_DEFAULT = ["panel_core", "composite_generic", "f2_divergence"]
+
+
+def mirror_control(models):
+    """THE CONTROL FOR FORWARD COLLAPSE: does anything answer BACKWARD when asked FORWARD?
+
+    "The tuned arms answer the other question" is only a directional claim if the confusion is
+    directional. If arms simply mixed the two tasks up, the mirror would show the same thing: forward
+    replies shaped like a CALL rather than like a value. It does not. This measures the share of
+    forward replies that parse as a single call -- the backward answer's shape -- on the same arms
+    and the same conditions.
+    """
+    conds = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1", "C_L1r_S1", "C_L1r_X1"]
+    arms = [a for a in ARMS if a != "mole_router"]
+    print(f"\n\nMIRROR CONTROL: share of FORWARD replies that are call-shaped "
+          f"(the backward answer's form)\n")
+    print(f"{'model':16s} " + " ".join(f"{a[:12]:>13s}" for a in arms))
+    rows = {}
+    for m in models:
+        cells = []
+        for arm in arms:
+            hits = tot = 0
+            for c in conds:
+                for ph in FWD_PHASES.get(arm, FWD_DEFAULT):
+                    q = CELLS / ph / m / "python" / f"{arm}__{c}" / "trials.parquet"
+                    if q.exists():
+                        d = pd.read_parquet(q, columns=["output_raw"])
+                        for r in d["output_raw"]:
+                            try:
+                                if isinstance(ast.parse(str(r).strip(), mode="eval").body, ast.Call):
+                                    hits += 1
+                            except Exception:
+                                pass
+                        tot += len(d)
+                        break
+            if not tot:
+                cells.append(f"{'--':>13s}")
+                continue
+            rows.setdefault(m, {})[arm] = {"call_shaped_rate": hits/tot, "n_trials": tot}
+            cells.append(f"{hits/tot:13.4f}")
+        print(f"{m:16s} " + " ".join(cells))
+    print("\n  Essentially zero everywhere, and highest on the UNTUNED model rather than on a tuned "
+          "arm. The\n  confusion runs one way only: tuned arms answer forward when asked backward, "
+          "and nothing answers\n  backward when asked forward. Forward-locking is directional.")
+    return rows
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -207,6 +257,7 @@ def main() -> int:
 
     if a.aggregate:
         out["aggregate"] = aggregate(models)
+        out["mirror_control"] = mirror_control(models)
 
     p = Path(a.out) if a.out else ROOT / "results/analysis/pipeline" / f"backward_failure_modes_{a.cond}.json"
     p.parent.mkdir(parents=True, exist_ok=True)

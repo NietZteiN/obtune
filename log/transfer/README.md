@@ -169,3 +169,4 @@
 - [`2026-09-14_two-prompts-one-phase.md`](2026-09-14_two-prompts-one-phase.md) — the backward ladder was zero-shot on 7/8 models; stack reads unaffected; repair queued.
 - [`2026-09-14_forward-locking-is-the-mechanism.md`](2026-09-14_forward-locking-is-the-mechanism.md) — merges do not forward-lock; every single-adapter arm does; anchored worst at 0.312.
 - [`2026-09-14_merge-is-not-weaker.md`](2026-09-14_merge-is-not-weaker.md) — the merge has breadth's forward accuracy on 8/8, so the flat drop is not weakness.
+- [`2026-09-14_forward-locking-is-directional.md`](2026-09-14_forward-locking-is-directional.md) — the mirror is empty, so the collapse is directional rather than task confusion.
