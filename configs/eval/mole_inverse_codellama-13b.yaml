@@ -1,0 +1,70 @@
+# THE MIXTURE, BACKWARDS -- input prediction for codellama-13b (2026-09-14).
+#
+# WHY THIS EXISTS. The paper's three main methods are the merge, the router and the breadth-trained
+# LoRA, and its argument is that an adaptation must be tested in BOTH directions. Until today two of
+# the three had a backward number and the router had none, on any model: `inverse_generic` covers
+# `base`, the per-type and breadth adapters, the anchored arm and the merges, and stops there. So the
+# one method the paper introduces was the one method never asked the question backwards.
+#
+# It could not have been run before today: `mole/eval_mole.py` never passed `task` to `run_cell`,
+# which defaults it to "output" -- a config asking for `task: input` would have been evaluated
+# FORWARDS and written into the inverse phase, and the result would have read as "the router is
+# unexpectedly good at input prediction". Fixed in the same commit as this file.
+#
+# SAME PHASE as every other backward cell (inverse_generic), so these rows land beside the existing
+# ones in the master table and nothing already written is recomputed -- including `base`, which
+# resumes from the vLLM read rather than being regenerated through HFEngine.
+#
+# ONE PROMPT, the frozen L0 one-shot demo in its inverse form, on every arm -- as in
+# inverse_stacks.yaml. No arm was trained on it, so the demo is the same distribution shift for all
+# of them. Grading is by execution; `args_exact` is the strict secondary column.
+_extends: _base_eval.yaml
+
+phase: inverse_generic
+experiment_id: mole_inverse_codellama-13b
+run_tag: mole_inverse_codellama-13b
+model: codellama-13b
+language: python
+eval_source: heldout
+task: input
+
+sampling:
+  max_tokens: 128
+
+scoring:
+  float_tol: 1.0e-6
+  exec: {timeout_s: 2.0, mem_mb: 512, workers: 16}
+
+experts:
+  L0:   runs/adapters/codellama-13b/python/L0_r32_s17/best
+  L1b:  runs/adapters/codellama-13b/python/L1b_r32_s17/best
+  L1r:  runs/adapters/codellama-13b/python/L1r_r32_s17/best
+  L2:   runs/adapters/codellama-13b/python/L2_r32_s17/best
+  S1:   runs/adapters/codellama-13b/python/S1_r32_s17/best
+  S2:   runs/adapters/codellama-13b/python/S2_r32_s17/best
+  S3:   runs/adapters/codellama-13b/python/S3_r32_s17/best
+  S4:   runs/adapters/codellama-13b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+gate_checkpoint: runs/mole/codellama-13b/python/routerlora_codellama13b_s17/gate.pt
+
+engine:
+  seed: 17
+  dtype: bfloat16
+  batch_size: 32
+
+systems:
+  - {name: base, arch: none, one_shot: true}
+  - {name: mole_uniform, arch: mole_uniform, train_cond: mix, one_shot: true}
+  - {name: mole_random, arch: mole_random, train_cond: mix, one_shot: true}
+  - {name: mole_router, arch: mole_router, train_cond: mix, one_shot: true}
+  - {name: mole_hardrouter, arch: mole_hardrouter, train_cond: mix, one_shot: true}
+
+arm_modes: {}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]

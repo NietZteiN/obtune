@@ -326,9 +326,21 @@ def main(argv: Optional[list[str]] = None) -> int:
     engine = HFEngine(holder, tokenizer, ecfg=ecfg, stub=args.stub,
                       batch_size=int(ecfg.get("batch_size", 32)))
 
+    conds_cfg = list(cfg["eval_conditions"])
+
+    # THE TASK DIRECTION. `run_cell` takes `task` as a keyword and defaults it to "output";
+    # this path never passed it, so a config asking for `task: input` was silently evaluated
+    # FORWARDS and written into an inverse phase -- the failure would have looked like "the
+    # router is unexpectedly good at input prediction", which is exactly the claim under test.
+    # Also goes into meta_base, because `_assert_resume_same_grid` compares the two and a cell
+    # with no `task` key reads as task="output" to any later resume.
+    task = str(cfg.get("task", "output"))
+    if task == "input" and "H1" in conds_cfg:
+        raise ValueError("task='input' grids may not include H1 (quarantine budget spent)")
+
     seed = int((cfg.get("engine") or {}).get("seed", 17))
     summary: list[dict[str, Any]] = []
-    conds = list(cfg["eval_conditions"])
+    conds = list(conds_cfg)
     if args.eval_conditions:
         want = set(args.eval_conditions.split(","))
         conds = [c for c in conds if c in want]
@@ -353,7 +365,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             cell = cell_dir(out_root, phase, model_key, language, system.name, cond)
             meta_base = {
                 "run_id": f"{phase}__{model_key}__{language}__{system.name}__{cond}",
-                "run_ts": run_ts, "seed": seed, "phase": phase,
+                "run_ts": run_ts, "seed": seed, "phase": phase, "task": task,
                 # The grid this cell was evaluated on. `eval_vllm` records it; this path did
                 # not, so every mixture cell written here carried no grid label and
                 # `_assert_resume_same_grid` could not protect it — the guard treats a missing
@@ -370,7 +382,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             }
             res = run_cell(engine, items, system, cell, cfg, meta_base,
                            resume=bool((cfg.get("output") or {}).get("resume", True)),
-                           limit=args.limit)
+                           limit=args.limit, task=task)
             print(f"[mole.eval] {model_key}/{language} {system.name}__{cond}: "
                   f"n={res.n_items} acc={res.accuracy:.3f}", flush=True)
             summary.append({"system": system.name, "eval_cond": cond,
