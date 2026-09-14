@@ -1,0 +1,52 @@
+# RQ5' (docs/RQ_SUMMARY.md §6.5) — the INVERSE task: program + return value -> a call that
+# returns it. MODEL-NEUTRAL. NO H1 (task='input' grids refuse it in eval_vllm.run_grid).
+#
+# WHY THIS EXISTS. Every adapter in the project was trained on output prediction only. If
+# what tuning teaches is a fact about the CODE (reading it under a transform), it should be
+# usable in either direction; if it is a fact about the forward MAPPING, the inverse task
+# should show base-level accuracy — Nikiema et al. 2025's "cognitive specialization", which
+# the CFT replication (docs/CFT_REPLICATION.md) found at 0 % on deobfuscation. This is the
+# stress test for "understanding": same items, same code, the question asked backwards.
+#
+# Design.
+# * ONE prompt for every arm, with the frozen L0 one-shot demo (prompts.ONE_SHOT_DEMOS,
+#   shown in its inverse form). No arm was trained on this prompt, so the demo is the same
+#   distribution shift for all of them; without it the tuned arms — trained to answer with a
+#   bare literal — would fail on format alone, and the read would be about the format, not
+#   the task. `formatonly` is here to measure exactly that residue.
+# * Grading is by EXECUTION (src/obtune/inverse.py): any call that reproduces the value is
+#   correct, as in CRUXEval-I. `args_exact` (the gold call) is a secondary column.
+# * max_tokens 128: a call with list/dict arguments is longer than a return literal.
+#   `stop` keeps the base config's "\n\n" / fence; the call is one line.
+# * Two cell blocks are submitted as two stages (core / specialists) so neither needs an
+#   8-hour backfill slot; both write to this phase.
+_extends: _base_eval.yaml
+
+phase: inverse_generic
+experiment_id: inverse_stacks_ties
+run_tag: inverse_stacks_ties
+language: python
+eval_source: heldout
+task: input
+
+engine:
+  gpu_memory_utilization: 0.85
+
+sampling:
+  max_tokens: 128
+
+scoring:
+  float_tol: 1.0e-6
+  exec: {timeout_s: 2.0, mem_mb: 512, workers: 16}
+
+systems:
+# TIES ALONE. inverse_stacks.yaml carries merge_dare_ties but not merge_ties, so the master
+# table's backward stack rows have ONE merge method where the ladder rows have two -- and the
+# merge is the arm the robustness claim now rests on (log/transfer/2026-09-14_backward-stacks-
+# eight-models-paired.md), so resting it on a single merge recipe is thin. Same phase, so these
+# cells land beside the existing ones and nothing is recomputed.
+  - {name: merge_ties, adapter: "runs/adapters/{model}/{language}/merge_ties_r32_s17", arch: per_type, train_cond: merge, one_shot: true}
+
+eval_conditions: [C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]

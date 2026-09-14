@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_invties_codellama-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_stacks_ties.yaml",
+    "--model",
+    "codellama-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.4,
+  "priority": 70,
+  "meta": {
+    "note": "master table: merge_ties on all 16 stacks, backward. inverse_stacks.yaml carried merge_dare_ties only, so the merge column of the backward stack block rested on one recipe -- and the merge is the arm that survives everywhere (log/transfer/2026-09-14_backward-stacks-eight-models-paired.md)."
+  }
+}
