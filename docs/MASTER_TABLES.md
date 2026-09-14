@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-14 02:14 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-14 02:17 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -567,6 +567,7 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | S2 | 0.191 | fmt | 0.439 | +24.8 | fmt | 0.484 | +29.3 | fmt | 0.202 | +1.1 | fmt | -- | -- | -- | -- | -- | -- |
 | X1 | 0.135 | fmt | 0.299 | +16.4 | fmt | 0.328 | +19.3 | fmt | 0.178 | +4.3 | fmt | -- | -- | -- | -- | -- | -- |
 | C_L1b_S1 | 0.156 | fmt | 0.295 | +13.9 | fmt | 0.331 | +17.5 | fmt | 0.195 | +3.8 | fmt | -- | -- | -- | -- | -- | -- |
+| C_L1r_S1 | 0.184 | fmt | 0.332 | +14.8 | fmt | 0.362 | +17.8 | fmt | 0.160 | -2.4 | fmt | -- | -- | -- | -- | -- | -- |
 
 ### Llama-3.1-8B
 
@@ -830,7 +831,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | S2 | 0.191 | 100 | 0.040† | -- | 0.484 | 253 | 0.484 | 254 | 0.525 | 275 | 0.478 | 251 | -- | -- | 0.484 | 253 |
 | X1 | 0.135 | 100 | 0.050† | -- | 0.325 | 241 | 0.298 | 221 | 0.334 | 248 | 0.381 | 282 | -- | -- | 0.328 | 243 |
 | C_L1b_S1 | 0.156 | 100 | 0.033† | -- | 0.322 | 206 | 0.399 | 255 | 0.421 | 269 | 0.336 | 215 | -- | -- | 0.331 | 212 |
-| C_L1r_S1 | 0.184 | 100 | 0.063† | -- | 0.351 | 191 | 0.393 | 214 | 0.427 | 233 | 0.366 | 199 | -- | -- | -- | -- |
+| C_L1r_S1 | 0.184 | 100 | 0.063† | -- | 0.351 | 191 | 0.393 | 214 | 0.427 | 233 | 0.366 | 199 | -- | -- | 0.362 | 197 |
 | C_S1_L1r | 0.180 | 100 | 0.053† | -- | 0.367 | 204 | 0.405 | 225 | 0.425 | 237 | 0.379 | 211 | -- | -- | -- | -- |
 | C_L2_S4 | 0.191 | 100 | 0.045† | -- | 0.431 | 226 | 0.454 | 238 | 0.478 | 251 | 0.431 | 226 | -- | -- | -- | -- |
 | C_L1r_S3 | 0.169 | 100 | 0.041† | -- | 0.451 | 266 | 0.454 | 268 | 0.482 | 284 | 0.437 | 258 | -- | -- | -- | -- |

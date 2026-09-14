@@ -66,3 +66,22 @@ enters no mean; the gate is per cell, stricter than the pooled registration.
 | `setup_stacks.tex` | Setup › Obfuscation taxonomy (all 16 stacks, listed) | `\input{tables/setup_stacks}` |
 | `master_summary.tex` | §Every intervention against every obfuscation (`sections/master.tex`) | `\input{tables/master_summary}` |
 | `master_<model>.tex` × 8 | Appendix A, one `table*` per panel model, every condition and stack, forward and backward | `\input{tables/master_codellama7b}` … |
+
+## The tables are inlined into the .tex (2026-09-14)
+
+The sections no longer carry `\input{tables/...}`. Every generated table is expanded into the `.tex`
+between markers:
+
+```
+% >>> GENERATED TABLE rq1_dissociation -- from tables/rq1_dissociation.tex; regenerate, then re-run inline_tables.py
+...
+% <<< GENERATED TABLE rq1_dissociation
+```
+
+**Workflow unchanged otherwise.** Regenerate with `59_master_tables.py` / `gen_fse_tables.py`, then
+`python scripts/paper/inline_tables.py paper/router_merger` — which `runs/probe/build_paper.sh` now
+does for you before every build. The step replaces either a marked block or a bare `\input`, so it is
+idempotent: running it twice leaves the sources byte-identical.
+
+**This directory stays.** It is the generators' output and the provenance trail — each file's header
+names the JSON it was computed from, which the inlined copy carries with it into the section.

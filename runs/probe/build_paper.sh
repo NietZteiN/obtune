@@ -12,6 +12,12 @@ export APPTAINER_TMPDIR=$SINGULARITY_TMPDIR
 mkdir -p "$SINGULARITY_TMPDIR"
 IMG=$SINGULARITY_CACHEDIR/texlive.sif
 [ -f "$IMG" ] || singularity pull "$IMG" docker://texlive/texlive:latest
+# Tables are generated from the cells and INLINED into the .tex (the user asked for them built in
+# rather than \input from tables/). Refresh the inlined copies before every build so a stale table
+# cannot survive a regeneration; the step is idempotent and a no-op when nothing changed.
+if [ -d "paper/${1:-paper_latex}/tables" ]; then
+  python scripts/paper/inline_tables.py "paper/${1:-paper_latex}" >/dev/null || true
+fi
 cd "paper/${1:-paper_latex}"
 singularity exec -B "$PWD:$PWD" --pwd "$PWD" "$IMG" \
   latexmk -pdf -interaction=nonstopmode -halt-on-error fse27.tex
