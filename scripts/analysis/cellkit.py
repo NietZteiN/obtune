@@ -79,12 +79,37 @@ def register_prompt(model: str, system: str, prompt_id: str, task: str = "output
               f"cellkit.allow_mixed_prompts() if that is the intent.", file=sys.stderr)
 
 
+
+# ---- GRADE VERSION FOR BACKWARD CELLS --------------------------------------------------------
+# 72_regrade_inverse.py writes `trials_v2.parquet` / `cell_meta_v2.json` beside the originals for
+# any backward cell that had multi-line replies: v2 grades the first line, which is exactly what
+# the "\n" stop string the harness should have carried would have returned. v2 is the default
+# read wherever it exists. OBTUNE_INVERSE_GRADE=v1 forces the originals, for before/after reads.
+# Forward cells never have a v2 file, so the resolver is a no-op there.
+import os as _os
+
+
+def grade_version() -> str:
+    return "v1" if _os.environ.get("OBTUNE_INVERSE_GRADE", "v2").lower() == "v1" else "v2"
+
+
+def trials_path(cell_dir: Path) -> Path:
+    v2 = cell_dir / "trials_v2.parquet"
+    return v2 if grade_version() == "v2" and v2.exists() else cell_dir / "trials.parquet"
+
+
+def meta_path(cell_dir: Path) -> Path:
+    v2 = cell_dir / "cell_meta_v2.json"
+    return v2 if grade_version() == "v2" and v2.exists() else cell_dir / "cell_meta.json"
+
+
 def load_cell(phases: Iterable[str], model: str, system: str, cond: str,
               language: str = "python") -> Optional[pd.DataFrame]:
     if cond == "H1":
         raise H1Refused("H1 reads are forbidden in pipeline analyses (CLAUDE.md §3.2)")
     for ph in phases:
-        p = CELLS / ph / model / language / f"{system}__{cond}" / "trials.parquet"
+        cell_dir = CELLS / ph / model / language / f"{system}__{cond}"
+        p = trials_path(cell_dir)
         if p.exists():
             df = pd.read_parquet(p)
             df["condition"] = cond

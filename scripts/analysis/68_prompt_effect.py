@@ -36,7 +36,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "analysis"))
-from cellkit import allow_mixed_prompts  # noqa: E402
+from cellkit import allow_mixed_prompts, trials_path  # noqa: E402
 
 # This script's entire purpose is to compare the two prompts, so the registry's warning would fire
 # on every arm and mean nothing here.
@@ -53,7 +53,7 @@ N_BOOT, SEED = 2000, 17
 
 
 def load(phase, model, arm, cond):
-    p = CELLS / phase / model / "python" / f"{arm}__{cond}" / "trials.parquet"
+    p = trials_path(CELLS / phase / model / "python" / f"{arm}__{cond}")
     if not p.exists():
         return None
     return pd.read_parquet(p, columns=["snippet_id", "correct", "format_fail"])

@@ -20,8 +20,9 @@ Three numbers per (system, condition, direction):
 from __future__ import annotations
 import json, collections, datetime as dt, sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]; sys.path.insert(0, str(ROOT/"src"))
+ROOT = Path(__file__).resolve().parents[2]; sys.path.insert(0, str(ROOT/"src")); sys.path.insert(0, str(ROOT/"scripts"/"analysis"))
 from obtune.config import load_config
+from cellkit import meta_path, trials_path  # backward cells: prefer the v2 (newline-stop) grade where it exists
 CELLS = ROOT/"results/cells"
 TEX_OUT = ROOT/"paper/router_merger/tables"
 MODELS = ["codellama-7b","codellama-13b","codellama-34b","llama31-8b","starcoder2-15b","gemma3-12b","codegemma-7b","granite31-8b"]
@@ -50,7 +51,7 @@ FMT_MAX = 0.25   # the inverse design's pre-registered gate; the ICL read uses t
 
 def acc(phases, m, s, c):
     for ph in phases:
-        p = CELLS/ph/m/"python"/f"{s}__{c}"/"cell_meta.json"
+        p = meta_path(CELLS/ph/m/"python"/f"{s}__{c}")
         if p.exists():
             d = json.loads(p.read_text()); return d.get("accuracy"), d.get("format_fail_rate")
     return None, None
@@ -545,7 +546,7 @@ def args_exact(m, sysn, c):
     `exchange_sort([1,2,3]) -> 0` scores as correct against any program whose answer is 0. Measured
     2026-09-13: 64-69 % of every system's backward `correct` answers are degenerate in this way, and
     the untuned model's 0.279 exec-match is 0.086 by exact arguments. Both are reported."""
-    p = next((q for q in (CELLS/ph/m/"python"/f"{sysn}__{c}"/"trials.parquet" for ph in BWD_PH)
+    p = next((q for q in (trials_path(CELLS/ph/m/"python"/f"{sysn}__{c}") for ph in BWD_PH)
               if q.exists()), None)
     if p is None: return None
     try:
@@ -587,7 +588,7 @@ def collapse_rate(m, sysn, c):
     """Share of backward replies that are exactly the gold FORWARD answer. None if unreadable."""
     key = (m, sysn, c)
     if key in _COLLAPSE_CACHE: return _COLLAPSE_CACHE[key]
-    p = next((q for q in (CELLS/ph/m/"python"/f"{sysn}__{c}"/"trials.parquet" for ph in BWD_PH)
+    p = next((q for q in (trials_path(CELLS/ph/m/"python"/f"{sysn}__{c}") for ph in BWD_PH)
               if q.exists()), None)
     val = None
     if p is not None:

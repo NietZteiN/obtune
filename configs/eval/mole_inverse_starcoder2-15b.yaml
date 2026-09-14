@@ -30,6 +30,16 @@ task: input
 
 sampling:
   max_tokens: 128
+  # "\n" ADDED 2026-09-14. The backward answer is ONE call on ONE line by contract, but every
+  # backward config inherited the forward stop list ("\n\n", fences, <end_of_turn>) and never
+  # stopped at a single newline. A model that writes the call and then opens a fresh
+  # "Language: python / Program:" block produced a multi-line reply that the grader rejects by
+  # design -- 22,893 replies on the panel, 21,140 of them in CodeGemma's TIES merge, where they
+  # were 65 % of ALL its trials and the whole reason that arm read as unreadable. Safe: 0 of
+  # 68,310 sampled replies begin with a newline, so this cannot truncate to empty. Cells already
+  # written are re-graded on their first line by 72_regrade_inverse.py, which is the identical
+  # measurement (see that script). max_tokens stays at 128: gold calls have p99 = 64 tokens.
+  stop: ["\n", "\n\n", "```", "<end_of_turn>"]
 
 scoring:
   float_tol: 1.0e-6

@@ -48,7 +48,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts" / "analysis"))
 from obtune.data import load_eval_items  # noqa: E402
-from cellkit import register_prompt  # noqa: E402
+from cellkit import register_prompt, trials_path  # noqa: E402
 
 CELLS = ROOT / "results" / "cells"
 PHASES = ["inverse_1shot", "inverse_generic"]
@@ -82,7 +82,7 @@ def cell_path(model, sysn, cond):
     import json as _json
 
     for ph in PHASES:
-        p = CELLS / ph / model / "python" / f"{sysn}__{cond}" / "trials.parquet"
+        p = trials_path(CELLS / ph / model / "python" / f"{sysn}__{cond}")
         if p.exists():
             meta = p.parent / "cell_meta.json"
             if meta.exists():

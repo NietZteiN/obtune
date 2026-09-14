@@ -1,0 +1,602 @@
+{
+  "script": "71_backward_defects.py",
+  "generated_utc": "2026-09-14T18:50:38+00:00",
+  "conditions": [
+    "L0",
+    "L1b",
+    "L1r",
+    "L2",
+    "S1",
+    "S2",
+    "X1",
+    "C_L1b_S1",
+    "C_L1r_S1",
+    "C_S1_L1r",
+    "C_L2_S4",
+    "C_L1r_S3",
+    "C_S4_S3",
+    "C3_L1r_S3_S4",
+    "C3_S1_S3_S4",
+    "C3_L1r_S1_S4",
+    "C4_L1r_S1_S3_S4",
+    "C_L1r_X1",
+    "C_X1_S1",
+    "C_S2_X1",
+    "C_L1r_X1m",
+    "C_S1_X1s",
+    "C3_L1r_S1_X1"
+  ],
+  "max_tokens": 128,
+  "by_model_arm": {
+    "codellama-7b/base": {
+      "n": 32334,
+      "n_fail": 1910,
+      "stop_newline": 0,
+      "keyword_args": 420,
+      "expression": 763,
+      "truncated": 684,
+      "answered_forward": 0,
+      "malformed": 43
+    },
+    "codellama-7b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 9442,
+      "stop_newline": 0,
+      "keyword_args": 5,
+      "expression": 127,
+      "truncated": 1558,
+      "answered_forward": 3081,
+      "malformed": 4671
+    },
+    "codellama-7b/mono_all": {
+      "n": 32334,
+      "n_fail": 3136,
+      "stop_newline": 1,
+      "keyword_args": 5,
+      "expression": 142,
+      "truncated": 97,
+      "answered_forward": 1186,
+      "malformed": 1705
+    },
+    "codellama-7b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 835,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 87,
+      "truncated": 419,
+      "answered_forward": 155,
+      "malformed": 174
+    },
+    "codellama-7b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 1682,
+      "stop_newline": 0,
+      "keyword_args": 4,
+      "expression": 79,
+      "truncated": 1162,
+      "answered_forward": 24,
+      "malformed": 413
+    },
+    "codellama-7b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 1335,
+      "stop_newline": 0,
+      "keyword_args": 31,
+      "expression": 170,
+      "truncated": 1039,
+      "answered_forward": 18,
+      "malformed": 77
+    },
+    "codellama-7b/merge_ties": {
+      "n": 32334,
+      "n_fail": 1436,
+      "stop_newline": 0,
+      "keyword_args": 168,
+      "expression": 440,
+      "truncated": 802,
+      "answered_forward": 0,
+      "malformed": 26
+    },
+    "codellama-13b/base": {
+      "n": 32334,
+      "n_fail": 713,
+      "stop_newline": 0,
+      "keyword_args": 153,
+      "expression": 225,
+      "truncated": 300,
+      "answered_forward": 10,
+      "malformed": 25
+    },
+    "codellama-13b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 4126,
+      "stop_newline": 3,
+      "keyword_args": 8,
+      "expression": 202,
+      "truncated": 1090,
+      "answered_forward": 460,
+      "malformed": 2363
+    },
+    "codellama-13b/mono_all": {
+      "n": 32334,
+      "n_fail": 27031,
+      "stop_newline": 354,
+      "keyword_args": 1,
+      "expression": 52,
+      "truncated": 631,
+      "answered_forward": 1544,
+      "malformed": 24449
+    },
+    "codellama-13b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 7520,
+      "stop_newline": 177,
+      "keyword_args": 0,
+      "expression": 97,
+      "truncated": 740,
+      "answered_forward": 2837,
+      "malformed": 3669
+    },
+    "codellama-13b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 21047,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 38,
+      "truncated": 2528,
+      "answered_forward": 1485,
+      "malformed": 16996
+    },
+    "codellama-13b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 1742,
+      "stop_newline": 0,
+      "keyword_args": 6,
+      "expression": 170,
+      "truncated": 1308,
+      "answered_forward": 23,
+      "malformed": 235
+    },
+    "codellama-13b/merge_ties": {
+      "n": 32334,
+      "n_fail": 977,
+      "stop_newline": 2,
+      "keyword_args": 32,
+      "expression": 200,
+      "truncated": 636,
+      "answered_forward": 50,
+      "malformed": 57
+    },
+    "codellama-34b/base": {
+      "n": 32334,
+      "n_fail": 826,
+      "stop_newline": 1,
+      "keyword_args": 177,
+      "expression": 199,
+      "truncated": 430,
+      "answered_forward": 0,
+      "malformed": 19
+    },
+    "codellama-34b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 3698,
+      "stop_newline": 1,
+      "keyword_args": 1,
+      "expression": 126,
+      "truncated": 1162,
+      "answered_forward": 116,
+      "malformed": 2292
+    },
+    "codellama-34b/mono_all": {
+      "n": 32334,
+      "n_fail": 14248,
+      "stop_newline": 12,
+      "keyword_args": 0,
+      "expression": 131,
+      "truncated": 351,
+      "answered_forward": 937,
+      "malformed": 12817
+    },
+    "codellama-34b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 5207,
+      "stop_newline": 0,
+      "keyword_args": 1,
+      "expression": 128,
+      "truncated": 895,
+      "answered_forward": 456,
+      "malformed": 3727
+    },
+    "codellama-34b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 4519,
+      "stop_newline": 1175,
+      "keyword_args": 0,
+      "expression": 75,
+      "truncated": 1656,
+      "answered_forward": 224,
+      "malformed": 1389
+    },
+    "codellama-34b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 1234,
+      "stop_newline": 0,
+      "keyword_args": 2,
+      "expression": 143,
+      "truncated": 1018,
+      "answered_forward": 24,
+      "malformed": 47
+    },
+    "codellama-34b/merge_ties": {
+      "n": 32334,
+      "n_fail": 735,
+      "stop_newline": 0,
+      "keyword_args": 20,
+      "expression": 153,
+      "truncated": 542,
+      "answered_forward": 11,
+      "malformed": 9
+    },
+    "llama31-8b/base": {
+      "n": 32334,
+      "n_fail": 2646,
+      "stop_newline": 0,
+      "keyword_args": 163,
+      "expression": 543,
+      "truncated": 1696,
+      "answered_forward": 0,
+      "malformed": 244
+    },
+    "llama31-8b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 2479,
+      "stop_newline": 0,
+      "keyword_args": 1,
+      "expression": 128,
+      "truncated": 2007,
+      "answered_forward": 17,
+      "malformed": 326
+    },
+    "llama31-8b/mono_all": {
+      "n": 32334,
+      "n_fail": 2895,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 205,
+      "truncated": 184,
+      "answered_forward": 683,
+      "malformed": 1823
+    },
+    "llama31-8b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 3312,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 105,
+      "truncated": 838,
+      "answered_forward": 810,
+      "malformed": 1559
+    },
+    "llama31-8b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 1470,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 80,
+      "truncated": 835,
+      "answered_forward": 44,
+      "malformed": 511
+    },
+    "llama31-8b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 1718,
+      "stop_newline": 0,
+      "keyword_args": 5,
+      "expression": 141,
+      "truncated": 1145,
+      "answered_forward": 2,
+      "malformed": 425
+    },
+    "llama31-8b/merge_ties": {
+      "n": 32334,
+      "n_fail": 1885,
+      "stop_newline": 0,
+      "keyword_args": 65,
+      "expression": 241,
+      "truncated": 1340,
+      "answered_forward": 0,
+      "malformed": 239
+    },
+    "starcoder2-15b/base": {
+      "n": 32334,
+      "n_fail": 14525,
+      "stop_newline": 10,
+      "keyword_args": 32,
+      "expression": 269,
+      "truncated": 1610,
+      "answered_forward": 3,
+      "malformed": 12601
+    },
+    "starcoder2-15b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 7478,
+      "stop_newline": 0,
+      "keyword_args": 2,
+      "expression": 205,
+      "truncated": 1815,
+      "answered_forward": 5292,
+      "malformed": 164
+    },
+    "starcoder2-15b/mono_all": {
+      "n": 32334,
+      "n_fail": 10415,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 114,
+      "truncated": 310,
+      "answered_forward": 9004,
+      "malformed": 987
+    },
+    "starcoder2-15b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 6092,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 105,
+      "truncated": 727,
+      "answered_forward": 4838,
+      "malformed": 422
+    },
+    "starcoder2-15b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 11523,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 80,
+      "truncated": 3406,
+      "answered_forward": 7354,
+      "malformed": 683
+    },
+    "starcoder2-15b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 2961,
+      "stop_newline": 0,
+      "keyword_args": 3,
+      "expression": 271,
+      "truncated": 2666,
+      "answered_forward": 10,
+      "malformed": 11
+    },
+    "starcoder2-15b/merge_ties": {
+      "n": 32334,
+      "n_fail": 3019,
+      "stop_newline": 0,
+      "keyword_args": 7,
+      "expression": 642,
+      "truncated": 2339,
+      "answered_forward": 0,
+      "malformed": 31
+    },
+    "gemma3-12b/base": {
+      "n": 32334,
+      "n_fail": 769,
+      "stop_newline": 0,
+      "keyword_args": 35,
+      "expression": 309,
+      "truncated": 415,
+      "answered_forward": 0,
+      "malformed": 10
+    },
+    "gemma3-12b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 1781,
+      "stop_newline": 0,
+      "keyword_args": 5,
+      "expression": 115,
+      "truncated": 636,
+      "answered_forward": 335,
+      "malformed": 690
+    },
+    "gemma3-12b/mono_all": {
+      "n": 32334,
+      "n_fail": 805,
+      "stop_newline": 0,
+      "keyword_args": 1,
+      "expression": 122,
+      "truncated": 204,
+      "answered_forward": 86,
+      "malformed": 392
+    },
+    "gemma3-12b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 13370,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 49,
+      "truncated": 389,
+      "answered_forward": 3322,
+      "malformed": 9610
+    },
+    "gemma3-12b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 414,
+      "stop_newline": 0,
+      "keyword_args": 5,
+      "expression": 78,
+      "truncated": 311,
+      "answered_forward": 0,
+      "malformed": 20
+    },
+    "gemma3-12b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 861,
+      "stop_newline": 0,
+      "keyword_args": 3,
+      "expression": 140,
+      "truncated": 664,
+      "answered_forward": 2,
+      "malformed": 52
+    },
+    "gemma3-12b/merge_ties": {
+      "n": 32334,
+      "n_fail": 724,
+      "stop_newline": 0,
+      "keyword_args": 17,
+      "expression": 195,
+      "truncated": 497,
+      "answered_forward": 0,
+      "malformed": 15
+    },
+    "codegemma-7b/base": {
+      "n": 32334,
+      "n_fail": 3987,
+      "stop_newline": 16,
+      "keyword_args": 304,
+      "expression": 1900,
+      "truncated": 1421,
+      "answered_forward": 0,
+      "malformed": 346
+    },
+    "codegemma-7b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 923,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 368,
+      "truncated": 208,
+      "answered_forward": 199,
+      "malformed": 148
+    },
+    "codegemma-7b/mono_all": {
+      "n": 32334,
+      "n_fail": 2974,
+      "stop_newline": 0,
+      "keyword_args": 2,
+      "expression": 288,
+      "truncated": 74,
+      "answered_forward": 2287,
+      "malformed": 323
+    },
+    "codegemma-7b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 23111,
+      "stop_newline": 0,
+      "keyword_args": 1,
+      "expression": 43,
+      "truncated": 107,
+      "answered_forward": 21994,
+      "malformed": 966
+    },
+    "codegemma-7b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 5095,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 75,
+      "truncated": 270,
+      "answered_forward": 3341,
+      "malformed": 1409
+    },
+    "codegemma-7b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 958,
+      "stop_newline": 0,
+      "keyword_args": 4,
+      "expression": 403,
+      "truncated": 348,
+      "answered_forward": 77,
+      "malformed": 126
+    },
+    "codegemma-7b/merge_ties": {
+      "n": 32334,
+      "n_fail": 23499,
+      "stop_newline": 21140,
+      "keyword_args": 124,
+      "expression": 1029,
+      "truncated": 993,
+      "answered_forward": 0,
+      "malformed": 213
+    },
+    "granite31-8b/base": {
+      "n": 32334,
+      "n_fail": 6486,
+      "stop_newline": 0,
+      "keyword_args": 43,
+      "expression": 541,
+      "truncated": 1697,
+      "answered_forward": 1801,
+      "malformed": 2404
+    },
+    "granite31-8b/tuned_L0": {
+      "n": 32334,
+      "n_fail": 11621,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 126,
+      "truncated": 2181,
+      "answered_forward": 5875,
+      "malformed": 3439
+    },
+    "granite31-8b/mono_all": {
+      "n": 32334,
+      "n_fail": 3257,
+      "stop_newline": 1,
+      "keyword_args": 0,
+      "expression": 67,
+      "truncated": 254,
+      "answered_forward": 2480,
+      "malformed": 455
+    },
+    "granite31-8b/cons_lam3": {
+      "n": 32334,
+      "n_fail": 15088,
+      "stop_newline": 0,
+      "keyword_args": 0,
+      "expression": 60,
+      "truncated": 898,
+      "answered_forward": 10108,
+      "malformed": 4022
+    },
+    "granite31-8b/tuned_X1": {
+      "n": 32334,
+      "n_fail": 2789,
+      "stop_newline": 0,
+      "keyword_args": 3,
+      "expression": 126,
+      "truncated": 1119,
+      "answered_forward": 1003,
+      "malformed": 538
+    },
+    "granite31-8b/merge_dare_ties": {
+      "n": 32334,
+      "n_fail": 1194,
+      "stop_newline": 0,
+      "keyword_args": 8,
+      "expression": 154,
+      "truncated": 969,
+      "answered_forward": 30,
+      "malformed": 33
+    },
+    "granite31-8b/merge_ties": {
+      "n": 32334,
+      "n_fail": 2032,
+      "stop_newline": 0,
+      "keyword_args": 26,
+      "expression": 299,
+      "truncated": 1669,
+      "answered_forward": 11,
+      "malformed": 27
+    }
+  },
+  "panel": {
+    "n": 1810704,
+    "n_fail": 307555,
+    "stop_newline": 22893,
+    "keyword_args": 1893,
+    "expression": 13363,
+    "truncated": 55290,
+    "answered_forward": 93649,
+    "malformed": 120467
+  }
+}
