@@ -89,7 +89,14 @@ class MoLEModel:
 
 def _decoder_layers(model: nn.Module) -> list[nn.Module]:
     """The decoder layer list, across the shapes HF actually uses."""
-    for path in ("model.layers", "model.model.layers", "transformer.h", "model.decoder.layers"):
+    # Gemma-3 is multimodal: the decoder lives under the TEXT tower
+    # (`model.language_model.layers`), and the two-level `model.model.…` variants appear once the
+    # causal-LM wrapper is in play. Every text-only model in the panel matches one of the first four;
+    # the language_model paths are the 2026-09-14 addition, after the Gemma-3 gate died here having
+    # already survived the config and chat-template fixes.
+    for path in ("model.layers", "model.model.layers", "transformer.h", "model.decoder.layers",
+                 "model.language_model.layers", "language_model.model.layers",
+                 "model.language_model.model.layers"):
         obj: Any = model
         try:
             for part in path.split("."):
