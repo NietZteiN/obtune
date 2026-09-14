@@ -2081,3 +2081,32 @@ gate and is the closest thing in the panel to a merge computed at inference time
 lands at the merge floor while `mole_router` does not, the paper gets a causal statement rather than
 a correlation: it is the AVERAGING that removes the lock, not the adapters. `mole_uniform` and
 `mole_random` are in the same config and will be read at the same time.
+
+---
+
+## 2026-09-14 · First mixture-backward cells — reading BEFORE the grid finishes, so the call is on record
+
+15 of 115 cells on CodeGemma-7B only, and all of them on the four easiest ladder conditions
+(L0, L1b, L1r, L2). No stack, no X1. **This is not enough to decide H-router-locks and it is written
+down now so that a later reading cannot quietly become the registered one.**
+
+What the partial data shows: `mole_router` forward-collapse 0.001–0.002, `mole_hardrouter`
+0.001–0.004, `mole_uniform` 0.004–0.010, `mole_random` 0.004–0.010. Against CodeGemma's
+single-adapter arms on the full 23-condition read (`tuned_L0` 0.006, `mono_all` 0.071, `tuned_X1`
+0.103, `cons_lam3` 0.680) and its untuned floor of 0.000.
+
+**That points at REFUTED, which is the opposite of my registered prediction.** The rule says REFUTED
+if the router's panel mean is below 0.01 — at the merge floor — and these cells are there. My
+prediction was CONFIRMED at 0.10–0.20, reasoning that the gate is saturated so the router *is* a
+per-type adapter most of the time and should inherit its locking.
+
+Three reasons not to call it yet, all of which would have to be stated anyway if the final answer
+agrees: one model of five, four conditions of twenty-three, and the four are the conditions where
+every arm collapses least (CodeGemma's `mono_all` is 0.071 pooled but its ladder cells are far below
+that). The X1 and stack cells are where the single-adapter arms do their collapsing, and none exist
+yet.
+
+Also early and also worth checking later: the four mixture arms are within 0.01 of each other on
+every cell, and their backward accuracy (0.287–0.341 by execution) is above `base`'s repaired
+one-shot 0.229 on L0. That is `H-mixture` again — the mixing is the effect, not the dispatch —
+appearing in the backward direction for the first time.
