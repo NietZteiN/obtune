@@ -164,3 +164,4 @@
 - [`2026-09-14_backward-dissociation-three-of-four.md`](2026-09-14_backward-dissociation-three-of-four.md) — three models, three lineages; breadth falls 2.1-4.3x further than base backwards.
 - [`2026-09-14_backward-stacks-fifth-model.md`](2026-09-14_backward-stacks-fifth-model.md) — fifth model; 3 readable/3 replicate, 2 unreadable, 0 contradicting.
 - [`2026-09-14_backward-stacks-seven-models.md`](2026-09-14_backward-stacks-seven-models.md) — 4/5 clear, Gemma-3 weak; the anchored arm's backward stability holds on one model of two.
+- [`2026-09-14_backward-stacks-eight-models-paired.md`](2026-09-14_backward-stacks-eight-models-paired.md) — 8/8 complete and paired; 3 of 4, ratios withdrawn, merge robust everywhere.
