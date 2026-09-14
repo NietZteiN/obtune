@@ -246,7 +246,13 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
     # every future submission remembering, exclude the node automatically for anything that
     # builds an engine. An explicit --exclude/--nodelist still wins, so the decision can be
     # revisited deliberately (e.g. after a driver upgrade) without editing this file.
-    if "obtune.eval_vllm" in argv and partition == "h100" and not exclude and not nodelist:
+    # MOLE GATE TRAINING ALSO NEEDS A WHOLE CARD, for a different reason: it holds the base model
+    # plus an eight-expert LoRA bank (~0.8-1.0 B trainable-adjacent params) plus activations, and
+    # OOM'd on g-06-01's 47 GB slice for Llama-3.1-8B (7.83 GiB short in the loss) and Granite
+    # (400 MiB short in backward) on 2026-09-14 -- twelve to sixteen minutes in, after the weights
+    # had loaded. The same jobs run on a full card.
+    if (("obtune.eval_vllm" in argv or "obtune.mole.train_mole" in argv)
+            and partition == "h100" and not exclude and not nodelist):
         exclude = "g-06-01"
     # Node selection is not cosmetic on juno: `h100` is heterogeneous and g-06-01
     # advertises 3g.47gb MIG slices, not whole cards. On 2026-08-28 the alignment

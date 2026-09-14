@@ -1,11 +1,11 @@
 {
-  "job_id": "tr_gate_codegemma-7b",
+  "job_id": "tr_gate_granite31-8b",
   "kind": "train",
   "argv": [
     "-m",
     "obtune.mole.train_mole",
     "--config",
-    "mole/routerlora_codegemma-7b.yaml"
+    "mole/routerlora_granite31-8b.yaml"
   ],
   "raw": false,
   "est_gpu_h": 3.0,
@@ -14,10 +14,10 @@
     "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed"
   },
   "slurm": {
-    "job_id": "394574",
+    "job_id": "394582",
     "node": "g-06-01",
     "partition": "h100",
     "exit_code": 1,
-    "finished_utc": "2026-09-14T02:56:58.876689+00:00"
+    "finished_utc": "2026-09-14T03:12:37.600006+00:00"
   }
 }
