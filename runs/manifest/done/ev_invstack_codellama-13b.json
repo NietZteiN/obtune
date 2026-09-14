@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_invstack_gemma3-12b",
+  "job_id": "ev_invstack_codellama-13b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,7 +7,7 @@
     "--config",
     "eval/inverse_stacks.yaml",
     "--model",
-    "gemma3-12b",
+    "codellama-13b",
     "--language",
     "python"
   ],
@@ -18,10 +18,17 @@
     "note": "master table: the input-prediction block on all 16 stacks -- the backward task has never been run on a stack | REQUEUED 2026-09-14: the config carried the `formatonly` control, which exists only for CodeLlama-7B; the missing-adapter guard refused it on every other model. Arm removed."
   },
   "previous_slurm": {
-    "job_id": "394541",
-    "node": "g-04-02",
+    "job_id": "394535",
+    "node": "g-05-01",
     "partition": "h100",
     "exit_code": 1,
-    "finished_utc": "2026-09-14T03:04:34.628172+00:00"
+    "finished_utc": "2026-09-14T02:50:08.860222+00:00"
+  },
+  "slurm": {
+    "job_id": "394727",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T08:37:03.241453+00:00"
   }
 }
