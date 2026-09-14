@@ -144,7 +144,12 @@ def main() -> int:
             r = subprocess.run(
                 [sys.executable, str(ROOT / "scripts/slurm/submit.py"),
                  "--name", f"mg_{name}_{m}", "--partition", "dev", "--gres", "none",
-                 "--cpus", "8", "--mem", "64G", "--time", "0:40:00", "--argv",
+                 # MEMORY SCALES WITH THE BASE MODEL. merge_adapters.py loads it on the CPU
+                 # (device_map=None), so 34B's ~68 GB of bf16 weights need far more than the 64 G
+                 # that suffices for 7-15B: the first two 34B merges were OOM-killed at 64 G on
+                 # 2026-09-13, two minutes in, while loading weights. 13B and 15B fit in 64 G.
+                 "--cpus", "8", "--mem", "160G" if "34b" in m else "64G",
+                 "--time", "1:30:00" if "34b" in m else "0:40:00", "--argv",
                  str(ROOT / "src/obtune/merge_adapters.py"), "--config", cfg,
                  "--model", m, "--language", "python", "--rank", "32",
                  "--combination-type", comb, "--out", out],
