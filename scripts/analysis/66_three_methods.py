@@ -61,7 +61,9 @@ N_BOOT, SEED = 2000, 17
 def read(model, direction):
     out = {}
     for label, sysn, fwd_phases in METHODS:
-        phases = ["inverse_generic"] if direction == "backward" else fwd_phases
+        # Backward is stacks-only here, and every stack cell is one-shot, so this read does not
+        # inherit the zero-shot ladder problem described in configs/eval/inverse_ladder_1shot.yaml.
+        phases = ["inverse_1shot", "inverse_generic"] if direction == "backward" else fwd_phases
         cells, ok = {}, True
         for grp, conds in (("seen", SEEN), ("unseen", UNSEEN)):
             for c in conds:

@@ -166,3 +166,4 @@
 - [`2026-09-14_backward-stacks-seven-models.md`](2026-09-14_backward-stacks-seven-models.md) — 4/5 clear, Gemma-3 weak; the anchored arm's backward stability holds on one model of two.
 - [`2026-09-14_backward-stacks-eight-models-paired.md`](2026-09-14_backward-stacks-eight-models-paired.md) — 8/8 complete and paired; 3 of 4, ratios withdrawn, merge robust everywhere.
 - [`2026-09-14_three-methods-one-table.md`](2026-09-14_three-methods-one-table.md) — merge pays no tax in either direction on 8/8; breadth does; router still mostly unmeasured.
+- [`2026-09-14_two-prompts-one-phase.md`](2026-09-14_two-prompts-one-phase.md) — the backward ladder was zero-shot on 7/8 models; stack reads unaffected; repair queued.

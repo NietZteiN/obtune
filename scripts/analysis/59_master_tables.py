@@ -70,7 +70,12 @@ def pooled(phases, m, s, conds):
 def fwd(m, s, conds): return pooled(PHASES[KIND[conds[0]]], m, s, conds)
 # The `ladder` guard here was correct until 2026-09-13 and wrong after it: inverse_stacks.yaml
 # writes the stacks into the SAME phase, so the guard was hiding cells that exist on disk.
-def bwd(m, s, conds): return pooled(["inverse_generic"], m, s, conds)
+# PHASE ORDER MATTERS. inverse_1shot holds the ladder re-read with the SAME one-shot prompt the
+# stacks and the merges always used; inverse_generic holds the original ladder read, which was
+# zero-shot on the seven non-7B models (prompt_id inverse_v1 against inverse_1shot_v1). First hit
+# wins, so a model with the repair reads one-shot everywhere and a model without it is unchanged.
+BWD_PH = ["inverse_1shot", "inverse_generic"]
+def bwd(m, s, conds): return pooled(BWD_PH, m, s, conds)
 def icl(m, conds): return pooled(["basecheck_1shot"], m, "base_1shot", conds) if (KIND[conds[0]]=="ladder" and conds[0]!="X1") else None
 
 def triple(a, b, ref):
@@ -533,8 +538,9 @@ def args_exact(m, sysn, c):
     `exchange_sort([1,2,3]) -> 0` scores as correct against any program whose answer is 0. Measured
     2026-09-13: 64-69 % of every system's backward `correct` answers are degenerate in this way, and
     the untuned model's 0.279 exec-match is 0.086 by exact arguments. Both are reported."""
-    p = CELLS/"inverse_generic"/m/"python"/f"{sysn}__{c}"/"trials.parquet"
-    if not p.exists(): return None
+    p = next((q for q in (CELLS/ph/m/"python"/f"{sysn}__{c}"/"trials.parquet" for ph in BWD_PH)
+              if q.exists()), None)
+    if p is None: return None
     try:
         import pandas as pd
         d = pd.read_parquet(p, columns=["args_exact"])
@@ -542,19 +548,74 @@ def args_exact(m, sysn, c):
     except Exception:
         return None
 
+# ---- WHY A GATED BACKWARD CELL IS GATED -------------------------------------------------------
+# Until now every cell over the 0.25 format gate carried one marker, and twenty of thirty-five
+# backward cells on the new panel models carry it. That collapses two different failures into one
+# symbol. A reply that is exactly the program's gold RETURN VALUE is not malformed -- it is the
+# answer to the FORWARD question, asked backwards, which is the paper's forward-locking claim
+# showing up as a parse failure. A reply that is prose, or an expression, or three lines, is the
+# prompt contract failing. The first is a result; the second is an artefact of a template written
+# for CodeLlama-7B. They must not share a symbol.
+#   dagger      the cell is gated and most of its replies are unparseable        -- an artefact
+#   double-dag  the cell is gated and most of its replies ANSWER FORWARD         -- a result
+# Measured per cell, on output_raw against the same gold the forward grader uses (63_forward_
+# collapse.py established the metric). Computed ONLY for gated backward cells: it needs the trial
+# rows, and reading those for every cell of every model would multiply this script's runtime.
+_GOLD_CACHE = {}
+_COLLAPSE_CACHE = {}
+
+def _normed(x): return str(x).strip().strip('"').strip("'").replace(" ", "")
+
+def _gold_for(cond):
+    if cond not in _GOLD_CACHE:
+        from obtune.data import load_eval_items
+        try:
+            _GOLD_CACHE[cond] = {(it.program_id, it.item_id): _normed(it.output_repr)
+                                 for it in load_eval_items([cond], "python", source="heldout")}
+        except Exception:
+            _GOLD_CACHE[cond] = {}
+    return _GOLD_CACHE[cond]
+
+def collapse_rate(m, sysn, c):
+    """Share of backward replies that are exactly the gold FORWARD answer. None if unreadable."""
+    key = (m, sysn, c)
+    if key in _COLLAPSE_CACHE: return _COLLAPSE_CACHE[key]
+    p = next((q for q in (CELLS/ph/m/"python"/f"{sysn}__{c}"/"trials.parquet" for ph in BWD_PH)
+              if q.exists()), None)
+    val = None
+    if p is not None:
+        try:
+            import pandas as pd
+            d = pd.read_parquet(p, columns=["snippet_id", "item_id", "output_raw"])
+            g = _gold_for(c)
+            if g:
+                hit = sum(1 for sid, iid, raw in zip(d["snippet_id"], d["item_id"], d["output_raw"])
+                          if _normed(raw) == g.get((sid, iid), "\x00"))
+                val = hit/len(d) if len(d) else None
+        except Exception:
+            val = None
+    _COLLAPSE_CACHE[key] = val
+    return val
+
 def abs_cell(m, sysn, c, bwd=False):
     if bwd:
-        a, ff = acc(["inverse_generic"], m, sysn, c)
+        a, ff = acc(BWD_PH, m, sysn, c)
     else:
         ph = ABS_PH.get(sysn) or PHASES[KIND[c]]
         a, ff = acc(ph, m, sysn, c)
         if a is None and ABS_PH.get(sysn) is None: a, ff = acc(B_PH, m, sysn, c)
     return a, ff
 
-def abs_fmt(a, ff, tex=True):
+def abs_fmt(a, ff, tex=True, collapse=None):
+    """`collapse` is the cell's forward-collapse rate, passed only for BACKWARD cells. A gated cell
+    whose replies are mostly the gold forward answer gets the double dagger: it is forward-locking,
+    not a broken template."""
     if a is None: return "--"
     gated = (ff or 0) > FMT_MAX
-    return (f"{a:.3f}" + (r"$^{\dagger}$" if gated else "")) if tex else (f"{a:.3f}" + ("†" if gated else ""))
+    if not gated: return f"{a:.3f}"
+    answered_forward = collapse is not None and collapse > 0.5
+    mark = (r"$^{\ddagger}$" if answered_forward else r"$^{\dagger}$") if tex else ("‡" if answered_forward else "†")
+    return f"{a:.3f}{mark}"
 
 BWD_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
 
@@ -598,10 +659,14 @@ def abs_table(m):
         base_ok = ba if isinstance(ba, float) and (bf or 0) <= FMT_MAX else None
         cells = []
         for _, sy in ABS_SYS:
-            if bwd and sy in ("base_1shot", "mole_router"):
+            # `mole_router` used to be skipped here alongside `base_1shot`, because the mixture
+            # had no backward cell on any model. It has a config now (mole_inverse_*.yaml), so the
+            # column fills in as those land and renders `--` until then, like every other cell.
+            if bwd and sy == "base_1shot":
                 cells += ["--", "--"]; continue
             a, ff = abs_cell(m, sy, c, bwd)
-            cells += [abs_fmt(a, ff), fp(pct_of_base(a if isinstance(a, float) and (ff or 0) <= FMT_MAX else None, base_ok))]
+            cr = collapse_rate(m, sy, c) if (bwd and (ff or 0) > FMT_MAX) else None
+            cells += [abs_fmt(a, ff, collapse=cr), fp(pct_of_base(a if isinstance(a, float) and (ff or 0) <= FMT_MAX else None, base_ok))]
         return cells
 
     prev=None
@@ -634,7 +699,11 @@ for m in MODELS:
 # markdown twin
 out.append("\n## 6. Absolute master tables — every method × every obfuscation\n")
 out.append("Raw exact-match accuracy, with `%b` after each system: its accuracy as a percentage of `base`'s on the same condition. "
-           "`†` marks a cell over the 0.25 format gate; `--` a cell not run.\n\n"
+           "A gated cell (format-failure rate over 0.25) carries one of two marks, and the difference matters: "
+           "`†` means most of its replies are unparseable — the prompt contract failing, an artefact of a template "
+           "written for CodeLlama-7B — while `‡` means most of its replies are exactly the gold FORWARD answer. "
+           "The second is not a broken cell: it is the arm answering the other question, which is the forward-locking "
+           "result showing up as a parse failure. `--` is a cell not run.\n\n"
            "**The backward block is reported twice.** *By execution* accepts any call that returns the gold value — inversion is "
            "many-to-one, so a guess landing on a common return value scores. *By exact arguments* requires the gold call. "
            "64–69% of every system's backward successes on CodeLlama-7B are of the first kind, which is why the untuned model looks "
@@ -643,15 +712,16 @@ def md_row(m, c, bwd=False, strict=False):
     if strict:
         b=args_exact(m,"base",c); cells=[]
         for _,sy in ABS_SYS:
-            if sy in ("base_1shot","mole_router"): cells += ["--","--"]; continue
+            if sy == "base_1shot": cells += ["--","--"]; continue
             a=args_exact(m,sy,c); cells += ["--" if a is None else f"{a:.3f}", fp(pct_of_base(a,b))]
         return cells
     ba,bf=abs_cell(m,"base",c,bwd); base_ok = ba if isinstance(ba,float) and (bf or 0)<=FMT_MAX else None
     cells=[]
     for _,sy in ABS_SYS:
-        if bwd and sy in ("base_1shot","mole_router"): cells += ["--","--"]; continue
+        if bwd and sy == "base_1shot": cells += ["--","--"]; continue
         a,ff=abs_cell(m,sy,c,bwd)
-        cells += [abs_fmt(a,ff,tex=False), fp(pct_of_base(a if isinstance(a,float) and (ff or 0)<=FMT_MAX else None, base_ok))]
+        cr = collapse_rate(m, sy, c) if (bwd and (ff or 0) > FMT_MAX) else None
+        cells += [abs_fmt(a,ff,tex=False,collapse=cr), fp(pct_of_base(a if isinstance(a,float) and (ff or 0)<=FMT_MAX else None, base_ok))]
     return cells
 for m in MODELS:
     out.append(f"\n### {NICE[m]}\n")

@@ -54,7 +54,11 @@ SYSTEMS = ["base", "mono_all", "cons_lam3", "tuned_X1", "tuned_L0",
            "merge_dare_ties", "merge_ties"]
 MODELS = ["codellama-7b", "codellama-13b", "codellama-34b", "llama31-8b",
           "starcoder2-15b", "gemma3-12b", "codegemma-7b", "granite31-8b"]
-PHASES = ["inverse_generic"]
+# Stacks only, and every stack cell was written with the one-shot inverse prompt, so this read is
+# NOT affected by the zero-shot/one-shot split that contaminates the backward LADDER cells on the
+# seven non-7B models (see configs/eval/inverse_ladder_1shot.yaml). inverse_1shot is listed first
+# so that a future ladder variant of this script picks up the repaired cells automatically.
+PHASES = ["inverse_1shot", "inverse_generic"]
 FMT_GATE = 0.25
 N_BOOT, SEED = 2000, 17
 

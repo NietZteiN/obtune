@@ -1,6 +1,6 @@
 {
   "script": "65_backward_stacks.py",
-  "generated_utc": "2026-09-14T12:38:23+00:00",
+  "generated_utc": "2026-09-14T13:02:47+00:00",
   "metric": "args_exact",
   "n_resamples": 2000,
   "seed": 17,
@@ -406,6 +406,19 @@
           "vs_base_ci": [
             -5.82,
             15.13
+          ],
+          "vs_base_sig": false
+        },
+        "merge_ties": {
+          "format_fail_max": 0.0638,
+          "gated": false,
+          "seen_acc": 0.1146,
+          "unseen_acc": 0.0968,
+          "drop_pct": -15.5,
+          "vs_base_pts": 1.85,
+          "vs_base_ci": [
+            -5.63,
+            8.86
           ],
           "vs_base_sig": false
         }

@@ -13,6 +13,17 @@ Applies the rule pre-registered in CLAUDE_SCRATCHPAD.md on 2026-09-13 BEFORE sub
 Direction ratio = backward gain / forward gain, both against the untuned model, as in 58_direction_ratio.py.
 Forward cells come from panel_core / merge_panel; backward from inverse_generic. Cells over the 0.25
 format gate are excluded and named.
+
+⚠️ PROMPT CONFOUND, FOUND 2026-09-14 AND NOT YET REPAIRED IN THIS SCRIPT'S OUTPUT.
+This script reads the backward LADDER (L0-S2, X1), and on the seven non-CodeLlama-7B models those
+cells were written by `inverse_core.yaml` with NO one-shot demo (`prompt_id: inverse_v1`), while the
+merge arms it compares them against came from `inverse_merge.yaml` WITH one (`inverse_1shot_v1`).
+The difference is large -- CodeGemma's `mono_all` sits at 0.882 format-failure zero-shot and 0.086
+one-shot on a comparable condition -- so this script's format-gate exclusions and part of its merge
+advantage are a prompt difference, not a method difference. The repair is queued as
+`inverse_ladder_1shot.yaml` into phase `inverse_1shot`; once those cells land, change PHASES below
+to ["inverse_1shot", "inverse_generic"] and re-read. The STACK-based reads
+(65_backward_stacks.py, 66_three_methods.py) are unaffected: every arm there is one-shot.
 """
 from __future__ import annotations
 import datetime as dt, json, sys

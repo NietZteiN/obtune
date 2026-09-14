@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_inv1shot_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_ladder_1shot.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 128,
+  "meta": {
+    "note": "REPAIR: the backward ladder cells for this model were written zero-shot (inverse_core.yaml, prompt_id inverse_v1) while every backward stack cell, every backward merge cell and every CodeLlama-7B backward cell is one-shot (inverse_1shot_v1). Two prompts in one phase and one column of the master table. New phase inverse_1shot; the old cells are kept."
+  }
+}
