@@ -2127,3 +2127,41 @@ as everything else. Re-run 72 after the last mixture grid finishes; that is the 
 
 Numbers that should now be quoted from v2 and were previously v1: CodeGemma `merge_ties` (was
 gated everywhere backwards; now readable and +1.90 above base on stacks). Nothing else moved ≥ 0.02.
+
+---
+
+## 2026-09-14 · GPU maximisation: what is queued, and the rules registered before any of it lands
+
+**Idle capacity found:** a30 (two nodes, only CodeLlama-7B fits), one h200 slot inside obtune's share of
+two, and nothing else — h100 is saturated by the mixture backward grids. Everything below is 7B.
+
+**Cell inventory before prediction.** Phases `seed42_generic`, `seed42_inverse`, `invtrained_generic`,
+`invtrained_inverse` are empty; `runs/adapters_inverse/` does not exist; `S3/S4/X1_r32_s42` and
+`merge_{ties,dare_ties}_r32_s42` do not exist. Jobs: a30 398390–398392 (S3/S4/X1 s42), 398428
+(backward-trained breadth), dev 398395/398396 (s42 merges).
+
+### H-seed42 — do the paper's CodeLlama-7B claims survive a second seed?
+On `seed42_*`, each s42 arm paired with its s17 twin on the common program set, 2,000 resamples:
+- **H-seed42-merge:** CONFIRMED iff `merge_dare_ties_s42 − base` backwards on the nine stacks has
+  ci_lo > 0 (s17: +1.39 [+0.7, +2.2]); REFUTED iff ci_hi < 0.
+- **H-seed42-breadth-tax:** CONFIRMED iff `mono_all_s42`'s seen→unseen drop exceeds `base`'s with
+  ci_lo > 0 on the difference (s17: −40.0 % vs −15.0 %, significant); REFUTED iff the difference's
+  ci_hi < 0.
+- **H-seed42-collapse:** CONFIRMED iff the s42 forward-collapse ordering has both merges at the floor
+  (≤ 0.01) and `cons_lam3_s42` highest among single-adapter arms; REFUTED if either fails.
+- **Prediction: all three CONFIRMED.** The s17 effects are large relative to their intervals and the
+  seed-variance work on `mono_all` (s17/s42/s101) found the breadth tie stable. A REFUTED here would
+  matter more than any other result this week, which is why it is the first thing the idle cards do.
+
+### H-inv-trained — is inversion a different skill, or was forward competence surface-fitted?
+On `invtrained_inverse`, `inverse_trained − mono_all` backwards, exact arguments, pooled over the
+nine stacks, common programs:
+- CONFIRMED (**inversion is learnable; forward tuning was surface-fitting**) iff ci_lo > +5 pts, i.e.
+  training on the task itself clears the ceiling every forward-trained arm sits under (0.07–0.13).
+- REFUTED (**the ceiling is the task**) iff the gain is below +2 pts or its interval includes 0.
+- 2–5 pts: INCONCLUSIVE, reported as such.
+- Also read, not ruled: what it costs forwards (`invtrained_generic` vs `mono_all` on the same cells).
+- **Prediction: CONFIRMED, at +8 to +15 pts backwards, with a forward cost of 5–10 pts.** The
+  backward task's gold calls are short (p99 = 64 tokens) and its failure modes are mostly formatting
+  and enumeration, which supervision on the exact target should remove; I do not expect it to make the
+  model *reason* about inversion, so I expect it well under the forward numbers and well over 0.13.

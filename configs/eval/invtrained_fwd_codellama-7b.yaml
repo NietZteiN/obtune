@@ -1,0 +1,21 @@
+# THE BACKWARD-TRAINED ARM, evaluated FORWARDS (2026-09-14). One system: the breadth recipe trained on the
+# INVERSE prompt with the gold call as completion (configs/train/inverse_breadth_py.yaml). Its own phase,
+# 23 conditions, CodeLlama-7B only. What backward training COSTS on the task the other arms were built for.
+# Do not queue until runs/adapters_inverse/codellama-7b/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best exists
+# (a30 job 398428): the missing-adapter guard would fail the job in seconds and file it under failed/.
+_extends: _base_eval.yaml
+
+phase: invtrained_generic
+experiment_id: invtrained_fwd_codellama-7b
+run_tag: invtrained_fwd_codellama-7b
+model: codellama-7b
+language: python
+eval_source: heldout
+
+systems:
+  - {name: base, arch: none}
+  - {name: inverse_trained, adapter: "runs/adapters_inverse/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]

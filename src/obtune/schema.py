@@ -199,7 +199,10 @@ class TrialRow(BaseModel):
                    # and backward, each in one phase so 73_seed42.py can pair every s42 cell with its
                    # s17 twin. Their own phases because the s17 cells are spread over panel_core,
                    # composite_generic, composite_depth, f2_divergence and inverse_generic.
-                   "seed42_generic", "seed42_inverse"]
+                   "seed42_generic", "seed42_inverse",
+                   # 2026-09-14: the backward-TRAINED control (configs/train/inverse_breadth_py.yaml),
+                   # evaluated forwards and backwards on CodeLlama-7B.
+                   "invtrained_generic", "invtrained_inverse"]
     experiment_id: str
     base_model: str
     # "pretrained" added 2026-09-09 for llama31-8b-base, the panel's one non-instruction-tuned
