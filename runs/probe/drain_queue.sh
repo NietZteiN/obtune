@@ -81,10 +81,16 @@ while true; do
       out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition h200 --mem 128G 2>&1 | grep -E "^submitted|FAILED")
       [ -n "$out" ] && echo "$out" | sed "s/^/[h200-34b] /"
     done
-    for j in $(ls runs/manifest/queued/tr_*.json 2>/dev/null | grep -E "codellama-7b" | head -2); do
-      out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition a30 --mem 64G 2>&1 | grep -E "^submitted|FAILED")
-      [ -n "$out" ] && echo "$out" | sed "s/^/[a30] /"
-    done
+    # a30 PASS DISABLED 2026-09-14. Four of four CodeLlama-7B trainings at the panel batch shape OOM'd
+    # on a30 within three minutes (log/setup/2026-09-14_a30-cannot-train-7b.md), and this pass then
+    # resubmitted two of them there minutes after that was established, because the running copy of
+    # this script is a loop that never re-reads itself. Kept, commented, so the mechanism is visible;
+    # re-enable only with a batch shape that fits 23.5 GB, and note that such a run would not be
+    # comparable with its seed-17 twin.
+    #    for j in $(ls runs/manifest/queued/tr_*.json 2>/dev/null | grep -E "codellama-7b" | head -2); do
+    #      out=$(timeout 300 python scripts/slurm/submit.py --job "$j" --partition a30 --mem 64G 2>&1 | grep -E "^submitted|FAILED")
+    #      [ -n "$out" ] && echo "$out" | sed "s/^/[a30] /"
+    #    done
   fi
   # Advance the routing/merging track too: training a specialist leaves checkpoint-*/ and final/, not
   # best/, and merge_adapters.py defaults to best. This checkpoint-selects whatever is ready and merges
