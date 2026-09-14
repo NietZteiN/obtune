@@ -11,13 +11,14 @@
   "est_gpu_h": 6.0,
   "priority": 280,
   "meta": {
-    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | est raised to 6 h (walltime 12 h) after CodeLlama-13B's gate projected 6h19 against a 6 h limit."
+    "note": "master table: the mixture arm -- router gate over the eight experts, queued automatically once all eight existed | batch 2x32 after an OOM at 8x8 on an 80 GB card; 12 B with a 262 k vocabulary."
   },
   "slurm": {
-    "job_id": "394702",
-    "node": "g-04-02",
+    "job_id": "395132",
+    "node": "g-05-01",
     "partition": "h100",
-    "exit_code": 1,
-    "finished_utc": "2026-09-14T06:44:57.320083+00:00"
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T15:57:03.827256+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
   }
 }

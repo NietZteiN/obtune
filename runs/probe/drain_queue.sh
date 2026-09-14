@@ -99,6 +99,11 @@ while true; do
     # 34B gate training needs h200: the base model is ~68 GB before the eight-expert bank.
     qdir=runs/manifest/queued; case "$m" in *34b*) qdir=runs/manifest/queued_34b ;; esac
     mf=$qdir/tr_gate_$m.json
+    # A HELD manifest means a human stopped this job on purpose and it must not come back on its
+    # own. gemma3-12b's gate went nan at step 90 and burned 5h56m before anyone looked; this block
+    # saw a missing gate.pt and 8/8 experts and queued it straight back, which would have bought
+    # another 12 h of NaN. runs/manifest/held/ is the veto, and it is checked first.
+    [ -f "runs/manifest/held/tr_gate_$m.json" ] && continue
     if [ "$have" -eq 8 ] && [ ! -f "runs/mole/$m/python/$tag/gate.pt" ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/tr_gate_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "tr_gate_$m"; then
