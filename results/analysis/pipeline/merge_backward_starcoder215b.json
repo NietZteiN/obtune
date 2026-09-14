@@ -1,59 +1,128 @@
 {
  "script": "62_merge_backward.py",
+ "generated_utc": "2026-09-14T15:39:12+00:00",
  "model": "starcoder2-15b",
- "generated_utc": "2026-09-14T13:10:36+00:00",
- "no_untuned_reference": "every backward `base` cell exceeds the format gate; no contrast or direction ratio is defined on this model",
+ "conditions_read": [
+  "L0",
+  "L2"
+ ],
  "format_gated_cells": [
-  "base__L0",
   "base__L1b",
   "base__L1r",
-  "base__L2",
   "base__S1",
   "base__S2",
   "base__X1",
-  "tuned_L0__L0",
-  "tuned_L0__L1b",
-  "tuned_L0__L1r",
-  "tuned_L0__L2",
-  "tuned_L0__S1",
-  "tuned_L0__S2",
   "tuned_L0__X1",
-  "mono_all__L0",
-  "mono_all__L1b",
-  "mono_all__L1r",
-  "mono_all__L2",
   "mono_all__S1",
-  "mono_all__S2",
   "mono_all__X1",
-  "cons_lam3__L0",
-  "cons_lam3__L1b",
-  "cons_lam3__L1r",
-  "cons_lam3__L2",
-  "cons_lam3__S1",
-  "cons_lam3__S2",
-  "cons_lam3__X1",
-  "tuned_X1__L0",
   "tuned_X1__L1b",
-  "tuned_X1__L1r",
-  "tuned_X1__L2",
-  "tuned_X1__S1",
   "tuned_X1__S2",
   "tuned_X1__X1"
  ],
- "absolute_backward_accuracy": {
-  "merge_dare_ties__L0": 0.45182525433871934,
-  "merge_dare_ties__L1b": 0.36106088004822184,
-  "merge_dare_ties__L1r": 0.42190305206463197,
-  "merge_dare_ties__L2": 0.417115499700778,
-  "merge_dare_ties__S1": 0.4238782051282051,
-  "merge_dare_ties__S2": 0.43884892086330934,
-  "merge_dare_ties__X1": 0.3292181069958848,
-  "merge_ties__L0": 0.4254937163375224,
-  "merge_ties__L1b": 0.3568414707655214,
-  "merge_ties__L1r": 0.3985637342908438,
-  "merge_ties__L2": 0.40155595451825254,
-  "merge_ties__S1": 0.3998397435897436,
-  "merge_ties__S2": 0.4148681055155875,
-  "merge_ties__X1": 0.2880658436213992
+ "n_resamples": 2000,
+ "seed": 17,
+ "arms": {
+  "merge_dare_ties": {
+   "backward_vs_base": {
+    "value_pts": 7.719928186714542,
+    "ci_lo": 5.953770197486532,
+    "ci_hi": 9.45541591861161,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 50.26946107784431,
+    "ci_lo": 47.39602034709755,
+    "ci_hi": 53.143806810838754,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.15357093593583424
+  },
+  "merge_ties": {
+   "backward_vs_base": {
+    "value_pts": 5.595451825254338,
+    "ci_lo": 4.128515858767202,
+    "ci_hi": 6.97187312986236,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 44.25149700598802,
+    "ci_lo": 41.407056916723775,
+    "ci_hi": 46.94615347402144,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.1264466109360588
+  },
+  "tuned_L0": {
+   "backward_vs_base": {
+    "value_pts": 4.159186116098146,
+    "ci_lo": 2.2441651705565557,
+    "ci_hi": 6.104877318970674,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 51.047904191616766,
+    "ci_lo": 48.14482345900658,
+    "ci_hi": 54.00969522381412,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.08147613857928333
+  },
+  "mono_all": {
+   "backward_vs_base": {
+    "value_pts": -5.535607420706162,
+    "ci_lo": -7.8396169958108946,
+    "ci_hi": -3.321364452423703,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 50.74850299401198,
+    "ci_lo": 47.78238833896019,
+    "ci_hi": 53.68268989283267,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "direction_ratio": -0.10907922587114206
+  },
+  "cons_lam3": {
+   "backward_vs_base": {
+    "value_pts": 2.9323758228605667,
+    "ci_lo": 1.0173548773189711,
+    "ci_hi": 4.817474566128066,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 51.76646706586826,
+    "ci_lo": 48.62283064033513,
+    "ci_hi": 54.880239520958085,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.056646242037908
+  },
+  "tuned_X1": {
+   "backward_vs_base": {
+    "value_pts": 1.8850987432675048,
+    "ci_lo": 0.029922202274090676,
+    "ci_hi": 3.8300418910831855,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "forward_vs_base": {
+    "value_pts": 47.51497005988024,
+    "ci_lo": 44.67057885427467,
+    "ci_hi": 50.270371479928095,
+    "n_programs": 557,
+    "excludes_zero": true
+   },
+   "direction_ratio": 0.03967378577513211
+  }
  }
 }

@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-14 14:05 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-14 15:40 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -110,32 +110,32 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 | condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| L0 | 0.418 | 100 | -- | -- | -- | 0.405 | -1.3 | 97 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L1b | 0.385 | 92 | -- | -- | -- | 0.391 | +0.6 | 94 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L1r | 0.433 | 104 | -- | -- | -- | 0.417 | -1.6 | 100 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L2 | 0.396 | 95 | -- | -- | -- | 0.390 | -0.6 | 93 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| S1 | 0.408 | 97 | -- | -- | -- | 0.424 | +1.6 | 101 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| S2 | 0.303 | 72 | -- | -- | -- | 0.394 | +9.2 | 94 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| X1 | 0.264 | 63 | -- | -- | -- | 0.267 | +0.3 | 64 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_L1b_S1 | 0.253 | 60 | -- | -- | -- | 0.326 | +7.3 | 78 | fmt | fmt | fmt | 0.201 | -5.2 | 48 | fmt | fmt | fmt |
-| C_L1r_S1 | 0.325 | 78 | -- | -- | -- | 0.360 | +3.5 | 86 | fmt | fmt | fmt | 0.203 | -12.2 | 48 | fmt | fmt | fmt |
-| C_S1_L1r | 0.323 | 77 | -- | -- | -- | 0.351 | +2.8 | 84 | fmt | fmt | fmt | 0.230 | -9.3 | 55 | fmt | fmt | fmt |
-| C_L2_S4 | 0.274 | 65 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_L1r_S3 | 0.305 | 73 | -- | -- | -- | 0.361 | +5.6 | 86 | fmt | fmt | fmt | 0.220 | -8.6 | 53 | fmt | fmt | fmt |
-| C_S4_S3 | 0.293 | 70 | -- | -- | -- | 0.326 | +3.4 | 78 | fmt | fmt | fmt | 0.239 | -5.3 | 57 | fmt | fmt | fmt |
-| *seen stacks, pooled (6)* | 0.295 | 71 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C3_L1r_S3_S4 | 0.310 | 74 | -- | -- | -- | 0.337 | +2.7 | 81 | fmt | fmt | fmt | 0.222 | -8.8 | 53 | fmt | fmt | fmt |
-| C3_S1_S3_S4 | 0.295 | 70 | -- | -- | -- | 0.329 | +3.5 | 79 | fmt | fmt | fmt | 0.235 | -5.9 | 56 | fmt | fmt | fmt |
-| C3_L1r_S1_S4 | 0.316 | 75 | -- | -- | -- | 0.353 | +3.7 | 84 | fmt | fmt | fmt | 0.210 | -10.6 | 50 | fmt | fmt | fmt |
-| C4_L1r_S1_S3_S4 | 0.310 | 74 | -- | -- | -- | 0.333 | +2.3 | 80 | fmt | fmt | fmt | 0.222 | -8.9 | 53 | fmt | fmt | fmt |
-| *depth-3/4 stacks, pooled (4)* | 0.308 | 74 | -- | -- | -- | 0.338 | +3.1 | 81 | fmt | fmt | fmt | 0.222 | -8.5 | 53 | fmt | fmt | fmt |
-| C_L1r_X1 | 0.281 | 67 | -- | -- | -- | 0.254 | -2.6 | 61 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_X1_S1 | 0.289 | 69 | -- | -- | -- | 0.264 | -2.5 | 63 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_S2_X1 | 0.271 | 65 | -- | -- | -- | 0.279 | +0.8 | 67 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| *unseen-containing stacks, pooled (3)* | 0.280 | 67 | -- | -- | -- | 0.266 | -1.4 | 63 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_L1r_X1m | 0.291 | 69 | -- | -- | -- | 0.259 | -3.1 | 62 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_S1_X1s | 0.301 | 72 | -- | -- | -- | 0.290 | -1.1 | 69 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C3_L1r_S1_X1 | 0.304 | 73 | -- | -- | -- | 0.293 | -1.0 | 70 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| L0 | 0.285 | 100 | -- | -- | -- | 0.269 | -1.6 | 94 | fmt | fmt | fmt | 0.229 | -5.6 | 80 | fmt | fmt | fmt |
+| L1b | 0.277 | 97 | -- | -- | -- | 0.285 | +0.8 | 100 | fmt | fmt | fmt | 0.253 | -2.5 | 89 | fmt | fmt | fmt |
+| L1r | 0.327 | 115 | -- | -- | -- | 0.347 | +2.0 | 122 | fmt | fmt | fmt | 0.228 | -9.9 | 80 | fmt | fmt | fmt |
+| L2 | 0.279 | 98 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.206 | -7.2 | 72 | fmt | fmt | fmt |
+| S1 | 0.304 | 107 | -- | -- | -- | 0.341 | +3.7 | 120 | fmt | fmt | fmt | 0.199 | -10.6 | 70 | fmt | fmt | fmt |
+| S2 | 0.293 | 103 | -- | -- | -- | 0.317 | +2.4 | 111 | fmt | fmt | fmt | 0.237 | -5.6 | 83 | fmt | fmt | fmt |
+| X1 | 0.258 | 91 | -- | -- | -- | 0.274 | +1.6 | 96 | fmt | fmt | fmt | 0.214 | -4.4 | 75 | fmt | fmt | fmt |
+| C_L1b_S1 | 0.253 | 89 | -- | -- | -- | 0.326 | +7.3 | 114 | fmt | fmt | fmt | 0.201 | -5.2 | 71 | fmt | fmt | fmt |
+| C_L1r_S1 | 0.325 | 114 | -- | -- | -- | 0.360 | +3.5 | 126 | fmt | fmt | fmt | 0.203 | -12.2 | 71 | fmt | fmt | fmt |
+| C_S1_L1r | 0.323 | 113 | -- | -- | -- | 0.351 | +2.8 | 123 | fmt | fmt | fmt | 0.230 | -9.3 | 81 | fmt | fmt | fmt |
+| C_L2_S4 | 0.274 | 96 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C_L1r_S3 | 0.305 | 107 | -- | -- | -- | 0.361 | +5.6 | 127 | fmt | fmt | fmt | 0.220 | -8.6 | 77 | fmt | fmt | fmt |
+| C_S4_S3 | 0.293 | 103 | -- | -- | -- | 0.326 | +3.4 | 114 | fmt | fmt | fmt | 0.239 | -5.3 | 84 | fmt | fmt | fmt |
+| *seen stacks, pooled (6)* | 0.295 | 104 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C3_L1r_S3_S4 | 0.310 | 109 | -- | -- | -- | 0.337 | +2.7 | 118 | fmt | fmt | fmt | 0.222 | -8.8 | 78 | fmt | fmt | fmt |
+| C3_S1_S3_S4 | 0.295 | 103 | -- | -- | -- | 0.329 | +3.5 | 116 | fmt | fmt | fmt | 0.235 | -5.9 | 83 | fmt | fmt | fmt |
+| C3_L1r_S1_S4 | 0.316 | 111 | -- | -- | -- | 0.353 | +3.7 | 124 | fmt | fmt | fmt | 0.210 | -10.6 | 74 | fmt | fmt | fmt |
+| C4_L1r_S1_S3_S4 | 0.310 | 109 | -- | -- | -- | 0.333 | +2.3 | 117 | fmt | fmt | fmt | 0.222 | -8.9 | 78 | fmt | fmt | fmt |
+| *depth-3/4 stacks, pooled (4)* | 0.308 | 108 | -- | -- | -- | 0.338 | +3.1 | 119 | fmt | fmt | fmt | 0.222 | -8.5 | 78 | fmt | fmt | fmt |
+| C_L1r_X1 | 0.281 | 99 | -- | -- | -- | 0.254 | -2.6 | 89 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C_X1_S1 | 0.289 | 101 | -- | -- | -- | 0.264 | -2.5 | 93 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C_S2_X1 | 0.271 | 95 | -- | -- | -- | 0.279 | +0.8 | 98 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| *unseen-containing stacks, pooled (3)* | 0.280 | 98 | -- | -- | -- | 0.266 | -1.4 | 93 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C_L1r_X1m | 0.291 | 102 | -- | -- | -- | 0.259 | -3.1 | 91 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C_S1_X1s | 0.301 | 106 | -- | -- | -- | 0.290 | -1.1 | 102 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| C3_L1r_S1_X1 | 0.304 | 107 | -- | -- | -- | 0.293 | -1.0 | 103 | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
 
 ### CodeLlama-34B
 
@@ -238,32 +238,32 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 | condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| L0 | 0.424 | 100 | -- | -- | -- | 0.393 | -3.2 | 93 | fmt | fmt | fmt | fmt | fmt | fmt | 0.408 | -1.7 | 96 |
-| L1b | 0.322 | 76 | -- | -- | -- | 0.330 | +0.7 | 78 | fmt | fmt | fmt | fmt | fmt | fmt | 0.334 | +1.1 | 79 |
-| L1r | 0.369 | 87 | -- | -- | -- | 0.385 | +1.6 | 91 | fmt | fmt | fmt | fmt | fmt | fmt | 0.375 | +0.6 | 88 |
-| L2 | 0.363 | 86 | -- | -- | -- | 0.387 | +2.3 | 91 | fmt | fmt | fmt | fmt | fmt | fmt | 0.358 | -0.5 | 84 |
-| S1 | 0.348 | 82 | -- | -- | -- | 0.402 | +5.4 | 95 | fmt | fmt | fmt | fmt | fmt | fmt | 0.401 | +5.3 | 94 |
-| S2 | 0.368 | 87 | -- | -- | -- | 0.390 | +2.2 | 92 | fmt | fmt | fmt | fmt | fmt | fmt | 0.409 | +4.1 | 96 |
-| X1 | 0.279 | 66 | -- | -- | -- | 0.310 | +3.1 | 73 | fmt | fmt | fmt | fmt | fmt | fmt | 0.343 | +6.4 | 81 |
-| C_L1b_S1 | 0.287 | 68 | -- | -- | -- | 0.253 | -3.4 | 60 | 0.274 | -1.4 | 64 | 0.258 | -2.9 | 61 | 0.297 | +1.0 | 70 |
-| C_L1r_S1 | 0.297 | 70 | -- | -- | -- | 0.281 | -1.7 | 66 | 0.280 | -1.8 | 66 | 0.283 | -1.4 | 67 | 0.271 | -2.6 | 64 |
-| C_S1_L1r | 0.303 | 71 | -- | -- | -- | 0.269 | -3.4 | 63 | 0.274 | -2.9 | 65 | 0.274 | -2.9 | 65 | 0.290 | -1.3 | 68 |
-| C_L2_S4 | 0.320 | 75 | -- | -- | -- | 0.275 | -4.6 | 65 | 0.269 | -5.2 | 63 | 0.286 | -3.4 | 67 | 0.309 | -1.1 | 73 |
-| C_L1r_S3 | 0.342 | 81 | -- | -- | -- | 0.297 | -4.5 | 70 | 0.299 | -4.3 | 71 | 0.303 | -3.9 | 72 | 0.308 | -3.4 | 73 |
-| C_S4_S3 | 0.367 | 86 | -- | -- | -- | 0.333 | -3.4 | 78 | 0.313 | -5.4 | 74 | 0.329 | -3.8 | 77 | 0.362 | -0.5 | 85 |
-| *seen stacks, pooled (6)* | 0.319 | 75 | -- | -- | -- | 0.284 | -3.5 | 67 | 0.285 | -3.5 | 67 | 0.289 | -3.1 | 68 | 0.306 | -1.3 | 72 |
-| C3_L1r_S3_S4 | 0.309 | 73 | -- | -- | -- | 0.271 | -3.8 | 64 | 0.303 | -0.5 | 71 | 0.300 | -0.8 | 71 | 0.300 | -0.9 | 71 |
-| C3_S1_S3_S4 | 0.353 | 83 | -- | -- | -- | 0.311 | -4.2 | 73 | 0.289 | -6.3 | 68 | 0.281 | -7.2 | 66 | 0.340 | -1.3 | 80 |
-| C3_L1r_S1_S4 | 0.302 | 71 | -- | -- | -- | 0.270 | -3.2 | 64 | 0.262 | -4.0 | 62 | 0.271 | -3.1 | 64 | 0.270 | -3.2 | 64 |
-| C4_L1r_S1_S3_S4 | 0.281 | 66 | -- | -- | -- | 0.234 | -4.7 | 55 | 0.280 | -0.2 | 66 | 0.279 | -0.2 | 66 | 0.259 | -2.2 | 61 |
-| *depth-3/4 stacks, pooled (4)* | 0.311 | 73 | -- | -- | -- | 0.272 | -4.0 | 64 | 0.284 | -2.8 | 67 | 0.283 | -2.8 | 67 | 0.292 | -1.9 | 69 |
-| C_L1r_X1 | 0.218 | 51 | -- | -- | -- | 0.220 | +0.2 | 52 | 0.193 | -2.6 | 45 | 0.239 | +2.1 | 56 | 0.265 | +4.7 | 62 |
-| C_X1_S1 | 0.291 | 69 | -- | -- | -- | 0.283 | -0.7 | 67 | 0.210 | -8.1 | 49 | 0.220 | -7.1 | 52 | 0.302 | +1.1 | 71 |
-| C_S2_X1 | 0.323 | 76 | -- | -- | -- | 0.288 | -3.4 | 68 | 0.229 | -9.3 | 54 | 0.241 | -8.1 | 57 | 0.306 | -1.6 | 72 |
-| *unseen-containing stacks, pooled (3)* | 0.277 | 65 | -- | -- | -- | 0.264 | -1.3 | 62 | 0.211 | -6.7 | 50 | 0.233 | -4.4 | 55 | 0.291 | +1.4 | 69 |
-| C_L1r_X1m | 0.232 | 55 | -- | -- | -- | 0.210 | -2.2 | 49 | 0.217 | -1.5 | 51 | 0.245 | +1.3 | 58 | 0.258 | +2.7 | 61 |
-| C_S1_X1s | 0.357 | 84 | -- | -- | -- | 0.287 | -7.0 | 68 | 0.205 | -15.2 | 48 | 0.212 | -14.5 | 50 | 0.330 | -2.7 | 78 |
-| C3_L1r_S1_X1 | 0.268 | 63 | -- | -- | -- | 0.234 | -3.4 | 55 | 0.188 | -8.0 | 44 | 0.194 | -7.4 | 46 | 0.243 | -2.5 | 57 |
+| L0 | 0.409 | 100 | -- | -- | -- | 0.335 | -7.4 | 82 | 0.320 | -9.0 | 78 | 0.332 | -7.8 | 81 | 0.365 | -4.4 | 89 |
+| L1b | 0.371 | 91 | -- | -- | -- | 0.297 | -7.4 | 73 | 0.280 | -9.2 | 68 | 0.285 | -8.6 | 70 | 0.297 | -7.5 | 72 |
+| L1r | 0.373 | 91 | -- | -- | -- | 0.312 | -6.1 | 76 | 0.290 | -8.3 | 71 | 0.297 | -7.5 | 73 | 0.316 | -5.7 | 77 |
+| L2 | 0.376 | 92 | -- | -- | -- | 0.297 | -7.8 | 73 | 0.284 | -9.2 | 69 | 0.294 | -8.1 | 72 | 0.319 | -5.7 | 78 |
+| S1 | 0.375 | 92 | -- | -- | -- | 0.325 | -5.0 | 79 | 0.285 | -9.0 | 70 | 0.291 | -8.4 | 71 | 0.360 | -1.5 | 88 |
+| S2 | 0.378 | 92 | -- | -- | -- | 0.345 | -3.4 | 84 | 0.326 | -5.2 | 80 | 0.325 | -5.3 | 79 | 0.366 | -1.3 | 89 |
+| X1 | 0.263 | 64 | -- | -- | -- | 0.267 | +0.3 | 65 | 0.211 | -5.3 | 51 | 0.228 | -3.5 | 56 | 0.302 | +3.9 | 74 |
+| C_L1b_S1 | 0.287 | 70 | -- | -- | -- | 0.253 | -3.4 | 62 | 0.274 | -1.4 | 67 | 0.258 | -2.9 | 63 | 0.297 | +1.0 | 72 |
+| C_L1r_S1 | 0.297 | 73 | -- | -- | -- | 0.281 | -1.7 | 69 | 0.280 | -1.8 | 68 | 0.283 | -1.4 | 69 | 0.271 | -2.6 | 66 |
+| C_S1_L1r | 0.303 | 74 | -- | -- | -- | 0.269 | -3.4 | 66 | 0.274 | -2.9 | 67 | 0.274 | -2.9 | 67 | 0.290 | -1.3 | 71 |
+| C_L2_S4 | 0.320 | 78 | -- | -- | -- | 0.275 | -4.6 | 67 | 0.269 | -5.2 | 66 | 0.286 | -3.4 | 70 | 0.309 | -1.1 | 75 |
+| C_L1r_S3 | 0.342 | 84 | -- | -- | -- | 0.297 | -4.5 | 73 | 0.299 | -4.3 | 73 | 0.303 | -3.9 | 74 | 0.308 | -3.4 | 75 |
+| C_S4_S3 | 0.367 | 90 | -- | -- | -- | 0.333 | -3.4 | 81 | 0.313 | -5.4 | 76 | 0.329 | -3.8 | 80 | 0.362 | -0.5 | 88 |
+| *seen stacks, pooled (6)* | 0.319 | 78 | -- | -- | -- | 0.284 | -3.5 | 70 | 0.285 | -3.5 | 70 | 0.289 | -3.1 | 71 | 0.306 | -1.3 | 75 |
+| C3_L1r_S3_S4 | 0.309 | 75 | -- | -- | -- | 0.271 | -3.8 | 66 | 0.303 | -0.5 | 74 | 0.300 | -0.8 | 73 | 0.300 | -0.9 | 73 |
+| C3_S1_S3_S4 | 0.353 | 86 | -- | -- | -- | 0.311 | -4.2 | 76 | 0.289 | -6.3 | 71 | 0.281 | -7.2 | 69 | 0.340 | -1.3 | 83 |
+| C3_L1r_S1_S4 | 0.302 | 74 | -- | -- | -- | 0.270 | -3.2 | 66 | 0.262 | -4.0 | 64 | 0.271 | -3.1 | 66 | 0.270 | -3.2 | 66 |
+| C4_L1r_S1_S3_S4 | 0.281 | 69 | -- | -- | -- | 0.234 | -4.7 | 57 | 0.280 | -0.2 | 68 | 0.279 | -0.2 | 68 | 0.259 | -2.2 | 63 |
+| *depth-3/4 stacks, pooled (4)* | 0.311 | 76 | -- | -- | -- | 0.272 | -4.0 | 66 | 0.284 | -2.8 | 69 | 0.283 | -2.8 | 69 | 0.292 | -1.9 | 71 |
+| C_L1r_X1 | 0.218 | 53 | -- | -- | -- | 0.220 | +0.2 | 54 | 0.193 | -2.6 | 47 | 0.239 | +2.1 | 58 | 0.265 | +4.7 | 65 |
+| C_X1_S1 | 0.291 | 71 | -- | -- | -- | 0.283 | -0.7 | 69 | 0.210 | -8.1 | 51 | 0.220 | -7.1 | 54 | 0.302 | +1.1 | 74 |
+| C_S2_X1 | 0.323 | 79 | -- | -- | -- | 0.288 | -3.4 | 70 | 0.229 | -9.3 | 56 | 0.241 | -8.1 | 59 | 0.306 | -1.6 | 75 |
+| *unseen-containing stacks, pooled (3)* | 0.277 | 68 | -- | -- | -- | 0.264 | -1.3 | 64 | 0.211 | -6.7 | 51 | 0.233 | -4.4 | 57 | 0.291 | +1.4 | 71 |
+| C_L1r_X1m | 0.232 | 57 | -- | -- | -- | 0.210 | -2.2 | 51 | 0.217 | -1.5 | 53 | 0.245 | +1.3 | 60 | 0.258 | +2.7 | 63 |
+| C_S1_X1s | 0.357 | 87 | -- | -- | -- | 0.287 | -7.0 | 70 | 0.205 | -15.2 | 50 | 0.212 | -14.5 | 52 | 0.330 | -2.7 | 81 |
+| C3_L1r_S1_X1 | 0.268 | 65 | -- | -- | -- | 0.234 | -3.4 | 57 | 0.188 | -8.0 | 46 | 0.194 | -7.4 | 47 | 0.243 | -2.5 | 59 |
 
 ### StarCoder2-15B
 
@@ -302,30 +302,30 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 | condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| L0 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L1b | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L1r | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L2 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| S1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| S2 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_L1b_S1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.317 | fmt | fmt | fmt | fmt | fmt |
-| C_L1r_S1 | fmt | fmt | -- | -- | -- | 0.301 | fmt | fmt | fmt | fmt | fmt | 0.303 | fmt | fmt | fmt | fmt | fmt |
-| C_S1_L1r | fmt | fmt | -- | -- | -- | 0.311 | fmt | fmt | fmt | fmt | fmt | 0.303 | fmt | fmt | fmt | fmt | fmt |
-| C_L2_S4 | fmt | fmt | -- | -- | -- | 0.342 | fmt | fmt | fmt | fmt | fmt | 0.353 | fmt | fmt | 0.290 | fmt | fmt |
-| C_L1r_S3 | fmt | fmt | -- | -- | -- | 0.300 | fmt | fmt | 0.282 | fmt | fmt | 0.368 | fmt | fmt | fmt | fmt | fmt |
-| C_S4_S3 | fmt | fmt | -- | -- | -- | 0.368 | fmt | fmt | 0.301 | fmt | fmt | 0.386 | fmt | fmt | fmt | fmt | fmt |
-| *seen stacks, pooled (6)* | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.338 | fmt | fmt | fmt | fmt | fmt |
-| C3_L1r_S3_S4 | fmt | fmt | -- | -- | -- | 0.294 | fmt | fmt | fmt | fmt | fmt | 0.339 | fmt | fmt | fmt | fmt | fmt |
-| C3_S1_S3_S4 | fmt | fmt | -- | -- | -- | 0.337 | fmt | fmt | fmt | fmt | fmt | 0.333 | fmt | fmt | fmt | fmt | fmt |
-| C3_L1r_S1_S4 | fmt | fmt | -- | -- | -- | 0.293 | fmt | fmt | fmt | fmt | fmt | 0.270 | fmt | fmt | fmt | fmt | fmt |
-| C4_L1r_S1_S3_S4 | fmt | fmt | -- | -- | -- | 0.289 | fmt | fmt | fmt | fmt | fmt | 0.273 | fmt | fmt | fmt | fmt | fmt |
-| *depth-3/4 stacks, pooled (4)* | fmt | fmt | -- | -- | -- | 0.304 | fmt | fmt | fmt | fmt | fmt | 0.304 | fmt | fmt | fmt | fmt | fmt |
+| L0 | 0.366 | 100 | -- | -- | -- | 0.411 | +4.5 | 112 | 0.311 | -5.5 | 85 | 0.399 | +3.3 | 109 | 0.393 | +2.8 | 108 |
+| L1b | fmt | fmt | -- | -- | -- | 0.316 | fmt | 86 | 0.301 | fmt | 82 | 0.395 | fmt | 108 | fmt | fmt | fmt |
+| L1r | fmt | fmt | -- | -- | -- | 0.354 | fmt | 97 | 0.273 | fmt | 75 | 0.369 | fmt | 101 | 0.298 | fmt | 82 |
+| L2 | 0.353 | 97 | -- | -- | -- | 0.391 | +3.8 | 107 | 0.297 | -5.6 | 81 | 0.379 | +2.6 | 104 | 0.363 | +1.0 | 99 |
+| S1 | fmt | fmt | -- | -- | -- | 0.361 | fmt | 99 | fmt | fmt | fmt | 0.364 | fmt | 99 | 0.342 | fmt | 94 |
+| S2 | fmt | fmt | -- | -- | -- | 0.359 | fmt | 98 | 0.300 | fmt | 82 | 0.384 | fmt | 105 | fmt | fmt | fmt |
+| X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.281 | fmt | 77 | fmt | fmt | fmt |
+| C_L1b_S1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.317 | fmt | 87 | fmt | fmt | fmt |
+| C_L1r_S1 | fmt | fmt | -- | -- | -- | 0.301 | fmt | 82 | fmt | fmt | fmt | 0.303 | fmt | 83 | fmt | fmt | fmt |
+| C_S1_L1r | fmt | fmt | -- | -- | -- | 0.311 | fmt | 85 | fmt | fmt | fmt | 0.303 | fmt | 83 | fmt | fmt | fmt |
+| C_L2_S4 | fmt | fmt | -- | -- | -- | 0.342 | fmt | 94 | fmt | fmt | fmt | 0.353 | fmt | 96 | 0.290 | fmt | 79 |
+| C_L1r_S3 | fmt | fmt | -- | -- | -- | 0.300 | fmt | 82 | 0.282 | fmt | 77 | 0.368 | fmt | 101 | fmt | fmt | fmt |
+| C_S4_S3 | fmt | fmt | -- | -- | -- | 0.368 | fmt | 101 | 0.301 | fmt | 82 | 0.386 | fmt | 106 | fmt | fmt | fmt |
+| *seen stacks, pooled (6)* | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.338 | fmt | 93 | fmt | fmt | fmt |
+| C3_L1r_S3_S4 | fmt | fmt | -- | -- | -- | 0.294 | fmt | 81 | fmt | fmt | fmt | 0.339 | fmt | 93 | fmt | fmt | fmt |
+| C3_S1_S3_S4 | fmt | fmt | -- | -- | -- | 0.337 | fmt | 92 | fmt | fmt | fmt | 0.333 | fmt | 91 | fmt | fmt | fmt |
+| C3_L1r_S1_S4 | fmt | fmt | -- | -- | -- | 0.293 | fmt | 80 | fmt | fmt | fmt | 0.270 | fmt | 74 | fmt | fmt | fmt |
+| C4_L1r_S1_S3_S4 | fmt | fmt | -- | -- | -- | 0.289 | fmt | 79 | fmt | fmt | fmt | 0.273 | fmt | 75 | fmt | fmt | fmt |
+| *depth-3/4 stacks, pooled (4)* | fmt | fmt | -- | -- | -- | 0.304 | fmt | 83 | fmt | fmt | fmt | 0.304 | fmt | 83 | fmt | fmt | fmt |
 | C_L1r_X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
 | C_X1_S1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
 | C_S2_X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
 | *unseen-containing stacks, pooled (3)* | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_L1r_X1m | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.234 | fmt | fmt | fmt | fmt | fmt |
+| C_L1r_X1m | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | 0.234 | fmt | 64 | fmt | fmt | fmt |
 | C_S1_X1s | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
 | C3_L1r_S1_X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
 
@@ -366,32 +366,32 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 | condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| L0 | 0.491 | 100 | -- | -- | -- | 0.344 | -14.7 | 70 | 0.452 | -3.9 | 92 | fmt | fmt | fmt | 0.474 | -1.7 | 97 |
-| L1b | 0.411 | 84 | -- | -- | -- | fmt | fmt | fmt | 0.439 | +2.8 | 90 | fmt | fmt | fmt | 0.417 | +0.6 | 85 |
-| L1r | 0.440 | 90 | -- | -- | -- | 0.350 | -9.0 | 71 | 0.423 | -1.7 | 86 | fmt | fmt | fmt | 0.439 | -0.1 | 90 |
-| L2 | 0.409 | 83 | -- | -- | -- | 0.335 | -7.5 | 68 | 0.414 | +0.4 | 84 | fmt | fmt | fmt | 0.440 | +3.1 | 90 |
-| S1 | 0.417 | 85 | -- | -- | -- | fmt | fmt | fmt | 0.445 | +2.7 | 91 | fmt | fmt | fmt | 0.446 | +2.8 | 91 |
-| S2 | 0.458 | 93 | -- | -- | -- | 0.388 | -7.0 | 79 | 0.463 | +0.5 | 94 | fmt | fmt | fmt | 0.472 | +1.4 | 96 |
-| X1 | 0.317 | 65 | -- | -- | -- | 0.290 | -2.7 | 59 | 0.340 | +2.3 | 69 | fmt | fmt | fmt | 0.374 | +5.7 | 76 |
-| C_L1b_S1 | 0.349 | 71 | -- | -- | -- | 0.317 | -3.3 | 65 | 0.366 | +1.7 | 75 | fmt | fmt | fmt | 0.370 | +2.1 | 75 |
-| C_L1r_S1 | 0.356 | 73 | -- | -- | -- | 0.319 | -3.7 | 65 | 0.379 | +2.2 | 77 | fmt | fmt | fmt | 0.397 | +4.1 | 81 |
-| C_S1_L1r | 0.337 | 69 | -- | -- | -- | 0.319 | -1.8 | 65 | 0.379 | +4.1 | 77 | fmt | fmt | fmt | 0.407 | +6.9 | 83 |
-| C_L2_S4 | 0.387 | 79 | -- | -- | -- | 0.381 | -0.6 | 78 | 0.416 | +2.9 | 85 | fmt | fmt | fmt | 0.427 | +4.0 | 87 |
-| C_L1r_S3 | 0.427 | 87 | -- | -- | -- | 0.402 | -2.6 | 82 | 0.423 | -0.5 | 86 | fmt | fmt | fmt | 0.438 | +1.1 | 89 |
-| C_S4_S3 | 0.434 | 88 | -- | -- | -- | 0.438 | +0.4 | 89 | 0.462 | +2.8 | 94 | fmt | fmt | fmt | 0.469 | +3.5 | 96 |
-| *seen stacks, pooled (6)* | 0.382 | 78 | -- | -- | -- | 0.363 | -1.9 | 74 | 0.404 | +2.2 | 82 | fmt | fmt | fmt | 0.418 | +3.6 | 85 |
-| C3_L1r_S3_S4 | 0.398 | 81 | -- | -- | -- | 0.386 | -1.2 | 79 | 0.420 | +2.2 | 86 | fmt | fmt | fmt | 0.447 | +4.9 | 91 |
-| C3_S1_S3_S4 | 0.387 | 79 | -- | -- | -- | 0.354 | -3.3 | 72 | 0.419 | +3.1 | 85 | fmt | fmt | fmt | 0.440 | +5.2 | 90 |
-| C3_L1r_S1_S4 | 0.347 | 71 | -- | -- | -- | 0.302 | -4.5 | 62 | 0.376 | +3.0 | 77 | fmt | fmt | fmt | 0.377 | +3.0 | 77 |
-| C4_L1r_S1_S3_S4 | 0.329 | 67 | -- | -- | -- | 0.293 | -3.7 | 60 | 0.364 | +3.5 | 74 | fmt | fmt | fmt | 0.399 | +6.9 | 81 |
-| *depth-3/4 stacks, pooled (4)* | 0.365 | 74 | -- | -- | -- | 0.334 | -3.2 | 68 | 0.395 | +2.9 | 80 | fmt | fmt | fmt | 0.416 | +5.0 | 85 |
-| C_L1r_X1 | 0.258 | 52 | -- | -- | -- | 0.242 | -1.6 | 49 | 0.279 | +2.1 | 57 | fmt | fmt | fmt | 0.329 | +7.2 | 67 |
-| C_X1_S1 | 0.348 | 71 | -- | -- | -- | 0.282 | -6.5 | 58 | 0.331 | -1.7 | 68 | fmt | fmt | fmt | 0.410 | +6.2 | 84 |
-| C_S2_X1 | 0.360 | 73 | -- | -- | -- | 0.339 | -2.0 | 69 | 0.357 | -0.3 | 73 | fmt | fmt | fmt | 0.398 | +3.8 | 81 |
-| *unseen-containing stacks, pooled (3)* | 0.322 | 66 | -- | -- | -- | 0.288 | -3.4 | 59 | 0.322 | +0.1 | 66 | fmt | fmt | fmt | 0.379 | +5.7 | 77 |
-| C_L1r_X1m | 0.273 | 56 | -- | -- | -- | 0.269 | -0.4 | 55 | 0.323 | +5.0 | 66 | fmt | fmt | fmt | 0.349 | +7.6 | 71 |
-| C_S1_X1s | 0.412 | 84 | -- | -- | -- | 0.371 | -4.1 | 76 | 0.383 | -3.0 | 78 | fmt | fmt | fmt | 0.448 | +3.6 | 91 |
-| C3_L1r_S1_X1 | 0.279 | 57 | -- | -- | -- | 0.226 | -5.3 | 46 | 0.270 | -0.9 | 55 | fmt | fmt | fmt | 0.337 | +5.8 | 69 |
+| L0 | 0.453 | 100 | -- | -- | -- | 0.440 | -1.3 | 97 | 0.447 | -0.6 | 99 | 0.355 | -9.8 | 78 | 0.469 | +1.6 | 104 |
+| L1b | 0.405 | 89 | -- | -- | -- | 0.353 | -5.2 | 78 | 0.427 | +2.2 | 94 | fmt | fmt | fmt | 0.395 | -1.0 | 87 |
+| L1r | 0.420 | 93 | -- | -- | -- | 0.394 | -2.6 | 87 | 0.411 | -0.9 | 91 | fmt | fmt | fmt | 0.428 | +0.8 | 94 |
+| L2 | 0.403 | 89 | -- | -- | -- | 0.378 | -2.6 | 83 | 0.405 | +0.2 | 89 | fmt | fmt | fmt | 0.431 | +2.8 | 95 |
+| S1 | 0.424 | 94 | -- | -- | -- | 0.375 | -4.9 | 83 | 0.421 | -0.2 | 93 | fmt | fmt | fmt | 0.461 | +3.7 | 102 |
+| S2 | 0.443 | 98 | -- | -- | -- | 0.444 | +0.1 | 98 | 0.457 | +1.4 | 101 | fmt | fmt | fmt | 0.454 | +1.1 | 100 |
+| X1 | 0.333 | 74 | -- | -- | -- | 0.305 | -2.9 | 67 | 0.333 | +0.0 | 74 | fmt | fmt | fmt | 0.393 | +6.0 | 87 |
+| C_L1b_S1 | 0.349 | 77 | -- | -- | -- | 0.317 | -3.3 | 70 | 0.366 | +1.7 | 81 | fmt | fmt | fmt | 0.370 | +2.1 | 82 |
+| C_L1r_S1 | 0.356 | 79 | -- | -- | -- | 0.319 | -3.7 | 70 | 0.379 | +2.2 | 84 | fmt | fmt | fmt | 0.397 | +4.1 | 88 |
+| C_S1_L1r | 0.337 | 74 | -- | -- | -- | 0.319 | -1.8 | 70 | 0.379 | +4.1 | 84 | fmt | fmt | fmt | 0.407 | +6.9 | 90 |
+| C_L2_S4 | 0.387 | 85 | -- | -- | -- | 0.381 | -0.6 | 84 | 0.416 | +2.9 | 92 | fmt | fmt | fmt | 0.427 | +4.0 | 94 |
+| C_L1r_S3 | 0.427 | 94 | -- | -- | -- | 0.402 | -2.6 | 89 | 0.423 | -0.5 | 93 | fmt | fmt | fmt | 0.438 | +1.1 | 97 |
+| C_S4_S3 | 0.434 | 96 | -- | -- | -- | 0.438 | +0.4 | 97 | 0.462 | +2.8 | 102 | fmt | fmt | fmt | 0.469 | +3.5 | 104 |
+| *seen stacks, pooled (6)* | 0.382 | 84 | -- | -- | -- | 0.363 | -1.9 | 80 | 0.404 | +2.2 | 89 | fmt | fmt | fmt | 0.418 | +3.6 | 92 |
+| C3_L1r_S3_S4 | 0.398 | 88 | -- | -- | -- | 0.386 | -1.2 | 85 | 0.420 | +2.2 | 93 | fmt | fmt | fmt | 0.447 | +4.9 | 99 |
+| C3_S1_S3_S4 | 0.387 | 86 | -- | -- | -- | 0.354 | -3.3 | 78 | 0.419 | +3.1 | 92 | fmt | fmt | fmt | 0.440 | +5.2 | 97 |
+| C3_L1r_S1_S4 | 0.347 | 77 | -- | -- | -- | 0.302 | -4.5 | 67 | 0.376 | +3.0 | 83 | fmt | fmt | fmt | 0.377 | +3.0 | 83 |
+| C4_L1r_S1_S3_S4 | 0.329 | 73 | -- | -- | -- | 0.293 | -3.7 | 65 | 0.364 | +3.5 | 80 | fmt | fmt | fmt | 0.399 | +6.9 | 88 |
+| *depth-3/4 stacks, pooled (4)* | 0.365 | 81 | -- | -- | -- | 0.334 | -3.2 | 74 | 0.395 | +2.9 | 87 | fmt | fmt | fmt | 0.416 | +5.0 | 92 |
+| C_L1r_X1 | 0.258 | 57 | -- | -- | -- | 0.242 | -1.6 | 53 | 0.279 | +2.1 | 62 | fmt | fmt | fmt | 0.329 | +7.2 | 73 |
+| C_X1_S1 | 0.348 | 77 | -- | -- | -- | 0.282 | -6.5 | 62 | 0.331 | -1.7 | 73 | fmt | fmt | fmt | 0.410 | +6.2 | 91 |
+| C_S2_X1 | 0.360 | 79 | -- | -- | -- | 0.339 | -2.0 | 75 | 0.357 | -0.3 | 79 | fmt | fmt | fmt | 0.398 | +3.8 | 88 |
+| *unseen-containing stacks, pooled (3)* | 0.322 | 71 | -- | -- | -- | 0.288 | -3.4 | 64 | 0.322 | +0.1 | 71 | fmt | fmt | fmt | 0.379 | +5.7 | 84 |
+| C_L1r_X1m | 0.273 | 60 | -- | -- | -- | 0.269 | -0.4 | 59 | 0.323 | +5.0 | 71 | fmt | fmt | fmt | 0.349 | +7.6 | 77 |
+| C_S1_X1s | 0.412 | 91 | -- | -- | -- | 0.371 | -4.1 | 82 | 0.383 | -3.0 | 84 | fmt | fmt | fmt | 0.448 | +3.6 | 99 |
+| C3_L1r_S1_X1 | 0.279 | 62 | -- | -- | -- | 0.226 | -5.3 | 50 | 0.270 | -0.9 | 60 | fmt | fmt | fmt | 0.337 | +5.8 | 74 |
 
 ### CodeGemma-7B
 
@@ -434,9 +434,9 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 | L1b | 0.267 | 100 | -- | -- | -- | 0.309 | +4.2 | 116 | 0.298 | +3.1 | 112 | fmt | fmt | fmt | 0.193 | -7.4 | 73 |
 | L1r | 0.250 | 94 | -- | -- | -- | 0.333 | +8.3 | 125 | 0.301 | +5.1 | 113 | fmt | fmt | fmt | 0.225 | -2.5 | 85 |
 | L2 | 0.238 | 90 | -- | -- | -- | 0.327 | +8.9 | 123 | 0.291 | +5.3 | 109 | fmt | fmt | fmt | 0.220 | -1.8 | 83 |
-| S1 | 0.253 | 95 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| S2 | 0.245 | 92 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
+| S1 | 0.234 | 88 | -- | -- | -- | 0.357 | +12.3 | 134 | 0.337 | +10.3 | 127 | fmt | fmt | fmt | 0.231 | -0.3 | 87 |
+| S2 | 0.270 | 102 | -- | -- | -- | 0.372 | +10.2 | 140 | 0.351 | +8.0 | 132 | fmt | fmt | fmt | 0.248 | -2.3 | 93 |
+| X1 | 0.190 | 72 | -- | -- | -- | 0.260 | +7.0 | 98 | 0.217 | +2.7 | 82 | fmt | fmt | fmt | 0.235 | +4.4 | 88 |
 | C_L1b_S1 | 0.229 | 86 | -- | -- | -- | 0.274 | +4.5 | 103 | 0.276 | +4.7 | 104 | fmt | fmt | fmt | fmt | fmt | fmt |
 | C_L1r_S1 | 0.170 | 64 | -- | -- | -- | 0.289 | +11.9 | 109 | 0.290 | +12.0 | 109 | fmt | fmt | fmt | 0.208 | +3.8 | 78 |
 | C_S1_L1r | 0.168 | 63 | -- | -- | -- | 0.284 | +11.6 | 107 | 0.316 | +14.8 | 119 | fmt | fmt | fmt | 0.203 | +3.4 | 76 |
@@ -494,32 +494,32 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 | condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| L0 | 0.410 | 100 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.280 | -13.0 | 68 |
-| L1b | 0.362 | 88 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| L1r | 0.405 | 99 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.312 | -9.3 | 76 |
-| L2 | 0.366 | 89 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| S1 | 0.356 | 87 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.264 | -9.1 | 65 |
-| S2 | 0.429 | 105 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| X1 | 0.281 | 68 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt |
-| C_L1b_S1 | 0.216 | 53 | -- | -- | -- | fmt | fmt | fmt | 0.199 | -1.8 | 48 | fmt | fmt | fmt | 0.194 | -2.2 | 47 |
-| C_L1r_S1 | 0.284 | 69 | -- | -- | -- | 0.206 | -7.8 | 50 | 0.225 | -5.9 | 55 | fmt | fmt | fmt | 0.234 | -5.0 | 57 |
-| C_S1_L1r | 0.262 | 64 | -- | -- | -- | 0.208 | -5.4 | 51 | 0.241 | -2.2 | 59 | fmt | fmt | fmt | 0.242 | -2.0 | 59 |
-| C_L2_S4 | 0.278 | 68 | -- | -- | -- | fmt | fmt | fmt | 0.225 | -5.3 | 55 | fmt | fmt | fmt | 0.213 | -6.5 | 52 |
-| C_L1r_S3 | 0.296 | 72 | -- | -- | -- | fmt | fmt | fmt | 0.240 | -5.6 | 59 | fmt | fmt | fmt | 0.251 | -4.5 | 61 |
-| C_S4_S3 | 0.334 | 81 | -- | -- | -- | fmt | fmt | fmt | 0.254 | -8.0 | 62 | fmt | fmt | fmt | 0.254 | -8.0 | 62 |
-| *seen stacks, pooled (6)* | 0.278 | 68 | -- | -- | -- | fmt | fmt | fmt | 0.231 | -4.8 | 56 | fmt | fmt | fmt | 0.231 | -4.7 | 56 |
-| C3_L1r_S3_S4 | 0.331 | 81 | -- | -- | -- | fmt | fmt | fmt | 0.238 | -9.3 | 58 | fmt | fmt | fmt | 0.235 | -9.6 | 57 |
-| C3_S1_S3_S4 | 0.323 | 79 | -- | -- | -- | fmt | fmt | fmt | 0.214 | -10.9 | 52 | fmt | fmt | fmt | 0.242 | -8.1 | 59 |
-| C3_L1r_S1_S4 | 0.293 | 71 | -- | -- | -- | 0.192 | -10.0 | 47 | 0.223 | -6.9 | 54 | fmt | fmt | fmt | 0.238 | -5.5 | 58 |
-| C4_L1r_S1_S3_S4 | 0.305 | 74 | -- | -- | -- | fmt | fmt | fmt | 0.216 | -8.9 | 53 | fmt | fmt | fmt | 0.239 | -6.5 | 58 |
-| *depth-3/4 stacks, pooled (4)* | 0.313 | 76 | -- | -- | -- | fmt | fmt | fmt | 0.223 | -9.0 | 54 | fmt | fmt | fmt | 0.239 | -7.4 | 58 |
-| C_L1r_X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | 0.163 | fmt | 40 | fmt | fmt | fmt | 0.190 | fmt | 46 |
-| C_X1_S1 | 0.234 | 57 | -- | -- | -- | fmt | fmt | fmt | 0.161 | -7.3 | 39 | fmt | fmt | fmt | 0.242 | +0.8 | 59 |
-| C_S2_X1 | 0.300 | 73 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.235 | -6.5 | 57 |
-| *unseen-containing stacks, pooled (3)* | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.222 | fmt | 54 |
-| C_L1r_X1m | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | 0.180 | fmt | 44 | fmt | fmt | fmt | 0.188 | fmt | 46 |
-| C_S1_X1s | 0.282 | 69 | -- | -- | -- | fmt | fmt | fmt | 0.173 | -10.9 | 42 | fmt | fmt | fmt | 0.234 | -4.8 | 57 |
-| C3_L1r_S1_X1 | 0.259 | 63 | -- | -- | -- | fmt | fmt | fmt | 0.156 | -10.3 | 38 | fmt | fmt | fmt | 0.226 | -3.3 | 55 |
+| L0 | 0.291 | 100 | -- | -- | -- | fmt | fmt | fmt | 0.261 | -3.0 | 90 | fmt | fmt | fmt | 0.272 | -1.9 | 94 |
+| L1b | 0.255 | 88 | -- | -- | -- | fmt | fmt | fmt | 0.228 | -2.7 | 79 | fmt | fmt | fmt | 0.211 | -4.4 | 73 |
+| L1r | 0.284 | 98 | -- | -- | -- | fmt | fmt | fmt | 0.268 | -1.7 | 92 | 0.150 | -13.4 | 52 | 0.262 | -2.3 | 90 |
+| L2 | 0.247 | 85 | -- | -- | -- | fmt | fmt | fmt | 0.236 | -1.1 | 81 | fmt | fmt | fmt | 0.222 | -2.5 | 76 |
+| S1 | 0.305 | 105 | -- | -- | -- | fmt | fmt | fmt | 0.220 | -8.6 | 75 | fmt | fmt | fmt | 0.236 | -6.9 | 81 |
+| S2 | 0.329 | 113 | -- | -- | -- | fmt | fmt | fmt | 0.244 | -8.5 | 84 | fmt | fmt | fmt | 0.266 | -6.2 | 92 |
+| X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.207 | fmt | 71 |
+| C_L1b_S1 | 0.216 | 74 | -- | -- | -- | fmt | fmt | fmt | 0.199 | -1.8 | 68 | fmt | fmt | fmt | 0.194 | -2.2 | 67 |
+| C_L1r_S1 | 0.284 | 98 | -- | -- | -- | 0.206 | -7.8 | 71 | 0.225 | -5.9 | 77 | fmt | fmt | fmt | 0.234 | -5.0 | 80 |
+| C_S1_L1r | 0.262 | 90 | -- | -- | -- | 0.208 | -5.4 | 72 | 0.241 | -2.2 | 83 | fmt | fmt | fmt | 0.242 | -2.0 | 83 |
+| C_L2_S4 | 0.278 | 96 | -- | -- | -- | fmt | fmt | fmt | 0.225 | -5.3 | 78 | fmt | fmt | fmt | 0.213 | -6.5 | 73 |
+| C_L1r_S3 | 0.296 | 102 | -- | -- | -- | fmt | fmt | fmt | 0.240 | -5.6 | 83 | fmt | fmt | fmt | 0.251 | -4.5 | 86 |
+| C_S4_S3 | 0.334 | 115 | -- | -- | -- | fmt | fmt | fmt | 0.254 | -8.0 | 87 | fmt | fmt | fmt | 0.254 | -8.0 | 87 |
+| *seen stacks, pooled (6)* | 0.278 | 96 | -- | -- | -- | fmt | fmt | fmt | 0.231 | -4.8 | 79 | fmt | fmt | fmt | 0.231 | -4.7 | 80 |
+| C3_L1r_S3_S4 | 0.331 | 114 | -- | -- | -- | fmt | fmt | fmt | 0.238 | -9.3 | 82 | fmt | fmt | fmt | 0.235 | -9.6 | 81 |
+| C3_S1_S3_S4 | 0.323 | 111 | -- | -- | -- | fmt | fmt | fmt | 0.214 | -10.9 | 74 | fmt | fmt | fmt | 0.242 | -8.1 | 83 |
+| C3_L1r_S1_S4 | 0.293 | 101 | -- | -- | -- | 0.192 | -10.0 | 66 | 0.223 | -6.9 | 77 | fmt | fmt | fmt | 0.238 | -5.5 | 82 |
+| C4_L1r_S1_S3_S4 | 0.305 | 105 | -- | -- | -- | fmt | fmt | fmt | 0.216 | -8.9 | 74 | fmt | fmt | fmt | 0.239 | -6.5 | 82 |
+| *depth-3/4 stacks, pooled (4)* | 0.313 | 108 | -- | -- | -- | fmt | fmt | fmt | 0.223 | -9.0 | 77 | fmt | fmt | fmt | 0.239 | -7.4 | 82 |
+| C_L1r_X1 | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | 0.163 | fmt | 56 | fmt | fmt | fmt | 0.190 | fmt | 65 |
+| C_X1_S1 | 0.234 | 80 | -- | -- | -- | fmt | fmt | fmt | 0.161 | -7.3 | 55 | fmt | fmt | fmt | 0.242 | +0.8 | 83 |
+| C_S2_X1 | 0.300 | 103 | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.235 | -6.5 | 81 |
+| *unseen-containing stacks, pooled (3)* | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | fmt | 0.222 | fmt | 76 |
+| C_L1r_X1m | fmt | fmt | -- | -- | -- | fmt | fmt | fmt | 0.180 | fmt | 62 | fmt | fmt | fmt | 0.188 | fmt | 65 |
+| C_S1_X1s | 0.282 | 97 | -- | -- | -- | fmt | fmt | fmt | 0.173 | -10.9 | 59 | fmt | fmt | fmt | 0.234 | -4.8 | 81 |
+| C3_L1r_S1_X1 | 0.259 | 89 | -- | -- | -- | fmt | fmt | fmt | 0.156 | -10.3 | 54 | fmt | fmt | fmt | 0.226 | -3.3 | 78 |
 
 ### Cross-model summary — mean Δ (points) / mean % of the untuned model's clean-code accuracy
 
@@ -529,13 +529,13 @@ Means over the cells that exist and pass the format gate; `n` counts them, `fmt`
 |---|---|---:|---:|---:|---:|---:|
 | ICL | fwd | +3.8 / 115% (n=3, 5 fmt) | +3.2 / 97% (n=16, 24 fmt) | -- | -- | -- |
 | clean LoRA | fwd | +19.0 / 175% (n=5, 3 fmt) | +18.5 (n=30, 10 fmt) / 152% (n=25, 15 fmt) | +13.7 (n=7, 1 fmt) / 102% (n=5, 3 fmt) | +16.7 (n=60, 20 fmt) / 129% (n=50, 30 fmt) | +11.5 (n=28, 4 fmt) / 95% (n=20, 12 fmt) |
-| clean LoRA | bwd | -2.6 / 97% (n=6, 2 fmt) | -0.1 / 93% (n=24, 16 fmt) | -1.1 / 66% (n=4, 4 fmt) | +0.8 / 82% (n=54, 26 fmt) | -0.8 (n=20, 12 fmt) / 72% (n=21, 11 fmt) |
+| clean LoRA | bwd | -0.3 / 101% (n=7, 1 fmt) | -0.3 (n=28, 12 fmt) / 97% (n=32, 8 fmt) | +0.2 / 79% (n=5, 3 fmt) | +0.8 (n=54, 26 fmt) / 90% (n=63, 17 fmt) | -0.8 (n=20, 12 fmt) / 79% (n=21, 11 fmt) |
 | breadth | fwd | +17.0 / 167% (n=5, 3 fmt) | +19.7 (n=30, 10 fmt) / 157% (n=25, 15 fmt) | +10.7 (n=7, 1 fmt) / 91% (n=5, 3 fmt) | +20.9 (n=60, 20 fmt) / 146% (n=50, 30 fmt) | +10.9 (n=28, 4 fmt) / 93% (n=20, 12 fmt) |
-| breadth | bwd | +0.4 / 104% (n=3, 5 fmt) | +0.9 / 97% (n=13, 27 fmt) | +0.2 / 76% (n=2, 6 fmt) | -0.0 / 82% (n=50, 30 fmt) | -4.3 (n=15, 17 fmt) / 60% (n=17, 15 fmt) |
+| breadth | bwd | -2.2 / 95% (n=6, 2 fmt) | -1.6 (n=26, 14 fmt) / 91% (n=29, 11 fmt) | -1.1 / 73% (n=4, 4 fmt) | -0.0 (n=50, 30 fmt) / 88% (n=52, 28 fmt) | -4.3 (n=15, 17 fmt) / 64% (n=17, 15 fmt) |
 | anchored | fwd | +17.6 / 169% (n=5, 3 fmt) | +21.0 (n=30, 10 fmt) / 161% (n=25, 15 fmt) | +13.1 (n=7, 1 fmt) / 99% (n=5, 3 fmt) | +22.0 (n=60, 20 fmt) / 148% (n=50, 30 fmt) | +12.8 (n=28, 4 fmt) / 98% (n=20, 12 fmt) |
-| anchored | bwd | -3.3 / 91% (n=2, 6 fmt) | -2.9 / 90% (n=10, 30 fmt) | -1.4 / 84% (n=2, 6 fmt) | -4.2 / 73% (n=39, 41 fmt) | -3.4 / 74% (n=9, 23 fmt) |
+| anchored | bwd | -4.4 / 89% (n=6, 2 fmt) | -5.1 (n=22, 18 fmt) / 86% (n=26, 14 fmt) | -2.7 (n=4, 4 fmt) / 75% (n=5, 3 fmt) | -4.2 (n=39, 41 fmt) / 81% (n=49, 31 fmt) | -3.4 / 75% (n=9, 23 fmt) |
 | family | fwd | +18.5 / 173% (n=5, 3 fmt) | +17.8 (n=30, 10 fmt) / 150% (n=25, 15 fmt) | +20.1 (n=7, 1 fmt) / 128% (n=5, 3 fmt) | +17.5 (n=60, 20 fmt) / 132% (n=50, 30 fmt) | +16.8 (n=28, 4 fmt) / 116% (n=20, 12 fmt) |
-| family | bwd | -4.1 / 90% (n=6, 2 fmt) | -2.0 / 86% (n=25, 15 fmt) | +1.3 / 78% (n=4, 4 fmt) | -1.2 / 78% (n=58, 22 fmt) | -0.0 (n=19, 13 fmt) / 71% (n=21, 11 fmt) |
+| family | bwd | -1.4 / 96% (n=7, 1 fmt) | -2.9 (n=31, 9 fmt) / 87% (n=33, 7 fmt) | +1.4 (n=5, 3 fmt) / 79% (n=6, 2 fmt) | -1.2 (n=58, 22 fmt) / 84% (n=59, 21 fmt) | -0.0 (n=19, 13 fmt) / 77% (n=21, 11 fmt) |
 
 ## 2. Models
 
@@ -731,6 +731,11 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | C3_L1r_S1_S4 | 0.147 | fmt | 0.307 | +16.0 | fmt | 0.354 | +20.7 | fmt | 0.168 | +2.1 | fmt | -- | -- | -- | -- | -- | -- |
 | C4_L1r_S1_S3_S4 | 0.105 | fmt | 0.281 | +17.6 | fmt | 0.351 | +24.7 | fmt | 0.112 | +0.7 | fmt | -- | -- | -- | -- | -- | -- |
 | C_L1r_X1 | 0.115 | fmt | 0.214 | +9.9 | fmt | 0.236 | +12.1 | fmt | 0.114 | -0.1 | fmt | -- | -- | -- | -- | -- | -- |
+| C_X1_S1 | 0.125 | fmt | 0.297 | +17.3 | fmt | 0.317 | +19.2 | fmt | 0.169 | +4.5 | fmt | -- | -- | -- | -- | -- | -- |
+| C_S2_X1 | 0.176 | fmt | 0.336 | +16.0 | fmt | 0.382 | +20.6 | fmt | 0.170 | -0.6 | fmt | -- | -- | -- | -- | -- | -- |
+| C_L1r_X1m | 0.128 | fmt | 0.240 | +11.2 | fmt | 0.279 | +15.0 | fmt | 0.130 | +0.2 | fmt | -- | -- | -- | -- | -- | -- |
+| C_S1_X1s | 0.176 | fmt | 0.353 | +17.6 | fmt | 0.387 | +21.1 | fmt | 0.192 | +1.6 | fmt | -- | -- | -- | -- | -- | -- |
+| C3_L1r_S1_X1 | 0.118 | fmt | 0.230 | +11.3 | fmt | 0.267 | +15.0 | fmt | 0.114 | -0.4 | fmt | -- | -- | -- | -- | -- | -- |
 
 ### Llama-3.1-8B
 
@@ -799,7 +804,13 @@ Same three numbers as §1. Routing arms are MoLE mixtures of the eight per-trans
 | L1b | fmt | fmt | 0.489 | fmt | fmt | 0.489 | fmt | fmt | 0.451 | fmt | fmt | 0.448 | fmt | fmt |
 | L1r | fmt | fmt | 0.492 | fmt | fmt | 0.490 | fmt | fmt | 0.489 | fmt | fmt | 0.487 | fmt | fmt |
 | L2 | fmt | fmt | 0.493 | fmt | fmt | 0.496 | fmt | fmt | 0.490 | fmt | fmt | 0.490 | fmt | fmt |
-| S1 | fmt | fmt | 0.510 | fmt | fmt | -- | -- | -- | 0.517 | fmt | fmt | 0.514 | fmt | fmt |
+| S1 | fmt | fmt | 0.510 | fmt | fmt | 0.512 | fmt | fmt | 0.517 | fmt | fmt | 0.514 | fmt | fmt |
+| S2 | fmt | fmt | 0.533 | fmt | fmt | 0.539 | fmt | fmt | 0.528 | fmt | fmt | 0.526 | fmt | fmt |
+| X1 | fmt | fmt | 0.353 | fmt | fmt | 0.354 | fmt | fmt | 0.352 | fmt | fmt | 0.353 | fmt | fmt |
+| C_L1b_S1 | fmt | fmt | 0.417 | fmt | fmt | 0.417 | fmt | fmt | 0.375 | fmt | fmt | 0.374 | fmt | fmt |
+| C_L1r_S1 | fmt | fmt | 0.419 | fmt | fmt | 0.415 | fmt | fmt | 0.391 | fmt | fmt | 0.389 | fmt | fmt |
+| C_S1_L1r | fmt | fmt | 0.418 | fmt | fmt | 0.418 | fmt | fmt | 0.398 | fmt | fmt | 0.397 | fmt | fmt |
+| C_L2_S4 | fmt | fmt | 0.485 | fmt | fmt | 0.485 | fmt | fmt | 0.468 | fmt | fmt | 0.467 | fmt | fmt |
 
 **Merging (forward)**
 
@@ -1064,13 +1075,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.179 | 100 | 0.166 | 93 | 0.364 | 204 | 0.345 | 193 | 0.360 | 201 | 0.368 | 206 | -- | -- | 0.376 | 210 |
 | C3_L1r_S1_X1 | 0.128 | 100 | 0.107† | -- | 0.233 | 182 | 0.234 | 183 | 0.249 | 194 | 0.291 | 228 | -- | -- | 0.251 | 196 |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.418 | 100 | -- | -- | 0.405 | 97 | 0.023† | -- | 0.165† | -- | 0.115† | -- | -- | -- | -- | -- |
-| L1b | 0.385 | 100 | -- | -- | 0.391 | 102 | 0.013† | -- | 0.124† | -- | 0.124† | -- | -- | -- | -- | -- |
-| L1r | 0.433 | 100 | -- | -- | 0.417 | 96 | 0.012† | -- | 0.127† | -- | 0.114† | -- | -- | -- | -- | -- |
-| L2 | 0.396 | 100 | -- | -- | 0.390 | 98 | 0.013† | -- | 0.104† | -- | 0.177† | -- | -- | -- | -- | -- |
-| S1 | 0.408 | 100 | -- | -- | 0.424 | 104 | 0.014† | -- | 0.135† | -- | 0.091† | -- | -- | -- | -- | -- |
-| S2 | 0.303 | 100 | -- | -- | 0.394 | 130 | 0.011† | -- | 0.103† | -- | 0.086† | -- | -- | -- | -- | -- |
-| X1 | 0.264 | 100 | -- | -- | 0.267 | 101 | 0.005† | -- | 0.035‡ | -- | 0.040† | -- | -- | -- | -- | -- |
+| L0 | 0.285 | 100 | -- | -- | 0.269 | 94 | 0.066† | -- | 0.229 | 80 | 0.086† | -- | -- | -- | 0.339 | 119 |
+| L1b | 0.277 | 100 | -- | -- | 0.285 | 103 | 0.064† | -- | 0.253 | 91 | 0.133† | -- | -- | -- | 0.318 | 115 |
+| L1r | 0.327 | 100 | -- | -- | 0.347 | 106 | 0.049† | -- | 0.228 | 70 | 0.068† | -- | -- | -- | 0.366 | 112 |
+| L2 | 0.279 | 100 | -- | -- | 0.232† | -- | 0.025† | -- | 0.206 | 74 | 0.091† | -- | -- | -- | 0.318 | 114 |
+| S1 | 0.304 | 100 | -- | -- | 0.341 | 112 | 0.055† | -- | 0.199 | 65 | 0.156† | -- | -- | -- | 0.363 | 119 |
+| S2 | 0.293 | 100 | -- | -- | 0.317 | 108 | 0.038† | -- | 0.237 | 81 | 0.139† | -- | -- | -- | 0.365 | 125 |
+| X1 | 0.258 | 100 | -- | -- | 0.274 | 106 | 0.016† | -- | 0.214 | 83 | 0.083† | -- | -- | -- | 0.298 | 115 |
 | C_L1b_S1 | 0.253 | 100 | -- | -- | 0.326 | 129 | 0.057† | -- | 0.201 | 79 | 0.195† | -- | -- | -- | 0.341 | 135 |
 | C_L1r_S1 | 0.325 | 100 | -- | -- | 0.360 | 111 | 0.061† | -- | 0.203 | 62 | 0.124† | -- | -- | -- | 0.368 | 114 |
 | C_S1_L1r | 0.323 | 100 | -- | -- | 0.351 | 109 | 0.077† | -- | 0.230 | 71 | 0.118† | -- | -- | -- | 0.376 | 117 |
@@ -1088,13 +1099,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.301 | 100 | -- | -- | 0.290 | 96 | 0.024† | -- | 0.199† | -- | 0.093† | -- | -- | -- | 0.317 | 105 |
 | C3_L1r_S1_X1 | 0.304 | 100 | -- | -- | 0.293 | 97 | 0.025† | -- | 0.184† | -- | 0.071† | -- | -- | -- | 0.313 | 103 |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.145 | 100 | -- | -- | 0.162 | 111 | 0.001 | 0 | 0.053 | 36 | 0.046 | 32 | -- | -- | -- | -- |
-| L1b | 0.109 | 100 | -- | -- | 0.129 | 118 | 0.002 | 2 | 0.033 | 30 | 0.049 | 45 | -- | -- | -- | -- |
-| L1r | 0.117 | 100 | -- | -- | 0.132 | 112 | 0.001 | 1 | 0.036 | 31 | 0.038 | 33 | -- | -- | -- | -- |
-| L2 | 0.116 | 100 | -- | -- | 0.130 | 112 | 0.002 | 2 | 0.023 | 20 | 0.060 | 52 | -- | -- | -- | -- |
-| S1 | 0.123 | 100 | -- | -- | 0.159 | 129 | 0.002 | 1 | 0.044 | 36 | 0.026 | 21 | -- | -- | -- | -- |
-| S2 | 0.086 | 100 | -- | -- | 0.147 | 171 | 0.000 | 0 | 0.029 | 34 | 0.033 | 38 | -- | -- | -- | -- |
-| X1 | 0.069 | 100 | -- | -- | 0.103 | 149 | 0.000 | 0 | 0.005 | 7 | 0.013 | 19 | -- | -- | -- | -- |
+| L0 | 0.105 | 100 | -- | -- | 0.121 | 115 | 0.016 | 15 | 0.074 | 70 | 0.027 | 26 | -- | -- | 0.149 | 142 |
+| L1b | 0.086 | 100 | -- | -- | 0.103 | 120 | 0.013 | 15 | 0.070 | 82 | 0.043 | 50 | -- | -- | 0.112 | 131 |
+| L1r | 0.102 | 100 | -- | -- | 0.121 | 118 | 0.014 | 13 | 0.065 | 63 | 0.012 | 12 | -- | -- | 0.134 | 131 |
+| L2 | 0.092 | 100 | -- | -- | 0.079 | 86 | 0.009 | 10 | 0.059 | 64 | 0.025 | 27 | -- | -- | 0.120 | 131 |
+| S1 | 0.096 | 100 | -- | -- | 0.140 | 146 | 0.009 | 9 | 0.060 | 62 | 0.056 | 58 | -- | -- | 0.143 | 148 |
+| S2 | 0.094 | 100 | -- | -- | 0.130 | 139 | 0.010 | 10 | 0.078 | 83 | 0.051 | 54 | -- | -- | 0.154 | 165 |
+| X1 | 0.072 | 100 | -- | -- | 0.109 | 151 | 0.004 | 6 | 0.066 | 91 | 0.025 | 34 | -- | -- | 0.114 | 157 |
 | C_L1b_S1 | 0.080 | 100 | -- | -- | 0.104 | 130 | 0.012 | 15 | 0.059 | 74 | 0.057 | 72 | -- | -- | 0.117 | 147 |
 | C_L1r_S1 | 0.105 | 100 | -- | -- | 0.124 | 117 | 0.016 | 15 | 0.065 | 62 | 0.033 | 32 | -- | -- | 0.142 | 135 |
 | C_S1_L1r | 0.098 | 100 | -- | -- | 0.112 | 114 | 0.015 | 15 | 0.069 | 71 | 0.030 | 31 | -- | -- | 0.123 | 125 |
@@ -1134,19 +1145,19 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C3_L1r_S1_S4 | 0.147 | 100 | 0.041† | -- | 0.338 | 230 | 0.390 | 266 | 0.412 | 280 | 0.359 | 245 | -- | -- | 0.354 | 241 |
 | C4_L1r_S1_S3_S4 | 0.105 | 100 | 0.033† | -- | 0.316 | 302 | 0.372 | 356 | 0.413 | 395 | 0.354 | 338 | -- | -- | 0.351 | 336 |
 | C_L1r_X1 | 0.115 | 100 | 0.044† | -- | 0.226 | 196 | 0.249 | 216 | 0.278 | 241 | 0.275 | 239 | -- | -- | 0.236 | 205 |
-| C_X1_S1 | 0.125 | 100 | 0.064† | -- | 0.317 | 254 | 0.290 | 233 | 0.339 | 272 | 0.372 | 298 | -- | -- | -- | -- |
-| C_S2_X1 | 0.176 | 100 | 0.099† | -- | 0.372 | 211 | 0.355 | 202 | 0.403 | 229 | 0.395 | 225 | -- | -- | -- | -- |
-| C_L1r_X1m | 0.128 | 100 | 0.052† | -- | 0.261 | 204 | 0.275 | 214 | 0.294 | 229 | 0.317 | 247 | -- | -- | -- | -- |
-| C_S1_X1s | 0.176 | 100 | 0.077† | -- | 0.390 | 221 | 0.382 | 217 | 0.415 | 235 | 0.411 | 233 | -- | -- | -- | -- |
-| C3_L1r_S1_X1 | 0.118 | 100 | 0.048† | -- | 0.256 | 218 | 0.262 | 222 | 0.297 | 252 | 0.293 | 249 | -- | -- | -- | -- |
+| C_X1_S1 | 0.125 | 100 | 0.064† | -- | 0.317 | 254 | 0.290 | 233 | 0.339 | 272 | 0.372 | 298 | -- | -- | 0.317 | 254 |
+| C_S2_X1 | 0.176 | 100 | 0.099† | -- | 0.372 | 211 | 0.355 | 202 | 0.403 | 229 | 0.395 | 225 | -- | -- | 0.382 | 217 |
+| C_L1r_X1m | 0.128 | 100 | 0.052† | -- | 0.261 | 204 | 0.275 | 214 | 0.294 | 229 | 0.317 | 247 | -- | -- | 0.279 | 217 |
+| C_S1_X1s | 0.176 | 100 | 0.077† | -- | 0.390 | 221 | 0.382 | 217 | 0.415 | 235 | 0.411 | 233 | -- | -- | 0.387 | 219 |
+| C3_L1r_S1_X1 | 0.118 | 100 | 0.048† | -- | 0.256 | 218 | 0.262 | 222 | 0.297 | 252 | 0.293 | 249 | -- | -- | 0.267 | 227 |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.363 | 100 | -- | -- | 0.260 | 72 | 0.200† | -- | 0.284 | 78 | 0.265 | 73 | -- | -- | -- | -- |
-| L1b | 0.327 | 100 | -- | -- | 0.253 | 77 | 0.174† | -- | 0.287 | 88 | 0.223 | 68 | -- | -- | -- | -- |
-| L1r | 0.339 | 100 | -- | -- | 0.255 | 75 | 0.135† | -- | 0.256 | 76 | 0.239 | 70 | -- | -- | -- | -- |
-| L2 | 0.357 | 100 | -- | -- | 0.280 | 78 | 0.179† | -- | 0.276 | 77 | 0.268 | 75 | -- | -- | -- | -- |
-| S1 | 0.323 | 100 | -- | -- | 0.305 | 95 | 0.178† | -- | 0.264 | 82 | 0.240 | 74 | -- | -- | -- | -- |
-| S2 | 0.350 | 100 | -- | -- | 0.354 | 101 | 0.219† | -- | 0.306 | 87 | 0.263 | 75 | -- | -- | -- | -- |
-| X1 | 0.303 | 100 | -- | -- | 0.253 | 83 | 0.118† | -- | 0.249 | 82 | 0.198 | 65 | -- | -- | -- | -- |
+| L0 | 0.363 | 100 | -- | -- | 0.260 | 72 | 0.200† | -- | 0.284 | 78 | 0.265 | 73 | -- | -- | 0.382 | 105 |
+| L1b | 0.327 | 100 | -- | -- | 0.253 | 77 | 0.174† | -- | 0.287 | 88 | 0.223 | 68 | -- | -- | 0.360 | 110 |
+| L1r | 0.339 | 100 | -- | -- | 0.255 | 75 | 0.135† | -- | 0.256 | 76 | 0.239 | 70 | -- | -- | 0.373 | 110 |
+| L2 | 0.357 | 100 | -- | -- | 0.280 | 78 | 0.179† | -- | 0.276 | 77 | 0.268 | 75 | -- | -- | 0.378 | 106 |
+| S1 | 0.323 | 100 | -- | -- | 0.305 | 95 | 0.178† | -- | 0.264 | 82 | 0.240 | 74 | -- | -- | 0.390 | 121 |
+| S2 | 0.350 | 100 | -- | -- | 0.354 | 101 | 0.219† | -- | 0.306 | 87 | 0.263 | 75 | -- | -- | 0.437 | 125 |
+| X1 | 0.303 | 100 | -- | -- | 0.253 | 83 | 0.118† | -- | 0.249 | 82 | 0.198 | 65 | -- | -- | 0.338 | 112 |
 | C_L1b_S1 | 0.257 | 100 | -- | -- | 0.272 | 106 | 0.144† | -- | 0.258 | 100 | 0.175† | -- | -- | -- | 0.358 | 139 |
 | C_L1r_S1 | 0.304 | 100 | -- | -- | 0.285 | 94 | 0.132† | -- | 0.200 | 66 | 0.248 | 82 | -- | -- | 0.375 | 123 |
 | C_S1_L1r | 0.292 | 100 | -- | -- | 0.307 | 105 | 0.142† | -- | 0.216 | 74 | 0.258 | 89 | -- | -- | 0.371 | 127 |
@@ -1164,13 +1175,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.346 | 100 | -- | -- | 0.302 | 87 | 0.140† | -- | 0.268 | 77 | 0.240 | 69 | -- | -- | 0.418 | 121 |
 | C3_L1r_S1_X1 | 0.304 | 100 | -- | -- | 0.296 | 97 | 0.084† | -- | 0.188† | -- | 0.216 | 71 | -- | -- | 0.357 | 118 |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.141 | 100 | -- | -- | 0.105 | 74 | 0.070 | 50 | 0.109 | 77 | 0.101 | 71 | -- | -- | -- | -- |
-| L1b | 0.110 | 100 | -- | -- | 0.086 | 79 | 0.057 | 52 | 0.095 | 86 | 0.066 | 60 | -- | -- | -- | -- |
-| L1r | 0.115 | 100 | -- | -- | 0.083 | 72 | 0.038 | 33 | 0.076 | 66 | 0.075 | 66 | -- | -- | -- | -- |
-| L2 | 0.121 | 100 | -- | -- | 0.092 | 75 | 0.049 | 40 | 0.090 | 74 | 0.085 | 70 | -- | -- | -- | -- |
-| S1 | 0.121 | 100 | -- | -- | 0.115 | 95 | 0.065 | 54 | 0.099 | 82 | 0.088 | 73 | -- | -- | -- | -- |
-| S2 | 0.126 | 100 | -- | -- | 0.140 | 110 | 0.085 | 67 | 0.114 | 90 | 0.099 | 78 | -- | -- | -- | -- |
-| X1 | 0.090 | 100 | -- | -- | 0.098 | 109 | 0.035 | 39 | 0.091 | 101 | 0.071 | 79 | -- | -- | -- | -- |
+| L0 | 0.141 | 100 | -- | -- | 0.105 | 74 | 0.070 | 50 | 0.109 | 77 | 0.101 | 71 | -- | -- | 0.154 | 110 |
+| L1b | 0.110 | 100 | -- | -- | 0.086 | 79 | 0.057 | 52 | 0.095 | 86 | 0.066 | 60 | -- | -- | 0.128 | 117 |
+| L1r | 0.115 | 100 | -- | -- | 0.083 | 72 | 0.038 | 33 | 0.076 | 66 | 0.075 | 66 | -- | -- | 0.130 | 114 |
+| L2 | 0.121 | 100 | -- | -- | 0.092 | 75 | 0.049 | 40 | 0.090 | 74 | 0.085 | 70 | -- | -- | 0.134 | 110 |
+| S1 | 0.121 | 100 | -- | -- | 0.115 | 95 | 0.065 | 54 | 0.099 | 82 | 0.088 | 73 | -- | -- | 0.147 | 121 |
+| S2 | 0.126 | 100 | -- | -- | 0.140 | 110 | 0.085 | 67 | 0.114 | 90 | 0.099 | 78 | -- | -- | 0.185 | 146 |
+| X1 | 0.090 | 100 | -- | -- | 0.098 | 109 | 0.035 | 39 | 0.091 | 101 | 0.071 | 79 | -- | -- | 0.127 | 141 |
 | C_L1b_S1 | 0.082 | 100 | -- | -- | 0.089 | 109 | 0.041 | 50 | 0.082 | 100 | 0.061 | 74 | -- | -- | 0.110 | 134 |
 | C_L1r_S1 | 0.097 | 100 | -- | -- | 0.094 | 97 | 0.034 | 35 | 0.061 | 63 | 0.079 | 81 | -- | -- | 0.126 | 130 |
 | C_S1_L1r | 0.094 | 100 | -- | -- | 0.092 | 97 | 0.032 | 34 | 0.067 | 71 | 0.069 | 73 | -- | -- | 0.122 | 130 |
@@ -1216,13 +1227,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.193 | 100 | 0.231 | 119 | 0.341 | 176 | 0.299 | 155 | 0.335 | 174 | 0.355 | 184 | -- | -- | 0.349 | 181 |
 | C3_L1r_S1_X1 | 0.105 | 100 | 0.156 | 149 | 0.194 | 185 | 0.207 | 198 | 0.224 | 214 | 0.251 | 240 | -- | -- | 0.215 | 205 |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.424 | 100 | -- | -- | 0.393 | 93 | 0.202† | -- | 0.204† | -- | 0.408 | 96 | -- | -- | 0.420 | 99 |
-| L1b | 0.322 | 100 | -- | -- | 0.330 | 102 | 0.163† | -- | 0.162† | -- | 0.334 | 104 | -- | -- | 0.388 | 120 |
-| L1r | 0.369 | 100 | -- | -- | 0.385 | 104 | 0.195† | -- | 0.200† | -- | 0.375 | 102 | -- | -- | 0.370 | 100 |
-| L2 | 0.363 | 100 | -- | -- | 0.387 | 106 | 0.130† | -- | 0.128‡ | -- | 0.358 | 99 | -- | -- | 0.361 | 99 |
-| S1 | 0.348 | 100 | -- | -- | 0.402 | 116 | 0.125† | -- | 0.159† | -- | 0.401 | 115 | -- | -- | 0.413 | 119 |
-| S2 | 0.368 | 100 | -- | -- | 0.390 | 106 | 0.176† | -- | 0.190† | -- | 0.409 | 111 | -- | -- | 0.435 | 118 |
-| X1 | 0.279 | 100 | -- | -- | 0.310 | 111 | 0.105† | -- | 0.131† | -- | 0.343 | 123 | -- | -- | 0.314 | 113 |
+| L0 | 0.409 | 100 | -- | -- | 0.335 | 82 | 0.320 | 78 | 0.332 | 81 | 0.365 | 89 | -- | -- | 0.414 | 101 |
+| L1b | 0.371 | 100 | -- | -- | 0.297 | 80 | 0.280 | 75 | 0.285 | 77 | 0.297 | 80 | -- | -- | 0.383 | 103 |
+| L1r | 0.373 | 100 | -- | -- | 0.312 | 84 | 0.290 | 78 | 0.297 | 80 | 0.316 | 85 | -- | -- | 0.372 | 100 |
+| L2 | 0.376 | 100 | -- | -- | 0.297 | 79 | 0.284 | 75 | 0.294 | 78 | 0.319 | 85 | -- | -- | 0.364 | 97 |
+| S1 | 0.375 | 100 | -- | -- | 0.325 | 87 | 0.285 | 76 | 0.291 | 78 | 0.360 | 96 | -- | -- | 0.411 | 110 |
+| S2 | 0.378 | 100 | -- | -- | 0.345 | 91 | 0.326 | 86 | 0.325 | 86 | 0.366 | 97 | -- | -- | 0.435 | 115 |
+| X1 | 0.263 | 100 | -- | -- | 0.267 | 101 | 0.211 | 80 | 0.228 | 87 | 0.302 | 115 | -- | -- | 0.311 | 118 |
 | C_L1b_S1 | 0.287 | 100 | -- | -- | 0.253 | 88 | 0.274 | 95 | 0.258 | 90 | 0.297 | 103 | -- | -- | 0.352 | 123 |
 | C_L1r_S1 | 0.297 | 100 | -- | -- | 0.281 | 94 | 0.280 | 94 | 0.283 | 95 | 0.271 | 91 | -- | -- | 0.350 | 118 |
 | C_S1_L1r | 0.303 | 100 | -- | -- | 0.269 | 89 | 0.274 | 91 | 0.274 | 91 | 0.290 | 96 | -- | -- | 0.356 | 118 |
@@ -1240,13 +1251,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.357 | 100 | -- | -- | 0.287 | 80 | 0.205 | 57 | 0.212 | 59 | 0.330 | 92 | -- | -- | 0.376 | 105 |
 | C3_L1r_S1_X1 | 0.268 | 100 | -- | -- | 0.234 | 87 | 0.188 | 70 | 0.194 | 73 | 0.243 | 91 | -- | -- | 0.305 | 114 |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.115 | 100 | -- | -- | 0.129 | 112 | 0.062 | 54 | 0.050 | 44 | 0.132 | 115 | -- | -- | 0.146 | 127 |
-| L1b | 0.087 | 100 | -- | -- | 0.094 | 108 | 0.041 | 47 | 0.028 | 32 | 0.099 | 113 | -- | -- | 0.110 | 126 |
-| L1r | 0.095 | 100 | -- | -- | 0.109 | 115 | 0.062 | 65 | 0.047 | 49 | 0.101 | 107 | -- | -- | 0.108 | 114 |
-| L2 | 0.092 | 100 | -- | -- | 0.109 | 119 | 0.041 | 44 | 0.023 | 25 | 0.096 | 105 | -- | -- | 0.104 | 113 |
-| S1 | 0.092 | 100 | -- | -- | 0.113 | 123 | 0.034 | 37 | 0.036 | 39 | 0.120 | 130 | -- | -- | 0.135 | 146 |
-| S2 | 0.100 | 100 | -- | -- | 0.126 | 126 | 0.048 | 48 | 0.047 | 47 | 0.131 | 131 | -- | -- | 0.138 | 138 |
-| X1 | 0.059 | 100 | -- | -- | 0.095 | 161 | 0.026 | 43 | 0.029 | 49 | 0.115 | 194 | -- | -- | 0.100 | 168 |
+| L0 | 0.121 | 100 | -- | -- | 0.116 | 96 | 0.095 | 78 | 0.103 | 85 | 0.127 | 105 | -- | -- | 0.143 | 118 |
+| L1b | 0.098 | 100 | -- | -- | 0.087 | 89 | 0.080 | 82 | 0.084 | 86 | 0.090 | 92 | -- | -- | 0.110 | 112 |
+| L1r | 0.095 | 100 | -- | -- | 0.086 | 90 | 0.083 | 87 | 0.083 | 87 | 0.091 | 96 | -- | -- | 0.108 | 113 |
+| L2 | 0.090 | 100 | -- | -- | 0.086 | 96 | 0.077 | 86 | 0.084 | 93 | 0.089 | 99 | -- | -- | 0.104 | 115 |
+| S1 | 0.099 | 100 | -- | -- | 0.103 | 103 | 0.083 | 84 | 0.087 | 87 | 0.115 | 115 | -- | -- | 0.133 | 134 |
+| S2 | 0.116 | 100 | -- | -- | 0.113 | 97 | 0.099 | 85 | 0.103 | 89 | 0.122 | 105 | -- | -- | 0.137 | 118 |
+| X1 | 0.072 | 100 | -- | -- | 0.081 | 111 | 0.053 | 74 | 0.067 | 93 | 0.108 | 149 | -- | -- | 0.097 | 134 |
 | C_L1b_S1 | 0.068 | 100 | -- | -- | 0.066 | 98 | 0.073 | 107 | 0.061 | 89 | 0.080 | 118 | -- | -- | 0.099 | 146 |
 | C_L1r_S1 | 0.074 | 100 | -- | -- | 0.081 | 110 | 0.071 | 96 | 0.073 | 98 | 0.071 | 96 | -- | -- | 0.093 | 125 |
 | C_S1_L1r | 0.073 | 100 | -- | -- | 0.079 | 109 | 0.077 | 107 | 0.077 | 107 | 0.075 | 103 | -- | -- | 0.096 | 133 |
@@ -1273,12 +1284,12 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | L1r | 0.000† | -- | 0.000† | -- | 0.483 | -- | 0.485 | -- | 0.509 | -- | 0.448 | -- | 0.492 | -- | 0.476 | -- |
 | L2 | 0.000† | -- | 0.002† | -- | 0.479 | -- | 0.486 | -- | 0.503 | -- | 0.437 | -- | 0.493 | -- | 0.466 | -- |
 | S1 | 0.000† | -- | 0.010† | -- | 0.508 | -- | 0.487 | -- | 0.501 | -- | 0.470 | -- | 0.510 | -- | 0.487 | -- |
-| S2 | 0.000† | -- | 0.023† | -- | 0.512 | -- | 0.514 | -- | 0.539 | -- | 0.501 | -- | -- | -- | 0.518 | -- |
-| X1 | 0.000† | -- | 0.009† | -- | 0.347 | -- | 0.320 | -- | 0.343 | -- | 0.381 | -- | -- | -- | 0.343 | -- |
-| C_L1b_S1 | 0.000† | -- | 0.001† | -- | 0.360 | -- | 0.416 | -- | 0.456 | -- | 0.336 | -- | -- | -- | 0.354 | -- |
-| C_L1r_S1 | 0.000† | -- | 0.000† | -- | 0.393 | -- | 0.423 | -- | 0.440 | -- | 0.377 | -- | -- | -- | 0.389 | -- |
-| C_S1_L1r | 0.000† | -- | 0.000† | -- | 0.377 | -- | 0.406 | -- | 0.431 | -- | 0.370 | -- | -- | -- | 0.387 | -- |
-| C_L2_S4 | 0.000† | -- | 0.005† | -- | 0.454 | -- | 0.470 | -- | 0.508 | -- | 0.421 | -- | -- | -- | 0.438 | -- |
+| S2 | 0.000† | -- | 0.023† | -- | 0.512 | -- | 0.514 | -- | 0.539 | -- | 0.501 | -- | 0.533 | -- | 0.518 | -- |
+| X1 | 0.000† | -- | 0.009† | -- | 0.347 | -- | 0.320 | -- | 0.343 | -- | 0.381 | -- | 0.353 | -- | 0.343 | -- |
+| C_L1b_S1 | 0.000† | -- | 0.001† | -- | 0.360 | -- | 0.416 | -- | 0.456 | -- | 0.336 | -- | 0.417 | -- | 0.354 | -- |
+| C_L1r_S1 | 0.000† | -- | 0.000† | -- | 0.393 | -- | 0.423 | -- | 0.440 | -- | 0.377 | -- | 0.419 | -- | 0.389 | -- |
+| C_S1_L1r | 0.000† | -- | 0.000† | -- | 0.377 | -- | 0.406 | -- | 0.431 | -- | 0.370 | -- | 0.418 | -- | 0.387 | -- |
+| C_L2_S4 | 0.000† | -- | 0.005† | -- | 0.454 | -- | 0.470 | -- | 0.508 | -- | 0.421 | -- | 0.485 | -- | 0.438 | -- |
 | C_L1r_S3 | 0.000† | -- | 0.000† | -- | 0.473 | -- | 0.483 | -- | 0.504 | -- | 0.435 | -- | -- | -- | 0.459 | -- |
 | C_S4_S3 | 0.000† | -- | 0.028† | -- | 0.511 | -- | 0.516 | -- | 0.539 | -- | 0.490 | -- | -- | -- | 0.506 | -- |
 | C3_L1r_S3_S4 | 0.000† | -- | 0.004† | -- | 0.448 | -- | 0.484 | -- | 0.503 | -- | 0.413 | -- | -- | -- | 0.436 | -- |
@@ -1292,13 +1303,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.000† | -- | 0.044† | -- | 0.434 | -- | 0.408 | -- | 0.434 | -- | 0.435 | -- | -- | -- | 0.427 | -- |
 | C3_L1r_S1_X1 | 0.000† | -- | 0.002† | -- | 0.278 | -- | 0.298 | -- | 0.302 | -- | 0.306 | -- | -- | -- | 0.286 | -- |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.000† | -- | -- | -- | 0.168‡ | -- | 0.188‡ | -- | 0.138‡ | -- | 0.237† | -- | -- | -- | 0.452 | -- |
-| L1b | 0.000† | -- | -- | -- | 0.092‡ | -- | 0.150‡ | -- | 0.107‡ | -- | 0.115† | -- | -- | -- | 0.361 | -- |
-| L1r | 0.000† | -- | -- | -- | 0.096‡ | -- | 0.142‡ | -- | 0.092‡ | -- | 0.165† | -- | -- | -- | 0.422 | -- |
-| L2 | 0.000† | -- | -- | -- | 0.181† | -- | 0.179† | -- | 0.106‡ | -- | 0.238† | -- | -- | -- | 0.417 | -- |
-| S1 | 0.000† | -- | -- | -- | 0.077‡ | -- | 0.065‡ | -- | 0.059‡ | -- | 0.132‡ | -- | -- | -- | 0.424 | -- |
-| S2 | 0.000† | -- | -- | -- | 0.081‡ | -- | 0.128‡ | -- | 0.094‡ | -- | 0.053‡ | -- | -- | -- | 0.439 | -- |
-| X1 | 0.000† | -- | -- | -- | 0.026‡ | -- | 0.029‡ | -- | 0.025‡ | -- | 0.015‡ | -- | -- | -- | 0.329 | -- |
+| L0 | 0.366 | 100 | -- | -- | 0.411 | 112 | 0.311 | 85 | 0.399 | 109 | 0.393 | 108 | -- | -- | 0.452 | 124 |
+| L1b | 0.216† | -- | -- | -- | 0.316 | -- | 0.301 | -- | 0.395 | -- | 0.265† | -- | -- | -- | 0.364 | -- |
+| L1r | 0.282† | -- | -- | -- | 0.354 | -- | 0.273 | -- | 0.369 | -- | 0.298 | -- | -- | -- | 0.423 | -- |
+| L2 | 0.353 | 100 | -- | -- | 0.391 | 111 | 0.297 | 84 | 0.379 | 107 | 0.363 | 103 | -- | -- | 0.421 | 119 |
+| S1 | 0.235† | -- | -- | -- | 0.361 | -- | 0.257† | -- | 0.364 | -- | 0.342 | -- | -- | -- | 0.421 | -- |
+| S2 | 0.238† | -- | -- | -- | 0.359 | -- | 0.300 | -- | 0.384 | -- | 0.299† | -- | -- | -- | 0.440 | -- |
+| X1 | 0.235† | -- | -- | -- | 0.254† | -- | 0.177† | -- | 0.281 | -- | 0.216† | -- | -- | -- | 0.328 | -- |
 | C_L1b_S1 | 0.122† | -- | -- | -- | 0.254† | -- | 0.211† | -- | 0.317 | -- | 0.199† | -- | -- | -- | 0.324 | -- |
 | C_L1r_S1 | 0.165† | -- | -- | -- | 0.301 | -- | 0.214† | -- | 0.303 | -- | 0.257† | -- | -- | -- | 0.388 | -- |
 | C_S1_L1r | 0.136† | -- | -- | -- | 0.311 | -- | 0.183† | -- | 0.303 | -- | 0.252† | -- | -- | -- | 0.374 | -- |
@@ -1316,13 +1327,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.258† | -- | -- | -- | 0.291† | -- | 0.176† | -- | 0.286† | -- | 0.221† | -- | -- | -- | 0.384 | -- |
 | C3_L1r_S1_X1 | 0.153† | -- | -- | -- | 0.191† | -- | 0.107‡ | -- | 0.167† | -- | 0.059‡ | -- | -- | -- | 0.323 | -- |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.000 | -- | -- | -- | 0.046 | -- | 0.045 | -- | 0.029 | -- | 0.090 | -- | -- | -- | 0.199 | -- |
-| L1b | 0.000 | -- | -- | -- | 0.020 | -- | 0.028 | -- | 0.014 | -- | 0.038 | -- | -- | -- | 0.129 | -- |
-| L1r | 0.000 | -- | -- | -- | 0.016 | -- | 0.019 | -- | 0.013 | -- | 0.050 | -- | -- | -- | 0.157 | -- |
-| L2 | 0.000 | -- | -- | -- | 0.032 | -- | 0.029 | -- | 0.013 | -- | 0.077 | -- | -- | -- | 0.150 | -- |
-| S1 | 0.000 | -- | -- | -- | 0.022 | -- | 0.015 | -- | 0.012 | -- | 0.055 | -- | -- | -- | 0.177 | -- |
-| S2 | 0.000 | -- | -- | -- | 0.020 | -- | 0.026 | -- | 0.017 | -- | 0.015 | -- | -- | -- | 0.191 | -- |
-| X1 | 0.000 | -- | -- | -- | 0.007 | -- | 0.002 | -- | 0.004 | -- | 0.004 | -- | -- | -- | 0.149 | -- |
+| L0 | 0.159 | 100 | -- | -- | 0.174 | 109 | 0.123 | 77 | 0.172 | 109 | 0.165 | 104 | -- | -- | 0.197 | 125 |
+| L1b | 0.082 | 100 | -- | -- | 0.101 | 124 | 0.101 | 124 | 0.148 | 180 | 0.098 | 119 | -- | -- | 0.130 | 159 |
+| L1r | 0.105 | 100 | -- | -- | 0.116 | 110 | 0.094 | 89 | 0.127 | 121 | 0.108 | 103 | -- | -- | 0.155 | 147 |
+| L2 | 0.122 | 100 | -- | -- | 0.134 | 110 | 0.095 | 78 | 0.132 | 108 | 0.135 | 110 | -- | -- | 0.152 | 125 |
+| S1 | 0.090 | 100 | -- | -- | 0.150 | 167 | 0.096 | 107 | 0.146 | 162 | 0.138 | 154 | -- | -- | 0.178 | 198 |
+| S2 | 0.102 | 100 | -- | -- | 0.154 | 151 | 0.109 | 107 | 0.163 | 160 | 0.126 | 124 | -- | -- | 0.189 | 186 |
+| X1 | 0.097 | 100 | -- | -- | 0.105 | 108 | 0.053 | 55 | 0.109 | 112 | 0.086 | 89 | -- | -- | 0.147 | 151 |
 | C_L1b_S1 | 0.040 | 100 | -- | -- | 0.083 | 208 | 0.059 | 148 | 0.103 | 258 | 0.064 | 160 | -- | -- | 0.114 | 286 |
 | C_L1r_S1 | 0.053 | 100 | -- | -- | 0.096 | 182 | 0.070 | 133 | 0.093 | 177 | 0.088 | 167 | -- | -- | 0.136 | 259 |
 | C_S1_L1r | 0.038 | 100 | -- | -- | 0.102 | 267 | 0.058 | 152 | 0.097 | 254 | 0.083 | 217 | -- | -- | 0.136 | 356 |
@@ -1368,13 +1379,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.255 | 100 | 0.275 | 108 | 0.395 | 155 | 0.374 | 147 | 0.395 | 155 | 0.401 | 158 | -- | -- | 0.393 | 154 |
 | C3_L1r_S1_X1 | 0.136 | 100 | 0.147† | -- | 0.225 | 165 | 0.236 | 174 | 0.258 | 189 | 0.260 | 191 | -- | -- | 0.246 | 181 |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.491 | 100 | -- | -- | 0.344 | 70 | 0.452 | 92 | 0.185† | -- | 0.474 | 97 | -- | -- | -- | -- |
-| L1b | 0.411 | 100 | -- | -- | 0.244† | -- | 0.439 | 107 | 0.127† | -- | 0.417 | 101 | -- | -- | -- | -- |
-| L1r | 0.440 | 100 | -- | -- | 0.350 | 79 | 0.423 | 96 | 0.129† | -- | 0.439 | 100 | -- | -- | -- | -- |
-| L2 | 0.409 | 100 | -- | -- | 0.335 | 82 | 0.414 | 101 | 0.137† | -- | 0.440 | 108 | -- | -- | -- | -- |
-| S1 | 0.417 | 100 | -- | -- | 0.294† | -- | 0.445 | 107 | 0.164† | -- | 0.446 | 107 | -- | -- | -- | -- |
-| S2 | 0.458 | 100 | -- | -- | 0.388 | 85 | 0.463 | 101 | 0.161† | -- | 0.472 | 103 | -- | -- | -- | -- |
-| X1 | 0.317 | 100 | -- | -- | 0.290 | 91 | 0.340 | 107 | 0.147† | -- | 0.374 | 118 | -- | -- | -- | -- |
+| L0 | 0.453 | 100 | -- | -- | 0.440 | 97 | 0.447 | 99 | 0.355 | 78 | 0.469 | 104 | -- | -- | 0.481 | 106 |
+| L1b | 0.405 | 100 | -- | -- | 0.353 | 87 | 0.427 | 106 | 0.309† | -- | 0.395 | 98 | -- | -- | 0.425 | 105 |
+| L1r | 0.420 | 100 | -- | -- | 0.394 | 94 | 0.411 | 98 | 0.280† | -- | 0.428 | 102 | -- | -- | 0.440 | 105 |
+| L2 | 0.403 | 100 | -- | -- | 0.378 | 94 | 0.405 | 100 | 0.295† | -- | 0.431 | 107 | -- | -- | 0.420 | 104 |
+| S1 | 0.424 | 100 | -- | -- | 0.375 | 88 | 0.421 | 99 | 0.256† | -- | 0.461 | 109 | -- | -- | 0.435 | 103 |
+| S2 | 0.443 | 100 | -- | -- | 0.444 | 100 | 0.457 | 103 | 0.277† | -- | 0.454 | 102 | -- | -- | 0.484 | 109 |
+| X1 | 0.333 | 100 | -- | -- | 0.305 | 91 | 0.333 | 100 | 0.199† | -- | 0.393 | 118 | -- | -- | 0.371 | 111 |
 | C_L1b_S1 | 0.349 | 100 | -- | -- | 0.317 | 91 | 0.366 | 105 | 0.214† | -- | 0.370 | 106 | -- | -- | 0.396 | 113 |
 | C_L1r_S1 | 0.356 | 100 | -- | -- | 0.319 | 89 | 0.379 | 106 | 0.203† | -- | 0.397 | 111 | -- | -- | 0.386 | 108 |
 | C_S1_L1r | 0.337 | 100 | -- | -- | 0.319 | 95 | 0.379 | 112 | 0.207† | -- | 0.407 | 121 | -- | -- | 0.405 | 120 |
@@ -1392,13 +1403,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.412 | 100 | -- | -- | 0.371 | 90 | 0.383 | 93 | 0.178† | -- | 0.448 | 109 | -- | -- | 0.438 | 106 |
 | C3_L1r_S1_X1 | 0.279 | 100 | -- | -- | 0.226 | 81 | 0.270 | 97 | 0.115† | -- | 0.337 | 121 | -- | -- | 0.300 | 107 |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.169 | 100 | -- | -- | 0.129 | 76 | 0.159 | 94 | 0.062 | 37 | 0.165 | 98 | -- | -- | -- | -- |
-| L1b | 0.114 | 100 | -- | -- | 0.081 | 71 | 0.139 | 122 | 0.035 | 31 | 0.136 | 119 | -- | -- | -- | -- |
-| L1r | 0.138 | 100 | -- | -- | 0.115 | 83 | 0.135 | 97 | 0.034 | 25 | 0.136 | 99 | -- | -- | -- | -- |
-| L2 | 0.131 | 100 | -- | -- | 0.109 | 83 | 0.129 | 99 | 0.035 | 26 | 0.139 | 106 | -- | -- | -- | -- |
-| S1 | 0.127 | 100 | -- | -- | 0.104 | 82 | 0.150 | 118 | 0.046 | 37 | 0.154 | 122 | -- | -- | -- | -- |
-| S2 | 0.152 | 100 | -- | -- | 0.141 | 93 | 0.159 | 105 | 0.049 | 32 | 0.167 | 110 | -- | -- | -- | -- |
-| X1 | 0.087 | 100 | -- | -- | 0.113 | 129 | 0.108 | 124 | 0.056 | 64 | 0.138 | 158 | -- | -- | -- | -- |
+| L0 | 0.159 | 100 | -- | -- | 0.171 | 108 | 0.158 | 99 | 0.132 | 83 | 0.168 | 105 | -- | -- | 0.175 | 110 |
+| L1b | 0.114 | 100 | -- | -- | 0.118 | 104 | 0.134 | 118 | 0.106 | 93 | 0.125 | 110 | -- | -- | 0.139 | 122 |
+| L1r | 0.129 | 100 | -- | -- | 0.135 | 105 | 0.127 | 99 | 0.095 | 74 | 0.137 | 107 | -- | -- | 0.147 | 114 |
+| L2 | 0.123 | 100 | -- | -- | 0.131 | 106 | 0.130 | 105 | 0.098 | 80 | 0.138 | 112 | -- | -- | 0.141 | 115 |
+| S1 | 0.139 | 100 | -- | -- | 0.141 | 102 | 0.149 | 108 | 0.099 | 71 | 0.162 | 117 | -- | -- | 0.158 | 114 |
+| S2 | 0.150 | 100 | -- | -- | 0.162 | 108 | 0.159 | 106 | 0.094 | 63 | 0.167 | 111 | -- | -- | 0.167 | 111 |
+| X1 | 0.105 | 100 | -- | -- | 0.113 | 108 | 0.108 | 103 | 0.065 | 62 | 0.147 | 141 | -- | -- | 0.131 | 125 |
 | C_L1b_S1 | 0.092 | 100 | -- | -- | 0.089 | 97 | 0.107 | 117 | 0.065 | 70 | 0.102 | 111 | -- | -- | 0.116 | 127 |
 | C_L1r_S1 | 0.094 | 100 | -- | -- | 0.095 | 101 | 0.110 | 117 | 0.064 | 68 | 0.113 | 120 | -- | -- | 0.120 | 128 |
 | C_S1_L1r | 0.100 | 100 | -- | -- | 0.103 | 102 | 0.121 | 121 | 0.074 | 74 | 0.125 | 125 | -- | -- | 0.125 | 125 |
@@ -1444,13 +1455,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.186 | 100 | 0.210 | 113 | 0.338 | 182 | 0.351 | 189 | 0.339 | 182 | 0.386 | 208 | -- | -- | 0.358 | 193 |
 | C3_L1r_S1_X1 | 0.134 | 100 | 0.118 | 88 | 0.218 | 163 | 0.241 | 179 | 0.246 | 183 | 0.254 | 189 | -- | -- | 0.224 | 167 |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.266 | 100 | -- | -- | 0.364 | 137 | 0.324 | 122 | 0.098‡ | -- | 0.256 | 96 | -- | -- | -- | -- |
-| L1b | 0.267 | 100 | -- | -- | 0.309 | 116 | 0.298 | 112 | 0.067‡ | -- | 0.193 | 72 | -- | -- | -- | -- |
-| L1r | 0.250 | 100 | -- | -- | 0.333 | 133 | 0.301 | 120 | 0.107‡ | -- | 0.225 | 90 | -- | -- | -- | -- |
-| L2 | 0.238 | 100 | -- | -- | 0.327 | 137 | 0.291 | 122 | 0.078‡ | -- | 0.220 | 92 | -- | -- | -- | -- |
-| S1 | 0.234 | 100 | -- | -- | 0.357 | 153 | 0.036‡ | -- | 0.005‡ | -- | 0.080‡ | -- | -- | -- | -- | -- |
-| S2 | 0.245 | 100 | -- | -- | 0.130‡ | -- | 0.055‡ | -- | 0.005‡ | -- | 0.067‡ | -- | -- | -- | -- | -- |
-| X1 | 0.173† | -- | -- | -- | 0.031‡ | -- | 0.013‡ | -- | 0.000‡ | -- | 0.045‡ | -- | -- | -- | -- | -- |
+| L0 | 0.266 | 100 | -- | -- | 0.364 | 137 | 0.324 | 122 | 0.098‡ | -- | 0.256 | 96 | -- | -- | 0.329 | 124 |
+| L1b | 0.267 | 100 | -- | -- | 0.309 | 116 | 0.298 | 112 | 0.067‡ | -- | 0.193 | 72 | -- | -- | 0.301 | 113 |
+| L1r | 0.250 | 100 | -- | -- | 0.333 | 133 | 0.301 | 120 | 0.107‡ | -- | 0.225 | 90 | -- | -- | 0.303 | 121 |
+| L2 | 0.238 | 100 | -- | -- | 0.327 | 137 | 0.291 | 122 | 0.078‡ | -- | 0.220 | 92 | -- | -- | 0.299 | 125 |
+| S1 | 0.234 | 100 | -- | -- | 0.357 | 153 | 0.337 | 144 | 0.125‡ | -- | 0.231 | 99 | -- | -- | 0.312 | 134 |
+| S2 | 0.270 | 100 | -- | -- | 0.372 | 138 | 0.351 | 130 | 0.126‡ | -- | 0.248 | 92 | -- | -- | 0.330 | 122 |
+| X1 | 0.190 | 100 | -- | -- | 0.260 | 137 | 0.217 | 114 | 0.049‡ | -- | 0.235 | 123 | -- | -- | 0.264 | 139 |
 | C_L1b_S1 | 0.229 | 100 | -- | -- | 0.274 | 120 | 0.276 | 121 | 0.089‡ | -- | 0.176† | -- | -- | -- | 0.297 | 130 |
 | C_L1r_S1 | 0.170 | 100 | -- | -- | 0.289 | 170 | 0.290 | 171 | 0.086‡ | -- | 0.208 | 123 | -- | -- | 0.271 | 160 |
 | C_S1_L1r | 0.168 | 100 | -- | -- | 0.284 | 169 | 0.316 | 188 | 0.099‡ | -- | 0.203 | 120 | -- | -- | 0.281 | 167 |
@@ -1468,13 +1479,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.230 | 100 | -- | -- | 0.322 | 140 | 0.230 | 100 | 0.037‡ | -- | 0.243 | 106 | -- | -- | 0.302 | 132 |
 | C3_L1r_S1_X1 | 0.168 | 100 | -- | -- | 0.230 | 137 | 0.140† | -- | 0.013‡ | -- | 0.191 | 114 | -- | -- | 0.232 | 138 |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.095 | 100 | -- | -- | 0.143 | 151 | 0.111 | 117 | 0.047 | 49 | 0.090 | 96 | -- | -- | -- | -- |
-| L1b | 0.071 | 100 | -- | -- | 0.095 | 133 | 0.100 | 141 | 0.029 | 41 | 0.057 | 80 | -- | -- | -- | -- |
-| L1r | 0.069 | 100 | -- | -- | 0.103 | 150 | 0.101 | 146 | 0.045 | 66 | 0.062 | 90 | -- | -- | -- | -- |
-| L2 | 0.068 | 100 | -- | -- | 0.101 | 150 | 0.094 | 139 | 0.038 | 57 | 0.064 | 95 | -- | -- | -- | -- |
-| S1 | 0.062 | 100 | -- | -- | 0.128 | 205 | 0.011 | 18 | 0.001 | 1 | 0.028 | 45 | -- | -- | -- | -- |
-| S2 | 0.061 | 100 | -- | -- | 0.042 | 69 | 0.016 | 25 | 0.000 | 0 | 0.019 | 30 | -- | -- | -- | -- |
-| X1 | 0.040 | 100 | -- | -- | 0.005 | 12 | 0.002 | 4 | 0.000 | 0 | 0.014 | 35 | -- | -- | -- | -- |
+| L0 | 0.095 | 100 | -- | -- | 0.143 | 151 | 0.111 | 117 | 0.047 | 49 | 0.090 | 96 | -- | -- | 0.124 | 132 |
+| L1b | 0.071 | 100 | -- | -- | 0.095 | 133 | 0.100 | 141 | 0.029 | 41 | 0.057 | 80 | -- | -- | 0.096 | 135 |
+| L1r | 0.069 | 100 | -- | -- | 0.103 | 150 | 0.101 | 146 | 0.045 | 66 | 0.062 | 90 | -- | -- | 0.101 | 146 |
+| L2 | 0.068 | 100 | -- | -- | 0.101 | 150 | 0.094 | 139 | 0.038 | 57 | 0.064 | 95 | -- | -- | 0.104 | 153 |
+| S1 | 0.062 | 100 | -- | -- | 0.128 | 205 | 0.108 | 173 | 0.045 | 72 | 0.083 | 132 | -- | -- | 0.115 | 183 |
+| S2 | 0.083 | 100 | -- | -- | 0.138 | 167 | 0.124 | 149 | 0.058 | 70 | 0.078 | 94 | -- | -- | 0.125 | 151 |
+| X1 | 0.058 | 100 | -- | -- | 0.084 | 146 | 0.062 | 107 | 0.020 | 34 | 0.095 | 164 | -- | -- | 0.094 | 163 |
 | C_L1b_S1 | 0.055 | 100 | -- | -- | 0.079 | 143 | 0.088 | 159 | 0.030 | 54 | 0.047 | 86 | -- | -- | 0.083 | 151 |
 | C_L1r_S1 | 0.038 | 100 | -- | -- | 0.083 | 217 | 0.087 | 227 | 0.030 | 79 | 0.056 | 146 | -- | -- | 0.081 | 212 |
 | C_S1_L1r | 0.039 | 100 | -- | -- | 0.077 | 198 | 0.095 | 243 | 0.041 | 106 | 0.056 | 143 | -- | -- | 0.084 | 214 |
@@ -1520,13 +1531,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.206 | 100 | 0.215 | 104 | 0.298 | 145 | 0.267 | 129 | 0.269 | 131 | 0.318 | 154 | -- | -- | 0.293 | 142 |
 | C3_L1r_S1_X1 | 0.167 | 100 | 0.147 | 88 | 0.186 | 111 | 0.195 | 117 | 0.198 | 119 | 0.238 | 142 | -- | -- | 0.217 | 130 |
 | *backward, by execution* | | | | | | | | | | | | | | | | |
-| L0 | 0.410 | 100 | -- | -- | 0.122† | -- | 0.029‡ | -- | 0.000‡ | -- | 0.280 | 68 | -- | -- | 0.308 | 75 |
-| L1b | 0.362 | 100 | -- | -- | 0.069† | -- | 0.018‡ | -- | 0.000‡ | -- | 0.230† | -- | -- | -- | 0.277 | 76 |
-| L1r | 0.405 | 100 | -- | -- | 0.145† | -- | 0.023‡ | -- | 0.000‡ | -- | 0.312 | 77 | -- | -- | 0.297 | 73 |
-| L2 | 0.366 | 100 | -- | -- | 0.154† | -- | 0.007‡ | -- | 0.000‡ | -- | 0.221† | -- | -- | -- | 0.296 | 81 |
-| S1 | 0.356 | 100 | -- | -- | 0.135† | -- | 0.015‡ | -- | 0.000‡ | -- | 0.264 | 74 | -- | -- | 0.292 | 82 |
-| S2 | 0.429 | 100 | -- | -- | 0.118† | -- | 0.016‡ | -- | 0.000‡ | -- | 0.257† | -- | -- | -- | 0.314 | 73 |
-| X1 | 0.281 | 100 | -- | -- | 0.061† | -- | 0.002‡ | -- | 0.000‡ | -- | 0.182† | -- | -- | -- | 0.237 | 84 |
+| L0 | 0.291 | 100 | -- | -- | 0.206† | -- | 0.261 | 90 | 0.117† | -- | 0.272 | 94 | -- | -- | 0.304 | 105 |
+| L1b | 0.255 | 100 | -- | -- | 0.156† | -- | 0.228 | 90 | 0.117† | -- | 0.211 | 83 | -- | -- | 0.278 | 109 |
+| L1r | 0.284 | 100 | -- | -- | 0.209† | -- | 0.268 | 94 | 0.150 | 53 | 0.262 | 92 | -- | -- | 0.299 | 105 |
+| L2 | 0.247 | 100 | -- | -- | 0.209† | -- | 0.236 | 96 | 0.133† | -- | 0.222 | 90 | -- | -- | 0.294 | 119 |
+| S1 | 0.305 | 100 | -- | -- | 0.196† | -- | 0.220 | 72 | 0.099† | -- | 0.236 | 77 | -- | -- | 0.284 | 93 |
+| S2 | 0.329 | 100 | -- | -- | 0.182† | -- | 0.244 | 74 | 0.098† | -- | 0.266 | 81 | -- | -- | 0.315 | 96 |
+| X1 | 0.198† | -- | -- | -- | 0.123† | -- | 0.156† | -- | 0.048‡ | -- | 0.207 | -- | -- | -- | 0.243 | -- |
 | C_L1b_S1 | 0.216 | 100 | -- | -- | 0.136† | -- | 0.199 | 92 | 0.082† | -- | 0.194 | 90 | -- | -- | 0.228 | 106 |
 | C_L1r_S1 | 0.284 | 100 | -- | -- | 0.206 | 72 | 0.225 | 79 | 0.126† | -- | 0.234 | 82 | -- | -- | 0.267 | 94 |
 | C_S1_L1r | 0.262 | 100 | -- | -- | 0.208 | 79 | 0.241 | 92 | 0.132† | -- | 0.242 | 92 | -- | -- | 0.276 | 105 |
@@ -1544,13 +1555,13 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 | C_S1_X1s | 0.282 | 100 | -- | -- | 0.141† | -- | 0.173 | 61 | 0.037‡ | -- | 0.234 | 83 | -- | -- | 0.268 | 95 |
 | C3_L1r_S1_X1 | 0.259 | 100 | -- | -- | 0.163† | -- | 0.156 | 60 | 0.057‡ | -- | 0.226 | 87 | -- | -- | 0.239 | 92 |
 | *backward, by exact arguments* | | | | | | | | | | | | | | | | |
-| L0 | 0.121 | 100 | -- | -- | 0.044 | 36 | 0.002 | 2 | 0.000 | 0 | 0.087 | 71 | -- | -- | 0.104 | 86 |
-| L1b | 0.089 | 100 | -- | -- | 0.023 | 26 | 0.002 | 3 | 0.000 | 0 | 0.057 | 64 | -- | -- | 0.081 | 91 |
-| L1r | 0.108 | 100 | -- | -- | 0.035 | 33 | 0.004 | 3 | 0.000 | 0 | 0.090 | 84 | -- | -- | 0.093 | 87 |
-| L2 | 0.086 | 100 | -- | -- | 0.042 | 49 | 0.001 | 1 | 0.000 | 0 | 0.069 | 80 | -- | -- | 0.085 | 99 |
-| S1 | 0.098 | 100 | -- | -- | 0.040 | 41 | 0.000 | 0 | 0.000 | 0 | 0.069 | 70 | -- | -- | 0.082 | 84 |
-| S2 | 0.114 | 100 | -- | -- | 0.032 | 28 | 0.002 | 2 | 0.000 | 0 | 0.071 | 62 | -- | -- | 0.097 | 85 |
-| X1 | 0.071 | 100 | -- | -- | 0.013 | 19 | 0.000 | 0 | 0.000 | 0 | 0.055 | 78 | -- | -- | 0.057 | 80 |
+| L0 | 0.089 | 100 | -- | -- | 0.069 | 77 | 0.065 | 73 | 0.023 | 26 | 0.083 | 93 | -- | -- | 0.105 | 117 |
+| L1b | 0.060 | 100 | -- | -- | 0.043 | 72 | 0.050 | 84 | 0.028 | 47 | 0.061 | 102 | -- | -- | 0.081 | 136 |
+| L1r | 0.072 | 100 | -- | -- | 0.059 | 82 | 0.068 | 94 | 0.031 | 43 | 0.071 | 98 | -- | -- | 0.093 | 129 |
+| L2 | 0.063 | 100 | -- | -- | 0.056 | 88 | 0.063 | 99 | 0.025 | 39 | 0.056 | 88 | -- | -- | 0.084 | 132 |
+| S1 | 0.097 | 100 | -- | -- | 0.050 | 52 | 0.054 | 56 | 0.015 | 16 | 0.068 | 70 | -- | -- | 0.079 | 82 |
+| S2 | 0.097 | 100 | -- | -- | 0.056 | 58 | 0.064 | 65 | 0.016 | 16 | 0.078 | 80 | -- | -- | 0.097 | 100 |
+| X1 | 0.048 | 100 | -- | -- | 0.034 | 71 | 0.026 | 55 | 0.005 | 10 | 0.060 | 126 | -- | -- | 0.058 | 122 |
 | C_L1b_S1 | 0.059 | 100 | -- | -- | 0.032 | 54 | 0.039 | 66 | 0.011 | 19 | 0.042 | 72 | -- | -- | 0.056 | 95 |
 | C_L1r_S1 | 0.077 | 100 | -- | -- | 0.048 | 62 | 0.053 | 70 | 0.026 | 33 | 0.056 | 73 | -- | -- | 0.067 | 88 |
 | C_S1_L1r | 0.080 | 100 | -- | -- | 0.049 | 61 | 0.052 | 65 | 0.026 | 33 | 0.064 | 80 | -- | -- | 0.071 | 89 |

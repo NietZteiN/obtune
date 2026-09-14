@@ -141,7 +141,13 @@ STACK_CONDS = ["C_L1b_S1", "C_L1r_S1", "C_S1_L1r", "C_L2_S4", "C_L1r_S3", "C_S4_
                "C_L1r_X1", "C_X1_S1", "C_S2_X1", "C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4",
                "C4_L1r_S1_S3_S4", "C_L1r_X1m", "C_S1_X1s", "C3_L1r_S1_X1"]
 LADDER_CONDS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
-ALL_CONDS = STACK_CONDS
+# DEFAULT RESTORED TO THE FULL SET, 2026-09-14 (later). The stacks-only default above was a
+# stopgap while the ladder held two prompts. The `inverse_1shot` repair has now landed on all seven
+# affected models -- CodeLlama-7B was always one-shot -- so the registry reports no mixed-prompt
+# arm on any model and the 23-condition read is legitimate again. It agrees closely with the
+# stacks-only one (anchored 0.172 against 0.186, breadth 0.070 against 0.081), which is the check
+# that the stopgap was not itself distorting anything.
+ALL_CONDS = LADDER_CONDS + STACK_CONDS
 
 
 def aggregate(models, conds=None):
@@ -246,10 +252,11 @@ def main() -> int:
     ap.add_argument("--cond", default="C_L1r_X1",
                     help="condition to decompose (default: the hardest stack, one containing X1)")
     ap.add_argument("--models", default=None)
-    ap.add_argument("--conds", default="stacks", choices=["stacks", "ladder", "all"],
-                    help="which backward conditions the aggregate pools. Default `stacks`: the "
-                         "largest set evaluated with ONE prompt on every model. `ladder` and `all` "
-                         "mix prompts until the inverse_1shot repair has landed everywhere.")
+    ap.add_argument("--conds", default="all", choices=["stacks", "ladder", "all"],
+                    help="which backward conditions the aggregate pools. Default `all` (23): the "
+                         "ladder repair has landed, so every arm is one-shot on every model and "
+                         "the full read is honest. `stacks` (16) is the subset that was never "
+                         "affected and is kept as a cross-check.")
     ap.add_argument("--aggregate", action="store_true",
                     help="also print the panel-wide forward-collapse table: every arm, every model, "
                          "pooled over all sixteen backward conditions")
