@@ -352,6 +352,8 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     step = 0
     nonfinite = 0
+    skipped = 0
+    consec_skipped = 0
     for epoch in range(epochs):
         for i, batch in enumerate(loader):
             batch = {k: v.to(device) for k, v in batch.items()}
@@ -378,8 +380,41 @@ def main(argv: Optional[list[str]] = None) -> int:
             else:
                 nonfinite = 0
             if (i + 1) % accum == 0:
-                torch.nn.utils.clip_grad_norm_(holder.trainable_parameters(),
-                                               float(tcfg.get("max_grad_norm", 1.0)))
+                # SKIP A STEP WHOSE GRADIENT IS NOT FINITE, rather than taking it.
+                #
+                # This is the gemma3-12b bug, found by --nan-probe on 2026-09-14 at optimizer step
+                # 83: the LOSS was still finite (0.0747) and the gate's INPUT hidden states were
+                # finite, but `log_tau` itself had become NaN, so the temperature-scaled softmax
+                # produced NaN for every token at every layer from then on.
+                #
+                # The path is `clip_grad_norm_`. It computes the total norm, forms
+                # `clamp(max_norm / (total_norm + eps), max=1.0)` and multiplies EVERY gradient by
+                # it. With one non-finite gradient anywhere, total_norm is NaN, the coefficient is
+                # NaN, and all 50 gate tensors are NaN after the next `opt.step()` -- which is
+                # exactly what that run's checkpoint contained. One bad batch poisons the whole
+                # model through the clipper, silently, and clipping is what is supposed to protect
+                # against bad batches.
+                #
+                # `clip_grad_norm_` returns the norm it computed, so the test is free. A step with
+                # a non-finite gradient carries no information, so dropping it loses nothing; this
+                # is what AMP's GradScaler does for the same reason. Aborting after a run of them
+                # keeps a genuinely diverged run from grinding to walltime.
+                gnorm = torch.nn.utils.clip_grad_norm_(holder.trainable_parameters(),
+                                                       float(tcfg.get("max_grad_norm", 1.0)))
+                if not torch.isfinite(gnorm):
+                    opt.zero_grad(set_to_none=True)
+                    skipped += 1
+                    consec_skipped += 1
+                    if consec_skipped <= 3 or consec_skipped % 25 == 0:
+                        print(f"[mole.train] SKIPPED step {step + 1}: gradient norm {gnorm} is not "
+                              f"finite ({skipped} skipped so far). Taking it would multiply every "
+                              f"parameter by NaN through the clipper.", flush=True)
+                    if consec_skipped >= 50:
+                        raise SystemExit(
+                            f"[mole.train] {consec_skipped} consecutive non-finite gradients at "
+                            f"step {step}; this is divergence, not a bad batch. Nothing saved.")
+                    continue
+                consec_skipped = 0
                 opt.step()
                 opt.zero_grad(set_to_none=True)
                 # Temperature floor. The first run learned tau down to .39-.51 uniformly
