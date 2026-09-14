@@ -1,9 +1,9 @@
-% GENERATED 2026-09-14 12:31 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 12:48 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/gemma3-12b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{1.7pt}
-\caption{\textbf{Master grid, Gemma-3-12B.} Every condition and every stack, forward (output prediction) and backward (input prediction, ladder only). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the same condition; \% accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of the original accuracy the system brings back (100 = the untuned model on clean code). \emph{fmt}: format-failure rate above 0.25, the cell measures the prompt contract rather than the task and enters no mean. Pooled rows average the stacks above them. `--': cell not run.}
+\caption{\textbf{Master grid, Gemma-3-12B.} Every condition and every stack, forward (output prediction) and backward (input prediction). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the same condition; \% accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of the original accuracy the system brings back (100 = the untuned model on clean code). \emph{fmt}: format-failure rate above 0.25, the cell measures the prompt contract rather than the task and enters no mean. Pooled rows average the stacks above them. `--': cell not run.}
 \label{tab:master_gemma312b}
 \begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
 \toprule
@@ -51,6 +51,25 @@
 \texttt{S1} & 0.417 & 85 & -- & -- & -- & fmt & fmt & fmt & 0.445 & $+2.7$ & 91 & fmt & fmt & fmt & 0.446 & $+2.8$ & 91 \\
 \texttt{S2} & 0.458 & 93 & -- & -- & -- & 0.388 & $-7.0$ & 79 & 0.463 & $+0.5$ & 94 & fmt & fmt & fmt & 0.472 & $+1.4$ & 96 \\
 \texttt{X1} & 0.317 & 65 & -- & -- & -- & 0.290 & $-2.7$ & 59 & 0.340 & $+2.3$ & 69 & fmt & fmt & fmt & 0.374 & $+5.7$ & 76 \\
+\texttt{C\_L1b\_S1} & 0.349 & 71 & -- & -- & -- & 0.317 & $-3.3$ & 65 & 0.366 & $+1.7$ & 75 & fmt & fmt & fmt & 0.370 & $+2.1$ & 75 \\
+\texttt{C\_L1r\_S1} & 0.356 & 73 & -- & -- & -- & 0.319 & $-3.7$ & 65 & 0.379 & $+2.2$ & 77 & fmt & fmt & fmt & 0.397 & $+4.1$ & 81 \\
+\texttt{C\_S1\_L1r} & 0.337 & 69 & -- & -- & -- & 0.319 & $-1.8$ & 65 & 0.379 & $+4.1$ & 77 & fmt & fmt & fmt & 0.407 & $+6.9$ & 83 \\
+\texttt{C\_L2\_S4} & 0.387 & 79 & -- & -- & -- & 0.381 & $-0.6$ & 78 & 0.416 & $+2.9$ & 85 & fmt & fmt & fmt & 0.427 & $+4.0$ & 87 \\
+\texttt{C\_L1r\_S3} & 0.427 & 87 & -- & -- & -- & 0.402 & $-2.6$ & 82 & 0.423 & $-0.5$ & 86 & fmt & fmt & fmt & 0.438 & $+1.1$ & 89 \\
+\texttt{C\_S4\_S3} & 0.434 & 88 & -- & -- & -- & 0.438 & $+0.4$ & 89 & 0.462 & $+2.8$ & 94 & fmt & fmt & fmt & 0.469 & $+3.5$ & 96 \\
+\emph{seen stacks, pooled (6)} & 0.382 & 78 & -- & -- & -- & 0.363 & $-1.9$ & 74 & 0.404 & $+2.2$ & 82 & fmt & fmt & fmt & 0.418 & $+3.6$ & 85 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.398 & 81 & -- & -- & -- & 0.386 & $-1.2$ & 79 & 0.420 & $+2.2$ & 86 & fmt & fmt & fmt & 0.447 & $+4.9$ & 91 \\
+\texttt{C3\_S1\_S3\_S4} & 0.387 & 79 & -- & -- & -- & 0.354 & $-3.3$ & 72 & 0.419 & $+3.1$ & 85 & fmt & fmt & fmt & 0.440 & $+5.2$ & 90 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.347 & 71 & -- & -- & -- & 0.302 & $-4.5$ & 62 & 0.376 & $+3.0$ & 77 & fmt & fmt & fmt & 0.377 & $+3.0$ & 77 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.329 & 67 & -- & -- & -- & 0.293 & $-3.7$ & 60 & 0.364 & $+3.5$ & 74 & fmt & fmt & fmt & 0.399 & $+6.9$ & 81 \\
+\emph{depth-3/4 stacks, pooled (4)} & 0.365 & 74 & -- & -- & -- & 0.334 & $-3.2$ & 68 & 0.395 & $+2.9$ & 80 & fmt & fmt & fmt & 0.416 & $+5.0$ & 85 \\
+\texttt{C\_L1r\_X1} & 0.258 & 52 & -- & -- & -- & 0.242 & $-1.6$ & 49 & 0.279 & $+2.1$ & 57 & fmt & fmt & fmt & 0.329 & $+7.2$ & 67 \\
+\texttt{C\_X1\_S1} & 0.348 & 71 & -- & -- & -- & 0.282 & $-6.5$ & 58 & 0.331 & $-1.7$ & 68 & fmt & fmt & fmt & 0.410 & $+6.2$ & 84 \\
+\texttt{C\_S2\_X1} & 0.360 & 73 & -- & -- & -- & 0.339 & $-2.0$ & 69 & 0.357 & $-0.3$ & 73 & fmt & fmt & fmt & 0.398 & $+3.8$ & 81 \\
+\emph{unseen-containing stacks, pooled (3)} & 0.322 & 66 & -- & -- & -- & 0.288 & $-3.4$ & 59 & 0.322 & $+0.1$ & 66 & fmt & fmt & fmt & 0.379 & $+5.7$ & 77 \\
+\texttt{C\_L1r\_X1m} & 0.273 & 56 & -- & -- & -- & 0.269 & $-0.4$ & 55 & 0.323 & $+5.0$ & 66 & fmt & fmt & fmt & 0.349 & $+7.6$ & 71 \\
+\texttt{C\_S1\_X1s} & 0.412 & 84 & -- & -- & -- & 0.371 & $-4.1$ & 76 & 0.383 & $-3.0$ & 78 & fmt & fmt & fmt & 0.448 & $+3.6$ & 91 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.279 & 57 & -- & -- & -- & 0.226 & $-5.3$ & 46 & 0.270 & $-0.9$ & 55 & fmt & fmt & fmt & 0.337 & $+5.8$ & 69 \\
 \bottomrule
 \end{tabular}
 \end{table*}

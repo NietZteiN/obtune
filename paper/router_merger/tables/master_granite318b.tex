@@ -1,9 +1,9 @@
-% GENERATED 2026-09-14 12:31 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-14 12:48 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/granite31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{1.7pt}
-\caption{\textbf{Master grid, Granite-3.1-8B.} Every condition and every stack, forward (output prediction) and backward (input prediction, ladder only). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the same condition; \% accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of the original accuracy the system brings back (100 = the untuned model on clean code). \emph{fmt}: format-failure rate above 0.25, the cell measures the prompt contract rather than the task and enters no mean. Pooled rows average the stacks above them. `--': cell not run.}
+\caption{\textbf{Master grid, Granite-3.1-8B.} Every condition and every stack, forward (output prediction) and backward (input prediction). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the same condition; \% accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of the original accuracy the system brings back (100 = the untuned model on clean code). \emph{fmt}: format-failure rate above 0.25, the cell measures the prompt contract rather than the task and enters no mean. Pooled rows average the stacks above them. `--': cell not run.}
 \label{tab:master_granite318b}
 \begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
 \toprule
@@ -51,6 +51,25 @@
 \texttt{S1} & 0.356 & 87 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & 0.264 & $-9.1$ & 65 \\
 \texttt{S2} & 0.429 & 105 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
 \texttt{X1} & 0.281 & 68 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt \\
+\texttt{C\_L1b\_S1} & 0.216 & 53 & -- & -- & -- & fmt & fmt & fmt & 0.199 & $-1.8$ & 48 & fmt & fmt & fmt & 0.194 & $-2.2$ & 47 \\
+\texttt{C\_L1r\_S1} & 0.284 & 69 & -- & -- & -- & 0.206 & $-7.8$ & 50 & 0.225 & $-5.9$ & 55 & fmt & fmt & fmt & 0.234 & $-5.0$ & 57 \\
+\texttt{C\_S1\_L1r} & 0.262 & 64 & -- & -- & -- & 0.208 & $-5.4$ & 51 & 0.241 & $-2.2$ & 59 & fmt & fmt & fmt & 0.242 & $-2.0$ & 59 \\
+\texttt{C\_L2\_S4} & 0.278 & 68 & -- & -- & -- & fmt & fmt & fmt & 0.225 & $-5.3$ & 55 & fmt & fmt & fmt & 0.213 & $-6.5$ & 52 \\
+\texttt{C\_L1r\_S3} & 0.296 & 72 & -- & -- & -- & fmt & fmt & fmt & 0.240 & $-5.6$ & 59 & fmt & fmt & fmt & 0.251 & $-4.5$ & 61 \\
+\texttt{C\_S4\_S3} & 0.334 & 81 & -- & -- & -- & fmt & fmt & fmt & 0.254 & $-8.0$ & 62 & fmt & fmt & fmt & 0.254 & $-8.0$ & 62 \\
+\emph{seen stacks, pooled (6)} & 0.278 & 68 & -- & -- & -- & fmt & fmt & fmt & 0.231 & $-4.8$ & 56 & fmt & fmt & fmt & 0.231 & $-4.7$ & 56 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.331 & 81 & -- & -- & -- & fmt & fmt & fmt & 0.238 & $-9.3$ & 58 & fmt & fmt & fmt & 0.235 & $-9.6$ & 57 \\
+\texttt{C3\_S1\_S3\_S4} & 0.323 & 79 & -- & -- & -- & fmt & fmt & fmt & 0.214 & $-10.9$ & 52 & fmt & fmt & fmt & 0.242 & $-8.1$ & 59 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.293 & 71 & -- & -- & -- & 0.192 & $-10.0$ & 47 & 0.223 & $-6.9$ & 54 & fmt & fmt & fmt & 0.238 & $-5.5$ & 58 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.305 & 74 & -- & -- & -- & fmt & fmt & fmt & 0.216 & $-8.9$ & 53 & fmt & fmt & fmt & 0.239 & $-6.5$ & 58 \\
+\emph{depth-3/4 stacks, pooled (4)} & 0.313 & 76 & -- & -- & -- & fmt & fmt & fmt & 0.223 & $-9.0$ & 54 & fmt & fmt & fmt & 0.239 & $-7.4$ & 58 \\
+\texttt{C\_L1r\_X1} & fmt & fmt & -- & -- & -- & fmt & fmt & fmt & 0.163 & fmt & 40 & fmt & fmt & fmt & 0.190 & fmt & 46 \\
+\texttt{C\_X1\_S1} & 0.234 & 57 & -- & -- & -- & fmt & fmt & fmt & 0.161 & $-7.3$ & 39 & fmt & fmt & fmt & 0.242 & $+0.8$ & 59 \\
+\texttt{C\_S2\_X1} & 0.300 & 73 & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & 0.235 & $-6.5$ & 57 \\
+\emph{unseen-containing stacks, pooled (3)} & fmt & fmt & -- & -- & -- & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & fmt & 0.222 & fmt & 54 \\
+\texttt{C\_L1r\_X1m} & fmt & fmt & -- & -- & -- & fmt & fmt & fmt & 0.180 & fmt & 44 & fmt & fmt & fmt & 0.188 & fmt & 46 \\
+\texttt{C\_S1\_X1s} & 0.282 & 69 & -- & -- & -- & fmt & fmt & fmt & 0.173 & $-10.9$ & 42 & fmt & fmt & fmt & 0.234 & $-4.8$ & 57 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.259 & 63 & -- & -- & -- & fmt & fmt & fmt & 0.156 & $-10.3$ & 38 & fmt & fmt & fmt & 0.226 & $-3.3$ & 55 \\
 \bottomrule
 \end{tabular}
 \end{table*}

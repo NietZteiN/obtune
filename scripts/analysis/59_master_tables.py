@@ -68,7 +68,9 @@ def pooled(phases, m, s, conds):
     return sum(a for a, _ in pairs)/len(pairs)
 
 def fwd(m, s, conds): return pooled(PHASES[KIND[conds[0]]], m, s, conds)
-def bwd(m, s, conds): return pooled(["inverse_generic"], m, s, conds) if KIND[conds[0]]=="ladder" else None
+# The `ladder` guard here was correct until 2026-09-13 and wrong after it: inverse_stacks.yaml
+# writes the stacks into the SAME phase, so the guard was hiding cells that exist on disk.
+def bwd(m, s, conds): return pooled(["inverse_generic"], m, s, conds)
 def icl(m, conds): return pooled(["basecheck_1shot"], m, "base_1shot", conds) if (KIND[conds[0]]=="ladder" and conds[0]!="X1") else None
 
 def triple(a, b, ref):
@@ -103,7 +105,11 @@ def model_grid(m):
             a = icl(m, conds) if sysn=="base_1shot" else fwd(m, sysn, conds)
             r["iv"][name] = triple(a, bf, refF)
         rows.append(r)
-    for label, conds in [(c,[c]) for c in LADDER]:
+    # The backward block used to stop at the ladder, because that is all inverse_generic held.
+    # It now carries the stacks too (configs/eval/inverse_stacks.yaml, 2026-09-13), so it uses
+    # the SAME row list as the forward block -- the two halves of the table line up row for row,
+    # which is the whole point of putting them under one heading.
+    for label, conds in ROWS:
         bb = bwd(m, "base", conds)
         r = {"label": label, "dir": "bwd", "base": triple(bb, bb, refB)[::2], "iv": {}}
         for name, sysn in INTERV:
@@ -153,7 +159,7 @@ out.append(f"# Master tables\n\n*Generated {dt.datetime.now(dt.timezone.utc):%Y-
            "versions under `paper/router_merger/tables/`.*\n")
 out.append("## 1. Master grid — every model × every condition and stack, forward and backward\n")
 out.append("Forward = output prediction (what the adapters were trained on). Backward = input prediction on the same programs, "
-           "graded by execution; no adapter is trained on it, and it is run on the ladder only. Each system shows three numbers: "
+           "graded by execution; no adapter is trained on it. Both directions now cover the same rows, ladder and stacks alike. Each system shows three numbers: "
            "**acc** (raw accuracy), **Δ** (points against the untuned model on the same condition), and **%** (accuracy as a percentage "
            "of the untuned model's clean-code accuracy in the same direction — how much of the original accuracy the system brings "
            "back; the untuned model on clean code is 100 by definition, on obfuscated code it shows what the obfuscation removed, "
@@ -174,7 +180,8 @@ for m in MODELS:
     out.append("\n**Backward (input prediction)**\n"); out.append(hdr); out.append(sep)
     for r in GRIDS[m]:
         if r["dir"] == "fwd": continue
-        cells = [r["label"], fa(r["base"][0]), fp(r["base"][1])]
+        lab = f"*{r['label']}*" if "pooled" in r["label"] else r["label"]
+        cells = [lab, fa(r["base"][0]), fp(r["base"][1])]
         for n,_ in INTERV: t=r["iv"][n]; cells += [fa(t[0]), fd(t[1]), fp(t[2])]
         out.append("| " + " | ".join(cells) + " |")
 
@@ -303,7 +310,7 @@ def grid_tex(m):
     L = []
     L.append(r"\begin{table*}[p]"); L.append(r"\centering\scriptsize\setlength{\tabcolsep}{1.7pt}")
     L.append(r"\caption{\textbf{Master grid, " + NICE[m] + r".} Every condition and every stack, forward (output prediction) and "
-             r"backward (input prediction, ladder only). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the "
+             r"backward (input prediction). Per system: \emph{acc} raw accuracy; $\Delta$ points against the untuned model on the "
              r"same condition; \% accuracy as a percentage of the untuned model's clean-code accuracy in the same direction, i.e.\ how much of "
              r"the original accuracy the system brings back (100 = the untuned model on clean code). \emph{fmt}: format-failure rate above 0.25, "
              r"the cell measures the prompt contract rather than the task and enters no mean. Pooled rows average the stacks above them. "
