@@ -1,0 +1,62 @@
+{
+  "mole_router-base/args_exact": [
+    0.96,
+    0.09,
+    1.89,
+    557
+  ],
+  "mole_router-base/correct": [
+    -0.97,
+    -2.66,
+    0.71,
+    557
+  ],
+  "mole_uniform-base/args_exact": [
+    0.89,
+    0.06,
+    1.7,
+    557
+  ],
+  "mole_uniform-base/correct": [
+    0.14,
+    -1.38,
+    1.68,
+    557
+  ],
+  "mole_router-mole_uniform/args_exact": [
+    0.07,
+    -0.43,
+    0.58,
+    557
+  ],
+  "mole_router-mole_uniform/correct": [
+    -1.11,
+    -2.01,
+    -0.22,
+    557
+  ],
+  "mole_router-mono_all/args_exact": [
+    1.86,
+    1.2,
+    2.53,
+    557
+  ],
+  "mole_router-mono_all/correct": [
+    3.69,
+    2.44,
+    4.96,
+    557
+  ],
+  "merge_dare_ties-mole_router/args_exact": [
+    1.16,
+    0.47,
+    1.86,
+    557
+  ],
+  "merge_dare_ties-mole_router/correct": [
+    5.91,
+    4.62,
+    7.2,
+    557
+  ]
+}

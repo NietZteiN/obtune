@@ -2190,3 +2190,12 @@ today (122 for grids, 60 for the Llama s42 trainings, 126/128 for the ladder rep
 reverse, and the drain therefore ran the ten cheap trainings ahead of the two mixture grids they were
 meant to backfill behind. Queued manifests corrected: grids 10, trainings 300. The two OOM'd grids
 were submitted by name to skip the queue. Small number = urgent, from here on.
+
+**VERDICT, first model (Llama-3.1-8B, 2026-09-14): H-router-locks REFUTED.** `mole_router` collapse
+0.001 — the merge floor, not the 0.10–0.20 I predicted; uniform/random/hardened all at the floor too, so
+the uniform-vs-router discriminator is uninformative. Backwards the router is +0.96 [+0.09, +1.89]\* over
+untuned on exact arguments, +1.86\* over breadth, tied with uniform (+0.07), and 1.16\* below the merge.
+My model of the mechanism was wrong: locking follows what an adapter was *trained on* (the breadth
+mixture), not how many are combined. `log/modularity/2026-09-14_router-backwards-first-model.md`.
+Remaining four models: same rule, verdict is the count.
+

@@ -1,6 +1,6 @@
 {
   "script": "66_three_methods.py",
-  "generated_utc": "2026-09-14T13:47:00+00:00",
+  "generated_utc": "2026-09-14T23:12:54+00:00",
   "n_resamples": 2000,
   "seed": 17,
   "format_gate": 0.25,
@@ -170,10 +170,10 @@
           },
           "breadth": {
             "gated": true,
-            "fmt": 0.9461,
-            "seen": 0.0091,
-            "unseen": 0.0017,
-            "drop": -80.77
+            "fmt": 0.9438,
+            "seen": 0.0094,
+            "unseen": 0.0021,
+            "drop": -77.78
           },
           "merge": {
             "gated": false,
@@ -216,7 +216,19 @@
             ],
             "vs_base_sig": false
           },
-          "merge": null,
+          "merge": {
+            "gated": false,
+            "fmt": 0.0349,
+            "seen": 0.3851,
+            "unseen": 0.3026,
+            "drop": -21.41,
+            "vs_base_pts": -1.85,
+            "vs_base_ci": [
+              -12.32,
+              7.82
+            ],
+            "vs_base_sig": false
+          },
           "router": null
         }
       },
@@ -232,7 +244,7 @@
           },
           "breadth": {
             "gated": true,
-            "fmt": 0.5441,
+            "fmt": 0.5436,
             "seen": 0.0327,
             "unseen": 0.03,
             "drop": -8.51
@@ -342,7 +354,19 @@
             ],
             "vs_base_sig": false
           },
-          "router": null
+          "router": {
+            "gated": false,
+            "fmt": 0.0362,
+            "seen": 0.0886,
+            "unseen": 0.0731,
+            "drop": -17.49,
+            "vs_base_pts": -2.43,
+            "vs_base_ci": [
+              -18.05,
+              14.59
+            ],
+            "vs_base_sig": false
+          }
         }
       }
     },
@@ -379,7 +403,7 @@
         "methods": {
           "base": {
             "gated": true,
-            "fmt": 0.5183,
+            "fmt": 0.5182,
             "seen": 0.0505,
             "unseen": 0.0564,
             "drop": 11.72
