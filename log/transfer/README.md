@@ -156,3 +156,4 @@
 - [`../../docs/design_doc_v0.1.md`](../../docs/design_doc_v0.1.md)
 - [`2026-09-13_backward-task-is-many-to-one.md`](2026-09-13_backward-task-is-many-to-one.md) — the inverse task's execution grader accepts any call returning the gold value; two thirds of successes are degenerate. Strict `args_exact` reported alongside.
 - [`2026-09-14_backward-grader-audit.md`](2026-09-14_backward-grader-audit.md) — oracle 1.000 on four conditions, negative controls clean; executes the obfuscated code; the prompt permits any pre-image, so exec-match is the faithful metric.
+- [`2026-09-14_why-input-prediction-is-hard.md`](2026-09-14_why-input-prediction-is-hard.md) — prompt and grader cleared; it is capacity. The reversal test is on the weakest backward model in the panel.
