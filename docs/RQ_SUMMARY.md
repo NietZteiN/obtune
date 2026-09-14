@@ -626,6 +626,28 @@ Across the four models with merges: CodeLlama-7B **+3.21** (DR +0.17), Llama-3.1
 > every single-adapter arm is significantly negative. **The sentence below beginning "Merging is
 > therefore *not* backward-safe" is retired: it rested on Granite's reversal, which does not exist.**
 > `log/transfer/2026-09-14_the-reversal-was-the-prompt.md`.
+>
+> **SUPERSEDED IN FULL, later the same day.** The four models that had no backward merge cells got
+> them in the ladder repair, so `62_merge_backward.py` now runs on the panel with **one prompt on
+> every arm of every model** — the first version of this result where that is true. Backward gain
+> against the untuned model, pooled over the ladder:
+>
+> | model | `merge_dare_ties` | `merge_ties` | breadth | anchored |
+> |---|---|---|---|---|
+> | CodeLlama-7B | **+3.21**\* | −0.30 | −0.74 | +0.39 |
+> | CodeLlama-13B | **+4.18**\* | +0.71 | gated | **−6.94**\* |
+> | CodeLlama-34B | **+4.40**\* | **+4.43**\* | gated | **−6.55**\* |
+> | Llama-3.1-8B | **+2.00**\* | **+2.42**\* | **−7.74**\* | **−6.05**\* |
+> | StarCoder2-15B | **+7.72**\* | **+5.60**\* | **−5.54**\* | **+2.93**\* |
+> | Gemma-3-12B | **+2.31**\* | **+2.36**\* | +0.42 | gated |
+> | CodeGemma-7B | **+6.25**\* | gated | **+7.27**\* | gated |
+> | Granite-3.1-8B | −0.27 | **+6.94**\* | **−4.72**\* | gated |
+>
+> DARE-TIES: **positive on 8/8, significant on 7, negative on none**, direction ratio +0.11 to +0.29
+> on seven. Two exceptions that belong in any sentence written from this: CodeGemma's breadth adapter
+> **gains** +7.27, so breadth is not uniformly a backward cost; and Granite is DARE-TIES' one null
+> while its TIES merge gains +6.94 there, so no claim should rest on one recipe.
+> `log/modularity/2026-09-14_merge-backward-all-eight.md`.
 
 ### 6.5e The merge pays no brittleness tax in either direction, and forward-locking is why (2026-09-14)
 
@@ -807,6 +829,7 @@ is the project's central finding, and it is why these columns are kept apart.
 - **2026-09-13** — §6.5b: merging on the panel — DARE-TIES above the clean control on seen stacks (3/3) and above breadth on unseen-containing stacks (3/3); rule a refuted on Llama.
 - **2026-09-13** — §6.5c: H-F2-route refuted; the specialist mixture is +2.88 above breadth on unseen-containing stacks.
 - **2026-09-13** - §6.5d: H-merge-backward refuted; the DARE-TIES merge has the highest direction ratio measured (+0.17).
+- **2026-09-14 (final, merge)** - §6.5d superseded in full: all eight models, one prompt throughout. merge_dare_ties backward is positive on 8/8 and significant on 7 (+2.00 to +7.72), negative on none, DR +0.11-+0.29 on seven; breadth and anchoring are significantly negative on three each. Exceptions kept in view: CodeGemma's breadth GAINS +7.27, and Granite is DARE-TIES' only null while its TIES merge gains +6.94.
 - **2026-09-14 (final)** - §6.5e(c) on ALL 23 conditions, repair complete on 8/8, no mixed-prompt arm left: untuned 0.007, merges 0.000/0.001, family 0.052, clean 0.059, breadth 0.070, anchored 0.172. StarCoder2 gains a backward contrast for the first time (its untuned model clears the gate one-shot where it cleared none zero-shot) and every arm there is positive, merges highest. Across 8 merge-by-model backward cells the merges are significant-positive on 6, null on 2, negative on none; breadth is significant-negative on 3 of 4.
 - **2026-09-14 (latest)** - §6.5d's reversal RETIRED: Granite's backward merge cost was the missing one-shot demo. Repaired, it is -0.27 [-2.33, +1.83] (null) against the published -7.66, and its merge_ties is +6.94. The prompt bias ran AGAINST the merge, not for it, correcting the direction asserted in the morning's correction note.
 - **2026-09-14 (later)** - §6.5e(c)'s collapse row CORRECTED: the first version pooled stack cells with zero-shot ladder cells. Recomputed on stacks only: untuned 0.007, merges 0.000/0.001, family 0.060, clean 0.066, breadth 0.081, anchored 0.186. Ordering identical, magnitudes roughly halved.
