@@ -46,7 +46,9 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "scripts" / "analysis"))
 from obtune.data import load_eval_items  # noqa: E402
+from cellkit import register_prompt  # noqa: E402
 
 CELLS = ROOT / "results" / "cells"
 PHASES = ["inverse_1shot", "inverse_generic"]
@@ -74,9 +76,20 @@ def _first_line_is_call(raw) -> bool:
 
 
 def cell_path(model, sysn, cond):
+    """Also registers the cell's prompt_id, so this script is covered by cellkit's registry even
+    though it reads parquet directly rather than through load_cell. Not registering is how this
+    script published a panel mean that pooled across two prompts."""
+    import json as _json
+
     for ph in PHASES:
         p = CELLS / ph / model / "python" / f"{sysn}__{cond}" / "trials.parquet"
         if p.exists():
+            meta = p.parent / "cell_meta.json"
+            if meta.exists():
+                try:
+                    register_prompt(model, sysn, str(_json.loads(meta.read_text()).get("prompt_id", "?")))
+                except Exception:
+                    pass
             return p, ph
     return None, None
 

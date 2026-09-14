@@ -1,5 +1,5 @@
 {
-  "job_id": "ev_inv1shot_gemma3-12b",
+  "job_id": "ev_inv1shot_codegemma-7b",
   "kind": "eval",
   "argv": [
     "-m",
@@ -7,7 +7,7 @@
     "--config",
     "eval/inverse_ladder_1shot.yaml",
     "--model",
-    "gemma3-12b",
+    "codegemma-7b",
     "--language",
     "python"
   ],
@@ -16,5 +16,12 @@
   "priority": 128,
   "meta": {
     "note": "REPAIR: the backward ladder cells for this model were written zero-shot (inverse_core.yaml, prompt_id inverse_v1) while every backward stack cell, every backward merge cell and every CodeLlama-7B backward cell is one-shot (inverse_1shot_v1). Two prompts in one phase and one column of the master table. New phase inverse_1shot; the old cells are kept."
+  },
+  "slurm": {
+    "job_id": "396768",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-14T14:10:26.609716+00:00"
   }
 }

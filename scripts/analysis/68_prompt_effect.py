@@ -35,6 +35,13 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts" / "analysis"))
+from cellkit import allow_mixed_prompts  # noqa: E402
+
+# This script's entire purpose is to compare the two prompts, so the registry's warning would fire
+# on every arm and mean nothing here.
+allow_mixed_prompts()
+
 CELLS = ROOT / "results" / "cells"
 OLD, NEW = "inverse_generic", "inverse_1shot"
 LADDER = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]

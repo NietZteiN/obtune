@@ -42,6 +42,39 @@ class H1Refused(RuntimeError):
     pass
 
 
+
+# ---- AUTOMATIC PROMPT-CONSISTENCY REGISTRY ----------------------------------------------------
+# check_one_prompt() below only fires for code that CALLS it, and on 2026-09-14 two scripts that
+# needed it did not: 62_merge_backward.py has its own pooled(), and 67_backward_failure_modes.py
+# computes its own aggregate. Both crossed the prompt boundary and both published a number before
+# anyone noticed. A guard that works only on opt-in is not a guard, so this one fires from the read
+# path itself: every cell a process opens registers its prompt_id against (model, system), and the
+# second DISTINCT id for the same pair prints once. Scripts that compare prompts on purpose --
+# 68_prompt_effect.py -- call allow_mixed_prompts() to silence it.
+_SEEN_PROMPTS: dict = {}
+_MIXED_OK = False
+
+
+def allow_mixed_prompts(on: bool = True) -> None:
+    """Silence the registry, for a script whose whole point is comparing two prompts."""
+    global _MIXED_OK
+    _MIXED_OK = bool(on)
+
+
+def register_prompt(model: str, system: str, prompt_id: str) -> None:
+    if _MIXED_OK or not prompt_id or prompt_id == "?":
+        return
+    key = (model, system)
+    seen = _SEEN_PROMPTS.setdefault(key, set())
+    was = len(seen)
+    seen.add(prompt_id)
+    if was == 1 and len(seen) == 2:
+        print(f"[cellkit] WARNING: {model}/{system} has cells under TWO prompts "
+              f"{sorted(seen)}. Anything pooling or contrasting across them measures the prompt as "
+              f"well as the arm (log/transfer/2026-09-14_two-prompts-one-phase.md). Call "
+              f"cellkit.allow_mixed_prompts() if that is the intent.", file=sys.stderr)
+
+
 def load_cell(phases: Iterable[str], model: str, system: str, cond: str,
               language: str = "python") -> Optional[pd.DataFrame]:
     if cond == "H1":
@@ -54,7 +87,9 @@ def load_cell(phases: Iterable[str], model: str, system: str, cond: str,
             df["_phase"] = ph
             # Carried so `pooled` can check that everything it averages was asked the same way.
             # See the 2026-09-14 fault below.
-            df["_prompt_id"] = _prompt_id(p.parent)
+            pid = _prompt_id(p.parent)
+            df["_prompt_id"] = pid
+            register_prompt(model, system, pid)
             return df
     return None
 

@@ -1,6 +1,6 @@
 {
   "script": "67_backward_failure_modes.py",
-  "generated_utc": "2026-09-14T14:04:45+00:00",
+  "generated_utc": "2026-09-14T14:10:47+00:00",
   "max_tokens": 128,
   "format_gate": 0.25,
   "condition": "C_L1r_X1",
@@ -831,9 +831,16 @@
       }
     }
   },
-  "condition_set": "stacks",
+  "condition_set": "all",
   "aggregate": {
     "conditions": [
+      "L0",
+      "L1b",
+      "L1r",
+      "L2",
+      "S1",
+      "S2",
+      "X1",
       "C_L1b_S1",
       "C_L1r_S1",
       "C_S1_L1r",
@@ -855,53 +862,53 @@
       "codellama-7b": {
         "base": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.11982722586038735,
-          "n_trials": 21531
+          "collapse_rate": 0.09528669511968825,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.04932423017974084,
-          "n_trials": 21531
+          "collapse_rate": 0.036679656089565166,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.006688031210812317,
-          "n_trials": 21531
+          "collapse_rate": 0.004793715593492918,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.001068227207282523,
-          "n_trials": 21531
+          "collapse_rate": 0.0007422527370569679,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
-          "collapse_rate": 0.0005108912730481632,
-          "n_trials": 21531
+          "collapse_rate": 0.000556689552792726,
+          "n_trials": 32334
         },
         "merge_ties": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         }
       },
       "codellama-13b": {
         "base": {
-          "collapse_rate": 4.6444661186196645e-05,
-          "n_trials": 21531
+          "collapse_rate": 3.0927197377373665e-05,
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.013236728438066045,
-          "n_trials": 21531
+          "collapse_rate": 0.013329622069648049,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.04978867679160281,
-          "n_trials": 21531
+          "collapse_rate": 0.06921506773056225,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.10152802935302586,
-          "n_trials": 21531
+          "collapse_rate": 0.20096492855817405,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.04951000882448563,
-          "n_trials": 21531
+          "collapse_rate": 0.05334941547596957,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
           "collapse_rate": 0.0004180019506757698,
@@ -915,23 +922,23 @@
       "codellama-34b": {
         "base": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.003390460266592355,
-          "n_trials": 21531
+          "collapse_rate": 0.0035875548957753447,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.0318145929125447,
-          "n_trials": 21531
+          "collapse_rate": 0.02897878394259912,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.01885653244159584,
-          "n_trials": 21531
+          "collapse_rate": 0.01410280200408239,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.005434025358785008,
-          "n_trials": 21531
+          "collapse_rate": 0.006927692212531701,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
           "collapse_rate": 0.000789559240165343,
@@ -941,83 +948,83 @@
       "llama31-8b": {
         "base": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.0005108912730481632,
-          "n_trials": 21531
+          "collapse_rate": 0.004917424383002412,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.02257210533649157,
-          "n_trials": 21531
+          "collapse_rate": 0.10060617306859652,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.028609911290697135,
-          "n_trials": 21531
+          "collapse_rate": 0.1552545308344158,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.0013468951743997027,
-          "n_trials": 21531
+          "collapse_rate": 0.007329745778437558,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
-          "collapse_rate": 9.288932237239329e-05,
-          "n_trials": 21531
+          "collapse_rate": 6.185439475474733e-05,
+          "n_trials": 32334
         },
         "merge_ties": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         }
       },
       "starcoder2-15b": {
         "base": {
-          "collapse_rate": 0.00013933398355858994,
-          "n_trials": 21531
+          "collapse_rate": 9.278159213212098e-05,
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.18512841948817985,
-          "n_trials": 21531
+          "collapse_rate": 0.3508381270489268,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.31796015048070225,
-          "n_trials": 21531
+          "collapse_rate": 0.41798107255520506,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.1801588407412568,
-          "n_trials": 21531
+          "collapse_rate": 0.35433290035257003,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.28001486229157957,
-          "n_trials": 21531
+          "collapse_rate": 0.35597204181357084,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
-          "collapse_rate": 0.00046444661186196645,
-          "n_trials": 21531
+          "collapse_rate": 0.00030927197377373663,
+          "n_trials": 32334
         },
         "merge_ties": {
           "collapse_rate": 0.0,
-          "n_trials": 19224
+          "n_trials": 32334
         }
       },
       "gemma3-12b": {
         "base": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.011889833263666341,
-          "n_trials": 21531
+          "collapse_rate": 0.02897878394259912,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.0034833495889647487,
-          "n_trials": 21531
+          "collapse_rate": 0.004855569988247665,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.11685476754447076,
-          "n_trials": 21531
+          "collapse_rate": 0.1406878208696728,
+          "n_trials": 32334
         },
         "tuned_X1": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         },
         "merge_dare_ties": {
           "collapse_rate": 9.288932237239329e-05,
@@ -1031,23 +1038,23 @@
       "codegemma-7b": {
         "base": {
           "collapse_rate": 0.0,
-          "n_trials": 21531
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.007570479773350053,
-          "n_trials": 21531
+          "collapse_rate": 0.0061545122780973585,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.08703729506293252,
-          "n_trials": 21531
+          "collapse_rate": 0.07073050040205357,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.6918861176907715,
-          "n_trials": 21531
+          "collapse_rate": 0.6802127791179563,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.11416097719567135,
-          "n_trials": 21531
+          "collapse_rate": 0.1033277664378054,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
           "collapse_rate": 0.003158236960661372,
@@ -1060,43 +1067,43 @@
       },
       "granite31-8b": {
         "base": {
-          "collapse_rate": 0.05355069434768473,
-          "n_trials": 21531
+          "collapse_rate": 0.036617801694810416,
+          "n_trials": 32334
         },
         "tuned_L0": {
-          "collapse_rate": 0.18615020203427615,
-          "n_trials": 21531
+          "collapse_rate": 0.23408795694934126,
+          "n_trials": 32334
         },
         "mono_all": {
-          "collapse_rate": 0.08220705029956807,
-          "n_trials": 21531
+          "collapse_rate": 0.3643533123028391,
+          "n_trials": 32334
         },
         "cons_lam3": {
-          "collapse_rate": 0.3471738423668199,
-          "n_trials": 21531
+          "collapse_rate": 0.5578338590956887,
+          "n_trials": 32334
         },
         "tuned_X1": {
-          "collapse_rate": 0.027634573405787004,
-          "n_trials": 21531
+          "collapse_rate": 0.054648357765819264,
+          "n_trials": 32334
         },
         "merge_dare_ties": {
-          "collapse_rate": 0.0009753378849101296,
-          "n_trials": 21531
+          "collapse_rate": 0.0008968887239438362,
+          "n_trials": 32334
         },
         "merge_ties": {
-          "collapse_rate": 0.00037155728948957316,
-          "n_trials": 21531
+          "collapse_rate": 0.0003401991711511103,
+          "n_trials": 32334
         }
       }
     },
     "panel_mean": {
-      "base": 0.00671705912405369,
-      "tuned_L0": 0.0659630300496958,
-      "mono_all": 0.08052343133156843,
-      "cons_lam3": 0.18646950907993126,
-      "tuned_X1": 0.05989619618224885,
-      "merge_dare_ties": 0.0008127815707584413,
-      "merge_ties": 0.00013933398355858994
+      "base": 0.004592688810539989,
+      "tuned_L0": 0.09214758458588483,
+      "mono_all": 0.13667501700995857,
+      "cons_lam3": 0.26352291705325664,
+      "tuned_X1": 0.07278715902764891,
+      "merge_dare_ties": 0.0007854240148924905,
+      "merge_ties": 0.00013485425236738096
     }
   },
   "mirror_control": {
