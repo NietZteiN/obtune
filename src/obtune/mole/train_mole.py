@@ -165,6 +165,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--dry-run", action="store_true",
                     help="report the trainable split, the mixture and the loss mask; no training")
     ap.add_argument("--seed", type=int, default=None)
+    ap.add_argument("--nan-probe", type=int, default=0, metavar="N",
+                    help="run N optimizer steps with the gate instrumented and stop, reporting the "
+                         "FIRST non-finite tensor and the per-layer temperature range. Written for "
+                         "gemma3-12b, whose gate loss is nan from step 90 while the same code "
+                         "trains clean on seven other models; it uses THIS loop rather than a "
+                         "separate harness, because a separate harness can fail to reproduce.")
     args = ap.parse_args(argv)
 
     cfg = load_config(args.config)
@@ -319,6 +325,31 @@ def main(argv: Optional[list[str]] = None) -> int:
     if aux_coef and not hasattr(holder.gate, "keys"):
         raise ValueError("aux_load_balance is only meaningful for a trainable RouterGate")
 
+    # NAN PROBE. Wraps the gate's forward so the first non-finite tensor is NAMED and attributed:
+    # a non-finite hidden state means the BASE model overflowed and the gate is downstream of the
+    # problem; a finite input with a non-finite output means the gate's own temperature-scaled
+    # softmax did it. Those need different fixes, and guessing between them costs a 12 h job.
+    if args.nan_probe:
+        _gate = holder.gate
+        _orig_fwd = _gate.forward
+        _probe = {"said": False}
+
+        def _wrapped(hidden, layer):
+            if not _probe["said"] and not torch.isfinite(hidden).all():
+                bad = int((~torch.isfinite(hidden)).sum())
+                print(f"[nan-probe] BASE HIDDEN STATE non-finite at layer {layer}: {bad} of "
+                      f"{hidden.numel()} elements. The gate is downstream of this.", flush=True)
+                _probe["said"] = True
+            out = _orig_fwd(hidden, layer)
+            if not _probe["said"] and not torch.isfinite(out).all():
+                tau = float(_gate.log_tau[layer].exp()) if hasattr(_gate, "log_tau") else float("nan")
+                print(f"[nan-probe] GATE OUTPUT non-finite at layer {layer} from a FINITE input; "
+                      f"tau={tau:.3e}. Temperature collapse.", flush=True)
+                _probe["said"] = True
+            return out
+
+        _gate.forward = _wrapped
+
     step = 0
     for epoch in range(epochs):
         for i, batch in enumerate(loader):
@@ -343,6 +374,16 @@ def main(argv: Optional[list[str]] = None) -> int:
                     with torch.no_grad():
                         holder.gate.log_tau.clamp_(min=math.log(tau_min))
                 step += 1
+                if args.nan_probe:
+                    taus = (holder.gate.log_tau.exp().detach().float()
+                            if hasattr(holder.gate, "log_tau") else torch.zeros(1))
+                    print(f"[nan-probe] step {step} loss {task.item():.4f} "
+                          f"finite={bool(torch.isfinite(task))} "
+                          f"tau[min={float(taus.min()):.3e} max={float(taus.max()):.3e}]",
+                          flush=True)
+                    if step >= args.nan_probe or not torch.isfinite(task):
+                        print("[nan-probe] stopping; nothing saved.", flush=True)
+                        return 0
                 if step % 10 == 0:
                     print(f"[mole.train] epoch {epoch} step {step} "
                           f"loss {task.item():.4f}"
