@@ -2048,3 +2048,36 @@ generate through HFEngine means the untuned reference and the treatment come fro
 That is fine for accuracy (both are greedy, same prompts, same grader) but it makes
 `assert_adapter_effective` weaker than usual — it can pass on engine noise alone. Check the gate
 report and the routing entropy before trusting a small effect.
+
+---
+
+## 2026-09-14 · Sharpened prediction for the mixture-backwards read
+
+The pre-registration earlier today predicted the router would sit with breadth on the backward
+stack drop. Today's forward-collapse result makes a sharper prediction available, on a metric with
+a clean floor and no format gate, so it is recorded before the cells exist.
+
+**Measured, all eight models, all sixteen backward conditions** (`67_backward_failure_modes.py
+--aggregate`): untuned 0.004, `merge_ties` 0.000, `merge_dare_ties` 0.001, `tuned_X1` 0.110,
+`tuned_L0` 0.135, `mono_all` 0.198, `cons_lam3` 0.312. `mole_router` is `--` on every model: no cell
+exists.
+
+**H-router-locks.** The router's experts ARE the per-type adapters, and the gate weights them per
+token rather than averaging their weights once. If forward-locking lives in the adapter weights,
+the router should inherit it and land with the single-adapter arms; if it is a property of the
+single merged update, the router — which never forms one — should land at the merge floor.
+
+- CONFIRMED iff `mole_router`'s panel-mean collapse rate is **above 0.05** and within the
+  single-adapter band (0.10–0.35).
+- REFUTED iff it is **below 0.01**, i.e. at the merge floor.
+- Anything in 0.01–0.05 is inconclusive and gets reported as such rather than rounded to a story.
+
+**Prediction: CONFIRMED, around 0.10–0.20.** The gate is saturated on single transforms (100 %
+route accuracy, entropy ~1e-6), so on most items the router IS one per-type adapter, and a per-type
+adapter's collapse rate is 0.110–0.135. I expect it near `tuned_X1`'s level, below `mono_all`'s.
+
+**Why this is the interesting one.** `mole_uniform` averages the same eight experts with a fixed
+gate and is the closest thing in the panel to a merge computed at inference time. If `mole_uniform`
+lands at the merge floor while `mole_router` does not, the paper gets a causal statement rather than
+a correlation: it is the AVERAGING that removes the lock, not the adapters. `mole_uniform` and
+`mole_random` are in the same config and will be read at the same time.
