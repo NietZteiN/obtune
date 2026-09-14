@@ -77,7 +77,9 @@ while true; do
   for m in codellama-13b gemma3-12b codegemma-7b codellama-34b; do
     built=$(ls -d runs/adapters/$m/python/merge_*_r32_s17/adapter_model.safetensors 2>/dev/null | wc -l)
     cells=$(ls results/cells/merge_panel/$m/python 2>/dev/null | wc -l)
-    mf=runs/manifest/queued/ev_merge_$m.json
+    # 34B is h200-only for serving, so its manifests go to the parked queue the h200 pass reads.
+    qdir=runs/manifest/queued; case "$m" in *34b*) qdir=runs/manifest/queued_34b ;; esac
+    mf=$qdir/ev_merge_$m.json
     if [ "$built" -ge 3 ] && [ "$cells" -eq 0 ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/ev_merge_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "ev_merge_$m"; then
@@ -107,7 +109,9 @@ while true; do
   for m in codellama-13b llama31-8b starcoder2-15b gemma3-12b codegemma-7b granite31-8b codellama-34b; do
     tag="routerlora_$(echo $m | tr -d '-')_s17"
     cells=$(ls -d results/cells/mole_generic/$m/python/mole_* 2>/dev/null | wc -l)
-    mf=runs/manifest/queued/ev_mole_$m.json
+    # 34B is h200-only for serving, so its manifests go to the parked queue the h200 pass reads.
+    qdir=runs/manifest/queued; case "$m" in *34b*) qdir=runs/manifest/queued_34b ;; esac
+    mf=$qdir/ev_mole_$m.json
     if [ -f "runs/mole/$m/python/$tag/gate.pt" ] && [ "$cells" -eq 0 ] && [ ! -f "$mf" ] \
        && ! ls runs/manifest/{running,done}/ev_mole_$m.json >/dev/null 2>&1 \
        && ! squeue -h -u "$USER" -o "%j" | grep -qx "ev_mole_$m"; then
