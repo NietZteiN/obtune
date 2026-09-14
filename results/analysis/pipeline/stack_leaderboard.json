@@ -1,0 +1,825 @@
+{
+  "script": "69_stack_leaderboard.py",
+  "generated_utc": "2026-09-14T14:29:56+00:00",
+  "metric": "forward accuracy (execution-graded output prediction)",
+  "format_gate": 0.25,
+  "groups": {
+    "SEEN depth-2 stacks (6)": {
+      "codellama-7b": {
+        "base": {
+          "accuracy": 0.1598,
+          "format_fail": 0.1351,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3333,
+          "format_fail": 0.0305,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3683,
+          "format_fail": 0.0099,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3809,
+          "format_fail": 0.0165,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3291,
+          "format_fail": 0.0256,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3439,
+          "format_fail": 0.0248,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.3677,
+          "format_fail": 0.0191,
+          "gated": false
+        }
+      },
+      "codellama-13b": {
+        "base": {
+          "accuracy": 0.1857,
+          "format_fail": 0.079,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3684,
+          "format_fail": 0.018,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.398,
+          "format_fail": 0.0115,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.4115,
+          "format_fail": 0.012,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3764,
+          "format_fail": 0.0264,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3871,
+          "format_fail": 0.0267,
+          "gated": false
+        }
+      },
+      "codellama-34b": {
+        "base": {
+          "accuracy": 0.1808,
+          "format_fail": 0.1309,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.4084,
+          "format_fail": 0.0231,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.4367,
+          "format_fail": 0.0054,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.464,
+          "format_fail": 0.0149,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.4105,
+          "format_fail": 0.0234,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.415,
+          "format_fail": 0.0203,
+          "gated": false
+        }
+      },
+      "llama31-8b": {
+        "base": {
+          "accuracy": 0.185,
+          "format_fail": 0.0527,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.339,
+          "format_fail": 0.0296,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3713,
+          "format_fail": 0.0126,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3916,
+          "format_fail": 0.0139,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3511,
+          "format_fail": 0.017,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3644,
+          "format_fail": 0.0207,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.3982,
+          "format_fail": 0.0098,
+          "gated": false
+        }
+      },
+      "starcoder2-15b": {
+        "base": {
+          "accuracy": 0.0,
+          "format_fail": 1.0,
+          "gated": true
+        },
+        "clean": {
+          "accuracy": 0.4352,
+          "format_fail": 0.0154,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.4577,
+          "format_fail": 0.0078,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.4849,
+          "format_fail": 0.0136,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.4109,
+          "format_fail": 0.0177,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.4287,
+          "format_fail": 0.0149,
+          "gated": false
+        }
+      },
+      "gemma3-12b": {
+        "base": {
+          "accuracy": 0.2359,
+          "format_fail": 0.2843,
+          "gated": true
+        },
+        "clean": {
+          "accuracy": 0.4035,
+          "format_fail": 0.0087,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.4417,
+          "format_fail": 0.0144,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.4529,
+          "format_fail": 0.0107,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.396,
+          "format_fail": 0.01,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.4173,
+          "format_fail": 0.0123,
+          "gated": false
+        }
+      },
+      "codegemma-7b": {
+        "base": {
+          "accuracy": 0.1675,
+          "format_fail": 0.207,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3623,
+          "format_fail": 0.0139,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3997,
+          "format_fail": 0.0149,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3988,
+          "format_fail": 0.0136,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.355,
+          "format_fail": 0.0122,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3656,
+          "format_fail": 0.0172,
+          "gated": false
+        }
+      },
+      "granite31-8b": {
+        "base": {
+          "accuracy": 0.2392,
+          "format_fail": 0.0752,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3198,
+          "format_fail": 0.0323,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3675,
+          "format_fail": 0.009,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3594,
+          "format_fail": 0.0106,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3267,
+          "format_fail": 0.0219,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3358,
+          "format_fail": 0.031,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.3676,
+          "format_fail": 0.0228,
+          "gated": false
+        }
+      },
+      "_winners": {
+        "anchored": 5,
+        "router": 2,
+        "breadth": 1
+      }
+    },
+    "depth-3/4 stacks, all seen (4)": {
+      "codellama-7b": {
+        "base": {
+          "accuracy": 0.1254,
+          "format_fail": 0.1443,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3166,
+          "format_fail": 0.031,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3599,
+          "format_fail": 0.0091,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3694,
+          "format_fail": 0.0164,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3216,
+          "format_fail": 0.023,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3207,
+          "format_fail": 0.0259,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.3541,
+          "format_fail": 0.0181,
+          "gated": false
+        }
+      },
+      "codellama-13b": {
+        "base": {
+          "accuracy": 0.1495,
+          "format_fail": 0.059,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3437,
+          "format_fail": 0.0241,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.386,
+          "format_fail": 0.0116,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3971,
+          "format_fail": 0.0131,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3627,
+          "format_fail": 0.0295,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3636,
+          "format_fail": 0.0327,
+          "gated": false
+        }
+      },
+      "codellama-34b": {
+        "base": {
+          "accuracy": 0.1331,
+          "format_fail": 0.0771,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3771,
+          "format_fail": 0.0231,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.4193,
+          "format_fail": 0.0063,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.4445,
+          "format_fail": 0.0174,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3957,
+          "format_fail": 0.0259,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3948,
+          "format_fail": 0.0213,
+          "gated": false
+        }
+      },
+      "llama31-8b": {
+        "base": {
+          "accuracy": 0.1626,
+          "format_fail": 0.0734,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3086,
+          "format_fail": 0.0314,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.358,
+          "format_fail": 0.0131,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3758,
+          "format_fail": 0.0166,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3353,
+          "format_fail": 0.0172,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3453,
+          "format_fail": 0.0211,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.3784,
+          "format_fail": 0.0125,
+          "gated": false
+        }
+      },
+      "starcoder2-15b": {
+        "base": {
+          "accuracy": 0.0,
+          "format_fail": 1.0,
+          "gated": true
+        },
+        "clean": {
+          "accuracy": 0.4144,
+          "format_fail": 0.0153,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.4471,
+          "format_fail": 0.0069,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.4704,
+          "format_fail": 0.0123,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3984,
+          "format_fail": 0.0189,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.4097,
+          "format_fail": 0.0157,
+          "gated": false
+        }
+      },
+      "gemma3-12b": {
+        "base": {
+          "accuracy": 0.2018,
+          "format_fail": 0.2869,
+          "gated": true
+        },
+        "clean": {
+          "accuracy": 0.3696,
+          "format_fail": 0.0106,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.4247,
+          "format_fail": 0.0164,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.442,
+          "format_fail": 0.0125,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3778,
+          "format_fail": 0.0114,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3937,
+          "format_fail": 0.0133,
+          "gated": false
+        }
+      },
+      "codegemma-7b": {
+        "base": {
+          "accuracy": 0.1422,
+          "format_fail": 0.2339,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3289,
+          "format_fail": 0.0147,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3844,
+          "format_fail": 0.0146,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3868,
+          "format_fail": 0.0144,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3358,
+          "format_fail": 0.0177,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.341,
+          "format_fail": 0.022,
+          "gated": false
+        }
+      },
+      "granite31-8b": {
+        "base": {
+          "accuracy": 0.2324,
+          "format_fail": 0.0623,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.2989,
+          "format_fail": 0.0269,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3543,
+          "format_fail": 0.0091,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3511,
+          "format_fail": 0.0101,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.308,
+          "format_fail": 0.0192,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3168,
+          "format_fail": 0.0289,
+          "gated": false
+        }
+      },
+      "_winners": {
+        "anchored": 6,
+        "router": 1,
+        "breadth": 1
+      }
+    },
+    "stacks containing the UNSEEN family (3)": {
+      "codellama-7b": {
+        "base": {
+          "accuracy": 0.1214,
+          "format_fail": 0.1427,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.2625,
+          "format_fail": 0.037,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.2437,
+          "format_fail": 0.0099,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.281,
+          "format_fail": 0.0245,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3125,
+          "format_fail": 0.025,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.2708,
+          "format_fail": 0.0284,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.274,
+          "format_fail": 0.0276,
+          "gated": false
+        }
+      },
+      "codellama-13b": {
+        "base": {
+          "accuracy": 0.143,
+          "format_fail": 0.075,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.282,
+          "format_fail": 0.0432,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.2797,
+          "format_fail": 0.0159,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3057,
+          "format_fail": 0.0273,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3383,
+          "format_fail": 0.0237,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.299,
+          "format_fail": 0.0359,
+          "gated": false
+        }
+      },
+      "codellama-34b": {
+        "base": {
+          "accuracy": 0.144,
+          "format_fail": 0.0862,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.312,
+          "format_fail": 0.0385,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3052,
+          "format_fail": 0.0164,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3471,
+          "format_fail": 0.0263,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3516,
+          "format_fail": 0.0281,
+          "gated": false
+        }
+      },
+      "llama31-8b": {
+        "base": {
+          "accuracy": 0.138,
+          "format_fail": 0.0479,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.2484,
+          "format_fail": 0.0435,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.2365,
+          "format_fail": 0.0135,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.2661,
+          "format_fail": 0.0201,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3125,
+          "format_fail": 0.0177,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.2698,
+          "format_fail": 0.0289,
+          "gated": false
+        },
+        "router": {
+          "accuracy": 0.2839,
+          "format_fail": 0.0216,
+          "gated": false
+        }
+      },
+      "starcoder2-15b": {
+        "base": {
+          "accuracy": 0.0,
+          "format_fail": 1.0,
+          "gated": true
+        },
+        "clean": {
+          "accuracy": 0.3422,
+          "format_fail": 0.0339,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.3299,
+          "format_fail": 0.0187,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3479,
+          "format_fail": 0.0346,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3737,
+          "format_fail": 0.0211,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3492,
+          "format_fail": 0.0268,
+          "gated": false
+        }
+      },
+      "gemma3-12b": {
+        "base": {
+          "accuracy": 0.1625,
+          "format_fail": 0.2227,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.3005,
+          "format_fail": 0.0263,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.2844,
+          "format_fail": 0.037,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.3029,
+          "format_fail": 0.0195,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3583,
+          "format_fail": 0.0141,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.3018,
+          "format_fail": 0.0385,
+          "gated": false
+        }
+      },
+      "codegemma-7b": {
+        "base": {
+          "accuracy": 0.1549,
+          "format_fail": 0.1289,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.2818,
+          "format_fail": 0.0357,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.2721,
+          "format_fail": 0.0198,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.2654,
+          "format_fail": 0.031,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.3266,
+          "format_fail": 0.0172,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.2773,
+          "format_fail": 0.0357,
+          "gated": false
+        }
+      },
+      "granite31-8b": {
+        "base": {
+          "accuracy": 0.1716,
+          "format_fail": 0.0982,
+          "gated": false
+        },
+        "clean": {
+          "accuracy": 0.2193,
+          "format_fail": 0.1039,
+          "gated": false
+        },
+        "breadth": {
+          "accuracy": 0.2146,
+          "format_fail": 0.0164,
+          "gated": false
+        },
+        "anchored": {
+          "accuracy": 0.2021,
+          "format_fail": 0.019,
+          "gated": false
+        },
+        "family": {
+          "accuracy": 0.2857,
+          "format_fail": 0.0281,
+          "gated": false
+        },
+        "merge": {
+          "accuracy": 0.2336,
+          "format_fail": 0.0625,
+          "gated": false
+        }
+      },
+      "_winners": {
+        "family": 8
+      }
+    }
+  }
+}
