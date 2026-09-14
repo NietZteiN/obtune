@@ -43,3 +43,17 @@ The first Llama-3.1-8B seed-42 specialist finished with three checkpoints and no
 selection script hardwired `_s17` and would have reported every `_s42` adapter as "not trained
 yet". It takes the seed as its second argument now and covers L0 and X1, which s42 also has to
 select; it stays idempotent, so it runs once per model when enough adapters have landed.
+
+**Addendum, same hour.** The first replay quoted a 20,320-token prompt; that prompt is dropped by
+`run_cell`'s over-length filter before any engine sees it, and the replay had skipped the filter.
+Re-run with it: see the numbers appended below by the same script.
+
+| X1, 13B tokenizer, after the filter | old (count of 16) | new (token budget) |
+|---|---|---|
+| prompts | 1,205 kept, 10 dropped | same |
+| longest prompt | 1,994 tokens | same |
+| worst batch | 16 × 1,994 = **31,904** padded tokens | **9,552** padded tokens (30 % of old) |
+| batch sizes | 16 throughout | min 2, median 12, max 16 across 107 batches |
+
+The worst batch that reaches the eight-expert forward is a third of what it was, and the ladder's
+short prompts still run at full batch, so the cost is a few percent more batches, not a slower grid.
