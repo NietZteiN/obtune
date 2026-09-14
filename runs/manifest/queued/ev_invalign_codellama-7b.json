@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_invalign_codellama-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_align.yaml",
+    "--model",
+    "codellama-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 85,
+  "meta": {
+    "note": "H-anchor-site (pre-registered): is representation anchoring less forward-locked than output-distribution KL?"
+  }
+}

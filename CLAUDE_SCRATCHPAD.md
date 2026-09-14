@@ -1960,3 +1960,37 @@ it should inherit their backward cost; nothing in its construction preserves the
 way the anchored objective's KL term does. I have been wrong twice today predicting merging behaves like
 breadth, so I state the alternative explicitly: if merging turns out backward-neutral, the paper's
 "every method pays" sentence is false as written and anchoring loses its uniqueness claim.
+
+## 2026-09-14 — H-anchor-site PRE-REGISTERED before submission
+
+**Cell inventory printed before this prediction: 0 backward cells for any `align_*` arm, on any model.**
+
+`cons_lam3`'s KL is computed over the teacher's ANSWER-TOKEN DISTRIBUTION (`objectives.py`:
+`log_softmax` of the student's and teacher's logits at the answer positions). It matches forward
+behaviour by construction and adds a second forward-pinning term on top of the cross-entropy, so it
+cannot preserve the reverse direction. Measured forward-collapse rates agree: `cons_lam3` 0.433 panel
+mean, the highest of any arm, against `mono_all` 0.314, `tuned_L0` 0.185, `base` 0.001.
+
+The `align_*` arms anchor **hidden states** at six layers (4, 10, 16, 21, 25, 30) instead — a
+direction-neutral constraint on the representation rather than on the emitted answer. They exist for
+CodeLlama-7B only, with a `mismatch` control (aligned to the WRONG parent) already trained.
+
+Stimulus: `configs/eval/inverse_align.yaml`, phase `inverse_generic`, one-shot, graded by execution,
+on L0–S2 and X1. Controls (`base`, `tuned_L0`, `mono_all`, `cons_lam3`, `tuned_X1`) already exist in
+that phase on the same items. Read on the common program subset; clustered bootstrap 2,000 / seed 17.
+
+**Rules, on CodeLlama-7B, pooled over L0–S2 and X1:**
+- **H-anchor-site-a (forward-locking):** CONFIRMED iff the forward-collapse rate of the best `align_*`
+  arm is below `cons_lam3`'s AND below `mono_all`'s; REFUTED iff it is above `cons_lam3`'s.
+- **H-anchor-site-b (backward cost):** CONFIRMED iff `align − base` backwards (exact arguments) has
+  ci_lo > 0 while `cons_lam3 − base` does not; REFUTED iff `align − base` ci_hi < 0.
+- The `mismatch` arm is the control: if it behaves like the matched arm on both, the effect is not
+  about aligning to the right parent and neither rule is informative. REPORTED either way.
+
+**Prediction: a CONFIRMED on (a) and INCONCLUSIVE on (b).** Representation anchoring should not bind
+the output head the way an output-distribution KL does, so I expect less forward collapse; but nothing
+in it teaches inversion either, so I do not expect a backward *gain* — only the absence of a loss.
+Forward accuracy of the align arms is already known to be at or slightly below breadth (0.380–0.415 on
+L0 against `mono_all` 0.413), so if (a) confirms, the trade is "the same forward benefit, less
+forward-locking", which is the paper's argument with a better anchor. If (a) is refuted the anchor
+site is not the mechanism and `cons_lam3`'s collapse needs a different explanation.

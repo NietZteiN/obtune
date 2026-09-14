@@ -1,0 +1,56 @@
+# W5: hidden-state alignment arms on the trainable grid, CodeLlama-7b (2026-09-04).
+# Trained by configs/train/align_codellama7b_py_mono.yaml. Cells land in rq2_generic so each
+# arm sits beside `tuned_L0` (the teacher and the control) and the `mono_all` seed band
+# (s17/s42/s101) it is read against. No H1; `final_eval` stays unspent.
+#
+# align_lam0 is the plumbing gate: same data, same knobs, lambda = 0 -- it must reproduce
+# mono_all inside the seed band or nothing else on this file means anything. The mismatched
+# twin (`invariance_mismatch`) is the control that decides whether a matched gain is semantic
+# (matched > mismatched) or just regularization (matched == mismatched).
+_extends: _base_eval.yaml
+
+phase: inverse_generic
+experiment_id: inverse_align
+run_tag: inverse_align
+language: python
+eval_source: heldout
+
+task: input
+sampling:
+  max_tokens: 128
+scoring:
+  float_tol: 1.0e-6
+  exec: {timeout_s: 2.0, mem_mb: 512, workers: 16}
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: align_lam0, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam0_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix, one_shot: true}
+  - {name: align_lam0.3, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam0.3_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix, one_shot: true}
+  - {name: align_lam1, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam1_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix, one_shot: true}
+  - {name: align_lam1_mm, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam1_k4_L4-10-16-21-25-30_mismatch_s17/best", arch: invariance_mismatch, train_cond: mix, one_shot: true}
+  - {name: align_lam3, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam3_k4_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix, one_shot: true}
+
+  - {name: align_span_lam3, adapter: "runs/adapters_align/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_lam3_span_L4-10-16-21-25-30_s17/best", arch: invariance, train_cond: mix, one_shot: true}
+
+# THE DIRECTION-NEUTRAL ANCHOR, ASKED BACKWARDS (2026-09-14).
+#
+# WHY THIS IS THE EXPERIMENT. `cons_lam3`'s KL is computed over the teacher's ANSWER-TOKEN
+# DISTRIBUTION (objectives.py: log_softmax of both logit rows at the answer positions). It is
+# therefore a forward-output-matching objective, and it cannot by construction preserve anything
+# about the reverse direction -- it adds a SECOND forward-pinning term on top of the cross-entropy.
+# The measured forward-collapse rate agrees: cons_lam3 is the most forward-locked arm on the panel
+# (0.433 mean against breadth's 0.314 and clean LoRA's 0.185).
+#
+# The align_* arms anchor the HIDDEN STATES at six layers instead, which is direction-neutral: it
+# constrains the representation the model builds of the program, not the answer it emits. If the
+# forward benefit survives while the forward-locking does not, the anchor belongs at the
+# representation and not at the output, and that is a different paper's method.
+#
+# Same phase as inverse_generic so the existing backward cells are resumed past. CodeLlama-7B only:
+# these adapters exist nowhere else.
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]
