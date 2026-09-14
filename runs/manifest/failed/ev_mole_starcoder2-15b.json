@@ -1,0 +1,28 @@
+{
+  "job_id": "ev_mole_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_starcoder2-15b.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.5,
+  "priority": 125,
+  "meta": {
+    "note": "master table: the mixture column, queued automatically once the router gate existed"
+  },
+  "slurm": {
+    "job_id": "396481",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T16:03:16.400781+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  }
+}

@@ -644,7 +644,16 @@ def abs_table(m):
          r"\textbf{The backward block is reported twice.} \emph{by execution} accepts any call that returns the gold value, and "
          r"inversion is many-to-one, so a guess that lands on a common return value scores; \emph{by exact arguments} requires the "
          r"gold call. Measured on CodeLlama-7B, 64--69\,\% of every system's backward successes are of the first kind, which is why "
-         r"the untuned model appears to read backwards almost as well as forwards. $\dagger$: format-failure rate above 0.25. "
+         # THE MARKER IS SPLIT IN TWO and the caption must say so. A gated backward cell is not
+         # necessarily unparseable: on several cells most of the failures are replies that are
+         # exactly the gold FORWARD answer, which is forward-locking showing up as a parse
+         # failure. Editing this text in sections/master.tex does NOT work -- inline_tables.py
+         # regenerates that block from here, which silently reverted an earlier hand fix.
+         r"the untuned model appears to read backwards almost as well as forwards. "
+         r"$\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. "
+         r"$\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the "
+         r"gold \emph{forward} answer --- the arm answered the other question rather than failing "
+         r"to parse. "
          r"`--': not run.}",
          r"\label{tab:master_abs_" + m.replace("-","") + "}",
          r"\begin{tabular}{@{}l" + "rr"*len(ABS_SYS) + "@{}}", r"\toprule",
