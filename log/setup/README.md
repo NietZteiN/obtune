@@ -66,3 +66,4 @@
 - [`2026-09-14_gpu-maximisation.md`](2026-09-14_gpu-maximisation.md) — idle a30 → second-seed 7B panel + backward-trained control; share not raised.
 - [`2026-09-14_gpu-maximisation-round-2.md`](2026-09-14_gpu-maximisation-round-2.md) — OOM requeues; Llama-3.1-8B second seed queued.
 - [`2026-09-14_a30-cannot-train-7b.md`](2026-09-14_a30-cannot-train-7b.md) — four OOMs; a30 retired at the panel batch shape.
+- [`2026-09-14_mixture-grids-oom-root-cause.md`](2026-09-14_mixture-grids-oom-root-cause.md) — batching by count, not memory; token budget fixes all four.
