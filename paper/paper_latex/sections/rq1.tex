@@ -39,7 +39,35 @@ family it did not. We state this as a \emph{difference} rather than as two separ
 one interval being positive while another is negative is not a test of the difference between them,
 and on four of the six models the unseen-side interval straddles zero on its own.
 
-\input{tables/rq1_dissociation}
+% >>> GENERATED TABLE rq1_dissociation -- from tables/rq1_dissociation.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/stack_dissociation.json
+% Do not edit by hand -- regenerate. Supersedes the hand-written '+3.49 / +2.90 / +3.05 across three model scales'.
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{RQ1: the dissociation, measured within model on one program set.} Breadth
+(\texttt{mono\_all}) against the clean-code control (\texttt{tuned\_L0}) on stacks built from
+\emph{seen} transforms and on stacks containing an \emph{unseen} family. The \emph{difference} is
+the measured quantity; the two levels are context, and on most models the unseen-side interval
+straddles zero on its own. Both halves are paired on the 319 programs common
+to every cell of both groups. Bold intervals exclude zero.}
+\label{tab:rq1_dissociation}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Model} & \textbf{Lineage} & \textbf{Seen stacks} & \textbf{Unseen inside} & \textbf{Difference} \\
+\midrule
+CodeLlama-7B & Meta & \textbf{$+3.36$ [$+1.57$, $+5.27$]} & \textbf{$-1.92$ [$-3.70$, $-0.14$]} & \textbf{$+5.28$ [$+3.20$, $+7.54$]} \\
+CodeLlama-34B & Meta & \textbf{$+2.27$ [$+0.44$, $+4.09$]} & $-0.77$ [$-2.62$, $+1.12$] & \textbf{$+3.03$ [$+0.78$, $+5.28$]} \\
+Llama-3.1-8B & Meta & \textbf{$+2.30$ [$+0.47$, $+4.15$]} & $-1.05$ [$-2.72$, $+0.63$] & \textbf{$+3.35$ [$+1.50$, $+5.30$]} \\
+StarCoder2-15B & BigCode & $+1.50$ [$-0.02$, $+3.00$] & $-1.19$ [$-2.93$, $+0.49$] & \textbf{$+2.68$ [$+0.77$, $+4.65$]} \\
+Gemma-3-12B & Google & \textbf{$+2.63$ [$+0.56$, $+4.64$]} & \textbf{$-2.09$ [$-3.81$, $-0.42$]} & \textbf{$+4.72$ [$+2.62$, $+6.85$]} \\
+Granite-3.1-8B & IBM & \textbf{$+3.66$ [$+1.54$, $+5.68$]} & $-0.24$ [$-2.02$, $+1.57$] & \textbf{$+3.91$ [$+1.41$, $+6.32$]} \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{difference significant on}} & 6 of 6 models \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE rq1_dissociation
 
 Table~\ref{tab:rq1_dissociation} is the core measurement. Breadth's advantage over clean-code tuning
 is \textbf{2.7 to 5.3 points larger} on stacks built from seen transforms than on stacks containing
@@ -53,7 +81,33 @@ The second test is independent of the first and gives the same answer. We evalua
 adapters, on the same programs, asked backwards, and grade by execution: a prediction is correct if
 the produced call actually returns the gold value.
 
-\input{tables/direction_ratio}
+% >>> GENERATED TABLE direction_ratio -- from tables/direction_ratio.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/direction_ratio_codellama7b.json
+% Do not edit by hand -- regenerate. New: the spine of the reorganised argument (docs/PAPER_REORG.md).
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{The direction ratio: how much of a forward gain survives the task being run
+backwards.} Forward is output prediction; backward is input prediction on the same programs, graded
+by execution. No adapter is trained on the backward task, so any backward gain is transferred
+program understanding rather than task fitting. $\mathrm{DR} < 0$ means the arm bought forward
+accuracy by \emph{losing} backward competence. Every adaptation method that fits the forward task
+directly is negative; only anchoring and family exposure are not. Both directions use the same 412 programs and the same six conditions.
+Bold intervals exclude zero; the ratio is descriptive and is read with its components.}
+\label{tab:direction_ratio}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Method} & \textbf{Arm} & \textbf{Forward gain} & \textbf{Backward gain} & \textbf{DR} \\
+\midrule
+Format-only control & \texttt{formatonly} & \textbf{$+1.47$ [$+0.90$, $+2.10$]} & \textbf{$-0.44$ [$-0.81$, $-0.08$]} & $-0.30$ \\
+Clean-code tuning & \texttt{tuned\_L0} & \textbf{$+19.34$ [$+16.87$, $+21.81$]} & $-1.60$ [$-3.41$, $+0.35$] & $-0.08$ \\
+Training breadth & \texttt{mono\_all} & \textbf{$+19.46$ [$+16.68$, $+22.01$]} & $-0.89$ [$-2.86$, $+1.04$] & $-0.05$ \\
+Paired consistency (ours) & \texttt{cons\_lam3} & \textbf{$+20.88$ [$+18.07$, $+23.49$]} & $+0.62$ [$-1.56$, $+2.81$] & $+0.03$ \\
+Family exposure & \texttt{tuned\_X1} & \textbf{$+17.35$ [$+14.98$, $+19.73$]} & \textbf{$+1.63$ [$+0.11$, $+3.20$]} & $+0.09$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE direction_ratio
 
 Table~\ref{tab:direction_ratio} reports the \emph{direction ratio} --- backward gain divided by
 forward gain, both measured against the untuned model. A negative ratio means the arm bought forward

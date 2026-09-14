@@ -1994,3 +1994,57 @@ Forward accuracy of the align arms is already known to be at or slightly below b
 L0 against `mono_all` 0.413), so if (a) confirms, the trade is "the same forward benefit, less
 forward-locking", which is the paper's argument with a better anchor. If (a) is refuted the anchor
 site is not the mechanism and `cons_lam3`'s collapse needs a different explanation.
+
+---
+
+## 2026-09-14 · The mixture, backwards — pre-registered before the cells exist
+
+**Why.** The paper's three main methods are the merge, the router and the breadth-trained LoRA, and
+its argument is that an adaptation must be tested in both directions. Two of the three have a
+backward number. The router has none, on any model. That is not an oversight in the eval grid: it
+was not runnable, because `mole/eval_mole.py` never passed `task` to `run_cell`, which defaults it
+to `"output"`. A config asking for `task: input` would have been evaluated FORWARDS and written into
+the inverse phase, and the number would have read as "the router is unexpectedly good at input
+prediction" — the claim under test. Fixed today; `configs/eval/mole_inverse_<model>.yaml` for all
+eight.
+
+**Stimulus.** Phase `inverse_generic` (the same phase as every other backward cell, so `base` resumes
+from the vLLM read and nothing is recomputed), `task: input`, the frozen L0 one-shot inverse demo on
+every arm, graded by execution with `args_exact` as the strict secondary. 23 conditions: the seven
+ladder conditions and all sixteen stacks. Arms: `mole_router`, `mole_hardrouter`, and the two fixed
+mixtures `mole_uniform` / `mole_random` as controls, so "the mixture is worth something" and "the
+ROUTING is worth something" stay separable backwards exactly as they are forwards.
+
+**Cell inventory before any prediction.** `results/cells/inverse_generic/<model>/python/` currently
+holds 131–245 cells per model across 19 systems, none of them `mole_*`. Every mixture backward cell
+named below does not exist yet. Gates exist for CodeLlama-7B, Granite-3.1-8B, Llama-3.1-8B,
+CodeGemma-7B and StarCoder2-15B; CodeLlama-13B, Gemma-3-12B and CodeLlama-34B are still training.
+
+**Decision rules, on CodeLlama-7B first, pooled over the six SEEN stacks against the three
+UNSEEN-containing ones, exact arguments, paired on one program set, 2,000 resamples / seed 17
+(`scripts/analysis/65_backward_stacks.py`):**
+
+- **H-router-bwd-a (does routing cost what breadth costs?):** CONFIRMED iff `mole_router`'s relative
+  drop is indistinguishable from `base`'s (the CI on the difference straddles 0); REFUTED iff it is
+  significantly larger, i.e. the router pays the same tax breadth pays (breadth −40.0 % against
+  base's −15.0 %).
+- **H-router-bwd-b (is it the routing or the mixture?):** INFORMATIVE only if `mole_router` and
+  `mole_uniform` differ backwards. If they do not, the backward result is a property of averaging
+  eight adapters and says nothing about the gate — which is what the FORWARD ladder already found
+  (router beats a random gate by +0.0000 on single transforms).
+- A `mole_*` cell over the 0.25 format gate is reported as gated and excluded, as everywhere else.
+
+**Prediction: REFUTED on (a), and (b) not informative.** The router's experts are the same per-type
+adapters whose breadth-trained sibling loses backward competence, and the gate selects among them
+rather than changing what they encode, so I expect the router to sit with breadth and not with base
+— somewhere near −35 to −45 %. On (b) I expect uniform and router to be within noise of each other
+backwards, for the same reason they are forwards: the gate is saturated and the arms differ in how
+they weight experts, not in what the experts know. If the router instead lands near base, the tax is
+a property of the single merged weight update and not of using adapters at all, which would be a
+better result for the paper than the one I expect and would need saying plainly.
+
+**What would make me distrust the number:** `base` resuming from a vLLM cell while the mixture arms
+generate through HFEngine means the untuned reference and the treatment come from different engines.
+That is fine for accuracy (both are greedy, same prompts, same grader) but it makes
+`assert_adapter_effective` weaker than usual — it can pass on engine noise alone. Check the gate
+report and the routing entropy before trusting a small effect.
