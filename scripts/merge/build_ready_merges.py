@@ -32,6 +32,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = ["L1b", "L1r", "L2", "S1", "S2"]
+#: Checkpoint-select covers S3 and S4 as well, because the MIXTURE arm needs eight experts
+#: (L0..S2 plus S3 and S4) while a MERGE needs only L0 plus SPEC. Keeping the two lists separate is
+#: the point: if S3/S4 joined SPEC, `ready()` would hold every model's merges hostage to specialists
+#: the merge does not use. Without this list the S3/S4 trainings queued on 2026-09-13 would have
+#: finished and never been selected, and the gates would have waited forever on 6/8 experts.
+CKPT_SPEC = SPEC + ["S3", "S4"]
 MODELS = ["codellama-13b", "codellama-34b", "llama31-8b", "starcoder2-15b",
           "gemma3-12b", "codegemma-7b", "granite31-8b"]
 #: (output name, --combination-type, config). The l0merge arms use the same combination types but
@@ -73,7 +79,7 @@ def needs_ckpt_select(m: str) -> list[str]:
     """Specialists that finished training but have no `best/` yet."""
     d = ROOT / "runs/adapters" / m / "python"
     out = []
-    for c in SPEC:
+    for c in CKPT_SPEC:
         a = d / f"{c}_r32_s17"
         if (a / "training_summary.json").exists() and not (a / "best/adapter_model.safetensors").exists():
             out.append(c)

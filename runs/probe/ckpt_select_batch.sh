@@ -12,7 +12,9 @@ set -u
 cd /work/jvl210002/migration/obtune
 source scripts/env.sh
 M="$1"
-for c in L1b L1r L2 S1 S2; do
+# S3 and S4 are here for the MIXTURE arm's eight experts; a merge needs only L1b..S2. Untrained
+# adapters are skipped below, so listing them costs nothing before they exist.
+for c in L1b L1r L2 S1 S2 S3 S4; do
   d="runs/adapters/$M/python/${c}_r32_s17"
   [ -f "$d/training_summary.json" ] || { echo "skip $c: not trained yet"; continue; }
   [ -e "$d/best/adapter_model.safetensors" ] && { echo "skip $c: best/ already exists"; continue; }
