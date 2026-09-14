@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_inv1shot_granite31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.eval_vllm",
+    "--config",
+    "eval/inverse_ladder_1shot.yaml",
+    "--model",
+    "granite31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.8,
+  "priority": 128,
+  "meta": {
+    "note": "REPAIR: the backward ladder cells for this model were written zero-shot (inverse_core.yaml, prompt_id inverse_v1) while every backward stack cell, every backward merge cell and every CodeLlama-7B backward cell is one-shot (inverse_1shot_v1). Two prompts in one phase and one column of the master table. New phase inverse_1shot; the old cells are kept."
+  },
+  "slurm": {
+    "job_id": "396771",
+    "node": "g-08-02",
+    "partition": "h200",
+    "exit_code": 1,
+    "finished_utc": "2026-09-14T13:10:53.744467+00:00"
+  }
+}

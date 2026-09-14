@@ -31,7 +31,7 @@ from pathlib import Path
 import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "analysis")); sys.path.insert(0, str(ROOT / "src"))
-from cellkit import load_cell  # noqa: E402
+from cellkit import check_one_prompt, load_cell  # noqa: E402
 MODELS = sys.argv[1:] or ["codellama-7b", "llama31-8b", "starcoder2-15b", "granite31-8b"]
 LADDER = ["L0", "L1b", "L1r", "L2", "S1", "S2", "X1"]
 ARMS = ["merge_dare_ties", "merge_ties"]
@@ -48,6 +48,11 @@ def _by(df, keep):
     return {p: g["correct"].to_numpy(dtype=float) for p, g in df.groupby("snippet_id") if p in keep}
 
 def pooled(cells, treat, control, conds, progs):
+    # This script has its OWN pooled(), so cellkit's guard never sees these frames. It has to be
+    # called explicitly, and this is the contrast the 2026-09-14 prompt fault actually distorts:
+    # the merge arms are one-shot and base/breadth/anchored are zero-shot on seven of eight models.
+    check_one_prompt([cells[(treat, c)] for c in conds] + [cells[(control, c)] for c in conds],
+                     label=f"{treat} - {control}")
     A = {c: _by(cells[(treat, c)], progs) for c in conds}; B = {c: _by(cells[(control, c)], progs) for c in conds}
     P = sorted(progs); rng = np.random.default_rng(SEED); idx = np.arange(len(P))
     def d(pick):

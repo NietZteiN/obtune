@@ -140,6 +140,11 @@ def contrast(block, treat: str, control: str, conds: Iterable[str], label: Optio
     if t is None or c is None:
         return None
     lab = label or f"{treat} - {control} @ {'+'.join(conds) if len(conds) > 1 else conds[0]}"
+    # ACROSS systems, not only within one. The 2026-09-14 fault was exactly this shape:
+    # 62_merge_backward.py contrasts one-shot merge cells against zero-shot base/breadth cells, and
+    # each system's own cells are internally consistent, so a per-system check never fires. The
+    # comparison is what crosses the boundary.
+    check_one_prompt([t, c], label=lab)
     return bootstrap_delta(t, c, lab, eq_margin=eq_margin).to_dict()
 
 
