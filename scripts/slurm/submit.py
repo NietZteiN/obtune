@@ -241,7 +241,15 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
                  partition: str, gres: str, cpus: int, mem: str, time: str,
                  nodelist: str | None = None, exclude: str | None = None,
                  dependency: str | None = None, qos: str | None = None) -> str:
-    command = "python " + " ".join(shlex.quote(a) for a in argv)
+    # `--argv` runs the PROJECT PYTHON, so the tokens are a python invocation -- except when they
+    # are obviously not. Passing a shell script produced `python bash runs/probe/...`, i.e.
+    # "can't open file '<root>/bash'", which SLURM reports as a one-second FAILED with exit 2 and
+    # is easy to read as a cluster problem; it cost two checkpoint-selection jobs on 2026-09-15.
+    # Detecting the two unambiguous cases costs nothing and removes the footgun.
+    if argv and (argv[0] in ("bash", "sh") or argv[0].endswith(".sh")):
+        command = " ".join(shlex.quote(a) for a in argv)
+    else:
+        command = "python " + " ".join(shlex.quote(a) for a in argv)
     # See the g-06-01 note below: vLLM hangs there, training does not. Rather than rely on
     # every future submission remembering, exclude the node automatically for anything that
     # builds an engine. An explicit --exclude/--nodelist still wins, so the decision can be

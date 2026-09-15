@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_mole_granite31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_granite31-8b.yaml",
+    "--model",
+    "granite31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.0,
+  "priority": 10,
+  "meta": {
+    "note": "RESUME 2026-09-15: 1 cell left. Previous attempt hit WALLTIME, not an error -- zero OOM retries fired in any of these logs, so the token-budget batching is holding and the jobs are simply slow. Walltime set to 4h from that run's own measured rate. Written cells are skipped on resume."
+  },
+  "slurm": {
+    "job_id": "404764",
+    "node": "g-06-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-15T19:53:32.394185+00:00"
+  }
+}

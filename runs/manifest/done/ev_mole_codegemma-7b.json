@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_mole_codegemma-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_codegemma-7b.yaml",
+    "--model",
+    "codegemma-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 5.0,
+  "priority": 10,
+  "meta": {
+    "note": "RESUME 2026-09-15: 6 cells left; previous run did 11 in 5h. Previous attempt hit WALLTIME, not an error -- zero OOM retries fired in any of these logs, so the token-budget batching is holding and the jobs are simply slow. Walltime set to 10h from that run's own measured rate. Written cells are skipped on resume."
+  },
+  "slurm": {
+    "job_id": "404768",
+    "node": "g-05-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-15T22:38:06.422912+00:00"
+  }
+}

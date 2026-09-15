@@ -81,10 +81,29 @@ class MoLELinear(nn.Module):
         # cpu, different from other tensors on cuda:0` on the first real forward. It never
         # showed up in `--dry-run`, which runs `device_map=None` and is therefore CPU-only
         # on both sides. Matching dtype here too keeps the forward free of per-call casts.
+        # ... BUT `base.weight.device` CAN BE `meta` (2026-09-15). When accelerate has to offload
+        # part of the model -- which on this cluster happens only for the 34B, and only on nodes
+        # where it does not fit outright -- the offloaded layers' weights sit on the meta device and
+        # are materialised by a hook immediately before the layer runs. Registering the bank with
+        # `.to(device=meta)` silently produces a meta tensor with NO DATA: it costs nothing, raises
+        # nothing, and survives until the first forward, where `self.A_cat.to(x.device)` dies with
+        # "Cannot copy out of meta tensor; no data!" one minute into a 24-hour job. Two grids were
+        # lost that way before this was found, and it never appears on the seven smaller models.
+        #
+        # The layer's real device is on accelerate's hook, so prefer that; fall back to CPU, which
+        # the forward's own `.to(x.device)` then handles correctly. Never meta.
         dev = base.weight.device
         dt = base.weight.dtype
+        if dev.type == "meta":
+            ed = getattr(getattr(base, "_hf_hook", None), "execution_device", None)
+            dev = torch.device(ed) if ed is not None else torch.device("cpu")
+            # dtype is still readable from a meta tensor; only the data is absent.
         self.register_buffer("A_cat", bank.A_cat.to(device=dev, dtype=dt), persistent=False)
         self.register_buffer("B_cat", bank.B_cat.to(device=dev, dtype=dt), persistent=False)
+        if self.A_cat.is_meta or self.B_cat.is_meta:      # belt and braces: fail at attach, not at
+            raise RuntimeError(                            # the first forward an hour later
+                "mixture bank landed on the meta device; the expert weights would have no data. "
+                f"base.weight.device={base.weight.device}, resolved dev={dev}")
 
     def extra_repr(self) -> str:
         return f"experts={self.n_experts}, rank={self.rank}"

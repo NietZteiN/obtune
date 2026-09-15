@@ -70,3 +70,4 @@
 - [`2026-09-14_work-quota-full.md`](2026-09-14_work-quota-full.md) — quota full mid-run; trainings held; cache moving to scratch.
 - [`2026-09-14_checkpoint-archive.md`](2026-09-14_checkpoint-archive.md) — 357 GB moved to scratch with symlinks; /work writable again.
 - [`2026-09-15_qwen-run-was-out-of-scope.md`](2026-09-15_qwen-run-was-out-of-scope.md) — an impermissible Qwen run, its removal from the paper, and the inventory awaiting a deletion decision.
+- [`2026-09-15_meta-tensor-killed-the-34b-grids.md`](2026-09-15_meta-tensor-killed-the-34b-grids.md) — a dataless expert bank on the meta device, and two submission faults.
