@@ -2199,3 +2199,10 @@ My model of the mechanism was wrong: locking follows what an adapter was *traine
 mixture), not how many are combined. `log/modularity/2026-09-14_router-backwards-first-model.md`.
 Remaining four models: same rule, verdict is the count.
 
+**VERDICT, second model (Granite-3.1-8B, 2026-09-14): H-router-locks CONFIRMED on the threshold clause,
+short of the band.** Router collapse 0.089 — above 0.05, below the 0.10–0.35 band the rule named, a gap
+the rule did not cover; recorded as such rather than rounded. Merges 0.001/0.000. Backwards the router is
+−2.18\* below untuned by execution, +0.54\*/+2.05\* above uniform, +1.48\* above breadth, 1.13\* below the
+merge. After two models the hypothesis is SPLIT (Llama 0.001, Granite 0.089): whether the mixture locks is
+model-dependent; whether the merge does is not. `log/modularity/2026-09-14_router-backwards-second-model.md`.
+
