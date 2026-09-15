@@ -69,3 +69,4 @@
 - [`2026-09-14_mixture-grids-oom-root-cause.md`](2026-09-14_mixture-grids-oom-root-cause.md) — batching by count, not memory; token budget fixes all four.
 - [`2026-09-14_work-quota-full.md`](2026-09-14_work-quota-full.md) — quota full mid-run; trainings held; cache moving to scratch.
 - [`2026-09-14_checkpoint-archive.md`](2026-09-14_checkpoint-archive.md) — 357 GB moved to scratch with symlinks; /work writable again.
+- [`2026-09-15_qwen-run-was-out-of-scope.md`](2026-09-15_qwen-run-was-out-of-scope.md) — an impermissible Qwen run, its removal from the paper, and the inventory awaiting a deletion decision.

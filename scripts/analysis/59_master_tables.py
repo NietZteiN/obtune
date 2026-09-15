@@ -558,7 +558,11 @@ ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D
 # never built for it (ICL, anchored, family) and render `--`.
 # H1 IS DELIBERATELY ABSENT from QWEN_ROWS. Qwen has H1 cells on disk from the pilot; CLAUDE.md
 # 3.2 rule 3 forbids any further read, and this table would be a read.
-ABS_EXTRA_MODELS = ["qwen25c-1.5b"]
+# QWEN REMOVED 2026-09-15 at the user's instruction ("don't run Qwen ... we're not allowed to").
+# The pilot model is out of scope for this project: it must not be run, and it must not appear in
+# the paper. Left as an empty list rather than deleting the mechanism, because ABS_ROWS_BY_MODEL /
+# ABS_PH_BY_MODEL below are generic and may serve another off-panel model later.
+ABS_EXTRA_MODELS: list[str] = []
 QWEN_ROWS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4"] + SEEN_STACKS
 assert "H1" not in QWEN_ROWS, "H1 is quarantined (CLAUDE.md 3.2)"
 ABS_ROWS_BY_MODEL = {"qwen25c-1.5b": QWEN_ROWS}

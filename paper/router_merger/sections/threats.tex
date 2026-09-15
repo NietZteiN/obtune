@@ -17,7 +17,7 @@ grade where we can measure it. \textbf{Format gating removes cells, not at rando
 format-failure rate exceeds 0.25 is excluded from every mean; those cells concentrate in the backward
 direction and on the weaker models, so the backward block is read on fewer cells than the forward one
 and its means are correspondingly less stable. Gated cells are marked rather than hidden.
-\textbf{The backward gain is a panel result, and the one sub-2\,B model we tested does not show it.} On the 1.5\,B pilot (Table~\ref{tab:master_abs_qwen25c15b}) the DARE-TIES merge is significantly \emph{below} the untuned model backwards ($-2.24$ points), where on all eight panel models it is at or above it. The ordering still replicates there --- the merges lose 0.1--2.2 points where clean-code tuning loses 6.8 and breadth 8.7 --- so what does not carry to that model is the gain, not the comparison between arms. Scale is the obvious explanation and is not identified: the pilot also differs in lineage, in training era, and in its condition set. Every claim we make about the merge being at or above the untuned model is scoped to the eight-model panel. \textbf{Merge density was tuned off-panel.} The DARE-TIES density of 0.5 was selected by a sweep on
+\textbf{Merge density was tuned off-panel.} The DARE-TIES density of 0.5 was selected by a sweep on
 the 1.5\,B pilot model and applied unchanged to all eight panel models; it is therefore not fitted to
 the panel, but neither is it tuned for it. \textbf{Instrument failures are reported, not omitted.}
 The causal attention instrument is inert (an identifier knockout moves the gold log-probability by
