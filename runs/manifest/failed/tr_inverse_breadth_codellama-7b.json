@@ -1,0 +1,27 @@
+{
+  "job_id": "tr_inverse_breadth_codellama-7b",
+  "kind": "train",
+  "argv": [
+    "src/obtune/train_sft.py",
+    "--config",
+    "train/inverse_breadth_py.yaml",
+    "--model",
+    "codellama-7b",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 289,
+  "meta": {
+    "note": "THE BACKWARD-TRAINED CONTROL. OOM'd on a30 at step 0 (872 MiB short of 23.49 GB), as did the three s42 specialists -- the panel batch shape does not fit a30 for ANY 7B recipe. h100 backfill, one notch ahead of the specialists because two eval configs wait on it."
+  },
+  "slurm": {
+    "job_id": "399419",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 124,
+    "finished_utc": "2026-09-15T03:17:51.458532+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  }
+}

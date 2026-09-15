@@ -16,5 +16,12 @@
   "priority": 11,
   "meta": {
     "note": "THE PILOT MODEL, BACKWARDS (user: 'I still want to see backward'). qwen25c-1.5b had 2,008 forward cells and zero with task=input -- the inverse task was designed after the pilot -- so its master table could only ever be half a table. 5 arms x 14 conditions. 1.5B, so it is the one job this project can still put on the otherwise-idle a30 partition; h100 takes it otherwise."
+  },
+  "slurm": {
+    "job_id": "400692",
+    "node": "g-02-01",
+    "partition": "a30",
+    "exit_code": 0,
+    "finished_utc": "2026-09-15T03:06:54.067345+00:00"
   }
 }

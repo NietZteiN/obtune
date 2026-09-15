@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_mole_llama31-8b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_llama31-8b.yaml",
+    "--model",
+    "llama31-8b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 1.0,
+  "priority": 10,
+  "meta": {
+    "note": "top-up: the three conditions its config was missing (C_L1r_X1m, C_S1_X1s, C3_L1r_S1_X1) x 5 mixture arms. Resume skips the 101 cells already written. Completes Llama's forward column so its master tables can go in the body."
+  }
+}

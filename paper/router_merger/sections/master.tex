@@ -3,7 +3,9 @@
 
 Tables~\ref{tab:master_abs_codellama7b} and~\ref{tab:master_abs_codellama7b_bwd} are the reference the research
 questions draw on, forward and backward; Table~\ref{tab:master_abs_qwen25c15b} repeats the forward reading on the
-1.5\,B model the project piloted on, which predates the held-out family and the deeper stacks. Bold rows average
+1.5\,B model the project piloted on, which predates the held-out family and the deeper stacks.
+Tables~\ref{tab:master_abs_llama318b} and~\ref{tab:master_abs_llama318b_bwd} give the same pair for
+Llama-3.1-8B, the second model complete in both directions. Bold rows average
 each group of conditions, and an accuracy is coloured where it sits above or below the untuned model. The raw
 accuracy of every method on every condition and stack for CodeLlama-7B, the one model on which every
 arm exists, forward and, for the ladder, backward. Every number is a strict exact-match accuracy on the
@@ -146,6 +148,103 @@ Appendices~\ref{app:master} and \ref{app:routing}.
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_qwen25c15b
+
+% Llama-3.1-8B: the second panel model complete in BOTH directions (161/161 backward) and the
+% one whose router was read first. Moved here from the appendix at the user's request; removed
+% there rather than repeated, because two \label{tab:master_abs_llama318b} would be a
+% duplicate-label error and every \ref would resolve to whichever came last.
+% >>> GENERATED TABLE master_abs_llama318b -- from tables/master_abs_llama318b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-15 02:06 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* for llama31-8b (raw accuracies, and % of base)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that family is not held out. The \textbf{held-out family} average row is unaffected --- it names a group of conditions, not an arm. `--': not run.}
+\label{tab:master_abs_llama318b}
+\begin{tabular}{@{}lrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
+\midrule
+\texttt{L0} & 0.258 & 100 & \textcolor{green!55!black}{0.320} & 124 & \textcolor{green!55!black}{0.448} & 174 & \textcolor{green!55!black}{0.426} & 165 & \textcolor{green!55!black}{0.445} & 172 & \textcolor{green!55!black}{0.475} & 184 & \textcolor{green!55!black}{0.462} & 179 \\
+\texttt{L1b} & 0.222 & 100 & \textcolor{green!55!black}{0.276} & 124 & \textcolor{green!55!black}{0.361} & 163 & \textcolor{green!55!black}{0.387} & 174 & \textcolor{green!55!black}{0.407} & 183 & \textcolor{green!55!black}{0.422} & 190 & \textcolor{green!55!black}{0.386} & 174 \\
+\texttt{L1r} & 0.242 & 100 & \textcolor{green!55!black}{0.284} & 118 & \textcolor{green!55!black}{0.387} & 160 & \textcolor{green!55!black}{0.387} & 160 & \textcolor{green!55!black}{0.405} & 167 & \textcolor{green!55!black}{0.407} & 168 & \textcolor{green!55!black}{0.398} & 164 \\
+\texttt{L2} & 0.215 & 100 & \textcolor{green!55!black}{0.278} & 130 & \textcolor{green!55!black}{0.391} & 182 & \textcolor{green!55!black}{0.386} & 180 & \textcolor{green!55!black}{0.409} & 190 & \textcolor{green!55!black}{0.425} & 198 & \textcolor{green!55!black}{0.396} & 184 \\
+\texttt{S1} & 0.213 & 100 & \textcolor{green!55!black}{0.256} & 120 & \textcolor{green!55!black}{0.395} & 185 & \textcolor{green!55!black}{0.391} & 183 & \textcolor{green!55!black}{0.413} & 194 & \textcolor{green!55!black}{0.428} & 201 & \textcolor{green!55!black}{0.412} & 193 \\
+\texttt{S2} & 0.205 & 100 & \textcolor{green!55!black}{0.272} & 133 & \textcolor{green!55!black}{0.413} & 201 & \textcolor{green!55!black}{0.413} & 201 & \textcolor{green!55!black}{0.445} & 217 & \textcolor{green!55!black}{0.456} & 222 & \textcolor{green!55!black}{0.437} & 213 \\
+\texttt{X1} & 0.132 & 100 & \textcolor{green!55!black}{0.161} & 122 & \textcolor{green!55!black}{0.249} & 189 & \textcolor{green!55!black}{0.222} & 168 & \textcolor{green!55!black}{0.255} & 194 & \textcolor{green!55!black}{0.280} & 212 & \textcolor{green!55!black}{0.266} & 202 \\
+\texttt{C\_L1b\_S1} & 0.152 & 100 & \textcolor{green!55!black}{0.185} & 122 & \textcolor{green!55!black}{0.279} & 184 & \textcolor{green!55!black}{0.338} & 223 & \textcolor{green!55!black}{0.368} & 243 & \textcolor{green!55!black}{0.369} & 243 & \textcolor{green!55!black}{0.307} & 203 \\
+\texttt{C\_L1r\_S1} & 0.162 & 100 & \textcolor{green!55!black}{0.220} & 136 & \textcolor{green!55!black}{0.303} & 187 & \textcolor{green!55!black}{0.352} & 217 & \textcolor{green!55!black}{0.363} & 224 & \textcolor{green!55!black}{0.366} & 226 & \textcolor{green!55!black}{0.328} & 202 \\
+\texttt{C\_S1\_L1r} & 0.159 & 100 & \textcolor{green!55!black}{0.208} & 131 & \textcolor{green!55!black}{0.277} & 174 & \textcolor{green!55!black}{0.338} & 213 & \textcolor{green!55!black}{0.354} & 223 & \textcolor{green!55!black}{0.347} & 219 & \textcolor{green!55!black}{0.306} & 193 \\
+\texttt{C\_L2\_S4} & 0.205 & 100 & \textcolor{green!55!black}{0.257} & 125 & \textcolor{green!55!black}{0.349} & 170 & \textcolor{green!55!black}{0.386} & 188 & \textcolor{green!55!black}{0.401} & 196 & \textcolor{green!55!black}{0.413} & 201 & \textcolor{green!55!black}{0.383} & 187 \\
+\texttt{C\_L1r\_S3} & 0.198 & 100 & \textcolor{green!55!black}{0.266} & 134 & \textcolor{green!55!black}{0.367} & 185 & \textcolor{green!55!black}{0.382} & 193 & \textcolor{green!55!black}{0.398} & 201 & \textcolor{green!55!black}{0.407} & 205 & \textcolor{green!55!black}{0.387} & 195 \\
+\texttt{C\_S4\_S3} & 0.214 & 100 & \textcolor{green!55!black}{0.269} & 126 & \textcolor{green!55!black}{0.421} & 197 & \textcolor{green!55!black}{0.411} & 192 & \textcolor{green!55!black}{0.444} & 208 & \textcolor{green!55!black}{0.459} & 215 & \textcolor{green!55!black}{0.437} & 204 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.183 & 100 & \textcolor{green!55!black}{0.233} & 128 & \textcolor{green!55!black}{0.329} & 180 & \textcolor{green!55!black}{0.374} & 205 & \textcolor{green!55!black}{0.391} & 214 & \textcolor{green!55!black}{0.399} & 218 & \textcolor{green!55!black}{0.370} & 202 \\
+\texttt{C3\_S1\_S3\_S4} & 0.160 & 100 & \textcolor{green!55!black}{0.220} & 137 & \textcolor{green!55!black}{0.359} & 224 & \textcolor{green!55!black}{0.376} & 234 & \textcolor{green!55!black}{0.393} & 245 & \textcolor{green!55!black}{0.415} & 258 & \textcolor{green!55!black}{0.377} & 235 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.160 & 100 & \textcolor{green!55!black}{0.208} & 130 & \textcolor{green!55!black}{0.279} & 174 & \textcolor{green!55!black}{0.342} & 213 & \textcolor{green!55!black}{0.358} & 223 & \textcolor{green!55!black}{0.353} & 220 & \textcolor{green!55!black}{0.319} & 199 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.140 & 100 & \textcolor{green!55!black}{0.191} & 137 & \textcolor{green!55!black}{0.263} & 189 & \textcolor{green!55!black}{0.335} & 240 & \textcolor{green!55!black}{0.358} & 256 & \textcolor{green!55!black}{0.342} & 245 & \textcolor{green!55!black}{0.310} & 222 \\
+\texttt{C\_L1r\_X1} & 0.100 & 100 & \textcolor{green!55!black}{0.118} & 117 & \textcolor{green!55!black}{0.165} & 164 & \textcolor{green!55!black}{0.181} & 180 & \textcolor{green!55!black}{0.207} & 206 & \textcolor{green!55!black}{0.204} & 203 & \textcolor{green!55!black}{0.184} & 183 \\
+\texttt{C\_X1\_S1} & 0.130 & 100 & \textcolor{green!55!black}{0.179} & 138 & \textcolor{green!55!black}{0.271} & 209 & \textcolor{green!55!black}{0.225} & 173 & \textcolor{green!55!black}{0.253} & 194 & \textcolor{green!55!black}{0.294} & 226 & \textcolor{green!55!black}{0.296} & 228 \\
+\texttt{C\_S2\_X1} & 0.170 & 100 & \textcolor{green!55!black}{0.212} & 124 & \textcolor{green!55!black}{0.296} & 174 & \textcolor{green!55!black}{0.284} & 167 & \textcolor{green!55!black}{0.317} & 187 & \textcolor{green!55!black}{0.336} & 198 & \textcolor{green!55!black}{0.317} & 187 \\
+\texttt{C\_L1r\_X1m} & 0.115 & 100 & \textcolor{green!55!black}{0.148} & 129 & \textcolor{green!55!black}{0.184} & 160 & \textcolor{green!55!black}{0.216} & 188 & \textcolor{green!55!black}{0.232} & 202 & -- & -- & \textcolor{green!55!black}{0.217} & 188 \\
+\texttt{C\_S1\_X1s} & 0.193 & 100 & \textcolor{green!55!black}{0.231} & 119 & \textcolor{green!55!black}{0.341} & 176 & \textcolor{green!55!black}{0.299} & 155 & \textcolor{green!55!black}{0.335} & 174 & -- & -- & \textcolor{green!55!black}{0.349} & 181 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.105 & 100 & \textcolor{green!55!black}{0.156} & 149 & \textcolor{green!55!black}{0.194} & 185 & \textcolor{green!55!black}{0.207} & 198 & \textcolor{green!55!black}{0.224} & 214 & -- & -- & \textcolor{green!55!black}{0.215} & 205 \\
+\cmidrule(l{2pt}r{2pt}){1-15}
+\textbf{single obfuscation} & 0.219 & 100 & \textcolor{green!55!black}{0.273} & 125 & \textcolor{green!55!black}{0.390} & 178 & \textcolor{green!55!black}{0.393} & 179 & \textcolor{green!55!black}{0.416} & 189 & \textcolor{green!55!black}{0.427} & 195 & \textcolor{green!55!black}{0.406} & 185 \\
+\textbf{held-out family} & 0.132 & 100 & \textcolor{green!55!black}{0.161} & 122 & \textcolor{green!55!black}{0.249} & 189 & \textcolor{green!55!black}{0.222} & 168 & \textcolor{green!55!black}{0.255} & 194 & \textcolor{green!55!black}{0.280} & 212 & \textcolor{green!55!black}{0.266} & 202 \\
+\textbf{depth 2, all seen} & 0.182 & 100 & \textcolor{green!55!black}{0.234} & 129 & \textcolor{green!55!black}{0.332} & 183 & \textcolor{green!55!black}{0.368} & 203 & \textcolor{green!55!black}{0.388} & 214 & \textcolor{green!55!black}{0.394} & 217 & \textcolor{green!55!black}{0.358} & 197 \\
+\textbf{depth 3, all seen} & 0.168 & 100 & \textcolor{green!55!black}{0.221} & 131 & \textcolor{green!55!black}{0.322} & 192 & \textcolor{green!55!black}{0.364} & 217 & \textcolor{green!55!black}{0.380} & 227 & \textcolor{green!55!black}{0.389} & 231 & \textcolor{green!55!black}{0.355} & 211 \\
+\textbf{depth 4, all seen} & 0.140 & 100 & \textcolor{green!55!black}{0.191} & 137 & \textcolor{green!55!black}{0.263} & 189 & \textcolor{green!55!black}{0.335} & 240 & \textcolor{green!55!black}{0.358} & 256 & \textcolor{green!55!black}{0.342} & 245 & \textcolor{green!55!black}{0.310} & 222 \\
+\textbf{depth 2, unseen inside} & 0.142 & 100 & \textcolor{green!55!black}{0.177} & 125 & \textcolor{green!55!black}{0.252} & 177 & \textcolor{green!55!black}{0.241} & 170 & \textcolor{green!55!black}{0.269} & 190 & \textcolor{green!55!black}{0.278$^{3}$} & 196 & \textcolor{green!55!black}{0.273} & 192 \\
+\textbf{depth 3, unseen inside} & 0.105 & 100 & \textcolor{green!55!black}{0.156} & 149 & \textcolor{green!55!black}{0.194} & 185 & \textcolor{green!55!black}{0.207} & 198 & \textcolor{green!55!black}{0.224} & 214 & -- & -- & \textcolor{green!55!black}{0.215} & 205 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that family is not held out. The \textbf{held-out family} average row is unaffected --- it names a group of conditions, not an arm. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_llama318b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
+\midrule
+\texttt{L0} & 0.409 & 100 & -- & -- & \textcolor{red!70!black}{0.335} & 82 & \textcolor{red!70!black}{0.320} & 78 & \textcolor{red!70!black}{0.332} & 81 & \textcolor{red!70!black}{0.338} & 83 & \textcolor{green!55!black}{0.414} & 101 \\
+\texttt{L1b} & 0.371 & 100 & -- & -- & \textcolor{red!70!black}{0.297} & 80 & \textcolor{red!70!black}{0.280} & 75 & \textcolor{red!70!black}{0.285} & 77 & \textcolor{red!70!black}{0.318} & 86 & \textcolor{green!55!black}{0.383} & 103 \\
+\texttt{L1r} & 0.373 & 100 & -- & -- & \textcolor{red!70!black}{0.312} & 84 & \textcolor{red!70!black}{0.290} & 78 & \textcolor{red!70!black}{0.297} & 80 & \textcolor{red!70!black}{0.311} & 83 & \textcolor{red!70!black}{0.372} & 100 \\
+\texttt{L2} & 0.376 & 100 & -- & -- & \textcolor{red!70!black}{0.297} & 79 & \textcolor{red!70!black}{0.284} & 75 & \textcolor{red!70!black}{0.294} & 78 & \textcolor{red!70!black}{0.311} & 83 & \textcolor{red!70!black}{0.364} & 97 \\
+\texttt{S1} & 0.375 & 100 & -- & -- & \textcolor{red!70!black}{0.325} & 87 & \textcolor{red!70!black}{0.285} & 76 & \textcolor{red!70!black}{0.291} & 78 & \textcolor{red!70!black}{0.316} & 84 & \textcolor{green!55!black}{0.411} & 110 \\
+\texttt{S2} & 0.378 & 100 & -- & -- & \textcolor{red!70!black}{0.345} & 91 & \textcolor{red!70!black}{0.326} & 86 & \textcolor{red!70!black}{0.325} & 86 & \textcolor{red!70!black}{0.366} & 97 & \textcolor{green!55!black}{0.435} & 115 \\
+\texttt{X1} & 0.263 & 100 & -- & -- & \textcolor{green!55!black}{0.267} & 101 & \textcolor{red!70!black}{0.211} & 80 & \textcolor{red!70!black}{0.228} & 87 & \textcolor{red!70!black}{0.258} & 98 & \textcolor{green!55!black}{0.311} & 118 \\
+\texttt{C\_L1b\_S1} & 0.287 & 100 & -- & -- & \textcolor{red!70!black}{0.253} & 88 & \textcolor{red!70!black}{0.274} & 95 & \textcolor{red!70!black}{0.258} & 90 & \textcolor{green!55!black}{0.306} & 107 & \textcolor{green!55!black}{0.352} & 123 \\
+\texttt{C\_L1r\_S1} & 0.297 & 100 & -- & -- & \textcolor{red!70!black}{0.281} & 94 & \textcolor{red!70!black}{0.280} & 94 & \textcolor{red!70!black}{0.283} & 95 & \textcolor{red!70!black}{0.293} & 98 & \textcolor{green!55!black}{0.350} & 118 \\
+\texttt{C\_S1\_L1r} & 0.303 & 100 & -- & -- & \textcolor{red!70!black}{0.269} & 89 & \textcolor{red!70!black}{0.274} & 91 & \textcolor{red!70!black}{0.274} & 91 & \textcolor{red!70!black}{0.293} & 97 & \textcolor{green!55!black}{0.356} & 118 \\
+\texttt{C\_L2\_S4} & 0.320 & 100 & -- & -- & \textcolor{red!70!black}{0.275} & 86 & \textcolor{red!70!black}{0.269} & 84 & \textcolor{red!70!black}{0.286} & 89 & \textcolor{red!70!black}{0.313} & 98 & \textcolor{green!55!black}{0.388} & 121 \\
+\texttt{C\_L1r\_S3} & 0.342 & 100 & -- & -- & \textcolor{red!70!black}{0.297} & 87 & \textcolor{red!70!black}{0.299} & 87 & \textcolor{red!70!black}{0.303} & 89 & \textcolor{red!70!black}{0.320} & 94 & \textcolor{green!55!black}{0.375} & 110 \\
+\texttt{C\_S4\_S3} & 0.367 & 100 & -- & -- & \textcolor{red!70!black}{0.333} & 91 & \textcolor{red!70!black}{0.313} & 85 & \textcolor{red!70!black}{0.329} & 90 & \textcolor{red!70!black}{0.363} & 99 & \textcolor{green!55!black}{0.417} & 114 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.309 & 100 & -- & -- & \textcolor{red!70!black}{0.271} & 88 & \textcolor{red!70!black}{0.303} & 98 & \textcolor{red!70!black}{0.300} & 97 & \textcolor{green!55!black}{0.317} & 103 & \textcolor{green!55!black}{0.372} & 121 \\
+\texttt{C3\_S1\_S3\_S4} & 0.353 & 100 & -- & -- & \textcolor{red!70!black}{0.311} & 88 & \textcolor{red!70!black}{0.289} & 82 & \textcolor{red!70!black}{0.281} & 80 & \textcolor{red!70!black}{0.311} & 88 & \textcolor{green!55!black}{0.408} & 116 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.302 & 100 & -- & -- & \textcolor{red!70!black}{0.270} & 89 & \textcolor{red!70!black}{0.262} & 87 & \textcolor{red!70!black}{0.271} & 90 & \textcolor{red!70!black}{0.276} & 91 & \textcolor{green!55!black}{0.341} & 113 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.281 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 83 & \textcolor{red!70!black}{0.280} & 99 & \textcolor{red!70!black}{0.279} & 99 & \textcolor{red!70!black}{0.274} & 97 & \textcolor{green!55!black}{0.340} & 121 \\
+\texttt{C\_L1r\_X1} & 0.218 & 100 & -- & -- & \textcolor{green!55!black}{0.220} & 101 & \textcolor{red!70!black}{0.193} & 88 & \textcolor{green!55!black}{0.239} & 109 & \textcolor{green!55!black}{0.230} & 105 & \textcolor{green!55!black}{0.275} & 126 \\
+\texttt{C\_X1\_S1} & 0.291 & 100 & -- & -- & \textcolor{red!70!black}{0.283} & 97 & \textcolor{red!70!black}{0.210} & 72 & \textcolor{red!70!black}{0.220} & 76 & \textcolor{red!70!black}{0.269} & 92 & \textcolor{green!55!black}{0.332} & 114 \\
+\texttt{C\_S2\_X1} & 0.323 & 100 & -- & -- & \textcolor{red!70!black}{0.288} & 89 & \textcolor{red!70!black}{0.229} & 71 & \textcolor{red!70!black}{0.241} & 75 & \textcolor{red!70!black}{0.284} & 88 & \textcolor{green!55!black}{0.350} & 109 \\
+\texttt{C\_L1r\_X1m} & 0.232 & 100 & -- & -- & \textcolor{red!70!black}{0.210} & 91 & \textcolor{red!70!black}{0.217} & 93 & \textcolor{green!55!black}{0.245} & 106 & \textcolor{red!70!black}{0.225} & 97 & \textcolor{green!55!black}{0.274} & 118 \\
+\texttt{C\_S1\_X1s} & 0.357 & 100 & -- & -- & \textcolor{red!70!black}{0.287} & 80 & \textcolor{red!70!black}{0.205} & 57 & \textcolor{red!70!black}{0.212} & 59 & \textcolor{red!70!black}{0.276} & 77 & \textcolor{green!55!black}{0.376} & 105 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.268 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 87 & \textcolor{red!70!black}{0.188} & 70 & \textcolor{red!70!black}{0.194} & 73 & \textcolor{red!70!black}{0.241} & 90 & \textcolor{green!55!black}{0.305} & 114 \\
+\cmidrule(l{2pt}r{2pt}){1-15}
+\textbf{single obfuscation} & 0.375 & 100 & -- & -- & \textcolor{red!70!black}{0.315} & 84 & \textcolor{red!70!black}{0.293} & 78 & \textcolor{red!70!black}{0.299} & 80 & \textcolor{red!70!black}{0.324} & 87 & \textcolor{green!55!black}{0.393} & 105 \\
+\textbf{held-out family} & 0.263 & 100 & -- & -- & \textcolor{green!55!black}{0.267} & 101 & \textcolor{red!70!black}{0.211} & 80 & \textcolor{red!70!black}{0.228} & 87 & \textcolor{red!70!black}{0.258} & 98 & \textcolor{green!55!black}{0.311} & 118 \\
+\textbf{depth 2, all seen} & 0.319 & 100 & -- & -- & \textcolor{red!70!black}{0.284} & 89 & \textcolor{red!70!black}{0.285} & 89 & \textcolor{red!70!black}{0.289} & 90 & \textcolor{red!70!black}{0.315} & 98 & \textcolor{green!55!black}{0.373} & 117 \\
+\textbf{depth 3, all seen} & 0.321 & 100 & -- & -- & \textcolor{red!70!black}{0.284} & 88 & \textcolor{red!70!black}{0.285} & 89 & \textcolor{red!70!black}{0.284} & 88 & \textcolor{red!70!black}{0.301} & 94 & \textcolor{green!55!black}{0.374} & 116 \\
+\textbf{depth 4, all seen} & 0.281 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 83 & \textcolor{red!70!black}{0.280} & 99 & \textcolor{red!70!black}{0.279} & 99 & \textcolor{red!70!black}{0.274} & 97 & \textcolor{green!55!black}{0.340} & 121 \\
+\textbf{depth 2, unseen inside} & 0.284 & 100 & -- & -- & \textcolor{red!70!black}{0.258} & 91 & \textcolor{red!70!black}{0.211} & 74 & \textcolor{red!70!black}{0.231} & 81 & \textcolor{red!70!black}{0.257} & 90 & \textcolor{green!55!black}{0.321} & 113 \\
+\textbf{depth 3, unseen inside} & 0.268 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 87 & \textcolor{red!70!black}{0.188} & 70 & \textcolor{red!70!black}{0.194} & 73 & \textcolor{red!70!black}{0.241} & 90 & \textcolor{green!55!black}{0.305} & 114 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_abs_llama318b
 
 % FLUSH THE FOUR FULL-PAGE FLOATS THIS SECTION DECLARES (2026-09-14). Splitting each master
 % table into forward and backward halves put four `[p]` floats in this section; LaTeX places them
