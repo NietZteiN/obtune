@@ -181,3 +181,4 @@
 - [`2026-09-14_merge-is-not-weaker.md`](2026-09-14_merge-is-not-weaker.md) — the merge has breadth's forward accuracy on 8/8, so the flat drop is not weakness.
 - [`2026-09-14_forward-locking-is-directional.md`](2026-09-14_forward-locking-is-directional.md) — the mirror is empty, so the collapse is directional rather than task confusion.
 - [`2026-09-14_llama-backward-is-trivial-golds.md`](2026-09-14_llama-backward-is-trivial-golds.md) — Llama's backward lead is trivial golds; by exact args it equals CodeLlama-7B.
+- [`2026-09-15_breadth-is-the-worst-way-to-use-the-same-data.md`](2026-09-15_breadth-is-the-worst-way-to-use-the-same-data.md) — breadth loses to composition on the unseen family, 8/8, paired.
