@@ -1,0 +1,26 @@
+{
+  "job_id": "tr_L1b_llama31-8b_s42",
+  "kind": "train",
+  "argv": [
+    "src/obtune/train_sft.py",
+    "--config",
+    "train/grid_py_L1b_panel.yaml",
+    "--model",
+    "llama31-8b",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 300,
+  "meta": {
+    "note": "SECOND SEED, Llama-3.1-8B (2026-09-14, 'maximize GPU usage'). Every panel number is s17-only. Llama-3.1-8B is the second model with a measured router and a readable backward baseline, so a full s42 replicate there turns every CodeLlama-7B seed check into a two-model one. Low priority: these backfill h100 behind the mixture grids. ~24 min each at s17 on h100/h200. | priority 60 -> 300 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse. | HELD 2026-09-14: /work quota full; the run cannot write its checkpoints. Release (move to queued/) once the quota has headroom."
+  },
+  "previous_slurm": {
+    "job_id": "399271",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-15T00:35:41.748473+00:00"
+  }
+}
