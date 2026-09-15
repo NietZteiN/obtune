@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_moleinv_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_starcoder2-15b.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 3.0,
+  "priority": 10,
+  "meta": {
+    "note": "THE MIXTURE, BACKWARDS -- the last empty column of the master table. The router had no backward number on any model because mole/eval_mole.py never passed `task` to run_cell. Validated by smoke job 397326 (5 cells, all four mixture arms answering). `base` resumes from the existing vLLM cells, so this computes the four mixture arms on 23 conditions. Rules and prediction pre-registered in CLAUDE_SCRATCHPAD.md before any cell existed. | REQUEUED 2026-09-14: OOM again. The token-budget batching committed earlier was NEVER APPLIED -- an assertion aborted the patch script before it reached this file and the commit message claimed it anyway. Now genuinely in, with an OOM retry that halves the batch, both unit-tested on CPU."
+  },
+  "previous_slurm": {
+    "job_id": "397519",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 1,
+    "finished_utc": "2026-09-15T01:07:41.170091+00:00"
+  }
+}

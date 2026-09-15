@@ -135,8 +135,18 @@ class HFEngine:
         # absent. This is the fourth place today where assuming a single device was wrong.
         device = getattr(model, "device", None) or next(model.parameters()).device
 
-        for start in range(0, len(order), self.batch_size):
-            idx = order[start:start + self.batch_size]
+        # SURVIVE AN OOM INSTEAD OF DYING ON ONE (2026-09-14). Six mixture grids have been killed by
+        # CUDA OOM at their longest conditions -- X1, L2, S2 -- on 80, 93 and 141 GB cards, each
+        # after one to eight hours of work. The cause is this loop: `order` is sorted by length, so
+        # the LAST batches are `batch_size` prompts of up to 2048 tokens, each run through EIGHT
+        # experts at once. Picking a smaller batch_size per model was guesswork and kept being wrong.
+        #
+        # Two changes. The batch is cut by a TOKEN BUDGET (padded width x size) as well as a count,
+        # so a batch of long prompts is automatically smaller. And an OOM is caught and the batch
+        # retried in halves down to a single prompt, so the worst case is a slow cell rather than a
+        # dead grid. `empty_cache` before each retry returns the failed attempt's blocks to the
+        # allocator; without it the retry usually fails the same way.
+        def _run(idx):
             batch = [texts[i] for i in idx]
             enc = self.tokenizer(batch, return_tensors="pt", padding=True).to(device)
             with torch.no_grad():
@@ -147,7 +157,35 @@ class HFEngine:
                     temperature=temperature if temperature > 0.0 else None,
                     pad_token_id=self.tokenizer.pad_token_id,
                 )
-            new = gen[:, enc["input_ids"].shape[1]:]
+            return gen[:, enc["input_ids"].shape[1]:]
+
+        def _run_retry(idx, depth=0):
+            try:
+                return [(idx, _run(idx))]
+            except torch.OutOfMemoryError:
+                if len(idx) == 1:
+                    raise
+                torch.cuda.empty_cache()
+                mid = len(idx) // 2
+                if depth == 0:
+                    print(f"[mole.eval] OOM on a batch of {len(idx)}; retrying in halves",
+                          flush=True)
+                return _run_retry(idx[:mid], depth + 1) + _run_retry(idx[mid:], depth + 1)
+
+        max_bt = int(self.ecfg.get("max_batch_tokens", 16 * 600))
+        lens = {i: len(self.tokenizer(texts[i]).input_ids) for i in order}
+        batches, cur, width = [], [], 0
+        for i in order:
+            w = max(width, lens[i])
+            if cur and (len(cur) >= self.batch_size or w * (len(cur) + 1) > max_bt):
+                batches.append(cur); cur, width = [], 0
+                w = lens[i]
+            cur.append(i); width = w
+        if cur:
+            batches.append(cur)
+
+        for idx0 in batches:
+          for idx, new in _run_retry(idx0):
             for j, i in enumerate(idx):
                 text = self.tokenizer.decode(new[j], skip_special_tokens=True)
                 for s in stop:
