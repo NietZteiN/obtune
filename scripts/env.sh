@@ -61,7 +61,14 @@ export PYTHONPATH="$OBTUNE_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 # The SPEED advantage of /scratch (14 GB/s vs 1.3 GB/s) is real and is what we are giving up.
 #
 # REVERSIBLE IN ONE LINE: export OBTUNE_HF_STORE=/scratch/juno/$USER/hf_home once the quota is cleared.
-export OBTUNE_HF_STORE="${OBTUNE_HF_STORE:-/work/jvl210002/migration/hf_home}"
+# HF_HOME MOVED TO /scratch AGAIN ON 2026-09-14 (the third move). /work hit the per-user quota mid-run: a
+# seed-42 training died writing its final save after all 219 steps, and a 2 GB probe fails. /scratch accepted
+# a 100 MB write today, has 27 TB free, and held a 285 GB copy; the delta was rsynced with the token (rc 0),
+# and every one of the 21 model directories on /work is present on scratch with identical file bytes -- the
+# only differences are zero-byte .no_exist markers scratch had accumulated. The /work copy is NOT deleted
+# yet: six running jobs memory-mapped their weights from it, and its removal needs the user's go-ahead. Jobs
+# starting from now read scratch; if scratch refuses writes again, the /work copy is valid until removed.
+export OBTUNE_HF_STORE="${OBTUNE_HF_STORE:-/scratch/juno/$USER/hf_home}"
 export HF_HOME="${HF_HOME:-$OBTUNE_HF_STORE}"
 export TMPDIR="${TMPDIR:-$OBTUNE_SCRATCH/tmp}"
 export TORCHINDUCTOR_CACHE_DIR="${TORCHINDUCTOR_CACHE_DIR:-$OBTUNE_SCRATCH/cache/inductor}"
