@@ -2206,3 +2206,14 @@ the rule did not cover; recorded as such rather than rounded. Merges 0.001/0.000
 merge. After two models the hypothesis is SPLIT (Llama 0.001, Granite 0.089): whether the mixture locks is
 model-dependent; whether the merge does is not. `log/modularity/2026-09-14_router-backwards-second-model.md`.
 
+**THIRD MODEL (CodeLlama-7B, 2026-09-14): 0.023 — INCONCLUSIVE by the registered rule (0.01–0.05).**
+Three read, three different outcomes: Llama 0.001 refuted, CodeLlama-7B 0.023 inconclusive, Granite
+0.089 above the threshold but short of the band. **The rule is badly calibrated and I am not
+re-specifying it**: its confirm band (0.10–0.35) was drawn from the single-adapter rates in the
+CONTAMINATED pooled numbers (breadth 0.198, anchored 0.312), and those arms sit at 0.021–0.077 once
+the two-prompt fault is out. Re-drawing a band after seeing the data is how a hypothesis stops being
+falsifiable. The last two grids are scored on the rule as written.
+What replicates on all three regardless of the band: router beats breadth backwards (+1.21\*, +1.86\*,
++1.48\* exact args), and the merge beats the router (+1.89\*, +1.16\*, +1.13\*).
+`log/modularity/2026-09-14_router-backwards-three-models.md`.
+
