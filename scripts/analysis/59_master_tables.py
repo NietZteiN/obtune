@@ -918,3 +918,94 @@ for m in MODELS:
         if args_exact(m,"base",c) is None: continue
         out.append(f"| {c} | " + " | ".join(md_row(m,c,strict=True)) + " |")
 (ROOT/"docs/MASTER_TABLES.md").write_text("\n".join(out) + "\n")
+
+# ---------------- 8. THE MAIN RESULTS TABLE ---------------------------------------------------
+# One panel-wide table for the BODY (2026-09-15, user: "one main table of results, failing methods
+# as baseline"). The nine per-model tables are the appendix; this is what a reader sees first.
+#
+# Three blocks, chosen because they are the three regimes where the arms behave differently:
+#   SEEN STACKS      composed transforms the specialists were trained on -- everything works here
+#   UNSEEN FAMILY    X1 and the stacks containing it -- where breadth collapses
+#   BACKWARD         input prediction, execution-graded -- where single adapters lock
+# Every number is the equally-weighted mean over that block's conditions, computed by the SAME
+# abs_cell path as the per-model tables' bold rows, so the summary and the appendix cannot drift.
+#
+# Bolding the best non-base arm per block per model is the point of the table: on the seen block the
+# bold lands on anchored/mixture, on the backward block it lands on the merge. That pattern IS the
+# paper's claim, and it is visible without reading a number.
+MAIN_BLOCKS = [("seen stacks", SEEN_STACKS + DEPTH_STACKS),
+               ("unseen family", ["X1"] + UNSEEN_STACKS + HALF_STACKS + D3_STACKS),
+               ("backward (input pred.)", None)]   # None = every backward condition available
+MAIN_SYS = [("base","base"),("clean","tuned_L0"),("breadth","mono_all"),
+            ("anch","cons_lam3"),("mix","mole_router"),("merge","merge_dare_ties")]
+
+def _block_mean(m, sy, conds, bwd):
+    """Mean over readable cells; None when the arm has none. Gated cells are dropped, exactly as in
+    the per-model tables -- an arm whose whole block is gated reads `--`, not a fabricated number."""
+    use = conds if conds is not None else BWD_ROWS
+    vals = []
+    for c in use:
+        a, ff = abs_cell(m, sy, c, bwd)
+        if isinstance(a, float) and (ff or 0) <= FMT_MAX:
+            vals.append(a)
+    return (sum(vals)/len(vals), len(vals)) if vals else (None, 0)
+
+# Short row labels: the full names cost 39 pt of width across eight rows in a table that was already
+# at the margin, and the lineage is the only part a reader needs here.
+SHORT = {"codellama-7b":"CodeLlama-7B","codellama-13b":"CodeLlama-13B","codellama-34b":"CodeLlama-34B",
+         "llama31-8b":"Llama-3.1-8B","starcoder2-15b":"StarCoder2-15B","gemma3-12b":"Gemma-3-12B",
+         "codegemma-7b":"CodeGemma-7B","granite31-8b":"Granite-3.1-8B"}
+
+def main_table():
+    # 19 columns at \footnotesize ran 124 pt past the two-column text block. \scriptsize with 2 pt
+    # padding brings it inside; the alternative -- dropping the per-block `base` column -- would cost
+    # the reader the level each block's colours are relative to, which is worth more than the font.
+    L = [r"\begin{table*}[t]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}",
+         r"\caption{\textbf{Every adaptation on every model, in the three regimes that separate them.} "
+         r"Mean exact-match accuracy over the conditions in each block, equally weighted; the same "
+         r"numbers as the bold rows of the per-model tables in Appendix~\ref{app:absmaster}. "
+         r"\emph{seen stacks}: depth-2/3/4 compositions of the five transforms the adapters were "
+         r"trained on. \emph{unseen family}: the held-out obfuscator and every stack containing it "
+         r"--- no arm was trained on it. \emph{backward}: input prediction, graded by execution. "
+         r"\emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, "
+         r"\emph{breadth} one LoRA tuned on all five transforms at once, \emph{anch} the "
+         r"paired-consistency objective, \emph{mix} a learned-gate mixture of five per-transform "
+         r"specialists, \emph{merge} the DARE-TIES merge of those same specialists. "
+         r"\textbf{Bold} is the best non-base arm in that block; "
+         r"\textcolor{red!70!black}{red} is below \texttt{base}. "
+         r"`--': no cell in the block survived the 0.25 format gate. "
+         r"\textbf{Read the bold across the blocks}: on seen stacks it falls on the single-adapter "
+         r"arms, and on the two out-of-distribution blocks it moves to the arms composed from "
+         r"per-transform specialists.}",
+         r"\label{tab:main}",
+         r"\resizebox{\textwidth}{!}{%",
+         r"\begin{tabular}{@{}l" + ("r"*len(MAIN_SYS) + "@{\\ }")*len(MAIN_BLOCKS) + "@{}}",
+         r"\toprule"]
+    L.append(" & " + " & ".join(r"\multicolumn{" + str(len(MAIN_SYS)) + r"}{c}{\textbf{" + b + "}}"
+                                for b, _ in MAIN_BLOCKS) + r" \\")
+    L.append(r"\cmidrule(lr){2-7}\cmidrule(lr){8-13}\cmidrule(lr){14-19}")
+    L.append(r"\textbf{model} & " + " & ".join(" & ".join(n for n, _ in MAIN_SYS) for _ in MAIN_BLOCKS) + r" \\")
+    L.append(r"\midrule")
+    for m in MODELS:
+        cells = []
+        for bname, conds in MAIN_BLOCKS:
+            bwd = conds is None
+            vals = {sy: _block_mean(m, sy, conds, bwd)[0] for _, sy in MAIN_SYS}
+            ref = vals["base"]
+            cand = {sy: v for sy, v in vals.items() if sy != "base" and v is not None}
+            best = max(cand, key=cand.get) if cand else None
+            for _, sy in MAIN_SYS:
+                v = vals[sy]
+                if v is None:
+                    cells.append("--"); continue
+                t = f"{v:.3f}"
+                if sy != "base" and isinstance(ref, float) and v < ref - 5e-4:
+                    t = r"\textcolor{red!70!black}{" + t + "}"
+                if sy == best:
+                    t = r"\textbf{" + t + "}"
+                cells.append(t)
+        L.append(tex_esc(SHORT.get(m, NICE[m])) + " & " + " & ".join(cells) + r" \\")
+    L += [r"\bottomrule", r"\end{tabular}}", r"\end{table*}"]
+    return "\n".join(L)
+
+write("main_results.tex", main_table(), "results/cells/* (block means, same path as the per-model tables)")

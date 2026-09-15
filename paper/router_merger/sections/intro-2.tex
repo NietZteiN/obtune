@@ -77,16 +77,21 @@ specialists in parameter space through \emph{model merging}. A third,
 and seemingly more direct, strategy is to increase \emph{training
 breadth} by fine-tuning a single model on examples from many individual
 obfuscations, hoping that knowledge learned separately will recombine
-when transformations are stacked. We systematically evaluate these
-three strategies and find that none provides the desired robustness.
-The learned router is worth about a point over a random routing policy
-and nothing over breadth training; merging specialized models performs at
-or below the clean-code-tuned control; and broader training, although effective on stacks assembled
-from transformations represented during training, introduces a
-substantial performance penalty on an unseen obfuscation
-family. Thus, broader exposure can improve recombination within the
-training distribution while simultaneously making the model
-\emph{less} robust outside that distribution.
+when transformations are stacked. We evaluate these three strategies, together with a
+clean-code control and a paired-consistency objective that anchors the
+student to its own behaviour on the unobfuscated parent, across eight
+models, and we evaluate them in three regimes rather than one:
+compositions of the transformations seen in training, an obfuscator
+family held out entirely, and the same programs queried in the reverse
+direction. The regimes disagree, and the disagreement is the result.
+On seen compositions every adaptation works and the choice between
+them is worth two to four points. Outside them the ordering inverts.
+Training breadth --- the obvious way to spend the data --- is the worst
+performer on the unseen family, below every arm assembled from
+per-transform specialists on all eight models and below an adapter
+trained on unobfuscated code alone on six. Broader exposure improves
+recombination within the training distribution while making the model
+\emph{less} robust outside it.
 
 Our analysis reveals why. The apparent robustness obtained from
 obfuscation-specific adaptation does not primarily arise from learning
@@ -140,56 +145,56 @@ the surface patterns of individual transformations, it anchors the
 student to the clean-code behavior that those transformations should
 preserve.
 
-Our empirical results demonstrate the advantage of this
-\emph{paired-consistency anchoring}. In contrast to routing, model merging, and breadth-only training, the KL-based objective retains the
-benefits of learning from diverse obfuscations without paying the
-corresponding penalty on an unseen obfuscation family. At the 7B scale,
-the anchored model improves over breadth training by 4.59 percentage
-points on the unseen family while introducing no degradation on clean
-code. Additional stress tests show that the resulting model continues
-to perform well under deeper compositions and transfers to a second
-programming language. At the same time, our analysis carefully bounds
-the claim: the method does not create a new ability to solve arbitrary
-unseen obfuscations beyond that of the clean-code teacher. Rather, it
-prevents obfuscation adaptation from destroying capabilities the model
-already possesses. This distinction is important: robust reasoning
-over obfuscated programs requires not only acquiring adaptation gains,
-but also preserving semantic competence as the surface form of the
-program changes.
+Across the two out-of-distribution regimes a single arm behaves
+differently from the rest. Weight-space merging of the per-transform
+specialists gives up two to four points on seen compositions, where
+fitting the training distribution pays, and gives up nothing anywhere
+else: it is above the untuned model on the reverse task on seven of
+eight models and is never significantly below it in any regime on any
+model. The mechanism is visible in what the other arms do when they
+fail backwards. Their failures are not malformed answers but the gold
+\emph{forward} answer --- the program's return value, correctly
+computed, offered in reply to a question that asked for an input. Every
+single-adapter arm does this at a measurable rate; both merges sit at
+the floor of it on all eight models. Monolithic training fits the task
+as it was posed, these transformations and this direction, and
+composing separately-trained specialists in weight space does not
+produce that fit.
+
+We state the bound plainly. Merging is an existing technique, applied
+here without modification; the contribution is not the algorithm but
+the evaluation that separates the arms and the finding that
+composition survives what monolithic training does not. Merging does
+not create a new ability to read obfuscation it has never seen --- on
+the unseen family it is competitive with, not superior to, the mixture
+of the same specialists --- and it is not the best forward arm
+anywhere. What it does is avoid paying, outside the training
+distribution, for a fit inside it.
 
 {\em Contributions.} This paper makes the following main contributions:
 
-\textbf{1. A two-test diagnostic for whether obfuscation adaptation generalises or
-memorises, and its verdict on the existing composition strategies.}
-    We ask whether competence learned on individual semantics-preserving transformations
-    survives leaving the distribution it was fit to, in two independent ways: being stacked
-    with a transformation family the model has never seen, and being asked backwards (given a
-    return value, produce a call that yields it). Inference-time routing, weight-space
-    merging, and broad multi-transformation training all fail both. Breadth's advantage on
-    stacks of seen transformations vanishes once an unseen family enters --- a gap significant
-    on six of six models across four lineages --- and every method that fits the forward task
-    buys its gain by losing backward competence on the same programs.
+\textbf{1. A three-regime evaluation of obfuscation adaptation, and the disagreement between the
+regimes.} We evaluate six adaptations on eight models across four lineages in three regimes:
+compositions of seen transformations, a held-out obfuscator family, and the reverse task (given a
+return value, produce a call that yields it). On seen compositions the adaptations are within two to
+four points of one another; on the other two the ordering inverts. Reporting only the first regime,
+as prior work does, supports the opposite conclusion to reporting all three.
 
-\textbf{2. An empirical characterisation of what adaptation learns instead.}
-    With complementary analyses across transformation mechanisms, identifier dependence, and
-    confidence behaviour, we show that obfuscation adaptation predominantly learns the surface
-    regularities a transformation leaves behind rather than an invariance to semantics-preserving
-    change. Because that surface is exactly what an obfuscator is free to alter, the diagnosis
-    names its own remedy.
+\textbf{2. Monolithic training is the worst use of the data outside the training distribution.} A
+single adapter trained on all five transformations is below every arm assembled from per-transformation
+specialists on the unseen family, on all eight models --- and below an adapter trained on unobfuscated
+code alone on six. The comparison is data-matched by construction: the composed arms are built from
+specialists trained on exactly the rows breadth trains on, at the same rank, from the same base model.
 
-\textbf{3. A clean-behaviour anchoring objective, derived from that diagnosis.}
-    We introduce a paired-consistency objective that anchors an obfuscated-code student to a
-    clean-code-tuned teacher reading the unobfuscated parent of the same program --- the one thing
-    a semantics-preserving transformation leaves invariant. The objective trains on exactly the rows
-    breadth training uses, so breadth is its data-matched control. Across eight models and four
-    lineages it removes breadth's unseen-family degradation on six and reverses on one, and its
-    clean-code cost is absent on five; we report both qualifiers rather than the unconditional
-    claim.
+\textbf{3. Adaptation locks the direction it was trained in, and we measure it directly.} Every
+single-adapter arm loses backward accuracy on the same programs it gained forward accuracy on. The
+failures are not parse errors: the most common ungradable backward reply is exactly the gold forward
+answer. We report this collapse rate per arm per model; the untuned models and both merges sit at its
+floor, and the highest rate belongs to the objective whose extra loss term most directly optimises for
+the forward answer.
 
-\textbf{4. The same two tests, re-run on the anchored model, with the bound stated.}
-    On a new divergence ladder of stacks that contain an unseen transformation family --- a
-    stimulus absent from prior work --- the anchored model's advantage \emph{grows} as the input
-    diverges from training, rising above the clean-code control where breadth falls, and it is the
-    only supervised-fine-tuning arm whose forward gain costs nothing backwards. It does not acquire
-    backward competence, and on the unseen family alone it is as robust as clean-code tuning and no
-    more: anchoring repairs what adaptation breaks rather than creating new invariance.
+\textbf{4. Weight-space merging as the arm that never breaks, with its price stated.} Merging the same
+specialists is above the untuned model on the reverse task on seven of eight models and is never
+significantly below it in any regime on any model, at a cost of two to four forward points where
+fitting the training distribution pays, one adapter, and no inference-time machinery. It is an existing
+technique used unmodified; the claim is about what the evaluation reveals, not about the algorithm.

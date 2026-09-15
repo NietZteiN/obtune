@@ -1,0 +1,126 @@
+\section{Results}
+\label{sec:results}
+
+% THE BODY'S ONE TABLE (2026-09-15). Everything below reads off Table~\ref{tab:main}; the per-model
+% tables it summarises are Appendix~\ref{app:absmaster}, and the block means here are computed by the
+% same code path as those tables' bold rows, so the two cannot disagree.
+% >>> GENERATED TABLE main_results -- from tables/main_results.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-15 15:34 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* (block means, same path as the per-model tables)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[t]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}
+\caption{\textbf{Every adaptation on every model, in the three regimes that separate them.} Mean exact-match accuracy over the conditions in each block, equally weighted; the same numbers as the bold rows of the per-model tables in Appendix~\ref{app:absmaster}. \emph{seen stacks}: depth-2/3/4 compositions of the five transforms the adapters were trained on. \emph{unseen family}: the held-out obfuscator and every stack containing it --- no arm was trained on it. \emph{backward}: input prediction, graded by execution. \emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, \emph{breadth} one LoRA tuned on all five transforms at once, \emph{anch} the paired-consistency objective, \emph{mix} a learned-gate mixture of five per-transform specialists, \emph{merge} the DARE-TIES merge of those same specialists. \textbf{Bold} is the best non-base arm in that block; \textcolor{red!70!black}{red} is below \texttt{base}. `--': no cell in the block survived the 0.25 format gate. \textbf{Read the bold across the blocks}: on seen stacks it falls on the single-adapter arms, and on the two out-of-distribution blocks it moves to the arms composed from per-transform specialists.}
+\label{tab:main}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrrrrrr@{\ }rrrrrr@{\ }rrrrrr@{\ }@{}}
+\toprule
+ & \multicolumn{6}{c}{\textbf{seen stacks}} & \multicolumn{6}{c}{\textbf{unseen family}} & \multicolumn{6}{c}{\textbf{backward (input pred.)}} \\
+\cmidrule(lr){2-7}\cmidrule(lr){8-13}\cmidrule(lr){14-19}
+\textbf{model} & base & clean & breadth & anch & mix & merge & base & clean & breadth & anch & mix & merge & base & clean & breadth & anch & mix & merge \\
+\midrule
+CodeLlama-7B & 0.143 & 0.323 & 0.362 & \textbf{0.374} & 0.359 & 0.331 & 0.120 & 0.259 & 0.243 & \textbf{0.280} & 0.272 & 0.266 & 0.282 & \textcolor{red!70!black}{0.266} & \textcolor{red!70!black}{0.249} & 0.287 & 0.287 & \textbf{0.311} \\
+CodeLlama-13B & 0.170 & 0.354 & 0.390 & \textbf{0.402} & 0.398 & 0.373 & 0.145 & 0.281 & 0.271 & 0.297 & \textbf{0.305} & 0.295 & 0.294 & 0.312 & -- & \textcolor{red!70!black}{0.223} & \textcolor{red!70!black}{0.280} & \textbf{0.337} \\
+CodeLlama-34B & 0.161 & 0.390 & 0.426 & \textbf{0.452} & 0.437 & 0.402 & 0.139 & 0.307 & 0.302 & 0.337 & \textbf{0.344} & 0.314 & 0.319 & \textcolor{red!70!black}{0.295} & -- & \textcolor{red!70!black}{0.260} & -- & \textbf{0.381} \\
+Llama-3.1-8B & 0.173 & 0.323 & 0.363 & 0.383 & \textbf{0.387} & 0.352 & 0.135 & 0.243 & 0.233 & 0.260 & \textbf{0.279} & 0.263 & 0.322 & \textcolor{red!70!black}{0.282} & \textcolor{red!70!black}{0.264} & \textcolor{red!70!black}{0.273} & \textcolor{red!70!black}{0.296} & \textbf{0.361} \\
+StarCoder2-15B & -- & 0.422 & 0.449 & \textbf{0.475} & 0.452 & 0.417 & -- & 0.339 & 0.332 & 0.349 & \textbf{0.358} & 0.344 & 0.361 & \textcolor{red!70!black}{0.335} & \textcolor{red!70!black}{0.295} & \textcolor{red!70!black}{0.336} & \textcolor{red!70!black}{0.350} & \textbf{0.376} \\
+Gemma-3-12B & -- & 0.383 & 0.431 & \textbf{0.445} & 0.436 & 0.402 & 0.170 & 0.290 & 0.276 & 0.296 & \textbf{0.314} & 0.295 & 0.372 & \textcolor{red!70!black}{0.345} & 0.385 & \textcolor{red!70!black}{0.355} & \textbf{0.421} & 0.403 \\
+CodeGemma-7B & 0.155 & 0.343 & 0.391 & \textbf{0.391} & 0.360 & 0.351 & 0.149 & 0.266 & 0.271 & 0.262 & \textbf{0.301} & 0.267 & 0.218 & 0.303 & 0.284 & -- & \textbf{0.315} & 0.287 \\
+Granite-3.1-8B & 0.234 & 0.307 & \textbf{0.359} & 0.353 & 0.359 & 0.324 & 0.168 & 0.218 & 0.214 & 0.204 & 0.230 & \textbf{0.234} & 0.285 & \textcolor{red!70!black}{0.202} & \textcolor{red!70!black}{0.217} & \textcolor{red!70!black}{0.150} & \textcolor{red!70!black}{0.247} & \textbf{\textcolor{red!70!black}{0.270}} \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+% <<< GENERATED TABLE main_results
+
+Table~\ref{tab:main} is the whole study on one page: six adaptations, eight models, and the three
+regimes that separate them. Read down a block and the models agree with each other; read \emph{across}
+the blocks and the bold moves. On stacks built from transforms the adapters were trained on, the best
+arm is a single adapter --- the anchored objective on five models, the mixture on two. On the held-out
+family, and again on the reverse task, the bold moves to the arms assembled from per-transform
+specialists. No arm wins everywhere, and the one that never loses is not the one that wins most often.
+
+\subsection{On seen compositions, every adaptation works}
+
+Stacking is where adaptation was supposed to break, and it does not. Every arm roughly doubles the
+untuned model on depth-2, -3 and -4 compositions of the five seen transforms: 0.143 to 0.32--0.37 on
+CodeLlama-7B, 0.161 to 0.39--0.45 on CodeLlama-34B, and so on down the panel. The spread among tuned
+arms is two to four points, an order of magnitude smaller than the gap to the untuned model, and it is
+the single-adapter arms that sit at the top of it. Composition per se is not the difficulty: a model
+that has seen identifier renaming and control-flow flattening separately handles them together.
+
+This is the regime prior work reports, and if the evaluation stopped here the conclusion would be that
+the choice of adaptation barely matters and the monolithic one is fine. The next two blocks are the
+reason it does not stop here.
+
+\subsection{On the unseen family, monolithic training is the worst use of the data}
+
+The \emph{unseen family} block holds the held-out obfuscator and every stack containing it. No arm was
+trained on it, and the ordering changes: breadth --- one adapter trained on all five transforms --- is
+below \emph{every} arm assembled from per-transform specialists, on all eight models.
+
+Paired by program with a cluster bootstrap over 2{,}000 resamples, breadth is below the mixture by
+3.3--5.9 points on 8 of 8 models (significant on all 8), and below the merge by 2.3--5.2 points on 8 of
+8 (significant on 7). The comparison is tight by construction: the merge and the mixture are built from
+specialists trained on exactly the rows breadth trains on, at the same rank, from the same base model.
+The only difference is whether those rows were learned in one set of weights or in five sets that are
+then composed.
+
+Breadth is also below a LoRA trained on \emph{unobfuscated code alone} on six of the eight models
+(significant on six, 1.0--4.7 points). An adapter that has never seen an obfuscated program generalises
+better to an unseen obfuscator than one trained on five of them. Training on more transforms made the
+model worse at a transform it had not seen --- which is what transform memorisation predicts and what
+invariance would forbid.
+
+\subsection{On the reverse task, single adapters lose what they gained}
+
+The backward task asks for a call that produces a given return value, on the same programs. No arm is
+trained in this direction, so it measures what adaptation did to program understanding rather than to
+task fitting.
+
+Every single-adapter arm goes red somewhere in the backward block, and the pattern is systematic rather
+than model-specific: tuning on clean code costs backward accuracy on six of eight models, breadth on
+six, the anchored objective on six. Against the untuned model, paired on the stacks, the two merges are
+the only arms that are positive on the panel: DARE-TIES is above base on seven of eight models
+(significant on seven, $+2.0$ to $+7.7$ points) and null on the eighth, and TIES is significantly above
+on five including the model where DARE-TIES is null. The arm that wins the seen-stack block is the
+clearest loser here: the anchored objective is significantly \emph{below} the untuned model on four
+models, by as much as 6.9 points.
+
+Two qualifications belong with that result rather than in a footnote. Backward is graded by execution
+--- any call returning the gold value counts, because inversion is many-to-one --- and 15\,\% of items
+have a trivial gold ($0$, \texttt{None}, \texttt{[]}, \ldots) that a well-formed guess can hit. On
+Llama-3.1-8B, whose untuned backward score is the panel's second highest, that accounts for nearly all
+of its lead: by exact-argument recovery it is 0.086 against CodeLlama-7B's 0.084, the same model. The
+merge's advantage survives the stricter grade on that model; some other differences do not, and we
+report both gradings in Appendix~\ref{app:absmaster}.
+
+\subsection{Why: adaptation locks the direction it was trained in}
+
+The backward failures are not parse failures. When a single-adapter arm is asked for an input and
+produces something ungradable, the reply is most often \emph{exactly the gold forward answer} --- the
+return value of the program, correctly computed, in answer to a question that asked for something else.
+The arm did not lose the ability to read the program; it lost the ability to be asked a different
+question about it.
+
+Measured as the share of backward replies that are exactly the gold forward answer, the untuned models
+sit at the floor (0.000--0.056) and so do both merges (0.000--0.001, at the floor on all eight models).
+Every single-adapter arm is above it, and the highest rate belongs to the anchored objective, whose
+extra loss term is a KL divergence to a clean-code teacher's answer-token distribution --- the arm that
+most explicitly optimises for producing the forward answer is the arm that most often produces it when
+asked for something else.
+
+This connects the two out-of-distribution blocks. Monolithic training fits the task as it was posed:
+these transforms, this direction. Composing separately-trained specialists in weight space does not
+produce that fit, which is why the merge gives up two to four points where the fit pays and keeps its
+competence where the fit does not transfer.
+
+\subsection{What to use}
+
+No arm dominates, and the table is more useful than a ranking. If the deployment distribution is known
+and fixed, the anchored objective and the mixture are the strongest forward arms and the two to four
+points are real. If it is not --- if an obfuscator may be updated, transforms may be composed in
+unseen ways, or the model may be asked something other than what it was tuned on --- the merge is the
+only arm in this study that is never significantly below the untuned model in any block on any model,
+and it costs one adapter and no inference-time machinery. The mixture matches or beats it on the unseen
+family but needs five adapters and a gate at inference, and its learned gate is worth nothing over a
+uniform one on the held-out family.

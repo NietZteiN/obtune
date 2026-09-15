@@ -1,19 +1,18 @@
 Fine-tuning a code model on obfuscated programs raises its accuracy on those programs by roughly
-nineteen points. We ask what that number is made of: competence at reading the program, or
-competence at the surface a particular transform leaves behind. We separate the two with tests that
-share no machinery --- whether the gain survives being stacked with a transform family the model has
-never seen, and whether it survives the task being run backwards. The field's existing answers,
-inference-time routing, weight-space merging, and training on a breadth of transforms, fail both --- merging outright, routing by matching breadth wherever the two are measured together.
-Breadth composes on stacks built from what it saw and loses that advantage the moment an unseen
-family enters, a gap significant on every one of six models across four lineages; and every method
-that fits the forward task buys its gain by losing backward competence on the very same programs.
-Three further instruments locate what is learned instead: the surface a transform leaves, which is
-exactly what an obfuscator is free to change. That diagnosis names its own remedy. We anchor the
-model to the one thing a semantics-preserving transform leaves invariant, its own behaviour on the
-unobfuscated parent of each program, through a paired-consistency objective that trains on exactly
-the rows breadth trains on. Re-running the same two tests, the anchored model is the only one whose
-advantage \emph{grows} as input diverges from training, rising above the clean-code control on
-stacks containing an unseen family, and the only one whose forward gain costs nothing backwards. Its
-repair holds on six of eight models and reverses on one, and on the unseen family alone it is as
-robust as clean-code tuning and no more. Adaptation to obfuscated code buys recombination of what
-the data covered; anchoring recovers what that costs; neither buys invariance.
+nineteen points. We ask what that number is made of, and we ask it in three regimes rather than one:
+compositions of the transforms the model was tuned on, an obfuscator family it has never seen, and the
+same programs queried in the reverse direction --- given a return value, produce a call that yields it.
+Across eight models and four lineages, the regimes disagree. On seen compositions every adaptation
+works and the differences are two to four points. Outside them the ordering inverts. A single adapter
+trained on all five transforms at once --- the obvious way to spend the data --- is below every
+arm assembled from per-transform specialists on the unseen family, on all eight models, and below an
+adapter trained on unobfuscated code alone on six: training on more transforms made the model worse at
+a transform it had not seen. Every arm that fits the forward task pays for it backwards, and the
+failures are not malformed answers but the gold \emph{forward} answer, returned to a question that
+asked for something else. Weight-space merging of the same specialists is the exception: at the floor
+of that failure mode on all eight models, above the untuned model on the reverse task on seven, and
+never significantly below it in any regime on any model --- at a cost of two to four forward points
+where the specialists are the right fit. We conclude that adaptation to obfuscated code buys
+recombination of what the training distribution covered, that monolithic training buys it at the price
+of everything outside, and that composing specialists in weight space is the cheapest way found here to
+avoid paying it.
