@@ -316,7 +316,34 @@ def build_script(argv: list[str], *, job_name: str, manifest_src: Path | None,
     )
 
 
+# MODELS THIS PROJECT MAY NOT RUN (added 2026-09-15 after a violation).
+# The constraint is the user's and predates this file; it was carried only in conversation, and on
+# 2026-09-14 I submitted job 400692 -- 31 minutes of Qwen2.5-Coder-1.5B inference -- because the
+# permission I had, to READ existing pilot-era cells, read to me like permission to use the model.
+# A rule that lives only in someone's memory is not a rule, so it lives here now: every submission
+# path (--queued, --job, --argv) goes through submit(), and the check is on the script text, which
+# carries the full resolved argv and config path. Matching is substring and case-insensitive, so it
+# catches a config filename, a --model flag, or an adapter path alike.
+#
+# This is deliberately a REFUSAL, not a warning: the failure mode it exists for is a plausible-looking
+# job submitted without anyone re-reading the constraint. To lift it, the user removes the entry.
+FORBIDDEN_MODEL_SUBSTRINGS = ("qwen",)
+
+
+def _refuse_forbidden(script: str, name: str) -> None:
+    low = script.lower()
+    hits = [m for m in FORBIDDEN_MODEL_SUBSTRINGS if m in low]
+    if hits:
+        raise SystemExit(
+            f"REFUSED: job {name!r} references a model this project may not run: {', '.join(hits)}.\n"
+            f"  The constraint is recorded in scripts/slurm/submit.py::FORBIDDEN_MODEL_SUBSTRINGS and\n"
+            f"  log/setup/2026-09-15_qwen-run-was-out-of-scope.md. Nothing was submitted.\n"
+            f"  If this is now permitted, the user removes the entry -- do not edit around it."
+        )
+
+
 def submit(script: str, name: str, dry_run: bool) -> str | None:
+    _refuse_forbidden(script, name)
     SLURM_DIR.mkdir(parents=True, exist_ok=True)
     SLURM_LOGS.mkdir(parents=True, exist_ok=True)
     # The sbatch files ARE the provenance record (they carry the exact argv, and they are

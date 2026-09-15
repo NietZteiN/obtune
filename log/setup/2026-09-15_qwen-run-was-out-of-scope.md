@@ -28,9 +28,27 @@ On 2026-09-15 the user said: "don't run Qwen delete that model don't run were no
   (`2026-09-15_the-pilot-does-not-replicate-the-merge-gain.md`) is removed from the paper.
 - Verified: **zero** occurrences of "Qwen" in the built PDF.
 
-## What is NOT done, and why
+## Resolution (user, 2026-09-15: "just delete the model itself weights and don't run more")
 
-No data has been deleted. The instruction "delete that model" spans categories that differ in kind,
+**The weights are deleted.** `/scratch/juno/$USER/hf_home/hub/models--Qwen--Qwen2.5-Coder-1.5B-Instruct`,
+2.9 GB, 16 files -- the only Qwen entry in any HF cache on this account, verified gone, with no job
+using it at the time. `configs/eval/inverse_qwen25c-1.5b.yaml`, the config I wrote for the
+impermissible run, is deleted too.
+
+**The constraint is now enforced in code, not memory.** `scripts/slurm/submit.py` grows
+`FORBIDDEN_MODEL_SUBSTRINGS` and refuses any submission whose script text matches. Every path
+(`--queued`, `--job`, `--argv`) goes through `submit()`, and the script text carries the full resolved
+argv and config path, so a config filename, a `--model` flag or an adapter path all trip it. Tested
+both ways: a Qwen job is refused with nothing submitted, a CodeLlama job still builds normally. It is
+a refusal rather than a warning because the failure it guards against is exactly a plausible-looking
+job submitted without anyone re-reading the constraint -- which is what happened.
+
+**Adapters and pilot-era cells are left in place**, per the user's instruction to delete the model
+itself. They predate the constraint; nothing in the paper reads them any more.
+
+## Original inventory, for the record
+
+At the time of the violation: The instruction "delete that model" spans categories that differ in kind,
 and deletion is irreversible, so the inventory went to the user for a decision (CLAUDE.md §2,
 human-in-the-loop on bulk deletion):
 
