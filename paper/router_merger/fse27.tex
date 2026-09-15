@@ -652,217 +652,294 @@ Data/code is available in {\color{black}{project's website~\cite{}}}.
 Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on which every arm exists. The same table for the other seven models follows; a cell that has not been evaluated renders as `--', and the mixture column exists only where a router gate has been trained.
 
 % >>> GENERATED TABLE master_abs_codellama13b -- from tables/master_abs_codellama13b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for codellama-13b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, CodeLlama-13B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, CodeLlama-13B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_codellama13b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
-\texttt{L0} & 0.252 & 100 & 0.278$^{\dagger}$ & -- & 0.469 & 186 & 0.446 & 177 & 0.462 & 183 & 0.463 & 184 & 0.477 & 189 & 0.477 & 189 \\
-\texttt{L1b} & 0.222 & 100 & 0.220$^{\dagger}$ & -- & 0.397 & 179 & 0.423 & 190 & 0.438 & 198 & 0.379 & 171 & 0.426 & 192 & 0.400 & 180 \\
-\texttt{L1r} & 0.225 & 100 & 0.233$^{\dagger}$ & -- & 0.415 & 184 & 0.420 & 186 & 0.439 & 195 & 0.407 & 181 & 0.428 & 190 & 0.425 & 189 \\
-\texttt{L2} & 0.228 & 100 & 0.244$^{\dagger}$ & -- & 0.407 & 178 & 0.417 & 183 & 0.432 & 189 & 0.401 & 176 & 0.424 & 186 & 0.421 & 185 \\
-\texttt{S1} & 0.213 & 100 & 0.216 & 101 & 0.408 & 191 & 0.413 & 194 & 0.435 & 204 & 0.410 & 192 & 0.435 & 204 & 0.435 & 204 \\
-\texttt{S2} & 0.184 & 100 & 0.187$^{\dagger}$ & -- & 0.422 & 229 & 0.445 & 241 & 0.469 & 254 & 0.422 & 229 & 0.453 & 246 & 0.441 & 239 \\
-\texttt{X1} & 0.149 & 100 & 0.141$^{\dagger}$ & -- & 0.294 & 197 & 0.254 & 170 & 0.292 & 196 & 0.353 & 237 & -- & -- & 0.306 & 205 \\
-\texttt{C\_L1b\_S1} & 0.183 & 100 & 0.159 & 87 & 0.318 & 174 & 0.367 & 201 & 0.375 & 205 & 0.320 & 175 & -- & -- & 0.329 & 180 \\
-\texttt{C\_L1r\_S1} & 0.175 & 100 & 0.175 & 100 & 0.318 & 182 & 0.371 & 212 & 0.376 & 215 & 0.342 & 196 & -- & -- & 0.356 & 204 \\
-\texttt{C\_S1\_L1r} & 0.172 & 100 & 0.172 & 100 & 0.315 & 184 & 0.359 & 209 & 0.363 & 212 & 0.350 & 204 & -- & -- & 0.341 & 199 \\
-\texttt{C\_L2\_S4} & 0.200 & 100 & 0.187$^{\dagger}$ & -- & 0.389 & 195 & 0.422 & 211 & 0.432 & 216 & 0.385 & 192 & -- & -- & 0.404 & 202 \\
-\texttt{C\_L1r\_S3} & 0.186 & 100 & 0.194$^{\dagger}$ & -- & 0.407 & 218 & 0.409 & 220 & 0.434 & 233 & 0.399 & 214 & -- & -- & 0.417 & 224 \\
-\texttt{C\_S4\_S3} & 0.192 & 100 & 0.211$^{\dagger}$ & -- & 0.424 & 221 & 0.436 & 227 & 0.459 & 239 & 0.433 & 226 & -- & -- & 0.443 & 231 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.166 & 100 & 0.169$^{\dagger}$ & -- & 0.382 & 230 & 0.410 & 247 & 0.429 & 258 & 0.382 & 230 & -- & -- & 0.394 & 237 \\
-\texttt{C3\_S1\_S3\_S4} & 0.147 & 100 & 0.158 & 107 & 0.367 & 250 & 0.408 & 278 & 0.423 & 288 & 0.384 & 261 & -- & -- & 0.387 & 263 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.163 & 100 & 0.156 & 96 & 0.314 & 193 & 0.367 & 225 & 0.367 & 225 & 0.349 & 214 & -- & -- & 0.346 & 212 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.117 & 100 & 0.117 & 100 & 0.300 & 258 & 0.353 & 303 & 0.360 & 309 & 0.331 & 284 & -- & -- & 0.320 & 275 \\
-\texttt{C\_L1r\_X1} & 0.123 & 100 & 0.115$^{\dagger}$ & -- & 0.199 & 162 & 0.213 & 173 & 0.236 & 192 & 0.284 & 232 & -- & -- & 0.217 & 177 \\
-\texttt{C\_X1\_S1} & 0.138 & 100 & 0.135 & 98 & 0.295 & 214 & 0.270 & 195 & 0.307 & 222 & 0.341 & 247 & -- & -- & 0.310 & 224 \\
-\texttt{C\_S2\_X1} & 0.160 & 100 & 0.167$^{\dagger}$ & -- & 0.335 & 209 & 0.334 & 208 & 0.356 & 222 & 0.376 & 234 & -- & -- & 0.353 & 220 \\
-\texttt{C\_L1r\_X1m} & 0.138 & 100 & 0.127$^{\dagger}$ & -- & 0.246 & 179 & 0.248 & 180 & 0.279 & 202 & 0.319 & 232 & -- & -- & 0.251 & 182 \\
-\texttt{C\_S1\_X1s} & 0.179 & 100 & 0.166 & 93 & 0.364 & 204 & 0.345 & 193 & 0.360 & 201 & 0.368 & 206 & -- & -- & 0.376 & 210 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.128 & 100 & 0.107$^{\dagger}$ & -- & 0.233 & 182 & 0.234 & 183 & 0.249 & 194 & 0.291 & 228 & -- & -- & 0.251 & 196 \\
+\texttt{L0} & 0.252 & 100 & 0.278$^{\dagger}$ & -- & \textcolor{green!55!black}{0.469} & 186 & \textcolor{green!55!black}{0.446} & 177 & \textcolor{green!55!black}{0.462} & 183 & \textcolor{green!55!black}{0.463} & 184 & \textcolor{green!55!black}{0.477} & 189 & \textcolor{green!55!black}{0.477} & 189 \\
+\texttt{L1b} & 0.222 & 100 & 0.220$^{\dagger}$ & -- & \textcolor{green!55!black}{0.397} & 179 & \textcolor{green!55!black}{0.423} & 190 & \textcolor{green!55!black}{0.438} & 198 & \textcolor{green!55!black}{0.379} & 171 & \textcolor{green!55!black}{0.426} & 192 & \textcolor{green!55!black}{0.400} & 180 \\
+\texttt{L1r} & 0.225 & 100 & 0.233$^{\dagger}$ & -- & \textcolor{green!55!black}{0.415} & 184 & \textcolor{green!55!black}{0.420} & 186 & \textcolor{green!55!black}{0.439} & 195 & \textcolor{green!55!black}{0.407} & 181 & \textcolor{green!55!black}{0.428} & 190 & \textcolor{green!55!black}{0.425} & 189 \\
+\texttt{L2} & 0.228 & 100 & 0.244$^{\dagger}$ & -- & \textcolor{green!55!black}{0.407} & 178 & \textcolor{green!55!black}{0.417} & 183 & \textcolor{green!55!black}{0.432} & 189 & \textcolor{green!55!black}{0.401} & 176 & \textcolor{green!55!black}{0.424} & 186 & \textcolor{green!55!black}{0.421} & 185 \\
+\texttt{S1} & 0.213 & 100 & \textcolor{green!55!black}{0.216} & 101 & \textcolor{green!55!black}{0.408} & 191 & \textcolor{green!55!black}{0.413} & 194 & \textcolor{green!55!black}{0.435} & 204 & \textcolor{green!55!black}{0.410} & 192 & \textcolor{green!55!black}{0.435} & 204 & \textcolor{green!55!black}{0.435} & 204 \\
+\texttt{S2} & 0.184 & 100 & 0.187$^{\dagger}$ & -- & \textcolor{green!55!black}{0.422} & 229 & \textcolor{green!55!black}{0.445} & 241 & \textcolor{green!55!black}{0.469} & 254 & \textcolor{green!55!black}{0.422} & 229 & \textcolor{green!55!black}{0.453} & 246 & \textcolor{green!55!black}{0.441} & 239 \\
+\texttt{X1} & 0.149 & 100 & 0.141$^{\dagger}$ & -- & \textcolor{green!55!black}{0.294} & 197 & \textcolor{green!55!black}{0.254} & 170 & \textcolor{green!55!black}{0.292} & 196 & \textcolor{green!55!black}{0.353} & 237 & -- & -- & \textcolor{green!55!black}{0.306} & 205 \\
+\texttt{C\_L1b\_S1} & 0.183 & 100 & \textcolor{red!70!black}{0.159} & 87 & \textcolor{green!55!black}{0.318} & 174 & \textcolor{green!55!black}{0.367} & 201 & \textcolor{green!55!black}{0.375} & 205 & \textcolor{green!55!black}{0.320} & 175 & -- & -- & \textcolor{green!55!black}{0.329} & 180 \\
+\texttt{C\_L1r\_S1} & 0.175 & 100 & 0.175 & 100 & \textcolor{green!55!black}{0.318} & 182 & \textcolor{green!55!black}{0.371} & 212 & \textcolor{green!55!black}{0.376} & 215 & \textcolor{green!55!black}{0.342} & 196 & -- & -- & \textcolor{green!55!black}{0.356} & 204 \\
+\texttt{C\_S1\_L1r} & 0.172 & 100 & 0.172 & 100 & \textcolor{green!55!black}{0.315} & 184 & \textcolor{green!55!black}{0.359} & 209 & \textcolor{green!55!black}{0.363} & 212 & \textcolor{green!55!black}{0.350} & 204 & -- & -- & \textcolor{green!55!black}{0.341} & 199 \\
+\texttt{C\_L2\_S4} & 0.200 & 100 & 0.187$^{\dagger}$ & -- & \textcolor{green!55!black}{0.389} & 195 & \textcolor{green!55!black}{0.422} & 211 & \textcolor{green!55!black}{0.432} & 216 & \textcolor{green!55!black}{0.385} & 192 & -- & -- & \textcolor{green!55!black}{0.404} & 202 \\
+\texttt{C\_L1r\_S3} & 0.186 & 100 & 0.194$^{\dagger}$ & -- & \textcolor{green!55!black}{0.407} & 218 & \textcolor{green!55!black}{0.409} & 220 & \textcolor{green!55!black}{0.434} & 233 & \textcolor{green!55!black}{0.399} & 214 & -- & -- & \textcolor{green!55!black}{0.417} & 224 \\
+\texttt{C\_S4\_S3} & 0.192 & 100 & 0.211$^{\dagger}$ & -- & \textcolor{green!55!black}{0.424} & 221 & \textcolor{green!55!black}{0.436} & 227 & \textcolor{green!55!black}{0.459} & 239 & \textcolor{green!55!black}{0.433} & 226 & -- & -- & \textcolor{green!55!black}{0.443} & 231 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.166 & 100 & 0.169$^{\dagger}$ & -- & \textcolor{green!55!black}{0.382} & 230 & \textcolor{green!55!black}{0.410} & 247 & \textcolor{green!55!black}{0.429} & 258 & \textcolor{green!55!black}{0.382} & 230 & -- & -- & \textcolor{green!55!black}{0.394} & 237 \\
+\texttt{C3\_S1\_S3\_S4} & 0.147 & 100 & \textcolor{green!55!black}{0.158} & 107 & \textcolor{green!55!black}{0.367} & 250 & \textcolor{green!55!black}{0.408} & 278 & \textcolor{green!55!black}{0.423} & 288 & \textcolor{green!55!black}{0.384} & 261 & -- & -- & \textcolor{green!55!black}{0.387} & 263 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.163 & 100 & \textcolor{red!70!black}{0.156} & 96 & \textcolor{green!55!black}{0.314} & 193 & \textcolor{green!55!black}{0.367} & 225 & \textcolor{green!55!black}{0.367} & 225 & \textcolor{green!55!black}{0.349} & 214 & -- & -- & \textcolor{green!55!black}{0.346} & 212 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.117 & 100 & 0.117 & 100 & \textcolor{green!55!black}{0.300} & 258 & \textcolor{green!55!black}{0.353} & 303 & \textcolor{green!55!black}{0.360} & 309 & \textcolor{green!55!black}{0.331} & 284 & -- & -- & \textcolor{green!55!black}{0.320} & 275 \\
+\texttt{C\_L1r\_X1} & 0.123 & 100 & 0.115$^{\dagger}$ & -- & \textcolor{green!55!black}{0.199} & 162 & \textcolor{green!55!black}{0.213} & 173 & \textcolor{green!55!black}{0.236} & 192 & \textcolor{green!55!black}{0.284} & 232 & -- & -- & \textcolor{green!55!black}{0.217} & 177 \\
+\texttt{C\_X1\_S1} & 0.138 & 100 & \textcolor{red!70!black}{0.135} & 98 & \textcolor{green!55!black}{0.295} & 214 & \textcolor{green!55!black}{0.270} & 195 & \textcolor{green!55!black}{0.307} & 222 & \textcolor{green!55!black}{0.341} & 247 & -- & -- & \textcolor{green!55!black}{0.310} & 224 \\
+\texttt{C\_S2\_X1} & 0.160 & 100 & 0.167$^{\dagger}$ & -- & \textcolor{green!55!black}{0.335} & 209 & \textcolor{green!55!black}{0.334} & 208 & \textcolor{green!55!black}{0.356} & 222 & \textcolor{green!55!black}{0.376} & 234 & -- & -- & \textcolor{green!55!black}{0.353} & 220 \\
+\texttt{C\_L1r\_X1m} & 0.138 & 100 & 0.127$^{\dagger}$ & -- & \textcolor{green!55!black}{0.246} & 179 & \textcolor{green!55!black}{0.248} & 180 & \textcolor{green!55!black}{0.279} & 202 & \textcolor{green!55!black}{0.319} & 232 & -- & -- & \textcolor{green!55!black}{0.251} & 182 \\
+\texttt{C\_S1\_X1s} & 0.179 & 100 & \textcolor{red!70!black}{0.166} & 93 & \textcolor{green!55!black}{0.364} & 204 & \textcolor{green!55!black}{0.345} & 193 & \textcolor{green!55!black}{0.360} & 201 & \textcolor{green!55!black}{0.368} & 206 & -- & -- & \textcolor{green!55!black}{0.376} & 210 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.128 & 100 & 0.107$^{\dagger}$ & -- & \textcolor{green!55!black}{0.233} & 182 & \textcolor{green!55!black}{0.234} & 183 & \textcolor{green!55!black}{0.249} & 194 & \textcolor{green!55!black}{0.291} & 228 & -- & -- & \textcolor{green!55!black}{0.251} & 196 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.215 & 100 & \textcolor{green!55!black}{0.216$^{1}$} & 101 & \textcolor{green!55!black}{0.410} & 191 & \textcolor{green!55!black}{0.423} & 197 & \textcolor{green!55!black}{0.442} & 206 & \textcolor{green!55!black}{0.404} & 188 & \textcolor{green!55!black}{0.433} & 202 & \textcolor{green!55!black}{0.424} & 198 \\
+\textbf{held-out family} & 0.149 & 100 & -- & -- & \textcolor{green!55!black}{0.294} & 197 & \textcolor{green!55!black}{0.254} & 170 & \textcolor{green!55!black}{0.292} & 196 & \textcolor{green!55!black}{0.353} & 237 & -- & -- & \textcolor{green!55!black}{0.306} & 205 \\
+\textbf{depth 2, all seen} & 0.185 & 100 & \textcolor{red!70!black}{0.168$^{3}$} & 91 & \textcolor{green!55!black}{0.362} & 196 & \textcolor{green!55!black}{0.394} & 214 & \textcolor{green!55!black}{0.407} & 220 & \textcolor{green!55!black}{0.372} & 201 & -- & -- & \textcolor{green!55!black}{0.381} & 207 \\
+\textbf{depth 3, all seen} & 0.159 & 100 & \textcolor{red!70!black}{0.157$^{2}$} & 99 & \textcolor{green!55!black}{0.354} & 223 & \textcolor{green!55!black}{0.395} & 249 & \textcolor{green!55!black}{0.406} & 256 & \textcolor{green!55!black}{0.372} & 234 & -- & -- & \textcolor{green!55!black}{0.375} & 237 \\
+\textbf{depth 4, all seen} & 0.117 & 100 & 0.117 & 100 & \textcolor{green!55!black}{0.300} & 258 & \textcolor{green!55!black}{0.353} & 303 & \textcolor{green!55!black}{0.360} & 309 & \textcolor{green!55!black}{0.331} & 284 & -- & -- & \textcolor{green!55!black}{0.320} & 275 \\
+\textbf{depth 2, unseen inside} & 0.148 & 100 & \textcolor{green!55!black}{0.151$^{2}$} & 102 & \textcolor{green!55!black}{0.288} & 195 & \textcolor{green!55!black}{0.282} & 191 & \textcolor{green!55!black}{0.307} & 208 & \textcolor{green!55!black}{0.338} & 229 & -- & -- & \textcolor{green!55!black}{0.301} & 204 \\
+\textbf{depth 3, unseen inside} & 0.128 & 100 & -- & -- & \textcolor{green!55!black}{0.233} & 182 & \textcolor{green!55!black}{0.234} & 183 & \textcolor{green!55!black}{0.249} & 194 & \textcolor{green!55!black}{0.291} & 228 & -- & -- & \textcolor{green!55!black}{0.251} & 196 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, CodeLlama-13B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_codellama13b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.285 & 100 & -- & -- & 0.269 & 94 & 0.066$^{\dagger}$ & -- & 0.231 & 81 & 0.086$^{\dagger}$ & -- & 0.232$^{\dagger}$ & -- & 0.339 & 119 \\
-\texttt{L1b} & 0.277 & 100 & -- & -- & 0.285 & 103 & 0.066$^{\dagger}$ & -- & 0.253 & 91 & 0.133$^{\dagger}$ & -- & 0.304 & 110 & 0.318 & 115 \\
-\texttt{L1r} & 0.327 & 100 & -- & -- & 0.347 & 106 & 0.051$^{\dagger}$ & -- & 0.229 & 70 & 0.068$^{\dagger}$ & -- & 0.274 & 84 & 0.366 & 112 \\
-\texttt{L2} & 0.279 & 100 & -- & -- & 0.232$^{\dagger}$ & -- & 0.026$^{\dagger}$ & -- & 0.206 & 74 & 0.091$^{\dagger}$ & -- & 0.152$^{\dagger}$ & -- & 0.318 & 114 \\
-\texttt{S1} & 0.304 & 100 & -- & -- & 0.341 & 112 & 0.059$^{\dagger}$ & -- & 0.199 & 65 & 0.156$^{\dagger}$ & -- & -- & -- & 0.363 & 119 \\
-\texttt{S2} & 0.293 & 100 & -- & -- & 0.317 & 108 & 0.038$^{\dagger}$ & -- & 0.238 & 81 & 0.139$^{\dagger}$ & -- & -- & -- & 0.365 & 125 \\
-\texttt{X1} & 0.258 & 100 & -- & -- & 0.274 & 106 & 0.016$^{\dagger}$ & -- & 0.219 & 85 & 0.083$^{\dagger}$ & -- & -- & -- & 0.298 & 115 \\
-\texttt{C\_L1b\_S1} & 0.253 & 100 & -- & -- & 0.326 & 129 & 0.059$^{\dagger}$ & -- & 0.201 & 79 & 0.195$^{\dagger}$ & -- & -- & -- & 0.341 & 135 \\
-\texttt{C\_L1r\_S1} & 0.325 & 100 & -- & -- & 0.360 & 111 & 0.070$^{\dagger}$ & -- & 0.203 & 63 & 0.124$^{\dagger}$ & -- & -- & -- & 0.368 & 114 \\
-\texttt{C\_S1\_L1r} & 0.323 & 100 & -- & -- & 0.351 & 109 & 0.086$^{\dagger}$ & -- & 0.230 & 71 & 0.118$^{\dagger}$ & -- & -- & -- & 0.376 & 117 \\
-\texttt{C\_L2\_S4} & 0.274 & 100 & -- & -- & 0.186$^{\dagger}$ & -- & 0.020$^{\dagger}$ & -- & 0.168$^{\dagger}$ & -- & 0.061$^{\dagger}$ & -- & -- & -- & 0.321 & 117 \\
-\texttt{C\_L1r\_S3} & 0.305 & 100 & -- & -- & 0.361 & 118 & 0.041$^{\dagger}$ & -- & 0.220 & 72 & 0.115$^{\dagger}$ & -- & -- & -- & 0.366 & 120 \\
-\texttt{C\_S4\_S3} & 0.293 & 100 & -- & -- & 0.326 & 111 & 0.026$^{\dagger}$ & -- & 0.239 & 82 & 0.125$^{\dagger}$ & -- & -- & -- & 0.363 & 124 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.310 & 100 & -- & -- & 0.337 & 109 & 0.032$^{\dagger}$ & -- & 0.224 & 72 & 0.080$^{\dagger}$ & -- & -- & -- & 0.353 & 114 \\
-\texttt{C3\_S1\_S3\_S4} & 0.295 & 100 & -- & -- & 0.329 & 112 & 0.035$^{\dagger}$ & -- & 0.235 & 80 & 0.150$^{\dagger}$ & -- & -- & -- & 0.347 & 118 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.316 & 100 & -- & -- & 0.353 & 112 & 0.061$^{\dagger}$ & -- & 0.211 & 67 & 0.137$^{\dagger}$ & -- & -- & -- & 0.370 & 117 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.310 & 100 & -- & -- & 0.333 & 107 & 0.049$^{\dagger}$ & -- & 0.222 & 71 & 0.134$^{\dagger}$ & -- & -- & -- & 0.353 & 114 \\
-\texttt{C\_L1r\_X1} & 0.281 & 100 & -- & -- & 0.254 & 91 & 0.016$^{\dagger}$ & -- & 0.170$^{\dagger}$ & -- & 0.065$^{\dagger}$ & -- & -- & -- & 0.266 & 95 \\
-\texttt{C\_X1\_S1} & 0.289 & 100 & -- & -- & 0.264 & 91 & 0.007$^{\dagger}$ & -- & 0.201$^{\dagger}$ & -- & 0.104$^{\dagger}$ & -- & -- & -- & 0.319 & 110 \\
-\texttt{C\_S2\_X1} & 0.271 & 100 & -- & -- & 0.279 & 103 & 0.008$^{\dagger}$ & -- & 0.204$^{\dagger}$ & -- & 0.092$^{\dagger}$ & -- & -- & -- & 0.329 & 122 \\
-\texttt{C\_L1r\_X1m} & 0.291 & 100 & -- & -- & 0.259 & 89 & 0.020$^{\dagger}$ & -- & 0.179$^{\dagger}$ & -- & 0.072$^{\dagger}$ & -- & -- & -- & 0.283 & 97 \\
-\texttt{C\_S1\_X1s} & 0.301 & 100 & -- & -- & 0.290 & 96 & 0.025$^{\dagger}$ & -- & 0.199$^{\dagger}$ & -- & 0.093$^{\dagger}$ & -- & -- & -- & 0.317 & 105 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.304 & 100 & -- & -- & 0.293 & 97 & 0.026$^{\dagger}$ & -- & 0.185$^{\dagger}$ & -- & 0.071$^{\dagger}$ & -- & -- & -- & 0.313 & 103 \\
+\texttt{L0} & 0.285 & 100 & -- & -- & \textcolor{red!70!black}{0.269} & 94 & 0.066$^{\dagger}$ & -- & \textcolor{red!70!black}{0.231} & 81 & 0.086$^{\dagger}$ & -- & 0.232$^{\dagger}$ & -- & \textcolor{green!55!black}{0.339} & 119 \\
+\texttt{L1b} & 0.277 & 100 & -- & -- & \textcolor{green!55!black}{0.285} & 103 & 0.066$^{\dagger}$ & -- & \textcolor{red!70!black}{0.253} & 91 & 0.133$^{\dagger}$ & -- & \textcolor{green!55!black}{0.304} & 110 & \textcolor{green!55!black}{0.318} & 115 \\
+\texttt{L1r} & 0.327 & 100 & -- & -- & \textcolor{green!55!black}{0.347} & 106 & 0.051$^{\dagger}$ & -- & \textcolor{red!70!black}{0.229} & 70 & 0.068$^{\dagger}$ & -- & \textcolor{red!70!black}{0.274} & 84 & \textcolor{green!55!black}{0.366} & 112 \\
+\texttt{L2} & 0.279 & 100 & -- & -- & 0.232$^{\dagger}$ & -- & 0.026$^{\dagger}$ & -- & \textcolor{red!70!black}{0.206} & 74 & 0.091$^{\dagger}$ & -- & 0.152$^{\dagger}$ & -- & \textcolor{green!55!black}{0.318} & 114 \\
+\texttt{S1} & 0.304 & 100 & -- & -- & \textcolor{green!55!black}{0.341} & 112 & 0.059$^{\dagger}$ & -- & \textcolor{red!70!black}{0.199} & 65 & 0.156$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.363} & 119 \\
+\texttt{S2} & 0.293 & 100 & -- & -- & \textcolor{green!55!black}{0.317} & 108 & 0.038$^{\dagger}$ & -- & \textcolor{red!70!black}{0.238} & 81 & 0.139$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.365} & 125 \\
+\texttt{X1} & 0.258 & 100 & -- & -- & \textcolor{green!55!black}{0.274} & 106 & 0.016$^{\dagger}$ & -- & \textcolor{red!70!black}{0.219} & 85 & 0.083$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.298} & 115 \\
+\texttt{C\_L1b\_S1} & 0.253 & 100 & -- & -- & \textcolor{green!55!black}{0.326} & 129 & 0.059$^{\dagger}$ & -- & \textcolor{red!70!black}{0.201} & 79 & 0.195$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.341} & 135 \\
+\texttt{C\_L1r\_S1} & 0.325 & 100 & -- & -- & \textcolor{green!55!black}{0.360} & 111 & 0.070$^{\dagger}$ & -- & \textcolor{red!70!black}{0.203} & 63 & 0.124$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.368} & 114 \\
+\texttt{C\_S1\_L1r} & 0.323 & 100 & -- & -- & \textcolor{green!55!black}{0.351} & 109 & 0.086$^{\dagger}$ & -- & \textcolor{red!70!black}{0.230} & 71 & 0.118$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.376} & 117 \\
+\texttt{C\_L2\_S4} & 0.274 & 100 & -- & -- & 0.186$^{\dagger}$ & -- & 0.020$^{\dagger}$ & -- & 0.168$^{\dagger}$ & -- & 0.061$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.321} & 117 \\
+\texttt{C\_L1r\_S3} & 0.305 & 100 & -- & -- & \textcolor{green!55!black}{0.361} & 118 & 0.041$^{\dagger}$ & -- & \textcolor{red!70!black}{0.220} & 72 & 0.115$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.366} & 120 \\
+\texttt{C\_S4\_S3} & 0.293 & 100 & -- & -- & \textcolor{green!55!black}{0.326} & 111 & 0.026$^{\dagger}$ & -- & \textcolor{red!70!black}{0.239} & 82 & 0.125$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.363} & 124 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.310 & 100 & -- & -- & \textcolor{green!55!black}{0.337} & 109 & 0.032$^{\dagger}$ & -- & \textcolor{red!70!black}{0.224} & 72 & 0.080$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.353} & 114 \\
+\texttt{C3\_S1\_S3\_S4} & 0.295 & 100 & -- & -- & \textcolor{green!55!black}{0.329} & 112 & 0.035$^{\dagger}$ & -- & \textcolor{red!70!black}{0.235} & 80 & 0.150$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.347} & 118 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.316 & 100 & -- & -- & \textcolor{green!55!black}{0.353} & 112 & 0.061$^{\dagger}$ & -- & \textcolor{red!70!black}{0.211} & 67 & 0.137$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.370} & 117 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.310 & 100 & -- & -- & \textcolor{green!55!black}{0.333} & 107 & 0.049$^{\dagger}$ & -- & \textcolor{red!70!black}{0.222} & 71 & 0.134$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.353} & 114 \\
+\texttt{C\_L1r\_X1} & 0.281 & 100 & -- & -- & \textcolor{red!70!black}{0.254} & 91 & 0.016$^{\dagger}$ & -- & 0.170$^{\dagger}$ & -- & 0.065$^{\dagger}$ & -- & -- & -- & \textcolor{red!70!black}{0.266} & 95 \\
+\texttt{C\_X1\_S1} & 0.289 & 100 & -- & -- & \textcolor{red!70!black}{0.264} & 91 & 0.007$^{\dagger}$ & -- & 0.201$^{\dagger}$ & -- & 0.104$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.319} & 110 \\
+\texttt{C\_S2\_X1} & 0.271 & 100 & -- & -- & \textcolor{green!55!black}{0.279} & 103 & 0.008$^{\dagger}$ & -- & 0.204$^{\dagger}$ & -- & 0.092$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.329} & 122 \\
+\texttt{C\_L1r\_X1m} & 0.291 & 100 & -- & -- & \textcolor{red!70!black}{0.259} & 89 & 0.020$^{\dagger}$ & -- & 0.179$^{\dagger}$ & -- & 0.072$^{\dagger}$ & -- & -- & -- & \textcolor{red!70!black}{0.283} & 97 \\
+\texttt{C\_S1\_X1s} & 0.301 & 100 & -- & -- & \textcolor{red!70!black}{0.290} & 96 & 0.025$^{\dagger}$ & -- & 0.199$^{\dagger}$ & -- & 0.093$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.317} & 105 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.304 & 100 & -- & -- & \textcolor{red!70!black}{0.293} & 97 & 0.026$^{\dagger}$ & -- & 0.185$^{\dagger}$ & -- & 0.071$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.313} & 103 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.296 & 100 & -- & -- & \textcolor{green!55!black}{0.323$^{4}$} & 109 & -- & -- & \textcolor{red!70!black}{0.225} & 76 & -- & -- & \textcolor{red!70!black}{0.289$^{2}$} & 98 & \textcolor{green!55!black}{0.346} & 117 \\
+\textbf{held-out family} & 0.258 & 100 & -- & -- & \textcolor{green!55!black}{0.274} & 106 & -- & -- & \textcolor{red!70!black}{0.219} & 85 & -- & -- & -- & -- & \textcolor{green!55!black}{0.298} & 115 \\
+\textbf{depth 2, all seen} & 0.295 & 100 & -- & -- & \textcolor{green!55!black}{0.345$^{5}$} & 117 & -- & -- & \textcolor{red!70!black}{0.219$^{5}$} & 74 & -- & -- & -- & -- & \textcolor{green!55!black}{0.356} & 120 \\
+\textbf{depth 3, all seen} & 0.307 & 100 & -- & -- & \textcolor{green!55!black}{0.340} & 111 & -- & -- & \textcolor{red!70!black}{0.223} & 73 & -- & -- & -- & -- & \textcolor{green!55!black}{0.357} & 116 \\
+\textbf{depth 4, all seen} & 0.310 & 100 & -- & -- & \textcolor{green!55!black}{0.333} & 107 & -- & -- & \textcolor{red!70!black}{0.222} & 71 & -- & -- & -- & -- & \textcolor{green!55!black}{0.353} & 114 \\
+\textbf{depth 2, unseen inside} & 0.286 & 100 & -- & -- & \textcolor{red!70!black}{0.269} & 94 & -- & -- & -- & -- & -- & -- & -- & -- & \textcolor{green!55!black}{0.303} & 106 \\
+\textbf{depth 3, unseen inside} & 0.304 & 100 & -- & -- & \textcolor{red!70!black}{0.293} & 97 & -- & -- & -- & -- & -- & -- & -- & -- & \textcolor{green!55!black}{0.313} & 103 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_codellama13b
 % >>> GENERATED TABLE master_abs_codellama34b -- from tables/master_abs_codellama34b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for codellama-34b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, CodeLlama-34B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, CodeLlama-34B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_codellama34b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
 \texttt{L0} & 0.254$^{\dagger}$ & -- & 0.178$^{\dagger}$ & -- & 0.520 & -- & 0.494 & -- & 0.525 & -- & 0.502 & -- & 0.526 & -- & 0.527 & -- \\
-\texttt{L1b} & 0.205 & 100 & 0.077$^{\dagger}$ & -- & 0.417 & 204 & 0.469 & 229 & 0.494 & 241 & 0.401 & 196 & 0.472 & 230 & 0.429 & 209 \\
-\texttt{L1r} & 0.220 & 100 & 0.117$^{\dagger}$ & -- & 0.469 & 214 & 0.457 & 208 & 0.487 & 222 & 0.459 & 209 & 0.481 & 219 & 0.467 & 213 \\
-\texttt{L2} & 0.231 & 100 & 0.109$^{\dagger}$ & -- & 0.466 & 202 & 0.465 & 202 & 0.478 & 207 & 0.456 & 198 & 0.475 & 206 & 0.463 & 201 \\
-\texttt{S1} & 0.222 & 100 & 0.079$^{\dagger}$ & -- & 0.472 & 212 & 0.467 & 210 & 0.496 & 223 & 0.461 & 208 & 0.484 & 218 & 0.456 & 205 \\
-\texttt{S2} & 0.191 & 100 & 0.040$^{\dagger}$ & -- & 0.484 & 253 & 0.484 & 254 & 0.525 & 275 & 0.478 & 251 & -- & -- & 0.484 & 253 \\
-\texttt{X1} & 0.135 & 100 & 0.050$^{\dagger}$ & -- & 0.325 & 241 & 0.298 & 221 & 0.334 & 248 & 0.381 & 282 & -- & -- & 0.328 & 243 \\
-\texttt{C\_L1b\_S1} & 0.156 & 100 & 0.033$^{\dagger}$ & -- & 0.322 & 206 & 0.399 & 255 & 0.421 & 269 & 0.336 & 215 & -- & -- & 0.331 & 212 \\
-\texttt{C\_L1r\_S1} & 0.184 & 100 & 0.063$^{\dagger}$ & -- & 0.351 & 191 & 0.393 & 214 & 0.427 & 233 & 0.366 & 199 & -- & -- & 0.362 & 197 \\
-\texttt{C\_S1\_L1r} & 0.180 & 100 & 0.053$^{\dagger}$ & -- & 0.367 & 204 & 0.405 & 225 & 0.425 & 237 & 0.379 & 211 & -- & -- & 0.377 & 210 \\
-\texttt{C\_L2\_S4} & 0.191 & 100 & 0.045$^{\dagger}$ & -- & 0.431 & 226 & 0.454 & 238 & 0.478 & 251 & 0.431 & 226 & -- & -- & 0.436 & 229 \\
-\texttt{C\_L1r\_S3} & 0.169 & 100 & 0.041$^{\dagger}$ & -- & 0.451 & 266 & 0.454 & 268 & 0.482 & 284 & 0.437 & 258 & -- & -- & 0.453 & 267 \\
-\texttt{C\_S4\_S3} & 0.199 & 100 & 0.041$^{\dagger}$ & -- & 0.482 & 242 & 0.487 & 244 & 0.521 & 261 & 0.476 & 239 & -- & -- & 0.488 & 245 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.148 & 100 & 0.017$^{\dagger}$ & -- & 0.416 & 281 & 0.452 & 305 & 0.473 & 319 & 0.424 & 286 & -- & -- & 0.425 & 287 \\
-\texttt{C3\_S1\_S3\_S4} & 0.128 & 100 & 0.042$^{\dagger}$ & -- & 0.428 & 336 & 0.454 & 356 & 0.472 & 370 & 0.440 & 345 & -- & -- & 0.442 & 346 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.147 & 100 & 0.041$^{\dagger}$ & -- & 0.338 & 230 & 0.390 & 266 & 0.412 & 280 & 0.359 & 245 & -- & -- & 0.354 & 241 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.105 & 100 & 0.033$^{\dagger}$ & -- & 0.316 & 302 & 0.372 & 356 & 0.413 & 395 & 0.354 & 338 & -- & -- & 0.351 & 336 \\
-\texttt{C\_L1r\_X1} & 0.115 & 100 & 0.044$^{\dagger}$ & -- & 0.226 & 196 & 0.249 & 216 & 0.278 & 241 & 0.275 & 239 & -- & -- & 0.236 & 205 \\
-\texttt{C\_X1\_S1} & 0.125 & 100 & 0.064$^{\dagger}$ & -- & 0.317 & 254 & 0.290 & 233 & 0.339 & 272 & 0.372 & 298 & -- & -- & 0.317 & 254 \\
-\texttt{C\_S2\_X1} & 0.176 & 100 & 0.099$^{\dagger}$ & -- & 0.372 & 211 & 0.355 & 202 & 0.403 & 229 & 0.395 & 225 & -- & -- & 0.382 & 217 \\
-\texttt{C\_L1r\_X1m} & 0.128 & 100 & 0.052$^{\dagger}$ & -- & 0.261 & 204 & 0.275 & 214 & 0.294 & 229 & 0.317 & 247 & -- & -- & 0.279 & 217 \\
-\texttt{C\_S1\_X1s} & 0.176 & 100 & 0.077$^{\dagger}$ & -- & 0.390 & 221 & 0.382 & 217 & 0.415 & 235 & 0.411 & 233 & -- & -- & 0.387 & 219 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.118 & 100 & 0.048$^{\dagger}$ & -- & 0.256 & 218 & 0.262 & 222 & 0.297 & 252 & 0.293 & 249 & -- & -- & 0.267 & 227 \\
+\texttt{L1b} & 0.205 & 100 & 0.077$^{\dagger}$ & -- & \textcolor{green!55!black}{0.417} & 204 & \textcolor{green!55!black}{0.469} & 229 & \textcolor{green!55!black}{0.494} & 241 & \textcolor{green!55!black}{0.401} & 196 & \textcolor{green!55!black}{0.472} & 230 & \textcolor{green!55!black}{0.429} & 209 \\
+\texttt{L1r} & 0.220 & 100 & 0.117$^{\dagger}$ & -- & \textcolor{green!55!black}{0.469} & 214 & \textcolor{green!55!black}{0.457} & 208 & \textcolor{green!55!black}{0.487} & 222 & \textcolor{green!55!black}{0.459} & 209 & \textcolor{green!55!black}{0.481} & 219 & \textcolor{green!55!black}{0.467} & 213 \\
+\texttt{L2} & 0.231 & 100 & 0.109$^{\dagger}$ & -- & \textcolor{green!55!black}{0.466} & 202 & \textcolor{green!55!black}{0.465} & 202 & \textcolor{green!55!black}{0.478} & 207 & \textcolor{green!55!black}{0.456} & 198 & \textcolor{green!55!black}{0.475} & 206 & \textcolor{green!55!black}{0.463} & 201 \\
+\texttt{S1} & 0.222 & 100 & 0.079$^{\dagger}$ & -- & \textcolor{green!55!black}{0.472} & 212 & \textcolor{green!55!black}{0.467} & 210 & \textcolor{green!55!black}{0.496} & 223 & \textcolor{green!55!black}{0.461} & 208 & \textcolor{green!55!black}{0.484} & 218 & \textcolor{green!55!black}{0.456} & 205 \\
+\texttt{S2} & 0.191 & 100 & 0.040$^{\dagger}$ & -- & \textcolor{green!55!black}{0.484} & 253 & \textcolor{green!55!black}{0.484} & 254 & \textcolor{green!55!black}{0.525} & 275 & \textcolor{green!55!black}{0.478} & 251 & -- & -- & \textcolor{green!55!black}{0.484} & 253 \\
+\texttt{X1} & 0.135 & 100 & 0.050$^{\dagger}$ & -- & \textcolor{green!55!black}{0.325} & 241 & \textcolor{green!55!black}{0.298} & 221 & \textcolor{green!55!black}{0.334} & 248 & \textcolor{green!55!black}{0.381} & 282 & -- & -- & \textcolor{green!55!black}{0.328} & 243 \\
+\texttt{C\_L1b\_S1} & 0.156 & 100 & 0.033$^{\dagger}$ & -- & \textcolor{green!55!black}{0.322} & 206 & \textcolor{green!55!black}{0.399} & 255 & \textcolor{green!55!black}{0.421} & 269 & \textcolor{green!55!black}{0.336} & 215 & -- & -- & \textcolor{green!55!black}{0.331} & 212 \\
+\texttt{C\_L1r\_S1} & 0.184 & 100 & 0.063$^{\dagger}$ & -- & \textcolor{green!55!black}{0.351} & 191 & \textcolor{green!55!black}{0.393} & 214 & \textcolor{green!55!black}{0.427} & 233 & \textcolor{green!55!black}{0.366} & 199 & -- & -- & \textcolor{green!55!black}{0.362} & 197 \\
+\texttt{C\_S1\_L1r} & 0.180 & 100 & 0.053$^{\dagger}$ & -- & \textcolor{green!55!black}{0.367} & 204 & \textcolor{green!55!black}{0.405} & 225 & \textcolor{green!55!black}{0.425} & 237 & \textcolor{green!55!black}{0.379} & 211 & -- & -- & \textcolor{green!55!black}{0.377} & 210 \\
+\texttt{C\_L2\_S4} & 0.191 & 100 & 0.045$^{\dagger}$ & -- & \textcolor{green!55!black}{0.431} & 226 & \textcolor{green!55!black}{0.454} & 238 & \textcolor{green!55!black}{0.478} & 251 & \textcolor{green!55!black}{0.431} & 226 & -- & -- & \textcolor{green!55!black}{0.436} & 229 \\
+\texttt{C\_L1r\_S3} & 0.169 & 100 & 0.041$^{\dagger}$ & -- & \textcolor{green!55!black}{0.451} & 266 & \textcolor{green!55!black}{0.454} & 268 & \textcolor{green!55!black}{0.482} & 284 & \textcolor{green!55!black}{0.437} & 258 & -- & -- & \textcolor{green!55!black}{0.453} & 267 \\
+\texttt{C\_S4\_S3} & 0.199 & 100 & 0.041$^{\dagger}$ & -- & \textcolor{green!55!black}{0.482} & 242 & \textcolor{green!55!black}{0.487} & 244 & \textcolor{green!55!black}{0.521} & 261 & \textcolor{green!55!black}{0.476} & 239 & -- & -- & \textcolor{green!55!black}{0.488} & 245 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.148 & 100 & 0.017$^{\dagger}$ & -- & \textcolor{green!55!black}{0.416} & 281 & \textcolor{green!55!black}{0.452} & 305 & \textcolor{green!55!black}{0.473} & 319 & \textcolor{green!55!black}{0.424} & 286 & -- & -- & \textcolor{green!55!black}{0.425} & 287 \\
+\texttt{C3\_S1\_S3\_S4} & 0.128 & 100 & 0.042$^{\dagger}$ & -- & \textcolor{green!55!black}{0.428} & 336 & \textcolor{green!55!black}{0.454} & 356 & \textcolor{green!55!black}{0.472} & 370 & \textcolor{green!55!black}{0.440} & 345 & -- & -- & \textcolor{green!55!black}{0.442} & 346 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.147 & 100 & 0.041$^{\dagger}$ & -- & \textcolor{green!55!black}{0.338} & 230 & \textcolor{green!55!black}{0.390} & 266 & \textcolor{green!55!black}{0.412} & 280 & \textcolor{green!55!black}{0.359} & 245 & -- & -- & \textcolor{green!55!black}{0.354} & 241 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.105 & 100 & 0.033$^{\dagger}$ & -- & \textcolor{green!55!black}{0.316} & 302 & \textcolor{green!55!black}{0.372} & 356 & \textcolor{green!55!black}{0.413} & 395 & \textcolor{green!55!black}{0.354} & 338 & -- & -- & \textcolor{green!55!black}{0.351} & 336 \\
+\texttt{C\_L1r\_X1} & 0.115 & 100 & 0.044$^{\dagger}$ & -- & \textcolor{green!55!black}{0.226} & 196 & \textcolor{green!55!black}{0.249} & 216 & \textcolor{green!55!black}{0.278} & 241 & \textcolor{green!55!black}{0.275} & 239 & -- & -- & \textcolor{green!55!black}{0.236} & 205 \\
+\texttt{C\_X1\_S1} & 0.125 & 100 & 0.064$^{\dagger}$ & -- & \textcolor{green!55!black}{0.317} & 254 & \textcolor{green!55!black}{0.290} & 233 & \textcolor{green!55!black}{0.339} & 272 & \textcolor{green!55!black}{0.372} & 298 & -- & -- & \textcolor{green!55!black}{0.317} & 254 \\
+\texttt{C\_S2\_X1} & 0.176 & 100 & 0.099$^{\dagger}$ & -- & \textcolor{green!55!black}{0.372} & 211 & \textcolor{green!55!black}{0.355} & 202 & \textcolor{green!55!black}{0.403} & 229 & \textcolor{green!55!black}{0.395} & 225 & -- & -- & \textcolor{green!55!black}{0.382} & 217 \\
+\texttt{C\_L1r\_X1m} & 0.128 & 100 & 0.052$^{\dagger}$ & -- & \textcolor{green!55!black}{0.261} & 204 & \textcolor{green!55!black}{0.275} & 214 & \textcolor{green!55!black}{0.294} & 229 & \textcolor{green!55!black}{0.317} & 247 & -- & -- & \textcolor{green!55!black}{0.279} & 217 \\
+\texttt{C\_S1\_X1s} & 0.176 & 100 & 0.077$^{\dagger}$ & -- & \textcolor{green!55!black}{0.390} & 221 & \textcolor{green!55!black}{0.382} & 217 & \textcolor{green!55!black}{0.415} & 235 & \textcolor{green!55!black}{0.411} & 233 & -- & -- & \textcolor{green!55!black}{0.387} & 219 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.118 & 100 & 0.048$^{\dagger}$ & -- & \textcolor{green!55!black}{0.256} & 218 & \textcolor{green!55!black}{0.262} & 222 & \textcolor{green!55!black}{0.297} & 252 & \textcolor{green!55!black}{0.293} & 249 & -- & -- & \textcolor{green!55!black}{0.267} & 227 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.214 & 100 & -- & -- & \textcolor{green!55!black}{0.462} & 216 & \textcolor{green!55!black}{0.469} & 219 & \textcolor{green!55!black}{0.496} & 232 & \textcolor{green!55!black}{0.451} & 211 & \textcolor{green!55!black}{0.478$^{4}$} & 224 & \textcolor{green!55!black}{0.460} & 215 \\
+\textbf{held-out family} & 0.135 & 100 & -- & -- & \textcolor{green!55!black}{0.325} & 241 & \textcolor{green!55!black}{0.298} & 221 & \textcolor{green!55!black}{0.334} & 248 & \textcolor{green!55!black}{0.381} & 282 & -- & -- & \textcolor{green!55!black}{0.328} & 243 \\
+\textbf{depth 2, all seen} & 0.180 & 100 & -- & -- & \textcolor{green!55!black}{0.401} & 223 & \textcolor{green!55!black}{0.432} & 240 & \textcolor{green!55!black}{0.459} & 255 & \textcolor{green!55!black}{0.404} & 225 & -- & -- & \textcolor{green!55!black}{0.408} & 227 \\
+\textbf{depth 3, all seen} & 0.141 & 100 & -- & -- & \textcolor{green!55!black}{0.394} & 280 & \textcolor{green!55!black}{0.432} & 307 & \textcolor{green!55!black}{0.452} & 321 & \textcolor{green!55!black}{0.408} & 289 & -- & -- & \textcolor{green!55!black}{0.407} & 289 \\
+\textbf{depth 4, all seen} & 0.105 & 100 & -- & -- & \textcolor{green!55!black}{0.316} & 302 & \textcolor{green!55!black}{0.372} & 356 & \textcolor{green!55!black}{0.413} & 395 & \textcolor{green!55!black}{0.354} & 338 & -- & -- & \textcolor{green!55!black}{0.351} & 336 \\
+\textbf{depth 2, unseen inside} & 0.144 & 100 & -- & -- & \textcolor{green!55!black}{0.313} & 217 & \textcolor{green!55!black}{0.310} & 215 & \textcolor{green!55!black}{0.346} & 240 & \textcolor{green!55!black}{0.354} & 246 & -- & -- & \textcolor{green!55!black}{0.320} & 222 \\
+\textbf{depth 3, unseen inside} & 0.118 & 100 & -- & -- & \textcolor{green!55!black}{0.256} & 218 & \textcolor{green!55!black}{0.262} & 222 & \textcolor{green!55!black}{0.297} & 252 & \textcolor{green!55!black}{0.293} & 249 & -- & -- & \textcolor{green!55!black}{0.267} & 227 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, CodeLlama-34B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_codellama34b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.363 & 100 & -- & -- & 0.260 & 72 & 0.200$^{\dagger}$ & -- & 0.284 & 78 & 0.269 & 74 & -- & -- & 0.382 & 105 \\
-\texttt{L1b} & 0.327 & 100 & -- & -- & 0.253 & 77 & 0.174$^{\dagger}$ & -- & 0.287 & 88 & 0.227 & 69 & -- & -- & 0.360 & 110 \\
-\texttt{L1r} & 0.339 & 100 & -- & -- & 0.255 & 75 & 0.135$^{\dagger}$ & -- & 0.256 & 76 & 0.241 & 71 & -- & -- & 0.373 & 110 \\
-\texttt{L2} & 0.357 & 100 & -- & -- & 0.280 & 78 & 0.179$^{\dagger}$ & -- & 0.276 & 77 & 0.268 & 75 & -- & -- & 0.378 & 106 \\
-\texttt{S1} & 0.323 & 100 & -- & -- & 0.305 & 95 & 0.178$^{\dagger}$ & -- & 0.264 & 82 & 0.246 & 76 & -- & -- & 0.390 & 121 \\
-\texttt{S2} & 0.350 & 100 & -- & -- & 0.354 & 101 & 0.219$^{\dagger}$ & -- & 0.306 & 87 & 0.278 & 79 & -- & -- & 0.437 & 125 \\
-\texttt{X1} & 0.303 & 100 & -- & -- & 0.253 & 83 & 0.118$^{\dagger}$ & -- & 0.249 & 82 & 0.207 & 68 & -- & -- & 0.338 & 112 \\
-\texttt{C\_L1b\_S1} & 0.257 & 100 & -- & -- & 0.272 & 106 & 0.144$^{\dagger}$ & -- & 0.258 & 100 & 0.178$^{\dagger}$ & -- & -- & -- & 0.358 & 139 \\
-\texttt{C\_L1r\_S1} & 0.304 & 100 & -- & -- & 0.285 & 94 & 0.132$^{\dagger}$ & -- & 0.200 & 66 & 0.254 & 84 & -- & -- & 0.375 & 123 \\
-\texttt{C\_S1\_L1r} & 0.292 & 100 & -- & -- & 0.307 & 105 & 0.142$^{\dagger}$ & -- & 0.216 & 74 & 0.264 & 90 & -- & -- & 0.371 & 127 \\
-\texttt{C\_L2\_S4} & 0.344 & 100 & -- & -- & 0.291 & 85 & 0.170$^{\dagger}$ & -- & 0.273 & 79 & 0.258 & 75 & -- & -- & 0.384 & 111 \\
-\texttt{C\_L1r\_S3} & 0.333 & 100 & -- & -- & 0.327 & 98 & 0.167$^{\dagger}$ & -- & 0.256 & 77 & 0.269 & 81 & -- & -- & 0.419 & 126 \\
-\texttt{C\_S4\_S3} & 0.352 & 100 & -- & -- & 0.345 & 98 & 0.218$^{\dagger}$ & -- & 0.301 & 86 & 0.276 & 79 & -- & -- & 0.442 & 126 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.325 & 100 & -- & -- & 0.330 & 102 & 0.182$^{\dagger}$ & -- & 0.251 & 77 & 0.272 & 84 & -- & -- & 0.427 & 132 \\
-\texttt{C3\_S1\_S3\_S4} & 0.330 & 100 & -- & -- & 0.323 & 98 & 0.208$^{\dagger}$ & -- & 0.288 & 87 & 0.270 & 82 & -- & -- & 0.413 & 125 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.291 & 100 & -- & -- & 0.311 & 107 & 0.121$^{\dagger}$ & -- & 0.199 & 68 & 0.271 & 93 & -- & -- & 0.381 & 131 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.283 & 100 & -- & -- & 0.333 & 118 & 0.164$^{\dagger}$ & -- & 0.214 & 75 & 0.270 & 95 & -- & -- & 0.386 & 136 \\
-\texttt{C\_L1r\_X1} & 0.275 & 100 & -- & -- & 0.240 & 87 & 0.060$^{\dagger}$ & -- & 0.162$^{\dagger}$ & -- & 0.195 & 71 & -- & -- & 0.299 & 109 \\
-\texttt{C\_X1\_S1} & 0.298 & 100 & -- & -- & 0.275 & 92 & 0.089$^{\dagger}$ & -- & 0.216$^{\dagger}$ & -- & 0.228 & 77 & -- & -- & 0.345 & 116 \\
-\texttt{C\_S2\_X1} & 0.378 & 100 & -- & -- & 0.366 & 97 & 0.196$^{\dagger}$ & -- & 0.288 & 76 & 0.233 & 62 & -- & -- & 0.414 & 110 \\
-\texttt{C\_L1r\_X1m} & 0.269 & 100 & -- & -- & 0.230 & 86 & 0.077$^{\dagger}$ & -- & 0.158$^{\dagger}$ & -- & 0.189 & 70 & -- & -- & 0.308 & 114 \\
-\texttt{C\_S1\_X1s} & 0.346 & 100 & -- & -- & 0.302 & 87 & 0.141$^{\dagger}$ & -- & 0.268 & 77 & 0.250 & 72 & -- & -- & 0.418 & 121 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.304 & 100 & -- & -- & 0.296 & 97 & 0.084$^{\dagger}$ & -- & 0.188$^{\dagger}$ & -- & 0.237 & 78 & -- & -- & 0.357 & 118 \\
+\texttt{L0} & 0.363 & 100 & -- & -- & \textcolor{red!70!black}{0.260} & 72 & 0.200$^{\dagger}$ & -- & \textcolor{red!70!black}{0.284} & 78 & \textcolor{red!70!black}{0.269} & 74 & -- & -- & \textcolor{green!55!black}{0.382} & 105 \\
+\texttt{L1b} & 0.327 & 100 & -- & -- & \textcolor{red!70!black}{0.253} & 77 & 0.174$^{\dagger}$ & -- & \textcolor{red!70!black}{0.287} & 88 & \textcolor{red!70!black}{0.227} & 69 & -- & -- & \textcolor{green!55!black}{0.360} & 110 \\
+\texttt{L1r} & 0.339 & 100 & -- & -- & \textcolor{red!70!black}{0.255} & 75 & 0.135$^{\dagger}$ & -- & \textcolor{red!70!black}{0.256} & 76 & \textcolor{red!70!black}{0.241} & 71 & -- & -- & \textcolor{green!55!black}{0.373} & 110 \\
+\texttt{L2} & 0.357 & 100 & -- & -- & \textcolor{red!70!black}{0.280} & 78 & 0.179$^{\dagger}$ & -- & \textcolor{red!70!black}{0.276} & 77 & \textcolor{red!70!black}{0.268} & 75 & -- & -- & \textcolor{green!55!black}{0.378} & 106 \\
+\texttt{S1} & 0.323 & 100 & -- & -- & \textcolor{red!70!black}{0.305} & 95 & 0.178$^{\dagger}$ & -- & \textcolor{red!70!black}{0.264} & 82 & \textcolor{red!70!black}{0.246} & 76 & -- & -- & \textcolor{green!55!black}{0.390} & 121 \\
+\texttt{S2} & 0.350 & 100 & -- & -- & \textcolor{green!55!black}{0.354} & 101 & 0.219$^{\dagger}$ & -- & \textcolor{red!70!black}{0.306} & 87 & \textcolor{red!70!black}{0.278} & 79 & -- & -- & \textcolor{green!55!black}{0.437} & 125 \\
+\texttt{X1} & 0.303 & 100 & -- & -- & \textcolor{red!70!black}{0.253} & 83 & 0.118$^{\dagger}$ & -- & \textcolor{red!70!black}{0.249} & 82 & \textcolor{red!70!black}{0.207} & 68 & -- & -- & \textcolor{green!55!black}{0.338} & 112 \\
+\texttt{C\_L1b\_S1} & 0.257 & 100 & -- & -- & \textcolor{green!55!black}{0.272} & 106 & 0.144$^{\dagger}$ & -- & \textcolor{green!55!black}{0.258} & 100 & 0.178$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.358} & 139 \\
+\texttt{C\_L1r\_S1} & 0.304 & 100 & -- & -- & \textcolor{red!70!black}{0.285} & 94 & 0.132$^{\dagger}$ & -- & \textcolor{red!70!black}{0.200} & 66 & \textcolor{red!70!black}{0.254} & 84 & -- & -- & \textcolor{green!55!black}{0.375} & 123 \\
+\texttt{C\_S1\_L1r} & 0.292 & 100 & -- & -- & \textcolor{green!55!black}{0.307} & 105 & 0.142$^{\dagger}$ & -- & \textcolor{red!70!black}{0.216} & 74 & \textcolor{red!70!black}{0.264} & 90 & -- & -- & \textcolor{green!55!black}{0.371} & 127 \\
+\texttt{C\_L2\_S4} & 0.344 & 100 & -- & -- & \textcolor{red!70!black}{0.291} & 85 & 0.170$^{\dagger}$ & -- & \textcolor{red!70!black}{0.273} & 79 & \textcolor{red!70!black}{0.258} & 75 & -- & -- & \textcolor{green!55!black}{0.384} & 111 \\
+\texttt{C\_L1r\_S3} & 0.333 & 100 & -- & -- & \textcolor{red!70!black}{0.327} & 98 & 0.167$^{\dagger}$ & -- & \textcolor{red!70!black}{0.256} & 77 & \textcolor{red!70!black}{0.269} & 81 & -- & -- & \textcolor{green!55!black}{0.419} & 126 \\
+\texttt{C\_S4\_S3} & 0.352 & 100 & -- & -- & \textcolor{red!70!black}{0.345} & 98 & 0.218$^{\dagger}$ & -- & \textcolor{red!70!black}{0.301} & 86 & \textcolor{red!70!black}{0.276} & 79 & -- & -- & \textcolor{green!55!black}{0.442} & 126 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.325 & 100 & -- & -- & \textcolor{green!55!black}{0.330} & 102 & 0.182$^{\dagger}$ & -- & \textcolor{red!70!black}{0.251} & 77 & \textcolor{red!70!black}{0.272} & 84 & -- & -- & \textcolor{green!55!black}{0.427} & 132 \\
+\texttt{C3\_S1\_S3\_S4} & 0.330 & 100 & -- & -- & \textcolor{red!70!black}{0.323} & 98 & 0.208$^{\dagger}$ & -- & \textcolor{red!70!black}{0.288} & 87 & \textcolor{red!70!black}{0.270} & 82 & -- & -- & \textcolor{green!55!black}{0.413} & 125 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.291 & 100 & -- & -- & \textcolor{green!55!black}{0.311} & 107 & 0.121$^{\dagger}$ & -- & \textcolor{red!70!black}{0.199} & 68 & \textcolor{red!70!black}{0.271} & 93 & -- & -- & \textcolor{green!55!black}{0.381} & 131 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.283 & 100 & -- & -- & \textcolor{green!55!black}{0.333} & 118 & 0.164$^{\dagger}$ & -- & \textcolor{red!70!black}{0.214} & 75 & \textcolor{red!70!black}{0.270} & 95 & -- & -- & \textcolor{green!55!black}{0.386} & 136 \\
+\texttt{C\_L1r\_X1} & 0.275 & 100 & -- & -- & \textcolor{red!70!black}{0.240} & 87 & 0.060$^{\dagger}$ & -- & 0.162$^{\dagger}$ & -- & \textcolor{red!70!black}{0.195} & 71 & -- & -- & \textcolor{green!55!black}{0.299} & 109 \\
+\texttt{C\_X1\_S1} & 0.298 & 100 & -- & -- & \textcolor{red!70!black}{0.275} & 92 & 0.089$^{\dagger}$ & -- & 0.216$^{\dagger}$ & -- & \textcolor{red!70!black}{0.228} & 77 & -- & -- & \textcolor{green!55!black}{0.345} & 116 \\
+\texttt{C\_S2\_X1} & 0.378 & 100 & -- & -- & \textcolor{red!70!black}{0.366} & 97 & 0.196$^{\dagger}$ & -- & \textcolor{red!70!black}{0.288} & 76 & \textcolor{red!70!black}{0.233} & 62 & -- & -- & \textcolor{green!55!black}{0.414} & 110 \\
+\texttt{C\_L1r\_X1m} & 0.269 & 100 & -- & -- & \textcolor{red!70!black}{0.230} & 86 & 0.077$^{\dagger}$ & -- & 0.158$^{\dagger}$ & -- & \textcolor{red!70!black}{0.189} & 70 & -- & -- & \textcolor{green!55!black}{0.308} & 114 \\
+\texttt{C\_S1\_X1s} & 0.346 & 100 & -- & -- & \textcolor{red!70!black}{0.302} & 87 & 0.141$^{\dagger}$ & -- & \textcolor{red!70!black}{0.268} & 77 & \textcolor{red!70!black}{0.250} & 72 & -- & -- & \textcolor{green!55!black}{0.418} & 121 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.304 & 100 & -- & -- & \textcolor{red!70!black}{0.296} & 97 & 0.084$^{\dagger}$ & -- & 0.188$^{\dagger}$ & -- & \textcolor{red!70!black}{0.237} & 78 & -- & -- & \textcolor{green!55!black}{0.357} & 118 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.339 & 100 & -- & -- & \textcolor{red!70!black}{0.289} & 85 & -- & -- & \textcolor{red!70!black}{0.278} & 82 & \textcolor{red!70!black}{0.252} & 74 & -- & -- & \textcolor{green!55!black}{0.388} & 114 \\
+\textbf{held-out family} & 0.303 & 100 & -- & -- & \textcolor{red!70!black}{0.253} & 83 & -- & -- & \textcolor{red!70!black}{0.249} & 82 & \textcolor{red!70!black}{0.207} & 68 & -- & -- & \textcolor{green!55!black}{0.338} & 112 \\
+\textbf{depth 2, all seen} & 0.314 & 100 & -- & -- & \textcolor{red!70!black}{0.305} & 97 & -- & -- & \textcolor{red!70!black}{0.251} & 80 & \textcolor{red!70!black}{0.264$^{5}$} & 84 & -- & -- & \textcolor{green!55!black}{0.391} & 125 \\
+\textbf{depth 3, all seen} & 0.315 & 100 & -- & -- & \textcolor{green!55!black}{0.322} & 102 & -- & -- & \textcolor{red!70!black}{0.246} & 78 & \textcolor{red!70!black}{0.271} & 86 & -- & -- & \textcolor{green!55!black}{0.407} & 129 \\
+\textbf{depth 4, all seen} & 0.283 & 100 & -- & -- & \textcolor{green!55!black}{0.333} & 118 & -- & -- & \textcolor{red!70!black}{0.214} & 75 & \textcolor{red!70!black}{0.270} & 95 & -- & -- & \textcolor{green!55!black}{0.386} & 136 \\
+\textbf{depth 2, unseen inside} & 0.313 & 100 & -- & -- & \textcolor{red!70!black}{0.283} & 90 & -- & -- & \textcolor{red!70!black}{0.278$^{2}$} & 89 & \textcolor{red!70!black}{0.219} & 70 & -- & -- & \textcolor{green!55!black}{0.357} & 114 \\
+\textbf{depth 3, unseen inside} & 0.304 & 100 & -- & -- & \textcolor{red!70!black}{0.296} & 97 & -- & -- & -- & -- & \textcolor{red!70!black}{0.237} & 78 & -- & -- & \textcolor{green!55!black}{0.357} & 118 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_codellama34b
 % >>> GENERATED TABLE master_abs_llama318b -- from tables/master_abs_llama318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for llama31-8b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_llama318b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
-\texttt{L0} & 0.258 & 100 & 0.320 & 124 & 0.448 & 174 & 0.426 & 165 & 0.445 & 172 & 0.459 & 178 & 0.475 & 184 & 0.462 & 179 \\
-\texttt{L1b} & 0.222 & 100 & 0.276 & 124 & 0.361 & 163 & 0.387 & 174 & 0.407 & 183 & 0.369 & 166 & 0.422 & 190 & 0.386 & 174 \\
-\texttt{L1r} & 0.242 & 100 & 0.284 & 118 & 0.387 & 160 & 0.387 & 160 & 0.405 & 167 & 0.378 & 156 & 0.407 & 168 & 0.398 & 164 \\
-\texttt{L2} & 0.215 & 100 & 0.278 & 130 & 0.391 & 182 & 0.386 & 180 & 0.409 & 190 & 0.387 & 180 & 0.425 & 198 & 0.396 & 184 \\
-\texttt{S1} & 0.213 & 100 & 0.256 & 120 & 0.395 & 185 & 0.391 & 183 & 0.413 & 194 & 0.409 & 192 & 0.428 & 201 & 0.412 & 193 \\
-\texttt{S2} & 0.205 & 100 & 0.272 & 133 & 0.413 & 201 & 0.413 & 201 & 0.445 & 217 & 0.438 & 213 & 0.456 & 222 & 0.437 & 213 \\
-\texttt{X1} & 0.132 & 100 & 0.161 & 122 & 0.249 & 189 & 0.222 & 168 & 0.255 & 194 & 0.332 & 252 & 0.280 & 212 & 0.266 & 202 \\
-\texttt{C\_L1b\_S1} & 0.152 & 100 & 0.185 & 122 & 0.279 & 184 & 0.338 & 223 & 0.368 & 243 & 0.305 & 201 & 0.369 & 243 & 0.307 & 203 \\
-\texttt{C\_L1r\_S1} & 0.162 & 100 & 0.220 & 136 & 0.303 & 187 & 0.352 & 217 & 0.363 & 224 & 0.314 & 194 & 0.366 & 226 & 0.328 & 202 \\
-\texttt{C\_S1\_L1r} & 0.159 & 100 & 0.208 & 131 & 0.277 & 174 & 0.338 & 213 & 0.354 & 223 & 0.305 & 192 & 0.347 & 219 & 0.306 & 193 \\
-\texttt{C\_L2\_S4} & 0.205 & 100 & 0.257 & 125 & 0.349 & 170 & 0.386 & 188 & 0.401 & 196 & 0.350 & 171 & 0.413 & 201 & 0.383 & 187 \\
-\texttt{C\_L1r\_S3} & 0.198 & 100 & 0.266 & 134 & 0.367 & 185 & 0.382 & 193 & 0.398 & 201 & 0.369 & 186 & 0.407 & 205 & 0.387 & 195 \\
-\texttt{C\_S4\_S3} & 0.214 & 100 & 0.269 & 126 & 0.421 & 197 & 0.411 & 192 & 0.444 & 208 & 0.431 & 202 & 0.459 & 215 & 0.437 & 204 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.183 & 100 & 0.233 & 128 & 0.329 & 180 & 0.374 & 205 & 0.391 & 214 & 0.363 & 198 & 0.399 & 218 & 0.370 & 202 \\
-\texttt{C3\_S1\_S3\_S4} & 0.160 & 100 & 0.220 & 137 & 0.359 & 224 & 0.376 & 234 & 0.393 & 245 & 0.378 & 236 & 0.415 & 258 & 0.377 & 235 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.160 & 100 & 0.208 & 130 & 0.279 & 174 & 0.342 & 213 & 0.358 & 223 & 0.299 & 187 & 0.353 & 220 & 0.319 & 199 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.140 & 100 & 0.191 & 137 & 0.263 & 189 & 0.335 & 240 & 0.358 & 256 & 0.294 & 210 & 0.342 & 245 & 0.310 & 222 \\
-\texttt{C\_L1r\_X1} & 0.100 & 100 & 0.118 & 117 & 0.165 & 164 & 0.181 & 180 & 0.207 & 206 & 0.257 & 256 & 0.204 & 203 & 0.184 & 183 \\
-\texttt{C\_X1\_S1} & 0.130 & 100 & 0.179 & 138 & 0.271 & 209 & 0.225 & 173 & 0.253 & 194 & 0.300 & 231 & 0.294 & 226 & 0.296 & 228 \\
-\texttt{C\_S2\_X1} & 0.170 & 100 & 0.212 & 124 & 0.296 & 174 & 0.284 & 167 & 0.317 & 187 & 0.360 & 212 & 0.336 & 198 & 0.317 & 187 \\
-\texttt{C\_L1r\_X1m} & 0.115 & 100 & 0.148 & 129 & 0.184 & 160 & 0.216 & 188 & 0.232 & 202 & 0.291 & 253 & -- & -- & 0.217 & 188 \\
-\texttt{C\_S1\_X1s} & 0.193 & 100 & 0.231 & 119 & 0.341 & 176 & 0.299 & 155 & 0.335 & 174 & 0.355 & 184 & -- & -- & 0.349 & 181 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.105 & 100 & 0.156 & 149 & 0.194 & 185 & 0.207 & 198 & 0.224 & 214 & 0.251 & 240 & -- & -- & 0.215 & 205 \\
+\texttt{L0} & 0.258 & 100 & \textcolor{green!55!black}{0.320} & 124 & \textcolor{green!55!black}{0.448} & 174 & \textcolor{green!55!black}{0.426} & 165 & \textcolor{green!55!black}{0.445} & 172 & \textcolor{green!55!black}{0.459} & 178 & \textcolor{green!55!black}{0.475} & 184 & \textcolor{green!55!black}{0.462} & 179 \\
+\texttt{L1b} & 0.222 & 100 & \textcolor{green!55!black}{0.276} & 124 & \textcolor{green!55!black}{0.361} & 163 & \textcolor{green!55!black}{0.387} & 174 & \textcolor{green!55!black}{0.407} & 183 & \textcolor{green!55!black}{0.369} & 166 & \textcolor{green!55!black}{0.422} & 190 & \textcolor{green!55!black}{0.386} & 174 \\
+\texttt{L1r} & 0.242 & 100 & \textcolor{green!55!black}{0.284} & 118 & \textcolor{green!55!black}{0.387} & 160 & \textcolor{green!55!black}{0.387} & 160 & \textcolor{green!55!black}{0.405} & 167 & \textcolor{green!55!black}{0.378} & 156 & \textcolor{green!55!black}{0.407} & 168 & \textcolor{green!55!black}{0.398} & 164 \\
+\texttt{L2} & 0.215 & 100 & \textcolor{green!55!black}{0.278} & 130 & \textcolor{green!55!black}{0.391} & 182 & \textcolor{green!55!black}{0.386} & 180 & \textcolor{green!55!black}{0.409} & 190 & \textcolor{green!55!black}{0.387} & 180 & \textcolor{green!55!black}{0.425} & 198 & \textcolor{green!55!black}{0.396} & 184 \\
+\texttt{S1} & 0.213 & 100 & \textcolor{green!55!black}{0.256} & 120 & \textcolor{green!55!black}{0.395} & 185 & \textcolor{green!55!black}{0.391} & 183 & \textcolor{green!55!black}{0.413} & 194 & \textcolor{green!55!black}{0.409} & 192 & \textcolor{green!55!black}{0.428} & 201 & \textcolor{green!55!black}{0.412} & 193 \\
+\texttt{S2} & 0.205 & 100 & \textcolor{green!55!black}{0.272} & 133 & \textcolor{green!55!black}{0.413} & 201 & \textcolor{green!55!black}{0.413} & 201 & \textcolor{green!55!black}{0.445} & 217 & \textcolor{green!55!black}{0.438} & 213 & \textcolor{green!55!black}{0.456} & 222 & \textcolor{green!55!black}{0.437} & 213 \\
+\texttt{X1} & 0.132 & 100 & \textcolor{green!55!black}{0.161} & 122 & \textcolor{green!55!black}{0.249} & 189 & \textcolor{green!55!black}{0.222} & 168 & \textcolor{green!55!black}{0.255} & 194 & \textcolor{green!55!black}{0.332} & 252 & \textcolor{green!55!black}{0.280} & 212 & \textcolor{green!55!black}{0.266} & 202 \\
+\texttt{C\_L1b\_S1} & 0.152 & 100 & \textcolor{green!55!black}{0.185} & 122 & \textcolor{green!55!black}{0.279} & 184 & \textcolor{green!55!black}{0.338} & 223 & \textcolor{green!55!black}{0.368} & 243 & \textcolor{green!55!black}{0.305} & 201 & \textcolor{green!55!black}{0.369} & 243 & \textcolor{green!55!black}{0.307} & 203 \\
+\texttt{C\_L1r\_S1} & 0.162 & 100 & \textcolor{green!55!black}{0.220} & 136 & \textcolor{green!55!black}{0.303} & 187 & \textcolor{green!55!black}{0.352} & 217 & \textcolor{green!55!black}{0.363} & 224 & \textcolor{green!55!black}{0.314} & 194 & \textcolor{green!55!black}{0.366} & 226 & \textcolor{green!55!black}{0.328} & 202 \\
+\texttt{C\_S1\_L1r} & 0.159 & 100 & \textcolor{green!55!black}{0.208} & 131 & \textcolor{green!55!black}{0.277} & 174 & \textcolor{green!55!black}{0.338} & 213 & \textcolor{green!55!black}{0.354} & 223 & \textcolor{green!55!black}{0.305} & 192 & \textcolor{green!55!black}{0.347} & 219 & \textcolor{green!55!black}{0.306} & 193 \\
+\texttt{C\_L2\_S4} & 0.205 & 100 & \textcolor{green!55!black}{0.257} & 125 & \textcolor{green!55!black}{0.349} & 170 & \textcolor{green!55!black}{0.386} & 188 & \textcolor{green!55!black}{0.401} & 196 & \textcolor{green!55!black}{0.350} & 171 & \textcolor{green!55!black}{0.413} & 201 & \textcolor{green!55!black}{0.383} & 187 \\
+\texttt{C\_L1r\_S3} & 0.198 & 100 & \textcolor{green!55!black}{0.266} & 134 & \textcolor{green!55!black}{0.367} & 185 & \textcolor{green!55!black}{0.382} & 193 & \textcolor{green!55!black}{0.398} & 201 & \textcolor{green!55!black}{0.369} & 186 & \textcolor{green!55!black}{0.407} & 205 & \textcolor{green!55!black}{0.387} & 195 \\
+\texttt{C\_S4\_S3} & 0.214 & 100 & \textcolor{green!55!black}{0.269} & 126 & \textcolor{green!55!black}{0.421} & 197 & \textcolor{green!55!black}{0.411} & 192 & \textcolor{green!55!black}{0.444} & 208 & \textcolor{green!55!black}{0.431} & 202 & \textcolor{green!55!black}{0.459} & 215 & \textcolor{green!55!black}{0.437} & 204 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.183 & 100 & \textcolor{green!55!black}{0.233} & 128 & \textcolor{green!55!black}{0.329} & 180 & \textcolor{green!55!black}{0.374} & 205 & \textcolor{green!55!black}{0.391} & 214 & \textcolor{green!55!black}{0.363} & 198 & \textcolor{green!55!black}{0.399} & 218 & \textcolor{green!55!black}{0.370} & 202 \\
+\texttt{C3\_S1\_S3\_S4} & 0.160 & 100 & \textcolor{green!55!black}{0.220} & 137 & \textcolor{green!55!black}{0.359} & 224 & \textcolor{green!55!black}{0.376} & 234 & \textcolor{green!55!black}{0.393} & 245 & \textcolor{green!55!black}{0.378} & 236 & \textcolor{green!55!black}{0.415} & 258 & \textcolor{green!55!black}{0.377} & 235 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.160 & 100 & \textcolor{green!55!black}{0.208} & 130 & \textcolor{green!55!black}{0.279} & 174 & \textcolor{green!55!black}{0.342} & 213 & \textcolor{green!55!black}{0.358} & 223 & \textcolor{green!55!black}{0.299} & 187 & \textcolor{green!55!black}{0.353} & 220 & \textcolor{green!55!black}{0.319} & 199 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.140 & 100 & \textcolor{green!55!black}{0.191} & 137 & \textcolor{green!55!black}{0.263} & 189 & \textcolor{green!55!black}{0.335} & 240 & \textcolor{green!55!black}{0.358} & 256 & \textcolor{green!55!black}{0.294} & 210 & \textcolor{green!55!black}{0.342} & 245 & \textcolor{green!55!black}{0.310} & 222 \\
+\texttt{C\_L1r\_X1} & 0.100 & 100 & \textcolor{green!55!black}{0.118} & 117 & \textcolor{green!55!black}{0.165} & 164 & \textcolor{green!55!black}{0.181} & 180 & \textcolor{green!55!black}{0.207} & 206 & \textcolor{green!55!black}{0.257} & 256 & \textcolor{green!55!black}{0.204} & 203 & \textcolor{green!55!black}{0.184} & 183 \\
+\texttt{C\_X1\_S1} & 0.130 & 100 & \textcolor{green!55!black}{0.179} & 138 & \textcolor{green!55!black}{0.271} & 209 & \textcolor{green!55!black}{0.225} & 173 & \textcolor{green!55!black}{0.253} & 194 & \textcolor{green!55!black}{0.300} & 231 & \textcolor{green!55!black}{0.294} & 226 & \textcolor{green!55!black}{0.296} & 228 \\
+\texttt{C\_S2\_X1} & 0.170 & 100 & \textcolor{green!55!black}{0.212} & 124 & \textcolor{green!55!black}{0.296} & 174 & \textcolor{green!55!black}{0.284} & 167 & \textcolor{green!55!black}{0.317} & 187 & \textcolor{green!55!black}{0.360} & 212 & \textcolor{green!55!black}{0.336} & 198 & \textcolor{green!55!black}{0.317} & 187 \\
+\texttt{C\_L1r\_X1m} & 0.115 & 100 & \textcolor{green!55!black}{0.148} & 129 & \textcolor{green!55!black}{0.184} & 160 & \textcolor{green!55!black}{0.216} & 188 & \textcolor{green!55!black}{0.232} & 202 & \textcolor{green!55!black}{0.291} & 253 & -- & -- & \textcolor{green!55!black}{0.217} & 188 \\
+\texttt{C\_S1\_X1s} & 0.193 & 100 & \textcolor{green!55!black}{0.231} & 119 & \textcolor{green!55!black}{0.341} & 176 & \textcolor{green!55!black}{0.299} & 155 & \textcolor{green!55!black}{0.335} & 174 & \textcolor{green!55!black}{0.355} & 184 & -- & -- & \textcolor{green!55!black}{0.349} & 181 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.105 & 100 & \textcolor{green!55!black}{0.156} & 149 & \textcolor{green!55!black}{0.194} & 185 & \textcolor{green!55!black}{0.207} & 198 & \textcolor{green!55!black}{0.224} & 214 & \textcolor{green!55!black}{0.251} & 240 & -- & -- & \textcolor{green!55!black}{0.215} & 205 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.219 & 100 & \textcolor{green!55!black}{0.273} & 125 & \textcolor{green!55!black}{0.390} & 178 & \textcolor{green!55!black}{0.393} & 179 & \textcolor{green!55!black}{0.416} & 189 & \textcolor{green!55!black}{0.396} & 181 & \textcolor{green!55!black}{0.427} & 195 & \textcolor{green!55!black}{0.406} & 185 \\
+\textbf{held-out family} & 0.132 & 100 & \textcolor{green!55!black}{0.161} & 122 & \textcolor{green!55!black}{0.249} & 189 & \textcolor{green!55!black}{0.222} & 168 & \textcolor{green!55!black}{0.255} & 194 & \textcolor{green!55!black}{0.332} & 252 & \textcolor{green!55!black}{0.280} & 212 & \textcolor{green!55!black}{0.266} & 202 \\
+\textbf{depth 2, all seen} & 0.182 & 100 & \textcolor{green!55!black}{0.234} & 129 & \textcolor{green!55!black}{0.332} & 183 & \textcolor{green!55!black}{0.368} & 203 & \textcolor{green!55!black}{0.388} & 214 & \textcolor{green!55!black}{0.346} & 190 & \textcolor{green!55!black}{0.394} & 217 & \textcolor{green!55!black}{0.358} & 197 \\
+\textbf{depth 3, all seen} & 0.168 & 100 & \textcolor{green!55!black}{0.221} & 131 & \textcolor{green!55!black}{0.322} & 192 & \textcolor{green!55!black}{0.364} & 217 & \textcolor{green!55!black}{0.380} & 227 & \textcolor{green!55!black}{0.347} & 207 & \textcolor{green!55!black}{0.389} & 231 & \textcolor{green!55!black}{0.355} & 211 \\
+\textbf{depth 4, all seen} & 0.140 & 100 & \textcolor{green!55!black}{0.191} & 137 & \textcolor{green!55!black}{0.263} & 189 & \textcolor{green!55!black}{0.335} & 240 & \textcolor{green!55!black}{0.358} & 256 & \textcolor{green!55!black}{0.294} & 210 & \textcolor{green!55!black}{0.342} & 245 & \textcolor{green!55!black}{0.310} & 222 \\
+\textbf{depth 2, unseen inside} & 0.142 & 100 & \textcolor{green!55!black}{0.177} & 125 & \textcolor{green!55!black}{0.252} & 177 & \textcolor{green!55!black}{0.241} & 170 & \textcolor{green!55!black}{0.269} & 190 & \textcolor{green!55!black}{0.313} & 221 & \textcolor{green!55!black}{0.278$^{3}$} & 196 & \textcolor{green!55!black}{0.273} & 192 \\
+\textbf{depth 3, unseen inside} & 0.105 & 100 & \textcolor{green!55!black}{0.156} & 149 & \textcolor{green!55!black}{0.194} & 185 & \textcolor{green!55!black}{0.207} & 198 & \textcolor{green!55!black}{0.224} & 214 & \textcolor{green!55!black}{0.251} & 240 & -- & -- & \textcolor{green!55!black}{0.215} & 205 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Llama-3.1-8B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_llama318b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.409 & 100 & -- & -- & 0.335 & 82 & 0.320 & 78 & 0.332 & 81 & 0.365 & 89 & 0.338 & 83 & 0.414 & 101 \\
-\texttt{L1b} & 0.371 & 100 & -- & -- & 0.297 & 80 & 0.280 & 75 & 0.285 & 77 & 0.297 & 80 & 0.318 & 86 & 0.383 & 103 \\
-\texttt{L1r} & 0.373 & 100 & -- & -- & 0.312 & 84 & 0.290 & 78 & 0.297 & 80 & 0.316 & 85 & 0.311 & 83 & 0.372 & 100 \\
-\texttt{L2} & 0.376 & 100 & -- & -- & 0.297 & 79 & 0.284 & 75 & 0.294 & 78 & 0.319 & 85 & 0.311 & 83 & 0.364 & 97 \\
-\texttt{S1} & 0.375 & 100 & -- & -- & 0.325 & 87 & 0.285 & 76 & 0.291 & 78 & 0.360 & 96 & 0.316 & 84 & 0.411 & 110 \\
-\texttt{S2} & 0.378 & 100 & -- & -- & 0.345 & 91 & 0.326 & 86 & 0.325 & 86 & 0.366 & 97 & 0.366 & 97 & 0.435 & 115 \\
-\texttt{X1} & 0.263 & 100 & -- & -- & 0.267 & 101 & 0.211 & 80 & 0.228 & 87 & 0.302 & 115 & 0.258 & 98 & 0.311 & 118 \\
-\texttt{C\_L1b\_S1} & 0.287 & 100 & -- & -- & 0.253 & 88 & 0.274 & 95 & 0.258 & 90 & 0.297 & 103 & 0.306 & 107 & 0.352 & 123 \\
-\texttt{C\_L1r\_S1} & 0.297 & 100 & -- & -- & 0.281 & 94 & 0.280 & 94 & 0.283 & 95 & 0.271 & 91 & 0.293 & 98 & 0.350 & 118 \\
-\texttt{C\_S1\_L1r} & 0.303 & 100 & -- & -- & 0.269 & 89 & 0.274 & 91 & 0.274 & 91 & 0.290 & 96 & 0.293 & 97 & 0.356 & 118 \\
-\texttt{C\_L2\_S4} & 0.320 & 100 & -- & -- & 0.275 & 86 & 0.269 & 84 & 0.286 & 89 & 0.309 & 96 & 0.313 & 98 & 0.388 & 121 \\
-\texttt{C\_L1r\_S3} & 0.342 & 100 & -- & -- & 0.297 & 87 & 0.299 & 87 & 0.303 & 89 & 0.308 & 90 & 0.320 & 94 & 0.375 & 110 \\
-\texttt{C\_S4\_S3} & 0.367 & 100 & -- & -- & 0.333 & 91 & 0.313 & 85 & 0.329 & 90 & 0.362 & 99 & 0.363 & 99 & 0.417 & 114 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.309 & 100 & -- & -- & 0.271 & 88 & 0.303 & 98 & 0.300 & 97 & 0.300 & 97 & 0.317 & 103 & 0.372 & 121 \\
-\texttt{C3\_S1\_S3\_S4} & 0.353 & 100 & -- & -- & 0.311 & 88 & 0.289 & 82 & 0.281 & 80 & 0.340 & 96 & 0.311 & 88 & 0.408 & 116 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.302 & 100 & -- & -- & 0.270 & 89 & 0.262 & 87 & 0.271 & 90 & 0.270 & 89 & 0.276 & 91 & 0.341 & 113 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.281 & 100 & -- & -- & 0.234 & 83 & 0.280 & 99 & 0.279 & 99 & 0.259 & 92 & 0.274 & 97 & 0.340 & 121 \\
-\texttt{C\_L1r\_X1} & 0.218 & 100 & -- & -- & 0.220 & 101 & 0.193 & 88 & 0.239 & 109 & 0.265 & 122 & 0.230 & 105 & 0.275 & 126 \\
-\texttt{C\_X1\_S1} & 0.291 & 100 & -- & -- & 0.283 & 97 & 0.210 & 72 & 0.220 & 76 & 0.302 & 104 & 0.269 & 92 & 0.332 & 114 \\
-\texttt{C\_S2\_X1} & 0.323 & 100 & -- & -- & 0.288 & 89 & 0.229 & 71 & 0.241 & 75 & 0.306 & 95 & 0.284 & 88 & 0.350 & 109 \\
-\texttt{C\_L1r\_X1m} & 0.232 & 100 & -- & -- & 0.210 & 91 & 0.217 & 93 & 0.245 & 106 & 0.258 & 111 & 0.225 & 97 & 0.274 & 118 \\
-\texttt{C\_S1\_X1s} & 0.357 & 100 & -- & -- & 0.287 & 80 & 0.205 & 57 & 0.212 & 59 & 0.330 & 92 & 0.276 & 77 & 0.376 & 105 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.268 & 100 & -- & -- & 0.234 & 87 & 0.188 & 70 & 0.194 & 73 & 0.243 & 91 & 0.241 & 90 & 0.305 & 114 \\
+\texttt{L0} & 0.409 & 100 & -- & -- & \textcolor{red!70!black}{0.335} & 82 & \textcolor{red!70!black}{0.320} & 78 & \textcolor{red!70!black}{0.332} & 81 & \textcolor{red!70!black}{0.365} & 89 & \textcolor{red!70!black}{0.338} & 83 & \textcolor{green!55!black}{0.414} & 101 \\
+\texttt{L1b} & 0.371 & 100 & -- & -- & \textcolor{red!70!black}{0.297} & 80 & \textcolor{red!70!black}{0.280} & 75 & \textcolor{red!70!black}{0.285} & 77 & \textcolor{red!70!black}{0.297} & 80 & \textcolor{red!70!black}{0.318} & 86 & \textcolor{green!55!black}{0.383} & 103 \\
+\texttt{L1r} & 0.373 & 100 & -- & -- & \textcolor{red!70!black}{0.312} & 84 & \textcolor{red!70!black}{0.290} & 78 & \textcolor{red!70!black}{0.297} & 80 & \textcolor{red!70!black}{0.316} & 85 & \textcolor{red!70!black}{0.311} & 83 & \textcolor{red!70!black}{0.372} & 100 \\
+\texttt{L2} & 0.376 & 100 & -- & -- & \textcolor{red!70!black}{0.297} & 79 & \textcolor{red!70!black}{0.284} & 75 & \textcolor{red!70!black}{0.294} & 78 & \textcolor{red!70!black}{0.319} & 85 & \textcolor{red!70!black}{0.311} & 83 & \textcolor{red!70!black}{0.364} & 97 \\
+\texttt{S1} & 0.375 & 100 & -- & -- & \textcolor{red!70!black}{0.325} & 87 & \textcolor{red!70!black}{0.285} & 76 & \textcolor{red!70!black}{0.291} & 78 & \textcolor{red!70!black}{0.360} & 96 & \textcolor{red!70!black}{0.316} & 84 & \textcolor{green!55!black}{0.411} & 110 \\
+\texttt{S2} & 0.378 & 100 & -- & -- & \textcolor{red!70!black}{0.345} & 91 & \textcolor{red!70!black}{0.326} & 86 & \textcolor{red!70!black}{0.325} & 86 & \textcolor{red!70!black}{0.366} & 97 & \textcolor{red!70!black}{0.366} & 97 & \textcolor{green!55!black}{0.435} & 115 \\
+\texttt{X1} & 0.263 & 100 & -- & -- & \textcolor{green!55!black}{0.267} & 101 & \textcolor{red!70!black}{0.211} & 80 & \textcolor{red!70!black}{0.228} & 87 & \textcolor{green!55!black}{0.302} & 115 & \textcolor{red!70!black}{0.258} & 98 & \textcolor{green!55!black}{0.311} & 118 \\
+\texttt{C\_L1b\_S1} & 0.287 & 100 & -- & -- & \textcolor{red!70!black}{0.253} & 88 & \textcolor{red!70!black}{0.274} & 95 & \textcolor{red!70!black}{0.258} & 90 & \textcolor{green!55!black}{0.297} & 103 & \textcolor{green!55!black}{0.306} & 107 & \textcolor{green!55!black}{0.352} & 123 \\
+\texttt{C\_L1r\_S1} & 0.297 & 100 & -- & -- & \textcolor{red!70!black}{0.281} & 94 & \textcolor{red!70!black}{0.280} & 94 & \textcolor{red!70!black}{0.283} & 95 & \textcolor{red!70!black}{0.271} & 91 & \textcolor{red!70!black}{0.293} & 98 & \textcolor{green!55!black}{0.350} & 118 \\
+\texttt{C\_S1\_L1r} & 0.303 & 100 & -- & -- & \textcolor{red!70!black}{0.269} & 89 & \textcolor{red!70!black}{0.274} & 91 & \textcolor{red!70!black}{0.274} & 91 & \textcolor{red!70!black}{0.290} & 96 & \textcolor{red!70!black}{0.293} & 97 & \textcolor{green!55!black}{0.356} & 118 \\
+\texttt{C\_L2\_S4} & 0.320 & 100 & -- & -- & \textcolor{red!70!black}{0.275} & 86 & \textcolor{red!70!black}{0.269} & 84 & \textcolor{red!70!black}{0.286} & 89 & \textcolor{red!70!black}{0.309} & 96 & \textcolor{red!70!black}{0.313} & 98 & \textcolor{green!55!black}{0.388} & 121 \\
+\texttt{C\_L1r\_S3} & 0.342 & 100 & -- & -- & \textcolor{red!70!black}{0.297} & 87 & \textcolor{red!70!black}{0.299} & 87 & \textcolor{red!70!black}{0.303} & 89 & \textcolor{red!70!black}{0.308} & 90 & \textcolor{red!70!black}{0.320} & 94 & \textcolor{green!55!black}{0.375} & 110 \\
+\texttt{C\_S4\_S3} & 0.367 & 100 & -- & -- & \textcolor{red!70!black}{0.333} & 91 & \textcolor{red!70!black}{0.313} & 85 & \textcolor{red!70!black}{0.329} & 90 & \textcolor{red!70!black}{0.362} & 99 & \textcolor{red!70!black}{0.363} & 99 & \textcolor{green!55!black}{0.417} & 114 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.309 & 100 & -- & -- & \textcolor{red!70!black}{0.271} & 88 & \textcolor{red!70!black}{0.303} & 98 & \textcolor{red!70!black}{0.300} & 97 & \textcolor{red!70!black}{0.300} & 97 & \textcolor{green!55!black}{0.317} & 103 & \textcolor{green!55!black}{0.372} & 121 \\
+\texttt{C3\_S1\_S3\_S4} & 0.353 & 100 & -- & -- & \textcolor{red!70!black}{0.311} & 88 & \textcolor{red!70!black}{0.289} & 82 & \textcolor{red!70!black}{0.281} & 80 & \textcolor{red!70!black}{0.340} & 96 & \textcolor{red!70!black}{0.311} & 88 & \textcolor{green!55!black}{0.408} & 116 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.302 & 100 & -- & -- & \textcolor{red!70!black}{0.270} & 89 & \textcolor{red!70!black}{0.262} & 87 & \textcolor{red!70!black}{0.271} & 90 & \textcolor{red!70!black}{0.270} & 89 & \textcolor{red!70!black}{0.276} & 91 & \textcolor{green!55!black}{0.341} & 113 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.281 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 83 & \textcolor{red!70!black}{0.280} & 99 & \textcolor{red!70!black}{0.279} & 99 & \textcolor{red!70!black}{0.259} & 92 & \textcolor{red!70!black}{0.274} & 97 & \textcolor{green!55!black}{0.340} & 121 \\
+\texttt{C\_L1r\_X1} & 0.218 & 100 & -- & -- & \textcolor{green!55!black}{0.220} & 101 & \textcolor{red!70!black}{0.193} & 88 & \textcolor{green!55!black}{0.239} & 109 & \textcolor{green!55!black}{0.265} & 122 & \textcolor{green!55!black}{0.230} & 105 & \textcolor{green!55!black}{0.275} & 126 \\
+\texttt{C\_X1\_S1} & 0.291 & 100 & -- & -- & \textcolor{red!70!black}{0.283} & 97 & \textcolor{red!70!black}{0.210} & 72 & \textcolor{red!70!black}{0.220} & 76 & \textcolor{green!55!black}{0.302} & 104 & \textcolor{red!70!black}{0.269} & 92 & \textcolor{green!55!black}{0.332} & 114 \\
+\texttt{C\_S2\_X1} & 0.323 & 100 & -- & -- & \textcolor{red!70!black}{0.288} & 89 & \textcolor{red!70!black}{0.229} & 71 & \textcolor{red!70!black}{0.241} & 75 & \textcolor{red!70!black}{0.306} & 95 & \textcolor{red!70!black}{0.284} & 88 & \textcolor{green!55!black}{0.350} & 109 \\
+\texttt{C\_L1r\_X1m} & 0.232 & 100 & -- & -- & \textcolor{red!70!black}{0.210} & 91 & \textcolor{red!70!black}{0.217} & 93 & \textcolor{green!55!black}{0.245} & 106 & \textcolor{green!55!black}{0.258} & 111 & \textcolor{red!70!black}{0.225} & 97 & \textcolor{green!55!black}{0.274} & 118 \\
+\texttt{C\_S1\_X1s} & 0.357 & 100 & -- & -- & \textcolor{red!70!black}{0.287} & 80 & \textcolor{red!70!black}{0.205} & 57 & \textcolor{red!70!black}{0.212} & 59 & \textcolor{red!70!black}{0.330} & 92 & \textcolor{red!70!black}{0.276} & 77 & \textcolor{green!55!black}{0.376} & 105 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.268 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 87 & \textcolor{red!70!black}{0.188} & 70 & \textcolor{red!70!black}{0.194} & 73 & \textcolor{red!70!black}{0.243} & 91 & \textcolor{red!70!black}{0.241} & 90 & \textcolor{green!55!black}{0.305} & 114 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.375 & 100 & -- & -- & \textcolor{red!70!black}{0.315} & 84 & \textcolor{red!70!black}{0.293} & 78 & \textcolor{red!70!black}{0.299} & 80 & \textcolor{red!70!black}{0.331} & 88 & \textcolor{red!70!black}{0.324} & 87 & \textcolor{green!55!black}{0.393} & 105 \\
+\textbf{held-out family} & 0.263 & 100 & -- & -- & \textcolor{green!55!black}{0.267} & 101 & \textcolor{red!70!black}{0.211} & 80 & \textcolor{red!70!black}{0.228} & 87 & \textcolor{green!55!black}{0.302} & 115 & \textcolor{red!70!black}{0.258} & 98 & \textcolor{green!55!black}{0.311} & 118 \\
+\textbf{depth 2, all seen} & 0.319 & 100 & -- & -- & \textcolor{red!70!black}{0.284} & 89 & \textcolor{red!70!black}{0.285} & 89 & \textcolor{red!70!black}{0.289} & 90 & \textcolor{red!70!black}{0.306} & 96 & \textcolor{red!70!black}{0.315} & 98 & \textcolor{green!55!black}{0.373} & 117 \\
+\textbf{depth 3, all seen} & 0.321 & 100 & -- & -- & \textcolor{red!70!black}{0.284} & 88 & \textcolor{red!70!black}{0.285} & 89 & \textcolor{red!70!black}{0.284} & 88 & \textcolor{red!70!black}{0.303} & 94 & \textcolor{red!70!black}{0.301} & 94 & \textcolor{green!55!black}{0.374} & 116 \\
+\textbf{depth 4, all seen} & 0.281 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 83 & \textcolor{red!70!black}{0.280} & 99 & \textcolor{red!70!black}{0.279} & 99 & \textcolor{red!70!black}{0.259} & 92 & \textcolor{red!70!black}{0.274} & 97 & \textcolor{green!55!black}{0.340} & 121 \\
+\textbf{depth 2, unseen inside} & 0.284 & 100 & -- & -- & \textcolor{red!70!black}{0.258} & 91 & \textcolor{red!70!black}{0.211} & 74 & \textcolor{red!70!black}{0.231} & 81 & \textcolor{green!55!black}{0.292} & 103 & \textcolor{red!70!black}{0.257} & 90 & \textcolor{green!55!black}{0.321} & 113 \\
+\textbf{depth 3, unseen inside} & 0.268 & 100 & -- & -- & \textcolor{red!70!black}{0.234} & 87 & \textcolor{red!70!black}{0.188} & 70 & \textcolor{red!70!black}{0.194} & 73 & \textcolor{red!70!black}{0.243} & 91 & \textcolor{red!70!black}{0.241} & 90 & \textcolor{green!55!black}{0.305} & 114 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_llama318b
 % >>> GENERATED TABLE master_abs_starcoder215b -- from tables/master_abs_starcoder215b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for starcoder2-15b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, StarCoder2-15B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, StarCoder2-15B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_starcoder215b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
 \texttt{L0} & 0.000$^{\dagger}$ & -- & 0.008$^{\dagger}$ & -- & 0.542 & -- & 0.529 & -- & 0.532 & -- & 0.513 & -- & 0.546 & -- & 0.539 & -- \\
 \texttt{L1b} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.431 & -- & 0.487 & -- & 0.510 & -- & 0.402 & -- & 0.489 & -- & 0.426 & -- \\
 \texttt{L1r} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.483 & -- & 0.485 & -- & 0.509 & -- & 0.448 & -- & 0.492 & -- & 0.476 & -- \\
@@ -886,12 +963,31 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{C\_L1r\_X1m} & 0.000$^{\dagger}$ & -- & 0.003$^{\dagger}$ & -- & 0.307 & -- & 0.323 & -- & 0.338 & -- & 0.342 & -- & 0.328 & -- & 0.317 & -- \\
 \texttt{C\_S1\_X1s} & 0.000$^{\dagger}$ & -- & 0.044$^{\dagger}$ & -- & 0.434 & -- & 0.408 & -- & 0.434 & -- & 0.435 & -- & 0.443 & -- & 0.427 & -- \\
 \texttt{C3\_L1r\_S1\_X1} & 0.000$^{\dagger}$ & -- & 0.002$^{\dagger}$ & -- & 0.278 & -- & 0.298 & -- & 0.302 & -- & 0.306 & -- & 0.306 & -- & 0.286 & -- \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & -- & -- & -- & -- & 0.482 & -- & 0.492 & -- & 0.512 & -- & 0.452 & -- & 0.503 & -- & 0.475 & -- \\
+\textbf{held-out family} & -- & -- & -- & -- & 0.347 & -- & 0.320 & -- & 0.343 & -- & 0.381 & -- & 0.353 & -- & 0.343 & -- \\
+\textbf{depth 2, all seen} & -- & -- & -- & -- & 0.428 & -- & 0.452 & -- & 0.480 & -- & 0.405 & -- & 0.459 & -- & 0.422 & -- \\
+\textbf{depth 3, all seen} & -- & -- & -- & -- & 0.431 & -- & 0.455 & -- & 0.478 & -- & 0.413 & -- & 0.456 & -- & 0.425 & -- \\
+\textbf{depth 4, all seen} & -- & -- & -- & -- & 0.357 & -- & 0.412 & -- & 0.437 & -- & 0.353 & -- & 0.401 & -- & 0.358 & -- \\
+\textbf{depth 2, unseen inside} & -- & -- & -- & -- & 0.350 & -- & 0.341 & -- & 0.359 & -- & 0.377 & -- & 0.369 & -- & 0.355 & -- \\
+\textbf{depth 3, unseen inside} & -- & -- & -- & -- & 0.278 & -- & 0.298 & -- & 0.302 & -- & 0.306 & -- & 0.306 & -- & 0.286 & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, StarCoder2-15B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_starcoder215b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.366 & 100 & -- & -- & 0.411 & 112 & 0.311 & 85 & 0.399 & 109 & 0.393 & 107 & 0.435 & 119 & 0.452 & 124 \\
+\texttt{L0} & 0.366 & 100 & -- & -- & \textcolor{green!55!black}{0.411} & 112 & \textcolor{red!70!black}{0.311} & 85 & \textcolor{green!55!black}{0.399} & 109 & \textcolor{green!55!black}{0.393} & 107 & \textcolor{green!55!black}{0.435} & 119 & \textcolor{green!55!black}{0.452} & 124 \\
 \texttt{L1b} & 0.216$^{\dagger}$ & -- & -- & -- & 0.316 & -- & 0.301 & -- & 0.395 & -- & 0.265$^{\dagger}$ & -- & 0.382 & -- & 0.364 & -- \\
 \texttt{L1r} & 0.282$^{\dagger}$ & -- & -- & -- & 0.354 & -- & 0.273 & -- & 0.369 & -- & 0.298 & -- & 0.368 & -- & 0.423 & -- \\
-\texttt{L2} & 0.355 & 100 & -- & -- & 0.391 & 110 & 0.297 & 84 & 0.379 & 107 & 0.363 & 102 & 0.406 & 115 & 0.421 & 119 \\
+\texttt{L2} & 0.355 & 100 & -- & -- & \textcolor{green!55!black}{0.391} & 110 & \textcolor{red!70!black}{0.297} & 84 & \textcolor{green!55!black}{0.379} & 107 & \textcolor{green!55!black}{0.363} & 102 & \textcolor{green!55!black}{0.406} & 115 & \textcolor{green!55!black}{0.421} & 119 \\
 \texttt{S1} & 0.235$^{\dagger}$ & -- & -- & -- & 0.361 & -- & 0.257$^{\dagger}$ & -- & 0.364 & -- & 0.342 & -- & 0.377 & -- & 0.421 & -- \\
 \texttt{S2} & 0.238$^{\dagger}$ & -- & -- & -- & 0.359 & -- & 0.300 & -- & 0.384 & -- & 0.299$^{\dagger}$ & -- & 0.404 & -- & 0.440 & -- \\
 \texttt{X1} & 0.235$^{\dagger}$ & -- & -- & -- & 0.254$^{\dagger}$ & -- & 0.177$^{\dagger}$ & -- & 0.281 & -- & 0.216$^{\dagger}$ & -- & 0.261$^{\dagger}$ & -- & 0.328 & -- \\
@@ -911,31 +1007,38 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{C\_L1r\_X1m} & 0.179$^{\dagger}$ & -- & -- & -- & 0.191$^{\dagger}$ & -- & 0.178$^{\dagger}$ & -- & 0.234 & -- & 0.130$^{\dagger}$ & -- & -- & -- & 0.267 & -- \\
 \texttt{C\_S1\_X1s} & 0.258$^{\dagger}$ & -- & -- & -- & 0.291$^{\dagger}$ & -- & 0.176$^{\dagger}$ & -- & 0.286$^{\dagger}$ & -- & 0.221$^{\dagger}$ & -- & -- & -- & 0.384 & -- \\
 \texttt{C3\_L1r\_S1\_X1} & 0.153$^{\dagger}$ & -- & -- & -- & 0.191$^{\dagger}$ & -- & 0.107$^{\ddagger}$ & -- & 0.167$^{\dagger}$ & -- & 0.059$^{\ddagger}$ & -- & -- & -- & 0.323 & -- \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.355$^{1}$ & 100 & -- & -- & \textcolor{green!55!black}{0.356} & 100 & \textcolor{red!70!black}{0.293$^{4}$} & 83 & \textcolor{green!55!black}{0.378} & 107 & \textcolor{red!70!black}{0.334$^{3}$} & 94 & \textcolor{green!55!black}{0.387} & 109 & \textcolor{green!55!black}{0.414} & 117 \\
+\textbf{held-out family} & -- & -- & -- & -- & -- & -- & -- & -- & 0.281 & -- & -- & -- & -- & -- & 0.328 & -- \\
+\textbf{depth 2, all seen} & -- & -- & -- & -- & 0.325$^{5}$ & -- & 0.291$^{2}$ & -- & 0.338 & -- & 0.290$^{1}$ & -- & 0.334 & -- & 0.385 & -- \\
+\textbf{depth 3, all seen} & -- & -- & -- & -- & 0.308 & -- & -- & -- & 0.314 & -- & -- & -- & 0.319 & -- & 0.382 & -- \\
+\textbf{depth 4, all seen} & -- & -- & -- & -- & 0.289 & -- & -- & -- & 0.273 & -- & -- & -- & 0.271 & -- & 0.358 & -- \\
+\textbf{depth 2, unseen inside} & -- & -- & -- & -- & -- & -- & -- & -- & 0.234$^{1}$ & -- & -- & -- & -- & -- & 0.330 & -- \\
+\textbf{depth 3, unseen inside} & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & 0.323 & -- \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_starcoder215b
 % >>> GENERATED TABLE master_abs_gemma312b -- from tables/master_abs_gemma312b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for gemma3-12b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, Gemma-3-12B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, Gemma-3-12B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_gemma312b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
 \texttt{L0} & 0.334$^{\dagger}$ & -- & 0.340$^{\dagger}$ & -- & 0.520 & -- & 0.507 & -- & 0.502 & -- & 0.506 & -- & -- & -- & 0.523 & -- \\
 \texttt{L1b} & 0.262$^{\dagger}$ & -- & 0.274$^{\dagger}$ & -- & 0.441 & -- & 0.475 & -- & 0.488 & -- & 0.402 & -- & -- & -- & 0.464 & -- \\
 \texttt{L1r} & 0.273$^{\dagger}$ & -- & 0.283$^{\dagger}$ & -- & 0.459 & -- & 0.463 & -- & 0.472 & -- & 0.447 & -- & -- & -- & 0.474 & -- \\
 \texttt{L2} & 0.269$^{\dagger}$ & -- & 0.281$^{\dagger}$ & -- & 0.456 & -- & 0.471 & -- & 0.478 & -- & 0.441 & -- & -- & -- & 0.465 & -- \\
 \texttt{S1} & 0.269$^{\dagger}$ & -- & 0.289$^{\dagger}$ & -- & 0.456 & -- & 0.457 & -- & 0.483 & -- & 0.452 & -- & -- & -- & 0.479 & -- \\
 \texttt{S2} & 0.290$^{\dagger}$ & -- & 0.308$^{\dagger}$ & -- & 0.500 & -- & 0.503 & -- & 0.504 & -- & 0.489 & -- & -- & -- & 0.513 & -- \\
-\texttt{X1} & 0.152 & 100 & 0.183 & 120 & 0.310 & 203 & 0.263 & 172 & 0.289 & 190 & 0.376 & 246 & -- & -- & 0.311 & 204 \\
+\texttt{X1} & 0.152 & 100 & \textcolor{green!55!black}{0.183} & 120 & \textcolor{green!55!black}{0.310} & 203 & \textcolor{green!55!black}{0.263} & 172 & \textcolor{green!55!black}{0.289} & 190 & \textcolor{green!55!black}{0.376} & 246 & -- & -- & \textcolor{green!55!black}{0.311} & 204 \\
 \texttt{C\_L1b\_S1} & 0.195$^{\dagger}$ & -- & 0.197$^{\dagger}$ & -- & 0.333 & -- & 0.406 & -- & 0.420 & -- & 0.330 & -- & -- & -- & 0.359 & -- \\
 \texttt{C\_L1r\_S1} & 0.200$^{\dagger}$ & -- & 0.204$^{\dagger}$ & -- & 0.336 & -- & 0.389 & -- & 0.416 & -- & 0.344 & -- & -- & -- & 0.362 & -- \\
 \texttt{C\_S1\_L1r} & 0.181$^{\dagger}$ & -- & 0.193$^{\dagger}$ & -- & 0.334 & -- & 0.393 & -- & 0.414 & -- & 0.329 & -- & -- & -- & 0.338 & -- \\
@@ -946,169 +1049,248 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 \texttt{C3\_S1\_S3\_S4} & 0.220$^{\dagger}$ & -- & 0.256$^{\dagger}$ & -- & 0.425 & -- & 0.452 & -- & 0.465 & -- & 0.431 & -- & -- & -- & 0.449 & -- \\
 \texttt{C3\_L1r\_S1\_S4} & 0.176$^{\dagger}$ & -- & 0.191$^{\dagger}$ & -- & 0.320 & -- & 0.390 & -- & 0.415 & -- & 0.330 & -- & -- & -- & 0.341 & -- \\
 \texttt{C4\_L1r\_S1\_S3\_S4} & 0.170$^{\dagger}$ & -- & 0.172$^{\dagger}$ & -- & 0.302 & -- & 0.394 & -- & 0.413 & -- & 0.323 & -- & -- & -- & 0.332 & -- \\
-\texttt{C\_L1r\_X1} & 0.102 & 100 & 0.126 & 123 & 0.195 & 191 & 0.206 & 202 & 0.224 & 219 & 0.285 & 279 & -- & -- & 0.203 & 198 \\
-\texttt{C\_X1\_S1} & 0.172 & 100 & 0.193 & 113 & 0.317 & 185 & 0.271 & 158 & 0.296 & 173 & 0.358 & 208 & -- & -- & 0.312 & 182 \\
-\texttt{C\_S2\_X1} & 0.201 & 100 & 0.222 & 110 & 0.368 & 183 & 0.349 & 173 & 0.364 & 181 & 0.412 & 205 & -- & -- & 0.368 & 183 \\
+\texttt{C\_L1r\_X1} & 0.102 & 100 & \textcolor{green!55!black}{0.126} & 123 & \textcolor{green!55!black}{0.195} & 191 & \textcolor{green!55!black}{0.206} & 202 & \textcolor{green!55!black}{0.224} & 219 & \textcolor{green!55!black}{0.285} & 279 & -- & -- & \textcolor{green!55!black}{0.203} & 198 \\
+\texttt{C\_X1\_S1} & 0.172 & 100 & \textcolor{green!55!black}{0.193} & 113 & \textcolor{green!55!black}{0.317} & 185 & \textcolor{green!55!black}{0.271} & 158 & \textcolor{green!55!black}{0.296} & 173 & \textcolor{green!55!black}{0.358} & 208 & -- & -- & \textcolor{green!55!black}{0.312} & 182 \\
+\texttt{C\_S2\_X1} & 0.201 & 100 & \textcolor{green!55!black}{0.222} & 110 & \textcolor{green!55!black}{0.368} & 183 & \textcolor{green!55!black}{0.349} & 173 & \textcolor{green!55!black}{0.364} & 181 & \textcolor{green!55!black}{0.412} & 205 & -- & -- & \textcolor{green!55!black}{0.368} & 183 \\
 \texttt{C\_L1r\_X1m} & 0.108$^{\dagger}$ & -- & 0.115$^{\dagger}$ & -- & 0.220 & -- & 0.235 & -- & 0.244 & -- & 0.312 & -- & -- & -- & 0.231 & -- \\
-\texttt{C\_S1\_X1s} & 0.255 & 100 & 0.275 & 108 & 0.395 & 155 & 0.374 & 147 & 0.395 & 155 & 0.401 & 158 & -- & -- & 0.393 & 154 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.136 & 100 & 0.147$^{\dagger}$ & -- & 0.225 & 165 & 0.236 & 174 & 0.258 & 189 & 0.260 & 191 & -- & -- & 0.246 & 181 \\
+\texttt{C\_S1\_X1s} & 0.255 & 100 & \textcolor{green!55!black}{0.275} & 108 & \textcolor{green!55!black}{0.395} & 155 & \textcolor{green!55!black}{0.374} & 147 & \textcolor{green!55!black}{0.395} & 155 & \textcolor{green!55!black}{0.401} & 158 & -- & -- & \textcolor{green!55!black}{0.393} & 154 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.136 & 100 & 0.147$^{\dagger}$ & -- & \textcolor{green!55!black}{0.225} & 165 & \textcolor{green!55!black}{0.236} & 174 & \textcolor{green!55!black}{0.258} & 189 & \textcolor{green!55!black}{0.260} & 191 & -- & -- & \textcolor{green!55!black}{0.246} & 181 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & -- & -- & -- & -- & 0.462 & -- & 0.474 & -- & 0.485 & -- & 0.446 & -- & -- & -- & 0.479 & -- \\
+\textbf{held-out family} & 0.152 & 100 & \textcolor{green!55!black}{0.183} & 120 & \textcolor{green!55!black}{0.310} & 203 & \textcolor{green!55!black}{0.263} & 172 & \textcolor{green!55!black}{0.289} & 190 & \textcolor{green!55!black}{0.376} & 246 & -- & -- & \textcolor{green!55!black}{0.311} & 204 \\
+\textbf{depth 2, all seen} & -- & -- & -- & -- & 0.395 & -- & 0.436 & -- & 0.448 & -- & 0.388 & -- & -- & -- & 0.409 & -- \\
+\textbf{depth 3, all seen} & -- & -- & -- & -- & 0.388 & -- & 0.432 & -- & 0.449 & -- & 0.393 & -- & -- & -- & 0.410 & -- \\
+\textbf{depth 4, all seen} & -- & -- & -- & -- & 0.302 & -- & 0.394 & -- & 0.413 & -- & 0.323 & -- & -- & -- & 0.332 & -- \\
+\textbf{depth 2, unseen inside} & 0.182$^{4}$ & 100 & \textcolor{green!55!black}{0.204$^{4}$} & 112 & \textcolor{green!55!black}{0.299} & 164 & \textcolor{green!55!black}{0.287} & 157 & \textcolor{green!55!black}{0.305} & 167 & \textcolor{green!55!black}{0.354} & 194 & -- & -- & \textcolor{green!55!black}{0.301} & 165 \\
+\textbf{depth 3, unseen inside} & 0.136 & 100 & -- & -- & \textcolor{green!55!black}{0.225} & 165 & \textcolor{green!55!black}{0.236} & 174 & \textcolor{green!55!black}{0.258} & 189 & \textcolor{green!55!black}{0.260} & 191 & -- & -- & \textcolor{green!55!black}{0.246} & 181 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Gemma-3-12B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_gemma312b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.453 & 100 & -- & -- & 0.440 & 97 & 0.447 & 99 & 0.355 & 78 & 0.469 & 104 & -- & -- & 0.481 & 106 \\
-\texttt{L1b} & 0.405 & 100 & -- & -- & 0.353 & 87 & 0.427 & 106 & 0.309$^{\dagger}$ & -- & 0.395 & 98 & -- & -- & 0.425 & 105 \\
-\texttt{L1r} & 0.420 & 100 & -- & -- & 0.394 & 94 & 0.411 & 98 & 0.280$^{\dagger}$ & -- & 0.428 & 102 & -- & -- & 0.440 & 105 \\
-\texttt{L2} & 0.403 & 100 & -- & -- & 0.378 & 94 & 0.405 & 100 & 0.295$^{\dagger}$ & -- & 0.431 & 107 & -- & -- & 0.420 & 104 \\
-\texttt{S1} & 0.424 & 100 & -- & -- & 0.375 & 88 & 0.421 & 99 & 0.256$^{\dagger}$ & -- & 0.461 & 109 & -- & -- & 0.435 & 103 \\
-\texttt{S2} & 0.443 & 100 & -- & -- & 0.444 & 100 & 0.457 & 103 & 0.277$^{\dagger}$ & -- & 0.454 & 102 & -- & -- & 0.484 & 109 \\
-\texttt{X1} & 0.333 & 100 & -- & -- & 0.305 & 91 & 0.333 & 100 & 0.199$^{\dagger}$ & -- & 0.393 & 118 & -- & -- & 0.371 & 111 \\
-\texttt{C\_L1b\_S1} & 0.349 & 100 & -- & -- & 0.317 & 91 & 0.366 & 105 & 0.214$^{\dagger}$ & -- & 0.370 & 106 & -- & -- & 0.396 & 113 \\
-\texttt{C\_L1r\_S1} & 0.356 & 100 & -- & -- & 0.319 & 89 & 0.379 & 106 & 0.203$^{\dagger}$ & -- & 0.397 & 111 & -- & -- & 0.386 & 108 \\
-\texttt{C\_S1\_L1r} & 0.337 & 100 & -- & -- & 0.319 & 95 & 0.379 & 112 & 0.207$^{\dagger}$ & -- & 0.407 & 121 & -- & -- & 0.405 & 120 \\
-\texttt{C\_L2\_S4} & 0.387 & 100 & -- & -- & 0.381 & 98 & 0.416 & 108 & 0.222$^{\dagger}$ & -- & 0.427 & 110 & -- & -- & 0.430 & 111 \\
-\texttt{C\_L1r\_S3} & 0.427 & 100 & -- & -- & 0.402 & 94 & 0.423 & 99 & 0.254$^{\dagger}$ & -- & 0.438 & 103 & -- & -- & 0.443 & 104 \\
-\texttt{C\_S4\_S3} & 0.434 & 100 & -- & -- & 0.438 & 101 & 0.462 & 106 & 0.274$^{\dagger}$ & -- & 0.469 & 108 & -- & -- & 0.472 & 109 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.398 & 100 & -- & -- & 0.386 & 97 & 0.420 & 106 & 0.223$^{\dagger}$ & -- & 0.447 & 112 & -- & -- & 0.441 & 111 \\
-\texttt{C3\_S1\_S3\_S4} & 0.387 & 100 & -- & -- & 0.354 & 92 & 0.419 & 108 & 0.240$^{\dagger}$ & -- & 0.440 & 114 & -- & -- & 0.430 & 111 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.347 & 100 & -- & -- & 0.302 & 87 & 0.376 & 109 & 0.181$^{\dagger}$ & -- & 0.377 & 109 & -- & -- & 0.377 & 109 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.329 & 100 & -- & -- & 0.293 & 89 & 0.364 & 111 & 0.180$^{\dagger}$ & -- & 0.399 & 121 & -- & -- & 0.370 & 112 \\
-\texttt{C\_L1r\_X1} & 0.258 & 100 & -- & -- & 0.242 & 94 & 0.279 & 108 & 0.121$^{\dagger}$ & -- & 0.329 & 128 & -- & -- & 0.274 & 106 \\
-\texttt{C\_X1\_S1} & 0.348 & 100 & -- & -- & 0.282 & 81 & 0.331 & 95 & 0.132$^{\dagger}$ & -- & 0.410 & 118 & -- & -- & 0.375 & 108 \\
-\texttt{C\_S2\_X1} & 0.360 & 100 & -- & -- & 0.339 & 94 & 0.357 & 99 & 0.210$^{\dagger}$ & -- & 0.398 & 111 & -- & -- & 0.395 & 110 \\
-\texttt{C\_L1r\_X1m} & 0.273 & 100 & -- & -- & 0.269 & 99 & 0.323 & 118 & 0.146$^{\dagger}$ & -- & 0.349 & 128 & -- & -- & 0.285 & 105 \\
-\texttt{C\_S1\_X1s} & 0.412 & 100 & -- & -- & 0.371 & 90 & 0.383 & 93 & 0.178$^{\dagger}$ & -- & 0.448 & 109 & -- & -- & 0.438 & 106 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.279 & 100 & -- & -- & 0.226 & 81 & 0.270 & 97 & 0.115$^{\dagger}$ & -- & 0.337 & 121 & -- & -- & 0.300 & 107 \\
+\texttt{L0} & 0.453 & 100 & -- & -- & \textcolor{red!70!black}{0.440} & 97 & \textcolor{red!70!black}{0.447} & 99 & \textcolor{red!70!black}{0.355} & 78 & \textcolor{green!55!black}{0.469} & 104 & -- & -- & \textcolor{green!55!black}{0.481} & 106 \\
+\texttt{L1b} & 0.405 & 100 & -- & -- & \textcolor{red!70!black}{0.353} & 87 & \textcolor{green!55!black}{0.427} & 106 & 0.309$^{\dagger}$ & -- & \textcolor{red!70!black}{0.395} & 98 & -- & -- & \textcolor{green!55!black}{0.425} & 105 \\
+\texttt{L1r} & 0.420 & 100 & -- & -- & \textcolor{red!70!black}{0.394} & 94 & \textcolor{red!70!black}{0.411} & 98 & 0.280$^{\dagger}$ & -- & \textcolor{green!55!black}{0.428} & 102 & -- & -- & \textcolor{green!55!black}{0.440} & 105 \\
+\texttt{L2} & 0.403 & 100 & -- & -- & \textcolor{red!70!black}{0.378} & 94 & \textcolor{green!55!black}{0.405} & 100 & 0.295$^{\dagger}$ & -- & \textcolor{green!55!black}{0.431} & 107 & -- & -- & \textcolor{green!55!black}{0.420} & 104 \\
+\texttt{S1} & 0.424 & 100 & -- & -- & \textcolor{red!70!black}{0.375} & 88 & \textcolor{red!70!black}{0.421} & 99 & 0.256$^{\dagger}$ & -- & \textcolor{green!55!black}{0.461} & 109 & -- & -- & \textcolor{green!55!black}{0.435} & 103 \\
+\texttt{S2} & 0.443 & 100 & -- & -- & \textcolor{green!55!black}{0.444} & 100 & \textcolor{green!55!black}{0.457} & 103 & 0.277$^{\dagger}$ & -- & \textcolor{green!55!black}{0.454} & 102 & -- & -- & \textcolor{green!55!black}{0.484} & 109 \\
+\texttt{X1} & 0.333 & 100 & -- & -- & \textcolor{red!70!black}{0.305} & 91 & 0.333 & 100 & 0.199$^{\dagger}$ & -- & \textcolor{green!55!black}{0.393} & 118 & -- & -- & \textcolor{green!55!black}{0.371} & 111 \\
+\texttt{C\_L1b\_S1} & 0.349 & 100 & -- & -- & \textcolor{red!70!black}{0.317} & 91 & \textcolor{green!55!black}{0.366} & 105 & 0.214$^{\dagger}$ & -- & \textcolor{green!55!black}{0.370} & 106 & -- & -- & \textcolor{green!55!black}{0.396} & 113 \\
+\texttt{C\_L1r\_S1} & 0.356 & 100 & -- & -- & \textcolor{red!70!black}{0.319} & 89 & \textcolor{green!55!black}{0.379} & 106 & 0.203$^{\dagger}$ & -- & \textcolor{green!55!black}{0.397} & 111 & -- & -- & \textcolor{green!55!black}{0.386} & 108 \\
+\texttt{C\_S1\_L1r} & 0.337 & 100 & -- & -- & \textcolor{red!70!black}{0.319} & 95 & \textcolor{green!55!black}{0.379} & 112 & 0.207$^{\dagger}$ & -- & \textcolor{green!55!black}{0.407} & 121 & -- & -- & \textcolor{green!55!black}{0.405} & 120 \\
+\texttt{C\_L2\_S4} & 0.387 & 100 & -- & -- & \textcolor{red!70!black}{0.381} & 98 & \textcolor{green!55!black}{0.416} & 108 & 0.222$^{\dagger}$ & -- & \textcolor{green!55!black}{0.427} & 110 & -- & -- & \textcolor{green!55!black}{0.430} & 111 \\
+\texttt{C\_L1r\_S3} & 0.427 & 100 & -- & -- & \textcolor{red!70!black}{0.402} & 94 & \textcolor{red!70!black}{0.423} & 99 & 0.254$^{\dagger}$ & -- & \textcolor{green!55!black}{0.438} & 103 & -- & -- & \textcolor{green!55!black}{0.443} & 104 \\
+\texttt{C\_S4\_S3} & 0.434 & 100 & -- & -- & \textcolor{green!55!black}{0.438} & 101 & \textcolor{green!55!black}{0.462} & 106 & 0.274$^{\dagger}$ & -- & \textcolor{green!55!black}{0.469} & 108 & -- & -- & \textcolor{green!55!black}{0.472} & 109 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.398 & 100 & -- & -- & \textcolor{red!70!black}{0.386} & 97 & \textcolor{green!55!black}{0.420} & 106 & 0.223$^{\dagger}$ & -- & \textcolor{green!55!black}{0.447} & 112 & -- & -- & \textcolor{green!55!black}{0.441} & 111 \\
+\texttt{C3\_S1\_S3\_S4} & 0.387 & 100 & -- & -- & \textcolor{red!70!black}{0.354} & 92 & \textcolor{green!55!black}{0.419} & 108 & 0.240$^{\dagger}$ & -- & \textcolor{green!55!black}{0.440} & 114 & -- & -- & \textcolor{green!55!black}{0.430} & 111 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.347 & 100 & -- & -- & \textcolor{red!70!black}{0.302} & 87 & \textcolor{green!55!black}{0.376} & 109 & 0.181$^{\dagger}$ & -- & \textcolor{green!55!black}{0.377} & 109 & -- & -- & \textcolor{green!55!black}{0.377} & 109 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.329 & 100 & -- & -- & \textcolor{red!70!black}{0.293} & 89 & \textcolor{green!55!black}{0.364} & 111 & 0.180$^{\dagger}$ & -- & \textcolor{green!55!black}{0.399} & 121 & -- & -- & \textcolor{green!55!black}{0.370} & 112 \\
+\texttt{C\_L1r\_X1} & 0.258 & 100 & -- & -- & \textcolor{red!70!black}{0.242} & 94 & \textcolor{green!55!black}{0.279} & 108 & 0.121$^{\dagger}$ & -- & \textcolor{green!55!black}{0.329} & 128 & -- & -- & \textcolor{green!55!black}{0.274} & 106 \\
+\texttt{C\_X1\_S1} & 0.348 & 100 & -- & -- & \textcolor{red!70!black}{0.282} & 81 & \textcolor{red!70!black}{0.331} & 95 & 0.132$^{\dagger}$ & -- & \textcolor{green!55!black}{0.410} & 118 & -- & -- & \textcolor{green!55!black}{0.375} & 108 \\
+\texttt{C\_S2\_X1} & 0.360 & 100 & -- & -- & \textcolor{red!70!black}{0.339} & 94 & \textcolor{red!70!black}{0.357} & 99 & 0.210$^{\dagger}$ & -- & \textcolor{green!55!black}{0.398} & 111 & -- & -- & \textcolor{green!55!black}{0.395} & 110 \\
+\texttt{C\_L1r\_X1m} & 0.273 & 100 & -- & -- & \textcolor{red!70!black}{0.269} & 99 & \textcolor{green!55!black}{0.323} & 118 & 0.146$^{\dagger}$ & -- & \textcolor{green!55!black}{0.349} & 128 & -- & -- & \textcolor{green!55!black}{0.285} & 105 \\
+\texttt{C\_S1\_X1s} & 0.412 & 100 & -- & -- & \textcolor{red!70!black}{0.371} & 90 & \textcolor{red!70!black}{0.383} & 93 & 0.178$^{\dagger}$ & -- & \textcolor{green!55!black}{0.448} & 109 & -- & -- & \textcolor{green!55!black}{0.438} & 106 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.279 & 100 & -- & -- & \textcolor{red!70!black}{0.226} & 81 & \textcolor{red!70!black}{0.270} & 97 & 0.115$^{\dagger}$ & -- & \textcolor{green!55!black}{0.337} & 121 & -- & -- & \textcolor{green!55!black}{0.300} & 107 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.419 & 100 & -- & -- & \textcolor{red!70!black}{0.389} & 93 & \textcolor{green!55!black}{0.424} & 101 & -- & -- & \textcolor{green!55!black}{0.434} & 103 & -- & -- & \textcolor{green!55!black}{0.441} & 105 \\
+\textbf{held-out family} & 0.333 & 100 & -- & -- & \textcolor{red!70!black}{0.305} & 91 & 0.333 & 100 & -- & -- & \textcolor{green!55!black}{0.393} & 118 & -- & -- & \textcolor{green!55!black}{0.371} & 111 \\
+\textbf{depth 2, all seen} & 0.382 & 100 & -- & -- & \textcolor{red!70!black}{0.363} & 95 & \textcolor{green!55!black}{0.404} & 106 & -- & -- & \textcolor{green!55!black}{0.418} & 109 & -- & -- & \textcolor{green!55!black}{0.422} & 111 \\
+\textbf{depth 3, all seen} & 0.377 & 100 & -- & -- & \textcolor{red!70!black}{0.348} & 92 & \textcolor{green!55!black}{0.405} & 107 & -- & -- & \textcolor{green!55!black}{0.421} & 112 & -- & -- & \textcolor{green!55!black}{0.416} & 110 \\
+\textbf{depth 4, all seen} & 0.329 & 100 & -- & -- & \textcolor{red!70!black}{0.293} & 89 & \textcolor{green!55!black}{0.364} & 111 & -- & -- & \textcolor{green!55!black}{0.399} & 121 & -- & -- & \textcolor{green!55!black}{0.370} & 112 \\
+\textbf{depth 2, unseen inside} & 0.330 & 100 & -- & -- & \textcolor{red!70!black}{0.301} & 91 & \textcolor{green!55!black}{0.335} & 101 & -- & -- & \textcolor{green!55!black}{0.387} & 117 & -- & -- & \textcolor{green!55!black}{0.353} & 107 \\
+\textbf{depth 3, unseen inside} & 0.279 & 100 & -- & -- & \textcolor{red!70!black}{0.226} & 81 & \textcolor{red!70!black}{0.270} & 97 & -- & -- & \textcolor{green!55!black}{0.337} & 121 & -- & -- & \textcolor{green!55!black}{0.300} & 107 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_gemma312b
 % >>> GENERATED TABLE master_abs_codegemma7b -- from tables/master_abs_codegemma7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for codegemma-7b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, CodeGemma-7B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, CodeGemma-7B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_codegemma7b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
-\texttt{L0} & 0.237 & 100 & 0.267$^{\dagger}$ & -- & 0.465 & 197 & 0.439 & 186 & 0.445 & 188 & 0.462 & 195 & 0.474 & 200 & 0.465 & 196 \\
-\texttt{L1b} & 0.185 & 100 & 0.209$^{\dagger}$ & -- & 0.382 & 207 & 0.425 & 230 & 0.435 & 236 & 0.345 & 187 & 0.443 & 240 & 0.391 & 212 \\
-\texttt{L1r} & 0.213 & 100 & 0.225$^{\dagger}$ & -- & 0.399 & 187 & 0.417 & 196 & 0.417 & 196 & 0.390 & 183 & 0.426 & 200 & 0.411 & 193 \\
-\texttt{L2} & 0.208 & 100 & 0.230$^{\dagger}$ & -- & 0.412 & 198 & 0.422 & 203 & 0.422 & 203 & 0.392 & 188 & 0.440 & 211 & 0.406 & 195 \\
-\texttt{S1} & 0.195 & 100 & 0.212 & 109 & 0.405 & 208 & 0.415 & 213 & 0.421 & 216 & 0.423 & 217 & 0.457 & 235 & 0.414 & 212 \\
-\texttt{S2} & 0.198 & 100 & 0.242$^{\dagger}$ & -- & 0.450 & 227 & 0.429 & 217 & 0.448 & 226 & 0.444 & 224 & 0.479 & 242 & 0.448 & 226 \\
-\texttt{X1} & 0.143 & 100 & 0.157 & 110 & 0.271 & 189 & 0.251 & 175 & 0.247 & 172 & 0.348 & 243 & -- & -- & 0.274 & 191 \\
-\texttt{C\_L1b\_S1} & 0.148 & 100 & 0.163 & 110 & 0.286 & 192 & 0.372 & 251 & 0.368 & 248 & 0.287 & 194 & -- & -- & 0.302 & 204 \\
-\texttt{C\_L1r\_S1} & 0.144 & 100 & 0.144 & 100 & 0.315 & 219 & 0.373 & 259 & 0.367 & 256 & 0.304 & 212 & -- & -- & 0.318 & 222 \\
-\texttt{C\_S1\_L1r} & 0.132 & 100 & 0.149 & 113 & 0.288 & 217 & 0.363 & 274 & 0.361 & 272 & 0.299 & 226 & -- & -- & 0.300 & 227 \\
-\texttt{C\_L2\_S4} & 0.176 & 100 & 0.208$^{\dagger}$ & -- & 0.391 & 222 & 0.423 & 240 & 0.421 & 239 & 0.374 & 212 & -- & -- & 0.391 & 222 \\
-\texttt{C\_L1r\_S3} & 0.183 & 100 & 0.216$^{\dagger}$ & -- & 0.396 & 216 & 0.415 & 226 & 0.410 & 224 & 0.375 & 205 & -- & -- & 0.393 & 214 \\
-\texttt{C\_S4\_S3} & 0.202 & 100 & 0.235$^{\dagger}$ & -- & 0.448 & 222 & 0.430 & 213 & 0.441 & 219 & 0.446 & 221 & -- & -- & 0.445 & 221 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.157 & 100 & 0.182$^{\dagger}$ & -- & 0.376 & 239 & 0.407 & 259 & 0.411 & 261 & 0.361 & 229 & -- & -- & 0.372 & 237 \\
-\texttt{C3\_S1\_S3\_S4} & 0.158 & 100 & 0.185 & 117 & 0.367 & 233 & 0.395 & 250 & 0.405 & 256 & 0.392 & 248 & -- & -- & 0.378 & 239 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.126 & 100 & 0.137 & 109 & 0.289 & 229 & 0.367 & 291 & 0.366 & 290 & 0.301 & 239 & -- & -- & 0.303 & 241 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.124 & 100 & 0.125$^{\dagger}$ & -- & 0.271 & 219 & 0.361 & 292 & 0.359 & 290 & 0.285 & 230 & -- & -- & 0.303 & 245 \\
-\texttt{C\_L1r\_X1} & 0.118 & 100 & 0.110 & 93 & 0.194 & 164 & 0.212 & 180 & 0.197 & 167 & 0.245 & 208 & -- & -- & 0.184 & 156 \\
-\texttt{C\_X1\_S1} & 0.144 & 100 & 0.152 & 105 & 0.285 & 197 & 0.261 & 181 & 0.247 & 171 & 0.339 & 235 & -- & -- & 0.288 & 199 \\
-\texttt{C\_S2\_X1} & 0.188 & 100 & 0.198 & 105 & 0.344 & 183 & 0.323 & 172 & 0.326 & 173 & 0.379 & 201 & -- & -- & 0.340 & 181 \\
-\texttt{C\_L1r\_X1m} & 0.130 & 100 & 0.112 & 86 & 0.214 & 164 & 0.256 & 196 & 0.234 & 180 & 0.288 & 221 & -- & -- & 0.201 & 154 \\
-\texttt{C\_S1\_X1s} & 0.186 & 100 & 0.210 & 113 & 0.338 & 182 & 0.351 & 189 & 0.339 & 182 & 0.386 & 208 & -- & -- & 0.358 & 193 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.134 & 100 & 0.118 & 88 & 0.218 & 163 & 0.241 & 179 & 0.246 & 183 & 0.254 & 189 & -- & -- & 0.224 & 167 \\
+\texttt{L0} & 0.237 & 100 & 0.267$^{\dagger}$ & -- & \textcolor{green!55!black}{0.465} & 197 & \textcolor{green!55!black}{0.439} & 186 & \textcolor{green!55!black}{0.445} & 188 & \textcolor{green!55!black}{0.462} & 195 & \textcolor{green!55!black}{0.474} & 200 & \textcolor{green!55!black}{0.465} & 196 \\
+\texttt{L1b} & 0.185 & 100 & 0.209$^{\dagger}$ & -- & \textcolor{green!55!black}{0.382} & 207 & \textcolor{green!55!black}{0.425} & 230 & \textcolor{green!55!black}{0.435} & 236 & \textcolor{green!55!black}{0.345} & 187 & \textcolor{green!55!black}{0.443} & 240 & \textcolor{green!55!black}{0.391} & 212 \\
+\texttt{L1r} & 0.213 & 100 & 0.225$^{\dagger}$ & -- & \textcolor{green!55!black}{0.399} & 187 & \textcolor{green!55!black}{0.417} & 196 & \textcolor{green!55!black}{0.417} & 196 & \textcolor{green!55!black}{0.390} & 183 & \textcolor{green!55!black}{0.426} & 200 & \textcolor{green!55!black}{0.411} & 193 \\
+\texttt{L2} & 0.208 & 100 & 0.230$^{\dagger}$ & -- & \textcolor{green!55!black}{0.412} & 198 & \textcolor{green!55!black}{0.422} & 203 & \textcolor{green!55!black}{0.422} & 203 & \textcolor{green!55!black}{0.392} & 188 & \textcolor{green!55!black}{0.440} & 211 & \textcolor{green!55!black}{0.406} & 195 \\
+\texttt{S1} & 0.195 & 100 & \textcolor{green!55!black}{0.212} & 109 & \textcolor{green!55!black}{0.405} & 208 & \textcolor{green!55!black}{0.415} & 213 & \textcolor{green!55!black}{0.421} & 216 & \textcolor{green!55!black}{0.423} & 217 & \textcolor{green!55!black}{0.457} & 235 & \textcolor{green!55!black}{0.414} & 212 \\
+\texttt{S2} & 0.198 & 100 & 0.242$^{\dagger}$ & -- & \textcolor{green!55!black}{0.450} & 227 & \textcolor{green!55!black}{0.429} & 217 & \textcolor{green!55!black}{0.448} & 226 & \textcolor{green!55!black}{0.444} & 224 & \textcolor{green!55!black}{0.479} & 242 & \textcolor{green!55!black}{0.448} & 226 \\
+\texttt{X1} & 0.143 & 100 & \textcolor{green!55!black}{0.157} & 110 & \textcolor{green!55!black}{0.271} & 189 & \textcolor{green!55!black}{0.251} & 175 & \textcolor{green!55!black}{0.247} & 172 & \textcolor{green!55!black}{0.348} & 243 & -- & -- & \textcolor{green!55!black}{0.274} & 191 \\
+\texttt{C\_L1b\_S1} & 0.148 & 100 & \textcolor{green!55!black}{0.163} & 110 & \textcolor{green!55!black}{0.286} & 192 & \textcolor{green!55!black}{0.372} & 251 & \textcolor{green!55!black}{0.368} & 248 & \textcolor{green!55!black}{0.287} & 194 & -- & -- & \textcolor{green!55!black}{0.302} & 204 \\
+\texttt{C\_L1r\_S1} & 0.144 & 100 & 0.144 & 100 & \textcolor{green!55!black}{0.315} & 219 & \textcolor{green!55!black}{0.373} & 259 & \textcolor{green!55!black}{0.367} & 256 & \textcolor{green!55!black}{0.304} & 212 & -- & -- & \textcolor{green!55!black}{0.318} & 222 \\
+\texttt{C\_S1\_L1r} & 0.132 & 100 & \textcolor{green!55!black}{0.149} & 113 & \textcolor{green!55!black}{0.288} & 217 & \textcolor{green!55!black}{0.363} & 274 & \textcolor{green!55!black}{0.361} & 272 & \textcolor{green!55!black}{0.299} & 226 & -- & -- & \textcolor{green!55!black}{0.300} & 227 \\
+\texttt{C\_L2\_S4} & 0.176 & 100 & 0.208$^{\dagger}$ & -- & \textcolor{green!55!black}{0.391} & 222 & \textcolor{green!55!black}{0.423} & 240 & \textcolor{green!55!black}{0.421} & 239 & \textcolor{green!55!black}{0.374} & 212 & -- & -- & \textcolor{green!55!black}{0.391} & 222 \\
+\texttt{C\_L1r\_S3} & 0.183 & 100 & 0.216$^{\dagger}$ & -- & \textcolor{green!55!black}{0.396} & 216 & \textcolor{green!55!black}{0.415} & 226 & \textcolor{green!55!black}{0.410} & 224 & \textcolor{green!55!black}{0.375} & 205 & -- & -- & \textcolor{green!55!black}{0.393} & 214 \\
+\texttt{C\_S4\_S3} & 0.202 & 100 & 0.235$^{\dagger}$ & -- & \textcolor{green!55!black}{0.448} & 222 & \textcolor{green!55!black}{0.430} & 213 & \textcolor{green!55!black}{0.441} & 219 & \textcolor{green!55!black}{0.446} & 221 & -- & -- & \textcolor{green!55!black}{0.445} & 221 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.157 & 100 & 0.182$^{\dagger}$ & -- & \textcolor{green!55!black}{0.376} & 239 & \textcolor{green!55!black}{0.407} & 259 & \textcolor{green!55!black}{0.411} & 261 & \textcolor{green!55!black}{0.361} & 229 & -- & -- & \textcolor{green!55!black}{0.372} & 237 \\
+\texttt{C3\_S1\_S3\_S4} & 0.158 & 100 & \textcolor{green!55!black}{0.185} & 117 & \textcolor{green!55!black}{0.367} & 233 & \textcolor{green!55!black}{0.395} & 250 & \textcolor{green!55!black}{0.405} & 256 & \textcolor{green!55!black}{0.392} & 248 & -- & -- & \textcolor{green!55!black}{0.378} & 239 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.126 & 100 & \textcolor{green!55!black}{0.137} & 109 & \textcolor{green!55!black}{0.289} & 229 & \textcolor{green!55!black}{0.367} & 291 & \textcolor{green!55!black}{0.366} & 290 & \textcolor{green!55!black}{0.301} & 239 & -- & -- & \textcolor{green!55!black}{0.303} & 241 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.124 & 100 & 0.125$^{\dagger}$ & -- & \textcolor{green!55!black}{0.271} & 219 & \textcolor{green!55!black}{0.361} & 292 & \textcolor{green!55!black}{0.359} & 290 & \textcolor{green!55!black}{0.285} & 230 & -- & -- & \textcolor{green!55!black}{0.303} & 245 \\
+\texttt{C\_L1r\_X1} & 0.118 & 100 & \textcolor{red!70!black}{0.110} & 93 & \textcolor{green!55!black}{0.194} & 164 & \textcolor{green!55!black}{0.212} & 180 & \textcolor{green!55!black}{0.197} & 167 & \textcolor{green!55!black}{0.245} & 208 & -- & -- & \textcolor{green!55!black}{0.184} & 156 \\
+\texttt{C\_X1\_S1} & 0.144 & 100 & \textcolor{green!55!black}{0.152} & 105 & \textcolor{green!55!black}{0.285} & 197 & \textcolor{green!55!black}{0.261} & 181 & \textcolor{green!55!black}{0.247} & 171 & \textcolor{green!55!black}{0.339} & 235 & -- & -- & \textcolor{green!55!black}{0.288} & 199 \\
+\texttt{C\_S2\_X1} & 0.188 & 100 & \textcolor{green!55!black}{0.198} & 105 & \textcolor{green!55!black}{0.344} & 183 & \textcolor{green!55!black}{0.323} & 172 & \textcolor{green!55!black}{0.326} & 173 & \textcolor{green!55!black}{0.379} & 201 & -- & -- & \textcolor{green!55!black}{0.340} & 181 \\
+\texttt{C\_L1r\_X1m} & 0.130 & 100 & \textcolor{red!70!black}{0.112} & 86 & \textcolor{green!55!black}{0.214} & 164 & \textcolor{green!55!black}{0.256} & 196 & \textcolor{green!55!black}{0.234} & 180 & \textcolor{green!55!black}{0.288} & 221 & -- & -- & \textcolor{green!55!black}{0.201} & 154 \\
+\texttt{C\_S1\_X1s} & 0.186 & 100 & \textcolor{green!55!black}{0.210} & 113 & \textcolor{green!55!black}{0.338} & 182 & \textcolor{green!55!black}{0.351} & 189 & \textcolor{green!55!black}{0.339} & 182 & \textcolor{green!55!black}{0.386} & 208 & -- & -- & \textcolor{green!55!black}{0.358} & 193 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.134 & 100 & \textcolor{red!70!black}{0.118} & 88 & \textcolor{green!55!black}{0.218} & 163 & \textcolor{green!55!black}{0.241} & 179 & \textcolor{green!55!black}{0.246} & 183 & \textcolor{green!55!black}{0.254} & 189 & -- & -- & \textcolor{green!55!black}{0.224} & 167 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.200 & 100 & \textcolor{green!55!black}{0.212$^{1}$} & 106 & \textcolor{green!55!black}{0.410} & 205 & \textcolor{green!55!black}{0.422} & 211 & \textcolor{green!55!black}{0.429} & 215 & \textcolor{green!55!black}{0.399} & 200 & \textcolor{green!55!black}{0.449} & 225 & \textcolor{green!55!black}{0.414} & 207 \\
+\textbf{held-out family} & 0.143 & 100 & \textcolor{green!55!black}{0.157} & 110 & \textcolor{green!55!black}{0.271} & 189 & \textcolor{green!55!black}{0.251} & 175 & \textcolor{green!55!black}{0.247} & 172 & \textcolor{green!55!black}{0.348} & 243 & -- & -- & \textcolor{green!55!black}{0.274} & 191 \\
+\textbf{depth 2, all seen} & 0.164 & 100 & \textcolor{red!70!black}{0.152$^{3}$} & 92 & \textcolor{green!55!black}{0.354} & 216 & \textcolor{green!55!black}{0.396} & 241 & \textcolor{green!55!black}{0.395} & 240 & \textcolor{green!55!black}{0.348} & 212 & -- & -- & \textcolor{green!55!black}{0.358} & 218 \\
+\textbf{depth 3, all seen} & 0.147 & 100 & \textcolor{green!55!black}{0.161$^{2}$} & 110 & \textcolor{green!55!black}{0.344} & 234 & \textcolor{green!55!black}{0.390} & 265 & \textcolor{green!55!black}{0.394} & 268 & \textcolor{green!55!black}{0.351} & 239 & -- & -- & \textcolor{green!55!black}{0.351} & 239 \\
+\textbf{depth 4, all seen} & 0.124 & 100 & -- & -- & \textcolor{green!55!black}{0.271} & 219 & \textcolor{green!55!black}{0.361} & 292 & \textcolor{green!55!black}{0.359} & 290 & \textcolor{green!55!black}{0.285} & 230 & -- & -- & \textcolor{green!55!black}{0.303} & 245 \\
+\textbf{depth 2, unseen inside} & 0.153 & 100 & \textcolor{green!55!black}{0.156} & 102 & \textcolor{green!55!black}{0.275} & 179 & \textcolor{green!55!black}{0.280} & 183 & \textcolor{green!55!black}{0.269} & 175 & \textcolor{green!55!black}{0.327} & 214 & -- & -- & \textcolor{green!55!black}{0.274} & 179 \\
+\textbf{depth 3, unseen inside} & 0.134 & 100 & \textcolor{red!70!black}{0.118} & 88 & \textcolor{green!55!black}{0.218} & 163 & \textcolor{green!55!black}{0.241} & 179 & \textcolor{green!55!black}{0.246} & 183 & \textcolor{green!55!black}{0.254} & 189 & -- & -- & \textcolor{green!55!black}{0.224} & 167 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, CodeGemma-7B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_codegemma7b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.266 & 100 & -- & -- & 0.364 & 137 & 0.324 & 122 & 0.098$^{\ddagger}$ & -- & 0.256 & 96 & 0.323 & 121 & 0.329 & 124 \\
-\texttt{L1b} & 0.268 & 100 & -- & -- & 0.309 & 115 & 0.298 & 111 & 0.067$^{\ddagger}$ & -- & 0.193 & 72 & 0.307 & 115 & 0.301 & 112 \\
-\texttt{L1r} & 0.251 & 100 & -- & -- & 0.333 & 133 & 0.301 & 120 & 0.107$^{\ddagger}$ & -- & 0.225 & 90 & 0.294 & 117 & 0.303 & 121 \\
-\texttt{L2} & 0.239 & 100 & -- & -- & 0.327 & 136 & 0.291 & 122 & 0.078$^{\ddagger}$ & -- & 0.220 & 92 & 0.287 & 120 & 0.299 & 125 \\
-\texttt{S1} & 0.234 & 100 & -- & -- & 0.357 & 153 & 0.337 & 144 & 0.125$^{\ddagger}$ & -- & 0.231 & 99 & 0.320 & 137 & 0.312 & 134 \\
-\texttt{S2} & 0.270 & 100 & -- & -- & 0.372 & 138 & 0.351 & 130 & 0.126$^{\ddagger}$ & -- & 0.248 & 92 & 0.359 & 133 & 0.330 & 122 \\
-\texttt{X1} & 0.190 & 100 & -- & -- & 0.260 & 137 & 0.217 & 114 & 0.049$^{\ddagger}$ & -- & 0.235 & 123 & -- & -- & 0.264 & 139 \\
-\texttt{C\_L1b\_S1} & 0.229 & 100 & -- & -- & 0.274 & 120 & 0.276 & 121 & 0.089$^{\ddagger}$ & -- & 0.176$^{\dagger}$ & -- & -- & -- & 0.297 & 130 \\
-\texttt{C\_L1r\_S1} & 0.170 & 100 & -- & -- & 0.289 & 170 & 0.290 & 171 & 0.086$^{\ddagger}$ & -- & 0.208 & 123 & -- & -- & 0.271 & 160 \\
-\texttt{C\_S1\_L1r} & 0.168 & 100 & -- & -- & 0.284 & 169 & 0.316 & 188 & 0.099$^{\ddagger}$ & -- & 0.203 & 120 & -- & -- & 0.281 & 167 \\
-\texttt{C\_L2\_S4} & 0.239 & 100 & -- & -- & 0.318 & 133 & 0.299 & 125 & 0.070$^{\ddagger}$ & -- & 0.238 & 100 & -- & -- & 0.295 & 124 \\
-\texttt{C\_L1r\_S3} & 0.223 & 100 & -- & -- & 0.326 & 147 & 0.314 & 141 & 0.150$^{\dagger}$ & -- & 0.223 & 100 & -- & -- & 0.293 & 131 \\
-\texttt{C\_S4\_S3} & 0.257 & 100 & -- & -- & 0.372 & 145 & 0.357 & 139 & 0.130$^{\ddagger}$ & -- & 0.242 & 94 & -- & -- & 0.348 & 136 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.187 & 100 & -- & -- & 0.318 & 170 & 0.312 & 167 & 0.083$^{\ddagger}$ & -- & 0.221 & 118 & -- & -- & 0.294 & 157 \\
-\texttt{C3\_S1\_S3\_S4} & 0.231 & 100 & -- & -- & 0.338 & 146 & 0.332 & 143 & 0.138$^{\ddagger}$ & -- & 0.234 & 101 & -- & -- & 0.306 & 132 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.173 & 100 & -- & -- & 0.274 & 158 & 0.286 & 165 & 0.064$^{\ddagger}$ & -- & 0.191 & 110 & -- & -- & 0.267 & 154 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.150 & 100 & -- & -- & 0.267 & 178 & 0.290 & 194 & 0.081$^{\ddagger}$ & -- & 0.177 & 118 & -- & -- & 0.270 & 180 \\
+\texttt{L0} & 0.266 & 100 & -- & -- & \textcolor{green!55!black}{0.364} & 137 & \textcolor{green!55!black}{0.324} & 122 & 0.098$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.256} & 96 & \textcolor{green!55!black}{0.323} & 121 & \textcolor{green!55!black}{0.329} & 124 \\
+\texttt{L1b} & 0.268 & 100 & -- & -- & \textcolor{green!55!black}{0.309} & 115 & \textcolor{green!55!black}{0.298} & 111 & 0.067$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.193} & 72 & \textcolor{green!55!black}{0.307} & 115 & \textcolor{green!55!black}{0.301} & 112 \\
+\texttt{L1r} & 0.251 & 100 & -- & -- & \textcolor{green!55!black}{0.333} & 133 & \textcolor{green!55!black}{0.301} & 120 & 0.107$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.225} & 90 & \textcolor{green!55!black}{0.294} & 117 & \textcolor{green!55!black}{0.303} & 121 \\
+\texttt{L2} & 0.239 & 100 & -- & -- & \textcolor{green!55!black}{0.327} & 136 & \textcolor{green!55!black}{0.291} & 122 & 0.078$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.220} & 92 & \textcolor{green!55!black}{0.287} & 120 & \textcolor{green!55!black}{0.299} & 125 \\
+\texttt{S1} & 0.234 & 100 & -- & -- & \textcolor{green!55!black}{0.357} & 153 & \textcolor{green!55!black}{0.337} & 144 & 0.125$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.231} & 99 & \textcolor{green!55!black}{0.320} & 137 & \textcolor{green!55!black}{0.312} & 134 \\
+\texttt{S2} & 0.270 & 100 & -- & -- & \textcolor{green!55!black}{0.372} & 138 & \textcolor{green!55!black}{0.351} & 130 & 0.126$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.248} & 92 & \textcolor{green!55!black}{0.359} & 133 & \textcolor{green!55!black}{0.330} & 122 \\
+\texttt{X1} & 0.190 & 100 & -- & -- & \textcolor{green!55!black}{0.260} & 137 & \textcolor{green!55!black}{0.217} & 114 & 0.049$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.235} & 123 & -- & -- & \textcolor{green!55!black}{0.264} & 139 \\
+\texttt{C\_L1b\_S1} & 0.229 & 100 & -- & -- & \textcolor{green!55!black}{0.274} & 120 & \textcolor{green!55!black}{0.276} & 121 & 0.089$^{\ddagger}$ & -- & 0.176$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.297} & 130 \\
+\texttt{C\_L1r\_S1} & 0.170 & 100 & -- & -- & \textcolor{green!55!black}{0.289} & 170 & \textcolor{green!55!black}{0.290} & 171 & 0.086$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.208} & 123 & -- & -- & \textcolor{green!55!black}{0.271} & 160 \\
+\texttt{C\_S1\_L1r} & 0.168 & 100 & -- & -- & \textcolor{green!55!black}{0.284} & 169 & \textcolor{green!55!black}{0.316} & 188 & 0.099$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.203} & 120 & -- & -- & \textcolor{green!55!black}{0.281} & 167 \\
+\texttt{C\_L2\_S4} & 0.239 & 100 & -- & -- & \textcolor{green!55!black}{0.318} & 133 & \textcolor{green!55!black}{0.299} & 125 & 0.070$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.238} & 100 & -- & -- & \textcolor{green!55!black}{0.295} & 124 \\
+\texttt{C\_L1r\_S3} & 0.223 & 100 & -- & -- & \textcolor{green!55!black}{0.326} & 147 & \textcolor{green!55!black}{0.314} & 141 & 0.150$^{\dagger}$ & -- & 0.223 & 100 & -- & -- & \textcolor{green!55!black}{0.293} & 131 \\
+\texttt{C\_S4\_S3} & 0.257 & 100 & -- & -- & \textcolor{green!55!black}{0.372} & 145 & \textcolor{green!55!black}{0.357} & 139 & 0.130$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.242} & 94 & -- & -- & \textcolor{green!55!black}{0.348} & 136 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.187 & 100 & -- & -- & \textcolor{green!55!black}{0.318} & 170 & \textcolor{green!55!black}{0.312} & 167 & 0.083$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.221} & 118 & -- & -- & \textcolor{green!55!black}{0.294} & 157 \\
+\texttt{C3\_S1\_S3\_S4} & 0.231 & 100 & -- & -- & \textcolor{green!55!black}{0.338} & 146 & \textcolor{green!55!black}{0.332} & 143 & 0.138$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.234} & 101 & -- & -- & \textcolor{green!55!black}{0.306} & 132 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.173 & 100 & -- & -- & \textcolor{green!55!black}{0.274} & 158 & \textcolor{green!55!black}{0.286} & 165 & 0.064$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.191} & 110 & -- & -- & \textcolor{green!55!black}{0.267} & 154 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.150 & 100 & -- & -- & \textcolor{green!55!black}{0.267} & 178 & \textcolor{green!55!black}{0.290} & 194 & 0.081$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.177} & 118 & -- & -- & \textcolor{green!55!black}{0.270} & 180 \\
 \texttt{C\_L1r\_X1} & 0.133$^{\dagger}$ & -- & -- & -- & 0.208 & -- & 0.174 & -- & 0.036$^{\ddagger}$ & -- & 0.178 & -- & -- & -- & 0.202 & -- \\
-\texttt{C\_X1\_S1} & 0.202 & 100 & -- & -- & 0.303 & 150 & 0.209 & 103 & 0.034$^{\ddagger}$ & -- & 0.227 & 112 & -- & -- & 0.280 & 138 \\
-\texttt{C\_S2\_X1} & 0.227 & 100 & -- & -- & 0.300 & 132 & 0.241 & 106 & 0.031$^{\ddagger}$ & -- & 0.210$^{\dagger}$ & -- & -- & -- & 0.293 & 129 \\
+\texttt{C\_X1\_S1} & 0.202 & 100 & -- & -- & \textcolor{green!55!black}{0.303} & 150 & \textcolor{green!55!black}{0.209} & 103 & 0.034$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.227} & 112 & -- & -- & \textcolor{green!55!black}{0.280} & 138 \\
+\texttt{C\_S2\_X1} & 0.227 & 100 & -- & -- & \textcolor{green!55!black}{0.300} & 132 & \textcolor{green!55!black}{0.241} & 106 & 0.031$^{\ddagger}$ & -- & 0.210$^{\dagger}$ & -- & -- & -- & \textcolor{green!55!black}{0.293} & 129 \\
 \texttt{C\_L1r\_X1m} & 0.146$^{\dagger}$ & -- & -- & -- & 0.231 & -- & 0.211 & -- & 0.049$^{\ddagger}$ & -- & 0.205 & -- & -- & -- & 0.230 & -- \\
-\texttt{C\_S1\_X1s} & 0.230 & 100 & -- & -- & 0.322 & 140 & 0.230 & 100 & 0.037$^{\ddagger}$ & -- & 0.243 & 106 & -- & -- & 0.302 & 132 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.168 & 100 & -- & -- & 0.230 & 137 & 0.140$^{\dagger}$ & -- & 0.013$^{\ddagger}$ & -- & 0.191 & 114 & -- & -- & 0.232 & 138 \\
+\texttt{C\_S1\_X1s} & 0.230 & 100 & -- & -- & \textcolor{green!55!black}{0.322} & 140 & \textcolor{green!55!black}{0.230} & 100 & 0.037$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.243} & 106 & -- & -- & \textcolor{green!55!black}{0.302} & 132 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.168 & 100 & -- & -- & \textcolor{green!55!black}{0.230} & 137 & 0.140$^{\dagger}$ & -- & 0.013$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.191} & 114 & -- & -- & \textcolor{green!55!black}{0.232} & 138 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.252 & 100 & -- & -- & \textcolor{green!55!black}{0.340} & 135 & \textcolor{green!55!black}{0.315} & 125 & -- & -- & \textcolor{red!70!black}{0.223} & 89 & \textcolor{green!55!black}{0.313} & 124 & \textcolor{green!55!black}{0.309} & 122 \\
+\textbf{held-out family} & 0.190 & 100 & -- & -- & \textcolor{green!55!black}{0.260} & 137 & \textcolor{green!55!black}{0.217} & 114 & -- & -- & \textcolor{green!55!black}{0.235} & 123 & -- & -- & \textcolor{green!55!black}{0.264} & 139 \\
+\textbf{depth 2, all seen} & 0.214 & 100 & -- & -- & \textcolor{green!55!black}{0.310} & 145 & \textcolor{green!55!black}{0.308} & 144 & -- & -- & \textcolor{green!55!black}{0.223$^{5}$} & 104 & -- & -- & \textcolor{green!55!black}{0.298} & 139 \\
+\textbf{depth 3, all seen} & 0.197 & 100 & -- & -- & \textcolor{green!55!black}{0.310} & 157 & \textcolor{green!55!black}{0.310} & 157 & -- & -- & \textcolor{green!55!black}{0.215} & 109 & -- & -- & \textcolor{green!55!black}{0.289} & 147 \\
+\textbf{depth 4, all seen} & 0.150 & 100 & -- & -- & \textcolor{green!55!black}{0.267} & 178 & \textcolor{green!55!black}{0.290} & 194 & -- & -- & \textcolor{green!55!black}{0.177} & 118 & -- & -- & \textcolor{green!55!black}{0.270} & 180 \\
+\textbf{depth 2, unseen inside} & 0.220$^{3}$ & 100 & -- & -- & \textcolor{green!55!black}{0.273} & 124 & \textcolor{red!70!black}{0.213} & 97 & -- & -- & \textcolor{red!70!black}{0.213$^{4}$} & 97 & -- & -- & \textcolor{green!55!black}{0.261} & 119 \\
+\textbf{depth 3, unseen inside} & 0.168 & 100 & -- & -- & \textcolor{green!55!black}{0.230} & 137 & -- & -- & -- & -- & \textcolor{green!55!black}{0.191} & 114 & -- & -- & \textcolor{green!55!black}{0.232} & 138 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE master_abs_codegemma7b
 % >>> GENERATED TABLE master_abs_granite318b -- from tables/master_abs_granite318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for granite31-8b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, Granite-3.1-8B.} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, \texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). \textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question rather than failing to parse. `--': not run.}
+\caption{\textbf{Every method against every obfuscation, Granite-3.1-8B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run.}
 \label{tab:master_abs_granite318b}
 \begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
 \toprule
 \textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
  & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Forward: output prediction}} \\
-\texttt{L0} & 0.285 & 100 & 0.293 & 103 & 0.430 & 151 & 0.416 & 146 & 0.396 & 139 & 0.413 & 145 & 0.438 & 154 & 0.433 & 152 \\
-\texttt{L1b} & 0.267 & 100 & 0.267 & 100 & 0.338 & 127 & 0.391 & 147 & 0.381 & 143 & 0.321 & 120 & 0.396 & 149 & 0.350 & 131 \\
-\texttt{L1r} & 0.268 & 100 & 0.260 & 97 & 0.375 & 140 & 0.383 & 143 & 0.378 & 141 & 0.376 & 140 & 0.391 & 146 & 0.384 & 144 \\
-\texttt{L2} & 0.251 & 100 & 0.248 & 99 & 0.372 & 148 & 0.387 & 154 & 0.377 & 150 & 0.366 & 145 & 0.400 & 159 & 0.378 & 150 \\
-\texttt{S1} & 0.254 & 100 & 0.253 & 99 & 0.346 & 136 & 0.379 & 149 & 0.358 & 141 & 0.350 & 138 & 0.403 & 158 & 0.371 & 146 \\
-\texttt{S2} & 0.272 & 100 & 0.276 & 101 & 0.386 & 142 & 0.415 & 152 & 0.394 & 144 & 0.398 & 146 & 0.422 & 155 & 0.402 & 148 \\
-\texttt{X1} & 0.147 & 100 & 0.160 & 109 & 0.216 & 147 & 0.207 & 141 & 0.188 & 128 & 0.282 & 192 & 0.244 & 166 & 0.231 & 157 \\
-\texttt{C\_L1b\_S1} & 0.219 & 100 & 0.191 & 87 & 0.263 & 120 & 0.342 & 157 & 0.337 & 154 & 0.261 & 119 & 0.324 & 148 & 0.279 & 127 \\
-\texttt{C\_L1r\_S1} & 0.204 & 100 & 0.187 & 91 & 0.279 & 137 & 0.344 & 168 & 0.338 & 165 & 0.291 & 143 & 0.334 & 164 & 0.301 & 147 \\
-\texttt{C\_S1\_L1r} & 0.224 & 100 & 0.187 & 83 & 0.279 & 124 & 0.326 & 146 & 0.319 & 142 & 0.291 & 130 & 0.327 & 146 & 0.293 & 131 \\
-\texttt{C\_L2\_S4} & 0.242 & 100 & 0.245 & 101 & 0.334 & 138 & 0.376 & 156 & 0.376 & 156 & 0.341 & 141 & 0.384 & 159 & 0.351 & 145 \\
-\texttt{C\_L1r\_S3} & 0.259 & 100 & 0.259 & 100 & 0.350 & 135 & 0.382 & 148 & 0.376 & 145 & 0.359 & 139 & 0.378 & 146 & 0.365 & 141 \\
-\texttt{C\_S4\_S3} & 0.270 & 100 & 0.282 & 104 & 0.380 & 141 & 0.412 & 152 & 0.389 & 144 & 0.383 & 142 & 0.429 & 159 & 0.394 & 146 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.257 & 100 & 0.245 & 96 & 0.333 & 130 & 0.380 & 148 & 0.375 & 146 & 0.340 & 132 & 0.375 & 146 & 0.348 & 136 \\
-\texttt{C3\_S1\_S3\_S4} & 0.242 & 100 & 0.248 & 103 & 0.316 & 131 & 0.372 & 154 & 0.358 & 148 & 0.330 & 137 & 0.380 & 157 & 0.342 & 142 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.221 & 100 & 0.200 & 90 & 0.279 & 126 & 0.333 & 151 & 0.330 & 149 & 0.283 & 128 & -- & -- & 0.287 & 130 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.203 & 100 & 0.205 & 101 & 0.258 & 127 & 0.325 & 160 & 0.334 & 165 & 0.270 & 133 & -- & -- & 0.281 & 139 \\
-\texttt{C\_L1r\_X1} & 0.136 & 100 & 0.124 & 92 & 0.157 & 115 & 0.172 & 127 & 0.163 & 120 & 0.245 & 181 & -- & -- & 0.173 & 127 \\
-\texttt{C\_X1\_S1} & 0.153 & 100 & 0.169 & 111 & 0.222 & 146 & 0.203 & 133 & 0.186 & 122 & 0.272 & 178 & -- & -- & 0.244 & 160 \\
-\texttt{C\_S2\_X1} & 0.209 & 100 & 0.217 & 104 & 0.263 & 126 & 0.252 & 121 & 0.240 & 115 & 0.323 & 155 & -- & -- & 0.272 & 130 \\
-\texttt{C\_L1r\_X1m} & 0.158 & 100 & 0.145 & 92 & 0.188 & 119 & 0.204 & 130 & 0.183 & 116 & 0.279 & 177 & -- & -- & 0.211 & 134 \\
-\texttt{C\_S1\_X1s} & 0.206 & 100 & 0.215 & 104 & 0.298 & 145 & 0.267 & 129 & 0.269 & 131 & 0.318 & 154 & -- & -- & 0.293 & 142 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.167 & 100 & 0.147 & 88 & 0.186 & 111 & 0.195 & 117 & 0.198 & 119 & 0.238 & 142 & -- & -- & 0.217 & 130 \\
+\texttt{L0} & 0.285 & 100 & \textcolor{green!55!black}{0.293} & 103 & \textcolor{green!55!black}{0.430} & 151 & \textcolor{green!55!black}{0.416} & 146 & \textcolor{green!55!black}{0.396} & 139 & \textcolor{green!55!black}{0.413} & 145 & \textcolor{green!55!black}{0.438} & 154 & \textcolor{green!55!black}{0.433} & 152 \\
+\texttt{L1b} & 0.267 & 100 & 0.267 & 100 & \textcolor{green!55!black}{0.338} & 127 & \textcolor{green!55!black}{0.391} & 147 & \textcolor{green!55!black}{0.381} & 143 & \textcolor{green!55!black}{0.321} & 120 & \textcolor{green!55!black}{0.396} & 149 & \textcolor{green!55!black}{0.350} & 131 \\
+\texttt{L1r} & 0.268 & 100 & \textcolor{red!70!black}{0.260} & 97 & \textcolor{green!55!black}{0.375} & 140 & \textcolor{green!55!black}{0.383} & 143 & \textcolor{green!55!black}{0.378} & 141 & \textcolor{green!55!black}{0.376} & 140 & \textcolor{green!55!black}{0.391} & 146 & \textcolor{green!55!black}{0.384} & 144 \\
+\texttt{L2} & 0.251 & 100 & \textcolor{red!70!black}{0.248} & 99 & \textcolor{green!55!black}{0.372} & 148 & \textcolor{green!55!black}{0.387} & 154 & \textcolor{green!55!black}{0.377} & 150 & \textcolor{green!55!black}{0.366} & 145 & \textcolor{green!55!black}{0.400} & 159 & \textcolor{green!55!black}{0.378} & 150 \\
+\texttt{S1} & 0.254 & 100 & \textcolor{red!70!black}{0.253} & 99 & \textcolor{green!55!black}{0.346} & 136 & \textcolor{green!55!black}{0.379} & 149 & \textcolor{green!55!black}{0.358} & 141 & \textcolor{green!55!black}{0.350} & 138 & \textcolor{green!55!black}{0.403} & 158 & \textcolor{green!55!black}{0.371} & 146 \\
+\texttt{S2} & 0.272 & 100 & \textcolor{green!55!black}{0.276} & 101 & \textcolor{green!55!black}{0.386} & 142 & \textcolor{green!55!black}{0.415} & 152 & \textcolor{green!55!black}{0.394} & 144 & \textcolor{green!55!black}{0.398} & 146 & \textcolor{green!55!black}{0.422} & 155 & \textcolor{green!55!black}{0.402} & 148 \\
+\texttt{X1} & 0.147 & 100 & \textcolor{green!55!black}{0.160} & 109 & \textcolor{green!55!black}{0.216} & 147 & \textcolor{green!55!black}{0.207} & 141 & \textcolor{green!55!black}{0.188} & 128 & \textcolor{green!55!black}{0.282} & 192 & \textcolor{green!55!black}{0.244} & 166 & \textcolor{green!55!black}{0.231} & 157 \\
+\texttt{C\_L1b\_S1} & 0.219 & 100 & \textcolor{red!70!black}{0.191} & 87 & \textcolor{green!55!black}{0.263} & 120 & \textcolor{green!55!black}{0.342} & 157 & \textcolor{green!55!black}{0.337} & 154 & \textcolor{green!55!black}{0.261} & 119 & \textcolor{green!55!black}{0.324} & 148 & \textcolor{green!55!black}{0.279} & 127 \\
+\texttt{C\_L1r\_S1} & 0.204 & 100 & \textcolor{red!70!black}{0.187} & 91 & \textcolor{green!55!black}{0.279} & 137 & \textcolor{green!55!black}{0.344} & 168 & \textcolor{green!55!black}{0.338} & 165 & \textcolor{green!55!black}{0.291} & 143 & \textcolor{green!55!black}{0.334} & 164 & \textcolor{green!55!black}{0.301} & 147 \\
+\texttt{C\_S1\_L1r} & 0.224 & 100 & \textcolor{red!70!black}{0.187} & 83 & \textcolor{green!55!black}{0.279} & 124 & \textcolor{green!55!black}{0.326} & 146 & \textcolor{green!55!black}{0.319} & 142 & \textcolor{green!55!black}{0.291} & 130 & \textcolor{green!55!black}{0.327} & 146 & \textcolor{green!55!black}{0.293} & 131 \\
+\texttt{C\_L2\_S4} & 0.242 & 100 & \textcolor{green!55!black}{0.245} & 101 & \textcolor{green!55!black}{0.334} & 138 & \textcolor{green!55!black}{0.376} & 156 & \textcolor{green!55!black}{0.376} & 156 & \textcolor{green!55!black}{0.341} & 141 & \textcolor{green!55!black}{0.384} & 159 & \textcolor{green!55!black}{0.351} & 145 \\
+\texttt{C\_L1r\_S3} & 0.259 & 100 & \textcolor{green!55!black}{0.259} & 100 & \textcolor{green!55!black}{0.350} & 135 & \textcolor{green!55!black}{0.382} & 148 & \textcolor{green!55!black}{0.376} & 145 & \textcolor{green!55!black}{0.359} & 139 & \textcolor{green!55!black}{0.378} & 146 & \textcolor{green!55!black}{0.365} & 141 \\
+\texttt{C\_S4\_S3} & 0.270 & 100 & \textcolor{green!55!black}{0.282} & 104 & \textcolor{green!55!black}{0.380} & 141 & \textcolor{green!55!black}{0.412} & 152 & \textcolor{green!55!black}{0.389} & 144 & \textcolor{green!55!black}{0.383} & 142 & \textcolor{green!55!black}{0.429} & 159 & \textcolor{green!55!black}{0.394} & 146 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.257 & 100 & \textcolor{red!70!black}{0.245} & 96 & \textcolor{green!55!black}{0.333} & 130 & \textcolor{green!55!black}{0.380} & 148 & \textcolor{green!55!black}{0.375} & 146 & \textcolor{green!55!black}{0.340} & 132 & \textcolor{green!55!black}{0.375} & 146 & \textcolor{green!55!black}{0.348} & 136 \\
+\texttt{C3\_S1\_S3\_S4} & 0.242 & 100 & \textcolor{green!55!black}{0.248} & 103 & \textcolor{green!55!black}{0.316} & 131 & \textcolor{green!55!black}{0.372} & 154 & \textcolor{green!55!black}{0.358} & 148 & \textcolor{green!55!black}{0.330} & 137 & \textcolor{green!55!black}{0.380} & 157 & \textcolor{green!55!black}{0.342} & 142 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.221 & 100 & \textcolor{red!70!black}{0.200} & 90 & \textcolor{green!55!black}{0.279} & 126 & \textcolor{green!55!black}{0.333} & 151 & \textcolor{green!55!black}{0.330} & 149 & \textcolor{green!55!black}{0.283} & 128 & -- & -- & \textcolor{green!55!black}{0.287} & 130 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.203 & 100 & \textcolor{green!55!black}{0.205} & 101 & \textcolor{green!55!black}{0.258} & 127 & \textcolor{green!55!black}{0.325} & 160 & \textcolor{green!55!black}{0.334} & 165 & \textcolor{green!55!black}{0.270} & 133 & -- & -- & \textcolor{green!55!black}{0.281} & 139 \\
+\texttt{C\_L1r\_X1} & 0.136 & 100 & \textcolor{red!70!black}{0.124} & 92 & \textcolor{green!55!black}{0.157} & 115 & \textcolor{green!55!black}{0.172} & 127 & \textcolor{green!55!black}{0.163} & 120 & \textcolor{green!55!black}{0.245} & 181 & -- & -- & \textcolor{green!55!black}{0.173} & 127 \\
+\texttt{C\_X1\_S1} & 0.153 & 100 & \textcolor{green!55!black}{0.169} & 111 & \textcolor{green!55!black}{0.222} & 146 & \textcolor{green!55!black}{0.203} & 133 & \textcolor{green!55!black}{0.186} & 122 & \textcolor{green!55!black}{0.272} & 178 & -- & -- & \textcolor{green!55!black}{0.244} & 160 \\
+\texttt{C\_S2\_X1} & 0.209 & 100 & \textcolor{green!55!black}{0.217} & 104 & \textcolor{green!55!black}{0.263} & 126 & \textcolor{green!55!black}{0.252} & 121 & \textcolor{green!55!black}{0.240} & 115 & \textcolor{green!55!black}{0.323} & 155 & -- & -- & \textcolor{green!55!black}{0.272} & 130 \\
+\texttt{C\_L1r\_X1m} & 0.158 & 100 & \textcolor{red!70!black}{0.145} & 92 & \textcolor{green!55!black}{0.188} & 119 & \textcolor{green!55!black}{0.204} & 130 & \textcolor{green!55!black}{0.183} & 116 & \textcolor{green!55!black}{0.279} & 177 & -- & -- & \textcolor{green!55!black}{0.211} & 134 \\
+\texttt{C\_S1\_X1s} & 0.206 & 100 & \textcolor{green!55!black}{0.215} & 104 & \textcolor{green!55!black}{0.298} & 145 & \textcolor{green!55!black}{0.267} & 129 & \textcolor{green!55!black}{0.269} & 131 & \textcolor{green!55!black}{0.318} & 154 & -- & -- & \textcolor{green!55!black}{0.293} & 142 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.167 & 100 & \textcolor{red!70!black}{0.147} & 88 & \textcolor{green!55!black}{0.186} & 111 & \textcolor{green!55!black}{0.195} & 117 & \textcolor{green!55!black}{0.198} & 119 & \textcolor{green!55!black}{0.238} & 142 & -- & -- & \textcolor{green!55!black}{0.217} & 130 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.262 & 100 & \textcolor{red!70!black}{0.261} & 99 & \textcolor{green!55!black}{0.363} & 138 & \textcolor{green!55!black}{0.391} & 149 & \textcolor{green!55!black}{0.378} & 144 & \textcolor{green!55!black}{0.362} & 138 & \textcolor{green!55!black}{0.402} & 153 & \textcolor{green!55!black}{0.377} & 144 \\
+\textbf{held-out family} & 0.147 & 100 & \textcolor{green!55!black}{0.160} & 109 & \textcolor{green!55!black}{0.216} & 147 & \textcolor{green!55!black}{0.207} & 141 & \textcolor{green!55!black}{0.188} & 128 & \textcolor{green!55!black}{0.282} & 192 & \textcolor{green!55!black}{0.244} & 166 & \textcolor{green!55!black}{0.231} & 157 \\
+\textbf{depth 2, all seen} & 0.236 & 100 & \textcolor{red!70!black}{0.225} & 95 & \textcolor{green!55!black}{0.314} & 133 & \textcolor{green!55!black}{0.364} & 154 & \textcolor{green!55!black}{0.356} & 151 & \textcolor{green!55!black}{0.321} & 136 & \textcolor{green!55!black}{0.363} & 154 & \textcolor{green!55!black}{0.330} & 140 \\
+\textbf{depth 3, all seen} & 0.240 & 100 & \textcolor{red!70!black}{0.231} & 96 & \textcolor{green!55!black}{0.309} & 129 & \textcolor{green!55!black}{0.362} & 151 & \textcolor{green!55!black}{0.354} & 148 & \textcolor{green!55!black}{0.318} & 132 & \textcolor{green!55!black}{0.377$^{2}$} & 157 & \textcolor{green!55!black}{0.326} & 136 \\
+\textbf{depth 4, all seen} & 0.203 & 100 & \textcolor{green!55!black}{0.205} & 101 & \textcolor{green!55!black}{0.258} & 127 & \textcolor{green!55!black}{0.325} & 160 & \textcolor{green!55!black}{0.334} & 165 & \textcolor{green!55!black}{0.270} & 133 & -- & -- & \textcolor{green!55!black}{0.281} & 139 \\
+\textbf{depth 2, unseen inside} & 0.172 & 100 & \textcolor{green!55!black}{0.174} & 101 & \textcolor{green!55!black}{0.226} & 131 & \textcolor{green!55!black}{0.220} & 128 & \textcolor{green!55!black}{0.208} & 121 & \textcolor{green!55!black}{0.287} & 167 & -- & -- & \textcolor{green!55!black}{0.239} & 139 \\
+\textbf{depth 3, unseen inside} & 0.167 & 100 & \textcolor{red!70!black}{0.147} & 88 & \textcolor{green!55!black}{0.186} & 111 & \textcolor{green!55!black}{0.195} & 117 & \textcolor{green!55!black}{0.198} & 119 & \textcolor{green!55!black}{0.238} & 142 & -- & -- & \textcolor{green!55!black}{0.217} & 130 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Granite-3.1-8B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
+\label{tab:master_abs_granite318b_bwd}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
 \midrule
-\multicolumn{17}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\
-\texttt{L0} & 0.291 & 100 & -- & -- & 0.206$^{\dagger}$ & -- & 0.261 & 90 & 0.117$^{\dagger}$ & -- & 0.272 & 94 & 0.268 & 92 & 0.304 & 105 \\
-\texttt{L1b} & 0.255 & 100 & -- & -- & 0.156$^{\dagger}$ & -- & 0.228 & 90 & 0.117$^{\dagger}$ & -- & 0.211 & 83 & 0.252 & 99 & 0.278 & 109 \\
-\texttt{L1r} & 0.284 & 100 & -- & -- & 0.209$^{\dagger}$ & -- & 0.268 & 94 & 0.150 & 53 & 0.262 & 92 & 0.280 & 99 & 0.299 & 105 \\
-\texttt{L2} & 0.247 & 100 & -- & -- & 0.209$^{\dagger}$ & -- & 0.236 & 96 & 0.133$^{\dagger}$ & -- & 0.222 & 90 & 0.244 & 99 & 0.294 & 119 \\
-\texttt{S1} & 0.305 & 100 & -- & -- & 0.196$^{\dagger}$ & -- & 0.220 & 72 & 0.099$^{\dagger}$ & -- & 0.236 & 77 & 0.260 & 85 & 0.284 & 93 \\
-\texttt{S2} & 0.329 & 100 & -- & -- & 0.182$^{\dagger}$ & -- & 0.244 & 74 & 0.098$^{\dagger}$ & -- & 0.266 & 81 & 0.278 & 84 & 0.315 & 96 \\
+\texttt{L0} & 0.291 & 100 & -- & -- & 0.206$^{\dagger}$ & -- & \textcolor{red!70!black}{0.261} & 90 & 0.117$^{\dagger}$ & -- & \textcolor{red!70!black}{0.272} & 94 & \textcolor{red!70!black}{0.268} & 92 & \textcolor{green!55!black}{0.304} & 105 \\
+\texttt{L1b} & 0.255 & 100 & -- & -- & 0.156$^{\dagger}$ & -- & \textcolor{red!70!black}{0.228} & 90 & 0.117$^{\dagger}$ & -- & \textcolor{red!70!black}{0.211} & 83 & \textcolor{red!70!black}{0.252} & 99 & \textcolor{green!55!black}{0.278} & 109 \\
+\texttt{L1r} & 0.284 & 100 & -- & -- & 0.209$^{\dagger}$ & -- & \textcolor{red!70!black}{0.268} & 94 & \textcolor{red!70!black}{0.150} & 53 & \textcolor{red!70!black}{0.262} & 92 & \textcolor{red!70!black}{0.280} & 99 & \textcolor{green!55!black}{0.299} & 105 \\
+\texttt{L2} & 0.247 & 100 & -- & -- & 0.209$^{\dagger}$ & -- & \textcolor{red!70!black}{0.236} & 96 & 0.133$^{\dagger}$ & -- & \textcolor{red!70!black}{0.222} & 90 & \textcolor{red!70!black}{0.244} & 99 & \textcolor{green!55!black}{0.294} & 119 \\
+\texttt{S1} & 0.305 & 100 & -- & -- & 0.196$^{\dagger}$ & -- & \textcolor{red!70!black}{0.220} & 72 & 0.099$^{\dagger}$ & -- & \textcolor{red!70!black}{0.236} & 77 & \textcolor{red!70!black}{0.260} & 85 & \textcolor{red!70!black}{0.284} & 93 \\
+\texttt{S2} & 0.329 & 100 & -- & -- & 0.182$^{\dagger}$ & -- & \textcolor{red!70!black}{0.244} & 74 & 0.098$^{\dagger}$ & -- & \textcolor{red!70!black}{0.266} & 81 & \textcolor{red!70!black}{0.278} & 84 & \textcolor{red!70!black}{0.315} & 96 \\
 \texttt{X1} & 0.198$^{\dagger}$ & -- & -- & -- & 0.123$^{\dagger}$ & -- & 0.156$^{\dagger}$ & -- & 0.048$^{\ddagger}$ & -- & 0.207 & -- & 0.210 & -- & 0.243 & -- \\
-\texttt{C\_L1b\_S1} & 0.216 & 100 & -- & -- & 0.136$^{\dagger}$ & -- & 0.199 & 92 & 0.082$^{\dagger}$ & -- & 0.194 & 90 & 0.234 & 108 & 0.228 & 106 \\
-\texttt{C\_L1r\_S1} & 0.284 & 100 & -- & -- & 0.206 & 72 & 0.225 & 79 & 0.126$^{\dagger}$ & -- & 0.234 & 82 & 0.250 & 88 & 0.267 & 94 \\
-\texttt{C\_S1\_L1r} & 0.262 & 100 & -- & -- & 0.208 & 79 & 0.241 & 92 & 0.132$^{\dagger}$ & -- & 0.242 & 92 & 0.254 & 97 & 0.276 & 105 \\
-\texttt{C\_L2\_S4} & 0.278 & 100 & -- & -- & 0.182$^{\dagger}$ & -- & 0.225 & 81 & 0.117$^{\dagger}$ & -- & 0.213 & 77 & 0.242 & 87 & 0.287 & 103 \\
-\texttt{C\_L1r\_S3} & 0.296 & 100 & -- & -- & 0.160$^{\dagger}$ & -- & 0.240 & 81 & 0.145$^{\dagger}$ & -- & 0.251 & 85 & 0.279 & 94 & 0.296 & 100 \\
-\texttt{C\_S4\_S3} & 0.334 & 100 & -- & -- & 0.180$^{\dagger}$ & -- & 0.254 & 76 & 0.100$^{\dagger}$ & -- & 0.254 & 76 & 0.290 & 87 & 0.313 & 94 \\
-\texttt{C3\_L1r\_S3\_S4} & 0.331 & 100 & -- & -- & 0.180$^{\dagger}$ & -- & 0.238 & 72 & 0.135$^{\dagger}$ & -- & 0.235 & 71 & 0.279 & 84 & 0.276 & 83 \\
-\texttt{C3\_S1\_S3\_S4} & 0.323 & 100 & -- & -- & 0.181$^{\dagger}$ & -- & 0.214 & 66 & 0.062$^{\dagger}$ & -- & 0.242 & 75 & 0.273 & 84 & 0.289 & 89 \\
-\texttt{C3\_L1r\_S1\_S4} & 0.293 & 100 & -- & -- & 0.192 & 66 & 0.223 & 76 & 0.111$^{\dagger}$ & -- & 0.238 & 81 & 0.246 & 84 & 0.262 & 90 \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.305 & 100 & -- & -- & 0.175$^{\dagger}$ & -- & 0.216 & 71 & 0.106$^{\dagger}$ & -- & 0.239 & 79 & 0.253 & 83 & 0.272 & 89 \\
+\texttt{C\_L1b\_S1} & 0.216 & 100 & -- & -- & 0.136$^{\dagger}$ & -- & \textcolor{red!70!black}{0.199} & 92 & 0.082$^{\dagger}$ & -- & \textcolor{red!70!black}{0.194} & 90 & \textcolor{green!55!black}{0.234} & 108 & \textcolor{green!55!black}{0.228} & 106 \\
+\texttt{C\_L1r\_S1} & 0.284 & 100 & -- & -- & \textcolor{red!70!black}{0.206} & 72 & \textcolor{red!70!black}{0.225} & 79 & 0.126$^{\dagger}$ & -- & \textcolor{red!70!black}{0.234} & 82 & \textcolor{red!70!black}{0.250} & 88 & \textcolor{red!70!black}{0.267} & 94 \\
+\texttt{C\_S1\_L1r} & 0.262 & 100 & -- & -- & \textcolor{red!70!black}{0.208} & 79 & \textcolor{red!70!black}{0.241} & 92 & 0.132$^{\dagger}$ & -- & \textcolor{red!70!black}{0.242} & 92 & \textcolor{red!70!black}{0.254} & 97 & \textcolor{green!55!black}{0.276} & 105 \\
+\texttt{C\_L2\_S4} & 0.278 & 100 & -- & -- & 0.182$^{\dagger}$ & -- & \textcolor{red!70!black}{0.225} & 81 & 0.117$^{\dagger}$ & -- & \textcolor{red!70!black}{0.213} & 77 & \textcolor{red!70!black}{0.242} & 87 & \textcolor{green!55!black}{0.287} & 103 \\
+\texttt{C\_L1r\_S3} & 0.296 & 100 & -- & -- & 0.160$^{\dagger}$ & -- & \textcolor{red!70!black}{0.240} & 81 & 0.145$^{\dagger}$ & -- & \textcolor{red!70!black}{0.251} & 85 & \textcolor{red!70!black}{0.279} & 94 & 0.296 & 100 \\
+\texttt{C\_S4\_S3} & 0.334 & 100 & -- & -- & 0.180$^{\dagger}$ & -- & \textcolor{red!70!black}{0.254} & 76 & 0.100$^{\dagger}$ & -- & \textcolor{red!70!black}{0.254} & 76 & \textcolor{red!70!black}{0.290} & 87 & \textcolor{red!70!black}{0.313} & 94 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.331 & 100 & -- & -- & 0.180$^{\dagger}$ & -- & \textcolor{red!70!black}{0.238} & 72 & 0.135$^{\dagger}$ & -- & \textcolor{red!70!black}{0.235} & 71 & \textcolor{red!70!black}{0.279} & 84 & \textcolor{red!70!black}{0.276} & 83 \\
+\texttt{C3\_S1\_S3\_S4} & 0.323 & 100 & -- & -- & 0.181$^{\dagger}$ & -- & \textcolor{red!70!black}{0.214} & 66 & 0.062$^{\dagger}$ & -- & \textcolor{red!70!black}{0.242} & 75 & \textcolor{red!70!black}{0.273} & 84 & \textcolor{red!70!black}{0.289} & 89 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.293 & 100 & -- & -- & \textcolor{red!70!black}{0.192} & 66 & \textcolor{red!70!black}{0.223} & 76 & 0.111$^{\dagger}$ & -- & \textcolor{red!70!black}{0.238} & 81 & \textcolor{red!70!black}{0.246} & 84 & \textcolor{red!70!black}{0.262} & 90 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.305 & 100 & -- & -- & 0.175$^{\dagger}$ & -- & \textcolor{red!70!black}{0.216} & 71 & 0.106$^{\dagger}$ & -- & \textcolor{red!70!black}{0.239} & 79 & \textcolor{red!70!black}{0.253} & 83 & \textcolor{red!70!black}{0.272} & 89 \\
 \texttt{C\_L1r\_X1} & 0.165$^{\dagger}$ & -- & -- & -- & 0.102$^{\dagger}$ & -- & 0.163 & -- & 0.072$^{\dagger}$ & -- & 0.190 & -- & 0.170 & -- & 0.201 & -- \\
-\texttt{C\_X1\_S1} & 0.234 & 100 & -- & -- & 0.156$^{\dagger}$ & -- & 0.161 & 69 & 0.034$^{\ddagger}$ & -- & 0.242 & 104 & 0.228 & 98 & 0.251 & 108 \\
-\texttt{C\_S2\_X1} & 0.300 & 100 & -- & -- & 0.151$^{\dagger}$ & -- & 0.150$^{\dagger}$ & -- & 0.043$^{\ddagger}$ & -- & 0.235 & 78 & 0.249 & 83 & 0.277 & 92 \\
+\texttt{C\_X1\_S1} & 0.234 & 100 & -- & -- & 0.156$^{\dagger}$ & -- & \textcolor{red!70!black}{0.161} & 69 & 0.034$^{\ddagger}$ & -- & \textcolor{green!55!black}{0.242} & 104 & \textcolor{red!70!black}{0.228} & 98 & \textcolor{green!55!black}{0.251} & 108 \\
+\texttt{C\_S2\_X1} & 0.300 & 100 & -- & -- & 0.151$^{\dagger}$ & -- & 0.150$^{\dagger}$ & -- & 0.043$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.235} & 78 & \textcolor{red!70!black}{0.249} & 83 & \textcolor{red!70!black}{0.277} & 92 \\
 \texttt{C\_L1r\_X1m} & 0.159$^{\dagger}$ & -- & -- & -- & 0.117$^{\dagger}$ & -- & 0.180 & -- & 0.091$^{\dagger}$ & -- & 0.188 & -- & 0.199 & -- & 0.196 & -- \\
-\texttt{C\_S1\_X1s} & 0.282 & 100 & -- & -- & 0.141$^{\dagger}$ & -- & 0.173 & 61 & 0.037$^{\ddagger}$ & -- & 0.234 & 83 & 0.232 & 82 & 0.268 & 95 \\
-\texttt{C3\_L1r\_S1\_X1} & 0.259 & 100 & -- & -- & 0.163$^{\dagger}$ & -- & 0.156 & 60 & 0.057$^{\ddagger}$ & -- & 0.226 & 87 & 0.219 & 85 & 0.239 & 92 \\
+\texttt{C\_S1\_X1s} & 0.282 & 100 & -- & -- & 0.141$^{\dagger}$ & -- & \textcolor{red!70!black}{0.173} & 61 & 0.037$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.234} & 83 & \textcolor{red!70!black}{0.232} & 82 & \textcolor{red!70!black}{0.268} & 95 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.259 & 100 & -- & -- & 0.163$^{\dagger}$ & -- & \textcolor{red!70!black}{0.156} & 60 & 0.057$^{\ddagger}$ & -- & \textcolor{red!70!black}{0.226} & 87 & \textcolor{red!70!black}{0.219} & 85 & \textcolor{red!70!black}{0.239} & 92 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.284 & 100 & -- & -- & -- & -- & \textcolor{red!70!black}{0.239} & 84 & \textcolor{red!70!black}{0.150$^{1}$} & 53 & \textcolor{red!70!black}{0.239} & 84 & \textcolor{red!70!black}{0.263} & 93 & \textcolor{green!55!black}{0.294} & 104 \\
+\textbf{held-out family} & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & 0.207 & -- & 0.210 & -- & 0.243 & -- \\
+\textbf{depth 2, all seen} & 0.278 & 100 & -- & -- & \textcolor{red!70!black}{0.207$^{2}$} & 74 & \textcolor{red!70!black}{0.231} & 83 & -- & -- & \textcolor{red!70!black}{0.231} & 83 & \textcolor{red!70!black}{0.258} & 93 & \textcolor{red!70!black}{0.278} & 100 \\
+\textbf{depth 3, all seen} & 0.316 & 100 & -- & -- & \textcolor{red!70!black}{0.192$^{1}$} & 61 & \textcolor{red!70!black}{0.225} & 71 & -- & -- & \textcolor{red!70!black}{0.238} & 76 & \textcolor{red!70!black}{0.266} & 84 & \textcolor{red!70!black}{0.276} & 87 \\
+\textbf{depth 4, all seen} & 0.305 & 100 & -- & -- & -- & -- & \textcolor{red!70!black}{0.216} & 71 & -- & -- & \textcolor{red!70!black}{0.239} & 79 & \textcolor{red!70!black}{0.253} & 83 & \textcolor{red!70!black}{0.272} & 89 \\
+\textbf{depth 2, unseen inside} & 0.272$^{3}$ & 100 & -- & -- & -- & -- & \textcolor{red!70!black}{0.169$^{4}$} & 62 & -- & -- & \textcolor{red!70!black}{0.218} & 80 & \textcolor{red!70!black}{0.216} & 79 & \textcolor{red!70!black}{0.239} & 88 \\
+\textbf{depth 3, unseen inside} & 0.259 & 100 & -- & -- & -- & -- & \textcolor{red!70!black}{0.156} & 60 & -- & -- & \textcolor{red!70!black}{0.226} & 87 & \textcolor{red!70!black}{0.219} & 85 & \textcolor{red!70!black}{0.239} & 92 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1120,7 +1302,7 @@ Table~\ref{tab:master_abs_codellama7b} in the body is CodeLlama-7B, the model on
 One table per panel model: every condition and every stack, forward and backward, with the raw accuracy, the change against the untuned model, and the percentage of the untuned model's clean-code accuracy. Cells marked \emph{fmt} exceed the pre-registered format-failure gate (0.25) and enter no mean; the gate is applied per cell, which is stricter than the pooled registration. The untuned CodeLlama-34B sits at 0.254 on clean code, a hair over the bar, which gates its percentage column while its deltas stand. Rows marked `--' are cells not yet run at the time of generation.
 
 % >>> GENERATED TABLE master_codellama7b -- from tables/master_codellama7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1197,7 +1379,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codellama7b
 % >>> GENERATED TABLE master_codellama13b -- from tables/master_codellama13b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-13b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1274,7 +1456,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codellama13b
 % >>> GENERATED TABLE master_codellama34b -- from tables/master_codellama34b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codellama-34b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1351,7 +1533,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codellama34b
 % >>> GENERATED TABLE master_llama318b -- from tables/master_llama318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/llama31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1428,7 +1610,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_llama318b
 % >>> GENERATED TABLE master_starcoder215b -- from tables/master_starcoder215b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/starcoder2-15b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1505,7 +1687,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_starcoder215b
 % >>> GENERATED TABLE master_gemma312b -- from tables/master_gemma312b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/gemma3-12b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1582,7 +1764,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_gemma312b
 % >>> GENERATED TABLE master_codegemma7b -- from tables/master_codegemma7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/codegemma-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1659,7 +1841,7 @@ One table per panel model: every condition and every stack, forward and backward
 \end{table*}
 % <<< GENERATED TABLE master_codegemma7b
 % >>> GENERATED TABLE master_granite318b -- from tables/master_granite318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{panel_core,composite_generic,composite_depth,f2_divergence,inverse_generic,basecheck_1shot}/granite31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1742,7 +1924,7 @@ One table per panel model: every condition and every stack, forward and backward
 Every routing and merging system on every condition and stack that has it, for the models on which those arms exist (routing: CodeLlama-7B; merging: CodeLlama-7B, Granite-3.1-8B, Llama-3.1-8B, StarCoder2-15B), with the same three numbers as Appendix~\ref{app:master}. The routing arms are MoLE mixtures of the eight per-transform experts; \emph{uniform} and \emph{random} gates separate the mixture's worth from the routing's. Every routing cell ran through the mixture engine.
 
 % >>> GENERATED TABLE master_routing_codellama7b -- from tables/master_routing_codellama7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/mole_generic/codellama-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1788,7 +1970,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_routing_codellama7b
 % >>> GENERATED TABLE master_merging_codellama7b -- from tables/master_merging_codellama7b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/codellama-7b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1834,7 +2016,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_merging_codellama7b
 % >>> GENERATED TABLE master_merging_granite318b -- from tables/master_merging_granite318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/granite31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1880,7 +2062,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_merging_granite318b
 % >>> GENERATED TABLE master_merging_llama318b -- from tables/master_merging_llama318b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/llama31-8b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -1926,7 +2108,7 @@ Every routing and merging system on every condition and stack that has it, for t
 \end{table*}
 % <<< GENERATED TABLE master_merging_llama318b
 % >>> GENERATED TABLE master_merging_starcoder215b -- from tables/master_merging_starcoder215b.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:10 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/starcoder2-15b
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -2118,7 +2300,7 @@ Granite-3.1-8B & IBM & $-1.47$ [$-2.99$, $+0.00$] & $-1.86$ [$-3.80$, $+0.12$] &
 \end{table*}
 % <<< GENERATED TABLE rq4_by_model
 % >>> GENERATED TABLE master_summary -- from tables/master_summary.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-15 01:09 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 01:32 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells (same phases as the per-model grids), all eight models
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]

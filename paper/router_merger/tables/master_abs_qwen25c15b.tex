@@ -1,0 +1,32 @@
+% GENERATED 2026-09-15 01:33 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* for qwen25c-1.5b (raw accuracies, and % of base)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
+\caption{\textbf{Every method against every obfuscation, Qwen2.5-Coder-1.5B (pilot): forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. \textbf{This model is the pilot}: it predates X1, the depth-3/4 stacks and the unseen-containing stacks, and the in-context, anchored and family arms were never built for it, so those rows and columns are absent rather than empty. It does carry \texttt{S3}/\texttt{S4} as standalone transforms, which the panel models do not. `--': not run.}
+\label{tab:master_abs_qwen25c15b}
+\begin{tabular}{@{}lrrrrrrrrrrrrrrrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{family}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
+ & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
+\midrule
+\texttt{L0} & 0.290 & 100 & -- & -- & \textcolor{green!55!black}{0.444} & 153 & \textcolor{green!55!black}{0.416} & 143 & -- & -- & -- & -- & \textcolor{green!55!black}{0.494} & 171 & \textcolor{green!55!black}{0.494} & 171 \\
+\texttt{L1b} & 0.233 & 100 & -- & -- & \textcolor{green!55!black}{0.343} & 147 & \textcolor{green!55!black}{0.381} & 163 & -- & -- & -- & -- & \textcolor{green!55!black}{0.477} & 205 & \textcolor{green!55!black}{0.398} & 171 \\
+\texttt{L1r} & 0.233 & 100 & -- & -- & \textcolor{green!55!black}{0.363} & 156 & \textcolor{green!55!black}{0.367} & 158 & -- & -- & -- & -- & \textcolor{green!55!black}{0.511} & 220 & \textcolor{green!55!black}{0.420} & 180 \\
+\texttt{L2} & 0.210 & 100 & -- & -- & \textcolor{green!55!black}{0.374} & 178 & \textcolor{green!55!black}{0.379} & 180 & -- & -- & -- & -- & \textcolor{green!55!black}{0.523} & 249 & \textcolor{green!55!black}{0.500} & 238 \\
+\texttt{S1} & 0.262 & 100 & -- & -- & \textcolor{green!55!black}{0.389} & 148 & \textcolor{green!55!black}{0.392} & 150 & -- & -- & -- & -- & \textcolor{green!55!black}{0.476} & 182 & \textcolor{green!55!black}{0.441} & 168 \\
+\texttt{S2} & 0.188 & 100 & -- & -- & \textcolor{green!55!black}{0.419} & 223 & \textcolor{green!55!black}{0.415} & 221 & -- & -- & -- & -- & \textcolor{green!55!black}{0.494} & 264 & \textcolor{green!55!black}{0.443} & 236 \\
+\texttt{S3} & 0.182 & 100 & -- & -- & \textcolor{green!55!black}{0.431} & 237 & \textcolor{green!55!black}{0.416} & 229 & -- & -- & -- & -- & \textcolor{green!55!black}{0.443} & 244 & \textcolor{green!55!black}{0.466} & 256 \\
+\texttt{S4} & 0.222 & 100 & -- & -- & \textcolor{green!55!black}{0.432} & 195 & \textcolor{green!55!black}{0.415} & 187 & -- & -- & -- & -- & \textcolor{green!55!black}{0.489} & 221 & \textcolor{green!55!black}{0.455} & 205 \\
+\texttt{C\_L1b\_S1} & 0.320 & 100 & -- & -- & \textcolor{red!70!black}{0.248} & 78 & \textcolor{green!55!black}{0.322} & 101 & -- & -- & -- & -- & \textcolor{green!55!black}{0.420} & 131 & \textcolor{green!55!black}{0.407} & 127 \\
+\texttt{C\_L1r\_S1} & 0.267 & 100 & -- & -- & \textcolor{green!55!black}{0.271} & 102 & \textcolor{green!55!black}{0.334} & 125 & -- & -- & -- & -- & \textcolor{green!55!black}{0.407} & 152 & \textcolor{green!55!black}{0.400} & 150 \\
+\texttt{C\_S1\_L1r} & 0.247 & 100 & -- & -- & \textcolor{red!70!black}{0.246} & 100 & \textcolor{green!55!black}{0.326} & 132 & -- & -- & -- & -- & \textcolor{green!55!black}{0.420} & 170 & \textcolor{green!55!black}{0.440} & 178 \\
+\texttt{C\_L2\_S4} & 0.176 & 100 & -- & -- & \textcolor{green!55!black}{0.344} & 195 & \textcolor{green!55!black}{0.373} & 211 & -- & -- & -- & -- & \textcolor{green!55!black}{0.540} & 306 & \textcolor{green!55!black}{0.443} & 252 \\
+\texttt{C\_L1r\_S3} & 0.159 & 100 & -- & -- & \textcolor{green!55!black}{0.345} & 217 & \textcolor{green!55!black}{0.368} & 231 & -- & -- & -- & -- & \textcolor{green!55!black}{0.460} & 289 & \textcolor{green!55!black}{0.432} & 271 \\
+\texttt{C\_S4\_S3} & 0.182 & 100 & -- & -- & \textcolor{green!55!black}{0.423} & 233 & \textcolor{green!55!black}{0.413} & 227 & -- & -- & -- & -- & \textcolor{green!55!black}{0.477} & 263 & \textcolor{green!55!black}{0.466} & 256 \\
+\cmidrule(l{2pt}r{2pt}){1-17}
+\textbf{single obfuscation} & 0.218 & 100 & -- & -- & \textcolor{green!55!black}{0.393} & 180 & \textcolor{green!55!black}{0.395} & 181 & -- & -- & -- & -- & \textcolor{green!55!black}{0.488} & 223 & \textcolor{green!55!black}{0.446} & 204 \\
+\textbf{depth 2, all seen} & 0.225 & 100 & -- & -- & \textcolor{green!55!black}{0.313} & 139 & \textcolor{green!55!black}{0.356} & 158 & -- & -- & -- & -- & \textcolor{green!55!black}{0.454} & 202 & \textcolor{green!55!black}{0.431} & 192 \\
+\bottomrule
+\end{tabular}
+\end{table*}

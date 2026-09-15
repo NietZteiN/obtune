@@ -28,7 +28,7 @@ TEX_OUT = ROOT/"paper/router_merger/tables"
 MODELS = ["codellama-7b","codellama-13b","codellama-34b","llama31-8b","starcoder2-15b","gemma3-12b","codegemma-7b","granite31-8b"]
 NICE = {"codellama-7b":"CodeLlama-7B","codellama-13b":"CodeLlama-13B","codellama-34b":"CodeLlama-34B","llama31-8b":"Llama-3.1-8B",
         "starcoder2-15b":"StarCoder2-15B","gemma3-12b":"Gemma-3-12B","codegemma-7b":"CodeGemma-7B","granite31-8b":"Granite-3.1-8B",
-        "llama31-8b-base":"Llama-3.1-8B (base)"}
+        "llama31-8b-base":"Llama-3.1-8B (base)", "qwen25c-1.5b":"Qwen2.5-Coder-1.5B (pilot)"}
 PARAMS_B = {"codellama-7b":6.7,"codellama-13b":13.0,"codellama-34b":33.7,"llama31-8b":8.0,"starcoder2-15b":15.5,
             "gemma3-12b":12.2,"codegemma-7b":8.5,"granite31-8b":8.2,"llama31-8b-base":8.0}  # nominal, from the model cards
 LADDER = ["L0","L1b","L1r","L2","S1","S2","X1"]
@@ -42,6 +42,10 @@ PHASES = {"ladder":["panel_core"],"seen":["composite_generic"],"depth":["composi
           "unseen":["f2_divergence"],"half":["f2_divergence"],"d3":["f2_divergence"]}
 KIND = {}
 for c in LADDER: KIND[c]="ladder"
+# S3/S4 are single transforms too. The eight-model panel never evaluates them as standalone
+# conditions (they exist only as experts and inside stacks), but the Qwen pilot did, and
+# abs_cell resolves a phase through KIND, so they need an entry or the Qwen table cannot read them.
+for c in ["S3","S4"]: KIND[c]="ladder"
 for c in SEEN_STACKS: KIND[c]="seen"
 for c in DEPTH_STACKS: KIND[c]="depth"
 for c in UNSEEN_STACKS: KIND[c]="unseen"
@@ -540,6 +544,39 @@ ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_
           "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
 ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
 
+# THE QWEN PILOT (2026-09-14, user request: "add another table like master table but with Qwen
+# result below table 5"). qwen25c-1.5b is the model the project piloted on before the eight-model
+# panel existed, so its cells sit in the pilot-era phases (`baselines`, `align_lam_sweep`, `main`)
+# rather than `panel_core`/`composite_generic`, and it has a DIFFERENT condition set: S3 and S4 as
+# standalone transforms, which the panel never ran, and no X1, no depth-3/4 stacks, no
+# unseen-containing stacks, because those were designed after it. Three of the eight methods were
+# never built for it (ICL, anchored, family) and render `--`.
+# H1 IS DELIBERATELY ABSENT from QWEN_ROWS. Qwen has H1 cells on disk from the pilot; CLAUDE.md
+# 3.2 rule 3 forbids any further read, and this table would be a read.
+ABS_EXTRA_MODELS = ["qwen25c-1.5b"]
+QWEN_ROWS = ["L0", "L1b", "L1r", "L2", "S1", "S2", "S3", "S4"] + SEEN_STACKS
+assert "H1" not in QWEN_ROWS, "H1 is quarantined (CLAUDE.md 3.2)"
+ABS_ROWS_BY_MODEL = {"qwen25c-1.5b": QWEN_ROWS}
+_QWEN_BASE_PH = ["baselines", "align_lam_sweep", "baselines_gridA", "main", "final"]
+ABS_PH_BY_MODEL = {"qwen25c-1.5b": {
+    "base": _QWEN_BASE_PH, "tuned_L0": _QWEN_BASE_PH, "base_1shot": ["basecheck_1shot"],
+    "mono_all": ["main"], "cons_lam3": ["main"], "tuned_X1": ["main"],
+    "mole_router": ["main"], "merge_dare_ties": ["main"]}}
+
+# AVERAGE ROWS (user, 2026-09-14: "averages for single obfuscation, held out, and all of the depths
+# each one so I can see those at a glance"). Depth and seen/unseen are crossed, because a depth-3
+# stack that contains the held-out family is a different question from one that does not -- that
+# distinction is the whole of RQ1 -- so they are separate rows rather than one "depth 3" row.
+AVG_GROUPS = [
+    ("single obfuscation",      ["L1b", "L1r", "L2", "S1", "S2", "S3", "S4"]),
+    ("held-out family",         ["X1"]),
+    ("depth 2, all seen",       SEEN_STACKS),
+    ("depth 3, all seen",       ["C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4"]),
+    ("depth 4, all seen",       ["C4_L1r_S1_S3_S4"]),
+    ("depth 2, unseen inside",  UNSEEN_STACKS + HALF_STACKS),
+    ("depth 3, unseen inside",  D3_STACKS),
+]
+
 def args_exact(m, sysn, c):
     """Share of items whose produced call recovers the GOLD ARGUMENTS, not merely a call that returns
     the gold value. The backward task is graded by execution and inversion is many-to-one, so
@@ -609,10 +646,34 @@ def abs_cell(m, sysn, c, bwd=False):
     if bwd:
         a, ff = acc(BWD_PH, m, sysn, c)
     else:
-        ph = ABS_PH.get(sysn) or PHASES[KIND[c]]
+        over = ABS_PH_BY_MODEL.get(m, {})
+        ph = over.get(sysn) or ABS_PH.get(sysn) or PHASES[KIND[c]]
         a, ff = acc(ph, m, sysn, c)
         if a is None and ABS_PH.get(sysn) is None: a, ff = acc(B_PH, m, sysn, c)
     return a, ff
+
+def colourise(a, b, txt):
+    """Green when this system is ABOVE `base` on this condition, red when below (user, 2026-09-14).
+
+    Applied to the accuracy only, never to the `%b` column beside it: `%b` already IS the comparison
+    to base, so colouring both would say the same thing twice. `base` itself is the reference and is
+    never coloured, and neither is a cell whose reference is missing or format-gated -- an
+    uncoloured number means "no comparison available", which is different from "equal".
+    xcolor and colortbl are both already in the paper's preamble.
+    """
+    if not isinstance(a, float) or not isinstance(b, float):
+        return txt
+    # Only colour a difference that is VISIBLE at the three decimals printed. Without this, a mean
+    # of 0.2984 against a base of 0.2985 printed as "0.298" beside "0.298" and 100 %, in red --
+    # a reader would read that as a bug in the table rather than a rounding boundary.
+    if abs(a - b) < 5e-4:
+        return txt
+    if a > b:
+        return r"\textcolor{green!55!black}{" + txt + "}"
+    if a < b:
+        return r"\textcolor{red!70!black}{" + txt + "}"
+    return txt
+
 
 def abs_fmt(a, ff, tex=True, collapse=None):
     """`collapse` is the cell's forward-collapse rate, passed only for BACKWARD cells. A gated cell
@@ -633,77 +694,118 @@ def pct_of_base(a, b):
     return a/b*100.0
 
 def abs_table(m):
-    ncol = 1 + 2*len(ABS_SYS)
-    # arraystretch 0.92 and no inter-group spacing (2026-09-14): with the exact-arguments block gone
-    # the table was still 31 pt taller than a page ("Float too large for page by 30.94pt"); 47 rows
-    # at 0.92 recover ~30 pt and dropping five \addlinespace[2pt] the rest.
-    L = [r"\begin{table*}[p]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}",
-         r"\caption{\textbf{Every method against every obfuscation, " + NICE[m] + r".} Raw accuracy (strict exact match), "
-         r"with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. "
-         r"\emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; "
-         r"\emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained "
-         r"on the unseen family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is "
-         r"the DARE-TIES merge of them (keys in order: \texttt{base}, \texttt{base\_1shot}, \texttt{tuned\_L0}, \texttt{mono\_all}, "
-         r"\texttt{cons\_lam3}, \texttt{tuned\_X1}, \texttt{mole\_router}, \texttt{merge\_dare\_ties}). "
-         r"\textbf{Backward is graded by execution}: the produced call is run against the program as shown and any call that returns the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs, so requiring the one recorded input would mark correct answers wrong. The stricter exact-argument rate is a secondary column in the repository's master tables. "
-         r"$\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. "
-         r"$\ddagger$: format-failure rate above 0.25, but most of those replies are exactly the "
-         r"gold \emph{forward} answer --- the arm answered the other question rather than failing "
-         r"to parse. "
-         r"`--': not run.}",
-         r"\label{tab:master_abs_" + m.replace("-","") + "}",
-         r"\begin{tabular}{@{}l" + "rr"*len(ABS_SYS) + "@{}}", r"\toprule",
-         r"\textbf{Condition} & " + " & ".join(r"\multicolumn{2}{c}{\textbf{" + n + "}}" for n,_ in ABS_SYS) + r" \\",
-         " & " + " & ".join(r"acc & \%\,b" for _ in ABS_SYS) + r" \\", r"\midrule",
-         r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Forward: output prediction}} \\"]
+    """TWO full-width floats per model: forward, then backward.
 
-    def row(c, bwd=False, strict=False):
-        if strict:
-            b = args_exact(m, "base", c)
-            cells = []
-            for _, sy in ABS_SYS:
-                if sy in ("base_1shot", "mole_router"):
-                    cells += ["--", "--"]; continue
-                a = args_exact(m, sy, c)
-                cells += ["--" if a is None else f"{a:.3f}", fp(pct_of_base(a, b))]
-            return cells
+    ONE table per model stopped fitting when the seven average rows went in, in both directions:
+    64 rows put CodeLlama-7B 47 pt over its page even at \tiny, and the seven appendix tables --
+    which were ALREADY 60-73 pt over before today -- went to 102-121 pt. Splitting is the fix that
+    keeps every per-condition row AND the averages at a readable size instead of trading one for
+    the other, and it repairs the appendix overflow that predates this change. The forward half
+    keeps the original label so existing \ref's still resolve; the backward half gets `_bwd`.
+    """
+    ncol = 1 + 2*len(ABS_SYS)
+    rows_for_m = ABS_ROWS_BY_MODEL.get(m, ABS_ROWS)
+    tag = m.replace("-","").replace(".","")
+
+    def row(c, bwd=False):
         ba, bf = abs_cell(m, "base", c, bwd)
         base_ok = ba if isinstance(ba, float) and (bf or 0) <= FMT_MAX else None
         cells = []
         for _, sy in ABS_SYS:
-            # `mole_router` used to be skipped here alongside `base_1shot`, because the mixture
-            # had no backward cell on any model. It has a config now (mole_inverse_*.yaml), so the
-            # column fills in as those land and renders `--` until then, like every other cell.
             if bwd and sy == "base_1shot":
                 cells += ["--", "--"]; continue
             a, ff = abs_cell(m, sy, c, bwd)
             cr = collapse_rate(m, sy, c) if (bwd and (ff or 0) > FMT_MAX) else None
-            cells += [abs_fmt(a, ff, collapse=cr), fp(pct_of_base(a if isinstance(a, float) and (ff or 0) <= FMT_MAX else None, base_ok))]
+            txt = abs_fmt(a, ff, collapse=cr)
+            a_ok = a if isinstance(a, float) and (ff or 0) <= FMT_MAX else None
+            if sy != "base":
+                txt = colourise(a_ok, base_ok, txt)
+            cells += [txt, fp(pct_of_base(a_ok, base_ok))]
         return cells
 
-    prev=None
-    for c in ABS_ROWS:
-        k=KIND[c]
-        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c)) + r" \\"); prev=k
-    L.append(r"\midrule"); L.append(r"\multicolumn{" + str(ncol) + r"}{@{}l}{\emph{Backward: input prediction, graded by execution}} \\")
-    prev=None
-    for c in BWD_ROWS:
-        if abs_cell(m, "base", c, True)[0] is None: continue
-        k=KIND[c]
-        L.append(r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c, bwd=True)) + r" \\"); prev=k
-    # THE EXACT-ARGUMENTS BLOCK IS NOT EMITTED TO LATEX (user, 2026-09-14: keep the more accurate
-    # grade only; the table overflowed the page at 69 rows). Execution is the accurate grade: the
-    # inverse task is many-to-one -- 21.5 % of the ladder's gold return values have many valid
-    # inputs -- so "exact arguments" marks a correct input wrong whenever it is not the one the
-    # dataset happened to record, and reads 0.06-0.13 for every arm for that reason alone. It stays
-    # in docs/MASTER_TABLES.md as the secondary column it always was.
-    L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
-    return "\n".join(L)
+    def avg_row(conds, bwd=False):
+        """Mean over the group's readable cells. A missing or format-gated member is dropped rather
+        than voiding the row, and a superscript gives the count used when it is short of the group."""
+        use = [c for c in conds if c in rows_for_m]
+        out, ref = [], None
+        for _, sy in ABS_SYS:
+            if bwd and sy == "base_1shot":
+                out += ["--", "--"]; continue
+            vals = []
+            for c in use:
+                a, ff = abs_cell(m, sy, c, bwd)
+                if isinstance(a, float) and (ff or 0) <= FMT_MAX:
+                    vals.append(a)
+            if not vals:
+                out += ["--", "--"]; continue
+            v = sum(vals)/len(vals)
+            if sy == "base":
+                ref = v
+            txt = f"{v:.3f}" + ("" if len(vals) == len(use) else r"$^{" + str(len(vals)) + "}$")
+            if sy != "base":
+                txt = colourise(v, ref, txt)
+            out += [txt, fp(pct_of_base(v, ref))]
+        return out
 
-# One absolute table per model. The body carries CodeLlama-7B (every arm exists there); the rest go
-# to the appendix and fill in as the backfill lands -- a cell that has not run renders as `--`.
-for m in MODELS:
-    write(f"master_abs_{m.replace('-','')}.tex", abs_table(m), "results/cells/* for " + m + " (raw accuracies, and % of base)")
+    def avg_block(bwd):
+        out = []
+        for label, conds in AVG_GROUPS:
+            present = [c for c in conds if c in rows_for_m]
+            if not present:
+                continue
+            if bwd and not any(abs_cell(m, "base", c, True)[0] is not None for c in present):
+                continue
+            out.append(r"\textbf{" + label + "} & " + " & ".join(avg_row(conds, bwd)) + r" \\")
+        return ([r"\cmidrule(l{2pt}r{2pt}){1-" + str(ncol) + "}"] + out) if out else []
+
+    common = (r"Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a "
+              r"percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its "
+              r"one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen "
+              r"transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen "
+              r"family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} "
+              r"is the DARE-TIES merge of them. "
+              r"\textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} "
+              r"\texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no "
+              r"comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally "
+              r"weighted per condition; a superscript gives the number of readable cells averaged when it is short of "
+              r"the group. "
+              + (r"\textbf{This model is the pilot}: it predates X1, the depth-3/4 stacks and the unseen-containing "
+                 r"stacks, and the in-context, anchored and family arms were never built for it, so those rows and "
+                 r"columns are absent rather than empty. It does carry \texttt{S3}/\texttt{S4} as standalone "
+                 r"transforms, which the panel models do not. " if m in ABS_EXTRA_MODELS else "")
+              + r"`--': not run.")
+
+    def frame(title, label, rows, extra=""):
+        return ([r"\begin{table*}[p]",
+                 r"\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}",
+                 r"\caption{\textbf{" + title + r"} " + common + extra + "}",
+                 r"\label{" + label + "}",
+                 r"\begin{tabular}{@{}l" + "rr"*len(ABS_SYS) + "@{}}", r"\toprule",
+                 r"\textbf{Condition} & " + " & ".join(r"\multicolumn{2}{c}{\textbf{" + n + "}}" for n, _ in ABS_SYS) + r" \\",
+                 " & " + " & ".join(r"acc & \%\,b" for _ in ABS_SYS) + r" \\", r"\midrule"]
+                + rows + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+
+    fwd_rows = [r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c)) + r" \\" for c in rows_for_m] + avg_block(False)
+    bwd_conds = [c for c in BWD_ROWS if c in rows_for_m and abs_cell(m, "base", c, True)[0] is not None]
+    bwd_rows = [r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c, bwd=True)) + r" \\" for c in bwd_conds] + avg_block(True)
+
+    out = frame(f"Every method against every obfuscation, {NICE[m]}: forward (output prediction).",
+                "tab:master_abs_" + tag, fwd_rows)
+    if bwd_rows:
+        out += [""] + frame(
+            f"Every method against every obfuscation, {NICE[m]}: backward (input prediction).",
+            "tab:master_abs_" + tag + "_bwd", bwd_rows,
+            extra=(r" \textbf{Graded by execution}: the produced call is run against the program as shown and any call "
+                   r"returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's "
+                   r"gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly "
+                   r"replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly "
+                   r"the gold \emph{forward} answer --- the arm answered the other question."))
+    return "\n".join(out)
+
+
+for m in MODELS + ABS_EXTRA_MODELS:
+    write(f"master_abs_{m.replace('-','').replace('.','')}.tex", abs_table(m),
+          "results/cells/* for " + m + " (raw accuracies, and % of base)")
 
 # ---------------- 7. FORWARD-COLLAPSE: the mechanism table ------------------------------------
 # How often each arm answers the FORWARD question when asked the BACKWARD one, pooled over every
