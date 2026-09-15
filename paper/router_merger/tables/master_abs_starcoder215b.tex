@@ -1,90 +1,46 @@
-% GENERATED 2026-09-15 02:06 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-15 04:11 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* for starcoder2-15b (raw accuracies, and % of base)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
-\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, StarCoder2-15B: forward (output prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that family is not held out. The \textbf{held-out family} average row is unaffected --- it names a group of conditions, not an arm. `--': not run.}
+\centering\footnotesize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.95}
+\caption{\textbf{Every method against every obfuscation, StarCoder2-15B.} Each cell is \emph{output prediction}\,/\,\emph{input prediction}: raw exact-match accuracy on the forward task (predict the return value of the code as shown) and, after the slash, on the backward task (produce a call that returns the shown value), on the held-out programs of that condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} in the same direction on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that family is not held out; the \textbf{held-out family} row names a group of conditions, not an arm. \textbf{Backward is graded by execution}: any call returning the gold value is correct, because inversion is many-to-one. $\dagger$: backward format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most replies are exactly the gold \emph{forward} answer --- the arm answered the other question. `--': not run.}
 \label{tab:master_abs_starcoder215b}
-\begin{tabular}{@{}lrrrrrrrrrrrrrr@{}}
+\begin{tabular}{@{}lccccccc@{}}
 \toprule
-\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
- & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
+\textbf{Condition} & \textbf{base} & \textbf{ICL} & \textbf{clean LoRA} & \textbf{breadth} & \textbf{anchored} & \textbf{mixture} & \textbf{merge} \\
+ & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} \\
 \midrule
-\texttt{L0} & 0.000$^{\dagger}$ & -- & 0.008$^{\dagger}$ & -- & 0.542 & -- & 0.529 & -- & 0.532 & -- & 0.546 & -- & 0.539 & -- \\
-\texttt{L1b} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.431 & -- & 0.487 & -- & 0.510 & -- & 0.489 & -- & 0.426 & -- \\
-\texttt{L1r} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.483 & -- & 0.485 & -- & 0.509 & -- & 0.492 & -- & 0.476 & -- \\
-\texttt{L2} & 0.000$^{\dagger}$ & -- & 0.002$^{\dagger}$ & -- & 0.479 & -- & 0.486 & -- & 0.503 & -- & 0.493 & -- & 0.466 & -- \\
-\texttt{S1} & 0.000$^{\dagger}$ & -- & 0.010$^{\dagger}$ & -- & 0.508 & -- & 0.487 & -- & 0.501 & -- & 0.510 & -- & 0.487 & -- \\
-\texttt{S2} & 0.000$^{\dagger}$ & -- & 0.023$^{\dagger}$ & -- & 0.512 & -- & 0.514 & -- & 0.539 & -- & 0.533 & -- & 0.518 & -- \\
-\texttt{X1} & 0.000$^{\dagger}$ & -- & 0.009$^{\dagger}$ & -- & 0.347 & -- & 0.320 & -- & 0.343 & -- & 0.353 & -- & 0.343 & -- \\
-\texttt{C\_L1b\_S1} & 0.000$^{\dagger}$ & -- & 0.001$^{\dagger}$ & -- & 0.360 & -- & 0.416 & -- & 0.456 & -- & 0.417 & -- & 0.354 & -- \\
-\texttt{C\_L1r\_S1} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.393 & -- & 0.423 & -- & 0.440 & -- & 0.419 & -- & 0.389 & -- \\
-\texttt{C\_S1\_L1r} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.377 & -- & 0.406 & -- & 0.431 & -- & 0.418 & -- & 0.387 & -- \\
-\texttt{C\_L2\_S4} & 0.000$^{\dagger}$ & -- & 0.005$^{\dagger}$ & -- & 0.454 & -- & 0.470 & -- & 0.508 & -- & 0.485 & -- & 0.438 & -- \\
-\texttt{C\_L1r\_S3} & 0.000$^{\dagger}$ & -- & 0.000$^{\dagger}$ & -- & 0.473 & -- & 0.483 & -- & 0.504 & -- & 0.490 & -- & 0.459 & -- \\
-\texttt{C\_S4\_S3} & 0.000$^{\dagger}$ & -- & 0.028$^{\dagger}$ & -- & 0.511 & -- & 0.516 & -- & 0.539 & -- & 0.525 & -- & 0.506 & -- \\
-\texttt{C3\_L1r\_S3\_S4} & 0.000$^{\dagger}$ & -- & 0.004$^{\dagger}$ & -- & 0.448 & -- & 0.484 & -- & 0.503 & -- & 0.475 & -- & 0.436 & -- \\
-\texttt{C3\_S1\_S3\_S4} & 0.000$^{\dagger}$ & -- & 0.019$^{\dagger}$ & -- & 0.476 & -- & 0.465 & -- & 0.493 & -- & 0.480 & -- & 0.464 & -- \\
-\texttt{C3\_L1r\_S1\_S4} & 0.000$^{\dagger}$ & -- & 0.002$^{\dagger}$ & -- & 0.370 & -- & 0.417 & -- & 0.439 & -- & 0.413 & -- & 0.376 & -- \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.000$^{\dagger}$ & -- & 0.001$^{\dagger}$ & -- & 0.357 & -- & 0.412 & -- & 0.437 & -- & 0.401 & -- & 0.358 & -- \\
-\texttt{C\_L1r\_X1} & 0.000$^{\dagger}$ & -- & 0.002$^{\dagger}$ & -- & 0.248 & -- & 0.274 & -- & 0.286 & -- & 0.278 & -- & 0.259 & -- \\
-\texttt{C\_X1\_S1} & 0.000$^{\dagger}$ & -- & 0.022$^{\dagger}$ & -- & 0.357 & -- & 0.322 & -- & 0.342 & -- & 0.385 & -- & 0.371 & -- \\
-\texttt{C\_S2\_X1} & 0.000$^{\dagger}$ & -- & 0.014$^{\dagger}$ & -- & 0.403 & -- & 0.375 & -- & 0.397 & -- & 0.413 & -- & 0.403 & -- \\
-\texttt{C\_L1r\_X1m} & 0.000$^{\dagger}$ & -- & 0.003$^{\dagger}$ & -- & 0.307 & -- & 0.323 & -- & 0.338 & -- & 0.328 & -- & 0.317 & -- \\
-\texttt{C\_S1\_X1s} & 0.000$^{\dagger}$ & -- & 0.044$^{\dagger}$ & -- & 0.434 & -- & 0.408 & -- & 0.434 & -- & 0.443 & -- & 0.427 & -- \\
-\texttt{C3\_L1r\_S1\_X1} & 0.000$^{\dagger}$ & -- & 0.002$^{\dagger}$ & -- & 0.278 & -- & 0.298 & -- & 0.302 & -- & 0.306 & -- & 0.286 & -- \\
-\cmidrule(l{2pt}r{2pt}){1-15}
-\textbf{single obfuscation} & -- & -- & -- & -- & 0.482 & -- & 0.492 & -- & 0.512 & -- & 0.503 & -- & 0.475 & -- \\
-\textbf{held-out family} & -- & -- & -- & -- & 0.347 & -- & 0.320 & -- & 0.343 & -- & 0.353 & -- & 0.343 & -- \\
-\textbf{depth 2, all seen} & -- & -- & -- & -- & 0.428 & -- & 0.452 & -- & 0.480 & -- & 0.459 & -- & 0.422 & -- \\
-\textbf{depth 3, all seen} & -- & -- & -- & -- & 0.431 & -- & 0.455 & -- & 0.478 & -- & 0.456 & -- & 0.425 & -- \\
-\textbf{depth 4, all seen} & -- & -- & -- & -- & 0.357 & -- & 0.412 & -- & 0.437 & -- & 0.401 & -- & 0.358 & -- \\
-\textbf{depth 2, unseen inside} & -- & -- & -- & -- & 0.350 & -- & 0.341 & -- & 0.359 & -- & 0.369 & -- & 0.355 & -- \\
-\textbf{depth 3, unseen inside} & -- & -- & -- & -- & 0.278 & -- & 0.298 & -- & 0.302 & -- & 0.306 & -- & 0.286 & -- \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\begin{table*}[p]
-\centering\scriptsize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.92}
-\caption{\textbf{Every method against every obfuscation, StarCoder2-15B: backward (input prediction).} Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen transforms; \emph{anchored} is the paired-consistency objective; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that family is not held out. The \textbf{held-out family} average row is unaffected --- it names a group of conditions, not an arm. `--': not run. \textbf{Graded by execution}: the produced call is run against the program as shown and any call returning the gold value is correct, because inversion is many-to-one --- 21.5\,\% of the ladder's gold return values have many valid inputs. $\dagger$: format-failure rate above 0.25, mostly replies that are not call-shaped. $\ddagger$: above 0.25, but most of those replies are exactly the gold \emph{forward} answer --- the arm answered the other question.}
-\label{tab:master_abs_starcoder215b_bwd}
-\begin{tabular}{@{}lrrrrrrrrrrrrrr@{}}
-\toprule
-\textbf{Condition} & \multicolumn{2}{c}{\textbf{base}} & \multicolumn{2}{c}{\textbf{ICL}} & \multicolumn{2}{c}{\textbf{clean LoRA}} & \multicolumn{2}{c}{\textbf{breadth}} & \multicolumn{2}{c}{\textbf{anchored}} & \multicolumn{2}{c}{\textbf{mixture}} & \multicolumn{2}{c}{\textbf{merge}} \\
- & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b & acc & \%\,b \\
-\midrule
-\texttt{L0} & 0.366 & 100 & -- & -- & \textcolor{green!55!black}{0.411} & 112 & \textcolor{red!70!black}{0.311} & 85 & \textcolor{green!55!black}{0.399} & 109 & \textcolor{green!55!black}{0.435} & 119 & \textcolor{green!55!black}{0.452} & 124 \\
-\texttt{L1b} & 0.216$^{\dagger}$ & -- & -- & -- & 0.316 & -- & 0.301 & -- & 0.395 & -- & 0.382 & -- & 0.364 & -- \\
-\texttt{L1r} & 0.282$^{\dagger}$ & -- & -- & -- & 0.354 & -- & 0.273 & -- & 0.369 & -- & 0.368 & -- & 0.423 & -- \\
-\texttt{L2} & 0.355 & 100 & -- & -- & \textcolor{green!55!black}{0.391} & 110 & \textcolor{red!70!black}{0.297} & 84 & \textcolor{green!55!black}{0.379} & 107 & \textcolor{green!55!black}{0.406} & 115 & \textcolor{green!55!black}{0.421} & 119 \\
-\texttt{S1} & 0.235$^{\dagger}$ & -- & -- & -- & 0.361 & -- & 0.257$^{\dagger}$ & -- & 0.364 & -- & 0.377 & -- & 0.421 & -- \\
-\texttt{S2} & 0.238$^{\dagger}$ & -- & -- & -- & 0.359 & -- & 0.300 & -- & 0.384 & -- & 0.404 & -- & 0.440 & -- \\
-\texttt{X1} & 0.235$^{\dagger}$ & -- & -- & -- & 0.254$^{\dagger}$ & -- & 0.177$^{\dagger}$ & -- & 0.281 & -- & 0.261$^{\dagger}$ & -- & 0.328 & -- \\
-\texttt{C\_L1b\_S1} & 0.122$^{\dagger}$ & -- & -- & -- & 0.254$^{\dagger}$ & -- & 0.211$^{\dagger}$ & -- & 0.317 & -- & 0.297 & -- & 0.324 & -- \\
-\texttt{C\_L1r\_S1} & 0.165$^{\dagger}$ & -- & -- & -- & 0.301 & -- & 0.214$^{\dagger}$ & -- & 0.303 & -- & 0.305 & -- & 0.388 & -- \\
-\texttt{C\_S1\_L1r} & 0.136$^{\dagger}$ & -- & -- & -- & 0.311 & -- & 0.183$^{\dagger}$ & -- & 0.303 & -- & 0.309 & -- & 0.374 & -- \\
-\texttt{C\_L2\_S4} & 0.215$^{\dagger}$ & -- & -- & -- & 0.342 & -- & 0.260$^{\dagger}$ & -- & 0.353 & -- & 0.378 & -- & 0.395 & -- \\
-\texttt{C\_L1r\_S3} & 0.243$^{\dagger}$ & -- & -- & -- & 0.300 & -- & 0.282 & -- & 0.368 & -- & 0.323 & -- & 0.383 & -- \\
-\texttt{C\_S4\_S3} & 0.243$^{\dagger}$ & -- & -- & -- & 0.368 & -- & 0.301 & -- & 0.386 & -- & 0.389 & -- & 0.448 & -- \\
-\texttt{C3\_L1r\_S3\_S4} & 0.182$^{\dagger}$ & -- & -- & -- & 0.294 & -- & 0.242$^{\dagger}$ & -- & 0.339 & -- & 0.315 & -- & 0.386 & -- \\
-\texttt{C3\_S1\_S3\_S4} & 0.191$^{\dagger}$ & -- & -- & -- & 0.337 & -- & 0.235$^{\dagger}$ & -- & 0.333 & -- & 0.345 & -- & 0.406 & -- \\
-\texttt{C3\_L1r\_S1\_S4} & 0.096$^{\dagger}$ & -- & -- & -- & 0.293 & -- & 0.209$^{\dagger}$ & -- & 0.270 & -- & 0.297 & -- & 0.353 & -- \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & 0.104$^{\dagger}$ & -- & -- & -- & 0.289 & -- & 0.206$^{\dagger}$ & -- & 0.273 & -- & 0.271 & -- & 0.358 & -- \\
-\texttt{C\_L1r\_X1} & 0.123$^{\dagger}$ & -- & -- & -- & 0.165$^{\dagger}$ & -- & 0.165$^{\dagger}$ & -- & 0.205$^{\dagger}$ & -- & 0.168$^{\dagger}$ & -- & 0.262 & -- \\
-\texttt{C\_X1\_S1} & 0.194$^{\dagger}$ & -- & -- & -- & 0.259$^{\dagger}$ & -- & 0.127$^{\ddagger}$ & -- & 0.243$^{\dagger}$ & -- & 0.238$^{\dagger}$ & -- & 0.355 & -- \\
-\texttt{C\_S2\_X1} & 0.184$^{\dagger}$ & -- & -- & -- & 0.261$^{\dagger}$ & -- & 0.196$^{\dagger}$ & -- & 0.268$^{\dagger}$ & -- & -- & -- & 0.384 & -- \\
-\texttt{C\_L1r\_X1m} & 0.179$^{\dagger}$ & -- & -- & -- & 0.191$^{\dagger}$ & -- & 0.178$^{\dagger}$ & -- & 0.234 & -- & -- & -- & 0.267 & -- \\
-\texttt{C\_S1\_X1s} & 0.258$^{\dagger}$ & -- & -- & -- & 0.291$^{\dagger}$ & -- & 0.176$^{\dagger}$ & -- & 0.286$^{\dagger}$ & -- & -- & -- & 0.384 & -- \\
-\texttt{C3\_L1r\_S1\_X1} & 0.153$^{\dagger}$ & -- & -- & -- & 0.191$^{\dagger}$ & -- & 0.107$^{\ddagger}$ & -- & 0.167$^{\dagger}$ & -- & -- & -- & 0.323 & -- \\
-\cmidrule(l{2pt}r{2pt}){1-15}
-\textbf{single obfuscation} & 0.355$^{1}$ & 100 & -- & -- & \textcolor{green!55!black}{0.356} & 100 & \textcolor{red!70!black}{0.293$^{4}$} & 83 & \textcolor{green!55!black}{0.378} & 107 & \textcolor{green!55!black}{0.387} & 109 & \textcolor{green!55!black}{0.414} & 117 \\
-\textbf{held-out family} & -- & -- & -- & -- & -- & -- & -- & -- & 0.281 & -- & -- & -- & 0.328 & -- \\
-\textbf{depth 2, all seen} & -- & -- & -- & -- & 0.325$^{5}$ & -- & 0.291$^{2}$ & -- & 0.338 & -- & 0.334 & -- & 0.385 & -- \\
-\textbf{depth 3, all seen} & -- & -- & -- & -- & 0.308 & -- & -- & -- & 0.314 & -- & 0.319 & -- & 0.382 & -- \\
-\textbf{depth 4, all seen} & -- & -- & -- & -- & 0.289 & -- & -- & -- & 0.273 & -- & 0.271 & -- & 0.358 & -- \\
-\textbf{depth 2, unseen inside} & -- & -- & -- & -- & -- & -- & -- & -- & 0.234$^{1}$ & -- & -- & -- & 0.330 & -- \\
-\textbf{depth 3, unseen inside} & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- & 0.323 & -- \\
+\texttt{L0} & 0.000$^{\dagger}$\,/\,0.366 & 0.008$^{\dagger}$\,/\,-- & 0.542\,/\,\textcolor{green!55!black}{0.411} & 0.529\,/\,\textcolor{red!70!black}{0.311} & 0.532\,/\,\textcolor{green!55!black}{0.399} & 0.546\,/\,\textcolor{green!55!black}{0.435} & 0.539\,/\,\textcolor{green!55!black}{0.452} \\
+\texttt{L1b} & 0.000$^{\dagger}$\,/\,0.216$^{\dagger}$ & 0.000$^{\dagger}$\,/\,-- & 0.431\,/\,0.316 & 0.487\,/\,0.301 & 0.510\,/\,0.395 & 0.489\,/\,0.382 & 0.426\,/\,0.364 \\
+\texttt{L1r} & 0.000$^{\dagger}$\,/\,0.282$^{\dagger}$ & 0.000$^{\dagger}$\,/\,-- & 0.483\,/\,0.354 & 0.485\,/\,0.273 & 0.509\,/\,0.369 & 0.492\,/\,0.368 & 0.476\,/\,0.423 \\
+\texttt{L2} & 0.000$^{\dagger}$\,/\,0.355 & 0.002$^{\dagger}$\,/\,-- & 0.479\,/\,\textcolor{green!55!black}{0.391} & 0.486\,/\,\textcolor{red!70!black}{0.297} & 0.503\,/\,\textcolor{green!55!black}{0.379} & 0.493\,/\,\textcolor{green!55!black}{0.406} & 0.466\,/\,\textcolor{green!55!black}{0.421} \\
+\texttt{S1} & 0.000$^{\dagger}$\,/\,0.235$^{\dagger}$ & 0.010$^{\dagger}$\,/\,-- & 0.508\,/\,0.361 & 0.487\,/\,0.257$^{\dagger}$ & 0.501\,/\,0.364 & 0.510\,/\,0.377 & 0.487\,/\,0.421 \\
+\texttt{S2} & 0.000$^{\dagger}$\,/\,0.238$^{\dagger}$ & 0.023$^{\dagger}$\,/\,-- & 0.512\,/\,0.359 & 0.514\,/\,0.300 & 0.539\,/\,0.384 & 0.533\,/\,0.404 & 0.518\,/\,0.440 \\
+\texttt{X1} & 0.000$^{\dagger}$\,/\,0.235$^{\dagger}$ & 0.009$^{\dagger}$\,/\,-- & 0.347\,/\,0.254$^{\dagger}$ & 0.320\,/\,0.177$^{\dagger}$ & 0.343\,/\,0.281 & 0.353\,/\,0.261$^{\dagger}$ & 0.343\,/\,0.328 \\
+\texttt{C\_L1b\_S1} & 0.000$^{\dagger}$\,/\,0.122$^{\dagger}$ & 0.001$^{\dagger}$\,/\,-- & 0.360\,/\,0.254$^{\dagger}$ & 0.416\,/\,0.211$^{\dagger}$ & 0.456\,/\,0.317 & 0.417\,/\,0.297 & 0.354\,/\,0.324 \\
+\texttt{C\_L1r\_S1} & 0.000$^{\dagger}$\,/\,0.165$^{\dagger}$ & 0.000$^{\dagger}$\,/\,-- & 0.393\,/\,0.301 & 0.423\,/\,0.214$^{\dagger}$ & 0.440\,/\,0.303 & 0.419\,/\,0.305 & 0.389\,/\,0.388 \\
+\texttt{C\_S1\_L1r} & 0.000$^{\dagger}$\,/\,0.136$^{\dagger}$ & 0.000$^{\dagger}$\,/\,-- & 0.377\,/\,0.311 & 0.406\,/\,0.183$^{\dagger}$ & 0.431\,/\,0.303 & 0.418\,/\,0.309 & 0.387\,/\,0.374 \\
+\texttt{C\_L2\_S4} & 0.000$^{\dagger}$\,/\,0.215$^{\dagger}$ & 0.005$^{\dagger}$\,/\,-- & 0.454\,/\,0.342 & 0.470\,/\,0.260$^{\dagger}$ & 0.508\,/\,0.353 & 0.485\,/\,0.378 & 0.438\,/\,0.395 \\
+\texttt{C\_L1r\_S3} & 0.000$^{\dagger}$\,/\,0.243$^{\dagger}$ & 0.000$^{\dagger}$\,/\,-- & 0.473\,/\,0.300 & 0.483\,/\,0.282 & 0.504\,/\,0.368 & 0.490\,/\,0.323 & 0.459\,/\,0.383 \\
+\texttt{C\_S4\_S3} & 0.000$^{\dagger}$\,/\,0.243$^{\dagger}$ & 0.028$^{\dagger}$\,/\,-- & 0.511\,/\,0.368 & 0.516\,/\,0.301 & 0.539\,/\,0.386 & 0.525\,/\,0.389 & 0.506\,/\,0.448 \\
+\texttt{C3\_L1r\_S3\_S4} & 0.000$^{\dagger}$\,/\,0.182$^{\dagger}$ & 0.004$^{\dagger}$\,/\,-- & 0.448\,/\,0.294 & 0.484\,/\,0.242$^{\dagger}$ & 0.503\,/\,0.339 & 0.475\,/\,0.315 & 0.436\,/\,0.386 \\
+\texttt{C3\_S1\_S3\_S4} & 0.000$^{\dagger}$\,/\,0.191$^{\dagger}$ & 0.019$^{\dagger}$\,/\,-- & 0.476\,/\,0.337 & 0.465\,/\,0.235$^{\dagger}$ & 0.493\,/\,0.333 & 0.480\,/\,0.345 & 0.464\,/\,0.406 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.000$^{\dagger}$\,/\,0.096$^{\dagger}$ & 0.002$^{\dagger}$\,/\,-- & 0.370\,/\,0.293 & 0.417\,/\,0.209$^{\dagger}$ & 0.439\,/\,0.270 & 0.413\,/\,0.297 & 0.376\,/\,0.353 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.000$^{\dagger}$\,/\,0.104$^{\dagger}$ & 0.001$^{\dagger}$\,/\,-- & 0.357\,/\,0.289 & 0.412\,/\,0.206$^{\dagger}$ & 0.437\,/\,0.273 & 0.401\,/\,0.271 & 0.358\,/\,0.358 \\
+\texttt{C\_L1r\_X1} & 0.000$^{\dagger}$\,/\,0.123$^{\dagger}$ & 0.002$^{\dagger}$\,/\,-- & 0.248\,/\,0.165$^{\dagger}$ & 0.274\,/\,0.165$^{\dagger}$ & 0.286\,/\,0.205$^{\dagger}$ & 0.278\,/\,0.168$^{\dagger}$ & 0.259\,/\,0.262 \\
+\texttt{C\_X1\_S1} & 0.000$^{\dagger}$\,/\,0.194$^{\dagger}$ & 0.022$^{\dagger}$\,/\,-- & 0.357\,/\,0.259$^{\dagger}$ & 0.322\,/\,0.127$^{\ddagger}$ & 0.342\,/\,0.243$^{\dagger}$ & 0.385\,/\,0.238$^{\dagger}$ & 0.371\,/\,0.355 \\
+\texttt{C\_S2\_X1} & 0.000$^{\dagger}$\,/\,0.184$^{\dagger}$ & 0.014$^{\dagger}$\,/\,-- & 0.403\,/\,0.261$^{\dagger}$ & 0.375\,/\,0.196$^{\dagger}$ & 0.397\,/\,0.268$^{\dagger}$ & 0.413\,/\,-- & 0.403\,/\,0.384 \\
+\texttt{C\_L1r\_X1m} & 0.000$^{\dagger}$\,/\,0.179$^{\dagger}$ & 0.003$^{\dagger}$\,/\,-- & 0.307\,/\,0.191$^{\dagger}$ & 0.323\,/\,0.178$^{\dagger}$ & 0.338\,/\,0.234 & 0.328\,/\,-- & 0.317\,/\,0.267 \\
+\texttt{C\_S1\_X1s} & 0.000$^{\dagger}$\,/\,0.258$^{\dagger}$ & 0.044$^{\dagger}$\,/\,-- & 0.434\,/\,0.291$^{\dagger}$ & 0.408\,/\,0.176$^{\dagger}$ & 0.434\,/\,0.286$^{\dagger}$ & 0.443\,/\,-- & 0.427\,/\,0.384 \\
+\texttt{C3\_L1r\_S1\_X1} & 0.000$^{\dagger}$\,/\,0.153$^{\dagger}$ & 0.002$^{\dagger}$\,/\,-- & 0.278\,/\,0.191$^{\dagger}$ & 0.298\,/\,0.107$^{\ddagger}$ & 0.302\,/\,0.167$^{\dagger}$ & 0.306\,/\,-- & 0.286\,/\,0.323 \\
+\cmidrule(l{2pt}r{2pt}){1-8}
+\textbf{single obfuscation} & --\,/\,0.355$^{1}$ & --\,/\,-- & 0.482\,/\,\textcolor{green!55!black}{0.356} & 0.492\,/\,\textcolor{red!70!black}{0.293$^{4}$} & 0.512\,/\,\textcolor{green!55!black}{0.378} & 0.503\,/\,\textcolor{green!55!black}{0.387} & 0.475\,/\,\textcolor{green!55!black}{0.414} \\
+\textbf{held-out family} & --\,/\,-- & --\,/\,-- & 0.347\,/\,-- & 0.320\,/\,-- & 0.343\,/\,0.281 & 0.353\,/\,-- & 0.343\,/\,0.328 \\
+\textbf{depth 2, all seen} & --\,/\,-- & --\,/\,-- & 0.428\,/\,0.325$^{5}$ & 0.452\,/\,0.291$^{2}$ & 0.480\,/\,0.338 & 0.459\,/\,0.334 & 0.422\,/\,0.385 \\
+\textbf{depth 3, all seen} & --\,/\,-- & --\,/\,-- & 0.431\,/\,0.308 & 0.455\,/\,-- & 0.478\,/\,0.314 & 0.456\,/\,0.319 & 0.425\,/\,0.382 \\
+\textbf{depth 4, all seen} & --\,/\,-- & --\,/\,-- & 0.357\,/\,0.289 & 0.412\,/\,-- & 0.437\,/\,0.273 & 0.401\,/\,0.271 & 0.358\,/\,0.358 \\
+\textbf{depth 2, unseen inside} & --\,/\,-- & --\,/\,-- & 0.350\,/\,-- & 0.341\,/\,-- & 0.359\,/\,0.234$^{1}$ & 0.369\,/\,-- & 0.355\,/\,0.330 \\
+\textbf{depth 3, unseen inside} & --\,/\,-- & --\,/\,-- & 0.278\,/\,-- & 0.298\,/\,-- & 0.302\,/\,-- & 0.306\,/\,-- & 0.286\,/\,0.323 \\
 \bottomrule
 \end{tabular}
 \end{table*}
