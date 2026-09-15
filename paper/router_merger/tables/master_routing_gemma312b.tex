@@ -1,0 +1,28 @@
+% GENERATED 2026-09-15 13:35 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/mole_generic/gemma3-12b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Routing, Gemma-3-12B.} MoLE mixtures of the eight per-transform experts on every condition and stack that has them: \emph{router} = trained gate, \emph{hard router} = its argmax, \emph{uniform} = fixed uniform gate, \emph{random} = gate frozen at random initialisation. Per system: raw accuracy, $\Delta$ points against the untuned model on the same items, and \% of the untuned model's clean-code accuracy. Every cell ran through the mixture engine.}
+\label{tab:routing_gemma312b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{router}} & \multicolumn{3}{c|}{\textbf{hard router}} & \multicolumn{3}{c|}{\textbf{uniform}} & \multicolumn{3}{c}{\textbf{random}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{mole\_router}} & \multicolumn{3}{c|}{\texttt{mole\_hardrouter}} & \multicolumn{3}{c|}{\texttt{mole\_uniform}} & \multicolumn{3}{c}{\texttt{mole\_random}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & fmt & fmt & 0.530 & fmt & fmt & 0.531 & fmt & fmt & 0.531 & fmt & fmt & 0.534 & fmt & fmt \\
+\texttt{L1b} & fmt & fmt & 0.481 & fmt & fmt & 0.484 & fmt & fmt & 0.468 & fmt & fmt & 0.466 & fmt & fmt \\
+\texttt{L1r} & fmt & fmt & 0.477 & fmt & fmt & 0.475 & fmt & fmt & 0.481 & fmt & fmt & 0.480 & fmt & fmt \\
+\texttt{L2} & fmt & fmt & 0.481 & fmt & fmt & 0.483 & fmt & fmt & 0.466 & fmt & fmt & 0.470 & fmt & fmt \\
+\texttt{S1} & fmt & fmt & 0.496 & fmt & fmt & 0.495 & fmt & fmt & 0.482 & fmt & fmt & 0.482 & fmt & fmt \\
+\texttt{S2} & fmt & fmt & 0.527 & fmt & fmt & 0.529 & fmt & fmt & 0.516 & fmt & fmt & 0.513 & fmt & fmt \\
+\texttt{X1} & 0.149 & fmt & 0.314 & $+16.5$ & fmt & 0.312 & $+16.3$ & fmt & 0.317 & $+16.8$ & fmt & 0.318 & $+16.9$ & fmt \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & fmt & fmt & 0.414 & fmt & fmt & 0.415 & fmt & fmt & 0.367 & fmt & fmt & 0.363 & fmt & fmt \\
+\texttt{C\_L1r\_S1} & fmt & fmt & 0.398 & fmt & fmt & 0.405 & fmt & fmt & 0.367 & fmt & fmt & 0.369 & fmt & fmt \\
+\texttt{C\_S1\_L1r} & fmt & fmt & 0.389 & fmt & fmt & 0.389 & fmt & fmt & 0.350 & fmt & fmt & 0.351 & fmt & fmt \\
+\texttt{C\_L2\_S4} & fmt & fmt & 0.459 & fmt & fmt & -- & -- & -- & 0.458 & fmt & fmt & 0.459 & fmt & fmt \\
+\bottomrule
+\end{tabular}
+\end{table*}

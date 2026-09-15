@@ -725,6 +725,17 @@ def abs_table(m):
         base_ok = ba if isinstance(ba, float) and (bf or 0) <= FMT_MAX else None
         cr = collapse_rate(m, sy, c) if (bwd and (ff or 0) > FMT_MAX) else None
         txt = abs_fmt(a, ff, collapse=cr)
+        if (ff or 0) > FMT_MAX:
+            # A FORMAT-GATED CELL IS RED (user, 2026-09-15: "for star format error stuff also put
+            # it as red"). 954 of the 8,852 cells on disk are gated, and they were the only numbers
+            # in the table with no colour at all -- so the cell a reader should trust least looked
+            # the same as one with no comparison available. It keeps its dagger, and that marker is
+            # what separates the two meanings of red: RED + MARKER is unreliable (over a quarter of
+            # its replies failed the output contract, so the accuracy underneath is not a fair
+            # reading), RED ALONE is a sound number that is simply below base. Applied to `base`
+            # too, unlike the below-base colour: base is the comparison reference, but a gated base
+            # is not a usable reference -- StarCoder2 forward is the extreme, 1.000 format failure.
+            return r"\textcolor{red!70!black}{" + txt + "}"
         a_ok = a if isinstance(a, float) and (ff or 0) <= FMT_MAX else None
         return txt if sy == "base" else colourise(a_ok, base_ok, txt)
 
@@ -775,16 +786,20 @@ def abs_table(m):
                r"specialists; \emph{merge} is the DARE-TIES merge of them. "
                r"\textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} "
                r"\texttt{base} in the same direction on the same condition; \texttt{base} is the reference, and an "
-               r"uncoloured number means no comparison was available rather than a tie. \textbf{Bold rows} are means "
+               r"uncoloured number means no comparison was available rather than a tie. A \textcolor{red!70!black}{red "
+               r"number carrying $\dagger$ or $\ddagger$} is red for the other reason --- its format-failure rate is "
+               r"above 0.25, so the accuracy beneath it is not a fair reading of the arm --- and those cells are "
+               r"excluded from the bold means. \textbf{Bold rows} are means "
                r"over the group named, equally weighted per condition; a superscript gives the number of readable "
                r"cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately "
                r"not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter "
                r"most it is the one arm for which that family is not held out; the \textbf{held-out family} row "
                r"names a group of conditions, not an arm. "
                r"\textbf{Backward is graded by execution}: any call returning the gold value is correct, because "
-               r"inversion is many-to-one. $\dagger$: backward format-failure rate above 0.25, mostly replies that "
-               r"are not call-shaped. $\ddagger$: above 0.25, but most replies are exactly the gold \emph{forward} "
-               r"answer --- the arm answered the other question. "
+               r"inversion is many-to-one. $\dagger$: format-failure rate above 0.25, mostly replies that do not "
+               r"meet the output contract. $\ddagger$: above 0.25 backward, but most replies are exactly the gold "
+               r"\emph{forward} answer --- the arm answered the other question, which is a result rather than a "
+               r"broken template. "
                + (r"\textbf{This model is the pilot}: it predates X1, the depth-3/4 stacks and the "
                   r"unseen-containing stacks, and the in-context, anchored and family arms were never built for it, "
                   r"so those rows and columns are absent rather than empty; it does carry \texttt{S3}/\texttt{S4} as "
