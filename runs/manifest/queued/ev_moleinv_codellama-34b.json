@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_moleinv_codellama-34b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_codellama-34b.yaml",
+    "--model",
+    "codellama-34b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 5.0,
+  "priority": 10,
+  "meta": {
+    "note": "RESUME 2026-09-15: 6 mixture cells left; the previous run hit walltime, not an error, and written cells are skipped. Walltime set from that run's own measured rate. ZERO OOM retries fired in any timed-out log -- the token-budget batching alone is holding, and StarCoder2's backward grid completed in 2h38 where it died at 7h51 before. The 13B backward job additionally hit an exec-pool bug (an unreapable sandbox process raised TimeoutExpired out of the timeout handler), fixed and regression-tested today."
+  }
+}

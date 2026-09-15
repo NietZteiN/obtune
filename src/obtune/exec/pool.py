@@ -130,7 +130,19 @@ def _run_one(item: BatchItem, timeout_s: float, mem_mb: int, hash_seed: int) -> 
                 os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
             except (ProcessLookupError, PermissionError):
                 pass
-            proc.wait(timeout=5)
+            # THE REAP CAN TIME OUT TOO, AND THAT ONE USED TO ESCAPE (2026-09-15). This handler
+            # exists to turn a slow program into a graded "timeout" case, but `proc.wait(timeout=5)`
+            # raises TimeoutExpired itself when SIGKILL does not reap the child in five seconds --
+            # which happens when it is blocked in uninterruptible I/O on the shared filesystem, and
+            # a SIGKILL cannot interrupt that. Raised from inside the except block, it propagated
+            # past every caller and killed the whole evaluation: job 400831 lost 31 minutes of
+            # CodeLlama-13B's backward mixture grid to one unreapable sandbox process. A leaked
+            # process is a far smaller problem than a dead grid, so give up on the reap and grade
+            # the item.
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
         res.child_status = "timeout"
         res.cases = [CaseResult(status="timeout") for _ in range(n)]
         return res

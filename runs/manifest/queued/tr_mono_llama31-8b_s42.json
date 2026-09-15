@@ -11,9 +11,17 @@
     "42"
   ],
   "raw": false,
-  "est_gpu_h": 0.6,
-  "priority": 300,
+  "est_gpu_h": 2.5,
+  "priority": 290,
   "meta": {
-    "note": "SECOND SEED, Llama-3.1-8B (2026-09-14, 'maximize GPU usage'). Every panel number is s17-only. Llama-3.1-8B is the second model with a measured router and a readable backward baseline, so a full s42 replicate there turns every CodeLlama-7B seed check into a two-model one. Low priority: these backfill h100 behind the mixture grids. ~24 min each at s17 on h100/h200. | priority 60 -> 300 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse."
+    "note": "SECOND SEED, Llama-3.1-8B (2026-09-14, 'maximize GPU usage'). Every panel number is s17-only. Llama-3.1-8B is the second model with a measured router and a readable backward baseline, so a full s42 replicate there turns every CodeLlama-7B seed check into a two-model one. Low priority: these backfill h100 behind the mixture grids. ~24 min each at s17 on h100/h200. | priority 60 -> 300 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse. | REQUEUED 2026-09-15: hit walltime at 2h00 with checkpoint-420 and -840 written but no `best`, so checkpoint selection has nothing to read. The breadth adapter trains on six conditions' data at once and is the longest single-adapter job in the seed-42 panel; 5h."
+  },
+  "slurm": {
+    "job_id": "401090",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 124,
+    "finished_utc": "2026-09-15T12:37:26.451803+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
   }
 }

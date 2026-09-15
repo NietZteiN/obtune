@@ -1,0 +1,20 @@
+{
+  "job_id": "ev_mole_codegemma-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_codegemma-7b.yaml",
+    "--model",
+    "codegemma-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.5,
+  "priority": 10,
+  "meta": {
+    "note": "2026-09-15: forward mixture: 17 cells short; gate routerlora_codegemma7b_s17 exists. Resume skips written cells. Closes the last master-table gaps outside CodeLlama-13B/34B and Gemma-3, which are already running or queued."
+  }
+}

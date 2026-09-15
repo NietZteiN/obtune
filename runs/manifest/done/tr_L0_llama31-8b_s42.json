@@ -1,0 +1,26 @@
+{
+  "job_id": "tr_L0_llama31-8b_s42",
+  "kind": "train",
+  "argv": [
+    "src/obtune/train_sft.py",
+    "--config",
+    "train/grid_py_L0.yaml",
+    "--model",
+    "llama31-8b",
+    "--seed",
+    "42"
+  ],
+  "raw": false,
+  "est_gpu_h": 0.6,
+  "priority": 299,
+  "meta": {
+    "note": "SECOND SEED, Llama-3.1-8B: the clean-code adapter, from the same config as its s17 twin (train/grid_py_L0.yaml). Priority one above the specialists because the anchored arm's s42 teacher depends on it. | priority 61 -> 299 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse."
+  },
+  "slurm": {
+    "job_id": "399750",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-15T03:45:20.427499+00:00"
+  }
+}
