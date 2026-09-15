@@ -144,7 +144,7 @@ H1 & heldout & string encoding (base64 / RC4 string array) plus guarded mixed-bo
 Every system is a LoRA on the same base model, evaluated on still-obfuscated code. \emph{Clean LoRA}
 (\texttt{tuned\_L0}) is tuned on unobfuscated programs and is the control throughout; one
 \emph{specialist} per seen transform; \emph{breadth} (\texttt{mono\_all}) is one adapter trained on
-all five seen transforms pooled; \emph{family} (\texttt{tuned\_X1}) is trained on the unseen family's
+the pooled data of all six training conditions --- the five seen transforms and clean code; \emph{family} (\texttt{tuned\_X1}) is trained on the unseen family's
 sibling and is the ceiling for that family; it is reported as that ceiling only and is excluded from
 the comparison tables, because on exactly the conditions that matter most it is the one arm for which
 the held-out family is not held out. \emph{Routing} mixes the specialists with a learned gate

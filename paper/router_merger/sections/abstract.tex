@@ -4,8 +4,8 @@ compositions of the transforms the model was tuned on, an obfuscator family it h
 same programs queried in the reverse direction --- given a return value, produce a call that yields it.
 Across eight models and four lineages, the regimes disagree. On seen compositions every adaptation
 works and the differences are within five points. Outside them the ordering inverts. A single adapter
-trained on all five transforms at once --- the obvious way to spend the data --- is below every
-arm assembled from per-transform specialists on the unseen family, on all eight models, and below an
+trained on the pooled data of all six training conditions at once --- the obvious way to spend the
+data --- is below every arm assembled from the same conditions' specialists on the unseen family, on all eight models, and below an
 adapter trained on unobfuscated code alone on six: training on more transforms made the model worse at
 a transform it had not seen. Every arm that fits the forward task pays for it backwards, and the
 failures are not malformed answers but the gold \emph{forward} answer, returned to a question that

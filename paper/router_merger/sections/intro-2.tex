@@ -181,8 +181,8 @@ points of one another; on the other two the ordering inverts. Reporting only the
 as prior work does, supports the opposite conclusion to reporting all three.
 
 \textbf{2. Monolithic training is the worst use of the data outside the training distribution.} A
-single adapter trained on all five transformations is below every arm assembled from per-transformation
-specialists on the unseen family, on all eight models --- and below an adapter trained on unobfuscated
+single adapter trained on the pooled data of all six training conditions is below every arm assembled
+from per-condition specialists on the unseen family, on all eight models --- and below an adapter trained on unobfuscated
 code alone on six. The comparison is data-matched by construction: the composed arms are built from
 specialists trained on exactly the rows breadth trains on, at the same rank, from the same base model.
 

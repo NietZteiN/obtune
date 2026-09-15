@@ -42,7 +42,7 @@ specialists. No arm wins everywhere, and the one that never loses is not the one
 \subsection{On seen compositions, every adaptation works}
 
 Stacking is where adaptation was supposed to break, and it does not. Every arm roughly doubles the
-untuned model on depth-2, -3 and -4 compositions of the five seen transforms: 0.143 to 0.32--0.37 on
+untuned model on depth-2, -3 and -4 compositions of the seen transforms: 0.143 to 0.32--0.37 on
 CodeLlama-7B, 0.161 to 0.39--0.45 on CodeLlama-34B, and so on down the panel. The spread among tuned
 arms is three to six points, an order of magnitude smaller than the gap to the untuned model, and it is
 the single-adapter arms that sit at the top of it. Composition per se is not the difficulty: a model
@@ -55,15 +55,20 @@ reason it does not stop here.
 \subsection{On the unseen family, monolithic training is the worst use of the data}
 
 The \emph{unseen family} block holds the held-out obfuscator and every stack containing it. No arm was
-trained on it, and the ordering changes: breadth --- one adapter trained on all five transforms --- is
-below \emph{every} arm assembled from per-transform specialists, on all eight models.
+trained on it, and the ordering changes: breadth --- one adapter trained on the pooled data of all six
+training conditions --- is below \emph{every} arm assembled from those same conditions' specialists,
+on all eight models.
 
 Paired by program with a cluster bootstrap over 2{,}000 resamples, breadth is below the mixture by
 3.3--5.9 points on 8 of 8 models (significant on all 8), and below the merge by 2.3--5.2 points on 8 of
-8 (significant on 7). The comparison is tight by construction: the merge and the mixture are built from
-specialists trained on exactly the rows breadth trains on, at the same rank, from the same base model.
-The only difference is whether those rows were learned in one set of weights or in five sets that are
-then composed.
+8 (significant on 7). The merge comparison is exactly data-matched: its six ingredient adapters are
+trained on precisely the six conditions breadth pools, at the same rank, from the same base model, so
+the only difference is whether those rows were learned in one set of weights or in six that are then
+composed. The mixture is \emph{not} data-matched --- it carries two further specialists, on the
+transforms \texttt{S3} and \texttt{S4}, that neither breadth nor the merge is trained on. Its
+advantage does not come from them: measured against the merge, it is the same size on composites that
+contain neither \texttt{S3} nor \texttt{S4} ($+2.8$ to $+5.3$) as on those that do ($+2.2$ to $+5.6$),
+on all eight models. We nonetheless treat the exactly-matched merge comparison as the load-bearing one.
 
 Breadth is also below a LoRA trained on \emph{unobfuscated code alone} on all eight models,
 significantly on six of them (2.7--4.7 points; the two non-significant gaps are 1.0 and 2.0). An adapter that has never seen an obfuscated program generalises
