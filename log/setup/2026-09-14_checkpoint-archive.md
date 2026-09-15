@@ -31,3 +31,9 @@ saying the same.
 The 321 GB model-cache copy. The cache now reads from scratch (verified identical), but six jobs
 that were running at the switch memory-mapped their weights from the /work copy, so it stays until
 they finish; its removal is a separate deletion that will be proposed with the exact path and size.
+
+## Addendum: final count
+
+The entry above was written from a wait that timed out while the archiver was still running, so
+its numbers were a snapshot at 219 directories. Final: **467 directories, 357 GB archived, 0
+left in place** (log: `results/analysis/pipeline/ckpt_archive.jsonl`).
