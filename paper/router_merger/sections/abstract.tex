@@ -1,9 +1,9 @@
 Fine-tuning a code model on obfuscated programs raises its accuracy on those programs by roughly
-nineteen points. We ask what that number is made of, and we ask it in three regimes rather than one:
+twenty points. We ask what that number is made of, and we ask it in three regimes rather than one:
 compositions of the transforms the model was tuned on, an obfuscator family it has never seen, and the
 same programs queried in the reverse direction --- given a return value, produce a call that yields it.
 Across eight models and four lineages, the regimes disagree. On seen compositions every adaptation
-works and the differences are two to four points. Outside them the ordering inverts. A single adapter
+works and the differences are within five points. Outside them the ordering inverts. A single adapter
 trained on all five transforms at once --- the obvious way to spend the data --- is below every
 arm assembled from per-transform specialists on the unseen family, on all eight models, and below an
 adapter trained on unobfuscated code alone on six: training on more transforms made the model worse at
@@ -11,7 +11,7 @@ a transform it had not seen. Every arm that fits the forward task pays for it ba
 failures are not malformed answers but the gold \emph{forward} answer, returned to a question that
 asked for something else. Weight-space merging of the same specialists is the exception: at the floor
 of that failure mode on all eight models, above the untuned model on the reverse task on seven, and
-never significantly below it in any regime on any model --- at a cost of two to four forward points
+never significantly below it in any regime on any model --- at a cost of three to six forward points
 where the specialists are the right fit. We conclude that adaptation to obfuscated code buys
 recombination of what the training distribution covered, that monolithic training buys it at the price
 of everything outside, and that composing specialists in weight space is the cheapest way found here to

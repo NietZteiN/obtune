@@ -85,7 +85,7 @@ compositions of the transformations seen in training, an obfuscator
 family held out entirely, and the same programs queried in the reverse
 direction. The regimes disagree, and the disagreement is the result.
 On seen compositions every adaptation works and the choice between
-them is worth two to four points. Outside them the ordering inverts.
+them is worth at most five points. Outside them the ordering inverts.
 Training breadth --- the obvious way to spend the data --- is the worst
 performer on the unseen family, below every arm assembled from
 per-transform specialists on all eight models and below an adapter
@@ -147,7 +147,7 @@ preserve.
 
 Across the two out-of-distribution regimes a single arm behaves
 differently from the rest. Weight-space merging of the per-transform
-specialists gives up two to four points on seen compositions, where
+specialists gives up three to six points on seen compositions, where
 fitting the training distribution pays, and gives up nothing anywhere
 else: it is above the untuned model on the reverse task on seven of
 eight models and is never significantly below it in any regime on any
@@ -176,8 +176,8 @@ distribution, for a fit inside it.
 \textbf{1. A three-regime evaluation of obfuscation adaptation, and the disagreement between the
 regimes.} We evaluate six adaptations on eight models across four lineages in three regimes:
 compositions of seen transformations, a held-out obfuscator family, and the reverse task (given a
-return value, produce a call that yields it). On seen compositions the adaptations are within two to
-four points of one another; on the other two the ordering inverts. Reporting only the first regime,
+return value, produce a call that yields it). On seen compositions the adaptations are within five
+points of one another; on the other two the ordering inverts. Reporting only the first regime,
 as prior work does, supports the opposite conclusion to reporting all three.
 
 \textbf{2. Monolithic training is the worst use of the data outside the training distribution.} A
@@ -195,6 +195,6 @@ the forward answer.
 
 \textbf{4. Weight-space merging as the arm that never breaks, with its price stated.} Merging the same
 specialists is above the untuned model on the reverse task on seven of eight models and is never
-significantly below it in any regime on any model, at a cost of two to four forward points where
+significantly below it in any regime on any model, at a cost of three to six forward points where
 fitting the training distribution pays, one adapter, and no inference-time machinery. It is an existing
 technique used unmodified; the claim is about what the evaluation reveals, not about the algorithm.

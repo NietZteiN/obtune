@@ -133,3 +133,4 @@
 - [`2026-09-14_paper-numbers-audit.md`](2026-09-14_paper-numbers-audit.md) — prose numbers verified against the cells after a day of corrections; clean.
 - [`2026-09-14_page-budget-is-a-table-problem.md`](2026-09-14_page-budget-is-a-table-problem.md) — prose is 4.4 of 13 pages; the overflow is tables, measured.
 - [`2026-09-14_table5-execution-only.md`](2026-09-14_table5-execution-only.md) — execution grade only in Table 5; overflow fixed.
+- [`2026-09-15_accuracy-pass-on-the-restructured-text.md`](2026-09-15_accuracy-pass-on-the-restructured-text.md) — nine claims corrected; the merge's never-below-base claim verified over 24 contrasts.

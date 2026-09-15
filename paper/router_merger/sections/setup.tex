@@ -145,7 +145,9 @@ Every system is a LoRA on the same base model, evaluated on still-obfuscated cod
 (\texttt{tuned\_L0}) is tuned on unobfuscated programs and is the control throughout; one
 \emph{specialist} per seen transform; \emph{breadth} (\texttt{mono\_all}) is one adapter trained on
 all five seen transforms pooled; \emph{family} (\texttt{tuned\_X1}) is trained on the unseen family's
-sibling and is the ceiling for that family. \emph{Routing} mixes the specialists with a learned gate
+sibling and is the ceiling for that family; it is reported as that ceiling only and is excluded from
+the comparison tables, because on exactly the conditions that matter most it is the one arm for which
+the held-out family is not held out. \emph{Routing} mixes the specialists with a learned gate
 (\texttt{mole\_router}), its argmax, a fixed uniform gate or a gate frozen at random initialisation;
 the last two separate what the mixture is worth from what the routing is worth. \emph{Merging}
 combines the specialists in weight space (TIES, DARE-TIES, DARE-linear) or anchors the merge on the
@@ -162,15 +164,18 @@ matching; the backward task is graded by executing the produced call against the
 Every contrast is a paired difference on the program subset common to its cells, with a
 program-clustered bootstrap of 2{,}000 resamples; bold intervals exclude zero. Decision rules were
 pre-registered before submission and are reported by their verdicts even when inconclusive.
-% >>> CONTRADICTED BY MEASUREMENT, 2026-09-14. The next sentence says a gated cell "measures the
-% prompt contract rather than the task". scripts/analysis/67_backward_failure_modes.py decomposes
-% those cells and that is false of many of them: on CodeGemma's anchored arm 96 %% of the failures
-% are replies that are exactly the gold FORWARD answer, and on StarCoder2's tuned arms 79-91 %%.
-% Those cells measure forward-locking, which is a result. Others are genuinely malformed, and a
-% few are truncation at the 128-token cap. Left unedited because the fix interacts with the
-% framing decision; log/transfer/2026-09-14_forward-locking-is-the-mechanism.md has the numbers
-% and tables/master_collapse.tex is the table, generated and not yet \input anywhere. <<<
-A cell
-whose format-failure rate exceeds 0.25 measures the prompt contract rather than the task and enters
-no mean; untuned format failure measures adherence to that contract, not capability, so screening
-base models by it is unsound.
+% RESOLVED 2026-09-15. The old text here said a gated cell "measures the prompt contract rather than
+% the task", which 67_backward_failure_modes.py showed is false of many of them: on CodeGemma's
+% anchored arm 96 % of the gated replies are exactly the gold FORWARD answer, and on StarCoder2's
+% tuned arms 79-91 %. Those cells measure forward-locking, which is a result and is now the subject
+% of Section~\ref{sec:results}'s last subsection. The claim is corrected rather than deleted.
+A cell whose format-failure rate exceeds 0.25 enters no mean, and is marked rather than hidden. Such a
+cell is not always a broken prompt contract: decomposing the gated cells shows that many of them are
+replies that are exactly the gold \emph{forward} answer --- on CodeGemma-7B's anchored arm 96\,\% of
+them, on StarCoder2-15B's tuned arms 79--91\,\% --- which is the forward-locking effect of
+Section~\ref{sec:results}, not a formatting failure. We therefore distinguish the two in every table:
+$\ddagger$ marks a gated cell whose replies are predominantly the gold forward answer and $\dagger$ one
+whose replies are genuinely unparseable. Gating removes cells non-randomly, concentrating in the
+backward direction and on weaker models, so backward means rest on fewer cells than forward ones.
+Untuned format failure measures adherence to the prompt contract, not capability, so screening base
+models by it is unsound.
