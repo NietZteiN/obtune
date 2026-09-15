@@ -538,8 +538,13 @@ for m, (r, g) in RM.items():
 
 # ---------------- 6. ABSOLUTE master table for one model: every method x every obfuscation ----------------
 # Raw accuracy only -- no deltas, no percentages (user, 2026-09-13: "I don't like this relative reporting").
+# `family` (tuned_X1) REMOVED from the table 2026-09-14 at the user's request. It is trained on X1,
+# the held-out family's sibling, so on the rows that matter most -- anything containing the unseen
+# family -- it is the one arm for which that family is not unseen, and it wins those rows by having
+# been trained on them. The same reason it was dropped from 69_stack_leaderboard.py and
+# 65_backward_stacks.py earlier today. Its cells are untouched and still in docs/MASTER_TABLES.md.
 ABS_SYS = [("base","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("anchored","cons_lam3"),
-           ("family","tuned_X1"),("mixture","mole_router"),("merge","merge_dare_ties")]
+           ("mixture","mole_router"),("merge","merge_dare_ties")]
 ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_all":None, "cons_lam3":None, "tuned_X1":None,
           "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
 ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
@@ -761,14 +766,17 @@ def abs_table(m):
     common = (r"Raw accuracy (strict exact match), with \%\,\emph{b} after each system: its accuracy as a "
               r"percentage of \texttt{base}'s on the same condition. \emph{base} is the untuned model; \emph{ICL} its "
               r"one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all five seen "
-              r"transforms; \emph{anchored} is the paired-consistency objective; \emph{family} is trained on the unseen "
-              r"family's sibling; \emph{mixture} is the learned-gate mixture of per-transform specialists; \emph{merge} "
+              r"transforms; \emph{anchored} is the paired-consistency objective; \emph{mixture} is the learned-gate "
+              r"mixture of per-transform specialists; \emph{merge} "
               r"is the DARE-TIES merge of them. "
               r"\textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} "
               r"\texttt{base} on the same condition; \texttt{base} is the reference, and an uncoloured number means no "
               r"comparison was available rather than a tie. \textbf{Bold rows} are means over the group named, equally "
               r"weighted per condition; a superscript gives the number of readable cells averaged when it is short of "
-              r"the group. "
+              r"the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the "
+              r"held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that "
+              r"family is not held out. The \textbf{held-out family} average row is unaffected --- it names a group of "
+              r"conditions, not an arm. "
               + (r"\textbf{This model is the pilot}: it predates X1, the depth-3/4 stacks and the unseen-containing "
                  r"stacks, and the in-context, anchored and family arms were never built for it, so those rows and "
                  r"columns are absent rather than empty. It does carry \texttt{S3}/\texttt{S4} as standalone "

@@ -1,0 +1,35 @@
+{
+  "job_id": "ev_mole_starcoder2-15b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_panel_starcoder2-15b.yaml",
+    "--model",
+    "starcoder2-15b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 2.5,
+  "priority": 10,
+  "meta": {
+    "note": "master table: the mixture column, queued automatically once the router gate existed | REQUEUED 2026-09-14: walltime-killed (rc 124) at 63 of 115 cells after 3 h at est 1.5 (3 h walltime). eval_vllm resumes per cell, so this finishes the remaining 52; est 2.5 -> 5 h, against the ~2.9 h the first 63 took. | priority 125 -> 10 (2026-09-14): submit.py runs LOWER numbers first; the earlier value assumed the reverse."
+  },
+  "previous_slurm": {
+    "job_id": "396481",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 124,
+    "finished_utc": "2026-09-14T16:03:16.400781+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  },
+  "slurm": {
+    "job_id": "397876",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-15T01:11:35.583727+00:00"
+  }
+}
