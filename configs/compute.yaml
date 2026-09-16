@@ -127,7 +127,17 @@ share_limits:
   # and 18+ h200 nodes sat mixed/idle, and the third slot is what lets the next mixture grid start
   # now and the Gemma-3 / CodeLlama-34B grids start the moment their gates finish. Restore to 2 if
   # the other project needs the pool back; nothing else reads this number.
-  h200: 3
+  # RAISED 3 -> 4 ON 2026-09-16 (user: "obtune should have like 9", "maximize").
+  # 4 IS THE CEILING AND IT IS NOT OURS TO RAISE. The juno QoS carries MaxJobsPU=4 -- four RUNNING
+  # jobs per Unix user across every partition that uses it (h200 AND normal; `dev` is juno-dev, a
+  # separate pool). Both projects on this account share that one user, so 4 is the total for both
+  # and nine is not reachable here by any setting in this file. Setting the share above 4 would
+  # only queue jobs SLURM will not start, and would take the pool entirely from the other project.
+  #
+  # WHERE NINE IS REACHABLE: h100 (3 nodes, 9 GPUs) and a30 (2 nodes, 4 GPUs) carry NO QoS at all
+  # (`scontrol show partition` -> QoS=N/A), so obtune's concurrency there is bounded by hardware,
+  # not policy. That is where the bulk of the work belongs and where it now goes.
+  h200: 4
   normal: 3      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:

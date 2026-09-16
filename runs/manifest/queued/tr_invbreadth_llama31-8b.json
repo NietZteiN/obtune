@@ -1,0 +1,20 @@
+{
+  "job_id": "tr_invbreadth_llama31-8b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/inverse_breadth_py.yaml",
+    "--model",
+    "llama31-8b",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 4.0,
+  "priority": 250,
+  "meta": {
+    "note": "THE BACKWARD-TRAINED CONTROL, SECOND MODEL (2026-09-16). Same six conditions, rows, rank and seed as breadth, with prompt.task=input. The control exists on CodeLlama-7B only, so the mechanism claim -- that forward tuning surface-fits the forward mapping rather than inversion being unreachable -- rests on one model. A second makes it a comparison rather than an anecdote. Queued while h100 sits uncapped and the juno pool is at its 4-job QoS ceiling."
+  }
+}
