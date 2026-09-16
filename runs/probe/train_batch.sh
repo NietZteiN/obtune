@@ -9,10 +9,16 @@
 # with 52 idle GPUs. Submitted as ONE job holding both GPUs and running `per_gpu` trainings on each,
 # the same seven occupy one slot and run four at a time. The limit is not GPUs; it is our packing.
 #
-# SIZING. A 7-8B LoRA at the panel's 16x4 shape peaked "well inside one card" on an H200 (CLAUDE.md
-# 1), and 141 GB / 2 leaves ~70 GB per training. per_gpu=2 is the tested setting; pass 1 to be safe
-# on a 13B+, and do NOT raise it without measuring -- an OOM here kills the whole batch, not one
-# training, which is the cost of packing.
+# SIZING -- AND per_gpu=1 IS THE RIGHT DEFAULT, MEASURED 2026-09-16. Memory is not the binding
+# constraint: a 7-8B LoRA at the panel's 16x4 shape fits twice over in 141 GB and the first packed
+# batch (granite31-8b s42, per_gpu=2) raised no OOM at all. COMPUTE is. Two trainings sharing one
+# H200 each ran about 2.75x slower than the same recipe alone -- L0 took 55 min packed against
+# ~20 min solo -- so four concurrent at 2.75x is ~1.45x the throughput of running them one at a
+# time, where two concurrent at full speed would be ~2x. Packing two per GPU is therefore SLOWER in
+# aggregate than one per GPU, and it converts a single OOM into a dead batch.
+#
+# Use per_gpu=1 and add GPUs instead. The value of this script is not per-GPU density: it is that N
+# trainings occupy ONE job slot, which is what gets past the four-job QoS cap on h200.
 #
 # Each training keeps its own log under runs/logs/batch/, so a failure is attributable to a
 # condition rather than to "the batch". The script waits for all of them and reports each exit code;
@@ -31,6 +37,7 @@ PY
 )
 SLOTS=$(( NGPU * PER_GPU ))
 echo "### batch: model=$M seed=$SEED gpus=$NGPU per_gpu=$PER_GPU -> $SLOTS concurrent; ${#CONDS[@]} trainings"
+[ "$PER_GPU" -gt 1 ] && echo "### NOTE: per_gpu>1 measured ~2.75x slower per training on H200; per_gpu=1 has higher throughput."
 mkdir -p runs/logs/batch
 declare -A PID2C
 launch() {
