@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_moleinv_codegemma-7b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_codegemma-7b.yaml",
+    "--model",
+    "codegemma-7b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 6.0,
+  "priority": 10,
+  "meta": {
+    "note": "RESUME 2026-09-15: 7 mixture cells left. Previous attempt hit walltime, not an error; written cells are skipped on resume."
+  },
+  "slurm": {
+    "job_id": "405833",
+    "node": "g-06-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-16T06:41:57.248323+00:00"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_moleinv_codellama-13b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_codellama-13b.yaml",
+    "--model",
+    "codellama-13b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 4.0,
+  "priority": 10,
+  "meta": {
+    "note": "RESUME 2026-09-15: 4 mixture cells left. Previous attempt hit walltime, not an error; written cells are skipped on resume."
+  },
+  "slurm": {
+    "job_id": "405832",
+    "node": "g-06-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-16T03:12:47.712299+00:00"
+  }
+}

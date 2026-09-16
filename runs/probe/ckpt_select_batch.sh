@@ -18,11 +18,21 @@ M="$1"
 SEED="${2:-17}"
 # S3 and S4 are here for the MIXTURE arm's eight experts; a merge needs only L1b..S2. Untrained
 # adapters are skipped below, so listing them costs nothing before they exist.
-for c in L0 L1b L1r L2 S1 S2 S3 S4 X1; do
+# THE BREADTH ADAPTER IS IN THIS LIST (added 2026-09-16). It was missing, and nothing said so:
+# the script reported "9 of 10 selected" and looked finished, while the one adapter every
+# seed-42 eval config names as `mono_all_s42` had no best/. The evals then failed at model-load
+# time with FileNotFoundError, hours later and on a different machine from the omission.
+# Its directory is named by its six conditions rather than one, so it needs its own case below.
+for c in L0 L1b L1r L2 S1 S2 S3 S4 X1 L0-L1b-L1r-L2-S1-S2; do
   d="runs/adapters/$M/python/${c}_r32_s${SEED}"
   [ -f "$d/training_summary.json" ] || { echo "skip $c: not trained yet"; continue; }
   [ -e "$d/best/adapter_model.safetensors" ] && { echo "skip $c: best/ already exists"; continue; }
-  case "$c" in L0) cfg="train/grid_py_L0.yaml" ;; X1) cfg="train/grid_py_X1.yaml" ;; *) cfg="train/grid_py_${c}_panel.yaml" ;; esac
+  case "$c" in
+    L0) cfg="train/grid_py_L0.yaml" ;;
+    X1) cfg="train/grid_py_X1.yaml" ;;
+    L0-L1b-L1r-L2-S1-S2) cfg="train/mono_generic_py.yaml" ;;
+    *) cfg="train/grid_py_${c}_panel.yaml" ;;
+  esac
   echo "### checkpoint-select $M $c s$SEED"
   python -m obtune.eval_vllm --config "$cfg" --model "$M" \
     --mode ckpt-select --adapter-root "$d" || echo "FAILED $M $c s$SEED"

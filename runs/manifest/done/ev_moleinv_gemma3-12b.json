@@ -1,0 +1,27 @@
+{
+  "job_id": "ev_moleinv_gemma3-12b",
+  "kind": "eval",
+  "argv": [
+    "-m",
+    "obtune.mole.eval_mole",
+    "--config",
+    "eval/mole_inverse_gemma3-12b.yaml",
+    "--model",
+    "gemma3-12b",
+    "--language",
+    "python"
+  ],
+  "raw": false,
+  "est_gpu_h": 8.0,
+  "priority": 10,
+  "meta": {
+    "note": "RESUME 2026-09-15: 9 mixture cells left. Previous attempt hit walltime, not an error; written cells are skipped on resume."
+  },
+  "slurm": {
+    "job_id": "405834",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-16T05:35:50.040922+00:00"
+  }
+}
