@@ -1,0 +1,46 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Cross-View Aggregation of Program Reasoning}
+The forward and backward tasks are two views of one object: the same program, the same gold value,
+the same grader, asked from opposite ends. That is what makes their disagreement informative. An arm
+that improves the forward view and degrades the backward one on the same programs has not become
+better at reading those programs; it has become better at producing the answer it was trained to
+produce. Reading each view alone hides this --- every adaptation in Table~\ref{tab:main} looks like
+progress forward --- and only aggregating across views exposes it.
+
+The aggregate we propose is simple and strict: an adaptation should be at or above the untuned model
+in \emph{every} view, on \emph{every} model, before it is called an improvement in understanding
+rather than in task fit. Under that criterion exactly one arm in this study passes on all eight
+models, the sign-consensus merge (Section~\ref{sec:results}), and it does so without being the best
+arm in any single view. Two properties of this criterion are worth stating. It is conservative in the
+right direction: it can only remove arms from the winner's list, never add one. And it costs nothing
+to apply beyond evaluating in more than one direction, which any behaviour-prediction benchmark can
+do, since the pairing is a property of the items rather than of the model.
+
+\subsection{Choosing an Adaptation Strategy}
+
+No arm dominates, and the table is more useful than a ranking. If the deployment distribution is known
+and fixed, the anchored objective and the mixture are the strongest forward arms and the three to six
+points are real. If it is not --- if an obfuscator may be updated, transforms may be composed in
+unseen ways, or the model may be asked something other than what it was tuned on --- the merge is the
+only arm in this study that is never significantly below the untuned model in any block on any model,
+and it costs one adapter and no inference-time machinery. The mixture matches or beats it on the unseen
+family but needs eight adapters and a gate at inference, and its learned gate is worth nothing over a
+uniform one on the held-out family.
+
+\subsection{The Limits of Training Breadth}
+The intuition behind pooled training is that a model shown more transforms learns something more
+general. The results say the opposite in both out-of-distribution regimes. On the held-out family,
+pooled training is below every arm composed from the same data on all eight models and below an
+adapter that never saw an obfuscated program on six. Backwards, it is below the untuned model on four
+of the six models where it is readable. Neither is what an invariance would predict; both are what
+memorising a transform's surface predicts, since the surface is exactly what an unseen obfuscator is
+free to change.
+
+The point is not that breadth is useless --- on seen compositions it is within a few points of the
+best arm --- but that its gains are confined to the distribution that produced them, and that the
+same data, learned as separate specialists and composed afterwards, does not have that confinement.
+The difference between the two is not the data or the capacity; it is whether the conditions were
+learned in one set of weights or in six. Where the deployment distribution is known and fixed that
+distinction may not matter. Where an obfuscator can be updated, it is the whole question.

@@ -1,0 +1,98 @@
+\section{Merging Obfuscation Specialists}
+\label{sec:merging}
+% Promoted from Background 2.5 on 2026-09-17. This is the method the paper recommends, so it gets its
+% own section and the merge figure sits with it.
+
+\begin{figure}[t]
+\centering
+\footnotesize
+\begin{tikzpicture}[
+  font=\scriptsize,
+  cell/.style={draw, minimum width=4.6mm, minimum height=4.6mm, inner sep=0pt, anchor=center},
+  pcell/.style ={cell, fill=green!22},
+  ncell/.style ={cell, fill=red!20},
+  zcell/.style ={cell, fill=black!6, text=black!40},
+  rl/.style  ={font=\scriptsize\bfseries, anchor=east},
+  st/.style  ={font=\scriptsize\itshape, anchor=west, text=black!65},
+]
+\def\dx{5.0mm}\def\dy{5.4mm}
+% three task vectors, six parameters each
+\def\rowA{{"+","-","+","-","+","-"}}
+\def\rowB{{"+","+","0","-","+","+"}}
+\def\rowC{{"-","+","+","+","+","0"}}
+\foreach \r/\name/\yy in {0/{$\Delta_1$}/0, 1/{$\Delta_2$}/-1, 2/{$\Delta_3$}/-2} {
+  \node[rl] at (-2mm, \yy*\dy) {\name};
+  \foreach \c in {0,...,5} {
+    \pgfmathparse{\r==0 ? \rowA[\c] : (\r==1 ? \rowB[\c] : \rowC[\c])}
+    \edef\v{\pgfmathresult}
+    \ifnum\pdfstrcmp{\v}{+}=0 \node[pcell] at (\c*\dx, \yy*\dy) {$+$};
+    \else\ifnum\pdfstrcmp{\v}{-}=0 \node[ncell] at (\c*\dx, \yy*\dy) {$-$};
+    \else \node[zcell] at (\c*\dx, \yy*\dy) {$0$};\fi\fi
+  }
+}
+\node[st] at (6.1*\dx, -1*\dy) {specialists' task vectors};
+
+% elected sign
+\node[rl] at (-2mm, -3.35*\dy) {elected};
+\foreach \c/\s in {0/+, 1/+, 2/+, 3/-, 4/+, 5/+} {
+  \ifnum\pdfstrcmp{\s}{+}=0 \node[pcell] at (\c*\dx, -3.35*\dy) {$+$};
+  \else \node[ncell] at (\c*\dx, -3.35*\dy) {$-$};\fi
+}
+\node[st] at (6.1*\dx, -3.35*\dy) {sign by summed magnitude};
+\draw[-{Latex[length=1.3mm]}, black!55] (2.5*\dx, -2.55*\dy) -- (2.5*\dx, -3.05*\dy);
+
+% merged: entries disagreeing with the elected sign are dropped
+\node[rl] at (-2mm, -4.7*\dy) {merged};
+\foreach \c/\s in {0/+, 1/+, 2/+, 3/-, 4/+, 5/+} {
+  \ifnum\pdfstrcmp{\s}{+}=0 \node[pcell] at (\c*\dx, -4.7*\dy) {$+$};
+  \else \node[ncell] at (\c*\dx, -4.7*\dy) {$-$};\fi
+}
+\draw[-{Latex[length=1.3mm]}, black!55] (2.5*\dx, -3.9*\dy) -- (2.5*\dx, -4.4*\dy);
+\node[st] at (6.1*\dx, -4.7*\dy) {mean of agreeing entries};
+
+% highlight the two parameters where a specialist disagreed and was excluded
+\draw[red!70!black, thick, rounded corners=1pt] (-0.42*\dx, -2.28*\dy) rectangle (0.42*\dx, 0.42*\dy);
+\draw[red!70!black, thick, rounded corners=1pt] (2.58*\dx, -2.28*\dy) rectangle (3.42*\dx, 0.42*\dy);
+\node[font=\scriptsize, text=red!70!black, anchor=north, text width=32mm, align=center]
+  at (1.7*\dx, -5.5*\dy) {boxed columns: specialists disagree; only those matching the elected sign are averaged};
+\end{tikzpicture}
+\caption{\textbf{Sign-consensus merging, on six parameters of three specialists.}
+Each specialist contributes a task vector --- the update its own training produced. Averaging these
+directly lets disagreeing updates cancel. TIES instead trims small entries, \emph{elects} a sign per
+parameter by summing signed magnitudes across specialists, and averages only the entries that match
+it, so a parameter two specialists push positive and one pushes negative is merged from the two
+(boxed columns)~\cite{ties}. DARE-TIES prepends a random drop of a fraction of each vector's entries
+with rescaling of the survivors, preserving the update in expectation~\cite{dare}. Nothing is
+trained: both are arithmetic on weights already learned, and the result is one adapter of the
+original rank.}
+\label{fig:merging}
+\end{figure}
+
+Our approach trains one low-rank specialist per obfuscating transform and merges the specialists into
+a single adapter before inference (Figure~\ref{fig:merging}). It occupies the same design point as a
+mixture of experts --- per-transform specialists, composed --- but resolves the composition
+\emph{before} inference, so what is deployed is a single adapter of exactly
+the base architecture, with no gate, no expert bank and no run-time cost over ordinary fine-tuning.
+
+The object being merged is a \emph{task vector}: for each specialist $i$, the update $\Delta_i$ its
+training produced. Naive averaging of task vectors degrades as their number grows, because updates
+that disagree cancel. TIES attributes that to two forms of interference --- redundant entries that
+carry little signal, and outright sign disagreement on a parameter --- and removes both in three
+steps: \emph{trim} each $\Delta_i$ to its largest-magnitude entries, \emph{elect} a sign per
+parameter by summing signed magnitudes across specialists, and \emph{merge} only the entries whose
+sign matches the elected one~\cite{ties}. Nothing is trained; the rule is arithmetic on weights
+already learned. DARE prepends a second sparsification of a different kind: drop a fraction $p$ of
+each $\Delta_i$'s entries at random and rescale the survivors by $1/(1-p)$, so the update is
+preserved in expectation while its redundancy is cut, on the finding that fine-tuning deltas are
+extremely redundant~\cite{dare}. We use both, as \textsc{TIES} and \textsc{DARE-TIES}, and report
+them separately --- they are not interchangeable, and the difference between them turns out to matter
+on one model in our panel.
+
+Two implementation choices are worth stating because they affect what is being measured. First, we
+merge \emph{in LoRA space}, combining the $A$ and $B$ factors of the specialists directly. The
+alternative offered by common tooling is to fold each adapter into the base weights and re-extract a
+low-rank adapter by SVD, which changes the rank and introduces reconstruction error before the
+merging rule is applied at all; that would confound the merge with its re-extraction. Second, the
+specialists are combined with uniform weights. A weighted merge is a tuning knob, and leaving it
+uniform keeps the comparison against pooled training --- which also weights its conditions equally by
+construction --- a comparison of \emph{composition}, not of tuning effort.

@@ -1,0 +1,18 @@
+\section{Conclusion}
+\label{sec:conclusion}
+Fine-tuning a code model on obfuscated programs roughly doubles its accuracy on them, and we asked
+what that gain is made of by evaluating in three regimes rather than one: compositions of the
+transforms the model saw, an obfuscator family it never saw, and the same programs queried in the
+reverse direction. On seen compositions every adaptation works and the choice between them is worth a
+few points. Outside them the ordering inverts. Training one adapter on everything --- the obvious use
+of the data --- is the worst arm on the unseen family and loses the untrained direction on most
+models; the failures are not malformed answers but the trained answer to the wrong question. Merging
+per-transform specialists in weight space, an existing technique applied without modification, is the
+one arm at or above the untuned model in every regime on every one of eight models, at a cost of a few
+forward points where the training distribution is the right fit.
+
+We take three things from this. Evaluating adaptation in a single view can support the opposite
+conclusion to evaluating it in several, and the pairing of directions is a cheap way to add a view to
+any behaviour-prediction benchmark. Breadth of training data does not buy breadth of competence; how
+the data is combined does. And for a deployment where the obfuscator can change, the recommendation
+is the boring one: train specialists, merge them, and deploy one adapter.

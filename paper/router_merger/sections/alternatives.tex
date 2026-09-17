@@ -1,0 +1,115 @@
+\section{Alternative Adaptation Strategies}
+\label{sec:baselines}
+% Promoted from Background 2.4 on 2026-09-17. These are the arms the merge is compared against; the
+% six-arm figure sits with them.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  base/.style ={draw, rounded corners=2pt, minimum height=4.6mm, minimum width=12mm, fill=black!5},
+  ad/.style   ={draw, rounded corners=1pt, minimum height=3.6mm, minimum width=7mm, fill=blue!10},
+  adw/.style  ={ad, fill=green!18},
+  gt/.style   ={draw, diamond, aspect=2.4, inner sep=0.8pt, fill=orange!20, minimum height=3.6mm},
+  clab/.style  ={font=\scriptsize, align=center, text depth=0pt, text width=34mm},
+  ar/.style   ={-{Latex[length=1.2mm]}, shorten >=0.5pt},
+]
+\def\cx{52mm}\def\ry{28mm}
+% ---------- row 1: no adaptation, then adaptation without composition --------------------------
+\begin{scope}[shift={(0,0)}]
+  \node[base] (b1) {base};
+  \node[clab, below=1.4mm of b1] {\textbf{untuned}\\[-1pt]no adaptation};
+\end{scope}
+\begin{scope}[shift={(\cx,0)}]
+  \node[base] (b2) {base};
+  \node[draw, dashed, rounded corners=1pt, minimum height=3.6mm, minimum width=10mm,
+        above=1.8mm of b2, fill=yellow!22] (ex) {example};
+  \draw[ar] (ex) -- (b2);
+  \node[clab, below=1.4mm of b2] {\textbf{in-context}\\[-1pt]one solved example};
+\end{scope}
+\begin{scope}[shift={(2*\cx,0)}]
+  \node[base] (b3) {base};
+  \node[ad, above=1.8mm of b3] (a3) {\texttt{L0}};
+  \draw[ar] (a3) -- (b3);
+  \node[clab, below=1.4mm of b3] {\textbf{clean LoRA}\\[-1pt]clean code only};
+\end{scope}
+% ---------- row 2: the three ways to use the per-transform data --------------------------------
+\begin{scope}[shift={(0,-\ry)}]
+  \node[base] (b4) {base};
+  \node[ad, above=1.8mm of b4, minimum width=12mm, fill=red!14] (a4) {pooled};
+  \draw[ar] (a4) -- (b4);
+  \foreach \x in {-4.5mm,-1.5mm,1.5mm,4.5mm}
+    \node[draw, fill=black!10, minimum width=2mm, minimum height=2mm, inner sep=0pt,
+          above=1.8mm of a4, xshift=\x] {};
+  \node[clab, below=1.4mm of b4] {\textbf{pooled}\\[-1pt]one adapter, all data};
+\end{scope}
+\begin{scope}[shift={(\cx,-\ry)}]
+  \node[base] (b5) {base};
+  \node[gt, above=1.8mm of b5] (g5) {gate};
+  \draw[ar] (g5) -- (b5);
+  \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
+    \node[ad, above=2mm of g5, xshift=\x, minimum width=5mm] (e\i) {};
+  \foreach \i in {1,2,3} \draw[ar] (e\i) -- (g5);
+  \node[clab, below=1.4mm of b5] {\textbf{mixture}\\[-1pt]gate mixes per input};
+\end{scope}
+\begin{scope}[shift={(2*\cx,-\ry)}]
+  \node[base] (b6) {base};
+  \node[adw, above=1.8mm of b6, minimum width=12mm] (m6) {merged};
+  \draw[ar] (m6) -- (b6);
+  \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
+    \node[ad, above=2.6mm of m6, xshift=\x, minimum width=5mm] (f\i) {};
+  \foreach \i in {1,2,3} \draw[ar] (f\i) -- (m6);
+  \node[clab, below=1.4mm of b6] {\textbf{merge}\\[-1pt]combined beforehand};
+\end{scope}
+% ---------- the axis the second row is ordered on ----------------------------------------------
+\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (0,-\ry-13.5mm) {in training};
+\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (\cx,-\ry-13.5mm) {at inference};
+\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (2*\cx,-\ry-13.5mm) {in weight space};
+\draw[black!30] (-22mm,-\ry-12.5mm) -- (2*\cx+22mm,-\ry-12.5mm);
+\end{tikzpicture}
+\caption{\textbf{The six arms.} All are the same base model at the same LoRA rank, differing only in
+how the training data is used and where per-transform knowledge is combined. Top row: arms that never
+see an obfuscated program in training --- \emph{untuned}, \emph{in-context}, and the \emph{clean
+LoRA} control that separates learning the task from learning the transforms. Bottom row: the three
+ways to spend the obfuscated data, ordered by \emph{when} the specialists are combined ---
+\emph{pooled} collapses them during training, \emph{mixture} composes them per input at inference and
+must keep every expert resident, and \emph{merge} composes them in weight space beforehand, leaving
+one adapter with no gate and no run-time cost. The anchored objective is \emph{pooled} with an added
+consistency term (Section~\ref{sec:baselines}).}
+\label{fig:baselines}
+\end{figure*}
+
+Figure~\ref{fig:baselines} places the merge among the five other ways one might spend the same budget
+of obfuscated training data. The first two do
+not adapt weights to obfuscation at all and bound the problem; the next three are the standard
+single-adapter answers; the last composes.
+
+\noindent\textbf{Untuned.} The instruction-tuned checkpoint, prompted directly. It is the reference
+every other arm is measured against, and on the backward task it is a surprisingly strong one.
+
+\noindent\textbf{In-context.} The same model with one solved example in the prompt. It tests whether
+the task format, rather than the obfuscation, is what the untuned model is failing at.
+
+\noindent\textbf{Clean-code LoRA.} An adapter trained on unobfuscated programs only. It is the
+control that separates \emph{learning the task} from \emph{learning the transforms}: it sees the
+prompt format and the answer distribution but never an obfuscated program, so whatever it gains is
+not transform knowledge.
+
+\noindent\textbf{Pooled training (breadth).} One adapter trained on the union of every training
+condition. This is the obvious way to spend the data and the one most likely to be done in practice:
+it needs no per-transform bookkeeping, no gate, and no merge step.
+
+\noindent\textbf{Anchored training.} Pooled training plus a consistency term. The student reads the
+obfuscated program while a frozen clean-code teacher reads its unobfuscated parent, and the loss adds
+$\lambda\,D_{\mathrm{KL}}$ between their answer-token distributions to the ordinary cross-entropy. It
+trains on exactly the rows pooled training uses and reduces to pooled training at $\lambda = 0$,
+which makes pooled training its data-matched control. The idea is to anchor the model to the one
+thing a semantics-preserving transform leaves invariant --- the behaviour of the same computation
+written plainly.
+
+\noindent\textbf{Mixture of specialists.} One adapter per transform, kept separate, with a learned
+gate that mixes their low-rank updates per input. Because a learned gate can be worth nothing over no
+gate at all, we also report a uniform gate and a gate frozen at random initialisation, which separate
+what the \emph{mixture} is worth from what the \emph{routing} is worth. This arm is the most
+expressive of the six and the most expensive: every expert must be resident at inference.
+

@@ -1,9 +1,9 @@
 \section{Results}
 \label{sec:results}
 
-% THE BODY'S ONE TABLE (2026-09-15). Everything below reads off Table~\ref{tab:main}; the per-model
-% tables it summarises are Appendix~\ref{app:absmaster}, and the block means here are computed by the
-% same code path as those tables' bold rows, so the two cannot disagree.
+% THE BODY'S ONE TABLE. Everything below reads off Table~\ref{tab:main}; the per-model tables it
+% summarises are Appendix~\ref{app:absmaster}, and the block means here are computed by the same code
+% path as those tables' bold rows, so the two cannot disagree.
 % >>> GENERATED TABLE main_results -- from tables/main_results.tex; regenerate, then re-run inline_tables.py
 % GENERATED 2026-09-17 20:46 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* (block means, same path as the per-model tables)
@@ -39,7 +39,8 @@ arm is the anchored objective on five models, the mixture on two and breadth on 
 family the mixture takes six and the anchored objective two; backwards the merge takes six. On the held-out family the bold moves to the mixture on six of eight,
 and on the reverse task to the merge on six --- both assembled from per-transform specialists. No arm wins everywhere, and the one that never loses is not the one that wins most often.
 
-\subsection{On seen compositions, every adaptation works}
+
+\subsection{Adaptation Succeeds on Seen Compositions}
 
 Stacking is where adaptation was supposed to break, and it does not. Every arm roughly doubles the
 untuned model on depth-2, -3 and -4 compositions of the seen transforms: 0.143 to 0.32--0.37 on
@@ -52,7 +53,8 @@ This is the regime prior work reports, and if the evaluation stopped here the co
 the choice of adaptation barely matters and the monolithic one is fine. The next two blocks are the
 reason it does not stop here.
 
-\subsection{On the unseen family, monolithic training is the worst use of the data}
+
+\subsection{Pooled Training Is the Worst Use of the Data on an Unseen Family}
 
 The \emph{unseen family} block holds the held-out obfuscator and every stack containing it. No arm was
 trained on it, and the ordering changes: breadth --- one adapter trained on the pooled data of all six
@@ -86,7 +88,8 @@ better to an unseen obfuscator than one trained on five of them. Training on mor
 model worse at a transform it had not seen --- which is what transform memorisation predicts and what
 invariance would forbid.
 
-\subsection{On the reverse task, single adapters lose what they gained}
+
+\subsection{Single Adapters Lose the Untrained Direction}
 
 The backward task asks for a call that produces a given return value, on the same programs. No arm is
 trained in this direction, so it measures what adaptation did to program understanding rather than to
@@ -110,7 +113,8 @@ of its lead: by exact-argument recovery it is 0.086 against CodeLlama-7B's 0.084
 merge's advantage survives the stricter grade on that model; some other differences do not, and we
 report both gradings in Appendix~\ref{app:absmaster}.
 
-\subsection{Why: adaptation locks the direction it was trained in}
+
+\subsection{Direction Locking Explains the Backward Failures}
 
 The backward failures are not parse failures. When a single-adapter arm is asked for an input and
 produces something ungradable, the reply is most often \emph{exactly the gold forward answer} --- the
@@ -132,13 +136,3 @@ these transforms, this direction. Composing separately-trained specialists in we
 produce that fit, which is why the merge gives up three to six points where the fit pays and keeps its
 competence where the fit does not transfer.
 
-\subsection{What to use}
-
-No arm dominates, and the table is more useful than a ranking. If the deployment distribution is known
-and fixed, the anchored objective and the mixture are the strongest forward arms and the three to six
-points are real. If it is not --- if an obfuscator may be updated, transforms may be composed in
-unseen ways, or the model may be asked something other than what it was tuned on --- the merge is the
-only arm in this study that is never significantly below the untuned model in any block on any model,
-and it costs one adapter and no inference-time machinery. The mixture matches or beats it on the unseen
-family but needs five adapters and a gate at inference, and its learned gate is worth nothing over a
-uniform one on the held-out family.

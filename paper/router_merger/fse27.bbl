@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{21}
+\begin{thebibliography}{23}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -214,6 +214,24 @@
 \newblock
 
 
+\bibitem[Ilharco et~al\mbox{.}(2023)]%
+        {taskarithmetic}
+\bibfield{author}{\bibinfo{person}{Gabriel Ilharco},
+  \bibinfo{person}{Marco~Tulio Ribeiro}, \bibinfo{person}{Mitchell Wortsman},
+  \bibinfo{person}{Suchin Gururangan}, \bibinfo{person}{Ludwig Schmidt},
+  \bibinfo{person}{Hannaneh Hajishirzi}, {and} \bibinfo{person}{Ali Farhadi}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Editing Models with Task Arithmetic}. In
+  \bibinfo{booktitle}{\emph{International Conference on Learning
+  Representations (ICLR)}}.
+\newblock
+\showeprint[arxiv]{2212.04089}
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2212.04089}
+\showURL{%
+\tempurl}
+
+
 \bibitem[Li et~al\mbox{.}(2022)]%
         {Competition-level-code-generation-with-AlphaCode}
 \bibfield{author}{\bibinfo{person}{Yujia Li}, \bibinfo{person}{David Choi},
@@ -375,6 +393,22 @@
 \newblock \bibinfo{title}{Code Llama: Open Foundation Models for Code}.
 \newblock
 \showeprint[arxiv]{2308.12950}~[cs.CL]
+
+
+\bibitem[Rozi\`ere et~al\mbox{.}(2021)]%
+        {dobf}
+\bibfield{author}{\bibinfo{person}{Baptiste Rozi\`ere},
+  \bibinfo{person}{Marie-Anne Lachaux}, \bibinfo{person}{Marc Szafraniec},
+  {and} \bibinfo{person}{Guillaume Lample}.} \bibinfo{year}{2021}\natexlab{}.
+\newblock \showarticletitle{{DOBF}: A Deobfuscation Pre-Training Objective for
+  Programming Languages}. In \bibinfo{booktitle}{\emph{Advances in Neural
+  Information Processing Systems (NeurIPS)}}.
+\newblock
+\showeprint[arxiv]{2102.07492}
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2102.07492}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Votipka et~al\mbox{.}(2019)]%
