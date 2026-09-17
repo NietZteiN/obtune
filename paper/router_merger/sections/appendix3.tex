@@ -1,0 +1,245 @@
+% APPENDIX 3: Routing and merging grids
+% One appendix per file (2026-09-17, user request). \input by fse27.tex in order, after
+% \appendix; the letter A/B/C/D is assigned by LaTeX from that order, not by this filename.
+%
+% The tables are written out here, not pulled in from paper/router_merger/tables/ by an
+% \input. They ARE still generated: scripts/analysis/59_master_tables.py writes
+% tables/*.tex and scripts/paper/inline_tables.py refreshes the blocks below in place,
+% matching the `>>> GENERATED TABLE <name>` / `<<< GENERATED TABLE <name>` markers.
+% Do not hand-edit between those markers; prose outside them survives regeneration.
+
+\section{Routing and merging grids}
+\label{app:routing}
+
+Every routing and merging system on every condition and stack that has it, for the models on which those arms exist (routing: CodeLlama-7B; merging: CodeLlama-7B, Granite-3.1-8B, Llama-3.1-8B, StarCoder2-15B), with the same three numbers as Appendix~\ref{app:master}. The routing arms are MoLE mixtures of the eight per-transform experts; \emph{uniform} and \emph{random} gates separate the mixture's worth from the routing's. Every routing cell ran through the mixture engine.
+
+% >>> GENERATED TABLE master_routing_codellama7b -- from tables/master_routing_codellama7b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-16 11:37 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/mole_generic/codellama-7b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Routing, CodeLlama-7B.} MoLE mixtures of the eight per-transform experts on every condition and stack that has them: \emph{router} = trained gate, \emph{hard router} = its argmax, \emph{uniform} = fixed uniform gate, \emph{random} = gate frozen at random initialisation. Per system: raw accuracy, $\Delta$ points against the untuned model on the same items, and \% of the untuned model's clean-code accuracy. Every cell ran through the mixture engine.}
+\label{tab:routing_codellama7b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{router}} & \multicolumn{3}{c|}{\textbf{hard router}} & \multicolumn{3}{c|}{\textbf{uniform}} & \multicolumn{3}{c}{\textbf{random}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{mole\_router}} & \multicolumn{3}{c|}{\texttt{mole\_hardrouter}} & \multicolumn{3}{c|}{\texttt{mole\_uniform}} & \multicolumn{3}{c}{\texttt{mole\_random}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.258 & 100 & 0.429 & $+17.1$ & 167 & 0.428 & $+17.0$ & 167 & 0.428 & $+16.9$ & 166 & 0.433 & $+17.5$ & 169 \\
+\texttt{L1b} & 0.196 & 76 & 0.381 & $+18.5$ & 148 & 0.384 & $+18.8$ & 149 & 0.371 & $+17.5$ & 144 & 0.375 & $+17.9$ & 146 \\
+\texttt{L1r} & 0.205 & 80 & 0.383 & $+17.7$ & 149 & 0.381 & $+17.6$ & 148 & 0.390 & $+18.4$ & 152 & 0.391 & $+18.6$ & 152 \\
+\texttt{L2} & 0.198 & 77 & 0.386 & $+18.8$ & 150 & 0.384 & $+18.6$ & 149 & 0.392 & $+19.3$ & 152 & 0.393 & $+19.5$ & 153 \\
+\texttt{S1} & 0.167 & 65 & 0.395 & $+22.8$ & 154 & 0.393 & $+22.6$ & 153 & 0.395 & $+22.8$ & 154 & 0.394 & $+22.7$ & 153 \\
+\texttt{S2} & 0.191 & 74 & 0.421 & $+23.0$ & 164 & 0.421 & $+22.9$ & 164 & 0.415 & $+22.3$ & 161 & 0.411 & $+22.0$ & 160 \\
+\texttt{X1} & 0.118 & 46 & 0.279 & $+16.1$ & 109 & 0.283 & $+16.5$ & 110 & 0.283 & $+16.6$ & 110 & 0.283 & $+16.5$ & 110 \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.141 & 55 & 0.325 & $+18.4$ & 126 & 0.324 & $+18.3$ & 126 & 0.310 & $+16.8$ & 121 & 0.312 & $+17.1$ & 121 \\
+\texttt{C\_L1r\_S1} & 0.131 & 51 & 0.346 & $+21.5$ & 135 & 0.339 & $+20.8$ & 132 & 0.318 & $+18.7$ & 124 & 0.320 & $+18.9$ & 125 \\
+\texttt{C\_S1\_L1r} & 0.135 & 53 & 0.318 & $+18.4$ & 124 & 0.324 & $+18.9$ & 126 & 0.302 & $+16.8$ & 118 & 0.303 & $+16.8$ & 118 \\
+\texttt{C\_L2\_S4} & 0.176 & 68 & 0.383 & $+20.8$ & 149 & 0.379 & $+20.3$ & 148 & 0.380 & $+20.4$ & 148 & 0.379 & $+20.3$ & 147 \\
+\texttt{C\_L1r\_S3} & 0.172 & 67 & 0.391 & $+21.9$ & 152 & 0.389 & $+21.7$ & 151 & 0.383 & $+21.1$ & 149 & 0.380 & $+20.8$ & 148 \\
+\texttt{C\_S4\_S3} & 0.185 & 72 & 0.415 & $+22.9$ & 161 & 0.413 & $+22.7$ & 161 & 0.409 & $+22.4$ & 159 & 0.409 & $+22.4$ & 159 \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & 0.150 & 58 & 0.375 & $+22.5$ & 146 & 0.376 & $+22.6$ & 146 & 0.365 & $+21.5$ & 142 & 0.363 & $+21.3$ & 141 \\
+\texttt{C3\_S1\_S3\_S4} & 0.128 & 50 & 0.377 & $+24.8$ & 147 & 0.378 & $+24.9$ & 147 & 0.367 & $+23.8$ & 143 & 0.367 & $+23.9$ & 143 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.126 & 49 & 0.325 & $+19.9$ & 126 & 0.326 & $+20.0$ & 127 & 0.306 & $+18.0$ & 119 & 0.305 & $+17.9$ & 119 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.089 & 35 & 0.334 & $+24.5$ & 130 & 0.336 & $+24.7$ & 131 & 0.296 & $+20.7$ & 115 & 0.298 & $+20.9$ & 116 \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.102 & 40 & 0.189 & $+8.7$ & 74 & 0.186 & $+8.4$ & 72 & 0.194 & $+9.2$ & 76 & 0.190 & $+8.8$ & 74 \\
+\texttt{C\_X1\_S1} & 0.104 & 40 & 0.291 & $+18.7$ & 113 & 0.286 & $+18.2$ & 111 & 0.293 & $+18.9$ & 114 & 0.295 & $+19.1$ & 115 \\
+\texttt{C\_S2\_X1} & 0.145 & 56 & 0.326 & $+18.1$ & 127 & 0.328 & $+18.3$ & 128 & 0.329 & $+18.4$ & 128 & 0.329 & $+18.4$ & 128 \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.114 & 44 & 0.227 & $+11.3$ & 88 & 0.224 & $+11.0$ & 87 & 0.221 & $+10.7$ & 86 & 0.221 & $+10.6$ & 86 \\
+\texttt{C\_S1\_X1s} & 0.148 & 58 & 0.350 & $+20.2$ & 136 & 0.348 & $+20.0$ & 135 & 0.344 & $+19.6$ & 134 & 0.343 & $+19.5$ & 134 \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.102 & 40 & 0.242 & $+14.0$ & 94 & 0.245 & $+14.3$ & 95 & 0.234 & $+13.2$ & 91 & 0.239 & $+13.8$ & 93 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_routing_codellama7b
+% >>> GENERATED TABLE master_merging_codellama7b -- from tables/master_merging_codellama7b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-16 11:37 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/codellama-7b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, CodeLlama-7B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_codellama7b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.257 & 100 & 0.366 & $+11.0$ & 143 & 0.426 & $+16.9$ & 166 & fmt & fmt & fmt & 0.394 & $+13.7$ & 153 & 0.413 & $+15.6$ & 161 \\
+\texttt{L1b} & 0.197 & 77 & 0.299 & $+10.1$ & 116 & 0.373 & $+17.6$ & 145 & fmt & fmt & fmt & 0.331 & $+13.4$ & 129 & 0.349 & $+15.1$ & 136 \\
+\texttt{L1r} & 0.207 & 81 & 0.323 & $+11.6$ & 126 & 0.381 & $+17.4$ & 148 & fmt & fmt & fmt & 0.338 & $+13.1$ & 132 & 0.352 & $+14.5$ & 137 \\
+\texttt{L2} & 0.202 & 79 & 0.317 & $+11.5$ & 123 & 0.375 & $+17.4$ & 146 & fmt & fmt & fmt & 0.337 & $+13.5$ & 131 & 0.355 & $+15.3$ & 138 \\
+\texttt{S1} & 0.168 & 66 & 0.322 & $+15.4$ & 125 & 0.376 & $+20.8$ & 146 & fmt & fmt & fmt & 0.342 & $+17.3$ & 133 & 0.365 & $+19.6$ & 142 \\
+\texttt{S2} & 0.193 & 75 & 0.340 & $+14.7$ & 132 & 0.392 & $+19.9$ & 153 & fmt & fmt & fmt & 0.365 & $+17.2$ & 142 & 0.379 & $+18.5$ & 147 \\
+\texttt{X1} & 0.119 & 46 & 0.234 & $+11.4$ & 91 & 0.276 & $+15.7$ & 107 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.141 & 55 & 0.245 & $+10.4$ & 95 & 0.302 & $+16.0$ & 117 & fmt & fmt & fmt & 0.269 & $+12.8$ & 105 & 0.280 & $+13.9$ & 109 \\
+\texttt{C\_L1r\_S1} & 0.131 & 51 & 0.255 & $+12.4$ & 99 & 0.301 & $+17.0$ & 117 & fmt & fmt & fmt & 0.277 & $+14.6$ & 108 & 0.283 & $+15.2$ & 110 \\
+\texttt{C\_S1\_L1r} & 0.135 & 53 & 0.245 & $+11.0$ & 95 & 0.301 & $+16.6$ & 117 & fmt & fmt & fmt & 0.273 & $+13.8$ & 106 & 0.282 & $+14.7$ & 110 \\
+\texttt{C\_L2\_S4} & 0.176 & 68 & 0.299 & $+12.3$ & 116 & 0.363 & $+18.7$ & 141 & fmt & fmt & fmt & 0.325 & $+14.9$ & 126 & 0.349 & $+17.3$ & 136 \\
+\texttt{C\_L1r\_S3} & 0.172 & 67 & 0.307 & $+13.5$ & 120 & 0.368 & $+19.6$ & 143 & fmt & fmt & fmt & 0.326 & $+15.4$ & 127 & 0.338 & $+16.6$ & 131 \\
+\texttt{C\_S4\_S3} & 0.186 & 72 & 0.341 & $+15.5$ & 133 & 0.398 & $+21.2$ & 155 & fmt & fmt & fmt & 0.367 & $+18.1$ & 143 & 0.385 & $+19.9$ & 150 \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & 0.150 & 58 & 0.298 & $+14.8$ & 116 & 0.349 & $+19.9$ & 136 & fmt & fmt & fmt & 0.313 & $+16.3$ & 122 & 0.328 & $+17.8$ & 128 \\
+\texttt{C3\_S1\_S3\_S4} & 0.128 & 50 & 0.271 & $+14.3$ & 106 & 0.340 & $+21.1$ & 132 & fmt & fmt & fmt & 0.295 & $+16.6$ & 115 & 0.315 & $+18.7$ & 123 \\
+\texttt{C3\_L1r\_S1\_S4} & 0.126 & 49 & 0.240 & $+11.4$ & 94 & 0.296 & $+17.0$ & 115 & fmt & fmt & fmt & 0.272 & $+14.6$ & 106 & 0.283 & $+15.7$ & 110 \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.089 & 35 & 0.217 & $+12.8$ & 85 & 0.290 & $+20.0$ & 113 & fmt & fmt & fmt & 0.243 & $+15.4$ & 95 & 0.256 & $+16.7$ & 100 \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.102 & 40 & 0.171 & $+6.9$ & 67 & 0.193 & $+9.1$ & 75 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & 0.104 & 40 & 0.223 & $+12.0$ & 87 & 0.290 & $+18.6$ & 113 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & 0.145 & 57 & 0.265 & $+12.0$ & 103 & 0.317 & $+17.1$ & 123 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.112 & 44 & 0.190 & $+7.8$ & 74 & 0.215 & $+10.3$ & 84 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_X1s} & 0.151 & 59 & 0.301 & $+15.0$ & 117 & 0.338 & $+18.8$ & 132 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.104 & 40 & 0.191 & $+8.7$ & 74 & 0.232 & $+12.8$ & 90 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_merging_codellama7b
+% >>> GENERATED TABLE master_merging_granite318b -- from tables/master_merging_granite318b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-16 11:37 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/granite31-8b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, Granite-3.1-8B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_granite318b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.285 & 100 & 0.383 & $+9.8$ & 134 & 0.433 & $+14.8$ & 152 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & 0.266 & 93 & 0.315 & $+4.9$ & 110 & 0.350 & $+8.4$ & 123 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & 0.268 & 94 & 0.353 & $+8.5$ & 124 & 0.384 & $+11.6$ & 135 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & 0.251 & 88 & 0.342 & $+9.0$ & 120 & 0.378 & $+12.6$ & 133 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & 0.254 & 89 & 0.323 & $+6.9$ & 113 & 0.371 & $+11.7$ & 130 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & 0.272 & 96 & 0.358 & $+8.5$ & 125 & 0.402 & $+13.0$ & 141 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & 0.147 & 51 & 0.199 & $+5.3$ & 70 & 0.231 & $+8.4$ & 81 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.219 & 77 & 0.247 & $+2.9$ & 87 & 0.279 & $+6.0$ & 98 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & 0.204 & 72 & 0.266 & $+6.1$ & 93 & 0.301 & $+9.7$ & 106 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.224 & 79 & 0.262 & $+3.8$ & 92 & 0.293 & $+6.9$ & 103 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L2\_S4} & 0.242 & 85 & 0.319 & $+7.7$ & 112 & 0.351 & $+10.9$ & 123 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & 0.259 & 91 & 0.324 & $+6.5$ & 114 & 0.365 & $+10.6$ & 128 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S4\_S3} & 0.270 & 95 & 0.353 & $+8.3$ & 124 & 0.394 & $+12.4$ & 138 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & 0.257 & 90 & 0.307 & $+5.0$ & 108 & 0.348 & $+9.1$ & 122 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & 0.242 & 85 & 0.315 & $+7.3$ & 111 & 0.342 & $+10.1$ & 120 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & 0.221 & 78 & 0.271 & $+4.9$ & 95 & 0.287 & $+6.6$ & 101 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.203 & 71 & 0.251 & $+4.8$ & 88 & 0.281 & $+7.8$ & 99 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.136 & 48 & 0.153 & $+1.7$ & 54 & 0.173 & $+3.7$ & 61 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & 0.153 & 54 & 0.200 & $+4.7$ & 70 & 0.244 & $+9.1$ & 86 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & 0.209 & 73 & 0.246 & $+3.7$ & 86 & 0.272 & $+6.3$ & 95 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.158 & 55 & 0.173 & $+1.5$ & 61 & 0.211 & $+5.3$ & 74 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_X1s} & 0.206 & 72 & 0.259 & $+5.3$ & 91 & 0.293 & $+8.7$ & 103 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.167 & 59 & 0.204 & $+3.7$ & 72 & 0.217 & $+5.0$ & 76 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_merging_granite318b
+% >>> GENERATED TABLE master_merging_llama318b -- from tables/master_merging_llama318b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-16 11:37 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/llama31-8b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, Llama-3.1-8B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_llama318b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & 0.259 & 100 & 0.398 & $+14.0$ & 154 & 0.462 & $+20.3$ & 179 & 0.292 & $+3.4$ & 113 & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & 0.222 & 86 & 0.336 & $+11.4$ & 130 & 0.386 & $+16.4$ & 150 & 0.253 & $+3.1$ & 98 & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & 0.242 & 94 & 0.348 & $+10.6$ & 135 & 0.398 & $+15.6$ & 154 & 0.234 & $-0.8$ & 91 & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & 0.215 & 83 & 0.353 & $+13.8$ & 137 & 0.396 & $+18.1$ & 153 & 0.246 & $+3.1$ & 95 & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & 0.213 & 83 & 0.335 & $+12.2$ & 130 & 0.412 & $+19.9$ & 160 & 0.256 & $+4.3$ & 99 & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & 0.208 & 80 & 0.361 & $+15.3$ & 140 & 0.437 & $+23.0$ & 169 & 0.256 & $+4.9$ & 99 & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & 0.132 & 51 & 0.217 & $+8.5$ & 84 & 0.266 & $+13.4$ & 103 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & 0.152 & 59 & 0.252 & $+10.1$ & 98 & 0.307 & $+15.6$ & 119 & 0.211 & $+6.0$ & 82 & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & 0.162 & 63 & 0.273 & $+11.1$ & 106 & 0.328 & $+16.6$ & 127 & 0.206 & $+4.4$ & 80 & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & 0.159 & 62 & 0.247 & $+8.9$ & 96 & 0.306 & $+14.8$ & 119 & 0.200 & $+4.2$ & 78 & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L2\_S4} & 0.206 & 80 & 0.311 & $+10.5$ & 120 & 0.383 & $+17.8$ & 149 & 0.226 & $+2.0$ & 88 & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & 0.198 & 77 & 0.334 & $+13.5$ & 129 & 0.387 & $+18.9$ & 150 & 0.222 & $+2.3$ & 86 & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S4\_S3} & 0.214 & 83 & 0.357 & $+14.3$ & 138 & 0.437 & $+22.3$ & 169 & 0.255 & $+4.1$ & 99 & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & 0.184 & 71 & 0.306 & $+12.2$ & 119 & 0.370 & $+18.6$ & 143 & 0.199 & $+1.6$ & 77 & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & 0.157 & 61 & 0.308 & $+15.1$ & 119 & 0.377 & $+22.0$ & 146 & 0.220 & $+6.2$ & 85 & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & 0.166 & 64 & 0.260 & $+9.4$ & 101 & 0.319 & $+15.3$ & 124 & 0.183 & $+1.7$ & 71 & -- & -- & -- & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.134 & 52 & 0.235 & $+10.1$ & 91 & 0.310 & $+17.6$ & 120 & 0.179 & $+4.5$ & 69 & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & 0.100 & 39 & 0.147 & $+4.6$ & 57 & 0.184 & $+8.3$ & 71 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & 0.130 & 50 & 0.233 & $+10.3$ & 90 & 0.296 & $+16.6$ & 115 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & 0.169 & 66 & 0.263 & $+9.4$ & 102 & 0.317 & $+14.8$ & 123 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & 0.114 & 44 & 0.162 & $+4.8$ & 63 & 0.217 & $+10.3$ & 84 & 0.126 & $+1.2$ & 49 & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_X1s} & 0.198 & 77 & 0.287 & $+8.9$ & 111 & 0.349 & $+15.1$ & 135 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & 0.105 & 41 & 0.170 & $+6.6$ & 66 & 0.215 & $+11.0$ & 83 & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_merging_llama318b
+% >>> GENERATED TABLE master_merging_starcoder215b -- from tables/master_merging_starcoder215b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-16 11:37 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/{rq2_generic,composite_generic,f2_divergence}/starcoder2-15b
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
+\caption{\textbf{Merging, StarCoder2-15B.} Weight-space merges of the per-transform specialists (TIES, DARE-TIES, DARE-linear) and two merges anchored on the clean-code adapter, on every condition and stack that has them. Same three numbers as the master grid.}
+\label{tab:merging_starcoder215b}
+\begin{tabular}{@{}lrr|rrr|rrr|rrr|rrr|rrr@{}}
+\toprule
+\textbf{Condition} & \multicolumn{2}{c|}{\textbf{untuned}} & \multicolumn{3}{c|}{\textbf{TIES}} & \multicolumn{3}{c|}{\textbf{DARE-TIES}} & \multicolumn{3}{c|}{\textbf{DARE-linear}} & \multicolumn{3}{c|}{\textbf{L0-anch. TIES}} & \multicolumn{3}{c}{\textbf{L0-anch. DARE-TIES}} \\
+ & \multicolumn{2}{c|}{\texttt{base}} & \multicolumn{3}{c|}{\texttt{merge\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_ties}} & \multicolumn{3}{c|}{\texttt{merge\_dare\_linear}} & \multicolumn{3}{c|}{\texttt{l0merge\_ties}} & \multicolumn{3}{c}{\texttt{l0merge\_dare\_ties}} \\
+ & acc & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% & acc & $\Delta$ & \% \\
+\midrule
+\texttt{L0} & fmt & fmt & 0.484 & fmt & fmt & 0.539 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1b} & fmt & fmt & 0.366 & fmt & fmt & 0.426 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L1r} & fmt & fmt & 0.414 & fmt & fmt & 0.476 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{L2} & fmt & fmt & 0.401 & fmt & fmt & 0.466 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S1} & fmt & fmt & 0.451 & fmt & fmt & 0.487 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{S2} & fmt & fmt & 0.440 & fmt & fmt & 0.518 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{X1} & fmt & fmt & 0.283 & fmt & fmt & 0.343 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1b\_S1} & fmt & fmt & 0.321 & fmt & fmt & 0.354 & fmt & fmt & 0.063 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S1} & fmt & fmt & 0.344 & fmt & fmt & 0.389 & fmt & fmt & 0.047 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_L1r} & fmt & fmt & 0.346 & fmt & fmt & 0.387 & fmt & fmt & 0.041 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L2\_S4} & fmt & fmt & 0.381 & fmt & fmt & 0.438 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_L1r\_S3} & fmt & fmt & 0.390 & fmt & fmt & 0.459 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S4\_S3} & fmt & fmt & 0.442 & fmt & fmt & 0.506 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S3\_S4} & fmt & fmt & 0.377 & fmt & fmt & 0.436 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_S1\_S3\_S4} & fmt & fmt & 0.393 & fmt & fmt & 0.464 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C3\_L1r\_S1\_S4} & fmt & fmt & 0.332 & fmt & fmt & 0.376 & fmt & fmt & 0.045 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & fmt & fmt & 0.301 & fmt & fmt & 0.358 & fmt & fmt & 0.026 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1} & fmt & fmt & 0.215 & fmt & fmt & 0.259 & fmt & fmt & 0.058 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_X1\_S1} & fmt & fmt & 0.295 & fmt & fmt & 0.371 & fmt & fmt & 0.067 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S2\_X1} & fmt & fmt & 0.341 & fmt & fmt & 0.403 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C\_L1r\_X1m} & fmt & fmt & 0.252 & fmt & fmt & 0.317 & fmt & fmt & 0.065 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\texttt{C\_S1\_X1s} & fmt & fmt & 0.378 & fmt & fmt & 0.427 & fmt & fmt & fmt & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\addlinespace[2pt]
+\texttt{C3\_L1r\_S1\_X1} & fmt & fmt & 0.241 & fmt & fmt & 0.286 & fmt & fmt & 0.058 & fmt & fmt & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_merging_starcoder215b

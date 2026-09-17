@@ -1,0 +1,193 @@
+% APPENDIX 4: Supplementary tables
+% One appendix per file (2026-09-17, user request). \input by fse27.tex in order, after
+% \appendix; the letter A/B/C/D is assigned by LaTeX from that order, not by this filename.
+%
+% The tables are written out here, not pulled in from paper/router_merger/tables/ by an
+% \input. They ARE still generated: scripts/analysis/59_master_tables.py writes
+% tables/*.tex and scripts/paper/inline_tables.py refreshes the blocks below in place,
+% matching the `>>> GENERATED TABLE <name>` / `<<< GENERATED TABLE <name>` markers.
+% Do not hand-edit between those markers; prose outside them survives regeneration.
+
+\section{Supplementary tables}
+\label{app:supp}
+
+The contrast tables referenced from the research questions that are not the one table each question carries in the body: routing and merging on stacks (Table~\ref{tab:rq1_composition}), merging across the panel (Table~\ref{tab:rq1_merge_panel}), the direction ratio (Table~\ref{tab:direction_ratio}), the anchoring advantage by model (Table~\ref{tab:rq4_by_model}), and the cross-model summary in relative terms (Table~\ref{tab:master_summary}).
+
+% >>> GENERATED TABLE rq1_composition -- from tables/rq1_composition.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/f1_routing_merging_codellama7b.json
+% Do not edit by hand -- regenerate. Supersedes the +0.0000 router number and the ladder-level -3.13 merge number in the draft.
+\begin{table*}[ht]
+\centering\scriptsize\setlength{\tabcolsep}{1.2pt}
+\caption{\textbf{RQ1: routing and merging on stacks of seen transforms.} Paired differences in
+points on the ten stacks (six depth-2, four depth-3/4), CodeLlama-7B, 394 programs common to
+every cell; the last column repeats the contrasts on the four stacks that contain the unseen family
+(319 programs; merges other than DARE-TIES have no cells there). Routing is worth about a point over a random gate and nothing over breadth; the mixture
+itself carries the gain (\texttt{mole\_uniform} $-$ \texttt{base}); a hard argmax router is
+indistinguishable from the soft one. The best merge (DARE-TIES) matches the clean-code control and
+the other four fall below it. Bold intervals exclude zero. Every arm ran through the mixture engine
+(\texttt{obtune.mole.eval\_mole}); an earlier run through vLLM had written the untuned model under the
+routing arms' names and was withdrawn.}
+\label{tab:rq1_composition}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Contrast} & \textbf{all ten seen} & \textbf{depth 2} & \textbf{depth 3--4} & \textbf{unseen inside} \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{Routing}} \\
+\texttt{mole\_router} $-$ \texttt{mole\_random} & \textbf{$+1.34$ [$+0.48$, $+2.17$]} & \textbf{$+1.11$ [$+0.28$, $+1.93$]} & \textbf{$+1.67$ [$+0.47$, $+2.86$]} & $-0.03$ [$-0.99$, $+0.84$] \\
+\texttt{mole\_router} $-$ \texttt{mole\_uniform} & \textbf{$+1.40$ [$+0.52$, $+2.25$]} & \textbf{$+1.17$ [$+0.31$, $+2.02$]} & \textbf{$+1.74$ [$+0.53$, $+2.90$]} & $+0.10$ [$-0.84$, $+0.99$] \\
+\texttt{mole\_hardrouter} $-$ \texttt{mole\_router} & $+0.03$ [$-0.13$, $+0.19$] & $-0.03$ [$-0.24$, $+0.18$] & $+0.13$ [$-0.11$, $+0.38$] & $-0.13$ [$-0.44$, $+0.18$] \\
+\texttt{mole\_router} $-$ \texttt{mono\_all} & $-0.28$ [$-1.57$, $+1.09$] & $-0.06$ [$-1.38$, $+1.30$] & $-0.61$ [$-2.10$, $+0.91$] & \textbf{$+2.88$ [$+1.33$, $+4.41$]} \\
+\texttt{mole\_uniform} $-$ \texttt{base} & \textbf{$+19.79$ [$+17.40$, $+22.23$]} & \textbf{$+19.16$ [$+16.77$, $+21.58$]} & \textbf{$+20.72$ [$+18.16$, $+23.31$]} & \textbf{$+14.98$ [$+12.81$, $+17.29$]} \\
+\multicolumn{5}{@{}l}{\emph{Merging}} \\
+\texttt{merge\_dare\_ties} $-$ \texttt{tuned\_L0} & $+0.52$ [$-0.15$, $+1.20$] & $+0.61$ [$-0.16$, $+1.41$] & $+0.38$ [$-0.47$, $+1.25$] & $+0.86$ [$-0.05$, $+1.78$] \\
+\texttt{merge\_ties} $-$ \texttt{tuned\_L0} & \textbf{$-5.50$ [$-6.86$, $-4.13$]} & \textbf{$-5.19$ [$-6.59$, $-3.77$]} & \textbf{$-5.95$ [$-7.47$, $-4.44$]} & -- \\
+\texttt{merge\_dare\_linear} $-$ \texttt{tuned\_L0} & \textbf{$-20.56$ [$-22.88$, $-18.25$]} & \textbf{$-20.60$ [$-23.00$, $-18.22$]} & \textbf{$-20.49$ [$-22.86$, $-18.15$]} & -- \\
+\texttt{l0merge\_ties} $-$ \texttt{tuned\_L0} & \textbf{$-3.14$ [$-4.21$, $-2.12$]} & \textbf{$-2.81$ [$-3.98$, $-1.67$]} & \textbf{$-3.64$ [$-4.91$, $-2.41$]} & -- \\
+\texttt{l0merge\_dare\_ties} $-$ \texttt{tuned\_L0} & \textbf{$-1.74$ [$-2.57$, $-0.91$]} & \textbf{$-1.40$ [$-2.30$, $-0.47$]} & \textbf{$-2.24$ [$-3.26$, $-1.23$]} & -- \\
+\multicolumn{5}{@{}l}{\emph{Breadth, for reference}} \\
+\texttt{mono\_all} $-$ \texttt{tuned\_L0} & \textbf{$+3.67$ [$+2.02$, $+5.24$]} & \textbf{$+3.34$ [$+1.61$, $+5.04$]} & \textbf{$+4.15$ [$+2.35$, $+5.91$]} & $-1.49$ [$-3.08$, $+0.08$] \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE rq1_composition
+% >>> GENERATED TABLE rq1_merge_panel -- from tables/rq1_merge_panel.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/merge_panel_*.json
+% Do not edit by hand -- regenerate. New 2026-09-13: merging on the panel, pre-registered as H-merge-panel.
+\begin{table*}[ht]
+\centering\scriptsize\setlength{\tabcolsep}{2.5pt}
+\caption{\textbf{Weight-space merging on the panel.} The best merge (DARE-TIES of the clean adapter and
+the five specialists) against the clean-code control, breadth and the anchored objective, pooled over
+the six seen stacks and the four stacks containing the unseen family; breadth and anchoring against the
+control in the last two columns. Points, paired on the programs common to every cell, program-clustered
+bootstrap. Bold intervals exclude zero. Pre-registered per model: merging does not beat the control on
+seen stacks (CONFIRMED iff $\mathrm{ci}_{hi} \le +1$) and stays below breadth ($\mathrm{ci}_{hi} < 0$).}
+\label{tab:rq1_merge_panel}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Stacks} & \texttt{merge}$-$\texttt{clean} & \texttt{merge}$-$\texttt{mono} & \texttt{merge}$-$\texttt{cons} & \texttt{mono}$-$\texttt{clean} & \texttt{cons}$-$\texttt{clean} \\
+\midrule
+\multicolumn{6}{@{}l}{\textbf{CodeLlama-7B}} \\
+\quad seen (6) & \textbf{$+0.83$ [$+0.01$, $+1.63$]} & \textbf{$-2.80$ [$-4.43$, $-1.19$]} & \textbf{$-4.01$ [$-5.29$, $-2.70$]} & \textbf{$+3.63$ [$+1.96$, $+5.27$]} & \textbf{$+4.84$ [$+3.49$, $+6.21$]} \\
+\quad unseen inside (4) & $+0.86$ [$-0.05$, $+1.78$] & \textbf{$+2.35$ [$+0.63$, $+3.97$]} & \textbf{$-1.39$ [$-2.72$, $-0.05$]} & $-1.49$ [$-3.08$, $+0.08$] & \textbf{$+2.25$ [$+0.86$, $+3.61$]} \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{CodeLlama-13B}} \\
+\quad seen (6) & \textbf{$+1.67$ [$+0.83$, $+2.51$]} & $-1.40$ [$-2.98$, $+0.12$] & \textbf{$-2.41$ [$-3.85$, $-1.05$]} & \textbf{$+3.07$ [$+1.55$, $+4.63$]} & \textbf{$+4.08$ [$+2.72$, $+5.40$]} \\
+\quad unseen inside (4) & \textbf{$+1.75$ [$+0.78$, $+2.80$]} & \textbf{$+2.48$ [$+0.89$, $+4.08$]} & $+0.08$ [$-1.23$, $+1.39$] & $-0.73$ [$-2.23$, $+0.76$] & \textbf{$+1.67$ [$+0.45$, $+2.82$]} \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{Llama-3.1-8B}} \\
+\quad seen (6) & \textbf{$+2.31$ [$+1.27$, $+3.38$]} & $-0.85$ [$-2.41$, $+0.72$] & \textbf{$-2.80$ [$-4.26$, $-1.35$]} & \textbf{$+3.16$ [$+1.52$, $+4.84$]} & \textbf{$+5.11$ [$+3.63$, $+6.58$]} \\
+\quad unseen inside (4) & \textbf{$+2.56$ [$+1.49$, $+3.61$]} & \textbf{$+3.09$ [$+1.54$, $+4.60$]} & $+0.81$ [$-0.47$, $+2.12$] & $-0.52$ [$-2.07$, $+1.02$] & \textbf{$+1.75$ [$+0.39$, $+3.11$]} \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{StarCoder2-15B}} \\
+\quad seen (6) & $-0.69$ [$-1.57$, $+0.13$] & \textbf{$-3.27$ [$-4.67$, $-1.86$]} & \textbf{$-5.73$ [$-7.05$, $-4.47$]} & \textbf{$+2.57$ [$+1.28$, $+3.86$]} & \textbf{$+5.04$ [$+3.82$, $+6.26$]} \\
+\quad unseen inside (4) & \textbf{$+1.15$ [$+0.08$, $+2.17$]} & \textbf{$+1.70$ [$+0.05$, $+3.32$]} & $+0.39$ [$-0.92$, $+1.80$] & $-0.55$ [$-2.12$, $+1.02$] & $+0.76$ [$-0.47$, $+2.02$] \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{Gemma-3-12B}} \\
+\quad seen (6) & \textbf{$+1.27$ [$+0.32$, $+2.22$]} & \textbf{$-2.61$ [$-4.13$, $-1.11$]} & \textbf{$-3.91$ [$-5.28$, $-2.52$]} & \textbf{$+3.88$ [$+2.18$, $+5.64$]} & \textbf{$+5.17$ [$+3.69$, $+6.64$]} \\
+\quad unseen inside (4) & $+0.42$ [$-0.55$, $+1.36$] & \textbf{$+1.83$ [$+0.39$, $+3.40$]} & $-0.18$ [$-1.57$, $+1.20$] & $-1.41$ [$-3.01$, $+0.13$] & $+0.60$ [$-0.78$, $+1.96$] \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{CodeGemma-7B}} \\
+\quad seen (6) & $+0.44$ [$-0.48$, $+1.36$] & \textbf{$-3.83$ [$-5.34$, $-2.32$]} & \textbf{$-3.59$ [$-5.08$, $-2.24$]} & \textbf{$+4.27$ [$+2.83$, $+5.63$]} & \textbf{$+4.03$ [$+2.67$, $+5.46$]} \\
+\quad unseen inside (4) & $-0.10$ [$-1.02$, $+0.81$] & $-0.13$ [$-1.67$, $+1.44$] & $+0.92$ [$-0.47$, $+2.35$] & $+0.03$ [$-1.55$, $+1.57$] & $-1.02$ [$-2.38$, $+0.29$] \\
+\addlinespace[2pt]
+\multicolumn{6}{@{}l}{\textbf{Granite-3.1-8B}} \\
+\quad seen (6) & \textbf{$+1.57$ [$+0.76$, $+2.46$]} & \textbf{$-3.23$ [$-4.92$, $-1.52$]} & \textbf{$-2.32$ [$-4.01$, $-0.61$]} & \textbf{$+4.80$ [$+3.05$, $+6.53$]} & \textbf{$+3.89$ [$+2.12$, $+5.67$]} \\
+\quad unseen inside (4) & \textbf{$+2.09$ [$+1.10$, $+3.09$]} & \textbf{$+2.20$ [$+0.50$, $+3.84$]} & \textbf{$+2.98$ [$+1.28$, $+4.65$]} & $-0.10$ [$-1.78$, $+1.62$] & $-0.89$ [$-2.59$, $+0.89$] \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE rq1_merge_panel
+% >>> GENERATED TABLE direction_ratio -- from tables/direction_ratio.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/direction_ratio_codellama7b.json
+% Do not edit by hand -- regenerate. New: the spine of the reorganised argument (docs/PAPER_REORG.md).
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{The direction ratio: how much of a forward gain survives the task being run
+backwards.} Forward is output prediction; backward is input prediction on the same programs, graded
+by execution. No adapter is trained on the backward task, so any backward gain is transferred
+program understanding rather than task fitting. $\mathrm{DR} < 0$ means the arm bought forward
+accuracy by \emph{losing} backward competence. Every adaptation method that fits the forward task
+directly is negative; only anchoring and family exposure are not. Both directions use the same 412 programs and the same six conditions.
+Bold intervals exclude zero; the ratio is descriptive and is read with its components.}
+\label{tab:direction_ratio}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Method} & \textbf{Arm} & \textbf{Forward gain} & \textbf{Backward gain} & \textbf{DR} \\
+\midrule
+Format-only control & \texttt{formatonly} & \textbf{$+1.47$ [$+0.90$, $+2.10$]} & \textbf{$-0.44$ [$-0.81$, $-0.08$]} & $-0.30$ \\
+Clean-code tuning & \texttt{tuned\_L0} & \textbf{$+19.34$ [$+16.87$, $+21.81$]} & $-1.60$ [$-3.41$, $+0.35$] & $-0.08$ \\
+Training breadth & \texttt{mono\_all} & \textbf{$+19.46$ [$+16.68$, $+22.01$]} & $-0.89$ [$-2.86$, $+1.04$] & $-0.05$ \\
+Paired consistency (ours) & \texttt{cons\_lam3} & \textbf{$+20.88$ [$+18.07$, $+23.49$]} & $+0.62$ [$-1.56$, $+2.81$] & $+0.03$ \\
+Family exposure & \texttt{tuned\_X1} & \textbf{$+17.35$ [$+14.98$, $+19.73$]} & \textbf{$+1.63$ [$+0.11$, $+3.20$]} & $+0.09$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE direction_ratio
+% >>> GENERATED TABLE rq4_by_model -- from tables/rq4_by_model.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-14 02:18 UTC by scripts/paper/gen_fse_tables.py
+% SOURCE: results/analysis/pipeline/f2_divergence{,_core}_*.json
+% Do not edit by hand -- regenerate. New: shows anchoring's advantage is conditional on the model.
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{RQ4: the divergence result across the panel}, on stacks containing the unseen
+family. \texttt{cons}$-$\texttt{mono} is anchoring's advantage over breadth; \texttt{fam} is an arm
+trained on the unseen family's trainable sibling, included because family exposure is the largest
+effect in the table and replicates on every model. Bold intervals exclude zero.}
+\label{tab:rq4_by_model}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+\textbf{Model} & \textbf{Lineage} & \texttt{cons}$-$\texttt{mono} & \texttt{cons}$-$\texttt{clean} & \texttt{fam}$-$\texttt{clean} \\
+\midrule
+CodeLlama-7B & Meta & \textbf{$+3.84$ [$+1.90$, $+5.70$]} & \textbf{$+2.13$ [$+0.66$, $+3.60$]} & \textbf{$+5.93$ [$+4.10$, $+7.78$]} \\
+CodeLlama-13B & Meta & \textbf{$+3.22$ [$+1.74$, $+4.65$]} & \textbf{$+2.02$ [$+0.58$, $+3.53$]} & \textbf{$+5.97$ [$+4.11$, $+7.91$]} \\
+CodeLlama-34B & Meta & \textbf{$+3.95$ [$+2.13$, $+5.81$]} & \textbf{$+3.10$ [$+1.63$, $+4.58$]} & \textbf{$+4.19$ [$+2.48$, $+5.94$]} \\
+Llama-3.1-8B & Meta & \textbf{$+2.87$ [$+1.20$, $+4.62$]} & \textbf{$+1.86$ [$+0.27$, $+3.53$]} & \textbf{$+6.67$ [$+4.58$, $+8.71$]} \\
+StarCoder2-15B & BigCode & $+1.36$ [$-0.08$, $+2.71$] & $+0.35$ [$-1.13$, $+1.86$] & \textbf{$+3.64$ [$+1.90$, $+5.35$]} \\
+Gemma-3-12B & Google & \textbf{$+2.44$ [$+0.97$, $+3.99$]} & $-0.08$ [$-1.67$, $+1.51$] & \textbf{$+5.35$ [$+3.21$, $+7.37$]} \\
+CodeGemma-7B & Google & $-1.59$ [$-3.26$, $+0.12$] & \textbf{$-2.40$ [$-4.11$, $-0.85$]} & \textbf{$+5.23$ [$+3.25$, $+7.21$]} \\
+Granite-3.1-8B & IBM & $-1.47$ [$-2.99$, $+0.00$] & $-1.86$ [$-3.80$, $+0.12$] & \textbf{$+7.29$ [$+5.19$, $+9.65$]} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE rq4_by_model
+% >>> GENERATED TABLE master_summary -- from tables/master_summary.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-16 11:36 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells (same phases as the per-model grids), all eight models
+% Do not edit by hand -- regenerate. 
+\begin{table*}[ht]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{\textbf{Every intervention against every kind of obfuscation, across the eight-model panel.} For each system and direction, $\Delta$ is the mean change in points against the untuned model and \% the mean accuracy as a percentage of the untuned model's clean-code accuracy, over the cells that exist and pass the format gate (in parentheses: the number of cells; after the semicolon, the number gated as \emph{fmt}). Systems: ICL = \texttt{base\_1shot}, clean LoRA = \texttt{tuned\_L0}, breadth = \texttt{mono\_all}, anchored = \texttt{cons\_lam3}, family = \texttt{tuned\_X1}. \emph{seen} = L1b, L1r, L2, S1, S2; \emph{seen stacks} = the six depth-2 and four depth-3/4 stacks of seen transforms; \emph{unseen stacks} = the three depth-2 and one depth-3 stacks with the X1 family inside. Backward cells survive the gate almost only on CodeLlama-7B, whose grid (Table~\ref{tab:master_codellama7b}) is the one fully interpretable backward read; the per-model grids for the whole panel are in Appendix~\ref{app:master}.}
+\label{tab:master_summary}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+\textbf{System} & \textbf{measure} & \textbf{clean} & \textbf{seen} & \textbf{unseen family} & \textbf{seen stacks} & \textbf{unseen stacks} \\
+\midrule
+ICL & fwd $\Delta$ pts & $+3.8$ {\scriptsize(3; 5 fmt)} & $+3.2$ {\scriptsize(16; 24 fmt)} & -- & -- & -- \\
+ & fwd \% of clean & 115\% {\scriptsize(3; 5 fmt)} & 97\% {\scriptsize(16; 24 fmt)} & -- & -- & -- \\
+\addlinespace[3pt]
+clean LoRA & fwd $\Delta$ pts & $+19.0$ {\scriptsize(5; 3 fmt)} & $+18.5$ {\scriptsize(30; 10 fmt)} & $+13.7$ {\scriptsize(7; 1 fmt)} & $+16.7$ {\scriptsize(60; 20 fmt)} & $+11.5$ {\scriptsize(28; 4 fmt)} \\
+ & fwd \% of clean & 175\% {\scriptsize(5; 3 fmt)} & 152\% {\scriptsize(25; 15 fmt)} & 102\% {\scriptsize(5; 3 fmt)} & 129\% {\scriptsize(50; 30 fmt)} & 95\% {\scriptsize(20; 12 fmt)} \\
+ & bwd $\Delta$ pts & $-0.4$ {\scriptsize(7; 1 fmt)} & $-0.3$ {\scriptsize(28; 12 fmt)} & $+0.2$ {\scriptsize(5; 3 fmt)} & $+0.8$ {\scriptsize(54; 26 fmt)} & $-0.8$ {\scriptsize(20; 12 fmt)} \\
+ & bwd \% of clean & 101\% {\scriptsize(7; 1 fmt)} & 97\% {\scriptsize(32; 8 fmt)} & 79\% {\scriptsize(5; 3 fmt)} & 90\% {\scriptsize(63; 17 fmt)} & 79\% {\scriptsize(21; 11 fmt)} \\
+\addlinespace[3pt]
+breadth & fwd $\Delta$ pts & $+17.0$ {\scriptsize(5; 3 fmt)} & $+19.7$ {\scriptsize(30; 10 fmt)} & $+10.7$ {\scriptsize(7; 1 fmt)} & $+20.9$ {\scriptsize(60; 20 fmt)} & $+10.9$ {\scriptsize(28; 4 fmt)} \\
+ & fwd \% of clean & 167\% {\scriptsize(5; 3 fmt)} & 157\% {\scriptsize(25; 15 fmt)} & 91\% {\scriptsize(5; 3 fmt)} & 146\% {\scriptsize(50; 30 fmt)} & 93\% {\scriptsize(20; 12 fmt)} \\
+ & bwd $\Delta$ pts & $-2.2$ {\scriptsize(6; 2 fmt)} & $-1.6$ {\scriptsize(26; 14 fmt)} & $-1.1$ {\scriptsize(4; 4 fmt)} & $-0.0$ {\scriptsize(50; 30 fmt)} & $-4.3$ {\scriptsize(15; 17 fmt)} \\
+ & bwd \% of clean & 95\% {\scriptsize(6; 2 fmt)} & 91\% {\scriptsize(29; 11 fmt)} & 73\% {\scriptsize(4; 4 fmt)} & 88\% {\scriptsize(52; 28 fmt)} & 64\% {\scriptsize(17; 15 fmt)} \\
+\addlinespace[3pt]
+anchored & fwd $\Delta$ pts & $+17.6$ {\scriptsize(5; 3 fmt)} & $+21.0$ {\scriptsize(30; 10 fmt)} & $+13.1$ {\scriptsize(7; 1 fmt)} & $+22.0$ {\scriptsize(60; 20 fmt)} & $+12.8$ {\scriptsize(28; 4 fmt)} \\
+ & fwd \% of clean & 169\% {\scriptsize(5; 3 fmt)} & 161\% {\scriptsize(25; 15 fmt)} & 99\% {\scriptsize(5; 3 fmt)} & 148\% {\scriptsize(50; 30 fmt)} & 98\% {\scriptsize(20; 12 fmt)} \\
+ & bwd $\Delta$ pts & $-4.4$ {\scriptsize(6; 2 fmt)} & $-5.1$ {\scriptsize(22; 18 fmt)} & $-2.6$ {\scriptsize(4; 4 fmt)} & $-4.2$ {\scriptsize(39; 41 fmt)} & $-3.4$ {\scriptsize(9; 23 fmt)} \\
+ & bwd \% of clean & 89\% {\scriptsize(6; 2 fmt)} & 86\% {\scriptsize(26; 14 fmt)} & 75\% {\scriptsize(5; 3 fmt)} & 81\% {\scriptsize(49; 31 fmt)} & 75\% {\scriptsize(9; 23 fmt)} \\
+\addlinespace[3pt]
+family & fwd $\Delta$ pts & $+18.5$ {\scriptsize(5; 3 fmt)} & $+17.8$ {\scriptsize(30; 10 fmt)} & $+20.1$ {\scriptsize(7; 1 fmt)} & $+17.5$ {\scriptsize(60; 20 fmt)} & $+16.8$ {\scriptsize(28; 4 fmt)} \\
+ & fwd \% of clean & 173\% {\scriptsize(5; 3 fmt)} & 150\% {\scriptsize(25; 15 fmt)} & 128\% {\scriptsize(5; 3 fmt)} & 132\% {\scriptsize(50; 30 fmt)} & 116\% {\scriptsize(20; 12 fmt)} \\
+ & bwd $\Delta$ pts & $-1.4$ {\scriptsize(7; 1 fmt)} & $-2.8$ {\scriptsize(31; 9 fmt)} & $+1.6$ {\scriptsize(5; 3 fmt)} & $-1.0$ {\scriptsize(58; 22 fmt)} & $-0.9$ {\scriptsize(21; 11 fmt)} \\
+ & bwd \% of clean & 96\% {\scriptsize(7; 1 fmt)} & 87\% {\scriptsize(33; 7 fmt)} & 80\% {\scriptsize(6; 2 fmt)} & 84\% {\scriptsize(59; 21 fmt)} & 76\% {\scriptsize(23; 9 fmt)} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+% <<< GENERATED TABLE master_summary
