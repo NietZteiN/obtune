@@ -7,26 +7,26 @@ Google, IBM), code-specialised and general, 7B to 34B, plus one pretrained check
 the one-shot baseline. Every adapter is a LoRA with the same rank and target modules on every model,
 and one prompt builder serves training, evaluation and attention extraction.
 % >>> GENERATED TABLE setup_models -- from tables/setup_models.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-16 11:36 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/models.yaml
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]
-\centering\scriptsize\setlength{\tabcolsep}{2.4pt}
+\centering\scriptsize\setlength{\tabcolsep}{2pt}
 \caption{\textbf{The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph{Chat template}: \emph{system} accepts a system role; \emph{merged} folds the system text into the user turn; \emph{plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model.}
 \label{tab:models}
 \begin{tabular}{@{}llllrrrl@{}}
 \toprule
 \textbf{Model} & \textbf{Checkpoint} & \textbf{Lineage} & \textbf{Type} & \textbf{Params (B)} & \textbf{Layers} & \textbf{Hidden} & \textbf{Chat template} \\
 \midrule
-CodeLlama-7B & \texttt{\scriptsize codellama/CodeLlama-7b-Instruct-hf} & Meta & coder & 6.7 & 32 & 4096 & system \\
-CodeLlama-13B & \texttt{\scriptsize codellama/CodeLlama-13b-Instruct-hf} & Meta & coder & 13.0 & 40 & 5120 & system \\
-CodeLlama-34B & \texttt{\scriptsize codellama/CodeLlama-34b-Instruct-hf} & Meta & coder & 33.7 & 48 & 8192 & system \\
-Llama-3.1-8B & \texttt{\scriptsize meta-llama/Llama-3.1-8B-Instruct} & Meta & instruct & 8.0 & 32 & 4096 & system \\
-StarCoder2-15B & \texttt{\scriptsize bigcode/starcoder2-15b-instruct-v0.1} & BigCode & coder & 15.5 & 40 & 6144 & merged \\
-Gemma-3-12B & \texttt{\scriptsize google/gemma-3-12b-it} & Google & instruct & 12.2 & 48 & 3840 & system \\
-CodeGemma-7B & \texttt{\scriptsize google/codegemma-7b-it} & Google & coder & 8.5 & 28 & 3072 & merged \\
-Granite-3.1-8B & \texttt{\scriptsize ibm-granite/granite-3.1-8b-instruct} & IBM & instruct & 8.2 & 40 & 4096 & system \\
-Llama-3.1-8B (base) & \texttt{\scriptsize meta-llama/Llama-3.1-8B} & Meta & pretrained & 8.0 & 32 & 4096 & plain \\
+CodeLlama-7B~\cite{code_llama} & \texttt{\tiny codellama/CodeLlama-7b-Instruct-hf} & Meta & coder & 6.7 & 32 & 4096 & system \\
+CodeLlama-13B~\cite{code_llama} & \texttt{\tiny codellama/CodeLlama-13b-Instruct-hf} & Meta & coder & 13.0 & 40 & 5120 & system \\
+CodeLlama-34B~\cite{code_llama} & \texttt{\tiny codellama/CodeLlama-34b-Instruct-hf} & Meta & coder & 33.7 & 48 & 8192 & system \\
+Llama-3.1-8B~\cite{llama3herd} & \texttt{\tiny meta-llama/Llama-3.1-8B-Instruct} & Meta & instruct & 8.0 & 32 & 4096 & system \\
+StarCoder2-15B~\cite{lozhkov2024starcoder2stackv2} & \texttt{\tiny bigcode/starcoder2-15b-instruct-v0.1} & BigCode & coder & 15.5 & 40 & 6144 & merged \\
+Gemma-3-12B~\cite{gemma3} & \texttt{\tiny google/gemma-3-12b-it} & Google & instruct & 12.2 & 48 & 3840 & system \\
+CodeGemma-7B~\cite{codegemma} & \texttt{\tiny google/codegemma-7b-it} & Google & coder & 8.5 & 28 & 3072 & merged \\
+Granite-3.1-8B~\cite{granite31} & \texttt{\tiny ibm-granite/granite-3.1-8b-instruct} & IBM & instruct & 8.2 & 40 & 4096 & system \\
+Llama-3.1-8B (base)~\cite{llama3herd} & \texttt{\tiny meta-llama/Llama-3.1-8B} & Meta & pretrained & 8.0 & 32 & 4096 & plain \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -39,7 +39,7 @@ independent of any transform. Coverage differs by condition because structural t
 some programs by design and the unseen family needs enough encodable sites; every paired contrast is
 computed on the programs common to the cells it compares, fixed before evaluation.
 % >>> GENERATED TABLE setup_dataset -- from tables/setup_dataset.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-16 11:36 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: data/train/base/python.jsonl, data/splits/python.json, data/eval/heldout/items/*
 % Do not edit by hand -- regenerate. 
 \begin{table}[ht]
@@ -55,7 +55,7 @@ Split & by program, seed 17: train 1563 / val 111 / held-out 557 \\
 Input cases per program & 3, gold output executed from the clean parent \\
 Program length & mean 8.4 LOC, max 57 \\
 Held-out eval, clean & 557 programs $\times$ 3 cases = 1671 items \\
-Coverage per condition & Tables~\ref{tab:taxonomy} and \ref{tab:stacks}; structural transforms decline some programs by design, the unseen family needs $\geq 3$ encodable sites \\
+Coverage per condition & Table~\ref{tab:taxonomy} and Appendix~\ref{app:absmaster}; structural transforms decline some programs by design, the unseen family needs $\geq 3$ encodable sites \\
 Training rows per adapter & one condition's train split $\times$ 3 cases (4689); breadth pools the five seen conditions \\
 Paired contrasts & on the programs common to every cell in the contrast, fixed before evaluation; program-clustered bootstrap, 2{,}000 resamples \\
 JavaScript & 168 held-out programs (504 items), transferred intact; not regenerable on the cluster \\
@@ -71,12 +71,12 @@ structural (S1, S2, and S2's two halves S3 and S4) and encoding (X1 and its halv
 to the clean parent and never stacked during training. H1 is the quarantined held-out obfuscator; its
 evaluation budget was spent under a pre-registered two-pass discipline, and every unseen-family number
 in this paper is measured on its trainable sibling X1, which reproduces H1's difficulty at
-$r = 0.9992$ (mean absolute difference 0.48 points). Stacks (Table~\ref{tab:stacks}) are a separate
+$r = 0.9992$ (mean absolute difference 0.48 points). Stacks are a separate
 namespace built by applying parts to the parent in order; order matters, and no system is trained on
 a stack. Ten stacks contain only seen transforms (six at depth two, four at depth three to four); six
 contain the unseen family or one of its halves and are the stimulus RQ4 turns on.
 % >>> GENERATED TABLE setup_taxonomy -- from tables/setup_taxonomy.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-16 11:36 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/conditions.yaml, data/eval/heldout/items/*
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]
@@ -103,42 +103,26 @@ H1 & heldout & string encoding (base64 / RC4 string array) plus guarded mixed-bo
 \end{tabular}
 \end{table*}
 % <<< GENERATED TABLE setup_taxonomy
-% >>> GENERATED TABLE setup_stacks -- from tables/setup_stacks.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-16 11:36 UTC by scripts/analysis/59_master_tables.py
-% SOURCE: configs/conditions_composite.yaml, data/eval/heldout/items/*
-% Do not edit by hand -- regenerate. 
-\begin{table*}[ht]
-\centering\footnotesize
-\caption{\textbf{Stacked composites.} A separate namespace from the ladder: parts are applied to the clean parent left to right, and order matters because composition does not commute. Size caps were calibrated on a 40-program build at cap 60 (p95 $\times$ 1.25) so that the cap is never the binding constraint. No system is ever trained on a stack; the breadth and family adapters see single transforms only.}
-\label{tab:stacks}
-\setlength{\tabcolsep}{2.5pt}\begin{tabular}{@{}llrlrrlp{0.17\linewidth}@{}}
-\toprule
-\textbf{Code} & \textbf{Parts, in order} & \textbf{Depth} & \textbf{X1 inside} & \textbf{Cap} & \textbf{Prog.\,/\,items} & \textbf{Group} & \textbf{Purpose} \\
-\midrule
-\texttt{C\_L1b\_S1} & L1b$\to$S1 & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & does L1b's specialist advantage survive stacking? \\
-\texttt{C\_L1r\_S1} & L1r$\to$S1 & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & headline identifier $\otimes$ structural stack \\
-\texttt{C\_S1\_L1r} & S1$\to$L1r & 2 & no & 8.0$\times$ & 418 / 1254 & seen d2 & order control for C\_L1r\_S1 (renames S1's state variables) \\
-\texttt{C\_L2\_S4} & L2$\to$S4 & 2 & no & 5.0$\times$ & 556 / 1668 & seen d2 & identifier $\otimes$ the reason-about-it half of S2 \\
-\texttt{C\_L1r\_S3} & L1r$\to$S3 & 2 & no & 5.0$\times$ & 557 / 1671 & seen d2 & identifier $\otimes$ the ignore-it half of S2 \\
-\texttt{C\_S4\_S3} & S4$\to$S3 & 2 & no & 5.0$\times$ & 556 / 1668 & seen d2 & positive control: reconstructs S2 by composition \\
-\addlinespace[2pt]
-\texttt{C3\_L1r\_S3\_S4} & L1r$\to$S3$\to$S4 & 3 & no & 10.0$\times$ & 556 / 1668 & seen d3--4 & depth 3, identifier first \\
-\texttt{C3\_S1\_S3\_S4} & S1$\to$S3$\to$S4 & 3 & no & 14.0$\times$ & 395 / 1185 & seen d3--4 & depth 3, structural only \\
-\texttt{C3\_L1r\_S1\_S4} & L1r$\to$S1$\to$S4 & 3 & no & 14.0$\times$ & 418 / 1254 & seen d3--4 & depth 3, identifier first, flattening inside \\
-\texttt{C4\_L1r\_S1\_S3\_S4} & L1r$\to$S1$\to$S3$\to$S4 & 4 & no & 18.0$\times$ & 418 / 1254 & seen d3--4 & depth 4 \\
-\addlinespace[2pt]
-\texttt{C\_L1r\_X1} & L1r$\to$X1 & 2 & yes & 10.0$\times$ & 405 / 1215 & unseen d2 & unseen family last, after renaming \\
-\texttt{C\_X1\_S1} & X1$\to$S1 & 2 & yes & 12.0$\times$ & 321 / 963 & unseen d2 & unseen material itself flattened \\
-\texttt{C\_S2\_X1} & S2$\to$X1 & 2 & yes & 22.0$\times$ & 555 / 1665 & unseen d2 & unseen family applied to dead code too \\
-\addlinespace[2pt]
-\texttt{C\_L1r\_X1m} & L1r$\to$X1m & 2 & yes & 10.0$\times$ & 351 / 1053 & half-unseen d2 & half an unseen family (arithmetic) \\
-\texttt{C\_S1\_X1s} & S1$\to$X1s & 2 & yes & 14.0$\times$ & 418 / 1254 & half-unseen d2 & half an unseen family (strings) \\
-\addlinespace[2pt]
-\texttt{C3\_L1r\_S1\_X1} & L1r$\to$S1$\to$X1 & 3 & yes & 16.0$\times$ & 417 / 1251 & unseen d3 & one unseen component at depth 3 \\
-\bottomrule
-\end{tabular}
-\end{table*}
-% <<< GENERATED TABLE setup_stacks
+% STACKS: PROSE, NOT A TABLE (2026-09-17, user: "stacked composites doesn't need a whole ass
+% table just describe in short paragraph"). The generated setup_stacks table listed all sixteen
+% composites with parts, depth, cap, coverage and purpose; the same content is a paragraph, and the
+% per-condition coverage a reader might want is already in the appendix tables. The generator still
+% writes tables/setup_stacks.tex -- it is simply no longer \input, so nothing is lost if it is
+% wanted back.
+\smallskip\noindent\textbf{Stacked composites.} Composites are a separate namespace from the ladder:
+parts are applied to the clean parent left to right, and order matters, so \texttt{C\_L1r\_S1} and
+\texttt{C\_S1\_L1r} are different conditions --- the second renames the state variables that
+control-flow flattening introduces. We evaluate sixteen. Six are depth-2 stacks of seen transforms,
+including an order-control pair and one positive control (\texttt{C\_S4\_S3}) that reconstructs
+\texttt{S2} by composing its two halves, which is how we check that composition behaves as the
+ladder predicts. Four go deeper on seen transforms: three at depth 3 and one at depth 4. The
+remaining six contain the held-out family --- three at depth 2, two more using half of it
+(arithmetic or strings alone), and one at depth 3 --- and are the conditions no arm was trained for
+in any part. Each composite inflates program length, by 5$\times$ to 22$\times$ over the clean
+parent, and a per-composite cap bounds that growth; coverage differs between them because
+structural transforms decline some programs by design, so every paired contrast runs on the
+programs common to the cells it compares, fixed before evaluation. The full per-composite
+definitions and item counts are in \texttt{configs/conditions\_composite.yaml}.
 
 \subsection{Systems}
 Every system is a LoRA on the same base model, evaluated on still-obfuscated code. \emph{Clean LoRA}

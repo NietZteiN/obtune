@@ -1,0 +1,66 @@
+\section{Background}
+\label{sec:background}
+
+% Written 2026-09-17 at the user's request. Scope chosen to cover exactly what the rest of the paper
+% assumes and no more: what a semantics-preserving transform is, what the two prediction directions
+% are, and the three adaptation mechanisms the results section compares. Every citation here was
+% verified against arxiv.org rather than recalled; Granite has no arXiv paper for its 3.x instruct
+% family and is cited by release.
+
+\subsection{Semantics-preserving obfuscation}
+An obfuscating transform rewrites a program's surface while preserving its observable behaviour:
+for every input, the transformed program returns what the original returned. The standard taxonomy
+separates \emph{lexical} transforms, which rewrite identifiers and strip the names and annotations a
+reader relies on, from \emph{control} transforms, which restructure the flow the computation takes,
+and \emph{data} transforms, which change how values are represented and
+computed~\cite{collberg1997taxonomy,collberg2002manufacturing}. The distinction matters here because
+it predicts what a model must recover. A lexical transform destroys evidence the model may have been
+relying on but leaves the computation's shape intact; a control transform leaves the identifiers and
+changes the shape; a data transform changes the arithmetic itself. An adaptation that generalises
+across all three has learned something about the computation. One that generalises within a family
+has learned that family's surface.
+
+Two properties of the class are what make it a usable instrument. First, the transforms
+\emph{compose}: an obfuscator may rename identifiers inside flattened control flow inside rewritten
+expressions, and real ones do. Composition is not a harder version of the same test but a different
+one, since a model may handle each part alone and still fail the stack. Second, because the
+transforms preserve semantics by construction, the ground truth is computable from the clean parent
+and is independent of any transform --- so a grader can be exact, and a claim of invariance is
+falsifiable rather than a matter of judgement.
+
+\subsection{Predicting behaviour in two directions}
+We evaluate program understanding as behaviour prediction rather than as generation or recovery.
+Given a program and an input, \emph{output prediction} asks what it returns; given a program and a
+return value, \emph{input prediction} asks for a call that produces it. Both are standard, and
+current code models are markedly imperfect at both even on unobfuscated
+code~\cite{cruxeval}. The pairing is what we use: the two directions share a program, a gold value
+and a grader, so an adaptation that improves one and damages the other has not become better at
+reading the program. Input prediction also has a property the forward direction lacks --- inversion
+is many-to-one, so grading it requires executing the produced call rather than matching it, which we
+do throughout.
+
+We never train on, or evaluate, recovery of the original source. That is the clean separation from
+the deobfuscation lineage: a model that can undo a transform tells us about the transform, whereas a
+model that answers correctly on the transformed program tells us about its understanding of the
+computation.
+
+\subsection{Adapting a model, and composing adaptations}
+Fine-tuning a code model on a new distribution is now routinely done with low-rank
+adaptation~\cite{lora}, which freezes the base weights and trains a pair of low-rank matrices per
+target module. The practical consequence for this paper is not efficiency but \emph{modularity}:
+each adapter is a small, separable object, so one can be trained per transform and the resulting set
+composed afterwards --- which is the design space the results section explores.
+
+Three ways to compose them appear in the literature and are the baselines we compare.
+\textbf{Pooled training} ignores the modularity and trains a single adapter on the union of all the
+data; it is the obvious thing to do and the one most likely to be done in practice.
+\textbf{Routing} keeps the adapters separate and selects or mixes among them per input, which needs a
+gate at inference and pays for every expert it keeps loaded. \textbf{Weight-space merging} collapses
+the adapters into one set of weights before inference, so it costs nothing at run time. The merging
+methods we use are the two standard ones. TIES resolves the interference between task vectors by
+trimming small updates and, where adapters disagree on a parameter's sign, keeping only those that
+agree with the majority~\cite{ties}. DARE adds a preliminary step that randomly drops a fraction of
+the delta entries and rescales the survivors so the expected update is preserved, on the finding that
+fine-tuning deltas are highly redundant~\cite{dare}. Both are used unmodified; the contribution of
+this paper is not a merging algorithm but an evaluation that separates these three mechanisms where
+they actually differ.

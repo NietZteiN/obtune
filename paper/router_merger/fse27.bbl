@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{11}
+\begin{thebibliography}{21}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -77,6 +77,19 @@
 \tempurl}
 
 
+\bibitem[{CodeGemma Team, Google}(2024)]%
+        {codegemma}
+\bibfield{author}{\bibinfo{person}{{CodeGemma Team, Google}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{CodeGemma: Open Code Models Based on Gemma}.
+\newblock
+\showeprint[arxiv]{2406.11409}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2406.11409}
+\showURL{%
+\tempurl}
+
+
 \bibitem[Collberg et~al\mbox{.}(1997)]%
         {collberg1997taxonomy}
 \bibfield{author}{\bibinfo{person}{Christian Collberg}, \bibinfo{person}{Clark
@@ -122,6 +135,35 @@
 \href{https://doi.org/10.18653/v1/2020.findings-emnlp.139}{doi:\nolinkurl{10.18653/v1/2020.findings-emnlp.139}}
 
 
+\bibitem[{Gemma Team, Google DeepMind}(2025)]%
+        {gemma3}
+\bibfield{author}{\bibinfo{person}{{Gemma Team, Google DeepMind}}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Gemma 3 Technical Report}.
+\newblock
+\showeprint[arxiv]{2503.19786}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2503.19786}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Gu et~al\mbox{.}(2024)]%
+        {cruxeval}
+\bibfield{author}{\bibinfo{person}{Alex Gu}, \bibinfo{person}{Baptiste
+  Rozi\`ere}, \bibinfo{person}{Hugh Leather}, \bibinfo{person}{Armando
+  Solar-Lezama}, \bibinfo{person}{Gabriel Synnaeve}, {and}
+  \bibinfo{person}{Sida~I. Wang}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{{CRUXEval}: A Benchmark for Code Reasoning,
+  Understanding and Execution}.
+\newblock
+\showeprint[arxiv]{2401.03065}~[cs.SE]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2401.03065}
+\showURL{%
+\tempurl}
+
+
 \bibitem[Guo et~al\mbox{.}(2021)]%
         {guo2021graphcodebert}
 \bibfield{author}{\bibinfo{person}{Daya Guo}, \bibinfo{person}{Shuo Ren},
@@ -142,6 +184,34 @@
 \url{https://openreview.net/forum?id=jLoC4ez43PZ}
 \showURL{%
 \tempurl}
+
+
+\bibitem[Hu et~al\mbox{.}(2021)]%
+        {lora}
+\bibfield{author}{\bibinfo{person}{Edward~J. Hu}, \bibinfo{person}{Yelong
+  Shen}, \bibinfo{person}{Phillip Wallis}, \bibinfo{person}{Zeyuan Allen-Zhu},
+  \bibinfo{person}{Yuanzhi Li}, \bibinfo{person}{Shean Wang},
+  \bibinfo{person}{Lu Wang}, {and} \bibinfo{person}{Weizhu Chen}.}
+  \bibinfo{year}{2021}\natexlab{}.
+\newblock \bibinfo{title}{LoRA: Low-Rank Adaptation of Large Language Models}.
+\newblock
+\showeprint[arxiv]{2106.09685}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2106.09685}
+\showURL{%
+\tempurl}
+
+
+\bibitem[{IBM Granite Team}(2024)]%
+        {granite31}
+\bibfield{author}{\bibinfo{person}{{IBM Granite Team}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{{Granite 3.1 Language Models}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/ibm-granite/granite-3.1-8b-instruct}}.
+\newblock
+\shownote{IBM Research}.
+\newblock
 
 
 \bibitem[Li et~al\mbox{.}(2022)]%
@@ -167,6 +237,64 @@
 \newblock
 \showISSN{1095-9203}
 \href{https://doi.org/10.1126/science.abq1158}{doi:\nolinkurl{10.1126/science.abq1158}}
+
+
+\bibitem[{Llama Team, AI @ Meta}(2024)]%
+        {llama3herd}
+\bibfield{author}{\bibinfo{person}{{Llama Team, AI @ Meta}}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{The Llama 3 Herd of Models}.
+\newblock
+\showeprint[arxiv]{2407.21783}~[cs.AI]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2407.21783}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Lozhkov et~al\mbox{.}(2024)]%
+        {lozhkov2024starcoder2stackv2}
+\bibfield{author}{\bibinfo{person}{Anton Lozhkov}, \bibinfo{person}{Raymond
+  Li}, \bibinfo{person}{Loubna~Ben Allal}, \bibinfo{person}{Federico Cassano},
+  \bibinfo{person}{Joel Lamy-Poirier}, \bibinfo{person}{Nouamane Tazi},
+  \bibinfo{person}{Ao Tang}, \bibinfo{person}{Dmytro Pykhtar},
+  \bibinfo{person}{Jiawei Liu}, \bibinfo{person}{Yuxiang Wei},
+  \bibinfo{person}{Tianyang Liu}, \bibinfo{person}{Max Tian},
+  \bibinfo{person}{Denis Kocetkov}, \bibinfo{person}{Arthur Zucker},
+  \bibinfo{person}{Younes Belkada}, \bibinfo{person}{Zijian Wang},
+  \bibinfo{person}{Qian Liu}, \bibinfo{person}{Dmitry Abulkhanov},
+  \bibinfo{person}{Indraneil Paul}, \bibinfo{person}{Zhuang Li},
+  \bibinfo{person}{Wen-Ding Li}, \bibinfo{person}{Megan Risdal},
+  \bibinfo{person}{Jia Li}, \bibinfo{person}{Jian Zhu},
+  \bibinfo{person}{Terry~Yue Zhuo}, \bibinfo{person}{Evgenii Zheltonozhskii},
+  \bibinfo{person}{Nii Osae~Osae Dade}, \bibinfo{person}{Wenhao Yu},
+  \bibinfo{person}{Lucas Krauß}, \bibinfo{person}{Naman Jain},
+  \bibinfo{person}{Yixuan Su}, \bibinfo{person}{Xuanli He},
+  \bibinfo{person}{Manan Dey}, \bibinfo{person}{Edoardo Abati},
+  \bibinfo{person}{Yekun Chai}, \bibinfo{person}{Niklas Muennighoff},
+  \bibinfo{person}{Xiangru Tang}, \bibinfo{person}{Muhtasham Oblokulov},
+  \bibinfo{person}{Christopher Akiki}, \bibinfo{person}{Marc Marone},
+  \bibinfo{person}{Chenghao Mou}, \bibinfo{person}{Mayank Mishra},
+  \bibinfo{person}{Alex Gu}, \bibinfo{person}{Binyuan Hui},
+  \bibinfo{person}{Tri Dao}, \bibinfo{person}{Armel Zebaze},
+  \bibinfo{person}{Olivier Dehaene}, \bibinfo{person}{Nicolas Patry},
+  \bibinfo{person}{Canwen Xu}, \bibinfo{person}{Julian McAuley},
+  \bibinfo{person}{Han Hu}, \bibinfo{person}{Torsten Scholak},
+  \bibinfo{person}{Sebastien Paquet}, \bibinfo{person}{Jennifer Robinson},
+  \bibinfo{person}{Carolyn~Jane Anderson}, \bibinfo{person}{Nicolas Chapados},
+  \bibinfo{person}{Mostofa Patwary}, \bibinfo{person}{Nima Tajbakhsh},
+  \bibinfo{person}{Yacine Jernite}, \bibinfo{person}{Carlos~Muñoz Ferrandis},
+  \bibinfo{person}{Lingming Zhang}, \bibinfo{person}{Sean Hughes},
+  \bibinfo{person}{Thomas Wolf}, \bibinfo{person}{Arjun Guha},
+  \bibinfo{person}{Leandro von Werra}, {and} \bibinfo{person}{Harm de Vries}.}
+  \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{StarCoder 2 and The Stack v2: The Next Generation}.
+\newblock
+\showeprint[arxiv]{2402.19173}~[cs.SE]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2402.19173}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Nguyen et~al\mbox{.}(2026)]%
@@ -229,6 +357,26 @@
 \href{https://doi.org/10.1109/MSP.2011.98}{doi:\nolinkurl{10.1109/MSP.2011.98}}
 
 
+\bibitem[Roziere et~al\mbox{.}(2023)]%
+        {code_llama}
+\bibfield{author}{\bibinfo{person}{Baptiste Roziere}, \bibinfo{person}{Jonas
+  Gehring}, \bibinfo{person}{Fabian Gloeckle}, \bibinfo{person}{Sten Sootla},
+  \bibinfo{person}{Itai Gat}, \bibinfo{person}{Xiaoqing~Ellen Tan},
+  \bibinfo{person}{Yossi Adi}, \bibinfo{person}{Jingyu Liu},
+  \bibinfo{person}{Tal Remez}, \bibinfo{person}{Jeremy Rapin},
+  \bibinfo{person}{Artyom Kozhevnikov}, \bibinfo{person}{Ivan Evtimov},
+  \bibinfo{person}{Joanna Bitton}, \bibinfo{person}{Manish Bhatt},
+  \bibinfo{person}{Cristian~Canton Ferrer}, \bibinfo{person}{Aaron
+  Grattafiori}, \bibinfo{person}{Wenhan Xiong}, \bibinfo{person}{Alexandre
+  Defossez}, \bibinfo{person}{Jade Copet}, \bibinfo{person}{Faisal Azhar},
+  \bibinfo{person}{Hugo Touvron}, \bibinfo{person}{Louis Martin},
+  \bibinfo{person}{Nicolas Usunier}, \bibinfo{person}{Thomas Scialom}, {and}
+  \bibinfo{person}{Gabriel Synnaeve}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Code Llama: Open Foundation Models for Code}.
+\newblock
+\showeprint[arxiv]{2308.12950}~[cs.CL]
+
+
 \bibitem[Votipka et~al\mbox{.}(2019)]%
   {An-Observational-Investigation-of-Reverse-Engineers-Process-and-Mental-Models}
 \bibfield{author}{\bibinfo{person}{Daniel Votipka}, \bibinfo{person}{Seth
@@ -244,6 +392,36 @@
 \newblock
 \showISBNx{9781450359719}
 \href{https://doi.org/10.1145/3290607.3313040}{doi:\nolinkurl{10.1145/3290607.3313040}}
+
+
+\bibitem[Yadav et~al\mbox{.}(2023)]%
+        {ties}
+\bibfield{author}{\bibinfo{person}{Prateek Yadav}, \bibinfo{person}{Derek Tam},
+  \bibinfo{person}{Leshem Choshen}, \bibinfo{person}{Colin Raffel}, {and}
+  \bibinfo{person}{Mohit Bansal}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{{TIES-Merging}: Resolving Interference When Merging
+  Models}.
+\newblock
+\showeprint[arxiv]{2306.01708}~[cs.LG]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2306.01708}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Yu et~al\mbox{.}(2024)]%
+        {dare}
+\bibfield{author}{\bibinfo{person}{Le Yu}, \bibinfo{person}{Bowen Yu},
+  \bibinfo{person}{Haiyang Yu}, \bibinfo{person}{Fei Huang}, {and}
+  \bibinfo{person}{Yongbin Li}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \bibinfo{title}{Language Models are Super Mario: Absorbing Abilities
+  from Homologous Models as a Free Lunch}.
+\newblock
+\showeprint[arxiv]{2311.03099}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2311.03099}
+\showURL{%
+\tempurl}
 
 
 \end{thebibliography}

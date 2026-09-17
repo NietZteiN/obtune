@@ -1,23 +1,23 @@
-% GENERATED 2026-09-16 11:36 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/models.yaml
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]
-\centering\scriptsize\setlength{\tabcolsep}{2.4pt}
+\centering\scriptsize\setlength{\tabcolsep}{2pt}
 \caption{\textbf{The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph{Chat template}: \emph{system} accepts a system role; \emph{merged} folds the system text into the user turn; \emph{plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model.}
 \label{tab:models}
 \begin{tabular}{@{}llllrrrl@{}}
 \toprule
 \textbf{Model} & \textbf{Checkpoint} & \textbf{Lineage} & \textbf{Type} & \textbf{Params (B)} & \textbf{Layers} & \textbf{Hidden} & \textbf{Chat template} \\
 \midrule
-CodeLlama-7B & \texttt{\scriptsize codellama/CodeLlama-7b-Instruct-hf} & Meta & coder & 6.7 & 32 & 4096 & system \\
-CodeLlama-13B & \texttt{\scriptsize codellama/CodeLlama-13b-Instruct-hf} & Meta & coder & 13.0 & 40 & 5120 & system \\
-CodeLlama-34B & \texttt{\scriptsize codellama/CodeLlama-34b-Instruct-hf} & Meta & coder & 33.7 & 48 & 8192 & system \\
-Llama-3.1-8B & \texttt{\scriptsize meta-llama/Llama-3.1-8B-Instruct} & Meta & instruct & 8.0 & 32 & 4096 & system \\
-StarCoder2-15B & \texttt{\scriptsize bigcode/starcoder2-15b-instruct-v0.1} & BigCode & coder & 15.5 & 40 & 6144 & merged \\
-Gemma-3-12B & \texttt{\scriptsize google/gemma-3-12b-it} & Google & instruct & 12.2 & 48 & 3840 & system \\
-CodeGemma-7B & \texttt{\scriptsize google/codegemma-7b-it} & Google & coder & 8.5 & 28 & 3072 & merged \\
-Granite-3.1-8B & \texttt{\scriptsize ibm-granite/granite-3.1-8b-instruct} & IBM & instruct & 8.2 & 40 & 4096 & system \\
-Llama-3.1-8B (base) & \texttt{\scriptsize meta-llama/Llama-3.1-8B} & Meta & pretrained & 8.0 & 32 & 4096 & plain \\
+CodeLlama-7B~\cite{code_llama} & \texttt{\tiny codellama/CodeLlama-7b-Instruct-hf} & Meta & coder & 6.7 & 32 & 4096 & system \\
+CodeLlama-13B~\cite{code_llama} & \texttt{\tiny codellama/CodeLlama-13b-Instruct-hf} & Meta & coder & 13.0 & 40 & 5120 & system \\
+CodeLlama-34B~\cite{code_llama} & \texttt{\tiny codellama/CodeLlama-34b-Instruct-hf} & Meta & coder & 33.7 & 48 & 8192 & system \\
+Llama-3.1-8B~\cite{llama3herd} & \texttt{\tiny meta-llama/Llama-3.1-8B-Instruct} & Meta & instruct & 8.0 & 32 & 4096 & system \\
+StarCoder2-15B~\cite{lozhkov2024starcoder2stackv2} & \texttt{\tiny bigcode/starcoder2-15b-instruct-v0.1} & BigCode & coder & 15.5 & 40 & 6144 & merged \\
+Gemma-3-12B~\cite{gemma3} & \texttt{\tiny google/gemma-3-12b-it} & Google & instruct & 12.2 & 48 & 3840 & system \\
+CodeGemma-7B~\cite{codegemma} & \texttt{\tiny google/codegemma-7b-it} & Google & coder & 8.5 & 28 & 3072 & merged \\
+Granite-3.1-8B~\cite{granite31} & \texttt{\tiny ibm-granite/granite-3.1-8b-instruct} & IBM & instruct & 8.2 & 40 & 4096 & system \\
+Llama-3.1-8B (base)~\cite{llama3herd} & \texttt{\tiny meta-llama/Llama-3.1-8B} & Meta & pretrained & 8.0 & 32 & 4096 & plain \\
 \bottomrule
 \end{tabular}
 \end{table*}

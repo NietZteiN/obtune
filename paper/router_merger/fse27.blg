@@ -20,45 +20,45 @@ Warning--page numbers missing in both pages and numpages fields in collberg1997t
 Warning--empty publisher in guo2021graphcodebert
 Warning--empty address in guo2021graphcodebert
 Warning--page numbers missing in both pages and numpages fields in guo2021graphcodebert
-You've used 11 entries,
+You've used 21 entries,
             6273 wiz_defined-function locations,
-            1612 strings with 23101 characters,
-and the built_in function-call counts, 17043 in all, are:
-= -- 1785
-> -- 1240
+            1664 strings with 26207 characters,
+and the built_in function-call counts, 29591 in all, are:
+= -- 2944
+> -- 2270
 < -- 0
-+ -- 454
-- -- 435
-* -- 1756
-:= -- 2074
-add.period$ -- 50
-call.type$ -- 11
-change.case$ -- 192
-chr.to.int$ -- 11
-cite$ -- 16
-duplicate$ -- 1068
-empty$ -- 738
-format.name$ -- 479
-if$ -- 3719
++ -- 823
+- -- 808
+* -- 3121
+:= -- 3769
+add.period$ -- 92
+call.type$ -- 21
+change.case$ -- 360
+chr.to.int$ -- 21
+cite$ -- 26
+duplicate$ -- 1775
+empty$ -- 1254
+format.name$ -- 876
+if$ -- 6227
 int.to.chr$ -- 2
 int.to.str$ -- 1
 missing$ -- 32
-newline$ -- 151
-num.names$ -- 79
-pop$ -- 505
+newline$ -- 265
+num.names$ -- 149
+pop$ -- 840
 preamble$ -- 1
-purify$ -- 276
+purify$ -- 515
 quote$ -- 0
-skip$ -- 429
+skip$ -- 727
 stack$ -- 0
-substring$ -- 814
-swap$ -- 120
+substring$ -- 1356
+swap$ -- 160
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 288
+type$ -- 588
 warning$ -- 5
-while$ -- 42
+while$ -- 88
 width$ -- 0
-write$ -- 270
+write$ -- 475
 (There were 7 warnings)

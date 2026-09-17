@@ -215,6 +215,19 @@ for n,_ in INTERV:
 
 # ---------------- 2. models ----------------
 mm = load_config("models.yaml")["models"]
+# Citations for the panel table (2026-09-17, user: "add citations to model panel"). Keys are in
+# paper/router_merger/references.bib; CodeLlama and StarCoder2 reuse entries that were already there,
+# the other three were added with arXiv ids verified against arxiv.org. Granite has NO arXiv paper for
+# the 3.x instruct family -- the arXiv Granite papers are Code/Vision/Guardian/Embedding/Speech -- so
+# it is cited by its release page rather than with an invented identifier.
+CITE = {"codellama-7b":"code_llama", "codellama-13b":"code_llama", "codellama-34b":"code_llama",
+        "llama31-8b":"llama3herd", "starcoder2-15b":"lozhkov2024starcoder2stackv2",
+        "gemma3-12b":"gemma3", "codegemma-7b":"codegemma", "granite31-8b":"granite31"}
+
+def cite(k):
+    c = CITE.get(k)
+    return f"~\\cite{{{c}}}" if c else ""
+
 def origin(k, v): return (v.get("origin") or ("Meta" if "llama" in k else "?")).split(" (")[0]
 out.append("\n## 2. Models\n")
 out.append("| model | HF id | lineage | type | params (B) | layers | hidden | chat template | LoRA rank / targets | role |")
@@ -389,7 +402,10 @@ L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
 write("master_summary.tex", "\n".join(L), "results/cells (same phases as the per-model grids), all eight models")
 
 # models table
-L = [r"\begin{table*}[ht]", r"\centering\scriptsize\setlength{\tabcolsep}{2.4pt}",
+# Citations widened the Model column by ~11.5 pt past the text block. 2 pt padding took 5.6 pt of
+# that; the checkpoint column is the other half, and \tiny on the hf_id alone keeps the model names
+# and the citations at \scriptsize where they are read.
+L = [r"\begin{table*}[ht]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}",
      r"\caption{\textbf{The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph{Chat template}: "
      r"\emph{system} accepts a system role; \emph{merged} folds the system text into the user turn; \emph{plain} has no template and is used "
      r"for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model.}",
@@ -397,7 +413,8 @@ L = [r"\begin{table*}[ht]", r"\centering\scriptsize\setlength{\tabcolsep}{2.4pt}
      r"\textbf{Model} & \textbf{Checkpoint} & \textbf{Lineage} & \textbf{Type} & \textbf{Params (B)} & \textbf{Layers} & \textbf{Hidden} & \textbf{Chat template} \\", r"\midrule"]
 for k in MODELS + ["llama31-8b-base"]:
     v = mm[k]
-    L.append(f"{NICE[k]} & " + r"\texttt{\scriptsize " + tex_esc(v['hf_id']) + "}" + f" & {origin(k,v)} & {v.get('family')} & {PARAMS_B[k]} & {v.get('n_layers')} & {v.get('hidden_size')} & {v.get('render_mode') or 'system'} " + r"\\")
+    # llama31-8b-base is the pretrained twin of llama31-8b and shares its citation.
+    L.append(f"{NICE[k]}{cite('llama31-8b' if k == 'llama31-8b-base' else k)} & " + r"\texttt{\tiny " + tex_esc(v['hf_id']) + "}" + f" & {origin(k,v)} & {v.get('family')} & {PARAMS_B[k]} & {v.get('n_layers')} & {v.get('hidden_size')} & {v.get('render_mode') or 'system'} " + r"\\")
 L += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
 write("setup_models.tex", "\n".join(L), "configs/models.yaml")
 
@@ -410,7 +427,7 @@ L.append(f"Split & by program, seed {sp['seed']}: train {sp['n_train']} / val {s
 L.append(f"Input cases per program & {sum(cases)/len(cases):.0f}, gold output executed from the clean parent " + r"\\")
 L.append(f"Program length & mean {sum(loc)/len(loc):.1f} LOC, max {max(loc)} " + r"\\")
 L.append(f"Held-out eval, clean & {COV['L0'][0]} programs $\\times$ 3 cases = {COV['L0'][1]} items " + r"\\")
-L.append(r"Coverage per condition & Tables~\ref{tab:taxonomy} and \ref{tab:stacks}; structural transforms decline some programs by design, the unseen family needs $\geq 3$ encodable sites \\")
+L.append(r"Coverage per condition & Table~\ref{tab:taxonomy} and Appendix~\ref{app:absmaster}; structural transforms decline some programs by design, the unseen family needs $\geq 3$ encodable sites \\")
 L.append(f"Training rows per adapter & one condition's train split $\\times$ 3 cases ({sp['n_train']*3}); breadth pools the five seen conditions " + r"\\")
 L.append(r"Paired contrasts & on the programs common to every cell in the contrast, fixed before evaluation; program-clustered bootstrap, 2{,}000 resamples \\")
 L.append(f"JavaScript & {js[0]} held-out programs ({js[1]} items), transferred intact; not regenerable on the cluster " + r"\\")
