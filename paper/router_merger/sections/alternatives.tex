@@ -91,9 +91,14 @@ It is the reference every other arm is measured against, and on the backward tas
 strong one.
 
 \noindent\textbf{In-context.} The same checkpoint with one solved example prepended to the
-prompt~\cite{fewshot}, drawn from the training split of the same condition and held fixed across
-items so the comparison is not confounded by example selection. It tests whether the \emph{task
-format}, rather than the obfuscation, is what the untuned model is failing at.
+prompt~\cite{fewshot}. The example is a single frozen seven-line program written for the purpose ---
+not drawn from the corpus --- shown \emph{unobfuscated} whatever condition is being evaluated, with
+its gold value obtained by executing it through the same sandbox as every other item. It is identical
+for every item, model and condition, and its identity is recorded in the prompt-template hash, so no
+result here depends on example selection. Because the example is clean code, this arm sees no
+obfuscated program at any point: it isolates whether the \emph{answer format}, rather than the
+obfuscation, is what the untuned model is failing at, and it is the weakest intervention in the study
+by design.
 
 \noindent\textbf{Clean-code LoRA.} An adapter trained on unobfuscated programs only, with the same
 prompt, optimiser and step count as every other adapter. It is the control that separates
