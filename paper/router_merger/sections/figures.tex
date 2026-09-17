@@ -1,0 +1,150 @@
+% APPROACH FIGURES (2026-09-17, user: "try drafting figures to show merging and baseline
+% approaches"). Two TikZ figures, no external image files, so the paper stays self-contained.
+%
+% Fig 1 (\label{fig:baselines}) places the six arms on the one axis that actually separates them:
+% WHEN the per-transform knowledge is combined -- never, at training time, at inference time, or in
+% weight space before inference. That is the paper's argument, so the figure should carry it rather
+% than just draw six boxes.
+% Fig 2 (\label{fig:merging}) is the merge itself, one row per step, with the disagreeing parameter
+% actually shown being dropped -- the sign election is the part a reader will not take on faith.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  base/.style ={draw, rounded corners=2pt, minimum height=4.6mm, minimum width=12mm, fill=black!5},
+  ad/.style   ={draw, rounded corners=1pt, minimum height=3.6mm, minimum width=7mm, fill=blue!10},
+  adw/.style  ={ad, fill=green!18},
+  gt/.style   ={draw, diamond, aspect=2.4, inner sep=0.8pt, fill=orange!20, minimum height=3.6mm},
+  clab/.style  ={font=\scriptsize, align=center, text depth=0pt, text width=34mm},
+  ar/.style   ={-{Latex[length=1.2mm]}, shorten >=0.5pt},
+]
+\def\cx{52mm}\def\ry{28mm}
+% ---------- row 1: no adaptation, then adaptation without composition --------------------------
+\begin{scope}[shift={(0,0)}]
+  \node[base] (b1) {base};
+  \node[clab, below=1.4mm of b1] {\textbf{untuned}\\[-1pt]no adaptation};
+\end{scope}
+\begin{scope}[shift={(\cx,0)}]
+  \node[base] (b2) {base};
+  \node[draw, dashed, rounded corners=1pt, minimum height=3.6mm, minimum width=10mm,
+        above=1.8mm of b2, fill=yellow!22] (ex) {example};
+  \draw[ar] (ex) -- (b2);
+  \node[clab, below=1.4mm of b2] {\textbf{in-context}\\[-1pt]one solved example};
+\end{scope}
+\begin{scope}[shift={(2*\cx,0)}]
+  \node[base] (b3) {base};
+  \node[ad, above=1.8mm of b3] (a3) {\texttt{L0}};
+  \draw[ar] (a3) -- (b3);
+  \node[clab, below=1.4mm of b3] {\textbf{clean LoRA}\\[-1pt]clean code only};
+\end{scope}
+% ---------- row 2: the three ways to use the per-transform data --------------------------------
+\begin{scope}[shift={(0,-\ry)}]
+  \node[base] (b4) {base};
+  \node[ad, above=1.8mm of b4, minimum width=12mm, fill=red!14] (a4) {pooled};
+  \draw[ar] (a4) -- (b4);
+  \foreach \x in {-4.5mm,-1.5mm,1.5mm,4.5mm}
+    \node[draw, fill=black!10, minimum width=2mm, minimum height=2mm, inner sep=0pt,
+          above=1.8mm of a4, xshift=\x] {};
+  \node[clab, below=1.4mm of b4] {\textbf{pooled}\\[-1pt]one adapter, all data};
+\end{scope}
+\begin{scope}[shift={(\cx,-\ry)}]
+  \node[base] (b5) {base};
+  \node[gt, above=1.8mm of b5] (g5) {gate};
+  \draw[ar] (g5) -- (b5);
+  \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
+    \node[ad, above=2mm of g5, xshift=\x, minimum width=5mm] (e\i) {};
+  \foreach \i in {1,2,3} \draw[ar] (e\i) -- (g5);
+  \node[clab, below=1.4mm of b5] {\textbf{mixture}\\[-1pt]gate mixes per input};
+\end{scope}
+\begin{scope}[shift={(2*\cx,-\ry)}]
+  \node[base] (b6) {base};
+  \node[adw, above=1.8mm of b6, minimum width=12mm] (m6) {merged};
+  \draw[ar] (m6) -- (b6);
+  \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
+    \node[ad, above=2.6mm of m6, xshift=\x, minimum width=5mm] (f\i) {};
+  \foreach \i in {1,2,3} \draw[ar] (f\i) -- (m6);
+  \node[clab, below=1.4mm of b6] {\textbf{merge}\\[-1pt]combined beforehand};
+\end{scope}
+% ---------- the axis the second row is ordered on ----------------------------------------------
+\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (0,-\ry-13.5mm) {in training};
+\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (\cx,-\ry-13.5mm) {at inference};
+\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (2*\cx,-\ry-13.5mm) {in weight space};
+\draw[black!30] (-22mm,-\ry-12.5mm) -- (2*\cx+22mm,-\ry-12.5mm);
+\end{tikzpicture}
+\caption{\textbf{The six arms.} All are the same base model at the same LoRA rank, differing only in
+how the training data is used and where per-transform knowledge is combined. Top row: arms that never
+see an obfuscated program in training --- \emph{untuned}, \emph{in-context}, and the \emph{clean
+LoRA} control that separates learning the task from learning the transforms. Bottom row: the three
+ways to spend the obfuscated data, ordered by \emph{when} the specialists are combined ---
+\emph{pooled} collapses them during training, \emph{mixture} composes them per input at inference and
+must keep every expert resident, and \emph{merge} composes them in weight space beforehand, leaving
+one adapter with no gate and no run-time cost. The anchored objective is \emph{pooled} with an added
+consistency term (Section~\ref{sec:baselines}).}
+\label{fig:baselines}
+\end{figure*}
+
+\begin{figure}[t]
+\centering
+\footnotesize
+\begin{tikzpicture}[
+  font=\scriptsize,
+  cell/.style={draw, minimum width=4.6mm, minimum height=4.6mm, inner sep=0pt, anchor=center},
+  pcell/.style ={cell, fill=green!22},
+  ncell/.style ={cell, fill=red!20},
+  zcell/.style ={cell, fill=black!6, text=black!40},
+  rl/.style  ={font=\scriptsize\bfseries, anchor=east},
+  st/.style  ={font=\scriptsize\itshape, anchor=west, text=black!65},
+]
+\def\dx{5.0mm}\def\dy{5.4mm}
+% three task vectors, six parameters each
+\def\rowA{{"+","-","+","-","+","-"}}
+\def\rowB{{"+","+","0","-","+","+"}}
+\def\rowC{{"-","+","+","+","+","0"}}
+\foreach \r/\name/\yy in {0/{$\Delta_1$}/0, 1/{$\Delta_2$}/-1, 2/{$\Delta_3$}/-2} {
+  \node[rl] at (-2mm, \yy*\dy) {\name};
+  \foreach \c in {0,...,5} {
+    \pgfmathparse{\r==0 ? \rowA[\c] : (\r==1 ? \rowB[\c] : \rowC[\c])}
+    \edef\v{\pgfmathresult}
+    \ifnum\pdfstrcmp{\v}{+}=0 \node[pcell] at (\c*\dx, \yy*\dy) {$+$};
+    \else\ifnum\pdfstrcmp{\v}{-}=0 \node[ncell] at (\c*\dx, \yy*\dy) {$-$};
+    \else \node[zcell] at (\c*\dx, \yy*\dy) {$0$};\fi\fi
+  }
+}
+\node[st] at (6.1*\dx, -1*\dy) {specialists' task vectors};
+
+% elected sign
+\node[rl] at (-2mm, -3.35*\dy) {elected};
+\foreach \c/\s in {0/+, 1/+, 2/+, 3/-, 4/+, 5/+} {
+  \ifnum\pdfstrcmp{\s}{+}=0 \node[pcell] at (\c*\dx, -3.35*\dy) {$+$};
+  \else \node[ncell] at (\c*\dx, -3.35*\dy) {$-$};\fi
+}
+\node[st] at (6.1*\dx, -3.35*\dy) {sign by summed magnitude};
+\draw[-{Latex[length=1.3mm]}, black!55] (2.5*\dx, -2.55*\dy) -- (2.5*\dx, -3.05*\dy);
+
+% merged: entries disagreeing with the elected sign are dropped
+\node[rl] at (-2mm, -4.7*\dy) {merged};
+\foreach \c/\s in {0/+, 1/+, 2/+, 3/-, 4/+, 5/+} {
+  \ifnum\pdfstrcmp{\s}{+}=0 \node[pcell] at (\c*\dx, -4.7*\dy) {$+$};
+  \else \node[ncell] at (\c*\dx, -4.7*\dy) {$-$};\fi
+}
+\draw[-{Latex[length=1.3mm]}, black!55] (2.5*\dx, -3.9*\dy) -- (2.5*\dx, -4.4*\dy);
+\node[st] at (6.1*\dx, -4.7*\dy) {mean of agreeing entries};
+
+% highlight the two parameters where a specialist disagreed and was excluded
+\draw[red!70!black, thick, rounded corners=1pt] (-0.42*\dx, -2.28*\dy) rectangle (0.42*\dx, 0.42*\dy);
+\draw[red!70!black, thick, rounded corners=1pt] (2.58*\dx, -2.28*\dy) rectangle (3.42*\dx, 0.42*\dy);
+\node[font=\scriptsize, text=red!70!black, anchor=north, text width=32mm, align=center]
+  at (1.7*\dx, -5.5*\dy) {boxed columns: specialists disagree; only those matching the elected sign are averaged};
+\end{tikzpicture}
+\caption{\textbf{Sign-consensus merging, on six parameters of three specialists.}
+Each specialist contributes a task vector --- the update its own training produced. Averaging these
+directly lets disagreeing updates cancel. TIES instead trims small entries, \emph{elects} a sign per
+parameter by summing signed magnitudes across specialists, and averages only the entries that match
+it, so a parameter two specialists push positive and one pushes negative is merged from the two
+(boxed columns)~\cite{ties}. DARE-TIES prepends a random drop of a fraction of each vector's entries
+with rescaling of the survivors, preserving the update in expectation~\cite{dare}. Nothing is
+trained: both are arithmetic on weights already learned, and the result is one adapter of the
+original rank.}
+\label{fig:merging}
+\end{figure}

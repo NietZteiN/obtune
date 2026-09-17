@@ -170,6 +170,8 @@
 \newcommand{\todomagenta}[1]{\todoc{magenta}{\textbf{#1}}}
   
 \usepackage{tikz}
+% Libraries for the approach figures in sections/figures.tex (2026-09-17).
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds,calc,shapes.geometric}
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
             \node[shape=circle,draw,inner sep=1.5pt] (char) {#1};}}
 %\newcommand{\david}[1]{\textcolor{red}{{#1}}}
@@ -625,6 +627,7 @@
 % wrong. sections/master.tex now carries only the per-model tables and is \input from the appendix,
 % because nine full-page floats cannot sit in a 10-page body.
 \input{sections/background}
+\input{sections/figures}
 \input{sections/setup}
 \input{sections/results}
 \input{sections/related}
