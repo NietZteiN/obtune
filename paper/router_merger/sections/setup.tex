@@ -125,22 +125,34 @@ programs common to the cells it compares, fixed before evaluation. The full per-
 definitions and item counts are in \texttt{configs/conditions\_composite.yaml}.
 
 \subsection{Systems}
-Every system is a LoRA on the same base model, evaluated on still-obfuscated code. \emph{Clean LoRA}
-(\texttt{tuned\_L0}) is tuned on unobfuscated programs and is the control throughout; one
-\emph{specialist} per seen transform; \emph{breadth} (\texttt{mono\_all}) is one adapter trained on
-the pooled data of all six training conditions --- the five seen transforms and clean code; \emph{family} (\texttt{tuned\_X1}) is trained on the unseen family's
-sibling and is the ceiling for that family; it is reported as that ceiling only and is excluded from
-the comparison tables, because on exactly the conditions that matter most it is the one arm for which
-the held-out family is not held out. \emph{Routing} mixes the specialists with a learned gate
-(\texttt{mole\_router}), its argmax, a fixed uniform gate or a gate frozen at random initialisation;
-the last two separate what the mixture is worth from what the routing is worth. \emph{Merging}
-combines the specialists in weight space (TIES, DARE-TIES, DARE-linear) or anchors the merge on the
-clean adapter. The \emph{anchored} objective (\texttt{cons\_lam3}) is Eq.~\ref{eq:paired_consistency}
-with $\lambda = 3$, a plateau from a sweep on the trainable grid: the teacher is a frozen clean-code-tuned
-adapter reading the unobfuscated parent, the student never sees the parent, and the objective trains on
-exactly the rows breadth trains on (26{,}841 rows, 1{,}257 steps for both); at $\lambda = 0$ it reduces
-to breadth identically, which makes breadth the data-matched control. A one-shot in-context baseline
-completes the set.
+Section~\ref{sec:baselines} describes what each arm is; this is how it is instantiated. Every system
+is a LoRA of rank 32 ($\alpha = 64$) on the same target modules of the same base model, evaluated on
+still-obfuscated code, so the arms differ only in what they were trained on and how they are
+combined.
+
+\emph{Clean LoRA} (\texttt{tuned\_L0}) is trained on unobfuscated programs; one \emph{specialist}
+per seen transform; \emph{breadth} (\texttt{mono\_all}) on the pooled data of all six training
+conditions --- the five seen transforms and clean code --- 26{,}841 rows in 1{,}257 steps. The
+\emph{anchored} objective (\texttt{cons\_lam3}) is Eq.~\ref{eq:paired_consistency} at $\lambda = 3$,
+a plateau from a sweep on the trainable grid, with a frozen clean-code-tuned adapter as teacher; the
+student never sees the parent, and it trains on exactly breadth's rows and steps, so at $\lambda = 0$
+it reduces to breadth identically. The \emph{mixture} (\texttt{mole\_router}) mixes eight specialists
+with a learned gate, reported alongside its argmax, a fixed uniform gate and a gate frozen at random
+initialisation.
+
+\emph{Merges} combine the six adapters for $\{$\texttt{L0}, \texttt{L1b}, \texttt{L1r},
+\texttt{L2}, \texttt{S1}, \texttt{S2}$\}$ --- precisely the conditions breadth pools --- with uniform
+weights, density $0.5$, and sign election by summed signed magnitude. We report \textsc{TIES} and
+\textsc{DARE-TIES}. Density was selected by a sweep over $\{0.3, 0.5, 0.7\}$ on a 1.5\,B pilot model
+outside the panel and applied unchanged to all eight, so it is not fitted to the panel and not tuned
+for it either. Merging is done in LoRA space (Section~\ref{sec:merging}) and the merged adapter is
+written at the same rank, so it is served exactly as any other adapter is.
+
+Two arms exist but are excluded from the comparison tables. \emph{Family} (\texttt{tuned\_X1}) is
+trained on the held-out family's trainable sibling: it is the ceiling for that family and is reported
+only as that, because on exactly the conditions that matter most it is the one arm for which the
+held-out family is not held out. \emph{DARE-linear} is a third merge variant we ran and do not
+discuss; it is in the appendix grids.
 
 \subsection{Measurement}
 Forward accuracy is strict normalised exact match on the produced output, with no containment

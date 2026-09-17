@@ -44,23 +44,77 @@ the deobfuscation lineage: a model that can undo a transform tells us about the 
 model that answers correctly on the transformed program tells us about its understanding of the
 computation.
 
-\subsection{Adapting a model, and composing adaptations}
+\subsection{Adapting a model}
 Fine-tuning a code model on a new distribution is now routinely done with low-rank
-adaptation~\cite{lora}, which freezes the base weights and trains a pair of low-rank matrices per
-target module. The practical consequence for this paper is not efficiency but \emph{modularity}:
-each adapter is a small, separable object, so one can be trained per transform and the resulting set
-composed afterwards --- which is the design space the results section explores.
+adaptation~\cite{lora}, which freezes the base weights $W$ and learns a low-rank update $\Delta W =
+BA$ with $B \in \mathbb{R}^{d \times r}$, $A \in \mathbb{R}^{r \times k}$ and $r \ll d$, applied to
+each target module. The practical consequence for this paper is not efficiency but
+\emph{modularity}: an adapter is a small, separable object that can be trained per transform and
+combined with others afterwards, and the \emph{same} architecture, rank and target modules can be
+held fixed while only the training data or the combination rule changes. Every arm below is a LoRA
+at the same rank on the same base model, so differences between them are differences in how the data
+was used, not in capacity.
 
-Three ways to compose them appear in the literature and are the baselines we compare.
-\textbf{Pooled training} ignores the modularity and trains a single adapter on the union of all the
-data; it is the obvious thing to do and the one most likely to be done in practice.
-\textbf{Routing} keeps the adapters separate and selects or mixes among them per input, which needs a
-gate at inference and pays for every expert it keeps loaded. \textbf{Weight-space merging} collapses
-the adapters into one set of weights before inference, so it costs nothing at run time. The merging
-methods we use are the two standard ones. TIES resolves the interference between task vectors by
-trimming small updates and, where adapters disagree on a parameter's sign, keeping only those that
-agree with the majority~\cite{ties}. DARE adds a preliminary step that randomly drops a fraction of
-the delta entries and rescales the survivors so the expected update is preserved, on the finding that
-fine-tuning deltas are highly redundant~\cite{dare}. Both are used unmodified; the contribution of
-this paper is not a merging algorithm but an evaluation that separates these three mechanisms where
-they actually differ.
+\subsection{Baselines}
+\label{sec:baselines}
+Six arms span the ways one might spend a fixed budget of obfuscated training data. The first two do
+not adapt weights to obfuscation at all and bound the problem; the next three are the standard
+single-adapter answers; the last composes.
+
+\noindent\textbf{Untuned.} The instruction-tuned checkpoint, prompted directly. It is the reference
+every other arm is measured against, and on the backward task it is a surprisingly strong one.
+
+\noindent\textbf{In-context.} The same model with one solved example in the prompt. It tests whether
+the task format, rather than the obfuscation, is what the untuned model is failing at.
+
+\noindent\textbf{Clean-code LoRA.} An adapter trained on unobfuscated programs only. It is the
+control that separates \emph{learning the task} from \emph{learning the transforms}: it sees the
+prompt format and the answer distribution but never an obfuscated program, so whatever it gains is
+not transform knowledge.
+
+\noindent\textbf{Pooled training (breadth).} One adapter trained on the union of every training
+condition. This is the obvious way to spend the data and the one most likely to be done in practice:
+it needs no per-transform bookkeeping, no gate, and no merge step.
+
+\noindent\textbf{Anchored training.} Pooled training plus a consistency term. The student reads the
+obfuscated program while a frozen clean-code teacher reads its unobfuscated parent, and the loss adds
+$\lambda\,D_{\mathrm{KL}}$ between their answer-token distributions to the ordinary cross-entropy. It
+trains on exactly the rows pooled training uses and reduces to pooled training at $\lambda = 0$,
+which makes pooled training its data-matched control. The idea is to anchor the model to the one
+thing a semantics-preserving transform leaves invariant --- the behaviour of the same computation
+written plainly.
+
+\noindent\textbf{Mixture of specialists.} One adapter per transform, kept separate, with a learned
+gate that mixes their low-rank updates per input. Because a learned gate can be worth nothing over no
+gate at all, we also report a uniform gate and a gate frozen at random initialisation, which separate
+what the \emph{mixture} is worth from what the \emph{routing} is worth. This arm is the most
+expressive of the six and the most expensive: every expert must be resident at inference.
+
+\subsection{Merging specialists into one adapter}
+\label{sec:merging}
+Merging occupies the same design point as the mixture --- per-transform specialists, composed --- but
+resolves the composition \emph{before} inference, so what is deployed is a single adapter of exactly
+the base architecture, with no gate, no expert bank and no run-time cost over ordinary fine-tuning.
+
+The object being merged is a \emph{task vector}: for each specialist $i$, the update $\Delta_i$ its
+training produced. Naive averaging of task vectors degrades as their number grows, because updates
+that disagree cancel. TIES attributes that to two forms of interference --- redundant entries that
+carry little signal, and outright sign disagreement on a parameter --- and removes both in three
+steps: \emph{trim} each $\Delta_i$ to its largest-magnitude entries, \emph{elect} a sign per
+parameter by summing signed magnitudes across specialists, and \emph{merge} only the entries whose
+sign matches the elected one~\cite{ties}. Nothing is trained; the rule is arithmetic on weights
+already learned. DARE prepends a second sparsification of a different kind: drop a fraction $p$ of
+each $\Delta_i$'s entries at random and rescale the survivors by $1/(1-p)$, so the update is
+preserved in expectation while its redundancy is cut, on the finding that fine-tuning deltas are
+extremely redundant~\cite{dare}. We use both, as \textsc{TIES} and \textsc{DARE-TIES}, and report
+them separately --- they are not interchangeable, and the difference between them turns out to matter
+on one model in our panel.
+
+Two implementation choices are worth stating because they affect what is being measured. First, we
+merge \emph{in LoRA space}, combining the $A$ and $B$ factors of the specialists directly. The
+alternative offered by common tooling is to fold each adapter into the base weights and re-extract a
+low-rank adapter by SVD, which changes the rank and introduces reconstruction error before the
+merging rule is applied at all; that would confound the merge with its re-extraction. Second, the
+specialists are combined with uniform weights. A weighted merge is a tuning knob, and leaving it
+uniform keeps the comparison against pooled training --- which also weights its conditions equally by
+construction --- a comparison of \emph{composition}, not of tuning effort.
