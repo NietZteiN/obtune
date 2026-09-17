@@ -91,8 +91,10 @@ space}: the trim--elect--merge rule is applied independently to the set of $A$ f
 of $B$ factors, and the merged adapter is $B_{\mathrm{merged}} A_{\mathrm{merged}}$, with each
 specialist's combining weight split as $\sqrt{w_i}$ on either side so the product recovers $w_i$. This
 is the standard implementation for LoRA and it is \emph{not} identical to applying TIES to the
-assembled updates $\{\Delta_i\}$: sign election on the factors is not sign election on their product.
-The difference is not negligible. On random factors at $r = 4$ with three specialists and density
+assembled updates $\{\Delta_i\}$. The reason is structural rather than incidental: each entry of the
+update is a sum over the rank, $\Delta_i[m,n] = \sum_{t=1}^{r} B_i[m,t]\,A_i[t,n]$, so no single
+factor entry corresponds to a parameter of the update, and ``specialists agree on the sign of this
+parameter'' is a different statement in the two spaces. The difference is not negligible. On random factors at $r = 4$ with three specialists and density
 $0.5$, $B_{\mathrm{merged}} A_{\mathrm{merged}}$ and $\mathrm{TIES}(\{B_i A_i\})$ have cosine
 similarity $0.40$ and disagree in sign on $39\%$ of entries.
 
