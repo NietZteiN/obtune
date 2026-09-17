@@ -68,45 +68,131 @@ original rank.}
 \label{fig:merging}
 \end{figure}
 
-Our approach trains one low-rank specialist per obfuscating transform and merges the specialists into
-a single adapter before inference (Figure~\ref{fig:merging}). It occupies the same design point as a
-router system --- per-transform specialists, composed --- but resolves the composition \emph{before}
-inference, so what is deployed is a single adapter of exactly the base architecture, with no gate, no
-expert bank and no run-time cost over ordinary fine-tuning.
+We train one low-rank specialist per obfuscating transform and combine the specialists into a single
+adapter before inference. The resulting system occupies the same design point as a router over
+experts --- per-transform specialists, composed --- but resolves the composition offline, so the
+deployed artefact is one adapter of the base architecture, requiring no gate, no expert bank, and no
+additional computation at inference time.
 
-\paragraph{What is combined.} Specialist $i$ contributes the update its training produced,
-$\Delta_i = B_i A_i$, with $B_i \in \mathbb{R}^{d \times r}$ and $A_i \in \mathbb{R}^{r \times k}$.
-Naive averaging of such updates degrades as their number grows, because entries that disagree cancel.
-TIES attributes this to two forms of interference --- redundant entries carrying little signal, and
-outright sign disagreement on a parameter --- and removes both in three steps: \emph{trim} each update
-to its largest-magnitude entries, \emph{elect} a sign per parameter by summing signed magnitudes
-across specialists, and \emph{merge} only the entries whose sign matches the elected
-one~\cite{ties}. DARE prepends a sparsification of a different kind: drop a fraction $p$ of each
-update's entries at random and rescale the survivors by $1/(1-p)$, preserving the update in
-expectation while cutting its redundancy~\cite{dare}. Nothing is trained; both are arithmetic on
-weights already learned, in the task-vector sense established by task arithmetic~\cite{taskarithmetic}.
+\subsection{Task Vectors and Sign-Consensus Merging}
+Let $W_0$ denote the frozen base weights of a target module. Specialist $i$, trained on transform
+$i$, contributes the update $\Delta_i = B_i A_i$ with $B_i \in \mathbb{R}^{d \times r}$ and
+$A_i \in \mathbb{R}^{r \times k}$; since the base is frozen, $\Delta_i$ is precisely the task vector
+of that specialist in the sense of Ilharco et al.~\cite{taskarithmetic}. The objective of merging is a
+single $\Delta^{\star}$ that retains the competence of all $n$ specialists.
 
-\paragraph{Where it is applied, and why that is not the same thing.} We merge in \emph{LoRA factor
-space}: the trim--elect--merge rule is applied independently to the set of $A$ factors and to the set
-of $B$ factors, and the merged adapter is $B_{\mathrm{merged}} A_{\mathrm{merged}}$, with each
-specialist's combining weight split as $\sqrt{w_i}$ on either side so the product recovers $w_i$. This
-is the standard implementation for LoRA and it is \emph{not} identical to applying TIES to the
-assembled updates $\{\Delta_i\}$. The reason is structural rather than incidental: each entry of the
-update is a sum over the rank, $\Delta_i[m,n] = \sum_{t=1}^{r} B_i[m,t]\,A_i[t,n]$, so no single
-factor entry corresponds to a parameter of the update, and ``specialists agree on the sign of this
-parameter'' is a different statement in the two spaces. The difference is not negligible. On random factors at $r = 4$ with three specialists and density
-$0.5$, $B_{\mathrm{merged}} A_{\mathrm{merged}}$ and $\mathrm{TIES}(\{B_i A_i\})$ have cosine
-similarity $0.40$ and disagree in sign on $39\%$ of entries.
+Uniform averaging, $\Delta^{\star} = \tfrac{1}{n}\sum_i \Delta_i$, degrades as $n$ grows because
+entries on which specialists disagree cancel. TIES~\cite{ties} attributes this degradation to two
+forms of interference and removes each in turn. First, each $\Delta_i$ is \emph{trimmed} to its
+largest-magnitude entries, discarding updates that carry little signal. Second, a sign is
+\emph{elected} for each parameter by summing signed magnitudes across specialists. Third, the merge
+averages only those entries whose sign matches the elected one, so a specialist that opposes the
+consensus on a parameter contributes nothing to it. DARE~\cite{dare} prepends an independent
+sparsification: a fraction $p$ of each $\Delta_i$'s entries is dropped at random and the survivors are
+rescaled by $1/(1-p)$, which preserves the update in expectation while reducing redundancy. Neither
+procedure involves training; both are arithmetic on weights already learned.
 
-We merge in factor space nonetheless, and the reason is the alternative. Assembling $\Delta_i$,
-merging, and re-extracting a low-rank adapter requires an SVD truncation that changes the rank and
-introduces reconstruction error \emph{before} the merging rule is evaluated --- so the deployed
-adapter would differ from the base architecture and the measured effect would confound the merge with
-its re-extraction. Factor-space merging preserves the rank exactly and leaves the result servable as
-any other adapter. The consequence for interpretation is that our results are evidence about
-sign-consensus merging \emph{as it is actually applied to LoRA adapters}, which is how practitioners
-use it, rather than about the published task-vector algorithm in its original setting.
+\subsection{Application in LoRA Factor Space}
+The published formulation of TIES operates on the assembled updates $\{\Delta_i\}$. The standard
+implementation for LoRA adapters, which we adopt, instead applies the trim--elect--merge rule
+independently to the set of $A$ factors and to the set of $B$ factors, forming
+$\Delta^{\star} = B_{\mathrm{m}} A_{\mathrm{m}}$, where each specialist's combining weight $w_i$ is
+split as $\sqrt{w_i}$ across the two sides so that their product recovers $w_i$.
 
-\paragraph{Weighting.} The specialists are combined with uniform weights. A weighted merge is a tuning
-knob, and leaving it uniform keeps the comparison against pooled training --- which also weights its
-conditions equally by construction --- a comparison of \emph{composition}, not of tuning effort.
+These two procedures are not equivalent, and the inequivalence is structural rather than numerical.
+Each entry of an update is a sum over the rank,
+$\Delta_i[m,n] = \sum_{t=1}^{r} B_i[m,t]\,A_i[t,n]$, so no entry of $A_i$ or $B_i$ corresponds to a
+single parameter of $\Delta_i$. The proposition ``the specialists agree on the sign of this
+parameter'' therefore denotes a different quantity in each space. Figure~\ref{fig:factorspace}
+contrasts the two. Empirically the gap is substantial: for random factors with $r = 4$, three
+specialists, and density $0.5$, the outputs $B_{\mathrm{m}}A_{\mathrm{m}}$ and
+$\mathrm{TIES}(\{B_iA_i\})$ exhibit a cosine similarity of $0.40$ and disagree in sign on $39\%$ of
+entries.
+
+We adopt factor-space merging because the alternative introduces a confound. Assembling each
+$\Delta_i$, merging, and re-extracting a low-rank adapter requires a truncated SVD, which alters the
+adapter's rank and introduces reconstruction error \emph{prior to} the evaluation of the merging rule;
+the deployed adapter would then differ from the base architecture, and any measured effect would
+combine the merge with its re-extraction. Factor-space merging preserves the rank exactly and yields
+an artefact servable by the same multi-adapter path as any single specialist. The consequence for
+interpretation is that our results characterise sign-consensus merging \emph{as it is applied to LoRA
+adapters in practice}, rather than the published task-vector algorithm in its original setting.
+Whether the two differ in downstream accuracy on our panel is an open question that the present
+experiments do not address.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  fsmat/.style  ={draw, minimum width=9mm, minimum height=7mm, inner sep=0pt, fill=blue!9},
+  fsfac/.style  ={draw, inner sep=0pt, fill=blue!9},
+  fsout/.style ={fsmat, fill=green!16},
+  fsop/.style   ={draw, rounded corners=1.5pt, minimum height=5.2mm, minimum width=15mm, fill=orange!16,
+                font=\scriptsize\bfseries},
+  fsarr/.style   ={-{Latex[length=1.3mm]}},
+  fshd/.style   ={font=\scriptsize\bfseries},
+  fsnote/.style   ={font=\scriptsize\itshape, text=black!65},
+]
+% ============================ (a) update space ==================================================
+\begin{scope}[shift={(0,0)}]
+  \node[fshd, anchor=west] at (-6mm, 17mm) {(a) update space --- TIES as published};
+  \foreach \i/\y in {1/10mm, 2/3mm, 3/-4mm} {
+    \node[fsfac, minimum width=3mm, minimum height=6mm] (b\i) at (0,\y) {};
+    \node[fsfac, minimum width=8mm, minimum height=3mm] (a\i) at (7mm,\y) {};
+    \node[fsnote] at (-4.5mm,\y) {$B_\i$};
+    \node at (13.5mm,\y) {$=$};
+    \node[fsmat] (d\i) at (21mm,\y) {$\Delta_\i$};
+  }
+  \node[fsnote] at (7mm,-9.5mm) {$A_i$};
+  \node[fsop] (t1) at (35mm, 3mm) {TIES};
+  \foreach \i in {1,2,3} \draw[fsarr] (d\i) -- (t1);
+  \node[fsout, minimum width=9mm] (o1) at (50mm, 3mm) {$\Delta^{\star}$};
+  \draw[fsarr] (t1) -- (o1);
+  \node[fsnote, text width=30mm, align=center] at (35mm,-9.5mm) {sign elected per\\parameter of $\Delta$};
+\end{scope}
+% ============================ (b) factor space ==================================================
+\begin{scope}[shift={(68mm,0)}]
+  \node[fshd, anchor=west] at (-4mm, 17mm) {(b) factor space --- what PEFT applies to LoRA};
+  \foreach \i/\y in {1/10mm, 2/3mm, 3/-4mm} {
+    \node[fsfac, minimum width=3mm, minimum height=6mm] (bb\i) at (0,\y) {};
+    \node[fsfac, minimum width=8mm, minimum height=3mm] (aa\i) at (10mm,\y) {};
+    \node[fsnote] at (-4.5mm,\y) {$B_\i$};
+  }
+  \node[fsnote] at (10mm,-9.5mm) {$A_i$};
+  \node[fsop, minimum width=11mm] (tb) at (26mm, 8mm) {TIES};
+  \node[fsop, minimum width=11mm] (ta) at (26mm, -2mm) {TIES};
+  \foreach \i in {1,2,3} { \draw[fsarr] (bb\i) -- (tb); \draw[fsarr] (aa\i) -- (ta); }
+  \node[fsfac, fill=green!16, minimum width=3mm, minimum height=6mm] (bm) at (41mm, 8mm) {};
+  \node[fsnote] at (46mm, 8mm) {$B_{\mathrm{m}}$};
+  \node[fsfac, fill=green!16, minimum width=8mm, minimum height=3mm] (am) at (42mm, -2mm) {};
+  \node[fsnote] at (49mm, -2mm) {$A_{\mathrm{m}}$};
+  \draw[fsarr] (tb) -- (bm); \draw[fsarr] (ta) -- (am);
+  \node[fsout, minimum width=11mm] (o2) at (60mm, 3mm) {$B_{\mathrm{m}}A_{\mathrm{m}}$};
+  \draw[fsarr] (bm) -- (o2); \draw[fsarr] (am) -- (o2);
+  \node[fsnote, text width=34mm, align=center] at (26mm,-9.5mm) {sign elected per entry\\of $A$ and of $B$};
+\end{scope}
+% ============================ the verdict =======================================================
+\node[font=\normalsize] (neq) at (59mm, 3mm) {$\neq$};
+\node[font=\scriptsize, text=red!70!black, align=center, anchor=north] at (58mm, -13mm)
+  {cosine $0.40$, \ $39\%$ of entries differ in sign};
+\node[fsnote, anchor=north, text width=120mm, align=center] at (58mm, -19mm)
+  {$\Delta[m,n] = \sum_{t=1}^{r} B[m,t]\,A[t,n]$: one entry of the update draws on a whole column of $B$ and row of $A$, so ``agree on this parameter'' is not the same statement in the two spaces};
+\end{tikzpicture}
+\caption{\textbf{Sign election in update space and in factor space are different operations.}
+(a) The published algorithm forms each specialist's update $\Delta_i = B_iA_i$ and elects a sign per
+\emph{parameter of the update}. (b) The standard LoRA implementation, and the one we use, applies the
+same rule independently to the $A$ factors and to the $B$ factors and multiplies the results, so signs
+are elected per \emph{factor entry}. Because each entry of $\Delta$ is a sum over the rank, no factor
+entry corresponds to one parameter of the update, and the two merges do not coincide: on random
+factors at $r{=}4$ with three specialists and density $0.5$ their outputs have cosine similarity
+$0.40$ and disagree in sign on $39\%$ of entries. We use (b) because the alternative --- assembling
+$\Delta$, merging, and re-extracting by SVD --- changes the adapter's rank and adds reconstruction
+error before the merging rule is evaluated.}
+\label{fig:factorspace}
+\end{figure*}
+
+\subsection{Weighting}
+Specialists are combined with uniform weights $w_i = 1/n$. Non-uniform weighting constitutes an
+additional degree of freedom, and holding the weights uniform preserves the comparison against pooled
+training --- which likewise weights its constituent conditions equally by construction --- as a
+comparison of composition strategy rather than of tuning effort.
