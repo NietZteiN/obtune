@@ -168,3 +168,4 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`2026-09-14_router-backwards-first-model.md`](2026-09-14_router-backwards-first-model.md) — H-router-locks refuted on Llama: the mixture does not lock, tracks the merge, and its gate is worth nothing over uniform.
 - [`2026-09-14_router-backwards-second-model.md`](2026-09-14_router-backwards-second-model.md) — Granite: the router locks (0.089) where Llama's did not; merge beats router on both.
 - [`2026-09-14_router-backwards-three-models.md`](2026-09-14_router-backwards-three-models.md) — three models, three outcomes; the rule's band was miscalibrated and is left as written.
+- [`2026-09-17_granite-exception-replicates-at-seed-42.md`](2026-09-17_granite-exception-replicates-at-seed-42.md) — the exception replicates; TIES carries Granite at both seeds.
