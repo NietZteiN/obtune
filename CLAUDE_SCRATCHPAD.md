@@ -2217,3 +2217,9 @@ What replicates on all three regardless of the band: router beats breadth backwa
 +1.48\* exact args), and the merge beats the router (+1.89\*, +1.16\*, +1.13\*).
 `log/modularity/2026-09-14_router-backwards-three-models.md`.
 
+**H-seed42, teacher clarification (2026-09-17).** The seed-42 anchored arm (`cons_lam3_s42`) is trained
+with the **seed-17 clean-code teacher** on both CodeLlama-7B and Llama-3.1-8B: `obj_cons_*_py.yaml`
+hardcodes `L0_r32_s17/best` and `objectives.py` exposes no override. The second seed therefore varies
+the student's initialisation and data order and holds the teacher fixed. Consistent across models;
+must be stated in the method when s42 results are reported. Not a bug; a choice made visible.
+
