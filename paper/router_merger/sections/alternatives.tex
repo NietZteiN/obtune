@@ -50,7 +50,7 @@
   \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
     \node[ad, above=2mm of g5, xshift=\x, minimum width=5mm] (e\i) {};
   \foreach \i in {1,2,3} \draw[ar] (e\i) -- (g5);
-  \node[clab, below=1.4mm of b5] {\textbf{mixture}\\[-1pt]gate mixes per input};
+  \node[clab, below=1.4mm of b5] {\textbf{router}\\[-1pt]gate mixes per input};
 \end{scope}
 \begin{scope}[shift={(2*\cx,-\ry)}]
   \node[base] (b6) {base};
@@ -72,44 +72,75 @@ how the training data is used and where per-transform knowledge is combined. Top
 see an obfuscated program in training --- \emph{untuned}, \emph{in-context}, and the \emph{clean
 LoRA} control that separates learning the task from learning the transforms. Bottom row: the three
 ways to spend the obfuscated data, ordered by \emph{when} the specialists are combined ---
-\emph{pooled} collapses them during training, \emph{mixture} composes them per input at inference and
+\emph{pooled} collapses them during training, \emph{router} composes them per input at inference and
 must keep every expert resident, and \emph{merge} composes them in weight space beforehand, leaving
-one adapter with no gate and no run-time cost. The anchored objective is \emph{pooled} with an added
+one adapter with no gate and no run-time cost. The KL-consistency arm is \emph{pooled} with an added
 consistency term (Section~\ref{sec:baselines}).}
 \label{fig:baselines}
 \end{figure*}
 
 Figure~\ref{fig:baselines} places the merge among the five other ways one might spend the same budget
-of obfuscated training data. The first two do
-not adapt weights to obfuscation at all and bound the problem; the next three are the standard
-single-adapter answers; the last composes.
+of obfuscated training data. The first two do not adapt weights at all and bound the problem; the next
+three are the standard single-adapter answers; the last composes. Every arm is a LoRA of the same rank
+on the same target modules of the same base model, so what differs is the data and the combination
+rule, not the capacity. We give each enough detail to be reimplemented; exact hyperparameters are in
+Section~\ref{sec:setup}.
 
-\noindent\textbf{Untuned.} The instruction-tuned checkpoint, prompted directly. It is the reference
-every other arm is measured against, and on the backward task it is a surprisingly strong one.
+\noindent\textbf{Untuned.} The instruction-tuned checkpoint, prompted directly, with no weight change.
+It is the reference every other arm is measured against, and on the backward task it is a surprisingly
+strong one.
 
-\noindent\textbf{In-context.} The same model with one solved example in the prompt. It tests whether
-the task format, rather than the obfuscation, is what the untuned model is failing at.
+\noindent\textbf{In-context.} The same checkpoint with one solved example prepended to the
+prompt~\cite{fewshot}, drawn from the training split of the same condition and held fixed across
+items so the comparison is not confounded by example selection. It tests whether the \emph{task
+format}, rather than the obfuscation, is what the untuned model is failing at.
 
-\noindent\textbf{Clean-code LoRA.} An adapter trained on unobfuscated programs only. It is the
-control that separates \emph{learning the task} from \emph{learning the transforms}: it sees the
-prompt format and the answer distribution but never an obfuscated program, so whatever it gains is
-not transform knowledge.
+\noindent\textbf{Clean-code LoRA.} An adapter trained on unobfuscated programs only, with the same
+prompt, optimiser and step count as every other adapter. It is the control that separates
+\emph{learning the task} from \emph{learning the transforms}: it sees the prompt format and the answer
+distribution but never an obfuscated program, so whatever it gains is not transform knowledge. It is
+also the teacher for the KL arm below.
 
-\noindent\textbf{Pooled training (breadth).} One adapter trained on the union of every training
-condition. This is the obvious way to spend the data and the one most likely to be done in practice:
-it needs no per-transform bookkeeping, no gate, and no merge step.
+\noindent\textbf{Pooled training.} One adapter trained on the union of every training condition,
+shuffled. This is the obvious way to spend the data and the one most likely to be done in practice: it
+needs no per-transform bookkeeping, no gate and no merge step. Because every composed arm below is
+built from specialists trained on exactly these rows, pooled training is the data-matched control for
+all of them.
 
-\noindent\textbf{Anchored training.} Pooled training plus a consistency term. The student reads the
-obfuscated program while a frozen clean-code teacher reads its unobfuscated parent, and the loss adds
-$\lambda\,D_{\mathrm{KL}}$ between their answer-token distributions to the ordinary cross-entropy. It
-trains on exactly the rows pooled training uses and reduces to pooled training at $\lambda = 0$,
-which makes pooled training its data-matched control. The idea is to anchor the model to the one
-thing a semantics-preserving transform leaves invariant --- the behaviour of the same computation
-written plainly.
+\noindent\textbf{KL-consistency training.} Pooled training plus a distillation
+term~\cite{distillation} that ties the student's answer to its own behaviour on the clean parent. For
+an obfuscated program $x_{\mathrm{obf}}$ with clean parent $x_{\mathrm{clean}}$ and gold answer $y$,
+%
+\begin{equation}
+\mathcal{L} \;=\; \mathrm{CE}\!\left(y \mid x_{\mathrm{obf}}\right)
+\;+\; \lambda\, D_{\mathrm{KL}}\!\left(
+p_{\mathrm{teacher}}(\cdot \mid x_{\mathrm{clean}}) \,\Vert\,
+p_{\mathrm{student}}(\cdot \mid x_{\mathrm{obf}}) \right),
+\label{eq:kl}
+\end{equation}
+%
+where the teacher is the frozen clean-code LoRA above, the KL is taken over the answer tokens only,
+and the student never sees the parent. Three properties make it a fair comparison rather than an extra
+knob. It trains on exactly the rows pooled training uses, for the same number of steps. At
+$\lambda = 0$ it reduces to pooled training identically, so pooled training is not an approximate
+control but an exact one. And the teacher is fixed across all conditions, so the term adds no
+transform-specific supervision --- it only asks that the same computation, written two ways, be
+answered the same way.
 
-\noindent\textbf{Mixture of specialists.} One adapter per transform, kept separate, with a learned
-gate that mixes their low-rank updates per input. Because a learned gate can be worth nothing over no
-gate at all, we also report a uniform gate and a gate frozen at random initialisation, which separate
-what the \emph{mixture} is worth from what the \emph{routing} is worth. This arm is the most
-expressive of the six and the most expensive: every expert must be resident at inference.
-
+\noindent\textbf{Router system.} One adapter per transform, kept separate, with a learned gate that
+mixes their low-rank updates per token and per layer. The gate reads the decoder layer's input hidden
+state $h$, so one gate serves every target projection in that layer, and scores experts by attention
+against a learned key $k_e$ per expert:
+%
+\begin{equation}
+a \;=\; \mathrm{softmax}_e\!\left( \frac{ \left(W_q\,\mathrm{LayerNorm}(h)\right) \cdot k_e }{ \sqrt{d_r}\,\tau } \right),
+\label{eq:gate}
+\end{equation}
+%
+with router width $d_r$ and a learned temperature $\tau$ per layer. Only the gate is trained; the
+experts and the base model stay frozen, so the arm adds a small number of parameters relative to the
+expert bank. Because a learned gate can be worth nothing over no gate at all, we report three controls
+alongside it --- the same gate argmaxed to a hard route, a fixed uniform gate, and a gate frozen at
+random initialisation --- which separate what the \emph{mixture} is worth from what the
+\emph{routing} is worth. This arm is the most expressive of the six and the most expensive: every
+expert must be resident at inference, and the gate runs at every layer for every token.

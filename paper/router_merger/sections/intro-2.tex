@@ -78,7 +78,7 @@ and seemingly more direct, strategy is to increase \emph{training
 breadth} by fine-tuning a single model on examples from many individual
 obfuscations, hoping that knowledge learned separately will recombine
 when transformations are stacked. We evaluate these three strategies, together with a
-clean-code control and a paired-consistency objective that anchors the
+clean-code control and a KL-consistency objective that ties the
 student to its own behaviour on the unobfuscated parent, across eight
 models, and we evaluate them in three regimes rather than one:
 compositions of the transformations seen in training, an obfuscator
@@ -110,7 +110,7 @@ the behavior that those transformations preserve.
 
 This diagnosis suggests a different principle for robust adaptation.
 Rather than attempting to compose transformation-specific knowledge,
-we anchor learning to something that is invariant across all such
+we tie learning to something that is invariant across all such
 transformations: the model's behavior on the corresponding
 \emph{unobfuscated program}. For every obfuscated training program
 $x_{\mathrm{obf}}$, we retain its clean parent
@@ -140,8 +140,8 @@ Importantly, this objective does not require recognizing which
 obfuscations are present, selecting among specialists, merging
 transformation-specific parameters, or recovering the original source
 code. Instead, it
-changes the learning target itself: rather than anchoring adaptation to
-the surface patterns of individual transformations, it anchors the
+changes the learning target itself: rather than tying adaptation to
+the surface patterns of individual transformations, it ties the
 student to the clean-code behavior that those transformations should
 preserve.
 
@@ -166,7 +166,7 @@ here without modification; the contribution is not the algorithm but
 the evaluation that separates the arms and the finding that
 composition survives what monolithic training does not. Merging does
 not create a new ability to read obfuscation it has never seen --- on
-the unseen family it is competitive with, not superior to, the mixture
+the unseen family it is competitive with, not superior to, the router system
 of the same specialists --- and it is not the best forward arm
 anywhere. What it does is avoid paying, outside the training
 distribution, for a fit inside it.

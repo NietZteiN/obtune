@@ -21,11 +21,11 @@ do, since the pairing is a property of the items rather than of the model.
 \subsection{Choosing an Adaptation Strategy}
 
 No arm dominates, and the table is more useful than a ranking. If the deployment distribution is known
-and fixed, the anchored objective and the mixture are the strongest forward arms and the three to six
+and fixed, the KL-consistency arm and the router system are the strongest forward arms and the three to six
 points are real. If it is not --- if an obfuscator may be updated, transforms may be composed in
 unseen ways, or the model may be asked something other than what it was tuned on --- the merge is the
 only arm in this study that is never significantly below the untuned model in any block on any model,
-and it costs one adapter and no inference-time machinery. The mixture matches or beats it on the unseen
+and it costs one adapter and no inference-time machinery. The router system matches or beats it on the unseen
 family but needs eight adapters and a gate at inference, and its learned gate is worth nothing over a
 uniform one on the held-out family.
 

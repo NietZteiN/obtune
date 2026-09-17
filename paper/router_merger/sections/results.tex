@@ -5,19 +5,19 @@
 % summarises are Appendix~\ref{app:absmaster}, and the block means here are computed by the same code
 % path as those tables' bold rows, so the two cannot disagree.
 % >>> GENERATED TABLE main_results -- from tables/main_results.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-17 20:46 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 23:37 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* (block means, same path as the per-model tables)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[t]
 \centering\scriptsize\setlength{\tabcolsep}{2pt}
-\caption{\textbf{Every adaptation on every model, in the three regimes that separate them.} Mean exact-match accuracy over the conditions in each block, equally weighted; the same numbers as the bold rows of the per-model tables in Appendix~\ref{app:absmaster}. \emph{seen stacks}: depth-2/3/4 compositions of the seen transforms; seven of its ten conditions include \texttt{S3} or \texttt{S4}, which the mixture has experts for and \emph{breadth} and \emph{merge} do not. --- no arm was trained on it. \emph{backward}: input prediction, graded by execution. \emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, \emph{breadth} one LoRA tuned on all six training conditions at once, \emph{anch} the paired-consistency objective, \emph{mix} a learned-gate mixture of eight per-condition specialists, \emph{merge} the DARE-TIES merge of the six that breadth pools. \emph{breadth} and \emph{merge} are exactly data-matched; \emph{mix} carries two further experts (\texttt{S3}, \texttt{S4}) that neither is trained on. \textbf{Bold} is the best non-base arm in that block; \textcolor{red!70!black}{red} is below \texttt{base}. `--': no cell in the block survived the 0.25 format gate. \textbf{Read the bold across the blocks}: on seen stacks it falls on the single-adapter arms, and on the two out-of-distribution blocks it moves to the arms composed from per-transform specialists.}
+\caption{\textbf{Every adaptation on every model, in the three regimes that separate them.} Mean exact-match accuracy over the conditions in each block, equally weighted; the same numbers as the bold rows of the per-model tables in Appendix~\ref{app:absmaster}. \emph{seen stacks}: depth-2/3/4 compositions of the seen transforms; seven of its ten conditions include \texttt{S3} or \texttt{S4}, which the mixture has experts for and \emph{breadth} and \emph{merge} do not. --- no arm was trained on it. \emph{backward}: input prediction, graded by execution. \emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, \emph{breadth} one LoRA tuned on all six training conditions at once, \emph{KL} the KL-consistency objective, \emph{router} a learned-gate mixture of eight per-condition specialists, \emph{merge} the DARE-TIES merge of the six that breadth pools. \emph{breadth} and \emph{merge} are exactly data-matched; \emph{mix} carries two further experts (\texttt{S3}, \texttt{S4}) that neither is trained on. \textbf{Bold} is the best non-base arm in that block; \textcolor{red!70!black}{red} is below \texttt{base}. `--': no cell in the block survived the 0.25 format gate. \textbf{Read the bold across the blocks}: on seen stacks it falls on the single-adapter arms, and on the two out-of-distribution blocks it moves to the arms composed from per-transform specialists.}
 \label{tab:main}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lrrrrrr@{\ }rrrrrr@{\ }rrrrrr@{\ }@{}}
 \toprule
  & \multicolumn{6}{c}{\textbf{seen stacks}} & \multicolumn{6}{c}{\textbf{unseen family}} & \multicolumn{6}{c}{\textbf{backward (input pred.)}} \\
 \cmidrule(lr){2-7}\cmidrule(lr){8-13}\cmidrule(lr){14-19}
-\textbf{model} & base & clean & breadth & anch & mix & merge & base & clean & breadth & anch & mix & merge & base & clean & breadth & anch & mix & merge \\
+\textbf{model} & base & clean & breadth & KL & router & merge & base & clean & breadth & KL & router & merge & base & clean & breadth & KL & router & merge \\
 \midrule
 CodeLlama-7B & 0.143 & 0.323 & 0.362 & \textbf{0.374} & 0.359 & 0.331 & 0.120 & 0.259 & 0.243 & \textbf{0.280} & 0.272 & 0.266 & 0.282 & \textcolor{red!70!black}{0.266} & \textcolor{red!70!black}{0.249} & 0.287 & 0.287 & \textbf{0.311} \\
 CodeLlama-13B & 0.170 & 0.354 & 0.390 & \textbf{0.402} & 0.398 & 0.373 & 0.145 & 0.281 & 0.271 & 0.297 & \textbf{0.305} & 0.295 & 0.294 & 0.312 & -- & \textcolor{red!70!black}{0.223} & 0.294 & \textbf{0.337} \\
@@ -35,8 +35,8 @@ Granite-3.1-8B & 0.234 & 0.307 & \textbf{0.359} & 0.353 & 0.359 & 0.324 & 0.168 
 Table~\ref{tab:main} is the whole study on one page: six adaptations, eight models, and the three
 regimes that separate them. Read down a block and the models agree with each other; read \emph{across}
 the blocks and the bold moves. On stacks built from transforms the adapters were trained on, the best
-arm is the anchored objective on five models, the mixture on two and breadth on one. On the held-out
-family the mixture takes six and the anchored objective two; backwards the merge takes six. On the held-out family the bold moves to the mixture on six of eight,
+arm is the KL-consistency arm on five models, the router system on two and breadth on one. On the held-out
+family the router system takes six and the KL-consistency arm two; backwards the merge takes six. On the held-out family the bold moves to the router system on six of eight,
 and on the reverse task to the merge on six --- both assembled from per-transform specialists. No arm wins everywhere, and the one that never loses is not the one that wins most often.
 
 
@@ -62,12 +62,12 @@ training conditions --- is below \emph{every} arm assembled from those same cond
 on all eight models.
 
 Paired by program with a cluster bootstrap over 2{,}000 resamples, and measured on the held-out family
-itself, breadth is below the mixture by 3.3--5.9 points on 8 of 8 models (significant on all 8), below
+itself, breadth is below the router system by 3.3--5.9 points on 8 of 8 models (significant on all 8), below
 the merge by 2.3--5.2 on 8 of 8 (significant on 7), and below a LoRA trained on \emph{unobfuscated code
 alone} by 2.7--4.7 on 8 of 8 (significant on 6).
 
 Measured over the whole block --- the family plus the six stacks that contain it --- the same orderings
-hold but the margins shrink: breadth is below the mixture on 8 of 8 (significant on all 8, 2.5--4.6
+hold but the margins shrink: breadth is below the router system on 8 of 8 (significant on all 8, 2.5--4.6
 points), below the merge on 7 of 8 (significant on 5, 1.8--3.0), and below clean-code tuning on 7 of 8
 but significantly on only 2 (1.3--1.6). The dilution is itself informative. A stack that contains the
 unseen family also contains transforms breadth was trained on, and breadth handles those well; its
@@ -76,7 +76,7 @@ what memorising a transform looks like, and it is not what an invariance would p
 
 The merge comparison is exactly data-matched: its six ingredient adapters are trained on precisely the
 six conditions breadth pools, at the same rank, from the same base model, so the only difference is
-whether those rows were learned in one set of weights or in six that are then composed. The mixture is
+whether those rows were learned in one set of weights or in six that are then composed. The router system is
 \emph{not} data-matched --- it carries two further specialists, on the transforms \texttt{S3} and
 \texttt{S4}, that neither breadth nor the merge is trained on. Its advantage does not come from them:
 measured against the merge, it is at least as large on composites that contain neither \texttt{S3} nor
@@ -98,7 +98,7 @@ task fitting.
 Every single-adapter arm goes red somewhere in the backward block, and the pattern is systematic
 rather than model-specific. Pooling every backward condition that clears the format gate and pairing by
 program, clean-code tuning is below the untuned model on six of eight models (significantly on four),
-breadth on four of the six where it is readable (significantly on four), and the anchored objective on
+breadth on four of the six where it is readable (significantly on four), and the KL-consistency arm on
 six (significantly on five, by as much as 13.2 points on Granite-3.1-8B). The merges are the exception:
 DARE-TIES is \emph{above} the untuned model on seven of eight models ($+3.0$ to $+6.4$ points,
 significant on all seven) and null on the eighth, and TIES is significantly above on six, including the
@@ -126,7 +126,7 @@ Measured as the share of backward replies that are exactly the gold forward answ
 sit at the floor (0.000--0.056) and so do both merges (0.000--0.002 across all eight models). Every
 single-adapter arm is above that floor on every model but one --- the exception is clean-code tuning on
 Llama-3.1-8B, at 0.001 --- and the panel maximum --- 0.680, on CodeGemma-7B
---- belongs to the anchored objective, which also holds the per-model maximum on five of the eight. Its
+--- belongs to the KL-consistency arm, which also holds the per-model maximum on five of the eight. Its
 extra loss term is a KL divergence to a clean-code teacher's answer-token distribution: the arm that
 most explicitly optimises for producing the forward answer is the arm that most often produces it when
 asked for something else.

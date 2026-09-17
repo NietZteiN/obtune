@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{23}
+\begin{thebibliography}{25}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -35,6 +35,23 @@
 \providecommand\bibinfo[2]{#2}
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[Brown et~al\mbox{.}(2020)]%
+        {fewshot}
+\bibfield{author}{\bibinfo{person}{Tom~B. Brown}, \bibinfo{person}{Benjamin
+  Mann}, \bibinfo{person}{Nick Ryder}, \bibinfo{person}{Melanie Subbiah},
+  \bibinfo{person}{Jared Kaplan}, {et~al\mbox{.}}}
+  \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Language Models are Few-Shot Learners}. In
+  \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}}.
+\newblock
+\showeprint[arxiv]{2005.14165}
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2005.14165}
+\showURL{%
+\tempurl}
+
 
 \bibitem[Chen et~al\mbox{.}(2021)]%
         {chen2021evaluatinglargelanguagemodels}
@@ -182,6 +199,20 @@
 \newblock
 \urldef\tempurl%
 \url{https://openreview.net/forum?id=jLoC4ez43PZ}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Hinton et~al\mbox{.}(2015)]%
+        {distillation}
+\bibfield{author}{\bibinfo{person}{Geoffrey Hinton}, \bibinfo{person}{Oriol
+  Vinyals}, {and} \bibinfo{person}{Jeff Dean}.}
+  \bibinfo{year}{2015}\natexlab{}.
+\newblock \bibinfo{title}{Distilling the Knowledge in a Neural Network}.
+\newblock
+\showeprint[arxiv]{1503.02531}~[stat.ML]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/1503.02531}
 \showURL{%
 \tempurl}
 

@@ -34,7 +34,7 @@ Google, IBM), code-specialised and general, 7B to 34B, plus one pretrained check
 the one-shot baseline. Every adapter is a LoRA with the same rank and target modules on every model,
 and one prompt builder serves training and evaluation alike.
 % >>> GENERATED TABLE setup_models -- from tables/setup_models.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 23:36 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/models.yaml
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]
@@ -66,7 +66,7 @@ independent of any transform. Coverage differs by condition because structural t
 some programs by design and the held-out family needs enough encodable sites; every paired contrast is
 computed on the programs common to the cells it compares, fixed before evaluation.
 % >>> GENERATED TABLE setup_dataset -- from tables/setup_dataset.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 23:36 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: data/train/base/python.jsonl, data/splits/python.json, data/eval/heldout/items/*
 % Do not edit by hand -- regenerate. 
 \begin{table}[ht]
@@ -100,7 +100,7 @@ family, \texttt{S3} and \texttt{S4} are the two halves of \texttt{S2} --- one th
 about, one it can ignore --- and exist as separate transforms so that composition can be checked
 against a known whole.
 % >>> GENERATED TABLE setup_taxonomy -- from tables/setup_taxonomy.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-17 20:45 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-17 23:36 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/conditions.yaml, data/eval/heldout/items/*
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]
@@ -169,10 +169,10 @@ combined.
 \emph{Clean LoRA} (\texttt{tuned\_L0}) is trained on unobfuscated programs; one \emph{specialist}
 per seen transform; \emph{breadth} (\texttt{mono\_all}) on the pooled data of all six training
 conditions --- the five seen transforms and clean code --- 26{,}841 rows in 1{,}257 steps. The
-\emph{anchored} objective (\texttt{cons\_lam3}) is Eq.~\ref{eq:paired_consistency} at $\lambda = 3$,
+\emph{KL-consistency} objective (\texttt{cons\_lam3}) is Eq.~\ref{eq:paired_consistency} at $\lambda = 3$,
 a plateau from a sweep on the trainable grid, with a frozen clean-code-tuned adapter as teacher; the
 student never sees the parent, and it trains on exactly breadth's rows and steps, so at $\lambda = 0$
-it reduces to breadth identically. The \emph{mixture} (\texttt{mole\_router}) mixes eight specialists
+it reduces to breadth identically. The \emph{router} (\texttt{mole\_router}) mixes eight specialists
 with a learned gate, reported alongside its argmax, a fixed uniform gate and a gate frozen at random
 initialisation.
 
@@ -197,7 +197,7 @@ program-clustered bootstrap of 2{,}000 resamples; bold intervals exclude zero. D
 pre-registered before submission and are reported by their verdicts even when inconclusive.
 A cell whose format-failure rate exceeds 0.25 enters no mean, and is marked rather than hidden. Such a
 cell is not always a broken prompt contract: decomposing the gated cells shows that many of them are
-replies that are exactly the gold \emph{forward} answer --- on CodeGemma-7B's anchored arm 96\,\% of
+replies that are exactly the gold \emph{forward} answer --- on CodeGemma-7B's KL-consistency arm 96\,\% of
 them, on StarCoder2-15B's tuned arms 79--91\,\% --- which is the forward-locking effect of
 Section~\ref{sec:results}, not a formatting failure. We therefore distinguish the two in every table:
 $\ddagger$ marks a gated cell whose replies are predominantly the gold forward answer and $\dagger$ one

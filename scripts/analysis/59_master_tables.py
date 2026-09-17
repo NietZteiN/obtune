@@ -958,7 +958,7 @@ MAIN_BLOCKS = [("seen stacks", SEEN_STACKS + DEPTH_STACKS),
                ("unseen family", ["X1"] + UNSEEN_STACKS + HALF_STACKS + D3_STACKS),
                ("backward (input pred.)", None)]   # None = every backward condition available
 MAIN_SYS = [("base","base"),("clean","tuned_L0"),("breadth","mono_all"),
-            ("anch","cons_lam3"),("mix","mole_router"),("merge","merge_dare_ties")]
+            ("KL","cons_lam3"),("router","mole_router"),("merge","merge_dare_ties")]
 
 def _block_mean(m, sy, conds, bwd):
     """Mean over readable cells; None when the arm has none. Gated cells are dropped, exactly as in
@@ -990,8 +990,8 @@ def main_table():
          r"and \emph{merge} do not. "
          r"--- no arm was trained on it. \emph{backward}: input prediction, graded by execution. "
          r"\emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, "
-         r"\emph{breadth} one LoRA tuned on all six training conditions at once, \emph{anch} the "
-         r"paired-consistency objective, \emph{mix} a learned-gate mixture of eight per-condition "
+         r"\emph{breadth} one LoRA tuned on all six training conditions at once, \emph{KL} the "
+         r"KL-consistency objective, \emph{router} a learned-gate mixture of eight per-condition "
          r"specialists, \emph{merge} the DARE-TIES merge of the six that breadth pools. \emph{breadth} and "
          r"\emph{merge} are exactly data-matched; \emph{mix} carries two further experts "
          r"(\texttt{S3}, \texttt{S4}) that neither is trained on. "

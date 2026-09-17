@@ -70,29 +70,41 @@ original rank.}
 
 Our approach trains one low-rank specialist per obfuscating transform and merges the specialists into
 a single adapter before inference (Figure~\ref{fig:merging}). It occupies the same design point as a
-mixture of experts --- per-transform specialists, composed --- but resolves the composition
-\emph{before} inference, so what is deployed is a single adapter of exactly
-the base architecture, with no gate, no expert bank and no run-time cost over ordinary fine-tuning.
+router system --- per-transform specialists, composed --- but resolves the composition \emph{before}
+inference, so what is deployed is a single adapter of exactly the base architecture, with no gate, no
+expert bank and no run-time cost over ordinary fine-tuning.
 
-The object being merged is a \emph{task vector}: for each specialist $i$, the update $\Delta_i$ its
-training produced. Naive averaging of task vectors degrades as their number grows, because updates
-that disagree cancel. TIES attributes that to two forms of interference --- redundant entries that
-carry little signal, and outright sign disagreement on a parameter --- and removes both in three
-steps: \emph{trim} each $\Delta_i$ to its largest-magnitude entries, \emph{elect} a sign per
-parameter by summing signed magnitudes across specialists, and \emph{merge} only the entries whose
-sign matches the elected one~\cite{ties}. Nothing is trained; the rule is arithmetic on weights
-already learned. DARE prepends a second sparsification of a different kind: drop a fraction $p$ of
-each $\Delta_i$'s entries at random and rescale the survivors by $1/(1-p)$, so the update is
-preserved in expectation while its redundancy is cut, on the finding that fine-tuning deltas are
-extremely redundant~\cite{dare}. We use both, as \textsc{TIES} and \textsc{DARE-TIES}, and report
-them separately --- they are not interchangeable, and the difference between them turns out to matter
-on one model in our panel.
+\paragraph{What is combined.} Specialist $i$ contributes the update its training produced,
+$\Delta_i = B_i A_i$, with $B_i \in \mathbb{R}^{d \times r}$ and $A_i \in \mathbb{R}^{r \times k}$.
+Naive averaging of such updates degrades as their number grows, because entries that disagree cancel.
+TIES attributes this to two forms of interference --- redundant entries carrying little signal, and
+outright sign disagreement on a parameter --- and removes both in three steps: \emph{trim} each update
+to its largest-magnitude entries, \emph{elect} a sign per parameter by summing signed magnitudes
+across specialists, and \emph{merge} only the entries whose sign matches the elected
+one~\cite{ties}. DARE prepends a sparsification of a different kind: drop a fraction $p$ of each
+update's entries at random and rescale the survivors by $1/(1-p)$, preserving the update in
+expectation while cutting its redundancy~\cite{dare}. Nothing is trained; both are arithmetic on
+weights already learned, in the task-vector sense established by task arithmetic~\cite{taskarithmetic}.
 
-Two implementation choices are worth stating because they affect what is being measured. First, we
-merge \emph{in LoRA space}, combining the $A$ and $B$ factors of the specialists directly. The
-alternative offered by common tooling is to fold each adapter into the base weights and re-extract a
-low-rank adapter by SVD, which changes the rank and introduces reconstruction error before the
-merging rule is applied at all; that would confound the merge with its re-extraction. Second, the
-specialists are combined with uniform weights. A weighted merge is a tuning knob, and leaving it
-uniform keeps the comparison against pooled training --- which also weights its conditions equally by
-construction --- a comparison of \emph{composition}, not of tuning effort.
+\paragraph{Where it is applied, and why that is not the same thing.} We merge in \emph{LoRA factor
+space}: the trim--elect--merge rule is applied independently to the set of $A$ factors and to the set
+of $B$ factors, and the merged adapter is $B_{\mathrm{merged}} A_{\mathrm{merged}}$, with each
+specialist's combining weight split as $\sqrt{w_i}$ on either side so the product recovers $w_i$. This
+is the standard implementation for LoRA and it is \emph{not} identical to applying TIES to the
+assembled updates $\{\Delta_i\}$: sign election on the factors is not sign election on their product.
+The difference is not negligible. On random factors at $r = 4$ with three specialists and density
+$0.5$, $B_{\mathrm{merged}} A_{\mathrm{merged}}$ and $\mathrm{TIES}(\{B_i A_i\})$ have cosine
+similarity $0.40$ and disagree in sign on $39\%$ of entries.
+
+We merge in factor space nonetheless, and the reason is the alternative. Assembling $\Delta_i$,
+merging, and re-extracting a low-rank adapter requires an SVD truncation that changes the rank and
+introduces reconstruction error \emph{before} the merging rule is evaluated --- so the deployed
+adapter would differ from the base architecture and the measured effect would confound the merge with
+its re-extraction. Factor-space merging preserves the rank exactly and leaves the result servable as
+any other adapter. The consequence for interpretation is that our results are evidence about
+sign-consensus merging \emph{as it is actually applied to LoRA adapters}, which is how practitioners
+use it, rather than about the published task-vector algorithm in its original setting.
+
+\paragraph{Weighting.} The specialists are combined with uniform weights. A weighted merge is a tuning
+knob, and leaving it uniform keeps the comparison against pooled training --- which also weights its
+conditions equally by construction --- a comparison of \emph{composition}, not of tuning effort.
