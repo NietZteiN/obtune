@@ -844,11 +844,11 @@ INPUT fse27.bbl
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/libertine/LinLibertineTI-tlf-t1.vf
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1--base.tfm
-INPUT ./sections/master.tex
-INPUT ./sections/master.tex
-INPUT ./sections/master.tex
-INPUT ./sections/master.tex
-INPUT sections/master.tex
+INPUT ./sections/master_tables.tex
+INPUT ./sections/master_tables.tex
+INPUT ./sections/master_tables.tex
+INPUT ./sections/master_tables.tex
+INPUT sections/master_tables.tex
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
