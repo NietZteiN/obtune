@@ -4,3 +4,6 @@ ev_1shot_codegemma-7b
 tr_L2_codegemma-7b
 ev_depth_codellama-34b
 tr_S3_granite31-8b
+tr_S3_codellama-7b_s42
+tr_L1b_llama31-8b_s42
+tr_L1r_llama31-8b_s42

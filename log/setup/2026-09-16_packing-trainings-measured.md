@@ -34,3 +34,36 @@ Not density. Its value is that N trainings occupy **one job slot**: seven Granit
 seven jobs queued behind a four-slot door, and became one job on the partition with the capacity.
 That part worked exactly as intended and is worth keeping — with one training per GPU and more GPUs
 per allocation.
+
+---
+
+## Postscript: I killed the batch job by editing its script mid-run
+
+The batch finished all seven trainings and then **exited 2 with a bash syntax error at line 63** --
+a line that is syntactically fine. The cause was not the code: I edited `train_batch.sh` (to document
+`per_gpu=1`) **while job 408686 was still executing it**. Bash reads a script incrementally from a
+file offset, so rewriting the file under a running shell resumes the parse at a byte position that no
+longer aligns with a statement boundary.
+
+This repository already knows this. `runs/probe/drain_queue.sh` carries the note "a `while true` loop
+that never re-reads itself -- edit then restart", written after the same mistake. I made it again,
+three hours after writing a commit message about a rule that lives only in someone's memory not being
+a rule.
+
+**Nothing was lost.** All seven Granite seed-42 adapters carry `training_summary.json`; only the
+script's own verification-and-exit ran on the corrupted parse. The damage was the exit code: SLURM
+marked the job FAILED, and `cks42_granite318b --dependency afterok:408686` became
+DependencyNeverSatisfied, which silently stopped the whole Granite chain. Re-chained without a
+dependency, since the adapters demonstrably exist.
+
+**The rule, stated where it will be read:** never edit a shell script while a job is executing it.
+Copy it, edit the copy, and submit that -- or wait.
+
+## Second fault found in the same sweep: the inverse adapter root was never selected
+
+`ckpt_select_batch.sh` iterates `runs/adapters/$M/python/`. The backward-trained control is
+deliberately rooted at `runs/adapters_inverse/` so it cannot collide with `mono_all`'s directory --
+which also means the selection loop never saw it. Both models trained to completion (checkpoint-1260
+plus `final`) and neither had a `best/`; it surfaced as `FileNotFoundError: system 'inverse_trained'`
+when the eval tried to load one, three and a half minutes into a job. The script now covers that root
+explicitly, and the two selections are queued.

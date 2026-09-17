@@ -37,4 +37,15 @@ for c in L0 L1b L1r L2 S1 S2 S3 S4 X1 L0-L1b-L1r-L2-S1-S2; do
   python -m obtune.eval_vllm --config "$cfg" --model "$M" \
     --mode ckpt-select --adapter-root "$d" || echo "FAILED $M $c s$SEED"
 done
+# THE BACKWARD-TRAINED CONTROL LIVES UNDER runs/adapters_inverse/, NOT runs/adapters/ (2026-09-16).
+# It is trained by the same recipe with prompt.task=input and adapter_root: runs/adapters_inverse,
+# precisely so it does not collide with mono_all's directory -- which also means this loop, rooted at
+# runs/adapters/$M/python, never saw it. Both models trained to completion (checkpoint-1260 and
+# `final`) and neither got a best/, which surfaced only when the evals tried to load one.
+d="runs/adapters_inverse/$M/python/L0-L1b-L1r-L2-S1-S2_r32_s17"
+if [ -f "$d/training_summary.json" ] && [ ! -e "$d/best/adapter_model.safetensors" ]; then
+  echo "### checkpoint-select $M inverse-breadth s17"
+  python -m obtune.eval_vllm --config train/inverse_breadth_py.yaml --model "$M" \
+    --mode ckpt-select --adapter-root "$d" || echo "FAILED $M inverse-breadth"
+fi
 echo "### done $M"
