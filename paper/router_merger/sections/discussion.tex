@@ -9,6 +9,11 @@ better at reading those programs; it has become better at producing the answer i
 produce. Reading each view alone hides this --- every adaptation in Table~\ref{tab:main} looks like
 progress forward --- and only aggregating across views exposes it.
 
+That the two views are not redundant is shown directly by the backward-trained control
+(Section~\ref{sec:results}): a model trained on input prediction improves at \emph{both} tasks, while
+models trained on output prediction improve at one and lose the other. A single view cannot
+distinguish those two outcomes; two views separate them immediately.
+
 The aggregate we propose is simple and strict: an adaptation should be at or above the untuned model
 in \emph{every} view, on \emph{every} model, before it is called an improvement in understanding
 rather than in task fit. Stated as \emph{never significantly below} the untuned model rather than strictly above it --- the

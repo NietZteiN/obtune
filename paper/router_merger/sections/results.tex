@@ -5,7 +5,7 @@
 % summarises are Appendix~\ref{app:absmaster}, and the block means here are computed by the same code
 % path as those tables' bold rows, so the two cannot disagree.
 % >>> GENERATED TABLE main_results -- from tables/main_results.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-18 03:19 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-18 14:21 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* (block means, same path as the per-model tables)
 % Do not edit by hand -- regenerate. 
 \begin{table*}[p]
@@ -200,6 +200,28 @@ Llama-3.1-8B, at 0.001 --- and the panel maximum --- 0.680, on CodeGemma-7B
 extra loss term is a KL divergence to a clean-code teacher's answer-token distribution: the arm that
 most explicitly optimises for producing the forward answer is the arm that most often produces it when
 asked for something else.
+
+\paragraph{Inversion is learnable, and the transfer between directions is one-way.} Every arm above
+is trained forwards and asked backwards, which cannot separate two explanations of the backward
+failures: that forward training surface-fits the forward mapping, or that inversion is simply not
+reachable by training. We settle this with a control that is pooled training's recipe exactly --- the
+same six conditions, rows, rank and seed --- with one change, the training prompt is the
+\emph{inverse} one, so the model is trained on the task the others are only asked. It is evaluated in
+both directions.
+
+Inversion is learnable, and by a wide margin. On CodeLlama-7B the backward-trained arm is $+10.30$
+points [$+8.5$, $+12.1$] above the untuned model on the backward task, and on Llama-3.1-8B $+5.18$
+[$+3.2$, $+7.2$]; the best forward-trained arm reaches $+3.56$ on the same task. The backward
+failures reported above are therefore a consequence of what forward training does, not a property of
+the task.
+
+The asymmetry is the sharper result. Training backwards does not cost forward accuracy --- it
+\emph{improves} it, by $+9.63$ [$+7.8$, $+11.4$] on CodeLlama-7B and $+7.19$ [$+5.6$, $+8.8$] on
+Llama-3.1-8B, all four contrasts significant. Training forwards, by contrast, costs backward accuracy
+on most models and arms. Same programs, same rank, same data budget, opposite outcomes: input
+prediction generalises to output prediction, and output prediction does not generalise to input
+prediction. Forward training is not merely narrow, then; it is narrow \emph{in a direction}, and the
+direction it narrows into is the one it was trained on.
 
 This connects the two out-of-distribution blocks. Monolithic training fits the task as it was posed:
 these transforms, this direction. Composing separately-trained specialists in weight space does not
