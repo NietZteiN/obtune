@@ -1,0 +1,28 @@
+{
+  "job_id": "tr_invbreadth_codellama-7b",
+  "kind": "train",
+  "argv": [
+    "-m",
+    "obtune.train_sft",
+    "--config",
+    "train/inverse_breadth_py.yaml",
+    "--model",
+    "codellama-7b",
+    "--seed",
+    "17"
+  ],
+  "raw": false,
+  "est_gpu_h": 4.0,
+  "priority": 250,
+  "meta": {
+    "note": "THE BACKWARD-TRAINED CONTROL, restarted. Same six conditions, rows, rank and seed as breadth, with prompt.task=input -- the model is trained ON the inverse prompt. It is the control the mechanism subsection needs: every other arm is trained forwards and asked backwards, which cannot separate 'forward tuning surface-fits the forward mapping' from 'inversion is unreachable by any training'. Previous attempt left checkpoint-420 and no best/, so ckpt selection and both invtrained_* evals are blocked on it. | REQUEUED 2026-09-16: hit walltime at 5h having reached checkpoint-840 of 1258 steps (67%). 8h."
+  },
+  "slurm": {
+    "job_id": "408471",
+    "node": "g-06-01",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-16T18:22:27.427918+00:00",
+    "reason": "killed before the command returned (walltime or node failure)"
+  }
+}

@@ -16,5 +16,12 @@
   "priority": 250,
   "meta": {
     "note": "THE BACKWARD-TRAINED CONTROL, SECOND MODEL (2026-09-16). Same six conditions, rows, rank and seed as breadth, with prompt.task=input. The control exists on CodeLlama-7B only, so the mechanism claim -- that forward tuning surface-fits the forward mapping rather than inversion being unreachable -- rests on one model. A second makes it a comparison rather than an anecdote. Queued while h100 sits uncapped and the juno pool is at its 4-job QoS ceiling."
+  },
+  "slurm": {
+    "job_id": "408572",
+    "node": "g-04-02",
+    "partition": "h100",
+    "exit_code": 0,
+    "finished_utc": "2026-09-16T18:37:12.299242+00:00"
   }
 }

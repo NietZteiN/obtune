@@ -1,6 +1,6 @@
 # Master tables
 
-*Generated 2026-09-16 11:36 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
+*Generated 2026-09-18 14:19 UTC by `scripts/analysis/59_master_tables.py`. Every number is read from a cell or a config; `--` means the cell does not exist yet. The same script writes the LaTeX versions under `paper/router_merger/tables/`.*
 
 ## 1. Master grid — every model × every condition and stack, forward and backward
 
@@ -13,7 +13,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.257 | 100 | 0.302 | +4.5 | 117 | 0.427 | +17.0 | 166 | 0.413 | +15.6 | 161 | 0.422 | +16.5 | 164 | 0.413 | +15.6 | 161 |
 | L1b | 0.198 | 77 | 0.255 | +5.7 | 99 | 0.358 | +16.0 | 139 | 0.388 | +19.0 | 151 | 0.402 | +20.4 | 156 | 0.346 | +14.8 | 135 |
@@ -44,7 +44,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.285 | 100 | -- | -- | -- | 0.324 | +3.9 | 114 | 0.276 | -0.8 | 97 | 0.297 | +1.3 | 104 | 0.312 | +2.7 | 109 |
 | L1b | 0.265 | 93 | -- | -- | -- | 0.251 | -1.3 | 88 | 0.279 | +1.4 | 98 | 0.294 | +2.9 | 103 | 0.265 | +0.1 | 93 |
@@ -77,7 +77,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.252 | 100 | fmt | fmt | fmt | 0.469 | +21.7 | 186 | 0.446 | +19.3 | 177 | 0.462 | +21.0 | 183 | 0.463 | +21.1 | 184 |
 | L1b | 0.222 | 88 | fmt | fmt | fmt | 0.397 | +17.6 | 158 | 0.423 | +20.1 | 168 | 0.438 | +21.7 | 174 | 0.379 | +15.7 | 150 |
@@ -108,7 +108,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.285 | 100 | -- | -- | -- | 0.269 | -1.6 | 94 | fmt | fmt | fmt | 0.231 | -5.4 | 81 | fmt | fmt | fmt |
 | L1b | 0.277 | 97 | -- | -- | -- | 0.285 | +0.8 | 100 | fmt | fmt | fmt | 0.253 | -2.5 | 89 | fmt | fmt | fmt |
@@ -141,7 +141,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | fmt | fmt | fmt | fmt | fmt | 0.520 | fmt | fmt | 0.494 | fmt | fmt | 0.525 | fmt | fmt | 0.502 | fmt | fmt |
 | L1b | 0.205 | fmt | fmt | fmt | fmt | 0.417 | +21.2 | fmt | 0.469 | +26.4 | fmt | 0.494 | +28.9 | fmt | 0.401 | +19.6 | fmt |
@@ -172,7 +172,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.363 | 100 | -- | -- | -- | 0.260 | -10.3 | 72 | fmt | fmt | fmt | 0.284 | -7.8 | 78 | 0.269 | -9.4 | 74 |
 | L1b | 0.327 | 90 | -- | -- | -- | 0.253 | -7.4 | 70 | fmt | fmt | fmt | 0.287 | -4.0 | 79 | 0.227 | -10.0 | 63 |
@@ -205,7 +205,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.258 | 100 | 0.320 | +6.2 | 124 | 0.448 | +19.0 | 174 | 0.426 | +16.8 | 165 | 0.445 | +18.7 | 172 | 0.459 | +20.1 | 178 |
 | L1b | 0.222 | 86 | 0.276 | +5.4 | 107 | 0.361 | +13.9 | 140 | 0.387 | +16.5 | 150 | 0.407 | +18.5 | 158 | 0.369 | +14.7 | 143 |
@@ -236,7 +236,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.409 | 100 | -- | -- | -- | 0.335 | -7.4 | 82 | 0.320 | -9.0 | 78 | 0.332 | -7.8 | 81 | 0.365 | -4.4 | 89 |
 | L1b | 0.371 | 91 | -- | -- | -- | 0.297 | -7.4 | 73 | 0.280 | -9.2 | 68 | 0.285 | -8.6 | 70 | 0.297 | -7.5 | 72 |
@@ -269,7 +269,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | fmt | fmt | fmt | fmt | fmt | 0.542 | fmt | fmt | 0.529 | fmt | fmt | 0.532 | fmt | fmt | 0.513 | fmt | fmt |
 | L1b | fmt | fmt | fmt | fmt | fmt | 0.431 | fmt | fmt | 0.487 | fmt | fmt | 0.510 | fmt | fmt | 0.402 | fmt | fmt |
@@ -300,7 +300,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.366 | 100 | -- | -- | -- | 0.411 | +4.4 | 112 | 0.311 | -5.6 | 85 | 0.399 | +3.2 | 109 | 0.393 | +2.7 | 107 |
 | L1b | fmt | fmt | -- | -- | -- | 0.316 | fmt | 86 | 0.301 | fmt | 82 | 0.395 | fmt | 108 | fmt | fmt | fmt |
@@ -333,7 +333,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | fmt | fmt | fmt | fmt | fmt | 0.520 | fmt | fmt | 0.507 | fmt | fmt | 0.502 | fmt | fmt | 0.506 | fmt | fmt |
 | L1b | fmt | fmt | fmt | fmt | fmt | 0.441 | fmt | fmt | 0.475 | fmt | fmt | 0.488 | fmt | fmt | 0.402 | fmt | fmt |
@@ -364,7 +364,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.453 | 100 | -- | -- | -- | 0.440 | -1.3 | 97 | 0.447 | -0.6 | 99 | 0.355 | -9.8 | 78 | 0.469 | +1.6 | 104 |
 | L1b | 0.405 | 89 | -- | -- | -- | 0.353 | -5.2 | 78 | 0.427 | +2.2 | 94 | fmt | fmt | fmt | 0.395 | -1.0 | 87 |
@@ -397,7 +397,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.237 | 100 | fmt | fmt | fmt | 0.465 | +22.9 | 197 | 0.439 | +20.2 | 186 | 0.445 | +20.8 | 188 | 0.462 | +22.6 | 195 |
 | L1b | 0.185 | 78 | fmt | fmt | fmt | 0.382 | +19.7 | 161 | 0.425 | +24.0 | 180 | 0.435 | +25.1 | 184 | 0.345 | +16.0 | 146 |
@@ -428,7 +428,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.266 | 100 | -- | -- | -- | 0.364 | +9.8 | 137 | 0.324 | +5.8 | 122 | fmt | fmt | fmt | 0.256 | -1.0 | 96 |
 | L1b | 0.268 | 101 | -- | -- | -- | 0.309 | +4.1 | 116 | 0.298 | +3.1 | 112 | fmt | fmt | fmt | 0.193 | -7.4 | 73 |
@@ -461,7 +461,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Forward (output prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.285 | 100 | 0.293 | +0.8 | 103 | 0.430 | +14.5 | 151 | 0.416 | +13.1 | 146 | 0.396 | +11.1 | 139 | 0.413 | +12.8 | 145 |
 | L1b | 0.267 | 94 | 0.267 | +0.0 | 94 | 0.338 | +7.1 | 118 | 0.391 | +12.5 | 137 | 0.381 | +11.4 | 134 | 0.321 | +5.4 | 113 |
@@ -492,7 +492,7 @@ Forward = output prediction (what the adapters were trained on). Backward = inpu
 
 **Backward (input prediction)**
 
-| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | anchored acc | Δ | % | family acc | Δ | % |
+| condition | base acc | base % | ICL acc | Δ | % | clean LoRA acc | Δ | % | breadth acc | Δ | % | KL acc | Δ | % | family acc | Δ | % |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.291 | 100 | -- | -- | -- | fmt | fmt | fmt | 0.261 | -3.0 | 90 | fmt | fmt | fmt | 0.272 | -1.9 | 94 |
 | L1b | 0.255 | 88 | -- | -- | -- | fmt | fmt | fmt | 0.228 | -2.7 | 79 | fmt | fmt | fmt | 0.211 | -4.4 | 73 |
@@ -532,8 +532,8 @@ Means over the cells that exist and pass the format gate; `n` counts them, `fmt`
 | clean LoRA | bwd | -0.4 / 101% (n=7, 1 fmt) | -0.3 (n=28, 12 fmt) / 97% (n=32, 8 fmt) | +0.2 / 79% (n=5, 3 fmt) | +0.8 (n=54, 26 fmt) / 90% (n=63, 17 fmt) | -0.8 (n=20, 12 fmt) / 79% (n=21, 11 fmt) |
 | breadth | fwd | +17.0 / 167% (n=5, 3 fmt) | +19.7 (n=30, 10 fmt) / 157% (n=25, 15 fmt) | +10.7 (n=7, 1 fmt) / 91% (n=5, 3 fmt) | +20.9 (n=60, 20 fmt) / 146% (n=50, 30 fmt) | +10.9 (n=28, 4 fmt) / 93% (n=20, 12 fmt) |
 | breadth | bwd | -2.2 / 95% (n=6, 2 fmt) | -1.6 (n=26, 14 fmt) / 91% (n=29, 11 fmt) | -1.1 / 73% (n=4, 4 fmt) | -0.0 (n=50, 30 fmt) / 88% (n=52, 28 fmt) | -4.3 (n=15, 17 fmt) / 64% (n=17, 15 fmt) |
-| anchored | fwd | +17.6 / 169% (n=5, 3 fmt) | +21.0 (n=30, 10 fmt) / 161% (n=25, 15 fmt) | +13.1 (n=7, 1 fmt) / 99% (n=5, 3 fmt) | +22.0 (n=60, 20 fmt) / 148% (n=50, 30 fmt) | +12.8 (n=28, 4 fmt) / 98% (n=20, 12 fmt) |
-| anchored | bwd | -4.4 / 89% (n=6, 2 fmt) | -5.1 (n=22, 18 fmt) / 86% (n=26, 14 fmt) | -2.6 (n=4, 4 fmt) / 75% (n=5, 3 fmt) | -4.2 (n=39, 41 fmt) / 81% (n=49, 31 fmt) | -3.4 / 75% (n=9, 23 fmt) |
+| KL | fwd | +17.6 / 169% (n=5, 3 fmt) | +21.0 (n=30, 10 fmt) / 161% (n=25, 15 fmt) | +13.1 (n=7, 1 fmt) / 99% (n=5, 3 fmt) | +22.0 (n=60, 20 fmt) / 148% (n=50, 30 fmt) | +12.8 (n=28, 4 fmt) / 98% (n=20, 12 fmt) |
+| KL | bwd | -4.4 / 89% (n=6, 2 fmt) | -5.1 (n=22, 18 fmt) / 86% (n=26, 14 fmt) | -2.6 (n=4, 4 fmt) / 75% (n=5, 3 fmt) | -4.2 (n=39, 41 fmt) / 81% (n=49, 31 fmt) | -3.4 / 75% (n=9, 23 fmt) |
 | family | fwd | +18.5 / 173% (n=5, 3 fmt) | +17.8 (n=30, 10 fmt) / 150% (n=25, 15 fmt) | +20.1 (n=7, 1 fmt) / 128% (n=5, 3 fmt) | +17.5 (n=60, 20 fmt) / 132% (n=50, 30 fmt) | +16.8 (n=28, 4 fmt) / 116% (n=20, 12 fmt) |
 | family | bwd | -1.4 / 96% (n=7, 1 fmt) | -2.8 (n=31, 9 fmt) / 87% (n=33, 7 fmt) | +1.6 (n=5, 3 fmt) / 80% (n=6, 2 fmt) | -1.0 (n=58, 22 fmt) / 84% (n=59, 21 fmt) | -0.9 (n=21, 11 fmt) / 76% (n=23, 9 fmt) |
 
@@ -1098,7 +1098,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### CodeLlama-7B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.257 | 100 | 0.302 | 117 | 0.427 | 166 | 0.413 | 161 | 0.422 | 164 | 0.429 | 167 | 0.426 | 166 |
 | L1b | 0.198 | 100 | 0.255 | 129 | 0.358 | 181 | 0.388 | 196 | 0.402 | 203 | 0.381 | 192 | 0.373 | 188 |
@@ -1174,7 +1174,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### CodeLlama-13B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.252 | 100 | 0.278† | -- | 0.469 | 186 | 0.446 | 177 | 0.462 | 183 | 0.477 | 189 | 0.477 | 189 |
 | L1b | 0.222 | 100 | 0.220† | -- | 0.397 | 179 | 0.423 | 190 | 0.438 | 198 | 0.426 | 192 | 0.400 | 180 |
@@ -1250,7 +1250,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### CodeLlama-34B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.254† | -- | 0.178† | -- | 0.520 | -- | 0.494 | -- | 0.525 | -- | 0.526 | -- | 0.527 | -- |
 | L1b | 0.205 | 100 | 0.077† | -- | 0.417 | 204 | 0.469 | 229 | 0.494 | 241 | 0.472 | 230 | 0.429 | 209 |
@@ -1326,7 +1326,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### Llama-3.1-8B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.258 | 100 | 0.320 | 124 | 0.448 | 174 | 0.426 | 165 | 0.445 | 172 | 0.475 | 184 | 0.462 | 179 |
 | L1b | 0.222 | 100 | 0.276 | 124 | 0.361 | 163 | 0.387 | 174 | 0.407 | 183 | 0.422 | 190 | 0.386 | 174 |
@@ -1402,7 +1402,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### StarCoder2-15B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.000† | -- | 0.008† | -- | 0.542 | -- | 0.529 | -- | 0.532 | -- | 0.546 | -- | 0.539 | -- |
 | L1b | 0.000† | -- | 0.000† | -- | 0.431 | -- | 0.487 | -- | 0.510 | -- | 0.489 | -- | 0.426 | -- |
@@ -1478,7 +1478,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### Gemma-3-12B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.334† | -- | 0.340† | -- | 0.520 | -- | 0.507 | -- | 0.502 | -- | 0.530 | -- | 0.523 | -- |
 | L1b | 0.262† | -- | 0.274† | -- | 0.441 | -- | 0.475 | -- | 0.488 | -- | 0.481 | -- | 0.464 | -- |
@@ -1554,7 +1554,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### CodeGemma-7B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.237 | 100 | 0.267† | -- | 0.465 | 197 | 0.439 | 186 | 0.445 | 188 | 0.474 | 200 | 0.465 | 196 |
 | L1b | 0.185 | 100 | 0.209† | -- | 0.382 | 207 | 0.425 | 230 | 0.435 | 236 | 0.443 | 240 | 0.391 | 212 |
@@ -1630,7 +1630,7 @@ Raw exact-match accuracy, with `%b` after each system: its accuracy as a percent
 
 ### Granite-3.1-8B
 
-| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | anchored | %b | mixture | %b | merge | %b |
+| condition | base | %b | ICL | %b | clean LoRA | %b | breadth | %b | KL | %b | router | %b | merge | %b |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | L0 | 0.285 | 100 | 0.293 | 103 | 0.430 | 151 | 0.416 | 146 | 0.396 | 139 | 0.438 | 154 | 0.433 | 152 |
 | L1b | 0.267 | 100 | 0.267 | 100 | 0.338 | 127 | 0.391 | 147 | 0.381 | 143 | 0.396 | 149 | 0.350 | 131 |
