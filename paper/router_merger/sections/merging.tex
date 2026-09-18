@@ -63,8 +63,9 @@ parameter by summing signed magnitudes across specialists, and averages only the
 it, so a parameter two specialists push positive and one pushes negative is merged from the two
 (boxed columns)~\cite{ties}. DARE-TIES prepends a random drop of a fraction of each vector's entries
 with rescaling of the survivors, preserving the update in expectation~\cite{dare}. Nothing is
-trained: both are arithmetic on weights already learned, and the result is one adapter of the
-original rank.}
+trained: both are arithmetic on weights already learned. The rule is shown here on task tensors, as
+it is defined; Figure~\ref{fig:factorspace} shows where it is actually applied for LoRA adapters, and
+why that is not the same operation.}
 \label{fig:merging}
 \end{figure}
 
@@ -72,53 +73,128 @@ We train one low-rank specialist per obfuscating transform and combine the speci
 adapter before inference. The resulting system occupies the same design point as a router over
 experts --- per-transform specialists, composed --- but resolves the composition offline, so the
 deployed artefact is one adapter of the base architecture, requiring no gate, no expert bank, and no
-additional computation at inference time.
+additional computation at inference time. This section states the algorithm exactly as we run it.
 
-\subsection{Task Vectors and Sign-Consensus Merging}
-Let $W_0$ denote the frozen base weights of a target module. Specialist $i$, trained on transform
-$i$, contributes the update $\Delta_i = B_i A_i$ with $B_i \in \mathbb{R}^{d \times r}$ and
-$A_i \in \mathbb{R}^{r \times k}$; since the base is frozen, $\Delta_i$ is precisely the task vector
-of that specialist in the sense of Ilharco et al.~\cite{taskarithmetic}. The objective of merging is a
-single $\Delta^{\star}$ that retains the competence of all $n$ specialists.
+\subsection{Specialists}
+For each trainable condition $c \in \mathcal{C}$ we train one LoRA adapter on that condition's rows
+alone, holding the base weights $W_0$ frozen. Adapter $c$ is the pair $(A_c, B_c)$ with
+$A_c \in \mathbb{R}^{r \times k}$, $B_c \in \mathbb{R}^{d \times r}$, and it applies the update
+%
+\begin{equation}
+\Delta_c \;=\; s_c\, B_c A_c , \qquad s_c \;=\; \frac{\alpha}{r},
+\label{eq:lora}
+\end{equation}
+%
+where $s_c$ is the LoRA scaling. All specialists share a rank, an $\alpha$, a target-module set, an
+optimiser and a step budget, so they differ only in training data. We merge the $n = |\mathcal{C}|$
+specialists for $\mathcal{C} = \{\texttt{L0},\texttt{L1b},\texttt{L1r},\texttt{L2},\texttt{S1},
+\texttt{S2}\}$, which is exactly the set of conditions pooled training sees.
 
-Uniform averaging, $\Delta^{\star} = \tfrac{1}{n}\sum_i \Delta_i$, degrades as $n$ grows because
-entries on which specialists disagree cancel. TIES~\cite{ties} attributes this degradation to two
-forms of interference and removes each in turn. First, each $\Delta_i$ is \emph{trimmed} to its
-largest-magnitude entries, discarding updates that carry little signal. Second, a sign is
-\emph{elected} for each parameter by summing signed magnitudes across specialists. Third, the merge
-averages only those entries whose sign matches the elected one, so a specialist that opposes the
-consensus on a parameter contributes nothing to it. DARE~\cite{dare} prepends an independent
-sparsification: a fraction $p$ of each $\Delta_i$'s entries is dropped at random and the survivors are
-rescaled by $1/(1-p)$, which preserves the update in expectation while reducing redundancy. Neither
-procedure involves training; both are arithmetic on weights already learned.
+\subsection{Sign-Consensus Merging}
+TIES~\cite{ties} and DARE~\cite{dare} were both introduced for \emph{task vectors}: the difference
+$\theta_{\mathrm{ft}} - \theta_{\mathrm{pre}}$ between a fine-tuned and a pre-trained model, in the
+sense of task arithmetic~\cite{taskarithmetic}. Given a set of task tensors $\{T_c\}_{c=1}^{n}$ and
+combining weights $\{w_c\}$, both proceed in three stages.
 
-\subsection{Application in LoRA Factor Space}
-The published formulation of TIES operates on the assembled updates $\{\Delta_i\}$. The standard
-implementation for LoRA adapters, which we adopt, instead applies the trim--elect--merge rule
-independently to the set of $A$ factors and to the set of $B$ factors, forming
-$\Delta^{\star} = B_{\mathrm{m}} A_{\mathrm{m}}$, where each specialist's combining weight $w_i$ is
-split as $\sqrt{w_i}$ across the two sides so that their product recovers $w_i$.
+\paragraph{1. Sparsify.} Each tensor is reduced to a fraction $\rho$ of its entries. TIES keeps the
+largest by magnitude,
+%
+\begin{equation}
+\widehat{T}_c \;=\; T_c \odot \mathbf{1}\!\left[\,\lvert T_c\rvert \geq \mathrm{topk}_{\rho}(\lvert T_c\rvert)\,\right],
+\label{eq:trim}
+\end{equation}
+%
+while DARE drops entries at random and rescales the survivors so the tensor is preserved in
+expectation,
+%
+\begin{equation}
+\widehat{T}_c \;=\; \frac{1}{\rho}\, T_c \odot M_c , \qquad M_c \sim \mathrm{Bernoulli}(\rho).
+\label{eq:dare}
+\end{equation}
+%
+\paragraph{2. Elect a sign.} A single sign is chosen per coordinate by summing the sparsified tensors
+and taking the sign of the sum, so that coordinates with large-magnitude support dominate:
+%
+\begin{equation}
+\gamma \;=\; \mathrm{sign}\!\left( \sum_{c=1}^{n} \widehat{T}_c \right),
+\qquad
+m_c \;=\; \mathbf{1}\!\left[\, \mathrm{sign}(\widehat{T}_c) = \gamma \,\right].
+\label{eq:elect}
+\end{equation}
+%
+This is the \texttt{total} variant of the majority-sign rule, which weights by summed magnitude; the
+alternative \texttt{frequency} variant counts signs instead. We use \texttt{total} throughout.
 
-These two procedures are not equivalent, and the inequivalence is structural rather than numerical.
-Each entry of an update is a sum over the rank,
-$\Delta_i[m,n] = \sum_{t=1}^{r} B_i[m,t]\,A_i[t,n]$, so no entry of $A_i$ or $B_i$ corresponds to a
-single parameter of $\Delta_i$. The proposition ``the specialists agree on the sign of this
-parameter'' therefore denotes a different quantity in each space. Figure~\ref{fig:factorspace}
-contrasts the two. Empirically the gap is substantial: for random factors with $r = 4$, three
-specialists, and density $0.5$, the outputs $B_{\mathrm{m}}A_{\mathrm{m}}$ and
-$\mathrm{TIES}(\{B_iA_i\})$ exhibit a cosine similarity of $0.40$ and disagree in sign on $39\%$ of
-entries.
+\paragraph{3. Disjoint merge.} Only the entries agreeing with the elected sign contribute, and the
+sum is normalised by how many specialists contributed at that coordinate rather than by $n$:
+%
+\begin{equation}
+T^{\star} \;=\; \frac{\sum_{c=1}^{n} w_c\, \widehat{T}_c \odot m_c}{\max\!\left(\sum_{c=1}^{n} m_c,\; 1\right)} .
+\label{eq:disjoint}
+\end{equation}
+%
+A coordinate on which every specialist opposes the consensus receives zero rather than an undefined
+value, which is what the clamp in the denominator provides. \textsc{TIES} applies
+Eq.~\ref{eq:trim}; \textsc{DARE-TIES} applies Eq.~\ref{eq:dare}; both then apply
+Eqs.~\ref{eq:elect}--\ref{eq:disjoint}. Neither involves any training.
 
-We adopt factor-space merging because the alternative introduces a confound. Assembling each
-$\Delta_i$, merging, and re-extracting a low-rank adapter requires a truncated SVD, which alters the
-adapter's rank and introduces reconstruction error \emph{prior to} the evaluation of the merging rule;
-the deployed adapter would then differ from the base architecture, and any measured effect would
-combine the merge with its re-extraction. Factor-space merging preserves the rank exactly and yields
-an artefact servable by the same multi-adapter path as any single specialist. The consequence for
-interpretation is that our results characterise sign-consensus merging \emph{as it is applied to LoRA
-adapters in practice}, rather than the published task-vector algorithm in its original setting.
-Whether the two differ in downstream accuracy on our panel is an open question that the present
-experiments do not address.
+\subsection{Application to LoRA Adapters}
+\label{sec:factorspace}
+The procedure above is defined on task tensors, and a LoRA adapter does not store one: it stores the
+factors $(A_c, B_c)$ whose product is the update. Our implementation, which follows the standard
+PEFT path for LoRA, therefore treats the two factor sets as \emph{separate} collections of task
+tensors and merges each independently:
+%
+\begin{equation}
+A_{\star} \;=\; \mathrm{Merge}\!\left(\{A_c\},\,\{\sqrt{w_c s_c}\}\right),
+\qquad
+B_{\star} \;=\; \mathrm{Merge}\!\left(\{B_c\},\,\{\sqrt{w_c s_c}\}\right),
+\label{eq:factormerge}
+\end{equation}
+%
+where $\mathrm{Merge}$ is Eqs.~\ref{eq:trim}--\ref{eq:disjoint} and the combining weight is split as a
+square root across the two sides so that the product recovers $w_c s_c$. The merged adapter is
+$(A_{\star}, B_{\star})$, written at the original rank $r$ with $\alpha = r$ so that its own scaling
+is unity and the factor already carries the specialists' scaling. It is served by the same multi-LoRA
+path as any single specialist.
+
+Equation~\ref{eq:factormerge} is \emph{not} equivalent to applying $\mathrm{Merge}$ to the assembled
+updates $\{\Delta_c\}$, and the inequivalence is structural. Each entry of an update is a sum over
+the rank,
+%
+\begin{equation}
+\Delta_c[m,n] \;=\; s_c \sum_{t=1}^{r} B_c[m,t]\, A_c[t,n],
+\label{eq:ranksum}
+\end{equation}
+%
+so no entry of $A_c$ or $B_c$ corresponds to a single coordinate of $\Delta_c$: an entry of $B_c$
+participates in an entire row of the update and an entry of $A_c$ in an entire column. The sign
+elected in Eq.~\ref{eq:elect} is therefore a statement about a factor coordinate, not about a
+parameter of the update, and the two merges compute different quantities.
+Figure~\ref{fig:factorspace} contrasts them. The gap is not a rounding effect: for random factors
+with $r = 4$, $n = 3$ and $\rho = 0.5$, $B_{\star}A_{\star}$ and $\mathrm{Merge}(\{B_cA_c\})$ have a
+cosine similarity of $0.40$ and disagree in sign on $39\%$ of coordinates.
+
+We merge in factor space because the alternative introduces a confound. Recovering a rank-$r$ adapter
+from a merged $\Delta^{\star}$ requires a truncated SVD, which changes the adapter's rank and
+introduces reconstruction error \emph{before} the merging rule is evaluated; the deployed artefact
+would no longer match the base architecture, and any measured effect would combine the merge with its
+re-extraction. Factor-space merging preserves the rank exactly. The consequence for interpretation is
+that our results characterise sign-consensus merging \emph{as it is applied to LoRA adapters in
+practice}, not the published task-vector algorithm in its original setting; whether the two differ in
+downstream accuracy is an open question these experiments do not address.
+
+\subsection{Configuration}
+We report two variants, \textsc{TIES} (Eq.~\ref{eq:trim}) and \textsc{DARE-TIES}
+(Eq.~\ref{eq:dare}), both with density $\rho = 0.5$, the \texttt{total} majority-sign rule, and
+uniform weights $w_c = 1/n$. Non-uniform weighting is an additional degree of freedom; holding the
+weights uniform preserves the comparison against pooled training --- which likewise weights its
+constituent conditions equally by construction --- as a comparison of composition strategy rather
+than of tuning effort. Density was selected by a sweep over $\rho \in \{0.3, 0.5, 0.7\}$ on a
+1.5\,B pilot model outside the evaluation panel and applied unchanged to all eight panel models, so
+it is neither fitted to the panel nor tuned for it. \textsc{DARE-TIES} is stochastic through
+Eq.~\ref{eq:dare}; we fix its seed and record it with the merged adapter, and each merge is performed
+once in \texttt{float32}.
 
 \begin{figure*}[t]
 \centering
@@ -191,8 +267,4 @@ error before the merging rule is evaluated.}
 \label{fig:factorspace}
 \end{figure*}
 
-\subsection{Weighting}
-Specialists are combined with uniform weights $w_i = 1/n$. Non-uniform weighting constitutes an
-additional degree of freedom, and holding the weights uniform preserves the comparison against pooled
-training --- which likewise weights its constituent conditions equally by construction --- as a
-comparison of composition strategy rather than of tuning effort.
+
