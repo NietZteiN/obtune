@@ -5,19 +5,49 @@
 % inliner finds them by marker wherever they live.
 
 \subsection{Behaviour Prediction Tasks and Grading}
-Given a program and an input, the \emph{forward} task asks for the value it returns; given a program
-and a return value, the \emph{backward} task asks for a call that produces it. Both are posed on the
-program \emph{as the model is shown it} --- the obfuscated variant, never the clean parent --- and
-both share the program, the gold value and the grader, which is what lets a change in one direction be
-read against the other.
+\label{sec:tasks}
+Both tasks are posed on the program \emph{as the model is shown it} --- the obfuscated variant, never
+the clean parent --- and both are decoded greedily with a constrained, no-chain-of-thought answer
+format. The two are graded by different procedures, which we state separately because the asymmetry
+is not incidental: forward answers are unique and backward answers are not.
 
-Forward accuracy is strict normalised exact match on the produced output, with no containment
-matching. Backward is graded by \emph{execution}: the produced call is run against the obfuscated
-program in a sandbox and is correct if it returns the gold value, because inversion is many-to-one
-and a call that matches the gold text is not the only right answer. We also report the stricter rate
-at which the \emph{gold arguments} are recovered, since execution grading can be satisfied by a
-generic guess on the roughly fifteen percent of items whose gold value is trivial
+\paragraph{Output prediction (forward).} The prompt gives the program and a call, and asks for the
+value the call returns. The reply is graded by normalised exact match against the gold value, which
+is obtained by executing the \emph{clean parent} on the same arguments, so the reference is
+independent of any transform. Normalisation is deliberately minimal and fixed in advance:
+surrounding whitespace is stripped, a code fence or pair of backticks is unwrapped, and a single
+trailing period is removed. No containment or substring matching is used --- an earlier audit of a
+substring grader on this corpus found roughly $3\%$ false positives, for instance \texttt{927}
+matching inside \texttt{9273}. Where the value parses as a literal in both the prediction and the
+gold, comparison is structural with a floating-point tolerance of $10^{-6}$; otherwise it is on the
+normalised strings. We additionally record \emph{raw exact match} --- byte equality after whitespace
+stripping alone, with no normalisation --- so the sensitivity of any effect to the normalisation
+rules can be checked.
+
+\paragraph{Input prediction (backward).} The prompt gives the program and a return value, and asks
+for a call that produces it. Grading is by \emph{execution}, not by matching: the predicted call is
+run against the obfuscated program in the project's sandbox and is correct if the canonical
+representation of its return value equals the gold value. Matching the gold \emph{arguments} is not
+required, because a return value generally has many pre-images and finding a different valid input
+is a success rather than an error. We nonetheless report the stricter rate at which the gold
+arguments are recovered (\emph{exact-argument} accuracy) alongside the execution rate throughout,
+because the two differ substantially and the gap is itself a finding
 (Section~\ref{sec:results}).
+
+Three details of the backward grader matter for reproduction. The reply must be a single call
+\texttt{name(arg,\,\ldots)} whose arguments are literals; prose, expressions such as
+\texttt{range(3)}, variable references and multi-line replies are recorded as format failures rather
+than repaired, since hunting for a call inside prose would conceal exactly the failure mode we want
+to measure. Arguments are literal-checked in the parent process before anything reaches the sandbox,
+so an unparseable prediction is a format failure and never an execution error. And the function
+\emph{name} before the parenthesis is not graded: under identifier renaming the entry point is
+renamed and the prompt states the new name, so a model that writes the original name has still
+identified the input; the call is executed against the item's true entry point.
+
+\paragraph{Format failures.} Both graders report a format-failure rate, and the constrained answer
+format is what makes that rate meaningful. A cell whose rate exceeds $0.25$ is excluded from every
+mean and marked rather than hidden; Section~\ref{sec:setup} gives the two marks and what distinguishes
+them.
 
 \subsection{Scope of Transformations Studied}
 Single transforms fall into three families (Section~\ref{sec:background}): \emph{identifier}
@@ -34,7 +64,7 @@ Google, IBM), code-specialised and general, 7B to 34B, plus one pretrained check
 the one-shot baseline. Every adapter is a LoRA with the same rank and target modules on every model,
 and one prompt builder serves training and evaluation alike.
 % >>> GENERATED TABLE setup_models -- from tables/setup_models.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-18 00:11 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-18 00:25 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/models.yaml
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]
@@ -66,7 +96,7 @@ independent of any transform. Coverage differs by condition because structural t
 some programs by design and the held-out family needs enough encodable sites; every paired contrast is
 computed on the programs common to the cells it compares, fixed before evaluation.
 % >>> GENERATED TABLE setup_dataset -- from tables/setup_dataset.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-18 00:11 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-18 00:25 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: data/train/base/python.jsonl, data/splits/python.json, data/eval/heldout/items/*
 % Do not edit by hand -- regenerate. 
 \begin{table}[ht]
@@ -100,7 +130,7 @@ family, \texttt{S3} and \texttt{S4} are the two halves of \texttt{S2} --- one th
 about, one it can ignore --- and exist as separate transforms so that composition can be checked
 against a known whole.
 % >>> GENERATED TABLE setup_taxonomy -- from tables/setup_taxonomy.tex; regenerate, then re-run inline_tables.py
-% GENERATED 2026-09-18 00:11 UTC by scripts/analysis/59_master_tables.py
+% GENERATED 2026-09-18 00:25 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: configs/conditions.yaml, data/eval/heldout/items/*
 % Do not edit by hand -- regenerate. 
 \begin{table*}[ht]

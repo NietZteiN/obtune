@@ -563,7 +563,7 @@ for m, (r, g) in RM.items():
 # 65_backward_stacks.py earlier today. Its cells are untouched and still in docs/MASTER_TABLES.md.
 # Column names match the main results table (2026-09-17): "anchored" -> KL, "mixture" -> router.
 ABS_SYS = [("base","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("KL","cons_lam3"),
-           ("router","mole_router"),("merge","merge_dare_ties")]
+           ("router","mole_router"),("TIES","merge_ties"),("DARE","merge_dare_ties")]
 ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_all":None, "cons_lam3":None, "tuned_X1":None,
           "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
 ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
@@ -807,7 +807,7 @@ def abs_table(m):
                r"unobfuscated code; \emph{breadth} on all six training conditions pooled; \emph{KL} adds a "
                r"KL-consistency term to a frozen clean-code teacher (Eq.~\ref{eq:kl}); \emph{router} is the "
                r"learned-gate mixture of per-transform "
-               r"specialists; \emph{merge} is the DARE-TIES merge of them. "
+               r"specialists; \emph{TIES} and \emph{DARE} are the two sign-consensus merges of them. "
                r"\textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} "
                r"\texttt{base} in the same direction on the same condition; \texttt{base} is the reference, and an "
                r"uncoloured number means no comparison was available rather than a tie. A \textcolor{red!70!black}{red "
@@ -836,10 +836,11 @@ def abs_table(m):
          r"\centering\footnotesize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.95}",
          r"\caption{" + caption + "}",
          r"\label{tab:master_abs_" + tag + "}",
+         r"\resizebox{\textwidth}{!}{%",
          r"\begin{tabular}{@{}l" + "c"*len(ABS_SYS) + "@{}}", r"\toprule",
          r"\textbf{Condition} & " + " & ".join(r"\textbf{" + n + "}" for n, _ in ABS_SYS) + r" \\",
          " & " + " & ".join(r"{\scriptsize out\,/\,in}" for _ in ABS_SYS) + r" \\", r"\midrule"]
-        + body + [r"\bottomrule", r"\end{tabular}", r"\end{table*}"])
+        + body + [r"\bottomrule", r"\end{tabular}}", r"\end{table*}"])
 
 
 for m in MODELS + ABS_EXTRA_MODELS:
@@ -961,7 +962,8 @@ MAIN_BLOCKS = [("seen stacks", SEEN_STACKS + DEPTH_STACKS),
                ("unseen family", ["X1"] + UNSEEN_STACKS + HALF_STACKS + D3_STACKS),
                ("backward (input pred.)", None)]   # None = every backward condition available
 MAIN_SYS = [("base","base"),("clean","tuned_L0"),("breadth","mono_all"),
-            ("KL","cons_lam3"),("router","mole_router"),("merge","merge_dare_ties")]
+            ("KL","cons_lam3"),("router","mole_router"),
+            ("TIES","merge_ties"),("DARE","merge_dare_ties")]
 
 def _block_mean(m, sy, conds, bwd):
     """Mean over readable cells; None when the arm has none. Gated cells are dropped, exactly as in
@@ -995,8 +997,9 @@ def main_table():
          r"\emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, "
          r"\emph{breadth} one LoRA tuned on all six training conditions at once, \emph{KL} the "
          r"KL-consistency objective, \emph{router} a learned-gate mixture of eight per-condition "
-         r"specialists, \emph{merge} the DARE-TIES merge of the six that breadth pools. \emph{breadth} and "
-         r"\emph{merge} are exactly data-matched; \emph{mix} carries two further experts "
+         r"specialists, and \emph{TIES} / \emph{DARE} the two sign-consensus merges of the six specialists that "
+         r"breadth pools --- \emph{DARE} additionally applies the random drop of Eq.~\ref{eq:dare}. \emph{breadth} and "
+         r"both merges are exactly data-matched; \emph{mix} carries two further experts "
          r"(\texttt{S3}, \texttt{S4}) that neither is trained on. "
          r"\textbf{Bold} is the best non-base arm in that block; "
          r"\textcolor{red!70!black}{red} is below \texttt{base}. "
