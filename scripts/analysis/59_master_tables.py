@@ -1079,52 +1079,80 @@ MAIN_GROUPS = [("single", AVG_GROUPS[0][1]), ("held-out", AVG_GROUPS[1][1]), ("d
 
 
 def _main_part(part, models):
-    """One float. Each arm gets TWO columns: its raw accuracy and that accuracy as a percentage of
-    the untuned model on the same conditions (2026-09-17, user: absolute numbers AND percentage,
-    in another column, made explicit against base). Every cell is forward\\,/\\,backward."""
-    arms = [(n, sy) for n, sy in MAIN_SYS if sy != "base"]
-    ncol = 2 + 1 + 2*len(arms)
-    cap_full = (r"\caption{\textbf{Every adaptation on every model, against the untuned model.} "
+    """One float. THE REFERENCE IS THE UNTUNED MODEL ON CLEAN CODE (2026-09-17, user: "highlight L0
+    accuracy and make it clear that's what we compare to").
+
+    Every percentage in the table is `arm_acc / base_acc_on_L0 * 100` -- what fraction of the
+    untuned model's UNOBFUSCATED performance the arm recovers under obfuscation. 100 means the
+    obfuscation has been fully paid for; below 100 means some of the clean-code competence is still
+    missing. That reference is one number per model per direction, shown in its own shaded column at
+    the left of each model's block so it cannot be mistaken for a per-row quantity.
+
+    This is a different question from "is the arm above the untuned model on this condition", which
+    the per-model tables in Appendix A answer. Here the denominator is fixed across every row of a
+    model, so the columns are comparable down the block and the degradation caused by each condition
+    group is visible in the `base` column itself.
+    """
+    arms = MAIN_SYS  # base included: its own recovery is informative (it is the degradation)
+    cap_full = (r"\caption{\textbf{Recovery of clean-code performance under obfuscation.} "
         r"Every cell is \emph{output prediction}\,/\,\emph{input prediction}; backward is graded by execution. "
-        r"For each arm the first column is its \textbf{raw accuracy} and the second is that accuracy "
-        r"\textbf{as a percentage of \texttt{base}} on the same conditions and direction: "
-        r"\textbf{100 means it matches the untuned model}, 187 means 1.87 times it, and "
-        r"\textcolor{green!55!black}{above} and \textcolor{red!70!black}{below} 100 are coloured. "
-        r"\texttt{base} is the untuned model and has no percentage column, being its own reference. "
-        r"Rows are the condition groups of Appendix~\ref{app:absmaster}: \emph{single} the seen transforms "
-        r"alone, \emph{held-out} the unseen family, \emph{d2--d4} stacks of that depth built only from seen "
-        r"transforms, and \emph{d2u}/\emph{d3u} stacks of that depth containing the unseen family. "
-        r"\textbf{Bold} marks the best non-base arm in that row and direction. A percentage needs a readable "
-        r"denominator, so `--' means either the arm or \emph{the untuned model} was format-gated on that "
-        r"group; StarCoder2-15B's untuned forward reading is gated on almost every condition, which is why "
-        r"its forward percentages are absent rather than zero. \emph{breadth} and \emph{merge} are exactly "
-        r"data-matched; \emph{router} carries two further experts (\texttt{S3}, \texttt{S4}) that neither is "
-        r"trained on.}")
-    cap_cont = (r"\caption{\textbf{Against the untuned model, continued} (Table~\ref{tab:main}). "
-        r"Columns, colours and row groups are as in Table~\ref{tab:main}: for each arm, raw accuracy then "
-        r"that accuracy as a percentage of \texttt{base}, every cell \emph{forward}\,/\,\emph{backward}.}")
+        r"\textbf{The reference is the shaded column}: the untuned model's accuracy on \texttt{L0}, the "
+        r"unobfuscated program. For each arm the first column is its raw accuracy on the condition group and "
+        r"the second is that accuracy \textbf{as a percentage of the shaded reference} --- "
+        r"\textbf{100 means the arm recovers all of the untuned model's clean-code accuracy}, and below 100 "
+        r"means some of it is still lost to the obfuscation. The denominator is the same for every row of a "
+        r"model, so the \texttt{base} column shows how far each condition group degrades the untuned model, and "
+        r"the remaining columns show how much of that each adaptation buys back. "
+        r"\textcolor{green!55!black}{Above} and \textcolor{red!70!black}{below} 100 are coloured; \textbf{bold} "
+        r"marks the best arm in that row and direction. Rows are the condition groups of "
+        r"Appendix~\ref{app:absmaster}: \emph{single} the seen transforms alone, \emph{held-out} the unseen "
+        r"family, \emph{d2--d4} stacks of that depth built only from seen transforms, \emph{d2u}/\emph{d3u} "
+        r"stacks containing the unseen family. The reference is \emph{not} subject to the 0.25 format gate that "
+        r"excludes cells from means --- that gate keeps unreliable measurements out of an average, whereas a "
+        r"denominator is a different object, and untuned format failure reflects adherence to the prompt "
+        r"contract rather than capability (Section~\ref{sec:setup}) --- but a reference whose own rate exceeds "
+        r"the gate carries $\dagger$, so a soft denominator is visible. StarCoder2-15B's untuned forward "
+        r"reading is not merely gated but zero, so it has no forward reference at all. \emph{breadth} and "
+        r"\emph{merge} are exactly data-matched; \emph{router} carries two further experts.}")
+    cap_cont = (r"\caption{\textbf{Recovery of clean-code performance, continued} (Table~\ref{tab:main}). "
+        r"Columns, colours and row groups are as in Table~\ref{tab:main}; percentages are of the shaded "
+        r"reference, the untuned model on \texttt{L0}.}")
     L = [r"\begin{table*}[p]", r"\centering\footnotesize\setlength{\tabcolsep}{2.5pt}",
          cap_full if part == 0 else cap_cont,
          r"\label{tab:main}" if part == 0 else r"\label{tab:main_b}",
          r"\resizebox{\textwidth}{!}{%",
-         r"\begin{tabular}{@{}ll" + "c" + "cc"*len(arms) + "@{}}", r"\toprule",
-         r"\textbf{model} & \textbf{conditions} & \textbf{base} & " +
+         r"\begin{tabular}{@{}lcl" + "cc"*len(arms) + "@{}}", r"\toprule",
+         r"\textbf{model} & \cellcolor{yellow!30}\textbf{base on \texttt{L0}} & \textbf{conditions} & " +
            " & ".join(r"\multicolumn{2}{c}{\textbf{" + n + "}}" for n, _ in arms) + r" \\",
          "".join(r"\cmidrule(lr){" + f"{4+2*k}-{5+2*k}" + "}" for k in range(len(arms))),
-         r" & & {\scriptsize acc} & " +
-           " & ".join(r"{\scriptsize acc} & {\scriptsize \%\,base}" for _ in arms) + r" \\",
+         r" & \cellcolor{yellow!30}{\scriptsize reference} & & " +
+           " & ".join(r"{\scriptsize acc} & {\scriptsize \%\,rec.}" for _ in arms) + r" \\",
          r"\midrule"]
     for mi, m in enumerate(models):
+        # THE REFERENCE IS NOT SUBJECT TO THE FORMAT GATE, and the reason is the paper's own
+        # position: "untuned format failure measures adherence to the prompt contract, not
+        # capability, so screening base models by it is unsound" (Section 5.9). The gate exists to
+        # keep unreliable MEASUREMENTS out of means; a denominator is a different object. Applying it
+        # here cost three of eight models their entire forward column on rates of 0.25-0.28 --
+        # CodeLlama-34B at 0.2539 was excluded by four thousandths -- which is a reporting artefact,
+        # not a fact about those models. The reference is used whenever it exists and is marked with
+        # a dagger when its own format rate is above the gate, so a soft denominator is visible
+        # rather than silently either used or dropped.
+        ref, refmark = {}, {}
+        for b in (False, True):
+            a, ff = abs_cell(m, "base", "L0", b)
+            ref[b] = a if isinstance(a, float) else None
+            refmark[b] = (ff or 0) > FMT_MAX
+        refstr = "\\,/\\,".join(
+            (f"{ref[b]:.3f}" + (r"$^{\dagger}$" if refmark[b] else "")) if ref[b] is not None else "--"
+            for b in (False, True))
         for gi, (gname, conds) in enumerate(MAIN_GROUPS):
-            ref = {b: _grp_mean(m, "base", conds, b) for b in (False, True)}
             best = {}
             for b in (False, True):
                 cand = {sy: _grp_mean(m, sy, conds, b) for _, sy in arms}
                 cand = {k: v for k, v in cand.items() if v is not None}
                 best[b] = max(cand, key=cand.get) if cand else None
             cells = []
-            bh = [f"{ref[b]:.3f}" if ref[b] is not None else "--" for b in (False, True)]
-            cells.append(bh[0] + r"\,/\," + bh[1])
             for _, sy in arms:
                 acc_h, pct_h = [], []
                 for b in (False, True):
@@ -1134,9 +1162,8 @@ def _main_part(part, models):
                     t = f"{v:.3f}"
                     if sy == best[b]: t = r"\textbf{" + t + "}"
                     acc_h.append(t)
-                    r0 = ref[b]
-                    if r0 is None or not r0: pct_h.append("--"); continue
-                    q = v / r0 * 100.0
+                    if ref[b] is None or not ref[b]: pct_h.append("--"); continue
+                    q = v / ref[b] * 100.0
                     pt = f"{q:.0f}"
                     if pt != "100":
                         pt = (r"\textcolor{green!55!black}{" if q > 100 else r"\textcolor{red!70!black}{") + pt + "}"
@@ -1144,7 +1171,8 @@ def _main_part(part, models):
                 cells.append(acc_h[0] + r"\,/\," + acc_h[1])
                 cells.append(pct_h[0] + r"\,/\," + pct_h[1])
             lead = (r"\multirow{7}{*}{" + tex_esc(SHORT.get(m, NICE[m])) + "}") if gi == 0 else ""
-            L.append(lead + " & " + gname + " & " + " & ".join(cells) + r" \\")
+            refcell = r"\cellcolor{yellow!22}" + refstr
+            L.append(lead + " & " + refcell + " & " + gname + " & " + " & ".join(cells) + r" \\")
         if mi != len(models) - 1: L.append(r"\midrule")
     L += [r"\bottomrule", r"\end{tabular}}", r"\end{table*}"]
     return "\n".join(L)
