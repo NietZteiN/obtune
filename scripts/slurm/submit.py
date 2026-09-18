@@ -436,14 +436,26 @@ def main() -> int:
     # Resolve the share from configs/compute.yaml unless given explicitly. NOT from the
     # environment: that form was inert, because env.sh is sourced by the sbatch script and not by
     # the shell doing the submitting.
+    # ZERO MEANS "TAKE NOTHING", NOT "NO LIMIT" (fixed 2026-09-18). The guard was `if a.share_limit`,
+    # which is falsy at 0, so setting the share to 0 to stand down from the pool would have DISABLED
+    # the check and allowed unlimited submission -- the exact opposite, and silently. A partition
+    # with no entry in compute.yaml still means unlimited, which is what h100 and a30 need; that is
+    # now `None` rather than 0, so the two cases are distinguishable.
     if a.share_limit is None:
         try:
-            a.share_limit = int((load_config("compute.yaml").get("share_limits") or {}).get(a.partition, 0))
+            a.share_limit = (load_config("compute.yaml").get("share_limits") or {}).get(a.partition)
+            a.share_limit = None if a.share_limit is None else int(a.share_limit)
         except Exception:
-            a.share_limit = 0
-    if a.share_limit and not a.ignore_share_limit:
+            a.share_limit = None
+    if a.share_limit is not None and not a.ignore_share_limit:
         held = obtune_jobs_on(a.partition)
         if held >= a.share_limit:
+            if a.share_limit == 0:
+                print(f"REFUSING: obtune has stood down from the {qos_pool(a.partition)[0] or a.partition} "
+                      f"pool (share 0 in configs/compute.yaml) -- the experiments are complete and the "
+                      f"slots are the other project's. Use h100/a30, or raise the share deliberately if "
+                      f"new work is needed.", file=sys.stderr)
+                return 2
             qos, pool = qos_pool(a.partition)
             print(f"REFUSING: obtune already holds {held} job(s) in the "
                   f"{qos or a.partition} pool ({', '.join(sorted(pool))}); the agreed share is "

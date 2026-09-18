@@ -137,7 +137,20 @@ share_limits:
   # WHERE NINE IS REACHABLE: h100 (3 nodes, 9 GPUs) and a30 (2 nodes, 4 GPUs) carry NO QoS at all
   # (`scontrol show partition` -> QoS=N/A), so obtune's concurrency there is bounded by hardware,
   # not policy. That is where the bulk of the work belongs and where it now goes.
-  h200: 4
+  # DROPPED 4 -> 0 ON 2026-09-18, at the user's instruction ("if we're done with experiments then
+  # drop our share completely"). Every experiment this project needs is complete: the eight-model
+  # panel is 184/184 forward and 161/161 backward, the seed-42 replication is closed on all three
+  # load-bearing claims, and the backward-trained control is read on two models. obtune therefore
+  # takes NO slot in the juno pool, and the other project on this account has all four.
+  #
+  # 0 MEANS TAKE NOTHING. It did not until today: submit.py guarded with `if a.share_limit`, which
+  # is falsy at 0, so this value would have disabled the check and allowed unlimited submission --
+  # silently, and exactly backwards. The guard now tests `is not None`, and a partition absent from
+  # this map (h100, a30) is what means unlimited.
+  #
+  # To resume: set this to the number of slots wanted and say so here. `--ignore-share-limit` exists
+  # for a single deliberate exception without editing the agreement.
+  h200: 0
   normal: 3      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
