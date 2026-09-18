@@ -37,7 +37,8 @@ DEPTH_STACKS = ["C3_L1r_S3_S4","C3_S1_S3_S4","C3_L1r_S1_S4","C4_L1r_S1_S3_S4"]
 UNSEEN_STACKS = ["C_L1r_X1","C_X1_S1","C_S2_X1"]
 HALF_STACKS = ["C_L1r_X1m","C_S1_X1s"]
 D3_STACKS = ["C3_L1r_S1_X1"]
-INTERV = [("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("anchored","cons_lam3"),("family","tuned_X1")]
+# Names match the main table and Appendix A (2026-09-17): "anchored" -> KL.
+INTERV = [("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("KL","cons_lam3"),("family","tuned_X1")]
 PHASES = {"ladder":["panel_core"],"seen":["composite_generic"],"depth":["composite_depth","composite_generic"],
           "unseen":["f2_divergence"],"half":["f2_divergence"],"d3":["f2_divergence"]}
 KIND = {}
@@ -332,9 +333,9 @@ def write(name, body, source, note=""):
     (TEX_OUT/name).write_text(hdr + body + "\n"); print(f"  wrote {(TEX_OUT/name).relative_to(ROOT)}", file=sys.stderr)
 
 SYS = {"ICL":r"ICL (\texttt{base\_1shot})","clean LoRA":r"clean LoRA (\texttt{tuned\_L0})","breadth":r"breadth (\texttt{mono\_all})",
-       "anchored":r"anchored (\texttt{cons\_lam3})","family":r"family (\texttt{tuned\_X1})"}
+       "KL":r"KL (\texttt{cons\_lam3})","family":r"family (\texttt{tuned\_X1})"}
 SYS2 = {"ICL":(r"ICL",r"\texttt{base\_1shot}"),"clean LoRA":(r"clean LoRA",r"\texttt{tuned\_L0}"),"breadth":(r"breadth",r"\texttt{mono\_all}"),
-        "anchored":(r"anchored",r"\texttt{cons\_lam3}"),"family":(r"family",r"\texttt{tuned\_X1}")}
+        "KL":(r"KL",r"\texttt{cons\_lam3}"),"family":(r"family",r"\texttt{tuned\_X1}")}
 COLSPEC = "@{}l" + "rr" + "|rrr"*len(INTERV) + "@{}"
 def grid_tex(m):
     L = []
@@ -383,7 +384,7 @@ L = [r"\begin{table*}[ht]", r"\centering\footnotesize\setlength{\tabcolsep}{3pt}
      r"\caption{\textbf{Every intervention against every kind of obfuscation, across the eight-model panel.} For each system and direction, "
      r"$\Delta$ is the mean change in points against the untuned model and \% the mean accuracy as a percentage of the untuned model's "
      r"clean-code accuracy, over the cells that exist and pass the format gate (in parentheses: the number of cells; after the semicolon, "
-     r"the number gated as \emph{fmt}). Systems: ICL = \texttt{base\_1shot}, clean LoRA = \texttt{tuned\_L0}, breadth = \texttt{mono\_all}, anchored = \texttt{cons\_lam3}, family = \texttt{tuned\_X1}. "
+     r"the number gated as \emph{fmt}). Systems: ICL = \texttt{base\_1shot}, clean LoRA = \texttt{tuned\_L0}, breadth = \texttt{mono\_all}, KL = \texttt{cons\_lam3}, family = \texttt{tuned\_X1}. "
      r"\emph{seen} = L1b, L1r, L2, S1, S2; \emph{seen stacks} = the six depth-2 and four depth-3/4 stacks "
      r"of seen transforms; \emph{unseen stacks} = the three depth-2 and one depth-3 stacks with the X1 family inside. Backward cells survive "
      r"the gate almost only on CodeLlama-7B, whose grid (Table~\ref{tab:master_codellama7b}) is the one fully interpretable backward read; "
@@ -560,8 +561,9 @@ for m, (r, g) in RM.items():
 # family -- it is the one arm for which that family is not unseen, and it wins those rows by having
 # been trained on them. The same reason it was dropped from 69_stack_leaderboard.py and
 # 65_backward_stacks.py earlier today. Its cells are untouched and still in docs/MASTER_TABLES.md.
-ABS_SYS = [("base","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("anchored","cons_lam3"),
-           ("mixture","mole_router"),("merge","merge_dare_ties")]
+# Column names match the main results table (2026-09-17): "anchored" -> KL, "mixture" -> router.
+ABS_SYS = [("base","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("KL","cons_lam3"),
+           ("router","mole_router"),("merge","merge_dare_ties")]
 ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_all":None, "cons_lam3":None, "tuned_X1":None,
           "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
 ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
@@ -802,8 +804,9 @@ def abs_table(m):
                r"forward task (predict the return value of the code as shown) and, after the slash, on the backward "
                r"task (produce a call that returns the shown value), on the held-out programs of that condition. "
                r"\emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on "
-               r"unobfuscated code; \emph{breadth} on all six training conditions pooled; \emph{anchored} is the "
-               r"paired-consistency objective; \emph{mixture} is the learned-gate mixture of per-transform "
+               r"unobfuscated code; \emph{breadth} on all six training conditions pooled; \emph{KL} adds a "
+               r"KL-consistency term to a frozen clean-code teacher (Eq.~\ref{eq:kl}); \emph{router} is the "
+               r"learned-gate mixture of per-transform "
                r"specialists; \emph{merge} is the DARE-TIES merge of them. "
                r"\textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} "
                r"\texttt{base} in the same direction on the same condition; \texttt{base} is the reference, and an "
@@ -822,7 +825,7 @@ def abs_table(m):
                r"\emph{forward} answer --- the arm answered the other question, which is a result rather than a "
                r"broken template. "
                + (r"\textbf{This model is the pilot}: it predates X1, the depth-3/4 stacks and the "
-                  r"unseen-containing stacks, and the in-context, anchored and family arms were never built for it, "
+                  r"unseen-containing stacks, and the in-context, KL and family arms were never built for it, "
                   r"so those rows and columns are absent rather than empty; it does carry \texttt{S3}/\texttt{S4} as "
                   r"standalone transforms, which the panel models do not. " if m in ABS_EXTRA_MODELS else "")
                + r"`--': not run.")
@@ -855,7 +858,7 @@ for m in MODELS + ABS_EXTRA_MODELS:
 COLLAPSE_JSON = ROOT/"results/analysis/pipeline/backward_failure_modes_C_L1r_X1.json"
 COLLAPSE_SYS = [("untuned","base"),("TIES merge","merge_ties"),("DARE-TIES merge","merge_dare_ties"),
                 ("family","tuned_X1"),("clean LoRA","tuned_L0"),("breadth","mono_all"),
-                ("anchored","cons_lam3"),("router","mole_router")]
+                ("KL","cons_lam3"),("router","mole_router")]
 
 def collapse_tex():
     if not COLLAPSE_JSON.exists():
