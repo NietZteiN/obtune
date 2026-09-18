@@ -957,6 +957,11 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/libertine/LinLibertineT
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1--base.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ot1.vf
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1--base.tfm
+INPUT ./sections/appendix1_5.tex
+INPUT ./sections/appendix1_5.tex
+INPUT ./sections/appendix1_5.tex
+INPUT ./sections/appendix1_5.tex
+INPUT sections/appendix1_5.tex
 INPUT ./sections/appendix2.tex
 INPUT ./sections/appendix2.tex
 INPUT ./sections/appendix2.tex

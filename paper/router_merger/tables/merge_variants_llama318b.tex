@@ -1,0 +1,47 @@
+% GENERATED 2026-09-18 00:45 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* for llama31-8b (merge variants, both directions)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.95}
+\caption{\textbf{Merge variants against the untuned model, Llama-3.1-8B.} Each cell is \emph{output prediction}\,/\,\emph{input prediction}, raw exact-match accuracy; backward is graded by execution. The three merges combine the same six specialists with the same uniform weights, density $0.5$ and sign rule, and differ only in the sparsification step: \emph{TIES} keeps the largest entries by magnitude (Eq.~\ref{eq:trim}), \emph{DARE-TIES} drops entries at random and rescales (Eq.~\ref{eq:dare}), and \emph{DARE-linear} applies that drop without the sign election of Eq.~\ref{eq:elect}. \textbf{Colour}: \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} in the same direction; a red number carrying a dagger is gated instead (format-failure rate above 0.25). \textbf{Bold rows} are group means. \emph{DARE-linear} was run forward only, so its backward half is absent by construction rather than by omission.}
+\label{tab:merge_variants_llama318b}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Condition} & \textbf{base} & \textbf{TIES} & \textbf{DARE-TIES} & \textbf{DARE-linear} \\
+ & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} \\
+\midrule
+\texttt{L0} & 0.258\,/\,0.409 & \textcolor{green!55!black}{0.398}\,/\,\textcolor{green!55!black}{0.434} & \textcolor{green!55!black}{0.462}\,/\,\textcolor{green!55!black}{0.414} & \textcolor{green!55!black}{0.292}\,/\,-- \\
+\texttt{L1b} & 0.222\,/\,0.371 & \textcolor{green!55!black}{0.336}\,/\,\textcolor{green!55!black}{0.389} & \textcolor{green!55!black}{0.386}\,/\,\textcolor{green!55!black}{0.383} & \textcolor{green!55!black}{0.253}\,/\,-- \\
+\texttt{L1r} & 0.242\,/\,0.373 & \textcolor{green!55!black}{0.348}\,/\,\textcolor{green!55!black}{0.388} & \textcolor{green!55!black}{0.398}\,/\,\textcolor{red!70!black}{0.372} & \textcolor{red!70!black}{0.234}\,/\,-- \\
+\texttt{L2} & 0.215\,/\,0.376 & \textcolor{green!55!black}{0.353}\,/\,\textcolor{green!55!black}{0.384} & \textcolor{green!55!black}{0.396}\,/\,\textcolor{red!70!black}{0.364} & \textcolor{green!55!black}{0.246}\,/\,-- \\
+\texttt{S1} & 0.213\,/\,0.375 & \textcolor{green!55!black}{0.335}\,/\,\textcolor{green!55!black}{0.417} & \textcolor{green!55!black}{0.412}\,/\,\textcolor{green!55!black}{0.411} & \textcolor{green!55!black}{0.256}\,/\,-- \\
+\texttt{S2} & 0.205\,/\,0.378 & \textcolor{green!55!black}{0.361}\,/\,\textcolor{green!55!black}{0.419} & \textcolor{green!55!black}{0.437}\,/\,\textcolor{green!55!black}{0.435} & \textcolor{green!55!black}{0.256}\,/\,-- \\
+\texttt{X1} & 0.132\,/\,0.263 & \textcolor{green!55!black}{0.217}\,/\,\textcolor{green!55!black}{0.314} & \textcolor{green!55!black}{0.266}\,/\,\textcolor{green!55!black}{0.311} & \textcolor{red!70!black}{0.164$^{\dagger}$}\,/\,-- \\
+\texttt{C\_L1b\_S1} & 0.152\,/\,0.287 & \textcolor{green!55!black}{0.252}\,/\,\textcolor{green!55!black}{0.315} & \textcolor{green!55!black}{0.307}\,/\,\textcolor{green!55!black}{0.352} & \textcolor{green!55!black}{0.211}\,/\,-- \\
+\texttt{C\_L1r\_S1} & 0.162\,/\,0.297 & \textcolor{green!55!black}{0.273}\,/\,\textcolor{green!55!black}{0.340} & \textcolor{green!55!black}{0.328}\,/\,\textcolor{green!55!black}{0.350} & \textcolor{green!55!black}{0.206}\,/\,-- \\
+\texttt{C\_S1\_L1r} & 0.159\,/\,0.303 & \textcolor{green!55!black}{0.247}\,/\,\textcolor{green!55!black}{0.348} & \textcolor{green!55!black}{0.306}\,/\,\textcolor{green!55!black}{0.356} & \textcolor{green!55!black}{0.200}\,/\,-- \\
+\texttt{C\_L2\_S4} & 0.205\,/\,0.320 & \textcolor{green!55!black}{0.311}\,/\,\textcolor{green!55!black}{0.358} & \textcolor{green!55!black}{0.383}\,/\,\textcolor{green!55!black}{0.388} & \textcolor{green!55!black}{0.226}\,/\,-- \\
+\texttt{C\_L1r\_S3} & 0.198\,/\,0.342 & \textcolor{green!55!black}{0.334}\,/\,\textcolor{green!55!black}{0.375} & \textcolor{green!55!black}{0.387}\,/\,\textcolor{green!55!black}{0.375} & \textcolor{green!55!black}{0.222}\,/\,-- \\
+\texttt{C\_S4\_S3} & 0.214\,/\,0.367 & \textcolor{green!55!black}{0.357}\,/\,\textcolor{green!55!black}{0.410} & \textcolor{green!55!black}{0.437}\,/\,\textcolor{green!55!black}{0.417} & \textcolor{green!55!black}{0.255}\,/\,-- \\
+\texttt{C3\_L1r\_S3\_S4} & 0.183\,/\,0.309 & \textcolor{green!55!black}{0.306}\,/\,\textcolor{green!55!black}{0.363} & \textcolor{green!55!black}{0.370}\,/\,\textcolor{green!55!black}{0.372} & \textcolor{green!55!black}{0.199}\,/\,-- \\
+\texttt{C3\_S1\_S3\_S4} & 0.160\,/\,0.353 & \textcolor{green!55!black}{0.308}\,/\,\textcolor{green!55!black}{0.398} & \textcolor{green!55!black}{0.377}\,/\,\textcolor{green!55!black}{0.408} & \textcolor{green!55!black}{0.220}\,/\,-- \\
+\texttt{C3\_L1r\_S1\_S4} & 0.160\,/\,0.302 & \textcolor{green!55!black}{0.260}\,/\,\textcolor{green!55!black}{0.344} & \textcolor{green!55!black}{0.319}\,/\,\textcolor{green!55!black}{0.341} & \textcolor{green!55!black}{0.183}\,/\,-- \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.140\,/\,0.281 & \textcolor{green!55!black}{0.235}\,/\,\textcolor{green!55!black}{0.324} & \textcolor{green!55!black}{0.310}\,/\,\textcolor{green!55!black}{0.340} & \textcolor{green!55!black}{0.179}\,/\,-- \\
+\texttt{C\_L1r\_X1} & 0.100\,/\,0.218 & \textcolor{green!55!black}{0.147}\,/\,\textcolor{green!55!black}{0.248} & \textcolor{green!55!black}{0.184}\,/\,\textcolor{green!55!black}{0.275} & \textcolor{red!70!black}{0.100$^{\dagger}$}\,/\,-- \\
+\texttt{C\_X1\_S1} & 0.130\,/\,0.291 & \textcolor{green!55!black}{0.233}\,/\,\textcolor{green!55!black}{0.341} & \textcolor{green!55!black}{0.296}\,/\,\textcolor{green!55!black}{0.332} & \textcolor{red!70!black}{0.159$^{\dagger}$}\,/\,-- \\
+\texttt{C\_S2\_X1} & 0.170\,/\,0.323 & \textcolor{green!55!black}{0.263}\,/\,\textcolor{green!55!black}{0.362} & \textcolor{green!55!black}{0.317}\,/\,\textcolor{green!55!black}{0.350} & \textcolor{red!70!black}{0.169$^{\dagger}$}\,/\,-- \\
+\texttt{C\_L1r\_X1m} & 0.115\,/\,0.232 & \textcolor{green!55!black}{0.162}\,/\,\textcolor{green!55!black}{0.276} & \textcolor{green!55!black}{0.217}\,/\,\textcolor{green!55!black}{0.274} & \textcolor{green!55!black}{0.126}\,/\,-- \\
+\texttt{C\_S1\_X1s} & 0.193\,/\,0.357 & \textcolor{green!55!black}{0.287}\,/\,\textcolor{green!55!black}{0.392} & \textcolor{green!55!black}{0.349}\,/\,\textcolor{green!55!black}{0.376} & \textcolor{red!70!black}{0.162$^{\dagger}$}\,/\,-- \\
+\texttt{C3\_L1r\_S1\_X1} & 0.105\,/\,0.268 & \textcolor{green!55!black}{0.170}\,/\,\textcolor{green!55!black}{0.298} & \textcolor{green!55!black}{0.215}\,/\,\textcolor{green!55!black}{0.305} & \textcolor{red!70!black}{0.075$^{\dagger}$}\,/\,-- \\
+\cmidrule(l{2pt}r{2pt}){1-5}
+\textbf{single obfuscation} & 0.219\,/\,0.375 & \textcolor{green!55!black}{0.347}\,/\,\textcolor{green!55!black}{0.399} & \textcolor{green!55!black}{0.406}\,/\,\textcolor{green!55!black}{0.393} & \textcolor{green!55!black}{0.249}\,/\,-- \\
+\textbf{held-out family} & 0.132\,/\,0.263 & \textcolor{green!55!black}{0.217}\,/\,\textcolor{green!55!black}{0.314} & \textcolor{green!55!black}{0.266}\,/\,\textcolor{green!55!black}{0.311} & --\,/\,-- \\
+\textbf{depth 2, all seen} & 0.182\,/\,0.319 & \textcolor{green!55!black}{0.296}\,/\,\textcolor{green!55!black}{0.358} & \textcolor{green!55!black}{0.358}\,/\,\textcolor{green!55!black}{0.373} & \textcolor{green!55!black}{0.220}\,/\,-- \\
+\textbf{depth 3, all seen} & 0.168\,/\,0.321 & \textcolor{green!55!black}{0.291}\,/\,\textcolor{green!55!black}{0.369} & \textcolor{green!55!black}{0.355}\,/\,\textcolor{green!55!black}{0.374} & \textcolor{green!55!black}{0.201}\,/\,-- \\
+\textbf{depth 4, all seen} & 0.140\,/\,0.281 & \textcolor{green!55!black}{0.235}\,/\,\textcolor{green!55!black}{0.324} & \textcolor{green!55!black}{0.310}\,/\,\textcolor{green!55!black}{0.340} & \textcolor{green!55!black}{0.179}\,/\,-- \\
+\textbf{depth 2, unseen inside} & 0.142\,/\,0.284 & \textcolor{green!55!black}{0.218}\,/\,\textcolor{green!55!black}{0.324} & \textcolor{green!55!black}{0.273}\,/\,\textcolor{green!55!black}{0.321} & \textcolor{red!70!black}{0.126$^{1}$}\,/\,-- \\
+\textbf{depth 3, unseen inside} & 0.105\,/\,0.268 & \textcolor{green!55!black}{0.170}\,/\,\textcolor{green!55!black}{0.298} & \textcolor{green!55!black}{0.215}\,/\,\textcolor{green!55!black}{0.305} & --\,/\,-- \\
+\bottomrule
+\end{tabular}}
+\end{table*}

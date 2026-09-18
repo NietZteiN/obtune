@@ -691,10 +691,11 @@ def colourise(a, b, txt):
     """
     if not isinstance(a, float) or not isinstance(b, float):
         return txt
-    # Only colour a difference that is VISIBLE at the three decimals printed. Without this, a mean
-    # of 0.2984 against a base of 0.2985 printed as "0.298" beside "0.298" and 100 %, in red --
-    # a reader would read that as a bug in the table rather than a rounding boundary.
-    if abs(a - b) < 5e-4:
+    # Only colour a difference that is VISIBLE at the three decimals printed. The test is on the
+    # ROUNDED values, not on a threshold: a fixed 5e-4 tolerance still coloured pairs that print
+    # identically (0.2777 against 0.2784 both render "0.278" and differ by 7e-4), which reads as a
+    # bug in the table rather than a rounding boundary. Comparing the rendered strings cannot.
+    if f"{a:.3f}" == f"{b:.3f}":
         return txt
     if a > b:
         return r"\textcolor{green!55!black}{" + txt + "}"
@@ -943,6 +944,88 @@ for m in MODELS:
         if args_exact(m,"base",c) is None: continue
         out.append(f"| {c} | " + " | ".join(md_row(m,c,strict=True)) + " |")
 (ROOT/"docs/MASTER_TABLES.md").write_text("\n".join(out) + "\n")
+
+# ---------------- 7b. MERGE VARIANTS, SIDE BY SIDE (Appendix A.5) -------------------------------
+# One table per model comparing the merge variants against the untuned model on every condition, in
+# both directions (2026-09-17, user request). Appendix A already carries TIES and DARE among eight
+# arms; this is the focused comparison, where the only thing varying is the sparsification step --
+# magnitude top-k (TIES), random drop-and-rescale (DARE-TIES), or random drop without sign election
+# (DARE-linear). That isolation is what makes the Granite result readable: DARE-TIES is below the
+# untuned model backwards there while plain TIES is well above, so the failure is DARE's random
+# drop, not sign-consensus merging.
+#
+# DARE-linear has forward cells on all eight models and NO backward cells, so its backward half is
+# `--` everywhere by construction rather than by omission; the caption says so.
+MERGE_SYS = [("base","base"),("TIES","merge_ties"),("DARE-TIES","merge_dare_ties"),
+             ("DARE-linear","merge_dare_linear")]
+
+def merge_table(m):
+    SEP = r"\,/\,"
+    rows_for_m = ABS_ROWS_BY_MODEL.get(m, ABS_ROWS)
+    tag = m.replace("-","").replace(".","")
+
+    def half(sy, c, bwd):
+        a, ff = abs_cell(m, sy, c, bwd)
+        if a is None: return "--"
+        ba, bf = abs_cell(m, "base", c, bwd)
+        base_ok = ba if isinstance(ba, float) and (bf or 0) <= FMT_MAX else None
+        cr = collapse_rate(m, sy, c) if (bwd and (ff or 0) > FMT_MAX) else None
+        txt = abs_fmt(a, ff, collapse=cr)
+        if (ff or 0) > FMT_MAX:
+            return r"\textcolor{red!70!black}{" + txt + "}"
+        return txt if sy == "base" else colourise(a, base_ok, txt)
+
+    def row(c):
+        return [half(sy, c, False) + SEP + half(sy, c, True) for _, sy in MERGE_SYS]
+
+    def avg_row(conds):
+        use = [c for c in conds if c in rows_for_m]
+        def mean_of(sy, bwd):
+            v=[a for a,ff in (abs_cell(m,sy,c,bwd) for c in use)
+               if isinstance(a,float) and (ff or 0) <= FMT_MAX]
+            return (sum(v)/len(v), len(v)) if v else (None,0)
+        ref = {b: mean_of("base", b)[0] for b in (False, True)}
+        out=[]
+        for _, sy in MERGE_SYS:
+            hs=[]
+            for b in (False, True):
+                v,n = mean_of(sy,b)
+                if v is None: hs.append("--"); continue
+                t=f"{v:.3f}" + ("" if n==len(use) else r"$^{"+str(n)+"}$")
+                hs.append(t if sy=="base" else colourise(v, ref[b], t))
+            out.append(hs[0]+SEP+hs[1])
+        return out
+
+    body = [r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c)) + r" \\" for c in rows_for_m]
+    blk = [r"\cmidrule(l{2pt}r{2pt}){1-" + str(1+len(MERGE_SYS)) + "}"]
+    for label, conds in AVG_GROUPS:
+        if [c for c in conds if c in rows_for_m]:
+            blk.append(r"\textbf{" + label + "} & " + " & ".join(avg_row(conds)) + r" \\")
+    caption = (r"\textbf{Merge variants against the untuned model, " + NICE[m] + r".} Each cell is "
+               r"\emph{output prediction}\,/\,\emph{input prediction}, raw exact-match accuracy; backward is "
+               r"graded by execution. The three merges combine the same six specialists with the same uniform "
+               r"weights, density $0.5$ and sign rule, and differ only in the sparsification step: "
+               r"\emph{TIES} keeps the largest entries by magnitude (Eq.~\ref{eq:trim}), \emph{DARE-TIES} drops "
+               r"entries at random and rescales (Eq.~\ref{eq:dare}), and \emph{DARE-linear} applies that drop "
+               r"without the sign election of Eq.~\ref{eq:elect}. \textbf{Colour}: "
+               r"\textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} in the same "
+               r"direction; a red number carrying a dagger is gated instead (format-failure rate above 0.25). "
+               r"\textbf{Bold rows} are group means. \emph{DARE-linear} was run forward only, so its backward "
+               r"half is absent by construction rather than by omission.")
+    return "\n".join(
+        [r"\begin{table*}[p]",
+         r"\centering\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.95}",
+         r"\caption{" + caption + "}",
+         r"\label{tab:merge_variants_" + tag + "}",
+         r"\resizebox{\textwidth}{!}{%",
+         r"\begin{tabular}{@{}l" + "c"*len(MERGE_SYS) + "@{}}", r"\toprule",
+         r"\textbf{Condition} & " + " & ".join(r"\textbf{" + n + "}" for n,_ in MERGE_SYS) + r" \\",
+         " & " + " & ".join(r"{\scriptsize out\,/\,in}" for _ in MERGE_SYS) + r" \\", r"\midrule"]
+        + body + blk + [r"\bottomrule", r"\end{tabular}}", r"\end{table*}"])
+
+for m in MODELS:
+    write(f"merge_variants_{m.replace('-','').replace('.','')}.tex", merge_table(m),
+          "results/cells/* for " + m + " (merge variants, both directions)")
 
 # ---------------- 8. THE MAIN RESULTS TABLE ---------------------------------------------------
 # One panel-wide table for the BODY (2026-09-15, user: "one main table of results, failing methods
