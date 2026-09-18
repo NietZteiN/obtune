@@ -829,7 +829,10 @@ def abs_table(m):
                   r"unseen-containing stacks, and the in-context, KL and family arms were never built for it, "
                   r"so those rows and columns are absent rather than empty; it does carry \texttt{S3}/\texttt{S4} as "
                   r"standalone transforms, which the panel models do not. " if m in ABS_EXTRA_MODELS else "")
-               + r"`--': not run.")
+               + r"\emph{ICL} has no backward column, and this is by construction rather than omission: the "
+               r"backward prompt is one-shot for \emph{every} arm including \texttt{base} "
+               r"(Section~\ref{sec:tasks}), so a separate in-context arm would duplicate the \texttt{base} "
+               r"column exactly. Every other cell in this table exists; `--' appears nowhere else.")
 
     body = [r"\texttt{" + tex_esc(c) + "} & " + " & ".join(row(c)) + r" \\" for c in rows_for_m] + avg_block()
     return "\n".join(

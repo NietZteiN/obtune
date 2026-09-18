@@ -48,4 +48,17 @@ if [ -f "$d/training_summary.json" ] && [ ! -e "$d/best/adapter_model.safetensor
   python -m obtune.eval_vllm --config train/inverse_breadth_py.yaml --model "$M" \
     --mode ckpt-select --adapter-root "$d" || echo "FAILED $M inverse-breadth"
 fi
+# THE OBJECTIVES ROOT IS THE THIRD ONE, AND IT WAS ALSO MISSED (2026-09-18). The KL-consistency arm
+# trains under runs/adapters_objectives/ so it does not collide with mono_all, exactly as the
+# backward-trained control uses runs/adapters_inverse/. Both were invisible to a loop rooted at
+# runs/adapters/. Llama-3.1-8B's seed-42 KL adapter trained to completion on 2026-09-17 and sat
+# without a best/ until its evals failed on it -- the third time this shape of bug has cost a run.
+for lam in cons_parent_lam3; do
+  d="runs/adapters_objectives/$M/python/L0-L1b-L1r-L2-S1-S2_r32_${lam}_s${SEED}"
+  [ -f "$d/training_summary.json" ] || continue
+  [ -e "$d/best/adapter_model.safetensors" ] && { echo "skip $lam s$SEED: best/ already exists"; continue; }
+  echo "### checkpoint-select $M $lam s$SEED"
+  python -m obtune.eval_vllm --config train/obj_cons_llama31_8b_py.yaml --model "$M" \
+    --mode ckpt-select --adapter-root "$d" || echo "FAILED $M $lam s$SEED"
+done
 echo "### done $M"
