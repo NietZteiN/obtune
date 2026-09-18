@@ -134,9 +134,10 @@ T^{\star} \;=\; \frac{\sum_{c=1}^{n} w_c\, \widehat{T}_c \odot m_c}{\max\!\left(
 \end{equation}
 %
 A coordinate on which every specialist opposes the consensus receives zero rather than an undefined
-value, which is what the clamp in the denominator provides. \textsc{TIES} applies
-Eq.~\ref{eq:trim}; \textsc{DARE-TIES} applies Eq.~\ref{eq:dare}; both then apply
-Eqs.~\ref{eq:elect}--\ref{eq:disjoint}. Neither involves any training.
+value, which is what the clamp in the denominator provides. Our method is \textsc{DARE-TIES}: Eq.~\ref{eq:dare} followed by
+Eqs.~\ref{eq:elect}--\ref{eq:disjoint}. Replacing Eq.~\ref{eq:dare} with the magnitude trim of
+Eq.~\ref{eq:trim} gives \textsc{TIES}, which we retain as an ablation of the sparsification step
+(Appendix~\ref{app:mergevariants}) rather than as a second proposal. Neither involves any training.
 
 \subsection{Application to LoRA Adapters}
 \label{sec:factorspace}
@@ -185,8 +186,7 @@ practice}, not the published task-vector algorithm in its original setting; whet
 downstream accuracy is an open question these experiments do not address.
 
 \subsection{Configuration}
-We report two variants, \textsc{TIES} (Eq.~\ref{eq:trim}) and \textsc{DARE-TIES}
-(Eq.~\ref{eq:dare}), both with density $\rho = 0.5$, the \texttt{total} majority-sign rule, and
+We use \textsc{DARE-TIES} (Eq.~\ref{eq:dare}) throughout, with density $\rho = 0.5$, the \texttt{total} majority-sign rule, and
 uniform weights $w_c = 1/n$. Non-uniform weighting is an additional degree of freedom; holding the
 weights uniform preserves the comparison against pooled training --- which likewise weights its
 constituent conditions equally by construction --- as a comparison of composition strategy rather

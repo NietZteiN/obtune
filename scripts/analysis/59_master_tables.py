@@ -563,7 +563,7 @@ for m, (r, g) in RM.items():
 # 65_backward_stacks.py earlier today. Its cells are untouched and still in docs/MASTER_TABLES.md.
 # Column names match the main results table (2026-09-17): "anchored" -> KL, "mixture" -> router.
 ABS_SYS = [("base","base"),("ICL","base_1shot"),("clean LoRA","tuned_L0"),("breadth","mono_all"),("KL","cons_lam3"),
-           ("router","mole_router"),("TIES","merge_ties"),("DARE","merge_dare_ties")]
+           ("router","mole_router"),("merge","merge_dare_ties")]
 ABS_PH = {"base":None, "base_1shot":["basecheck_1shot"], "tuned_L0":None, "mono_all":None, "cons_lam3":None, "tuned_X1":None,
           "mole_router":["mole_generic"], "merge_dare_ties":["merge_panel","rq2_generic","composite_generic","f2_divergence"]}
 ABS_ROWS = LADDER + SEEN_STACKS + DEPTH_STACKS + UNSEEN_STACKS + HALF_STACKS + D3_STACKS
@@ -808,7 +808,7 @@ def abs_table(m):
                r"unobfuscated code; \emph{breadth} on all six training conditions pooled; \emph{KL} adds a "
                r"KL-consistency term to a frozen clean-code teacher (Eq.~\ref{eq:kl}); \emph{router} is the "
                r"learned-gate mixture of per-transform "
-               r"specialists; \emph{TIES} and \emph{DARE} are the two sign-consensus merges of them. "
+               r"specialists; \emph{merge} is the DARE-TIES merge of them. "
                r"\textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} "
                r"\texttt{base} in the same direction on the same condition; \texttt{base} is the reference, and an "
                r"uncoloured number means no comparison was available rather than a tie. A \textcolor{red!70!black}{red "
@@ -1045,8 +1045,7 @@ MAIN_BLOCKS = [("seen stacks", SEEN_STACKS + DEPTH_STACKS),
                ("unseen family", ["X1"] + UNSEEN_STACKS + HALF_STACKS + D3_STACKS),
                ("backward (input pred.)", None)]   # None = every backward condition available
 MAIN_SYS = [("base","base"),("clean","tuned_L0"),("breadth","mono_all"),
-            ("KL","cons_lam3"),("router","mole_router"),
-            ("TIES","merge_ties"),("DARE","merge_dare_ties")]
+            ("KL","cons_lam3"),("router","mole_router"),("merge","merge_dare_ties")]
 
 def _block_mean(m, sy, conds, bwd):
     """Mean over readable cells; None when the arm has none. Gated cells are dropped, exactly as in
@@ -1065,60 +1064,93 @@ SHORT = {"codellama-7b":"CodeLlama-7B","codellama-13b":"CodeLlama-13B","codellam
          "llama31-8b":"Llama-3.1-8B","starcoder2-15b":"StarCoder2-15B","gemma3-12b":"Gemma-3-12B",
          "codegemma-7b":"CodeGemma-7B","granite31-8b":"Granite-3.1-8B"}
 
-def main_table():
-    # 19 columns at \footnotesize ran 124 pt past the two-column text block. \scriptsize with 2 pt
-    # padding brings it inside; the alternative -- dropping the per-block `base` column -- would cost
-    # the reader the level each block's colours are relative to, which is worth more than the font.
-    L = [r"\begin{table*}[t]", r"\centering\scriptsize\setlength{\tabcolsep}{2pt}",
-         r"\caption{\textbf{Every adaptation on every model, in the three regimes that separate them.} "
-         r"Mean exact-match accuracy over the conditions in each block, equally weighted; the same "
-         r"numbers as the bold rows of the per-model tables in Appendix~\ref{app:absmaster}. "
-         r"\emph{seen stacks}: depth-2/3/4 compositions of the seen transforms; seven of its ten "
-         r"conditions include \texttt{S3} or \texttt{S4}, which the mixture has experts for and \emph{breadth} "
-         r"and \emph{merge} do not. "
-         r"--- no arm was trained on it. \emph{backward}: input prediction, graded by execution. "
-         r"\emph{base} is the untuned model, \emph{clean} a LoRA tuned on unobfuscated code, "
-         r"\emph{breadth} one LoRA tuned on all six training conditions at once, \emph{KL} the "
-         r"KL-consistency objective, \emph{router} a learned-gate mixture of eight per-condition "
-         r"specialists, and \emph{TIES} / \emph{DARE} the two sign-consensus merges of the six specialists that "
-         r"breadth pools --- \emph{DARE} additionally applies the random drop of Eq.~\ref{eq:dare}. \emph{breadth} and "
-         r"both merges are exactly data-matched; \emph{mix} carries two further experts "
-         r"(\texttt{S3}, \texttt{S4}) that neither is trained on. "
-         r"\textbf{Bold} is the best non-base arm in that block; "
-         r"\textcolor{red!70!black}{red} is below \texttt{base}. "
-         r"`--': no cell in the block survived the 0.25 format gate. "
-         r"\textbf{Read the bold across the blocks}: on seen stacks it falls on the single-adapter "
-         r"arms, and on the two out-of-distribution blocks it moves to the arms composed from "
-         r"per-transform specialists.}",
-         r"\label{tab:main}",
+def _grp_mean(m, sy, conds, bwd):
+    vals = []
+    for c in conds:
+        if c not in ABS_ROWS: continue
+        a, ff = abs_cell(m, sy, c, bwd)
+        if isinstance(a, float) and (ff or 0) <= FMT_MAX: vals.append(a)
+    return (sum(vals)/len(vals)) if vals else None
+
+
+MAIN_GROUPS = [("single", AVG_GROUPS[0][1]), ("held-out", AVG_GROUPS[1][1]), ("d2", AVG_GROUPS[2][1]),
+               ("d3", AVG_GROUPS[3][1]), ("d4", AVG_GROUPS[4][1]), ("d2u", AVG_GROUPS[5][1]),
+               ("d3u", AVG_GROUPS[6][1])]
+
+
+def _main_part(part, models):
+    """One float. Each arm gets TWO columns: its raw accuracy and that accuracy as a percentage of
+    the untuned model on the same conditions (2026-09-17, user: absolute numbers AND percentage,
+    in another column, made explicit against base). Every cell is forward\\,/\\,backward."""
+    arms = [(n, sy) for n, sy in MAIN_SYS if sy != "base"]
+    ncol = 2 + 1 + 2*len(arms)
+    cap_full = (r"\caption{\textbf{Every adaptation on every model, against the untuned model.} "
+        r"Every cell is \emph{output prediction}\,/\,\emph{input prediction}; backward is graded by execution. "
+        r"For each arm the first column is its \textbf{raw accuracy} and the second is that accuracy "
+        r"\textbf{as a percentage of \texttt{base}} on the same conditions and direction: "
+        r"\textbf{100 means it matches the untuned model}, 187 means 1.87 times it, and "
+        r"\textcolor{green!55!black}{above} and \textcolor{red!70!black}{below} 100 are coloured. "
+        r"\texttt{base} is the untuned model and has no percentage column, being its own reference. "
+        r"Rows are the condition groups of Appendix~\ref{app:absmaster}: \emph{single} the seen transforms "
+        r"alone, \emph{held-out} the unseen family, \emph{d2--d4} stacks of that depth built only from seen "
+        r"transforms, and \emph{d2u}/\emph{d3u} stacks of that depth containing the unseen family. "
+        r"\textbf{Bold} marks the best non-base arm in that row and direction. A percentage needs a readable "
+        r"denominator, so `--' means either the arm or \emph{the untuned model} was format-gated on that "
+        r"group; StarCoder2-15B's untuned forward reading is gated on almost every condition, which is why "
+        r"its forward percentages are absent rather than zero. \emph{breadth} and \emph{merge} are exactly "
+        r"data-matched; \emph{router} carries two further experts (\texttt{S3}, \texttt{S4}) that neither is "
+        r"trained on.}")
+    cap_cont = (r"\caption{\textbf{Against the untuned model, continued} (Table~\ref{tab:main}). "
+        r"Columns, colours and row groups are as in Table~\ref{tab:main}: for each arm, raw accuracy then "
+        r"that accuracy as a percentage of \texttt{base}, every cell \emph{forward}\,/\,\emph{backward}.}")
+    L = [r"\begin{table*}[p]", r"\centering\footnotesize\setlength{\tabcolsep}{2.5pt}",
+         cap_full if part == 0 else cap_cont,
+         r"\label{tab:main}" if part == 0 else r"\label{tab:main_b}",
          r"\resizebox{\textwidth}{!}{%",
-         r"\begin{tabular}{@{}l" + ("r"*len(MAIN_SYS) + "@{\\ }")*len(MAIN_BLOCKS) + "@{}}",
-         r"\toprule"]
-    L.append(" & " + " & ".join(r"\multicolumn{" + str(len(MAIN_SYS)) + r"}{c}{\textbf{" + b + "}}"
-                                for b, _ in MAIN_BLOCKS) + r" \\")
-    L.append(r"\cmidrule(lr){2-7}\cmidrule(lr){8-13}\cmidrule(lr){14-19}")
-    L.append(r"\textbf{model} & " + " & ".join(" & ".join(n for n, _ in MAIN_SYS) for _ in MAIN_BLOCKS) + r" \\")
-    L.append(r"\midrule")
-    for m in MODELS:
-        cells = []
-        for bname, conds in MAIN_BLOCKS:
-            bwd = conds is None
-            vals = {sy: _block_mean(m, sy, conds, bwd)[0] for _, sy in MAIN_SYS}
-            ref = vals["base"]
-            cand = {sy: v for sy, v in vals.items() if sy != "base" and v is not None}
-            best = max(cand, key=cand.get) if cand else None
-            for _, sy in MAIN_SYS:
-                v = vals[sy]
-                if v is None:
-                    cells.append("--"); continue
-                t = f"{v:.3f}"
-                if sy != "base" and isinstance(ref, float) and v < ref - 5e-4:
-                    t = r"\textcolor{red!70!black}{" + t + "}"
-                if sy == best:
-                    t = r"\textbf{" + t + "}"
-                cells.append(t)
-        L.append(tex_esc(SHORT.get(m, NICE[m])) + " & " + " & ".join(cells) + r" \\")
+         r"\begin{tabular}{@{}ll" + "c" + "cc"*len(arms) + "@{}}", r"\toprule",
+         r"\textbf{model} & \textbf{conditions} & \textbf{base} & " +
+           " & ".join(r"\multicolumn{2}{c}{\textbf{" + n + "}}" for n, _ in arms) + r" \\",
+         "".join(r"\cmidrule(lr){" + f"{4+2*k}-{5+2*k}" + "}" for k in range(len(arms))),
+         r" & & {\scriptsize acc} & " +
+           " & ".join(r"{\scriptsize acc} & {\scriptsize \%\,base}" for _ in arms) + r" \\",
+         r"\midrule"]
+    for mi, m in enumerate(models):
+        for gi, (gname, conds) in enumerate(MAIN_GROUPS):
+            ref = {b: _grp_mean(m, "base", conds, b) for b in (False, True)}
+            best = {}
+            for b in (False, True):
+                cand = {sy: _grp_mean(m, sy, conds, b) for _, sy in arms}
+                cand = {k: v for k, v in cand.items() if v is not None}
+                best[b] = max(cand, key=cand.get) if cand else None
+            cells = []
+            bh = [f"{ref[b]:.3f}" if ref[b] is not None else "--" for b in (False, True)]
+            cells.append(bh[0] + r"\,/\," + bh[1])
+            for _, sy in arms:
+                acc_h, pct_h = [], []
+                for b in (False, True):
+                    v = _grp_mean(m, sy, conds, b)
+                    if v is None:
+                        acc_h.append("--"); pct_h.append("--"); continue
+                    t = f"{v:.3f}"
+                    if sy == best[b]: t = r"\textbf{" + t + "}"
+                    acc_h.append(t)
+                    r0 = ref[b]
+                    if r0 is None or not r0: pct_h.append("--"); continue
+                    q = v / r0 * 100.0
+                    pt = f"{q:.0f}"
+                    if pt != "100":
+                        pt = (r"\textcolor{green!55!black}{" if q > 100 else r"\textcolor{red!70!black}{") + pt + "}"
+                    pct_h.append(pt)
+                cells.append(acc_h[0] + r"\,/\," + acc_h[1])
+                cells.append(pct_h[0] + r"\,/\," + pct_h[1])
+            lead = (r"\multirow{7}{*}{" + tex_esc(SHORT.get(m, NICE[m])) + "}") if gi == 0 else ""
+            L.append(lead + " & " + gname + " & " + " & ".join(cells) + r" \\")
+        if mi != len(models) - 1: L.append(r"\midrule")
     L += [r"\bottomrule", r"\end{tabular}}", r"\end{table*}"]
     return "\n".join(L)
+
+
+def main_table():
+    return "\n\n".join(_main_part(k, ms) for k, ms in ((0, MODELS[:4]), (1, MODELS[4:])))
 
 write("main_results.tex", main_table(), "results/cells/* (block means, same path as the per-model tables)")

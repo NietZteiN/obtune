@@ -903,6 +903,7 @@ INPUT ./sections/results.tex
 INPUT ./sections/results.tex
 INPUT ./sections/results.tex
 INPUT sections/results.tex
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4b-4.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ts1.vf
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1--base.tfm
@@ -996,6 +997,7 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/txmiaX.tfm
 INPUT fse27.aux
 INPUT ./fse27.out
 INPUT ./fse27.out
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb

@@ -8,7 +8,8 @@ few points. Outside them the ordering inverts. Training one adapter on everythin
 of the data --- is the worst arm on the unseen family and loses the untrained direction on most
 models; the failures are not malformed answers but the trained answer to the wrong question. Merging
 per-transform specialists in weight space, an existing technique applied without modification, is the
-one arm at or above the untuned model in every regime on every one of eight models, at a cost of a few
+the one arm never significantly below the untuned model in any regime on any of eight models --- and
+significantly above it on the reverse task on seven --- at a cost of a few
 forward points where the training distribution is the right fit.
 
 We take three things from this. Evaluating adaptation in a single view can support the opposite

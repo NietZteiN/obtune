@@ -11,9 +11,9 @@ progress forward --- and only aggregating across views exposes it.
 
 The aggregate we propose is simple and strict: an adaptation should be at or above the untuned model
 in \emph{every} view, on \emph{every} model, before it is called an improvement in understanding
-rather than in task fit. Under that criterion exactly one arm in this study passes on all eight
-models, the sign-consensus merge (Section~\ref{sec:results}), and it does so without being the best
-arm in any single view. Two properties of this criterion are worth stating. It is conservative in the
+rather than in task fit. Stated as \emph{never significantly below} the untuned model rather than strictly above it --- the
+form the data supports --- exactly one arm in this study passes on all eight models, the DARE-TIES
+merge (Section~\ref{sec:results}), and it does so without being the best arm in any single view. Two properties of this criterion are worth stating. It is conservative in the
 right direction: it can only remove arms from the winner's list, never add one. And it costs nothing
 to apply beyond evaluating in more than one direction, which any behaviour-prediction benchmark can
 do, since the pairing is a property of the items rather than of the model.
