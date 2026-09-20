@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering\small
+\caption{\textbf{Direction locking.} Fraction of \emph{backward} replies that are exactly the gold \emph{forward} answer: the model was asked for an input and returned the output. Pooled over 16 backward conditions. The untuned models and the merge sit at the floor; every single-adapter arm is above it. \texttt{--}: arm not run on that model.}
+\label{tab:dirlock}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+model & Base & Clean & Breadth & KL & Router & Merge \\
+\midrule
+CodeLlama-7B & 0.000 & 0.081 & 0.024 & 0.003 & 0.015 & 0.001 \\
+CodeLlama-13B & 0.000 & 0.017 & 0.047 & 0.085 & 0.042 & 0.001 \\
+CodeLlama-34B & 0.000 & 0.004 & 0.027 & 0.010 & 0.041 & 0.001 \\
+Llama-3.1-8B & 0.000 & 0.001 & 0.021 & 0.024 & 0.001 & 0.000 \\
+StarCoder2-15B & 0.000 & 0.152 & 0.252 & 0.127 & 0.133 & 0.000 \\
+Gemma-3-12B & 0.000 & 0.010 & 0.002 & 0.095 & 0.001 & 0.000 \\
+CodeGemma-7B & 0.000 & 0.005 & 0.056 & 0.668 & 0.008 & 0.001 \\
+Granite-3.1-8B & 0.056 & 0.181 & 0.078 & 0.296 & 0.091 & 0.001 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -183,6 +183,13 @@ KL-consistency and router arms, 78 of 84 model\,$\times$\,condition-group cells 
 Fine-tuning on obfuscated code produces a model that reads obfuscated programs more accurately than
 the untuned model reads unobfuscated ones, including on an obfuscator family absent from training.
 
+The gain on clean code is not specific to merging. On \texttt{L0} itself the merge exceeds the
+untuned model by $+14.79$ to $+22.81$ points, significant on every model where the untuned reading
+clears the format gate. Against the clean-code LoRA, however, the merge differs by $-0.30$ to
+$+1.38$ points and the interval contains zero on all eight models. Merging and clean-code tuning
+reach the same accuracy on unobfuscated source; what separates them appears only once the input is
+obfuscated.
+
 In the backward direction 29 of 78 cells reach 100\,\%, and the merge is the closest arm. The effect
 is specific to the trained direction.
 
@@ -229,7 +236,10 @@ depth four on seen transformations. Its margin over pooled training does not dec
 
 \paragraph{Unseen obfuscator family.} The merge exceeds the untuned model on the held-out family and
 the stacks containing it on all eight models, by 6.6--17.6 points, significant wherever the reference
-is readable. The router system exceeds the merge in this condition on six of eight models.
+is readable. Paired by program with a 2{,}000-resample program-clustered bootstrap, the router system exceeds the
+merge in this condition by $+0.96$ to $+2.75$ points on seven of eight models, and by $+0.76$ on the
+eighth with an interval containing zero. On the stacks containing the held-out family the same
+comparison gives $+1.00$ to $+2.77$ points, significant on seven.
 
 \paragraph{Reversed task.} No arm is trained in this direction. Pooled training falls below the
 untuned model on four of the six models where it is readable, and KL-consistency on five of eight, by
