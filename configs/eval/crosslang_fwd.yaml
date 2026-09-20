@@ -1,0 +1,47 @@
+# CROSS-LANGUAGE TRANSFER, FORWARD ONLY (2026-09-20, user request item 9).
+#
+# Every adapter in this project is trained on PYTHON. This config evaluates them on the
+# JavaScript held-out corpus, which transferred intact from the previous cluster. It asks
+# whether the merged capability is tied to the training language or to the obfuscation
+# itself.
+#
+# WHY THIS IS RUNNABLE WITHOUT NODE, despite CLAUDE.md §2 listing JavaScript as blocked.
+# `node` is absent and the H1/H2/H3 generators cannot run, so the corpus cannot be
+# REGENERATED. Evaluation is a different requirement:
+#   * forward  = predict the output, graded by strict normalized exact match against the
+#                precomputed `output_repr` already in the item files. scoring.py's
+#                javascript branch is `json.loads` and nothing else -- no interpreter.
+#   * backward = graded by EXECUTING the predicted input, via obtune.exec.pool, which
+#                shells out to NODE_BIN. That genuinely needs node and is NOT run here.
+# Hence forward only. The asymmetry is the reason this config exists rather than a pair.
+#
+# THE ADAPTER PATHS HARDCODE `python` AND MUST NOT USE {language}. With {language} they
+# would resolve to runs/adapters/{model}/javascript/, which does not exist for any model,
+# and the run would either die or silently skip arms. Evaluating Python-trained weights on
+# JavaScript items IS the experiment.
+#
+# NO X1. The held-out family was never generated in JavaScript (no
+# data/eval/testset/items/X1/javascript.jsonl), so the unseen-family claim does not cross
+# languages and is not attempted. The conditions below are exactly those with JS items.
+_extends: _base_eval.yaml
+
+phase: crosslang_generic
+experiment_id: crosslang_fwd
+run_tag: crosslang_fwd
+language: javascript
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0, adapter: "runs/adapters/{model}/python/L0_r32_s17/best", arch: per_type, train_cond: L0}
+  - {name: mono_all, adapter: "runs/adapters/{model}/python/L0-L1b-L1r-L2-S1-S2_r32_s17/best", arch: per_type, train_cond: mix}
+  - {name: merge_dare_ties, adapter: "runs/adapters/{model}/python/merge_dare_ties_r32_s17", arch: per_type, train_cond: merge}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3]

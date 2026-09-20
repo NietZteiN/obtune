@@ -205,6 +205,8 @@ class TrialRow(BaseModel):
     # structural-only. Separate phases because these arms share adapter names with nothing else and
     # must not be pooled with the six-way merge in any mean.
     "mergeablate_generic", "mergeablate_inverse",
+    # Forward-only: JS backward grading needs node, which juno lacks (configs/eval/crosslang_fwd.yaml).
+    "crosslang_generic",
                    # 2026-09-14: the backward-TRAINED control (configs/train/inverse_breadth_py.yaml),
                    # evaluated forwards and backwards on CodeLlama-7B.
                    "invtrained_generic", "invtrained_inverse"]
