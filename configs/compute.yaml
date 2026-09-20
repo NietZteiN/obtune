@@ -150,7 +150,9 @@ share_limits:
   #
   # To resume: set this to the number of slots wanted and say so here. `--ignore-share-limit` exists
   # for a single deliberate exception without editing the agreement.
-  h200: 0
+  # RAISED 0 -> 4 ON 2026-09-20: a new round of ablations (no-L0 merge, specialist-family merges)
+  # is running, so the project needs the pool again. Return this to 0 when they finish.
+  h200: 4
   normal: 3      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:

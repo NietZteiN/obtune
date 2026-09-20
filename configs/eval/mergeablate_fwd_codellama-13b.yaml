@@ -1,0 +1,32 @@
+# RQ1 MERGE ABLATIONS (2026-09-20, user request). Three merges that vary the INGREDIENTS while
+# holding the merge operator, density, weights and rank fixed:
+#   merge_nol0    L1b+L1r+L2+S1+S2   -- the five obfuscation specialists, no clean-code specialist.
+#                 Tests whether the clean-code gain needs the L0 ingredient or comes from shared
+#                 reasoning across obfuscation specialists.
+#   merge_ident   L1b+L1r+L2         -- three specialists, one semantic view (identifiers).
+#   merge_struct  S1+S2              -- two specialists, a different single view (structure).
+# Together the last two separate DIVERSITY of view from NUMBER of adapters.
+# `base` is included so every contrast is paired within this phase.
+_extends: _base_eval.yaml
+
+phase: mergeablate_generic
+experiment_id: mergeablate_fwd_codellama-13b
+run_tag: mergeablate_fwd_codellama-13b
+model: codellama-13b
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+
+systems:
+  - {name: base, arch: none}
+  - {name: merge_nol0, adapter: "runs/adapters/{model}/{language}/merge_ablate_nol0_dare_ties_r32_s17", arch: per_type, train_cond: merge}
+  - {name: merge_ident, adapter: "runs/adapters/{model}/{language}/merge_ablate_ident_dare_ties_r32_s17", arch: per_type, train_cond: merge}
+  - {name: merge_struct, adapter: "runs/adapters/{model}/{language}/merge_ablate_struct_dare_ties_r32_s17", arch: per_type, train_cond: merge}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4,
+                  C_L1r_X1, C_X1_S1, C_S2_X1, C3_L1r_S1_X1, C_L1r_X1m, C_S1_X1s]

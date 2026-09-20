@@ -200,6 +200,11 @@ class TrialRow(BaseModel):
                    # s17 twin. Their own phases because the s17 cells are spread over panel_core,
                    # composite_generic, composite_depth, f2_divergence and inverse_generic.
                    "seed42_generic", "seed42_inverse",
+    # RQ1 MERGE ABLATIONS (2026-09-20): the merge OPERATOR, density, weights and rank are held
+    # fixed while the INGREDIENTS vary -- five obfuscation specialists without L0, identifier-only,
+    # structural-only. Separate phases because these arms share adapter names with nothing else and
+    # must not be pooled with the six-way merge in any mean.
+    "mergeablate_generic", "mergeablate_inverse",
                    # 2026-09-14: the backward-TRAINED control (configs/train/inverse_breadth_py.yaml),
                    # evaluated forwards and backwards on CodeLlama-7B.
                    "invtrained_generic", "invtrained_inverse"]
