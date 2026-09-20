@@ -193,11 +193,44 @@ obfuscated.
 In the backward direction 29 of 78 cells reach 100\,\%, and the merge is the closest arm. The effect
 is specific to the trained direction.
 
+\input{tables/merge_ablation}
+\input{tables/specialist_geometry}
+
+\subsubsection{The Gain Does Not Come From the Clean-Code Specialist}
+\label{sec:ablation}
+The merge contains a specialist trained on unobfuscated source, so its clean-code result invites the
+reading that the specialist supplies it. We test this directly by rebuilding the merge from
+different ingredients while holding the operator, density, weights and rank fixed
+(Table~\ref{tab:ablation}): \emph{no-L0} drops the clean-code specialist, and \emph{ident} and
+\emph{struct} keep three and two specialists from a single semantic view.
+
+Forward, none of it matters. Dropping the clean-code specialist changes \texttt{L0} accuracy by
+$-0.60$ to $+0.60$ points across four models, every interval containing zero, and cutting from five
+specialists to two changes it by $-1.20$ to $+0.54$, again containing zero everywhere. A merge of two
+structural specialists recovers as much clean-code accuracy as the full six. The gain is a property
+of adapting to obfuscation, not of any particular ingredient and not of the number of ingredients.
+
+The adapter geometry gives the mechanism (Table~\ref{tab:geometry}). Measured on the weights alone,
+the clean-code specialist's mean cosine to the five obfuscation specialists matches the
+within-family pairs. It occupies no direction the others do not already span, so removing it removes
+nothing.
+
+Backward, the ingredients do matter, and the contrast with the forward result is the finding. Cutting
+to two specialists costs $4.19$, $8.98$ and $6.52$ points on the three models where the narrow arm
+clears the format gate, all significant. Dropping only the clean-code specialist costs $1.38$ to
+$3.47$ points on three of four models and is null on the fourth. Breadth of semantic view, not the
+clean-code specialist, is what the untrained direction needs. On CodeLlama the narrow merge also
+loses the answer contract outright, at a format-failure rate of $0.33$ and $0.72$ against the six-way
+merge's $0.04$ and $0.06$; on Llama-3.1-8B it holds the contract at $0.10$ with nothing gated and
+still loses $8.98$ points, so the deficit is accuracy rather than formatting.
+
 \begin{takeaway}{RQ1}
 The merge is not the strongest arm on the transformations its specialists were trained on, and its
 advantage is largest where the surface is unfamiliar. Forward adaptation exceeds the untuned model's
 clean-code accuracy on 78 of 84 cells, including on an unseen obfuscator family. The effect does not
-appear in the untrained direction.
+appear in the untrained direction. It does not come from the merge's clean-code specialist: rebuilt
+from two structural specialists alone, the merge recovers the same clean-code accuracy on four of
+four models, and the specialist updates share directions that make this expected.
 \end{takeaway}
 
 \subsection{RQ2: Composing Capabilities for Stacked Obfuscation}
@@ -248,6 +281,12 @@ points and is null on the eighth. Across the three regimes and eight models it i
 below the untuned model in any cell. On an independent second seed the backward gain reproduces at
 $+3.56$, $+3.34$, $+3.53$ and $+3.89$ points across two models.
 
+That property depends on the breadth of the merge rather than on merging as such. The ablated merges
+of Section~\ref{sec:ablation} do fall below the untuned model here: the structure-only merge by
+$6.15$ and $8.01$ points on Llama-3.1-8B and Granite-3.1-8B, and the identifier-only merge by $8.18$
+points on Granite-3.1-8B, all significant. Of the four ingredient sets only the six-way merge is
+never significantly below the untuned model backward on any model.
+
 \input{tables/direction_lock}
 \input{tables/backward_decomp}
 
@@ -279,5 +318,6 @@ the untuned direction-lock floor on all eight: the other arms answer the forward
 to reverse, at rates up to $0.67$. It is not the strongest arm on
 familiar surfaces or on the unseen family, and clean-code recovery does not extend to the untrained
 direction. A backward-trained control attributes that limit to forward training rather than to the
-task.
+task. The robustness is a property of the breadth of the merge: narrower merges of the same
+operator fall significantly below the untuned model in this direction.
 \end{takeaway}
