@@ -55,8 +55,14 @@
   \draw[ar] (g5) -- (b5);
   \foreach \i/\x/\t in {1/-9mm/{\tiny L1b}, 2/0mm/{\tiny S1}, 3/9mm/{\tiny$\cdots$}}
     \node[ad, above=2mm of g5, xshift=\x, minimum width=7mm, minimum height=3.6mm] (e\i) {\t};
-  \foreach \i in {1,2,3} \draw[ar] (e\i) -- (g5);
-  \node[clab, below=1.4mm of b5] {\textbf{router}\\[-1pt]gate mixes per input};
+  % ROUTING SHOWN, NOT JUST MIXING (2026-09-20, user): the gate selects. Solid paths are the experts
+  % this input routes to; the dashed path is an expert the gate leaves out. Without this the panel
+  % looked identical to the merge's, which combines all of them unconditionally.
+  \draw[ar] (e1) -- (g5);
+  \draw[ar] (e2) -- (g5);
+  \draw[ar, dashed, black!55] (e3) -- (g5);
+  \node[font=\tiny, text=black!55, anchor=west] at ($(e3)!0.5!(g5) + (1.2mm,0.6mm)$) {not routed};
+  \node[clab, below=1.4mm of b5] {\textbf{router}\\[-1pt]gate routes per input};
 \end{scope}
 \begin{scope}[shift={(2*\cx,-\ry)}]
   \node[base] (b6) {base};
@@ -67,18 +73,15 @@
   \foreach \i in {1,2,3} \draw[ar] (f\i) -- (m6);
   \node[clab, below=1.4mm of b6] {\textbf{merge}\\[-1pt]combined beforehand};
 \end{scope}
-% ---------- the axis the second row is ordered on ----------------------------------------------
-\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (0,-\ry-13.5mm) {in training};
-\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (\cx,-\ry-13.5mm) {at inference};
-\node[font=\scriptsize\itshape, anchor=north, text=black!65] at (2*\cx,-\ry-13.5mm) {in weight space};
-\draw[black!30] (-22mm,-\ry-12.5mm) -- (2*\cx+22mm,-\ry-12.5mm);
+% The three grey axis captions were removed 2026-09-20: the caption already states the ordering,
+% and the labels repeated it in two words each.
 \end{tikzpicture}
 \caption{\textbf{The six arms.} All are the same base model at the same LoRA rank, differing only in
 how the training data is used and where per-transform knowledge is combined. Top row: arms that never
 see an obfuscated program in training --- \emph{untuned}, \emph{in-context}, and the \emph{clean
 LoRA} control that separates learning the task from learning the transforms. Bottom row: the three ways to spend the obfuscated data. The labelled boxes are the six training
 conditions, named by obfuscator (\texttt{L1b}, \texttt{S1}, and four more); all three arms receive
-the same six. They are ordered by \emph{when} those are combined ---
+the same six. In the \emph{router} panel the dashed path marks an expert the gate does not select for a given input; the merge combines all of them unconditionally. The three are ordered by \emph{when} the conditions are combined ---
 \emph{pooled} collapses them during training, \emph{router} composes them per input at inference and
 must keep every expert resident, and \emph{merge} composes them in weight space beforehand, leaving
 one adapter with no gate and no run-time cost. The KL-consistency arm is \emph{pooled} with an added
