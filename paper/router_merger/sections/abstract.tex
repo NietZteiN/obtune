@@ -1,17 +1,18 @@
 Fine-tuning a code model on obfuscated programs raises its accuracy on those programs by roughly
 twenty points. We ask what that number is made of, and we ask it in three regimes rather than one:
 compositions of the transforms the model was tuned on, an obfuscator family it has never seen, and the
-same programs queried in the reverse direction --- given a return value, produce a call that yields it.
-Across eight models and four lineages we find, first, that forward adaptation does not merely recover the accuracy obfuscation removes: an adapted model reading \emph{obfuscated} programs exceeds the untuned model's accuracy on \emph{clean} ones, on 93\,\% of model\,$\times$\,condition-group cells and on an obfuscator family no arm was trained on. Beyond that the regimes disagree. On seen compositions every adaptation
+same programs queried in the reverse direction, where a return value is given and a call producing it
+is requested.
+Across eight models and four lineages, forward adaptation exceeds the accuracy obfuscation removes. An adapted model reading obfuscated programs is more accurate than the untuned model reading unobfuscated ones, on 78 of 84 model\,$\times$\,condition-group cells and on an obfuscator family no arm was trained on. The three regimes otherwise disagree. On seen compositions every adaptation
 works and the differences are within five points. Outside them the ordering inverts. A single adapter
-trained on the pooled data of all six training conditions at once --- the obvious way to spend the
-data --- is below every arm assembled from the same conditions' specialists on the unseen family, on all eight models, and below an
+trained on the pooled data of all six training conditions at once is below every arm assembled from
+the same conditions' specialists on the unseen family, on all eight models, and below an
 adapter trained on unobfuscated code alone on six: training on more transforms made the model worse at
 a transform it had not seen. Every arm that fits the forward task pays for it backwards, and the
 failures are not malformed answers but the gold \emph{forward} answer, returned to a question that
 asked for something else. Weight-space merging of the same specialists is the exception: at the floor
 of that failure mode on all eight models, above the untuned model on the reverse task on seven, and
-never significantly below it in any regime on any model --- at a cost of three to six forward points
+never significantly below it in any regime on any model, at a cost of three to six forward points
 where the specialists are the right fit. We conclude that adaptation to obfuscated code buys
 recombination of what the training distribution covered, that monolithic training buys it at the price
 of everything outside, and that composing specialists in weight space is the cheapest way found here to

@@ -3,17 +3,15 @@
 Fine-tuning a code model on obfuscated programs roughly doubles its accuracy on them, and we asked
 what that gain is made of by evaluating in three regimes rather than one: compositions of the
 transforms the model saw, an obfuscator family it never saw, and the same programs queried in the
-reverse direction. The first finding is the size of what adaptation buys. Obfuscation costs an untuned model up to
-half its clean-code accuracy; an adapted model reading obfuscated programs reaches 110--195\,\% of
-the untuned model's \emph{clean-code} accuracy, above 100 on 93\,\% of model\,$\times$\,condition-group
-cells and on an obfuscator family it never saw. Adaptation is not tolerating the transform; it is
-teaching something the model lacked on unobfuscated source too. On seen compositions every
-adaptation does this and the choice between them is worth a few points. Outside them the ordering inverts. Training one adapter on everything --- the obvious use
-of the data --- is the worst arm on the unseen family and loses the untrained direction on most
+reverse direction. Obfuscation removes up to half of an untuned model's clean-code accuracy. Adapted models reading
+obfuscated programs reach 110--195\,\% of that clean-code accuracy, above 100\,\% on 78 of 84
+model\,$\times$\,condition-group cells and on an obfuscator family they never saw. On seen
+compositions every adaptation achieves this and the choice between them is worth a few points. Outside them the ordering inverts. Training one adapter on everything --- the obvious use
+of the data, is the worst arm on the unseen family and loses the untrained direction on most
 models; the failures are not malformed answers but the trained answer to the wrong question. Merging
 per-transform specialists in weight space, an existing technique applied without modification, is the
-the one arm never significantly below the untuned model in any regime on any of eight models --- and
-significantly above it on the reverse task on seven --- at a cost of a few
+the one arm never significantly below the untuned model in any regime on any of eight models, and
+significantly above it on the reverse task on seven, at a cost of a few
 forward points where the training distribution is the right fit.
 
 We take three things from this. Evaluating adaptation in a single view can support the opposite
