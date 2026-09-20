@@ -65,9 +65,11 @@ def main():
         ("Merge - Base",        "merge_dare_ties", "base",            BWD, ALLBWD,    "backward"),
     ]
     if a.ablation:
-        for arm, lbl in (("merge_ablate_nol0_dare_ties","no-L0 merge"),
-                         ("merge_ablate_ident_dare_ties","identifier merge"),
-                         ("merge_ablate_struct_dare_ties","structural merge")):
+        # Cells are keyed by the SYSTEM name in the eval config, not by the adapter directory:
+        # configs/eval/mergeablate_*.yaml declares these as merge_nol0 / merge_ident / merge_struct.
+        for arm, lbl in (("merge_nol0","no-L0 merge"),
+                         ("merge_ident","identifier merge"),
+                         ("merge_struct","structural merge")):
             C += [(f"{lbl} - Clean LoRA", arm, "tuned_L0", FWD, L0,     "clean L0"),
                   (f"{lbl} - Base",       arm, "base",     FWD, L0,     "clean L0"),
                   (f"{lbl} - Base",       arm, "base",     FWD, UNSEEN, "unseen family"),
