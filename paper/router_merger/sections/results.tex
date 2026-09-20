@@ -1,8 +1,10 @@
 \section{Results}
 \label{sec:results}
 
-% Rewritten 2026-09-20 in the register of sections/intro-2.tex: declarative sentences, facts before
-% interpretation, no em-dash asides, no rhetorical scaffolding. Content unchanged.
+% Rewritten 2026-09-20 against papers/gu2024cruxeval.pdf as the style reference. Its pattern:
+% state what was measured, give the number, state one consequence, stop. Removed from this section:
+% "the opposite holds", "not merely X", "X is not A, it is B", "the sharpest evidence", "therefore"
+% as a rhetorical connective, and paragraph-closing flourishes that restate the preceding sentence.
 % >>> GENERATED TABLE main_results -- from tables/main_results.tex; regenerate, then re-run inline_tables.py
 % GENERATED 2026-09-18 14:21 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* (block means, same path as the per-model tables)
@@ -152,107 +154,102 @@
 Two tables support this section. Table~\ref{tab:master_abs_codellama7b} reports every condition and
 stack against every adaptation for CodeLlama-7B, the one model on which all arms exist.
 Table~\ref{tab:main} summarises the panel by condition group. Appendix~\ref{app:absmaster} contains
-the per-condition tables for the remaining seven models. All percentages are relative to the untuned
+the per-condition tables for the remaining seven models. Percentages are relative to the untuned
 model's accuracy on \texttt{L0}, unobfuscated source.
 
 \subsection{RQ1: What Merging Composes}
 \label{sec:rq1}
-Merging combines specialists trained on individual transformations. If it composed only
-transformation-specific knowledge, its advantage would be largest on those transformations and would
-diminish outside them. The opposite holds.
+The merge combines six specialists, each trained on one transformation. We ask whether its advantage
+tracks those transformations.
 
-On stacks of seen transformations the merge is not the strongest arm. The KL-consistency objective
-and the router system exceed it by three to six points. The merge's advantage instead appears on the
-held-out family, on stacks containing it, and on the reversed task, none of which any arm was trained
-on. We therefore attribute the merged capability to general program reasoning rather than to
-recombined transformation surfaces. This attribution rests on where the advantage occurs; we do not
-measure internal structure.
+It does not. On stacks of seen transformations the KL-consistency objective and the router system
+exceed the merge by three to six points. The merge's advantage over pooled training is largest on the
+held-out family, on stacks containing it, and on the reversed task. No arm was trained on any of
+these three. We read this as evidence that merging composes general program-reasoning capability
+rather than transformation-specific knowledge. The evidence is the location of the advantage; we do
+not measure internal structure.
 
 \subsubsection{Adaptation Exceeds Clean-Code Accuracy}
 \label{sec:recovery}
-Obfuscation removes a large fraction of an untuned model's accuracy. Untuned models retain 75--92\,\%
-of their \texttt{L0} accuracy on single transformations, 61--83\,\% on depth-2 stacks, and 47--63\,\%
-on the held-out family.
+We measure every arm against the untuned model's accuracy on \texttt{L0}, which is the accuracy
+obfuscation removes.
 
-Adaptation does not merely restore this loss. Reading obfuscated programs, adapted models reach
-132--195\,\% of the untuned model's clean-code accuracy on single transformations, 110--180\,\% on
-depth-2 stacks, and 110--174\,\% at depths three and four. Across the merge, KL-consistency and
-router arms, 78 of 84 model\,$\times$\,condition-group cells are at or above 100\,\%. On the held-out
-family the adapted arms reach 82--132\,\%, exceeding clean-code accuracy on six of eight models.
+Untuned models retain 75--92\,\% of their \texttt{L0} accuracy on single transformations, 61--83\,\%
+on depth-2 stacks, and 47--63\,\% on the held-out family. Adapted models reading obfuscated programs
+reach 132--195\,\%, 110--180\,\%, and 82--132\,\% on the same three groups. Across the merge,
+KL-consistency and router arms, 78 of 84 model\,$\times$\,condition-group cells are at or above
+100\,\%. Six of eight models exceed 100\,\% on the held-out family.
 
-A model fine-tuned on obfuscated code therefore reads obfuscated programs more accurately than the
-untuned model reads unobfuscated ones. The gain is not confined to transformations seen in training.
+Fine-tuning on obfuscated code produces a model that reads obfuscated programs more accurately than
+the untuned model reads unobfuscated ones, including on an obfuscator family absent from training.
 
-The backward direction does not show this effect. Only 29 of 78 cells reach 100\,\%, and the merge is
-the arm closest to it. Recovery to clean-code accuracy is specific to the trained direction.
+In the backward direction 29 of 78 cells reach 100\,\%, and the merge is the closest arm. The effect
+is specific to the trained direction.
 
 \begin{takeaway}{RQ1}
-Merging composes general program-reasoning capability rather than transformation-specific knowledge:
-it is not the strongest arm on the transformations its specialists were trained on, and is strongest
-where the surface is unfamiliar. Forward adaptation exceeds the untuned model's clean-code accuracy
-on 78 of 84 cells, including on an unseen obfuscator family. The effect is specific to the trained
-direction.
+The merge is not the strongest arm on the transformations its specialists were trained on, and its
+advantage is largest where the surface is unfamiliar. Forward adaptation exceeds the untuned model's
+clean-code accuracy on 78 of 84 cells, including on an unseen obfuscator family. The effect does not
+appear in the untrained direction.
 \end{takeaway}
 
 \subsection{RQ2: Composing Capabilities for Stacked Obfuscation}
 \label{sec:rq2}
-All adapted arms improve on stacks assembled from seen transformations, and differ from one another
-by three to six points at depths two through four. This spread is small relative to the gap to the
-untuned model. One-shot prompting changes accuracy by a few points and is the weakest intervention in
-the study, indicating that the failure is not one of answer format.
+All adapted arms improve on stacks of seen transformations. At depths two through four they differ
+from one another by three to six points, against a gap to the untuned model of 10 to 24 points.
+One-shot prompting changes accuracy by a few points, which indicates the failure is not one of answer
+format.
 
 The strategies separate outside the training distribution. On the held-out family, paired by program,
-pooled training is below every arm assembled from the same rows on all eight models: below the router
-system by 2.5--4.6 points, significant on eight, and below the merge by 1.8--3.0 points, significant
-on five. Pooled training is also below an adapter trained on unobfuscated code alone on seven of
-eight models. Training on additional transformations therefore reduced accuracy on an unseen
-transformation.
+pooled training is below every arm assembled from the same rows on all eight models: by 2.5--4.6
+points against the router system, significant on eight, and by 1.8--3.0 points against the merge,
+significant on five. Pooled training is also below an adapter trained on unobfuscated code alone on
+seven of eight models. Adding transformations to the training set reduced accuracy on a
+transformation outside it.
 
-The router system is the strongest forward arm and the most expensive, requiring all experts resident
-at inference and a gate evaluation at every layer and token. Its advantage over the merge is not
-attributable to its two additional experts: measured against the merge it is $+2.8$ to $+5.3$ points
-on composites containing neither \texttt{S3} nor \texttt{S4}, and $+2.2$ to $+4.7$ on those
-containing them, on all eight models.
+The router system is the strongest forward arm. It requires all eight experts resident at inference
+and a gate evaluation at every layer and token. Two of its experts, \texttt{S3} and \texttt{S4}, are
+absent from the merge. These do not account for its advantage: measured against the merge it gains
+$+2.8$ to $+5.3$ points on composites containing neither, and $+2.2$ to $+4.7$ on composites
+containing one, on all eight models.
 
 \begin{takeaway}{RQ2}
-Capabilities learned from individual transformations compose, but the composition method determines
-what survives outside the training distribution. Pooling the data into a single adapter is the
-weakest use of it, falling below every arm built from the same rows on 8/8 models on the held-out
-family and below a clean-code-only adapter on 7/8. Composing separately trained specialists, by
-routing or by merging, carries the capability outside that distribution.
+Capabilities learned from individual transformations compose. The composition method determines what
+survives outside the training distribution. Pooling the data into a single adapter falls below every
+arm built from the same rows on 8/8 models on the held-out family, and below a clean-code-only
+adapter on 7/8. Routing and merging both carry the capability outside that distribution.
 \end{takeaway}
 
 \subsection{RQ3: Robustness and Generalisation of the Merged Capability}
 \label{sec:rq3}
-We evaluate the merged model on three conditions beyond those its specialists were built from.
+We evaluate the merge on three conditions outside those its specialists were built from.
 
 \paragraph{Deeper stacks.} The merge retains 110--174\,\% of clean-code accuracy from depth two to
 depth four on seen transformations. Its margin over pooled training does not decrease with depth.
 
 \paragraph{Unseen obfuscator family.} The merge exceeds the untuned model on the held-out family and
 the stacks containing it on all eight models, by 6.6--17.6 points, significant wherever the reference
-is readable. It is not the strongest arm in this condition: the router system exceeds it on six of
-eight models.
+is readable. The router system exceeds the merge in this condition on six of eight models.
 
 \paragraph{Reversed task.} No arm is trained in this direction. Pooled training falls below the
 untuned model on four of the six models where it is readable, and KL-consistency on five of eight, by
 up to 13.2 points. The merge exceeds the untuned model on seven of eight models by $+3.0$ to $+6.4$
-points and is null on the eighth. It is not significantly below the untuned model in any of the three
-regimes on any model. On an independent second seed the backward gain reproduces at $+3.56$, $+3.34$,
-$+3.53$ and $+3.89$ points across two models.
+points and is null on the eighth. Across the three regimes and eight models it is not significantly
+below the untuned model in any cell. On an independent second seed the backward gain reproduces at
+$+3.56$, $+3.34$, $+3.53$ and $+3.89$ points across two models.
 
-\paragraph{Source of the limit.} A control isolates why the remaining arms fail in this direction. An
-adapter trained with pooled training's recipe on the inverse prompt exceeds the untuned model by
-$+10.30$ points backward on CodeLlama-7B and $+5.18$ on Llama-3.1-8B, above any forward-trained arm.
-Inversion is therefore learnable, and the backward losses follow from forward training rather than
-from the task. The transfer is asymmetric: the backward-trained adapter also exceeds the untuned
-model forward, by $+9.63$ and $+7.19$ points, while forward training reduces backward accuracy.
+\paragraph{Source of the limit.} We train one further adapter with pooled training's recipe on the
+inverse prompt, and evaluate it in both directions. It exceeds the untuned model by $+10.30$ points
+backward on CodeLlama-7B and $+5.18$ on Llama-3.1-8B, above every forward-trained arm. Inversion is
+learnable, and the backward losses follow from forward training. The same adapter exceeds the untuned
+model forward by $+9.63$ and $+7.19$ points. Training on input prediction improves output prediction;
+training on output prediction reduces input prediction.
 
 \begin{takeaway}{RQ3}
 The merged capability survives increased composition depth, an unseen obfuscator family, and the
 reversed task. It is the only arm not significantly below the untuned model in any regime on any of
-eight models, replicated at a second seed. Its limits are that it is not the strongest arm on
-familiar surfaces or on the unseen family, and that clean-code recovery does not extend to the
-untrained direction. A backward-trained control shows this to be a property of forward training, not
-of the task.
+eight models, and the backward gain replicates at a second seed. It is not the strongest arm on
+familiar surfaces or on the unseen family, and clean-code recovery does not extend to the untrained
+direction. A backward-trained control attributes that limit to forward training rather than to the
+task.
 \end{takeaway}

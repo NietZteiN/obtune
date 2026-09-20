@@ -41,14 +41,14 @@
 \newlabel{eq:elect}{{5}{6}{2. Elect a sign}{equation.5}{}}
 \@writefile{toc}{\contentsline {paragraph}{3. Disjoint merge.}{6}{section*.4}\protected@file@percent }
 \newlabel{eq:disjoint}{{6}{6}{3. Disjoint merge}{equation.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Application to LoRA Adapters}{7}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:factorspace}{{4.3}{7}{Application to LoRA Adapters}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Application to LoRA Adapters}{6}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:factorspace}{{4.3}{6}{Application to LoRA Adapters}{subsection.4.3}{}}
+\citation{fewshot}
 \newlabel{eq:factormerge}{{7}{7}{Application to LoRA Adapters}{equation.7}{}}
 \newlabel{eq:ranksum}{{8}{7}{Application to LoRA Adapters}{equation.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Configuration}{7}{subsection.4.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {5}Alternative Adaptation Strategies}{7}{section.5}\protected@file@percent }
 \newlabel{sec:baselines}{{5}{7}{Alternative Adaptation Strategies}{section.5}{}}
-\citation{fewshot}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textbf  {Sign election in update space and in factor space are different operations.} (a) The published algorithm forms each specialist's update $\Delta _i = B_iA_i$ and elects a sign per \emph  {parameter of the update}. (b) The standard LoRA implementation, and the one we use, applies the same rule independently to the $A$ factors and to the $B$ factors and multiplies the results, so signs are elected per \emph  {factor entry}. Because each entry of $\Delta $ is a sum over the rank, no factor entry corresponds to one parameter of the update, and the two merges do not coincide: on random factors at $r{=}4$ with three specialists and density $0.5$ their outputs have cosine similarity $0.40$ and disagree in sign on $39\%$ of entries. We use (b) because the alternative --- assembling $\Delta $, merging, and re-extracting by SVD --- changes the adapter's rank and adds reconstruction error before the merging rule is evaluated.}}{8}{figure.caption.5}\protected@file@percent }
 \newlabel{fig:factorspace}{{2}{8}{\textbf {Sign election in update space and in factor space are different operations.} (a) The published algorithm forms each specialist's update $\Delta _i = B_iA_i$ and elects a sign per \emph {parameter of the update}. (b) The standard LoRA implementation, and the one we use, applies the same rule independently to the $A$ factors and to the $B$ factors and multiplies the results, so signs are elected per \emph {factor entry}. Because each entry of $\Delta $ is a sum over the rank, no factor entry corresponds to one parameter of the update, and the two merges do not coincide: on random factors at $r{=}4$ with three specialists and density $0.5$ their outputs have cosine similarity $0.40$ and disagree in sign on $39\%$ of entries. We use (b) because the alternative --- assembling $\Delta $, merging, and re-extracting by SVD --- changes the adapter's rank and adds reconstruction error before the merging rule is evaluated}{figure.caption.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \textbf  {The six arms.} All are the same base model at the same LoRA rank, differing only in how the training data is used and where per-transform knowledge is combined. Top row: arms that never see an obfuscated program in training --- \emph  {untuned}, \emph  {in-context}, and the \emph  {clean LoRA} control that separates learning the task from learning the transforms. Bottom row: the three ways to spend the obfuscated data, ordered by \emph  {when} the specialists are combined --- \emph  {pooled} collapses them during training, \emph  {router} composes them per input at inference and must keep every expert resident, and \emph  {merge} composes them in weight space beforehand, leaving one adapter with no gate and no run-time cost. The KL-consistency arm is \emph  {pooled} with an added consistency term (Section\nonbreakingspace \ref {sec:baselines}).}}{8}{figure.caption.6}\protected@file@percent }
@@ -56,6 +56,10 @@
 \citation{distillation}
 \newlabel{eq:kl}{{9}{9}{Alternative Adaptation Strategies}{equation.9}{}}
 \newlabel{eq:gate}{{10}{9}{Alternative Adaptation Strategies}{equation.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Evaluation Design}{9}{section.6}\protected@file@percent }
+\newlabel{sec:setup}{{6}{9}{Evaluation Design}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Behaviour Prediction Tasks and Grading}{9}{subsection.6.1}\protected@file@percent }
+\newlabel{sec:tasks}{{6.1}{9}{Behaviour Prediction Tasks and Grading}{subsection.6.1}{}}
 \citation{code_llama}
 \citation{code_llama}
 \citation{code_llama}
@@ -65,40 +69,37 @@
 \citation{codegemma}
 \citation{granite31}
 \citation{llama3herd}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Evaluation Design}{10}{section.6}\protected@file@percent }
-\newlabel{sec:setup}{{6}{10}{Evaluation Design}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Behaviour Prediction Tasks and Grading}{10}{subsection.6.1}\protected@file@percent }
-\newlabel{sec:tasks}{{6.1}{10}{Behaviour Prediction Tasks and Grading}{subsection.6.1}{}}
 \@writefile{toc}{\contentsline {paragraph}{Output prediction (forward).}{10}{section*.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Input prediction (backward).}{10}{section*.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Format failures.}{10}{section*.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Scope of Transformations Studied}{10}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Model Panel}{11}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Model Panel}{10}{subsection.6.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \textbf  {The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph  {Chat template}: \emph  {system} accepts a system role; \emph  {merged} folds the system text into the user turn; \emph  {plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model.}}{11}{table.caption.10}\protected@file@percent }
 \newlabel{tab:models}{{1}{11}{\textbf {The model panel.} Four lineages, code-specialised and general instruct models, 7B to 34B. \emph {Chat template}: \emph {system} accepts a system role; \emph {merged} folds the system text into the user turn; \emph {plain} has no template and is used for the one-shot baseline only. Parameter counts are nominal. Every adapter is a LoRA with the same rank and target modules on every model}{table.caption.10}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Corpus and Splits}{11}{subsection.6.4}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \textbf  {The dataset.} One Python corpus, split by program so no obfuscated variant of a training program can reach evaluation.}}{11}{table.caption.11}\protected@file@percent }
 \newlabel{tab:dataset}{{2}{11}{\textbf {The dataset.} One Python corpus, split by program so no obfuscated variant of a training program can reach evaluation}{table.caption.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}Single Transformations}{12}{subsection.6.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}Single Transformations}{11}{subsection.6.5}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \textbf  {Single transforms.} Each is applied to the clean parent and never stacked. \emph  {Cap} is the maximum growth factor over the parent above which a program is declined rather than clipped; \emph  {programs / items} is held-out coverage. H1 is the quarantined held-out obfuscator whose evaluation budget is spent; X1 is its trainable sibling and carries every unseen-family number.}}{12}{table.caption.12}\protected@file@percent }
 \newlabel{tab:taxonomy}{{3}{12}{\textbf {Single transforms.} Each is applied to the clean parent and never stacked. \emph {Cap} is the maximum growth factor over the parent above which a program is declined rather than clipped; \emph {programs / items} is held-out coverage. H1 is the quarantined held-out obfuscator whose evaluation budget is spent; X1 is its trainable sibling and carries every unseen-family number}{table.caption.12}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Stacked Composites}{12}{subsection.6.6}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Held-Out Family and Quarantine Protocol}{13}{subsection.6.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.8}System Instantiation}{13}{subsection.6.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.9}Measurement and Reporting}{14}{subsection.6.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.9}Measurement and Reporting}{13}{subsection.6.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {7}Results}{14}{section.7}\protected@file@percent }
 \newlabel{sec:results}{{7}{14}{Results}{section.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.1}RQ1: What Merging Composes}{14}{subsection.7.1}\protected@file@percent }
 \newlabel{sec:rq1}{{7.1}{14}{RQ1: What Merging Composes}{subsection.7.1}{}}
 \newlabel{sec:recovery}{{7.1.1}{14}{Adaptation Exceeds Clean-Code Accuracy}{subsubsection.7.1.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {7.1.1}Adaptation Exceeds Clean-Code Accuracy}{14}{subsubsection.7.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}RQ2: Composing Capabilities for Stacked Obfuscation}{15}{subsection.7.2}\protected@file@percent }
-\newlabel{sec:rq2}{{7.2}{15}{RQ2: Composing Capabilities for Stacked Obfuscation}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}RQ2: Composing Capabilities for Stacked Obfuscation}{14}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:rq2}{{7.2}{14}{RQ2: Composing Capabilities for Stacked Obfuscation}{subsection.7.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.3}RQ3: Robustness and Generalisation of the Merged Capability}{15}{subsection.7.3}\protected@file@percent }
 \newlabel{sec:rq3}{{7.3}{15}{RQ3: Robustness and Generalisation of the Merged Capability}{subsection.7.3}{}}
 \@writefile{toc}{\contentsline {paragraph}{Deeper stacks.}{15}{section*.16}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Unseen obfuscator family.}{15}{section*.17}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Reversed task.}{15}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Source of the limit.}{15}{section*.19}\protected@file@percent }
 \citation{collberg1997taxonomy,collberg2002manufacturing}
 \citation{nguyen2026effectcodeobfuscationhuman}
 \citation{ase26}
@@ -109,7 +110,6 @@
 \citation{ties}
 \citation{dare}
 \citation{cruxeval}
-\@writefile{toc}{\contentsline {paragraph}{Source of the limit.}{16}{section*.19}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {8}Related Work}{16}{section.8}\protected@file@percent }
 \newlabel{sec:related}{{8}{16}{Related Work}{section.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Comprehension Under Obfuscation and Deobfuscation}{16}{subsection.8.1}\protected@file@percent }

@@ -180,7 +180,7 @@ return value, produce a call that yields it). On seen compositions the adaptatio
 points of one another; on the other two the ordering inverts. Reporting only the first regime,
 as prior work does, supports the opposite conclusion to reporting all three.
 
-\textbf{2. Adaptation on obfuscated code exceeds clean-code accuracy, not merely recovers it.} Measured against the untuned model's accuracy on unobfuscated source, adapted models reading obfuscated programs reach 110--195\,\% of it, above 100\,\% on 78 of 84 model\,$\times$\,condition-group cells and on a held-out obfuscator family. The effect is specific to the trained direction and does not extend to the untrained one.
+\textbf{2. Adaptation on obfuscated code exceeds the untuned model's clean-code accuracy.} Measured against the untuned model's accuracy on unobfuscated source, adapted models reading obfuscated programs reach 110--195\,\% of it, above 100\,\% on 78 of 84 model\,$\times$\,condition-group cells and on a held-out obfuscator family. The effect is specific to the trained direction and does not extend to the untrained one.
 
 \textbf{3. Monolithic training is the worst use of the data outside the training distribution.} A
 single adapter trained on the pooled data of all six training conditions is below every arm assembled

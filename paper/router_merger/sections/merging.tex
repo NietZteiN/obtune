@@ -125,16 +125,16 @@ m_c \;=\; \mathbf{1}\!\left[\, \mathrm{sign}(\widehat{T}_c) = \gamma \,\right].
 This is the \texttt{total} variant of the majority-sign rule, which weights by summed magnitude; the
 alternative \texttt{frequency} variant counts signs instead. We use \texttt{total} throughout.
 
-\paragraph{3. Disjoint merge.} Only the entries agreeing with the elected sign contribute, and the
-sum is normalised by how many specialists contributed at that coordinate rather than by $n$:
+\paragraph{3. Disjoint merge.} Only entries agreeing with the elected sign contribute. The sum is
+normalised by the number of contributing specialists at that coordinate, not by $n$:
 %
 \begin{equation}
 T^{\star} \;=\; \frac{\sum_{c=1}^{n} w_c\, \widehat{T}_c \odot m_c}{\max\!\left(\sum_{c=1}^{n} m_c,\; 1\right)} .
 \label{eq:disjoint}
 \end{equation}
 %
-A coordinate on which every specialist opposes the consensus receives zero rather than an undefined
-value, which is what the clamp in the denominator provides. Our method is \textsc{DARE-TIES}: Eq.~\ref{eq:dare} followed by
+The clamp in the denominator gives zero, rather than an undefined value, at a coordinate where every
+specialist opposes the consensus. Our method is \textsc{DARE-TIES}: Eq.~\ref{eq:dare} followed by
 Eqs.~\ref{eq:elect}--\ref{eq:disjoint}. Replacing Eq.~\ref{eq:dare} with the magnitude trim of
 Eq.~\ref{eq:trim} gives \textsc{TIES}, which we retain as an ablation of the sparsification step
 (Appendix~\ref{app:mergevariants}) rather than as a second proposal. Neither involves any training.

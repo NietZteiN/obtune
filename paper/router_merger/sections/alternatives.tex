@@ -133,9 +133,8 @@ transform-specific supervision --- it only asks that the same computation, writt
 answered the same way.
 
 \noindent\textbf{Router system.} One adapter per transform, kept separate, with a learned gate that
-mixes their low-rank updates per token and per layer. The gate reads the decoder layer's input hidden
-state $h$, so one gate serves every target projection in that layer, and scores experts by attention
-against a learned key $k_e$ per expert:
+mixes their low-rank updates per token and per layer. The gate reads the decoder layer's input hidden state $h$, so one gate serves every target
+projection in that layer. It scores experts by attention against a learned key $k_e$ per expert:
 %
 \begin{equation}
 a \;=\; \mathrm{softmax}_e\!\left( \frac{ \left(W_q\,\mathrm{LayerNorm}(h)\right) \cdot k_e }{ \sqrt{d_r}\,\tau } \right),
@@ -144,8 +143,7 @@ a \;=\; \mathrm{softmax}_e\!\left( \frac{ \left(W_q\,\mathrm{LayerNorm}(h)\right
 %
 with router width $d_r$ and a learned temperature $\tau$ per layer. Only the gate is trained; the
 experts and the base model stay frozen, so the arm adds a small number of parameters relative to the
-expert bank. Because a learned gate can be worth nothing over no gate at all, we report three controls
-alongside it --- the same gate argmaxed to a hard route, a fixed uniform gate, and a gate frozen at
-random initialisation --- which separate what the \emph{mixture} is worth from what the
-\emph{routing} is worth. This arm is the most expressive of the six and the most expensive: every
+expert bank. A learned gate may be worth nothing over no gate. We therefore report three controls: the same gate
+argmaxed to a hard route, a fixed uniform gate, and a gate frozen at random initialisation. These
+separate the value of the mixture from the value of the routing. This arm is the most expressive of the six and the most expensive: every
 expert must be resident at inference, and the gate runs at every layer for every token.
