@@ -1,0 +1,142 @@
+{
+  "codellama-7b": {
+    "ref_L0": 0.2569,
+    "groups": {
+      "L0": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 166.0
+      },
+      "singles": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 147.8
+      },
+      "d2 seen": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 133.8
+      },
+      "unseen": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 105.5
+      }
+    },
+    "contrasts": {
+      "nol0_minus_6way_L0": null,
+      "struct_minus_nol0_L0": null
+    }
+  },
+  "codellama-13b": {
+    "ref_L0": 0.2521,
+    "groups": {
+      "L0": {
+        "struct": 190.7,
+        "ident": 188.4,
+        "no-L0": 189.5,
+        "6-way": 189.1
+      },
+      "singles": {
+        "struct": 166.6,
+        "ident": 169.8,
+        "no-L0": 169.8,
+        "6-way": 168.2
+      },
+      "d2 seen": {
+        "struct": 156.6,
+        "ident": 155.2,
+        "no-L0": 155.0,
+        "6-way": 153.5
+      },
+      "unseen": {
+        "struct": 126.1,
+        "ident": 119.9,
+        "no-L0": 123.2,
+        "6-way": 119.2
+      }
+    },
+    "contrasts": {
+      "nol0_minus_6way_L0": {
+        "delta": 0.12,
+        "lo": -0.6,
+        "hi": 0.84
+      },
+      "struct_minus_nol0_L0": {
+        "delta": 0.3,
+        "lo": -0.84,
+        "hi": 1.44
+      }
+    }
+  },
+  "llama31-8b": {
+    "ref_L0": 0.2581,
+    "groups": {
+      "L0": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 178.9
+      },
+      "singles": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 157.1
+      },
+      "d2 seen": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 141.2
+      },
+      "unseen": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 104.2
+      }
+    },
+    "contrasts": {
+      "nol0_minus_6way_L0": null,
+      "struct_minus_nol0_L0": null
+    }
+  },
+  "granite31-8b": {
+    "ref_L0": 0.285,
+    "groups": {
+      "L0": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 151.9
+      },
+      "singles": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 132.5
+      },
+      "d2 seen": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 117.8
+      },
+      "unseen": {
+        "struct": null,
+        "ident": null,
+        "no-L0": null,
+        "6-way": 81.7
+      }
+    },
+    "contrasts": {
+      "nol0_minus_6way_L0": null,
+      "struct_minus_nol0_L0": null
+    }
+  }
+}
