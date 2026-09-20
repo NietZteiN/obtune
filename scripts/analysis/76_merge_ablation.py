@@ -70,49 +70,114 @@ def _completeness_guard():
                            capture_output=True, text=True, timeout=20).stdout
     except Exception:
         return
-    live = [l for l in q.split("\n") if l.startswith("ev_mergeablate_")]
+    live = [l.strip() for l in q.split("\n") if l.strip().startswith("ev_mergeablate_")]
     if live:
-        print("REFUSING: these ablation evals are still running, so the phase is incomplete:",
+        print("WARNING: these ablation evals are still running; their rows are masked:",
               file=__import__("sys").stderr)
         for l in sorted(live): print("   ", l, file=__import__("sys").stderr)
-        print("    Re-run when the queue is clear, or pass --force to read anyway.",
-              file=__import__("sys").stderr)
         if "--force" not in __import__("sys").argv:
+            print("    Re-run when the queue is clear, or pass --force to read the rest.",
+                  file=__import__("sys").stderr)
             raise SystemExit(2)
+    return live
 
 
-def main():
-    _completeness_guard()
-    out = {}
-    print("forward, % of the untuned model's clean-code accuracy\n")
-    print(f"{'model':15s} {'group':9s} {'base':>6s} " + " ".join(f"{n:>7s}" for n,_,_,_ in ARMS))
+def _is_live(live, tag, model):
+    """True if this model's eval for this direction is still writing cells.
+
+    Matching is prefix-tolerant in both directions because squeue truncates long job
+    names, and a truncated name that silently failed to match would reintroduce exactly
+    the mid-write artefact this guard exists to prevent.
+    """
+    d = {"forward": "fwd", "backward": "bwd"}[tag]
+    want = f"ev_mergeablate_{d}_{model}"
+    return any(j.startswith(want) or want.startswith(j) for j in live)
+
+
+def _fmt_table(out, live, tag, ab_ph, full_ph):
+    """Format-failure rate per arm.
+
+    On the backward task the narrow merges are removed from the means by the >0.25
+    format gate rather than by being absent, so a table of blanks hides the actual
+    result: breadth of ingredients protects the output format. Report it explicitly.
+    """
+    all_cs = [c for _, cs in GROUPS for c in cs]
+    print(f"{tag} format-failure rate (cells gated out of {len(all_cs)} at ff>0.25)\n")
+    arms = [("base", "base", ab_ph)] + [(n, a, (ab_ph if ph is ABL else full_ph))
+                                        for n, a, ph, _ in ARMS]
+    print(f"{'model':15s} " + " ".join(f"{n:>14s}" for n, _, _ in arms))
     for m in MODELS:
-        ref = acc(ABL,m,"base",["L0"]) or acc(FULL,m,"base",["L0"])
-        if not ref: print(f"{m:15s} (no readable L0 reference)"); continue
-        out[m] = {"ref_L0": round(ref,4), "groups": {}}
-        for g,cs in GROUPS:
+        if _is_live(live, tag, m):
+            print(f"{m:15s} (eval still running - masked)")
+            continue
+        row, rec = [], {}
+        for nm, arm, ph in arms:
+            ff = [d.format_fail.mean() for d in
+                  (load_cell(ph, m, arm, c) for c in all_cs) if d is not None]
+            if not ff:
+                row.append(f"{'--':>14s}"); rec[nm] = None; continue
+            mean = sum(ff) / len(ff); gated = sum(1 for x in ff if x > 0.25)
+            rec[nm] = dict(mean_ff=round(mean, 3), gated=gated, cells=len(ff))
+            row.append(f"{mean:11.2f} /{gated:2d}")
+        out.setdefault(m, {}).setdefault(tag, {})["format_fail"] = rec
+        print(f"{m:15s} " + " ".join(row))
+    print()
+
+
+def _report(out, live, tag, ab_ph, full_ph):
+    """One direction's table + contrasts. `ab_ph` holds the three ablation merges,
+    `full_ph` the paper's six-way merge and the untuned baseline."""
+    arms = [(n, a, (ab_ph if ph is ABL else full_ph), d) for n, a, ph, d in ARMS]
+    print(f"{tag}, % of the untuned model's clean-code accuracy\n")
+    print(f"{'model':15s} {'group':9s} {'base':>6s} " + " ".join(f"{n:>7s}" for n, _, _, _ in arms))
+    seen = []
+    for m in MODELS:
+        if _is_live(live, tag, m):
+            print(f"{m:15s} (eval still running - masked)")
+            out.setdefault(m, {})[tag] = {"incomplete": True}
+            continue
+        ref = acc(ab_ph, m, "base", ["L0"]) or acc(full_ph, m, "base", ["L0"])
+        if not ref:
+            print(f"{m:15s} (no readable L0 reference)")
+            continue
+        seen.append(m)
+        rec_m = out.setdefault(m, {}).setdefault(tag, {})
+        rec_m["ref_L0"] = round(ref, 4)
+        rec_m["groups"] = {}
+        for g, cs in GROUPS:
             row, rec = [], {}
-            b = acc(ABL,m,"base",cs) or acc(FULL,m,"base",cs)
+            b = acc(ab_ph, m, "base", cs) or acc(full_ph, m, "base", cs)
             row.append("   --  " if b is None else f"{b/ref*100:5.0f}%")
-            for nm,arm,ph,_ in ARMS:
-                a = acc(ph,m,arm,cs)
-                rec[nm] = None if a is None else round(a/ref*100,1)
+            for nm, arm, ph, _ in arms:
+                a = acc(ph, m, arm, cs)
+                rec[nm] = None if a is None else round(a/ref*100, 1)
                 row.append("   --  " if a is None else f"{a/ref*100:6.0f}%")
-            out[m]["groups"][g] = rec
+            rec_m["groups"][g] = rec
             print(f"{m:15s} {g:9s} " + " ".join(row))
         print()
     print("paired contrasts (95% CI, program-clustered, 2000 resamples)\n")
     print(f"{'model':15s} {'no-L0 - 6-way on L0':>26s} {'struct - no-L0 on L0':>26s}")
-    for m in MODELS:
-        c1 = contrast(ABL,FULL,m,"merge_nol0","merge_dare_ties",["L0"])
-        c2 = contrast(ABL,ABL,m,"merge_struct","merge_nol0",["L0"])
-        f = lambda r: "          --          " if r is None else f"{r[0]:+6.2f} [{r[1]:+5.1f},{r[2]:+5.1f}]{'*' if (r[1]>0)==(r[2]>0) else ' '}"
-        out.setdefault(m,{}).setdefault("contrasts",{})
-        for k,r in (("nol0_minus_6way_L0",c1),("struct_minus_nol0_L0",c2)):
-            out[m]["contrasts"][k] = None if r is None else dict(delta=round(r[0],2),lo=round(r[1],2),hi=round(r[2],2))
+    f = lambda r: "          --          " if r is None else \
+        f"{r[0]:+6.2f} [{r[1]:+5.1f},{r[2]:+5.1f}]{'*' if (r[1]>0)==(r[2]>0) else ' '}"
+    for m in seen:
+        c1 = contrast(ab_ph, full_ph, m, "merge_nol0", "merge_dare_ties", ["L0"])
+        c2 = contrast(ab_ph, ab_ph, m, "merge_struct", "merge_nol0", ["L0"])
+        cr = out[m][tag].setdefault("contrasts", {})
+        for k, r in (("nol0_minus_6way_L0", c1), ("struct_minus_nol0_L0", c2)):
+            cr[k] = None if r is None else dict(delta=round(r[0], 2), lo=round(r[1], 2), hi=round(r[2], 2))
         print(f"{m:15s} {f(c1):>26s} {f(c2):>26s}")
+    print()
+
+
+def main():
+    live = _completeness_guard() or []
+    out = {}
+    _report(out, live, "forward", ABL, FULL)
+    print("=" * 78 + "\n")
+    _report(out, live, "backward", ABLB, BWD)
+    _fmt_table(out, live, "backward", ABLB, BWD)
     (ROOT/"results/analysis/pipeline/merge_ablation.json").write_text(json.dumps(out, indent=2))
-    print("\nwrote results/analysis/pipeline/merge_ablation.json")
+    print("wrote results/analysis/pipeline/merge_ablation.json")
     return 0
 
 if __name__ == "__main__":
