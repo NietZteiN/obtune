@@ -56,7 +56,33 @@ def contrast(phA, phB, m, a, b, cs, n=2000):
           for pk in (rng.choice(idx,len(ps),True) for _ in range(n))]
     lo,hi = np.percentile(dr,[2.5,97.5]); return pt,lo,hi
 
+def _completeness_guard():
+    """Refuse to report on a phase whose eval is still running.
+
+    Reading mergeablate_generic mid-write produced a 20-point spread on CodeLlama-7B's unseen-family
+    row that vanished once the remaining cells landed: arms had different numbers of readable
+    conditions at the moment of reading, so the group means averaged different condition sets. A
+    partially written phase looks exactly like a real effect.
+    """
+    import subprocess
+    try:
+        q = subprocess.run(["squeue","-h","-u",__import__("os").environ.get("USER",""),"-o","%j"],
+                           capture_output=True, text=True, timeout=20).stdout
+    except Exception:
+        return
+    live = [l for l in q.split("\n") if l.startswith("ev_mergeablate_")]
+    if live:
+        print("REFUSING: these ablation evals are still running, so the phase is incomplete:",
+              file=__import__("sys").stderr)
+        for l in sorted(live): print("   ", l, file=__import__("sys").stderr)
+        print("    Re-run when the queue is clear, or pass --force to read anyway.",
+              file=__import__("sys").stderr)
+        if "--force" not in __import__("sys").argv:
+            raise SystemExit(2)
+
+
 def main():
+    _completeness_guard()
     out = {}
     print("forward, % of the untuned model's clean-code accuracy\n")
     print(f"{'model':15s} {'group':9s} {'base':>6s} " + " ".join(f"{n:>7s}" for n,_,_,_ in ARMS))
