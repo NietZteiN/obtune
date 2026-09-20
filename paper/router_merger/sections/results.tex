@@ -248,6 +248,22 @@ points and is null on the eighth. Across the three regimes and eight models it i
 below the untuned model in any cell. On an independent second seed the backward gain reproduces at
 $+3.56$, $+3.34$, $+3.53$ and $+3.89$ points across two models.
 
+\input{tables/direction_lock}
+\input{tables/backward_decomp}
+
+\paragraph{What the backward replies contain.} Execution-graded accuracy pools three distinct
+failures, so we separate them (Table~\ref{tab:bwddecomp}): exact-input recovery, adherence to the
+answer contract, and \emph{direction locking}, the fraction of backward replies that are exactly the
+gold forward answer. The last is the specific failure of a forward-trained arm asked to reverse:
+it returns the output it was trained to predict. The untuned models sit at the floor, at $0.000$ on
+seven of eight. Every single-adapter arm rises above it, to $0.25$ for pooled training on
+StarCoder2-15B and $0.67$ for KL-consistency on CodeGemma-7B. The merge does not: it is at
+$0.001$ or below on all eight models (Table~\ref{tab:dirlock}), the only arm to hold the untuned
+floor everywhere. It also holds the answer contract best, at $0.91$--$0.97$ against pooled
+training's $0.18$--$0.98$. The backward gain is therefore not a grading artefact of either
+failure mode, and the arms that lose backward accuracy do so in part by answering the forward
+question instead.
+
 \paragraph{Source of the limit.} We train one further adapter with pooled training's recipe on the
 inverse prompt, and evaluate it in both directions. It exceeds the untuned model by $+10.30$ points
 backward on CodeLlama-7B and $+5.18$ on Llama-3.1-8B, above every forward-trained arm. Inversion is
@@ -258,7 +274,9 @@ training on output prediction reduces input prediction.
 \begin{takeaway}{RQ3}
 The merged capability survives increased composition depth, an unseen obfuscator family, and the
 reversed task. It is the only arm not significantly below the untuned model in any regime on any of
-eight models, and the backward gain replicates at a second seed. It is not the strongest arm on
+eight models, and the backward gain replicates at a second seed. It is also the only arm that holds
+the untuned direction-lock floor on all eight: the other arms answer the forward question when asked
+to reverse, at rates up to $0.67$. It is not the strongest arm on
 familiar surfaces or on the unseen family, and clean-code recovery does not extend to the untrained
 direction. A backward-trained control attributes that limit to forward training rather than to the
 task.

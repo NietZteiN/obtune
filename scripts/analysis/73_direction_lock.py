@@ -89,7 +89,7 @@ def main():
     L += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
     (ROOT/"paper/router_merger/tables/direction_lock.tex").write_text("\n".join(L) + "\n")
     # ---- table 2: decomposition ----
-    D = [r"\begin{table*}[t]", r"\centering\small",
+    D = [r"\begin{table*}[p]", r"\centering\scriptsize\setlength{\tabcolsep}{1.7pt}",
          r"\caption{\textbf{Backward-task decomposition.} For each arm: \emph{exec} execution-graded "
          r"accuracy, \emph{args} exact-input recovery, \emph{fmt} the fraction of replies meeting the answer "
          r"contract, and \emph{lock} the direction-lock rate of Table~\ref{tab:dirlock}. \emph{exec} and "
@@ -97,6 +97,7 @@ def main():
          r"cells. The split separates reverse reasoning from formatting failure and from answering the "
          r"forward question.}",
          r"\label{tab:bwddecomp}",
+         r"\resizebox{\textwidth}{!}{%",
          r"\begin{tabular}{@{}l" + "cccc"*len(ARMS) + r"@{}}", r"\toprule",
          " & " + " & ".join(r"\multicolumn{4}{c}{\textbf{" + n + "}}" for n, _ in ARMS) + r" \\",
          "".join(r"\cmidrule(lr){" + f"{2+4*k}-{5+4*k}" + "}" for k in range(len(ARMS))),
@@ -109,7 +110,7 @@ def main():
             cs += ["--","--","--","--"] if s is None else [fnum(s["exec_acc"]), fnum(s["args"]),
                                                             fnum(s["fmt_ok"],2), fnum(s["lock"])]
         D.append(NICE[m] + " & " + " & ".join(cs) + r" \\")
-    D += [r"\bottomrule", r"\end{tabular}", r"\end{table*}"]
+    D += [r"\bottomrule", r"\end{tabular}}", r"\end{table*}"]
     (ROOT/"paper/router_merger/tables/backward_decomp.tex").write_text("\n".join(D) + "\n")
     # ---- console ----
     print(f"{'model':16s} " + " ".join(f"{n:>8s}" for n, _ in ARMS) + "   (direction-lock rate)")

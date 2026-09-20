@@ -1,7 +1,8 @@
-\begin{table*}[t]
-\centering\small
+\begin{table*}[p]
+\centering\scriptsize\setlength{\tabcolsep}{1.7pt}
 \caption{\textbf{Backward-task decomposition.} For each arm: \emph{exec} execution-graded accuracy, \emph{args} exact-input recovery, \emph{fmt} the fraction of replies meeting the answer contract, and \emph{lock} the direction-lock rate of Table~\ref{tab:dirlock}. \emph{exec} and \emph{args} are computed on cells clearing the 0.25 format gate; \emph{fmt} and \emph{lock} on all cells. The split separates reverse reasoning from formatting failure and from answering the forward question.}
 \label{tab:bwddecomp}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccccccccccccccccccccccc@{}}
 \toprule
  & \multicolumn{4}{c}{\textbf{Base}} & \multicolumn{4}{c}{\textbf{Clean}} & \multicolumn{4}{c}{\textbf{Breadth}} & \multicolumn{4}{c}{\textbf{KL}} & \multicolumn{4}{c}{\textbf{Router}} & \multicolumn{4}{c}{\textbf{Merge}} \\
@@ -17,5 +18,5 @@ Gemma-3-12B & 0.389 & 0.119 & 0.98 & 0.000 & 0.365 & 0.127 & 0.94 & 0.010 & 0.39
 CodeGemma-7B & 0.233 & 0.064 & 0.89 & 0.000 & 0.316 & 0.101 & 0.97 & 0.005 & 0.292 & 0.094 & 0.92 & 0.056 & -- & -- & 0.30 & 0.668 & 0.297 & 0.099 & 0.97 & 0.008 & 0.297 & 0.099 & 0.97 & 0.001 \\
 Granite-3.1-8B & 0.282 & 0.077 & 0.79 & 0.056 & 0.207 & 0.048 & 0.63 & 0.181 & 0.230 & 0.054 & 0.90 & 0.078 & 0.150 & 0.031 & 0.54 & 0.296 & 0.252 & 0.065 & 0.85 & 0.091 & 0.279 & 0.079 & 0.96 & 0.001 \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table*}
