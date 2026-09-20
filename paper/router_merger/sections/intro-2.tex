@@ -180,20 +180,22 @@ return value, produce a call that yields it). On seen compositions the adaptatio
 points of one another; on the other two the ordering inverts. Reporting only the first regime,
 as prior work does, supports the opposite conclusion to reporting all three.
 
-\textbf{2. Monolithic training is the worst use of the data outside the training distribution.} A
+\textbf{2. Adaptation on obfuscated code exceeds clean-code accuracy, not merely recovers it.} Measured against the untuned model's accuracy on unobfuscated source --- the performance obfuscation removes --- adapted models reading obfuscated programs reach 110--195\,\% of it, above 100\,\% on 93\,\% of model\,$\times$\,condition-group cells, including on a held-out obfuscator family. The recovery is direction-specific: it does not extend to the untrained direction, which is what the rest of the paper is about.
+
+\textbf{3. Monolithic training is the worst use of the data outside the training distribution.} A
 single adapter trained on the pooled data of all six training conditions is below every arm assembled
 from per-condition specialists on the unseen family, on all eight models --- and below an adapter trained on unobfuscated
 code alone on six. The comparison is data-matched by construction: the composed arms are built from
 specialists trained on exactly the rows breadth trains on, at the same rank, from the same base model.
 
-\textbf{3. Adaptation locks the direction it was trained in, and we measure it directly.} Every
+\textbf{4. Adaptation locks the direction it was trained in, and we measure it directly.} Every
 single-adapter arm loses backward accuracy on the same programs it gained forward accuracy on. The
 failures are not parse errors: the most common ungradable backward reply is exactly the gold forward
 answer. We report this collapse rate per arm per model; the untuned models and both merges sit at its
 floor, and the highest rate belongs to the objective whose extra loss term most directly optimises for
 the forward answer.
 
-\textbf{4. Weight-space merging as the arm that never breaks, with its price stated.} Merging the same
+\textbf{5. Weight-space merging as the arm that never breaks, with its price stated.} Merging the same
 specialists is above the untuned model on the reverse task on seven of eight models and is never
 significantly below it in any regime on any model, at a cost of three to six forward points where
 fitting the training distribution pays, one adapter, and no inference-time machinery. It is an existing

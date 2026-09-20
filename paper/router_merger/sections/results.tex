@@ -1,9 +1,9 @@
 \section{Results}
 \label{sec:results}
 
-% THE BODY'S ONE TABLE. Everything below reads off Table~\ref{tab:main}; the per-model tables it
-% summarises are Appendix~\ref{app:absmaster}, and the block means here are computed by the same code
-% path as those tables' bold rows, so the two cannot disagree.
+% Restructured 2026-09-20 to RQ1/RQ2/RQ3 with takeaway boxes; the discussion section was folded in
+% and removed. Two tables serve the section: the full per-model grid (Appendix~\ref{app:absmaster})
+% and the panel summary below.
 % >>> GENERATED TABLE main_results -- from tables/main_results.tex; regenerate, then re-run inline_tables.py
 % GENERATED 2026-09-18 14:21 UTC by scripts/analysis/59_master_tables.py
 % SOURCE: results/cells/* (block means, same path as the per-model tables)
@@ -101,130 +101,176 @@
 \end{table*}
 % <<< GENERATED TABLE main_results
 
-Table~\ref{tab:main} is the whole study on one page: six adaptations, eight models, and the three
-regimes that separate them. Read down a block and the models agree with each other; read \emph{across}
-the blocks and the bold moves. On stacks built from transforms the adapters were trained on, the best
-arm is the KL-consistency arm on five models, the router system on two and breadth on one. On the held-out
-family the router system takes six and the KL-consistency arm two; backwards the merge takes six. On the held-out family the bold moves to the router system on six of eight,
-and on the reverse task to the merge on six --- both assembled from per-transform specialists. No arm wins everywhere, and the one that never loses is not the one that wins most often.
+% >>> GENERATED TABLE master_abs_codellama7b -- from tables/master_abs_codellama7b.tex; regenerate, then re-run inline_tables.py
+% GENERATED 2026-09-18 14:20 UTC by scripts/analysis/59_master_tables.py
+% SOURCE: results/cells/* for codellama-7b (raw accuracies, and % of base)
+% Do not edit by hand -- regenerate. 
+\begin{table*}[p]
+\centering\footnotesize\setlength{\tabcolsep}{2pt}\renewcommand{\arraystretch}{0.95}
+\caption{\textbf{Every method against every obfuscation, CodeLlama-7B.} Each cell is \emph{output prediction}\,/\,\emph{input prediction}: raw exact-match accuracy on the forward task (predict the return value of the code as shown) and, after the slash, on the backward task (produce a call that returns the shown value), on the held-out programs of that condition. \emph{base} is the untuned model; \emph{ICL} its one-shot prompt; \emph{clean LoRA} is tuned on unobfuscated code; \emph{breadth} on all six training conditions pooled; \emph{KL} adds a KL-consistency term to a frozen clean-code teacher (Eq.~\ref{eq:kl}); \emph{router} is the learned-gate mixture of per-transform specialists; \emph{merge} is the DARE-TIES merge of them. \textbf{Colour}: an accuracy \textcolor{green!55!black}{above} or \textcolor{red!70!black}{below} \texttt{base} in the same direction on the same condition; \texttt{base} is the reference, and an uncoloured number means no comparison was available rather than a tie. A \textcolor{red!70!black}{red number carrying $\dagger$ or $\ddagger$} is red for the other reason --- its format-failure rate is above 0.25, so the accuracy beneath it is not a fair reading of the arm --- and those cells are excluded from the bold means. \textbf{Bold rows} are means over the group named, equally weighted per condition; a superscript gives the number of readable cells averaged when it is short of the group. The family adapter (\texttt{tuned\_X1}) is deliberately not a column: it is trained on the held-out family's sibling, so on exactly the rows that matter most it is the one arm for which that family is not held out; the \textbf{held-out family} row names a group of conditions, not an arm. \textbf{Backward is graded by execution}: any call returning the gold value is correct, because inversion is many-to-one. $\dagger$: format-failure rate above 0.25, mostly replies that do not meet the output contract. $\ddagger$: above 0.25 backward, but most replies are exactly the gold \emph{forward} answer --- the arm answered the other question, which is a result rather than a broken template. \emph{ICL} has no backward column, and this is by construction rather than omission: the backward prompt is one-shot for \emph{every} arm including \texttt{base} (Section~\ref{sec:tasks}), so a separate in-context arm would duplicate the \texttt{base} column exactly. Every other cell in this table exists; `--' appears nowhere else.}
+\label{tab:master_abs_codellama7b}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Condition} & \textbf{base} & \textbf{ICL} & \textbf{clean LoRA} & \textbf{breadth} & \textbf{KL} & \textbf{router} & \textbf{merge} \\
+ & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} & {\scriptsize out\,/\,in} \\
+\midrule
+\texttt{L0} & 0.257\,/\,0.285 & \textcolor{green!55!black}{0.302}\,/\,-- & \textcolor{green!55!black}{0.427}\,/\,\textcolor{green!55!black}{0.324} & \textcolor{green!55!black}{0.413}\,/\,\textcolor{red!70!black}{0.276} & \textcolor{green!55!black}{0.422}\,/\,\textcolor{green!55!black}{0.297} & \textcolor{green!55!black}{0.429}\,/\,\textcolor{green!55!black}{0.305} & \textcolor{green!55!black}{0.426}\,/\,\textcolor{green!55!black}{0.329} \\
+\texttt{L1b} & 0.198\,/\,0.265 & \textcolor{green!55!black}{0.255}\,/\,-- & \textcolor{green!55!black}{0.358}\,/\,\textcolor{red!70!black}{0.251} & \textcolor{green!55!black}{0.388}\,/\,\textcolor{green!55!black}{0.279} & \textcolor{green!55!black}{0.402}\,/\,\textcolor{green!55!black}{0.294} & \textcolor{green!55!black}{0.381}\,/\,\textcolor{green!55!black}{0.300} & \textcolor{green!55!black}{0.373}\,/\,\textcolor{green!55!black}{0.297} \\
+\texttt{L1r} & 0.207\,/\,0.315 & \textcolor{green!55!black}{0.265}\,/\,-- & \textcolor{green!55!black}{0.378}\,/\,\textcolor{green!55!black}{0.327} & \textcolor{green!55!black}{0.387}\,/\,\textcolor{red!70!black}{0.276} & \textcolor{green!55!black}{0.395}\,/\,\textcolor{red!70!black}{0.293} & \textcolor{green!55!black}{0.383}\,/\,\textcolor{red!70!black}{0.312} & \textcolor{green!55!black}{0.381}\,/\,\textcolor{green!55!black}{0.352} \\
+\texttt{L2} & 0.202\,/\,0.282 & \textcolor{green!55!black}{0.272}\,/\,-- & \textcolor{green!55!black}{0.382}\,/\,\textcolor{green!55!black}{0.324} & \textcolor{green!55!black}{0.378}\,/\,\textcolor{red!70!black}{0.276} & \textcolor{green!55!black}{0.398}\,/\,\textcolor{red!70!black}{0.275} & \textcolor{green!55!black}{0.386}\,/\,\textcolor{green!55!black}{0.328} & \textcolor{green!55!black}{0.375}\,/\,\textcolor{green!55!black}{0.342} \\
+\texttt{S1} & 0.168\,/\,0.261 & \textcolor{green!55!black}{0.216}\,/\,-- & \textcolor{green!55!black}{0.379}\,/\,\textcolor{red!70!black}{0.188$^{\dagger}$} & \textcolor{green!55!black}{0.389}\,/\,\textcolor{green!55!black}{0.262} & \textcolor{green!55!black}{0.400}\,/\,\textcolor{green!55!black}{0.280} & \textcolor{green!55!black}{0.395}\,/\,\textcolor{red!70!black}{0.255} & \textcolor{green!55!black}{0.376}\,/\,\textcolor{green!55!black}{0.308} \\
+\texttt{S2} & 0.193\,/\,0.330 & \textcolor{red!70!black}{0.215$^{\dagger}$}\,/\,-- & \textcolor{green!55!black}{0.389}\,/\,\textcolor{red!70!black}{0.209$^{\dagger}$} & \textcolor{green!55!black}{0.403}\,/\,\textcolor{red!70!black}{0.294} & \textcolor{green!55!black}{0.415}\,/\,\textcolor{green!55!black}{0.332} & \textcolor{green!55!black}{0.421}\,/\,\textcolor{red!70!black}{0.293} & \textcolor{green!55!black}{0.392}\,/\,\textcolor{green!55!black}{0.357} \\
+\texttt{X1} & 0.119\,/\,0.257 & \textcolor{green!55!black}{0.154}\,/\,-- & \textcolor{green!55!black}{0.269}\,/\,\textcolor{red!70!black}{0.221$^{\dagger}$} & \textcolor{green!55!black}{0.231}\,/\,\textcolor{red!70!black}{0.237} & \textcolor{green!55!black}{0.286}\,/\,\textcolor{green!55!black}{0.281} & \textcolor{green!55!black}{0.279}\,/\,\textcolor{red!70!black}{0.206$^{\dagger}$} & \textcolor{green!55!black}{0.276}\,/\,\textcolor{green!55!black}{0.280} \\
+\texttt{C\_L1b\_S1} & 0.141\,/\,0.218 & \textcolor{green!55!black}{0.153}\,/\,-- & \textcolor{green!55!black}{0.279}\,/\,\textcolor{red!70!black}{0.163$^{\dagger}$} & \textcolor{green!55!black}{0.345}\,/\,\textcolor{green!55!black}{0.242} & \textcolor{green!55!black}{0.360}\,/\,\textcolor{green!55!black}{0.270} & \textcolor{green!55!black}{0.325}\,/\,\textcolor{green!55!black}{0.222} & \textcolor{green!55!black}{0.302}\,/\,\textcolor{green!55!black}{0.280} \\
+\texttt{C\_L1r\_S1} & 0.131\,/\,0.301 & \textcolor{green!55!black}{0.179}\,/\,-- & \textcolor{green!55!black}{0.294}\,/\,\textcolor{red!70!black}{0.209$^{\dagger}$} & \textcolor{green!55!black}{0.350}\,/\,\textcolor{red!70!black}{0.255} & \textcolor{green!55!black}{0.356}\,/\,\textcolor{red!70!black}{0.270} & \textcolor{green!55!black}{0.346}\,/\,\textcolor{red!70!black}{0.227$^{\dagger}$} & \textcolor{green!55!black}{0.301}\,/\,\textcolor{green!55!black}{0.316} \\
+\texttt{C\_S1\_L1r} & 0.135\,/\,0.282 & \textcolor{green!55!black}{0.168}\,/\,-- & \textcolor{green!55!black}{0.285}\,/\,\textcolor{red!70!black}{0.205} & \textcolor{green!55!black}{0.326}\,/\,\textcolor{red!70!black}{0.267} & \textcolor{green!55!black}{0.349}\,/\,\textcolor{green!55!black}{0.285} & \textcolor{green!55!black}{0.318}\,/\,\textcolor{red!70!black}{0.242} & \textcolor{green!55!black}{0.301}\,/\,\textcolor{green!55!black}{0.291} \\
+\texttt{C\_L2\_S4} & 0.176\,/\,0.291 & \textcolor{green!55!black}{0.239}\,/\,-- & \textcolor{green!55!black}{0.355}\,/\,\textcolor{red!70!black}{0.231$^{\dagger}$} & \textcolor{green!55!black}{0.385}\,/\,\textcolor{red!70!black}{0.260} & \textcolor{green!55!black}{0.392}\,/\,\textcolor{red!70!black}{0.283} & \textcolor{green!55!black}{0.383}\,/\,\textcolor{green!55!black}{0.309} & \textcolor{green!55!black}{0.363}\,/\,\textcolor{green!55!black}{0.349} \\
+\texttt{C\_L1r\_S3} & 0.172\,/\,0.296 & \textcolor{green!55!black}{0.201}\,/\,-- & \textcolor{green!55!black}{0.360}\,/\,\textcolor{red!70!black}{0.267} & \textcolor{green!55!black}{0.380}\,/\,\textcolor{red!70!black}{0.278} & \textcolor{green!55!black}{0.387}\,/\,\textcolor{green!55!black}{0.315} & \textcolor{green!55!black}{0.391}\,/\,\textcolor{green!55!black}{0.303} & \textcolor{green!55!black}{0.368}\,/\,\textcolor{green!55!black}{0.350} \\
+\texttt{C\_S4\_S3} & 0.186\,/\,0.315 & \textcolor{red!70!black}{0.223$^{\dagger}$}\,/\,-- & \textcolor{green!55!black}{0.392}\,/\,\textcolor{red!70!black}{0.201$^{\dagger}$} & \textcolor{green!55!black}{0.403}\,/\,\textcolor{red!70!black}{0.282} & \textcolor{green!55!black}{0.422}\,/\,\textcolor{green!55!black}{0.333} & \textcolor{green!55!black}{0.415}\,/\,\textcolor{red!70!black}{0.287} & \textcolor{green!55!black}{0.398}\,/\,\textcolor{green!55!black}{0.352} \\
+\texttt{C3\_L1r\_S3\_S4} & 0.150\,/\,0.303 & \textcolor{green!55!black}{0.181}\,/\,-- & \textcolor{green!55!black}{0.340}\,/\,\textcolor{red!70!black}{0.191$^{\dagger}$} & \textcolor{green!55!black}{0.377}\,/\,\textcolor{red!70!black}{0.268} & \textcolor{green!55!black}{0.380}\,/\,\textcolor{red!70!black}{0.302} & \textcolor{green!55!black}{0.375}\,/\,\textcolor{red!70!black}{0.249$^{\dagger}$} & \textcolor{green!55!black}{0.349}\,/\,\textcolor{green!55!black}{0.336} \\
+\texttt{C3\_S1\_S3\_S4} & 0.128\,/\,0.292 & \textcolor{green!55!black}{0.160}\,/\,-- & \textcolor{green!55!black}{0.354}\,/\,\textcolor{red!70!black}{0.166$^{\dagger}$} & \textcolor{green!55!black}{0.369}\,/\,\textcolor{red!70!black}{0.234} & \textcolor{green!55!black}{0.385}\,/\,\textcolor{green!55!black}{0.313} & \textcolor{green!55!black}{0.377}\,/\,\textcolor{red!70!black}{0.193$^{\dagger}$} & \textcolor{green!55!black}{0.340}\,/\,\textcolor{green!55!black}{0.321} \\
+\texttt{C3\_L1r\_S1\_S4} & 0.126\,/\,0.299 & \textcolor{green!55!black}{0.167}\,/\,-- & \textcolor{green!55!black}{0.289}\,/\,\textcolor{red!70!black}{0.163$^{\dagger}$} & \textcolor{green!55!black}{0.353}\,/\,\textcolor{red!70!black}{0.229} & \textcolor{green!55!black}{0.354}\,/\,\textcolor{red!70!black}{0.278} & \textcolor{green!55!black}{0.325}\,/\,\textcolor{red!70!black}{0.181$^{\dagger}$} & \textcolor{green!55!black}{0.296}\,/\,\textcolor{green!55!black}{0.314} \\
+\texttt{C4\_L1r\_S1\_S3\_S4} & 0.089\,/\,0.282 & \textcolor{green!55!black}{0.122}\,/\,-- & \textcolor{green!55!black}{0.278}\,/\,\textcolor{red!70!black}{0.183$^{\dagger}$} & \textcolor{green!55!black}{0.336}\,/\,\textcolor{red!70!black}{0.217} & \textcolor{green!55!black}{0.356}\,/\,\textcolor{green!55!black}{0.288} & \textcolor{green!55!black}{0.334}\,/\,\textcolor{red!70!black}{0.176$^{\dagger}$} & \textcolor{green!55!black}{0.290}\,/\,\textcolor{green!55!black}{0.296} \\
+\texttt{C\_L1r\_X1} & 0.102\,/\,0.253 & \textcolor{green!55!black}{0.121}\,/\,-- & \textcolor{green!55!black}{0.184}\,/\,\textcolor{red!70!black}{0.210} & \textcolor{green!55!black}{0.199}\,/\,\textcolor{red!70!black}{0.200} & \textcolor{green!55!black}{0.222}\,/\,\textcolor{red!70!black}{0.250} & \textcolor{green!55!black}{0.189}\,/\,\textcolor{red!70!black}{0.176$^{\dagger}$} & \textcolor{green!55!black}{0.193}\,/\,\textcolor{green!55!black}{0.255} \\
+\texttt{C\_X1\_S1} & 0.104\,/\,0.251 & \textcolor{green!55!black}{0.131}\,/\,-- & \textcolor{green!55!black}{0.274}\,/\,\textcolor{red!70!black}{0.139$^{\dagger}$} & \textcolor{green!55!black}{0.230}\,/\,\textcolor{red!70!black}{0.201} & \textcolor{green!55!black}{0.267}\,/\,\textcolor{green!55!black}{0.276} & \textcolor{green!55!black}{0.291}\,/\,\textcolor{red!70!black}{0.144$^{\dagger}$} & \textcolor{green!55!black}{0.290}\,/\,\textcolor{green!55!black}{0.285} \\
+\texttt{C\_S2\_X1} & 0.145\,/\,0.311 & \textcolor{green!55!black}{0.184}\,/\,-- & \textcolor{green!55!black}{0.313}\,/\,\textcolor{red!70!black}{0.153$^{\dagger}$} & \textcolor{green!55!black}{0.285}\,/\,\textcolor{red!70!black}{0.217} & \textcolor{green!55!black}{0.332}\,/\,\textcolor{red!70!black}{0.305} & \textcolor{green!55!black}{0.326}\,/\,\textcolor{red!70!black}{0.209$^{\dagger}$} & \textcolor{green!55!black}{0.317}\,/\,\textcolor{green!55!black}{0.326} \\
+\texttt{C\_L1r\_X1m} & 0.112\,/\,0.250 & \textcolor{green!55!black}{0.116}\,/\,-- & \textcolor{green!55!black}{0.220}\,/\,\textcolor{red!70!black}{0.220} & \textcolor{green!55!black}{0.232}\,/\,\textcolor{red!70!black}{0.223} & \textcolor{green!55!black}{0.249}\,/\,0.250 & \textcolor{green!55!black}{0.227}\,/\,\textcolor{red!70!black}{0.192$^{\dagger}$} & \textcolor{green!55!black}{0.215}\,/\,\textcolor{green!55!black}{0.253} \\
+\texttt{C\_S1\_X1s} & 0.151\,/\,0.277 & \textcolor{green!55!black}{0.206}\,/\,-- & \textcolor{green!55!black}{0.334}\,/\,\textcolor{red!70!black}{0.144$^{\dagger}$} & \textcolor{green!55!black}{0.302}\,/\,\textcolor{red!70!black}{0.195} & \textcolor{green!55!black}{0.355}\,/\,\textcolor{green!55!black}{0.288} & \textcolor{green!55!black}{0.350}\,/\,\textcolor{red!70!black}{0.168$^{\dagger}$} & \textcolor{green!55!black}{0.338}\,/\,\textcolor{green!55!black}{0.286} \\
+\texttt{C3\_L1r\_S1\_X1} & 0.104\,/\,0.263 & \textcolor{green!55!black}{0.127}\,/\,-- & \textcolor{green!55!black}{0.219}\,/\,\textcolor{red!70!black}{0.139$^{\dagger}$} & \textcolor{green!55!black}{0.222}\,/\,\textcolor{red!70!black}{0.154$^{\dagger}$} & \textcolor{green!55!black}{0.250}\,/\,\textcolor{red!70!black}{0.231} & \textcolor{green!55!black}{0.242}\,/\,\textcolor{red!70!black}{0.097$^{\dagger}$} & \textcolor{green!55!black}{0.232}\,/\,\textcolor{green!55!black}{0.288} \\
+\cmidrule(l{2pt}r{2pt}){1-8}
+\textbf{single obfuscation} & 0.194\,/\,0.291 & \textcolor{green!55!black}{0.252$^{4}$}\,/\,-- & \textcolor{green!55!black}{0.377}\,/\,\textcolor{green!55!black}{0.301$^{3}$} & \textcolor{green!55!black}{0.389}\,/\,\textcolor{red!70!black}{0.277} & \textcolor{green!55!black}{0.402}\,/\,\textcolor{green!55!black}{0.295} & \textcolor{green!55!black}{0.393}\,/\,\textcolor{green!55!black}{0.297} & \textcolor{green!55!black}{0.380}\,/\,\textcolor{green!55!black}{0.331} \\
+\textbf{held-out family} & 0.119\,/\,0.257 & \textcolor{green!55!black}{0.154}\,/\,-- & \textcolor{green!55!black}{0.269}\,/\,-- & \textcolor{green!55!black}{0.231}\,/\,\textcolor{red!70!black}{0.237} & \textcolor{green!55!black}{0.286}\,/\,\textcolor{green!55!black}{0.281} & \textcolor{green!55!black}{0.279}\,/\,-- & \textcolor{green!55!black}{0.276}\,/\,\textcolor{green!55!black}{0.280} \\
+\textbf{depth 2, all seen} & 0.157\,/\,0.284 & \textcolor{green!55!black}{0.188$^{5}$}\,/\,-- & \textcolor{green!55!black}{0.327}\,/\,\textcolor{red!70!black}{0.236$^{2}$} & \textcolor{green!55!black}{0.365}\,/\,\textcolor{red!70!black}{0.264} & \textcolor{green!55!black}{0.378}\,/\,\textcolor{green!55!black}{0.293} & \textcolor{green!55!black}{0.363}\,/\,\textcolor{red!70!black}{0.273$^{5}$} & \textcolor{green!55!black}{0.339}\,/\,\textcolor{green!55!black}{0.323} \\
+\textbf{depth 3, all seen} & 0.135\,/\,0.298 & \textcolor{green!55!black}{0.169}\,/\,-- & \textcolor{green!55!black}{0.328}\,/\,-- & \textcolor{green!55!black}{0.366}\,/\,\textcolor{red!70!black}{0.244} & \textcolor{green!55!black}{0.373}\,/\,0.298 & \textcolor{green!55!black}{0.359}\,/\,-- & \textcolor{green!55!black}{0.328}\,/\,\textcolor{green!55!black}{0.324} \\
+\textbf{depth 4, all seen} & 0.089\,/\,0.282 & \textcolor{green!55!black}{0.122}\,/\,-- & \textcolor{green!55!black}{0.278}\,/\,-- & \textcolor{green!55!black}{0.336}\,/\,\textcolor{red!70!black}{0.217} & \textcolor{green!55!black}{0.356}\,/\,\textcolor{green!55!black}{0.288} & \textcolor{green!55!black}{0.334}\,/\,-- & \textcolor{green!55!black}{0.290}\,/\,\textcolor{green!55!black}{0.296} \\
+\textbf{depth 2, unseen inside} & 0.123\,/\,0.268 & \textcolor{green!55!black}{0.152}\,/\,-- & \textcolor{green!55!black}{0.265}\,/\,\textcolor{red!70!black}{0.215$^{2}$} & \textcolor{green!55!black}{0.249}\,/\,\textcolor{red!70!black}{0.207} & \textcolor{green!55!black}{0.285}\,/\,\textcolor{green!55!black}{0.274} & \textcolor{green!55!black}{0.277}\,/\,-- & \textcolor{green!55!black}{0.271}\,/\,\textcolor{green!55!black}{0.281} \\
+\textbf{depth 3, unseen inside} & 0.104\,/\,0.263 & \textcolor{green!55!black}{0.127}\,/\,-- & \textcolor{green!55!black}{0.219}\,/\,-- & \textcolor{green!55!black}{0.222}\,/\,-- & \textcolor{green!55!black}{0.250}\,/\,\textcolor{red!70!black}{0.231} & \textcolor{green!55!black}{0.242}\,/\,-- & \textcolor{green!55!black}{0.232}\,/\,\textcolor{green!55!black}{0.288} \\
+\bottomrule
+\end{tabular}}
+\end{table*}
+% <<< GENERATED TABLE master_abs_codellama7b
 
+Two tables serve this section. Table~\ref{tab:master_abs_codellama7b} is the complete grid for
+CodeLlama-7B, the one model on which every arm exists: every condition and stack against every
+adaptation, in both directions. Table~\ref{tab:main} is the panel summary: every arm on every model, by condition group, as raw
+accuracy and as a percentage of the untuned model's \emph{clean-code} accuracy. The same per-condition detail for the
+other seven models is Appendix~\ref{app:absmaster}. We read both against the three questions in turn.
 
-\subsection{Adaptation Succeeds on Seen Compositions}
+\subsection{RQ1: What Merging Composes}
+\label{sec:rq1}
+If merging only combined transform-specific adaptations, its advantage would be confined to the
+transforms its specialists were trained on, and it would track the union of their individual
+competences. It does neither.
 
-Stacking is where adaptation was supposed to break, and it does not. Every arm roughly doubles the
-untuned model on depth-2, -3 and -4 compositions of the seen transforms: 0.143 to 0.32--0.37 on
-CodeLlama-7B, 0.161 to 0.39--0.45 on CodeLlama-34B, and so on down the panel. The spread among tuned
-arms is three to six points, two to five times smaller than the gap to the untuned model, and a
-single-adapter arm sits at the top of it on six of the eight models. Composition per se is not the difficulty: a model
-that has seen identifier renaming and control-flow flattening separately handles them together.
+On the seen stacks the merge is \emph{not} the strongest arm --- the KL-consistency objective and the
+router system are ahead of it by three to six points (Section~\ref{sec:rq2}). If merging were simply
+recombining transform-specific surface knowledge, this is where it should win, because these are
+exactly the transforms its ingredients were fitted to. It does not. Its advantage appears instead
+where the transform surface is unfamiliar: on the held-out family, on stacks containing it, and on
+the reverse task, where no arm was trained at all. That pattern is the signature of a general
+capability rather than a union of specific ones.
 
-This is the regime prior work reports, and if the evaluation stopped here the conclusion would be that
-the choice of adaptation barely matters and the monolithic one is fine. The next two blocks are the
-reason it does not stop here.
+\subsubsection{Adaptation Recovers --- and Exceeds --- Clean-Code Accuracy}
+\label{sec:recovery}
+The sharpest evidence is what the percentages in Table~\ref{tab:main} are relative to. The reference
+is the untuned model's accuracy on \texttt{L0}, unobfuscated source: the performance obfuscation
+takes away. Reading the forward half of the table against it, adaptation does not merely claw back
+part of that loss.
 
+Untuned, obfuscation costs the panel between 8\,\% and 53\,\% of clean-code accuracy: the untuned
+models retain 75--92\,\% of their \texttt{L0} accuracy on single transforms, 61--83\,\% on depth-2
+stacks, and 47--63\,\% on the held-out family. After adaptation the same models, still reading
+obfuscated programs, reach 132--195\,\% of clean-code accuracy on single transforms, 110--180\,\% on
+depth-2 stacks, and 110--174\,\% at depths three and four. Across the merge, KL-consistency and
+router arms, \textbf{78 of 84 model\,$\times$\,condition-group cells are at or above 100\,\% of the
+untuned model's clean-code accuracy} --- 93\,\%.
 
-\subsection{Pooled Training Is the Worst Use of the Data on an Unseen Family}
+This is a stronger statement than ``adaptation helps''. A model fine-tuned on obfuscated code reads
+obfuscated programs \emph{better than the original model reads clean ones}. The obfuscation is not
+being tolerated; the adaptation is teaching something the model did not have on unobfuscated source
+either. It holds even where the transform was never seen: on the held-out family the adapted arms
+reach 82--132\,\% of clean-code accuracy, recovering the whole of the obfuscation penalty on six of
+the eight models.
 
-The \emph{unseen family} block holds the held-out obfuscator and every stack containing it. No arm was
-trained on it, and the ordering changes: breadth --- one adapter trained on the pooled data of all six
-training conditions --- is below \emph{every} arm assembled from those same conditions' specialists,
-on all eight models.
+The backward direction is the exception, and it is exactly the one the rest of the paper is about.
+There only 29 of 78 cells reach 100\,\%, and the merge is the arm that comes closest. Recovery to
+clean-code level is a property of the direction that was trained, not of the adaptation as such.
 
-Paired by program with a cluster bootstrap over 2{,}000 resamples, and measured on the held-out family
-itself, breadth is below the router system by 3.3--5.9 points on 8 of 8 models (significant on all 8), below
-the merge by 2.3--5.2 on 8 of 8 (significant on 7), and below a LoRA trained on \emph{unobfuscated code
-alone} by 2.7--4.7 on 8 of 8 (significant on 6).
+\begin{takeaway}{RQ1}
+Merging composes a general program-reasoning capability, not a union of transform-specific ones: it
+is not the best arm on the transforms its specialists were built from, and is strongest where the
+surface is unfamiliar. More broadly, forward adaptation on obfuscated code does not merely recover
+the accuracy obfuscation removes --- it \emph{exceeds} the untuned model's clean-code accuracy on
+93\,\% of model\,$\times$\,condition-group cells, including on an obfuscator family no arm ever saw.
+That recovery is direction-specific: it does not extend to the untrained direction.
+\end{takeaway}
 
-Measured over the whole block --- the family plus the six stacks that contain it --- the same orderings
-hold but the margins shrink: breadth is below the router system on 8 of 8 (significant on all 8, 2.5--4.6
-points), below the merge on 7 of 8 (significant on 5, 1.8--3.0), and below clean-code tuning on 7 of 8
-but significantly on only 2 (1.3--1.6). The dilution is itself informative. A stack that contains the
-unseen family also contains transforms breadth was trained on, and breadth handles those well; its
-deficit is concentrated where the input is purely unfamiliar and fades as the familiar returns. That is
-what memorising a transform looks like, and it is not what an invariance would predict.
+\subsection{RQ2: Composing Capabilities for Stacked Obfuscation}
+\label{sec:rq2}
+Every strategy works on stacks assembled from seen transforms, and the differences between them are
+small. On depth-2 to depth-4 seen stacks all adapted arms land within three to six points of one
+another, an order smaller than the gap to the untuned model. Prompting is the exception: the
+in-context arm moves accuracy by a few points and is the weakest intervention in the study, which
+tells us the failure is not one of answer format.
 
-The merge comparison is exactly data-matched: its six ingredient adapters are trained on precisely the
-six conditions breadth pools, at the same rank, from the same base model, so the only difference is
-whether those rows were learned in one set of weights or in six that are then composed. The router system is
-\emph{not} data-matched --- it carries two further specialists, on the transforms \texttt{S3} and
-\texttt{S4}, that neither breadth nor the merge is trained on. Its advantage does not come from them:
-measured against the merge, it is at least as large on composites that contain neither \texttt{S3} nor
-\texttt{S4} ($+2.8$ to $+5.3$) as on those that do ($+2.2$ to $+4.7$), on all eight models. We
-nonetheless treat the exactly-matched merge comparison as the load-bearing one.
+The strategies separate once the input leaves the training distribution. Measured on the held-out
+family and paired by program, pooled training --- the obvious way to spend the data --- is below
+every arm assembled from the same rows on all eight models: below the router system by 2.5--4.6
+points (significant on all eight) and below the merge by 1.8--3.0 (significant on five). It is also
+below an adapter trained on \emph{unobfuscated code alone} on seven of eight. Training on more
+transforms made the model worse at a transform it had not seen, which is what memorising a surface
+predicts and what an invariance would forbid.
 
-An adapter that has never seen an obfuscated program generalises
-better to an unseen obfuscator than one trained on five of them. Training on more transforms made the
-model worse at a transform it had not seen --- which is what transform memorisation predicts and what
-invariance would forbid.
+Among the composing strategies, the router system is the strongest forward arm and the most
+expensive: it keeps every expert resident and runs a gate at every layer for every token. Its
+advantage over the merge is not bought by its two extra experts --- measured against the merge it is
+the same size on composites containing neither \texttt{S3} nor \texttt{S4} ($+2.8$ to $+5.3$) as on
+those that do ($+2.2$ to $+4.7$), on all eight models.
 
+\begin{takeaway}{RQ2}
+Capabilities learned from individual transformations do compose, but how they are combined decides
+what survives leaving the training distribution. Pooling the data into one adapter is the weakest
+use of it: on the held-out family it is below every arm built from the same rows on 8/8 models, and
+below a clean-code-only adapter on 7/8. Composing separately-trained specialists --- by routing or by
+merging --- is what carries the capability outside the distribution that produced it.
+\end{takeaway}
 
-\subsection{Single Adapters Lose the Untrained Direction}
+\subsection{RQ3: Robustness and Generalisation of the Merged Capability}
+\label{sec:rq3}
+We stress the merged model along three axes beyond its specialists' conditions.
 
-The backward task asks for a call that produces a given return value, on the same programs. No arm is
-trained in this direction, so it measures what adaptation did to program understanding rather than to
-task fitting.
+\paragraph{Deeper stacks.} Composition depth does not break it. From depth 2 to depth 4 on seen
+transforms the merge holds 110--174\,\% of clean-code accuracy across the panel, and its margin over
+pooled training does not narrow with depth.
 
-Every single-adapter arm goes red somewhere in the backward block, and the pattern is systematic
-rather than model-specific. Pooling every backward condition that clears the format gate and pairing by
-program, clean-code tuning is below the untuned model on six of eight models (significantly on four),
-breadth on four of the six where it is readable (significantly on four), and the KL-consistency arm on
-six (significantly on five, by as much as 13.2 points on Granite-3.1-8B). The merges are the exception:
-DARE-TIES is \emph{above} the untuned model on seven of eight models ($+3.0$ to $+6.4$ points,
-significant on all seven) and null on the eighth. It is not significantly below the untuned model on
-any model in any of the three blocks. On that eighth model, Granite-3.1-8B, replacing the random drop
-of Eq.~\ref{eq:dare} with a magnitude trim recovers a significant gain, which localises the null to
-the sparsification step rather than to merging (Appendix~\ref{app:mergevariants}). The arm that wins the seen-stack block is the clearest loser here.
+\paragraph{An unseen obfuscator family.} The merge is above the untuned model on the held-out family
+and the stacks containing it on all eight models, by 6.6--17.6 points, significant on every model
+where the reference is readable. It is not the \emph{best} arm there --- the router system is ahead
+on six of eight --- which bounds the claim: merging carries the capability to an unfamiliar surface,
+it does not carry it furthest.
 
-Two qualifications belong with that result rather than in a footnote. Backward is graded by execution
---- any call returning the gold value counts, because inversion is many-to-one --- and 15\,\% of items
-have a trivial gold ($0$, \texttt{None}, \texttt{[]}, \ldots) that a well-formed guess can hit. On
-Llama-3.1-8B, whose untuned backward score is the panel's second highest, that accounts for nearly all
-of its lead: by exact-argument recovery it is 0.086 against CodeLlama-7B's 0.084, the same model. The
-merge's advantage survives the stricter grade on that model; some other differences do not, and we
-report both gradings in Appendix~\ref{app:absmaster}.
+\paragraph{The reversed task.} This is where robustness is decided, because no arm is trained in this
+direction. Every single-adapter arm loses accuracy here: pooled training on four of the six models
+where it is readable, KL-consistency on five of eight, by as much as 13.2 points. The merge is the
+exception --- above the untuned model on seven of eight models by $+3.0$ to $+6.4$, null on the
+eighth, and \emph{never significantly below it in any of the three regimes on any model}. Across an
+independent second seed on two models the gain reproduces at $+3.56$, $+3.34$, $+3.53$ and $+3.89$,
+a spread of half a point.
 
+\paragraph{What the limit is made of.} A control settles why the other arms fail here. Trained with
+pooled training's exact recipe but on the \emph{inverse} prompt, an adapter reaches $+10.30$ points
+above the untuned model backwards on CodeLlama-7B and $+5.18$ on Llama-3.1-8B --- more than any
+forward-trained arm --- so inversion is learnable and the backward losses are caused by forward
+training rather than by the task. The transfer is one-way: that backward-trained arm also
+\emph{improves} forward accuracy, by $+9.63$ and $+7.19$, while forward training damages the backward
+direction. Forward adaptation is narrow in a direction, and it is the direction it was trained on.
 
-\subsection{Direction Locking Explains the Backward Failures}
-
-The backward failures are not parse failures. When a single-adapter arm is asked for an input and
-produces something ungradable, the reply is most often \emph{exactly the gold forward answer} --- the
-return value of the program, correctly computed, in answer to a question that asked for something else.
-The arm did not lose the ability to read the program; it lost the ability to be asked a different
-question about it.
-
-Measured as the share of backward replies that are exactly the gold forward answer, the untuned models
-sit at the floor (0.000--0.056) and so do both merges (0.000--0.002 across all eight models). Every
-single-adapter arm is above that floor on every model but one --- the exception is clean-code tuning on
-Llama-3.1-8B, at 0.001 --- and the panel maximum --- 0.680, on CodeGemma-7B
---- belongs to the KL-consistency arm, which also holds the per-model maximum on five of the eight. Its
-extra loss term is a KL divergence to a clean-code teacher's answer-token distribution: the arm that
-most explicitly optimises for producing the forward answer is the arm that most often produces it when
-asked for something else.
-
-\paragraph{Inversion is learnable, and the transfer between directions is one-way.} Every arm above
-is trained forwards and asked backwards, which cannot separate two explanations of the backward
-failures: that forward training surface-fits the forward mapping, or that inversion is simply not
-reachable by training. We settle this with a control that is pooled training's recipe exactly --- the
-same six conditions, rows, rank and seed --- with one change, the training prompt is the
-\emph{inverse} one, so the model is trained on the task the others are only asked. It is evaluated in
-both directions.
-
-Inversion is learnable, and by a wide margin. On CodeLlama-7B the backward-trained arm is $+10.30$
-points [$+8.5$, $+12.1$] above the untuned model on the backward task, and on Llama-3.1-8B $+5.18$
-[$+3.2$, $+7.2$]; the best forward-trained arm reaches $+3.56$ on the same task. The backward
-failures reported above are therefore a consequence of what forward training does, not a property of
-the task.
-
-The asymmetry is the sharper result. Training backwards does not cost forward accuracy --- it
-\emph{improves} it, by $+9.63$ [$+7.8$, $+11.4$] on CodeLlama-7B and $+7.19$ [$+5.6$, $+8.8$] on
-Llama-3.1-8B, all four contrasts significant. Training forwards, by contrast, costs backward accuracy
-on most models and arms. Same programs, same rank, same data budget, opposite outcomes: input
-prediction generalises to output prediction, and output prediction does not generalise to input
-prediction. Forward training is not merely narrow, then; it is narrow \emph{in a direction}, and the
-direction it narrows into is the one it was trained on.
-
-This connects the two out-of-distribution blocks. Monolithic training fits the task as it was posed:
-these transforms, this direction. Composing separately-trained specialists in weight space does not
-produce that fit, which is why the merge gives up three to six points where the fit pays and keeps its
-competence where the fit does not transfer.
-
+\begin{takeaway}{RQ3}
+The merged capability survives depth and an unseen obfuscator family, and it is the only arm that
+survives the reversed task --- never significantly below the untuned model in any regime on any of
+eight models, replicated at a second seed. Its limits are equally clear: it is not the strongest arm
+on familiar surfaces or on the unseen family, and the recovery of clean-code accuracy does not
+transfer to the untrained direction. A backward-trained control shows why: forward adaptation is
+narrow in a direction, not merely narrow.
+\end{takeaway}

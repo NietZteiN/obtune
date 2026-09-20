@@ -1,0 +1,26 @@
+\section{Research Questions}
+\label{sec:rqs}
+% Written 2026-09-20 to the user's three RQs, verbatim in substance. The results section is organised
+% against them one-for-one.
+
+Adaptation on obfuscated code raises accuracy on obfuscated code. What that gain is made of, and
+whether it composes, is what this paper asks.
+
+\begin{itemize}[leftmargin=*, topsep=2pt, itemsep=3pt]
+  \item \textbf{RQ1: What capabilities does model merging compose, and why can it improve program
+        reasoning on stacked obfuscated code?} We investigate whether merging merely combines
+        transform-specific adaptations or also consolidates more general program-reasoning
+        capabilities.
+
+  \item \textbf{RQ2: How effectively can capabilities learned from individual obfuscations be
+        composed for stacked obfuscation?} We compare alternative composition strategies ---
+        prompting, pooled training, KL-consistency training, inference-time routing, and
+        parameter-space model merging --- and evaluate whether they combine what was learned from
+        individual transformations into gains on stacked obfuscation, in both output and input
+        prediction.
+
+  \item \textbf{RQ3: How robust and generalizable is the capability produced by model merging?} We
+        stress-test the merged model beyond the conditions its specialists were built from: deeper
+        stacks, an unseen obfuscation family, and reversed input/output reasoning. These establish
+        how far merging carries beyond familiar transformation surfaces, and where it stops.
+\end{itemize}

@@ -2,7 +2,7 @@ Fine-tuning a code model on obfuscated programs raises its accuracy on those pro
 twenty points. We ask what that number is made of, and we ask it in three regimes rather than one:
 compositions of the transforms the model was tuned on, an obfuscator family it has never seen, and the
 same programs queried in the reverse direction --- given a return value, produce a call that yields it.
-Across eight models and four lineages, the regimes disagree. On seen compositions every adaptation
+Across eight models and four lineages we find, first, that forward adaptation does not merely recover the accuracy obfuscation removes: an adapted model reading \emph{obfuscated} programs exceeds the untuned model's accuracy on \emph{clean} ones, on 93\,\% of model\,$\times$\,condition-group cells and on an obfuscator family no arm was trained on. Beyond that the regimes disagree. On seen compositions every adaptation
 works and the differences are within five points. Outside them the ordering inverts. A single adapter
 trained on the pooled data of all six training conditions at once --- the obvious way to spend the
 data --- is below every arm assembled from the same conditions' specialists on the unseen family, on all eight models, and below an

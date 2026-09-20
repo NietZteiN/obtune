@@ -3,8 +3,12 @@
 Fine-tuning a code model on obfuscated programs roughly doubles its accuracy on them, and we asked
 what that gain is made of by evaluating in three regimes rather than one: compositions of the
 transforms the model saw, an obfuscator family it never saw, and the same programs queried in the
-reverse direction. On seen compositions every adaptation works and the choice between them is worth a
-few points. Outside them the ordering inverts. Training one adapter on everything --- the obvious use
+reverse direction. The first finding is the size of what adaptation buys. Obfuscation costs an untuned model up to
+half its clean-code accuracy; an adapted model reading obfuscated programs reaches 110--195\,\% of
+the untuned model's \emph{clean-code} accuracy, above 100 on 93\,\% of model\,$\times$\,condition-group
+cells and on an obfuscator family it never saw. Adaptation is not tolerating the transform; it is
+teaching something the model lacked on unobfuscated source too. On seen compositions every
+adaptation does this and the choice between them is worth a few points. Outside them the ordering inverts. Training one adapter on everything --- the obvious use
 of the data --- is the worst arm on the unseen family and loses the untrained direction on most
 models; the failures are not malformed answers but the trained answer to the wrong question. Merging
 per-transform specialists in weight space, an existing technique applied without modification, is the
