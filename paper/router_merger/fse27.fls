@@ -863,6 +863,22 @@ INPUT ./sections/alternatives.tex
 INPUT ./sections/alternatives.tex
 INPUT sections/alternatives.tex
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/nxlmi7.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/mnsymbol/MnSymbolF6.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/mnsymbol/MnSymbolE6.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/mnsymbol/MnSymbolA6.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/mnsymbol/MnSymbolB6.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/mnsymbol/MnSymbolC6.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/mnsymbol/MnSymbolD6.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/newtx/nxlmi5.vf
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/LibertineMathMI5.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/NewTXMI5.tfm
@@ -881,6 +897,8 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/NewTXMI.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/newtx/stxscr.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ot1.vf
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1--base.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-t1.vf
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1--base.tfm
 INPUT ./sections/evaluation.tex
 INPUT ./sections/evaluation.tex
 INPUT ./sections/evaluation.tex
@@ -908,7 +926,6 @@ INPUT ./sections/results.tex
 INPUT ./sections/results.tex
 INPUT ./sections/results.tex
 INPUT sections/results.tex
-INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2026/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
@@ -919,7 +936,6 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-ts1.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4b-4.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1.tfm
-INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTI-tlf-t1.tfm
@@ -1015,6 +1031,7 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/libertine/LinLiberti
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol10.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol5.pfb
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol6.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol7.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol8.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol9.pfb

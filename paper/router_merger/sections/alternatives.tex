@@ -34,30 +34,36 @@
   \node[clab, below=1.4mm of b3] {\textbf{clean LoRA}\\[-1pt]clean code only};
 \end{scope}
 % ---------- row 2: the three ways to use the per-transform data --------------------------------
+% All three bottom panels now show the SAME per-condition objects, labelled by obfuscator
+% (2026-09-20, user): pooled's inputs were unlabelled grey squares while the router's and the
+% merge's were blue adapter boxes, so the figure read as three different inputs when the paper's
+% whole argument is that they are the same six conditions combined three ways. Pooled's squares are
+% its training DATA rather than adapters, which is why they keep a distinct shape -- flat and wider
+% -- but they now carry the same fill and the same labels.
 \begin{scope}[shift={(0,-\ry)}]
   \node[base] (b4) {base};
-  \node[ad, above=1.8mm of b4, minimum width=12mm, fill=red!14] (a4) {pooled};
+  \node[ad, above=1.8mm of b4, minimum width=13mm, fill=red!14] (a4) {pooled};
   \draw[ar] (a4) -- (b4);
-  \foreach \x in {-4.5mm,-1.5mm,1.5mm,4.5mm}
-    \node[draw, fill=black!10, minimum width=2mm, minimum height=2mm, inner sep=0pt,
-          above=1.8mm of a4, xshift=\x] {};
-  \node[clab, below=1.4mm of b4] {\textbf{pooled}\\[-1pt]one adapter, all data};
+  \foreach \i/\x/\t in {1/-9mm/{\tiny L1b}, 2/0mm/{\tiny S1}, 3/9mm/{\tiny$\cdots$}}
+    \node[ad, minimum width=7mm, minimum height=3mm, above=2.6mm of a4, xshift=\x] (p\i) {\t};
+  \foreach \i in {1,2,3} \draw[ar] (p\i) -- (a4);
+  \node[clab, below=1.4mm of b4] {\textbf{pooled}\\[-1pt]rows merged, one adapter};
 \end{scope}
 \begin{scope}[shift={(\cx,-\ry)}]
   \node[base] (b5) {base};
   \node[gt, above=1.8mm of b5] (g5) {gate};
   \draw[ar] (g5) -- (b5);
-  \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
-    \node[ad, above=2mm of g5, xshift=\x, minimum width=5mm] (e\i) {};
+  \foreach \i/\x/\t in {1/-9mm/{\tiny L1b}, 2/0mm/{\tiny S1}, 3/9mm/{\tiny$\cdots$}}
+    \node[ad, above=2mm of g5, xshift=\x, minimum width=7mm, minimum height=3.6mm] (e\i) {\t};
   \foreach \i in {1,2,3} \draw[ar] (e\i) -- (g5);
   \node[clab, below=1.4mm of b5] {\textbf{router}\\[-1pt]gate mixes per input};
 \end{scope}
 \begin{scope}[shift={(2*\cx,-\ry)}]
   \node[base] (b6) {base};
-  \node[adw, above=1.8mm of b6, minimum width=12mm] (m6) {merged};
+  \node[adw, above=1.8mm of b6, minimum width=13mm] (m6) {merged};
   \draw[ar] (m6) -- (b6);
-  \foreach \i/\x in {1/-6.5mm, 2/0mm, 3/6.5mm}
-    \node[ad, above=2.6mm of m6, xshift=\x, minimum width=5mm] (f\i) {};
+  \foreach \i/\x/\t in {1/-9mm/{\tiny L1b}, 2/0mm/{\tiny S1}, 3/9mm/{\tiny$\cdots$}}
+    \node[ad, above=2.6mm of m6, xshift=\x, minimum width=7mm, minimum height=3.6mm] (f\i) {\t};
   \foreach \i in {1,2,3} \draw[ar] (f\i) -- (m6);
   \node[clab, below=1.4mm of b6] {\textbf{merge}\\[-1pt]combined beforehand};
 \end{scope}
@@ -70,8 +76,9 @@
 \caption{\textbf{The six arms.} All are the same base model at the same LoRA rank, differing only in
 how the training data is used and where per-transform knowledge is combined. Top row: arms that never
 see an obfuscated program in training --- \emph{untuned}, \emph{in-context}, and the \emph{clean
-LoRA} control that separates learning the task from learning the transforms. Bottom row: the three
-ways to spend the obfuscated data, ordered by \emph{when} the specialists are combined ---
+LoRA} control that separates learning the task from learning the transforms. Bottom row: the three ways to spend the obfuscated data. The labelled boxes are the six training
+conditions, named by obfuscator (\texttt{L1b}, \texttt{S1}, and four more); all three arms receive
+the same six. They are ordered by \emph{when} those are combined ---
 \emph{pooled} collapses them during training, \emph{router} composes them per input at inference and
 must keep every expert resident, and \emph{merge} composes them in weight space beforehand, leaving
 one adapter with no gate and no run-time cost. The KL-consistency arm is \emph{pooled} with an added
