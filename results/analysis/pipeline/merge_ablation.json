@@ -54,9 +54,9 @@
         "6-way": 153.5
       },
       "unseen": {
-        "struct": 126.1,
-        "ident": 119.9,
-        "no-L0": 123.2,
+        "struct": 122.9,
+        "ident": 118.0,
+        "no-L0": 120.5,
         "6-way": 119.2
       }
     },
@@ -110,33 +110,41 @@
     "ref_L0": 0.285,
     "groups": {
       "L0": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
+        "struct": 149.4,
+        "ident": 147.5,
+        "no-L0": 152.7,
         "6-way": 151.9
       },
       "singles": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
+        "struct": 133.4,
+        "ident": 132.1,
+        "no-L0": 134.4,
         "6-way": 132.5
       },
       "d2 seen": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
+        "struct": 100.0,
+        "ident": 97.7,
+        "no-L0": 100.8,
         "6-way": 117.8
       },
       "unseen": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
+        "struct": 84.7,
+        "ident": 76.0,
+        "no-L0": 80.9,
         "6-way": 81.7
       }
     },
     "contrasts": {
-      "nol0_minus_6way_L0": null,
-      "struct_minus_nol0_L0": null
+      "nol0_minus_6way_L0": {
+        "delta": 0.24,
+        "lo": -0.6,
+        "hi": 1.08
+      },
+      "struct_minus_nol0_L0": {
+        "delta": -0.96,
+        "lo": -2.34,
+        "hi": 0.48
+      }
     }
   }
 }
