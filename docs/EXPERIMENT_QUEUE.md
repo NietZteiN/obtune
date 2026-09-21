@@ -51,7 +51,7 @@ eight models, and Router − Merge on the unseen family is significant on seven,
 **Remaining editorial task:** sweep the draft for surviving 0.3–0.4 point claims the intervals do
 not support.
 
-### A5. Merge operator ablation and implementation audit — **QUEUED**
+### A5. Merge operator ablation and implementation audit — **FIRST RESULT IN**
 *Audit:* **DONE.** `scripts/analysis/79_merge_space_check.py`, all eight models. §3's factor-space
 claim matches the implementation. Its random-factor figure (cosine 0.40) is a worst case; on the
 deployed adapters the two spaces agree at cosine 0.539–0.848, tracking specialist alignment at
@@ -132,3 +132,30 @@ known, applied to every arm and model and reported beside the strict rate. That 
 honest reading of the reviewer's own point: the strict contract is conflating formatting with
 reverse reasoning, which they call the load-bearing ambiguity. Only 34B's router is a real gap
 and it is running.
+
+
+---
+
+## A5 first result: the operator is not arbitrary (Llama-3.1-8B, forward, 2026-09-20)
+
+Percent of the untuned model's clean-code accuracy. Ingredients, weights, rank and seed are
+identical across the three merges; only the operator differs.
+
+| group | base | linear | TIES | DARE-TIES |
+|---|---|---|---|---|
+| `L0` | 100 | 115 | 154 | **178** |
+| singles | 85 | 98 | 133 | **156** |
+| d2 seen | 70 | 87 | 116 | **140** |
+| unseen | 53 | gated | 83 | **104** |
+
+**Plain uniform averaging recovers 115 % of clean-code accuracy where DARE-TIES reaches 178 %.**
+So sparsification and sign election do most of the work, and the choice of DARE-TIES is
+justified rather than arbitrary — which is what the reviewer doubted. Averaging is barely
+better than not merging at all on the unseen family, where it fails the format gate outright
+(format-failure 0.29 against DARE-TIES' 0.03).
+
+Note the format column: `linear` runs at 0.17--0.29 format failure on every group while TIES
+and DARE-TIES sit at 0.02--0.04. Averaging six adapters degrades the answer contract; electing
+a sign does not.
+
+Three models to go.
