@@ -212,8 +212,12 @@ of adapting to obfuscation, not of any particular ingredient and not of the numb
 
 The adapter geometry gives the mechanism (Table~\ref{tab:geometry}). Measured on the weights alone,
 the clean-code specialist's mean cosine to the five obfuscation specialists matches the
-within-family pairs. It occupies no direction the others do not already span, so removing it removes
-nothing.
+within-family pairs on every model: the difference runs from $-0.021$ to $+0.007$ across seven
+models, while absolute alignment varies widely between them, from $0.35$ to $0.75$. The clean-code
+specialist occupies no direction the obfuscation specialists do not already span, so removing it
+removes nothing. Identifier and structural specialists are more aligned with each other than across
+the two families on all seven, so the family structure is real; it is simply much smaller than the
+distance to orthogonality.
 
 Backward, the ingredients do matter, and the contrast with the forward result is the finding. Cutting
 to two specialists costs $4.19$, $8.98$ and $6.52$ points on the three models where the narrow arm
