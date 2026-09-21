@@ -132,6 +132,7 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`2026-09-20_specialist-task-vectors-are-aligned.md`](2026-09-20_specialist-task-vectors-are-aligned.md) — specialist updates are aligned, not orthogonal; explains why TIES and DARE-TIES agree.
 - [`2026-09-20_the-l0-ingredient-matters-backward-only.md`](2026-09-20_the-l0-ingredient-matters-backward-only.md) — **superseded**, read mid-write on one model; kept per the §6 protocol.
 - [`2026-09-20_ablation-panel-complete-breadth-not-l0.md`](2026-09-20_ablation-panel-complete-breadth-not-l0.md) — four models, both directions, complete. Forward the ingredients are irrelevant; backward it is **breadth** of semantic view that matters, 3–6× the effect of the clean-code specialist, and not a format artefact.
+- [`2026-09-20_factor-space-merging-is-closer-than-the-paper-says.md`](2026-09-20_factor-space-merging-is-closer-than-the-paper-says.md) — factor- vs update-space merging on the deployed adapters: cosine 0.539–0.848, sign agreement 0.801–0.890, against the section's random-factor 0.40/0.61. **Resolved since that entry:** CodeLlama-34B landed at 0.840/0.877 (8/8 models), the agreement tracks specialist alignment at r = 0.95, and `merging.tex` is amended (`eea634f0`).
 
 ## Doc / results links
 - [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md)
