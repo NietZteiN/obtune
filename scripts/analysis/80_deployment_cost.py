@@ -99,15 +99,16 @@ def main() -> int:
             paths = {c: str(root/f"{c}_r32_s17"/"best") for c in EXPERTS
                      if (root/f"{c}_r32_s17"/"best").exists()}
             gc.collect(); torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats()
-            gate_sd = torch.load(gate_p, map_location="cpu")
+            # gate.pt is {"gate": <state_dict>, "summary": {...}} -- passing the outer dict
+            # to load_state_dict fails with a missing-keys RuntimeError, which is what the
+            # first run hit.
+            _ck = torch.load(gate_p, map_location="cpu")
+            gate_sd = _ck["gate"] if isinstance(_ck, dict) and "gate" in _ck else _ck
             holder = build_mole_model(m, paths, d_router=64, shared_query=False, device_map="cuda")
-            if hasattr(holder.gate, "load_state_dict"):
-                holder.gate.load_state_dict(gate_sd if not isinstance(gate_sd, dict)
-                                            or "state_dict" not in gate_sd else gate_sd["state_dict"])
+            holder.gate.load_state_dict(gate_sd)
             holder.model.eval()
             stored = sum(_params(root/f"{c}_r32_s17"/"best") for c in paths)
-            stored += sum(t.numel() for t in (gate_sd.values() if isinstance(gate_sd, dict) else [])
-                          if hasattr(t, "numel"))
+            stored += sum(t.numel() for t in gate_sd.values() if hasattr(t, "numel"))
             out["router"] = dict(stored_params=stored, n_experts=len(paths),
                                  peak_mem_gb=round(torch.cuda.max_memory_allocated()/2**30, 2),
                                  tokens_per_s=round(timed(holder.model), 1),
