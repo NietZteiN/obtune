@@ -210,7 +210,13 @@ def _report(out, live, tag, ab_ph, full_ph):
             print(f"{m:15s} {g:9s} " + " ".join(row))
         print()
     print("paired contrasts (95% CI, program-clustered, 2000 resamples)\n")
-    print(f"{'model':15s} {'no-L0 - 6-way on L0':>26s} {'struct - no-L0 on L0':>26s}")
+    # The third column is the depth result. At L0 the four ingredient sets are
+    # indistinguishable; at depth 3 the two-specialist STRUCTURAL merge beats the six-way on
+    # every model. Reported here because a table of group means shows the gap but not whether
+    # it survives a paired interval.
+    D3 = ["C3_L1r_S3_S4", "C3_S1_S3_S4", "C3_L1r_S1_S4"]
+    print(f"{'model':15s} {'no-L0 - 6-way on L0':>26s} {'struct - no-L0 on L0':>26s}"
+          + (f" {'struct - 6-way @ d3':>26s}" if tag == "forward" else ""))
     f = lambda r: "          --          " if r is None else \
         f"{r[0]:+6.2f} [{r[1]:+5.1f},{r[2]:+5.1f}]{'*' if (r[1]>0)==(r[2]>0) else ' '}"
     for m in seen:
@@ -219,7 +225,13 @@ def _report(out, live, tag, ab_ph, full_ph):
         cr = out[m][tag].setdefault("contrasts", {})
         for k, r in (("nol0_minus_6way_L0", c1), ("struct_minus_nol0_L0", c2)):
             cr[k] = None if r is None else dict(delta=round(r[0], 2), lo=round(r[1], 2), hi=round(r[2], 2))
-        print(f"{m:15s} {f(c1):>26s} {f(c2):>26s}")
+        line = f"{m:15s} {f(c1):>26s} {f(c2):>26s}"
+        if tag == "forward":
+            c3 = contrast(ab_ph, full_ph, m, "merge_struct", "merge_dare_ties", D3)
+            cr["struct_minus_6way_d3"] = None if c3 is None else dict(
+                delta=round(c3[0], 2), lo=round(c3[1], 2), hi=round(c3[2], 2))
+            line += f" {f(c3):>26s}"
+        print(line)
     print()
 
 
