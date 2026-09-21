@@ -79,7 +79,7 @@ def main() -> int:
           f"{'strict acc':>10s} {'rescored':>9s} {'delta':>7s}")
     for m in a.models:
         for arm in ARMS:
-            its, outs, n_rep, n = [], [], 0, 0
+            its, outs, reps, n_rep, n = [], [], [], 0, 0
             strict_ok = 0
             for c in a.conds:
                 d = load_cell(BWD, m, arm, c)
@@ -92,14 +92,18 @@ def main() -> int:
                     fixed, rep = repair(raw, it.entry_point)
                     if not rep: strict_ok += 1
                     n_rep += rep
+                    # Track the flag HERE. Recomputing it later from `outs` is wrong: those
+                    # strings are already repaired, so repair() returns False for every one and
+                    # the strict column silently equals the rescored one -- which is exactly
+                    # what the first run printed, +0.000 for all twelve arms.
+                    reps.append(rep)
                     its.append(it); outs.append(fixed)
             if not n: continue
             g = grade_batch(its, outs)
             acc = sum(1 for x in g if x.correct)/len(g)
-            # strict accuracy: a repaired reply would have been unparseable, so it scores 0
-            sacc = sum(1 for x, o in zip(g, outs) if x.correct)/len(g) if n_rep == 0 else \
-                   sum(1 for x, (it, raw) in zip(g, zip(its, outs))
-                       if x.correct and not repair(raw, it.entry_point)[1])/len(g)
+            # strict accuracy: a repaired reply was unparseable under the strict contract,
+            # so it scored 0 there. Use the flags captured at collection time.
+            sacc = sum(1 for x, r in zip(g, reps) if x.correct and not r)/len(g)
             rec = out.setdefault(m, {})[NICE[arm]] = dict(
                 n=n, strict_format=round(strict_ok/n, 4), repaired=round(n_rep/n, 4),
                 strict_acc=round(sacc, 4), rescored_acc=round(acc, 4))
