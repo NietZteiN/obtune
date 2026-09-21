@@ -7,19 +7,22 @@
         "base": 100.0,
         "clean": 152.44,
         "breadth": 165.85,
-        "merge": 153.66
+        "merge": 153.66,
+        "router": 151.22
       },
       "singles": {
         "base": 79.76,
         "clean": 141.95,
         "breadth": 163.9,
-        "merge": 147.8
+        "merge": 147.8,
+        "router": 151.46
       },
       "d2 seen": {
         "base": 75.61,
         "clean": 139.02,
         "breadth": 161.59,
-        "merge": 143.29
+        "merge": 143.29,
+        "router": 154.27
       }
     },
     "contrasts": {
@@ -42,6 +45,16 @@
         "delta": 5.69,
         "lo": 2.09,
         "hi": 9.33
+      },
+      "router - merge": {
+        "delta": 2.3,
+        "lo": 0.31,
+        "hi": 4.36
+      },
+      "router - breadth": {
+        "delta": -3.4,
+        "lo": -6.76,
+        "hi": 0.04
       }
     }
   },
@@ -53,19 +66,22 @@
         "base": 100.0,
         "clean": 134.65,
         "breadth": 131.68,
-        "merge": 139.6
+        "merge": 139.6,
+        "router": null
       },
       "singles": {
         "base": 80.4,
         "clean": 126.34,
         "breadth": 131.49,
-        "merge": 130.3
+        "merge": 130.3,
+        "router": null
       },
       "d2 seen": {
         "base": 70.13,
         "clean": 120.79,
         "breadth": 127.72,
-        "merge": 123.76
+        "merge": 123.76,
+        "router": null
       }
     },
     "contrasts": {
@@ -88,7 +104,9 @@
         "delta": 0.75,
         "lo": -1.82,
         "hi": 3.36
-      }
+      },
+      "router - merge": null,
+      "router - breadth": null
     }
   },
   "Llama-3.1-8B": {
@@ -99,19 +117,22 @@
         "base": 100.0,
         "clean": 187.84,
         "breadth": 172.97,
-        "merge": 195.95
+        "merge": 195.95,
+        "router": null
       },
       "singles": {
         "base": 79.19,
         "clean": 171.08,
         "breadth": 172.16,
-        "merge": 177.84
+        "merge": 177.84,
+        "router": null
       },
       "d2 seen": {
         "base": 62.84,
         "clean": 158.11,
         "breadth": 171.85,
-        "merge": 167.12
+        "merge": 167.12,
+        "router": null
       }
     },
     "contrasts": {
@@ -134,7 +155,9 @@
         "delta": -0.58,
         "lo": -4.25,
         "hi": 2.74
-      }
+      },
+      "router - merge": null,
+      "router - breadth": null
     }
   },
   "Granite-3.1-8B": {
@@ -145,19 +168,22 @@
         "base": 100.0,
         "clean": 140.21,
         "breadth": 138.14,
-        "merge": 134.02
+        "merge": 134.02,
+        "router": null
       },
       "singles": {
         "base": 82.06,
         "clean": 120.62,
         "breadth": 135.67,
-        "merge": 124.12
+        "merge": 124.12,
+        "router": null
       },
       "d2 seen": {
         "base": 71.65,
         "clean": 114.95,
         "breadth": 137.8,
-        "merge": 120.27
+        "merge": 120.27,
+        "router": null
       }
     },
     "contrasts": {
@@ -180,7 +206,9 @@
         "delta": 5.56,
         "lo": 1.85,
         "hi": 9.5
-      }
+      },
+      "router - merge": null,
+      "router - breadth": null
     }
   }
 }
