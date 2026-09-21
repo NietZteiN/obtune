@@ -32,8 +32,13 @@ FULL = ["panel_core","composite_generic","composite_depth","f2_divergence","merg
 BWD  = ["inverse_1shot","inverse_generic"]
 ARMS = [("struct","merge_struct",ABL,"S1+S2"),("ident","merge_ident",ABL,"L1b+L1r+L2"),
         ("no-L0","merge_nol0",ABL,"5 obf."),("6-way","merge_dare_ties",FULL,"all six")]
+# d3/d4 exist in the FORWARD ablation phase only; the backward config carries 16 conditions
+# and none of them is a depth-3 stack, so those rows render as `--` under backward. That is a
+# real gap in the eval, not a reporting choice, and showing it beats omitting the group.
 GROUPS = [("L0", ["L0"]), ("singles", ["L1b","L1r","L2","S1","S2"]),
           ("d2 seen", ["C_L1b_S1","C_L1r_S1","C_S1_L1r","C_L2_S4","C_L1r_S3","C_S4_S3"]),
+          ("d3 seen", ["C3_L1r_S3_S4","C3_S1_S3_S4","C3_L1r_S1_S4"]),
+          ("d4 seen", ["C4_L1r_S1_S3_S4"]),
           ("unseen", ["X1","C_L1r_X1","C_X1_S1","C_S2_X1"])]
 
 def pool(ph, m, arm, cs):
