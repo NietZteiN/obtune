@@ -1,149 +1,473 @@
 {
   "codellama-7b": {
-    "ref_L0": 0.2569,
-    "groups": {
-      "L0": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 166.0
+    "forward": {
+      "ref_L0": 0.2569,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 165.73,
+          "ident": 166.2,
+          "no-L0": 163.64,
+          "6-way": 165.97
+        },
+        "singles": {
+          "base": 75.87,
+          "struct": 150.11,
+          "ident": 149.28,
+          "no-L0": 150.16,
+          "6-way": 147.85
+        },
+        "d2 seen": {
+          "base": 62.15,
+          "struct": 139.98,
+          "ident": 134.16,
+          "no-L0": 136.07,
+          "6-way": 133.8
+        },
+        "unseen": {
+          "base": 47.06,
+          "struct": 108.37,
+          "ident": 102.98,
+          "no-L0": 105.91,
+          "6-way": 105.52
+        }
       },
-      "singles": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 147.8
-      },
-      "d2 seen": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 133.8
-      },
-      "unseen": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 105.5
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": -0.6,
+          "lo": -1.38,
+          "hi": 0.12
+        },
+        "struct_minus_nol0_L0": {
+          "delta": 0.54,
+          "lo": -0.54,
+          "hi": 1.68
+        }
       }
     },
-    "contrasts": {
-      "nol0_minus_6way_L0": null,
-      "struct_minus_nol0_L0": null
+    "backward": {
+      "ref_L0": 0.2849,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 100.42,
+          "ident": 110.5,
+          "no-L0": 115.13,
+          "6-way": 115.34
+        },
+        "singles": {
+          "base": 102.61,
+          "struct": 93.99,
+          "ident": 112.09,
+          "no-L0": 115.15,
+          "6-way": 116.75
+        },
+        "d2 seen": {
+          "base": 100.6,
+          "struct": null,
+          "ident": 104.41,
+          "no-L0": 113.33,
+          "6-way": 114.73
+        },
+        "unseen": {
+          "base": 95.64,
+          "struct": null,
+          "ident": 91.41,
+          "no-L0": 99.25,
+          "6-way": 101.75
+        }
+      },
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": -0.06,
+          "lo": -0.96,
+          "hi": 0.78
+        },
+        "struct_minus_nol0_L0": {
+          "delta": -4.19,
+          "lo": -6.04,
+          "hi": -2.27
+        }
+      },
+      "format_fail": {
+        "base": {
+          "mean_ff": 0.061,
+          "gated": 0,
+          "cells": 16
+        },
+        "struct": {
+          "mean_ff": 0.327,
+          "gated": 12,
+          "cells": 16
+        },
+        "ident": {
+          "mean_ff": 0.081,
+          "gated": 0,
+          "cells": 16
+        },
+        "no-L0": {
+          "mean_ff": 0.054,
+          "gated": 0,
+          "cells": 16
+        },
+        "6-way": {
+          "mean_ff": 0.045,
+          "gated": 0,
+          "cells": 16
+        }
+      }
     }
   },
   "codellama-13b": {
-    "ref_L0": 0.2521,
-    "groups": {
-      "L0": {
-        "struct": 190.7,
-        "ident": 188.4,
-        "no-L0": 189.5,
-        "6-way": 189.1
+    "forward": {
+      "ref_L0": 0.2521,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 190.74,
+          "ident": 188.36,
+          "no-L0": 189.55,
+          "6-way": 189.07
+        },
+        "singles": {
+          "base": 85.13,
+          "struct": 166.6,
+          "ident": 169.81,
+          "no-L0": 169.76,
+          "6-way": 168.16
+        },
+        "d2 seen": {
+          "base": 73.65,
+          "struct": 156.62,
+          "ident": 155.22,
+          "no-L0": 155.04,
+          "6-way": 153.55
+        },
+        "unseen": {
+          "base": 57.3,
+          "struct": 122.91,
+          "ident": 117.97,
+          "no-L0": 120.48,
+          "6-way": 119.22
+        }
       },
-      "singles": {
-        "struct": 166.6,
-        "ident": 169.8,
-        "no-L0": 169.8,
-        "6-way": 168.2
-      },
-      "d2 seen": {
-        "struct": 156.6,
-        "ident": 155.2,
-        "no-L0": 155.0,
-        "6-way": 153.5
-      },
-      "unseen": {
-        "struct": 122.9,
-        "ident": 118.0,
-        "no-L0": 120.5,
-        "6-way": 119.2
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": 0.12,
+          "lo": -0.6,
+          "hi": 0.84
+        },
+        "struct_minus_nol0_L0": {
+          "delta": 0.3,
+          "lo": -0.84,
+          "hi": 1.44
+        }
       }
     },
-    "contrasts": {
-      "nol0_minus_6way_L0": {
-        "delta": 0.12,
-        "lo": -0.6,
-        "hi": 0.84
+    "backward": {
+      "ref_L0": 0.2849,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": null,
+          "ident": null,
+          "no-L0": 106.72,
+          "6-way": 118.91
+        },
+        "singles": {
+          "base": 103.8,
+          "struct": null,
+          "ident": 102.24,
+          "no-L0": 112.67,
+          "6-way": 121.14
+        },
+        "d2 seen": {
+          "base": 103.41,
+          "struct": null,
+          "ident": 113.8,
+          "no-L0": 122.11,
+          "6-way": 124.62
+        },
+        "unseen": {
+          "base": 96.06,
+          "struct": null,
+          "ident": 85.92,
+          "no-L0": 99.11,
+          "6-way": 106.88
+        }
       },
-      "struct_minus_nol0_L0": {
-        "delta": 0.3,
-        "lo": -0.84,
-        "hi": 1.44
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": -3.47,
+          "lo": -5.03,
+          "hi": -2.09
+        },
+        "struct_minus_nol0_L0": null
+      },
+      "format_fail": {
+        "base": {
+          "mean_ff": 0.024,
+          "gated": 0,
+          "cells": 16
+        },
+        "struct": {
+          "mean_ff": 0.717,
+          "gated": 16,
+          "cells": 16
+        },
+        "ident": {
+          "mean_ff": 0.224,
+          "gated": 3,
+          "cells": 16
+        },
+        "no-L0": {
+          "mean_ff": 0.134,
+          "gated": 1,
+          "cells": 16
+        },
+        "6-way": {
+          "mean_ff": 0.058,
+          "gated": 0,
+          "cells": 16
+        }
       }
     }
   },
   "llama31-8b": {
-    "ref_L0": 0.2581,
-    "groups": {
-      "L0": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 178.9
+    "forward": {
+      "ref_L0": 0.2599,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 175.35,
+          "ident": 180.41,
+          "no-L0": 179.95,
+          "6-way": 177.65
+        },
+        "singles": {
+          "base": 84.87,
+          "struct": 158.6,
+          "ident": 159.71,
+          "no-L0": 158.79,
+          "6-way": 156.02
+        },
+        "d2 seen": {
+          "base": 70.43,
+          "struct": 146.09,
+          "ident": 144.03,
+          "no-L0": 143.24,
+          "6-way": 140.21
+        },
+        "unseen": {
+          "base": 52.53,
+          "struct": 108.65,
+          "ident": 103.62,
+          "no-L0": 105.91,
+          "6-way": 103.47
+        }
       },
-      "singles": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 157.1
-      },
-      "d2 seen": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 141.2
-      },
-      "unseen": {
-        "struct": null,
-        "ident": null,
-        "no-L0": null,
-        "6-way": 104.2
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": 0.6,
+          "lo": -0.18,
+          "hi": 1.44
+        },
+        "struct_minus_nol0_L0": {
+          "delta": -1.2,
+          "lo": -2.75,
+          "hi": 0.3
+        }
       }
     },
-    "contrasts": {
-      "nol0_minus_6way_L0": null,
-      "struct_minus_nol0_L0": null
+    "backward": {
+      "ref_L0": 0.4111,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 75.55,
+          "ident": 89.52,
+          "no-L0": 97.38,
+          "6-way": 100.73
+        },
+        "singles": {
+          "base": 91.22,
+          "struct": 69.89,
+          "ident": 87.59,
+          "no-L0": 91.4,
+          "6-way": 95.36
+        },
+        "d2 seen": {
+          "base": 78.58,
+          "struct": 67.13,
+          "ident": 83.35,
+          "no-L0": 88.43,
+          "6-way": 91.51
+        },
+        "unseen": {
+          "base": 67.42,
+          "struct": 59.1,
+          "ident": 68.48,
+          "no-L0": 76.7,
+          "6-way": 77.66
+        }
+      },
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": -1.38,
+          "lo": -2.51,
+          "hi": -0.3
+        },
+        "struct_minus_nol0_L0": {
+          "delta": -8.98,
+          "lo": -10.89,
+          "hi": -7.12
+        }
+      },
+      "format_fail": {
+        "base": {
+          "mean_ff": 0.075,
+          "gated": 0,
+          "cells": 16
+        },
+        "struct": {
+          "mean_ff": 0.103,
+          "gated": 0,
+          "cells": 16
+        },
+        "ident": {
+          "mean_ff": 0.052,
+          "gated": 0,
+          "cells": 16
+        },
+        "no-L0": {
+          "mean_ff": 0.054,
+          "gated": 0,
+          "cells": 16
+        },
+        "6-way": {
+          "mean_ff": 0.055,
+          "gated": 0,
+          "cells": 16
+        }
+      }
     }
   },
   "granite31-8b": {
-    "ref_L0": 0.285,
-    "groups": {
-      "L0": {
-        "struct": 149.4,
-        "ident": 147.5,
-        "no-L0": 152.7,
-        "6-way": 151.9
+    "forward": {
+      "ref_L0": 0.285,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 149.37,
+          "ident": 147.48,
+          "no-L0": 152.73,
+          "6-way": 151.89
+        },
+        "singles": {
+          "base": 92.23,
+          "struct": 133.38,
+          "ident": 132.1,
+          "no-L0": 134.4,
+          "6-way": 132.45
+        },
+        "d2 seen": {
+          "base": 83.84,
+          "struct": 120.67,
+          "ident": 115.19,
+          "no-L0": 120.43,
+          "6-way": 117.83
+        },
+        "unseen": {
+          "base": 58.1,
+          "struct": 86.36,
+          "ident": 79.0,
+          "no-L0": 83.58,
+          "6-way": 81.71
+        }
       },
-      "singles": {
-        "struct": 133.4,
-        "ident": 132.1,
-        "no-L0": 134.4,
-        "6-way": 132.5
-      },
-      "d2 seen": {
-        "struct": 100.0,
-        "ident": 97.7,
-        "no-L0": 100.8,
-        "6-way": 117.8
-      },
-      "unseen": {
-        "struct": 84.7,
-        "ident": 76.0,
-        "no-L0": 80.9,
-        "6-way": 81.7
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": 0.24,
+          "lo": -0.6,
+          "hi": 1.08
+        },
+        "struct_minus_nol0_L0": {
+          "delta": -0.96,
+          "lo": -2.34,
+          "hi": 0.48
+        }
       }
     },
-    "contrasts": {
-      "nol0_minus_6way_L0": {
-        "delta": 0.24,
-        "lo": -0.6,
-        "hi": 1.08
+    "backward": {
+      "ref_L0": 0.2902,
+      "groups": {
+        "L0": {
+          "base": 100.0,
+          "struct": 76.08,
+          "ident": 75.67,
+          "no-L0": 98.56,
+          "6-way": 104.74
+        },
+        "singles": {
+          "base": 97.48,
+          "struct": 72.33,
+          "ident": 71.79,
+          "no-L0": 94.22,
+          "6-way": 101.44
+        },
+        "d2 seen": {
+          "base": 97.16,
+          "struct": 71.08,
+          "ident": 69.47,
+          "no-L0": 91.35,
+          "6-way": 96.77
+        },
+        "unseen": {
+          "base": 95.18,
+          "struct": 58.64,
+          "ident": 54.26,
+          "no-L0": 79.7,
+          "6-way": 84.6
+        }
       },
-      "struct_minus_nol0_L0": {
-        "delta": -0.96,
-        "lo": -2.34,
-        "hi": 0.48
+      "contrasts": {
+        "nol0_minus_6way_L0": {
+          "delta": -1.8,
+          "lo": -2.99,
+          "hi": -0.6
+        },
+        "struct_minus_nol0_L0": {
+          "delta": -6.52,
+          "lo": -8.56,
+          "hi": -4.61
+        }
+      },
+      "format_fail": {
+        "base": {
+          "mean_ff": 0.21,
+          "gated": 2,
+          "cells": 16
+        },
+        "struct": {
+          "mean_ff": 0.161,
+          "gated": 1,
+          "cells": 16
+        },
+        "ident": {
+          "mean_ff": 0.193,
+          "gated": 3,
+          "cells": 16
+        },
+        "no-L0": {
+          "mean_ff": 0.04,
+          "gated": 0,
+          "cells": 16
+        },
+        "6-way": {
+          "mean_ff": 0.038,
+          "gated": 0,
+          "cells": 16
+        }
       }
     }
   }

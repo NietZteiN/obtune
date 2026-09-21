@@ -1,0 +1,186 @@
+{
+  "CodeLlama-7B": {
+    "ref_js": 0.3374,
+    "ref_py": 0.2569,
+    "groups": {
+      "L0": {
+        "base": 100.0,
+        "clean": 152.44,
+        "breadth": 165.85,
+        "merge": 153.66
+      },
+      "singles": {
+        "base": 79.76,
+        "clean": 141.95,
+        "breadth": 163.9,
+        "merge": 147.8
+      },
+      "d2 seen": {
+        "base": 75.61,
+        "clean": 139.02,
+        "breadth": 161.59,
+        "merge": 143.29
+      }
+    },
+    "contrasts": {
+      "breadth - base": {
+        "delta": 28.19,
+        "lo": 22.43,
+        "hi": 34.02
+      },
+      "merge - base": {
+        "delta": 22.5,
+        "lo": 17.04,
+        "hi": 28.36
+      },
+      "clean - base": {
+        "delta": 20.92,
+        "lo": 15.6,
+        "hi": 26.71
+      },
+      "breadth - merge": {
+        "delta": 5.69,
+        "lo": 2.09,
+        "hi": 9.33
+      }
+    }
+  },
+  "CodeLlama-13B": {
+    "ref_js": 0.4156,
+    "ref_py": 0.2521,
+    "groups": {
+      "L0": {
+        "base": 100.0,
+        "clean": 134.65,
+        "breadth": 131.68,
+        "merge": 139.6
+      },
+      "singles": {
+        "base": 80.4,
+        "clean": 126.34,
+        "breadth": 131.49,
+        "merge": 130.3
+      },
+      "d2 seen": {
+        "base": 70.13,
+        "clean": 120.79,
+        "breadth": 127.72,
+        "merge": 123.76
+      }
+    },
+    "contrasts": {
+      "breadth - base": {
+        "delta": 21.91,
+        "lo": 16.05,
+        "hi": 27.98
+      },
+      "merge - base": {
+        "delta": 21.16,
+        "lo": 15.91,
+        "hi": 26.47
+      },
+      "clean - base": {
+        "delta": 19.68,
+        "lo": 13.85,
+        "hi": 25.75
+      },
+      "breadth - merge": {
+        "delta": 0.75,
+        "lo": -1.82,
+        "hi": 3.36
+      }
+    }
+  },
+  "Llama-3.1-8B": {
+    "ref_js": 0.3045,
+    "ref_py": 0.2581,
+    "groups": {
+      "L0": {
+        "base": 100.0,
+        "clean": 187.84,
+        "breadth": 172.97,
+        "merge": 195.95
+      },
+      "singles": {
+        "base": 79.19,
+        "clean": 171.08,
+        "breadth": 172.16,
+        "merge": 177.84
+      },
+      "d2 seen": {
+        "base": 62.84,
+        "clean": 158.11,
+        "breadth": 171.85,
+        "merge": 167.12
+      }
+    },
+    "contrasts": {
+      "breadth - base": {
+        "delta": 30.25,
+        "lo": 23.66,
+        "hi": 37.07
+      },
+      "merge - base": {
+        "delta": 30.83,
+        "lo": 24.93,
+        "hi": 37.28
+      },
+      "clean - base": {
+        "delta": 28.4,
+        "lo": 22.26,
+        "hi": 34.81
+      },
+      "breadth - merge": {
+        "delta": -0.58,
+        "lo": -4.25,
+        "hi": 2.74
+      }
+    }
+  },
+  "Granite-3.1-8B": {
+    "ref_js": 0.3992,
+    "ref_py": 0.285,
+    "groups": {
+      "L0": {
+        "base": 100.0,
+        "clean": 140.21,
+        "breadth": 138.14,
+        "merge": 134.02
+      },
+      "singles": {
+        "base": 82.06,
+        "clean": 120.62,
+        "breadth": 135.67,
+        "merge": 124.12
+      },
+      "d2 seen": {
+        "base": 71.65,
+        "clean": 114.95,
+        "breadth": 137.8,
+        "merge": 120.27
+      }
+    },
+    "contrasts": {
+      "breadth - base": {
+        "delta": 23.39,
+        "lo": 17.8,
+        "hi": 29.36
+      },
+      "merge - base": {
+        "delta": 17.83,
+        "lo": 13.79,
+        "hi": 22.02
+      },
+      "clean - base": {
+        "delta": 16.39,
+        "lo": 11.9,
+        "hi": 21.03
+      },
+      "breadth - merge": {
+        "delta": 5.56,
+        "lo": 1.85,
+        "hi": 9.5
+      }
+    }
+  }
+}

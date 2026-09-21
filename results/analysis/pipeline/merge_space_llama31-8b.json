@@ -1,0 +1,12 @@
+{
+  "ties": {
+    "cosine": 0.7251,
+    "sign_agree": 0.8171,
+    "n": 14
+  },
+  "dare_ties": {
+    "cosine": 0.7015,
+    "sign_agree": 0.7759,
+    "n": 42
+  }
+}

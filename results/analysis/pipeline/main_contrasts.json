@@ -410,5 +410,408 @@
         "n_programs": 557
       }
     }
+  },
+  {
+    "contrast": "no-L0 merge - Clean LoRA",
+    "regime": "clean L0",
+    "per_model": {
+      "codellama-7b": {
+        "delta": -0.66,
+        "lo": -1.92,
+        "hi": 0.6,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 0.9,
+        "lo": -0.42,
+        "hi": 2.28,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 1.98,
+        "lo": 0.36,
+        "hi": 3.47,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 0.54,
+        "lo": -0.84,
+        "hi": 1.98,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "no-L0 merge - Base",
+    "regime": "clean L0",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 16.35,
+        "lo": 13.77,
+        "hi": 18.92,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 22.57,
+        "lo": 19.95,
+        "hi": 25.27,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 20.96,
+        "lo": 18.14,
+        "hi": 23.77,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 15.03,
+        "lo": 12.6,
+        "hi": 17.5,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "no-L0 merge - Base",
+    "regime": "unseen family",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 14.69,
+        "lo": 12.92,
+        "hi": 16.45,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 15.66,
+        "lo": 13.77,
+        "hi": 17.68,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 13.4,
+        "lo": 11.86,
+        "hi": 15.0,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 7.06,
+        "lo": 5.78,
+        "hi": 8.39,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "no-L0 merge - Base",
+    "regime": "backward",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 3.1,
+        "lo": 2.06,
+        "hi": 4.23,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 2.97,
+        "lo": 1.68,
+        "hi": 4.25,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 2.32,
+        "lo": 1.1,
+        "hi": 3.57,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": -2.0,
+        "lo": -3.54,
+        "hi": -0.41,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "identifier merge - Clean LoRA",
+    "regime": "clean L0",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 0.0,
+        "lo": -1.32,
+        "hi": 1.38,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 0.6,
+        "lo": -0.78,
+        "hi": 1.98,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 2.1,
+        "lo": 0.54,
+        "hi": 3.54,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": -0.96,
+        "lo": -2.39,
+        "hi": 0.6,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "identifier merge - Base",
+    "regime": "clean L0",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 17.01,
+        "lo": 14.38,
+        "hi": 19.6,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 22.28,
+        "lo": 19.69,
+        "hi": 24.91,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 21.08,
+        "lo": 18.21,
+        "hi": 23.83,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 13.53,
+        "lo": 11.01,
+        "hi": 16.11,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "identifier merge - Base",
+    "regime": "unseen family",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 14.09,
+        "lo": 12.3,
+        "hi": 15.86,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 14.94,
+        "lo": 12.99,
+        "hi": 16.94,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 13.03,
+        "lo": 11.4,
+        "hi": 14.61,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 5.54,
+        "lo": 4.25,
+        "hi": 6.87,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "identifier merge - Base",
+    "regime": "backward",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 1.28,
+        "lo": 0.06,
+        "hi": 2.55,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 0.14,
+        "lo": -1.23,
+        "hi": 1.44,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 0.05,
+        "lo": -1.25,
+        "hi": 1.4,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": -8.18,
+        "lo": -10.0,
+        "hi": -6.37,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "structural merge - Clean LoRA",
+    "regime": "clean L0",
+    "per_model": {
+      "codellama-7b": {
+        "delta": -0.12,
+        "lo": -1.44,
+        "hi": 1.2,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 1.2,
+        "lo": -0.24,
+        "hi": 2.81,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 0.78,
+        "lo": -0.84,
+        "hi": 2.16,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": -0.42,
+        "lo": -1.8,
+        "hi": 1.14,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "structural merge - Base",
+    "regime": "clean L0",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 16.89,
+        "lo": 14.31,
+        "hi": 19.57,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 22.87,
+        "lo": 20.23,
+        "hi": 25.64,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 19.76,
+        "lo": 16.84,
+        "hi": 22.58,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 14.07,
+        "lo": 11.62,
+        "hi": 16.82,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "structural merge - Base",
+    "regime": "unseen family",
+    "per_model": {
+      "codellama-7b": {
+        "delta": 15.34,
+        "lo": 13.51,
+        "hi": 17.16,
+        "n_programs": 557
+      },
+      "codellama-13b": {
+        "delta": 16.06,
+        "lo": 14.06,
+        "hi": 18.04,
+        "n_programs": 557
+      },
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": 14.43,
+        "lo": 12.66,
+        "hi": 16.15,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": 7.76,
+        "lo": 6.3,
+        "hi": 9.17,
+        "n_programs": 557
+      }
+    }
+  },
+  {
+    "contrast": "structural merge - Base",
+    "regime": "backward",
+    "per_model": {
+      "codellama-7b": {
+        "delta": -1.3,
+        "lo": -2.98,
+        "hi": 0.43,
+        "n_programs": 557
+      },
+      "codellama-13b": null,
+      "codellama-34b": null,
+      "llama31-8b": {
+        "delta": -6.15,
+        "lo": -7.65,
+        "hi": -4.66,
+        "n_programs": 557
+      },
+      "starcoder2-15b": null,
+      "gemma3-12b": null,
+      "codegemma-7b": null,
+      "granite31-8b": {
+        "delta": -8.01,
+        "lo": -9.88,
+        "hi": -6.12,
+        "n_programs": 557
+      }
+    }
   }
 ]
