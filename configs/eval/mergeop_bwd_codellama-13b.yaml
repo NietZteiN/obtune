@@ -1,0 +1,36 @@
+# A5: MERGE OPERATOR ablation. Ingredients, weights, rank and seed are identical across the
+# three merges; only the operator differs.
+#
+#   merge_linear     plain uniform average -- NO sparsification, NO sign election
+#   merge_ties       magnitude trim to density 0.5, sign election, disjoint merge
+#   merge_dare_ties  Bernoulli drop + rescale, then the same election
+#
+# The paper compares TIES to DARE-TIES and to nothing else, so it cannot say whether either
+# step buys anything over simply averaging the six specialists -- which makes the choice of
+# DARE-TIES look arbitrary. `linear` is that missing control. `base` is included so every
+# contrast is paired inside this phase.
+_extends: _base_eval.yaml
+
+phase: mergeop_inverse
+experiment_id: mergeop_bwd_codellama-13b
+run_tag: mergeop_bwd_codellama-13b
+model: codellama-13b
+language: python
+eval_source: heldout
+task: input
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: merge_linear, adapter: "runs/adapters/{model}/{language}/merge_linear_r32_s17", arch: per_type, train_cond: merge}
+  - {name: merge_ties, adapter: "runs/adapters/{model}/{language}/merge_ties_r32_s17", arch: per_type, train_cond: merge}
+  - {name: merge_dare_ties, adapter: "runs/adapters/{model}/{language}/merge_dare_ties_r32_s17", arch: per_type, train_cond: merge}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C_L1r_X1, C_X1_S1, C_S2_X1]
