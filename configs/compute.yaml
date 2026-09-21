@@ -162,8 +162,16 @@ share_limits:
   # MaxJobsPU=4 is the whole juno pool for BOTH projects on this account, so taking 4 would leave
   # the other project none, and 2 is what reaching 15 actually requires. Return to 0 when the
   # reviewer-response round finishes (docs/EXPERIMENT_QUEUE.md).
-  h200: 2
-  normal: 1      # same juno pool as h200; the two numbers are one budget, not two
+  # BACK TO 0 ON 2026-09-21: the reviewer-response round is finished (8 of 9 items; A6 is
+  # blocked by the spent H1 budget and is a writing decision). obtune holds no job.
+  # LESSON FROM THIS ROUND, worth more than the share number: the binding constraint was never
+  # the share. Jobs sat on (Priority) for hours on h100/h200 -- SLURM estimated 22 h at one
+  # point -- while a30's g-02-01 and h100's g-06-01 sat fully IDLE. Check `sinfo` for idle
+  # nodes and submit with --nodelist before raising this. g-06-01 in particular was excluded
+  # from every submission out of habit, for a CUDA-fork failure that VLLM_WORKER_MULTIPROC_METHOD
+  # =spawn (scripts/env.sh) already fixes; it ran the final eval without incident.
+  h200: 0
+  normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
   retired: 2026-08-28
