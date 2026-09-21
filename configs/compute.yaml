@@ -152,8 +152,13 @@ share_limits:
   # for a single deliberate exception without editing the agreement.
   # RAISED 0 -> 4 ON 2026-09-20: a new round of ablations (no-L0 merge, specialist-family merges)
   # is running, so the project needs the pool again. Return this to 0 when they finish.
-  h200: 4
-  normal: 3      # same juno pool as h200; the two numbers are one budget, not two
+  # DROPPED 4 -> 0 ON 2026-09-20, the ablation round having finished. Everything it was raised
+  # for is read and analysed: the merge-ingredient ablation is complete on four models in both
+  # directions, specialist geometry on all eight, the merge-space check on all eight, and the
+  # cross-language JavaScript panel on four. obtune holds no job, so the other project on this
+  # account has all four slots again. Raise it and say why here when the next round needs the pool.
+  h200: 0
+  normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
   retired: 2026-08-28
