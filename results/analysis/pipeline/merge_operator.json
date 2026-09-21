@@ -1,0 +1,142 @@
+{
+  "CodeLlama-7B": {
+    "forward": {
+      "L0": {
+        "base": 100.0,
+        "linear": null,
+        "TIES": 141.8,
+        "DARE-TIES": 163.6
+      },
+      "singles": {
+        "base": 75.3,
+        "linear": null,
+        "TIES": 123.9,
+        "DARE-TIES": 147.0
+      },
+      "unseen": {
+        "base": 46.2,
+        "linear": null,
+        "TIES": 88.0,
+        "DARE-TIES": 105.0
+      }
+    },
+    "backward": {
+      "L0": {
+        "base": 100.0,
+        "linear": null,
+        "TIES": 94.9,
+        "DARE-TIES": 102.2
+      },
+      "singles": {
+        "base": 92.7,
+        "linear": null,
+        "TIES": 92.5,
+        "DARE-TIES": 98.1
+      },
+      "unseen": {
+        "base": 80.6,
+        "linear": null,
+        "TIES": 78.8,
+        "DARE-TIES": 81.0
+      }
+    },
+    "lock": {
+      "base": 0.0,
+      "linear": 0.17354877318970677,
+      "TIES": 0.0,
+      "DARE-TIES": 0.019150209455415918
+    }
+  },
+  "CodeLlama-13B": {
+    "forward": {
+      "L0": {
+        "base": 100.0,
+        "linear": null,
+        "TIES": 162.7,
+        "DARE-TIES": 188.4
+      },
+      "singles": {
+        "base": 85.1,
+        "linear": null,
+        "TIES": 142.8,
+        "DARE-TIES": 168.0
+      },
+      "unseen": {
+        "base": 57.3,
+        "linear": 24.6,
+        "TIES": 94.9,
+        "DARE-TIES": 119.7
+      }
+    }
+  },
+  "Llama-3.1-8B": {
+    "forward": {
+      "L0": {
+        "base": 100.0,
+        "linear": 115.0,
+        "TIES": 154.1,
+        "DARE-TIES": 178.1
+      },
+      "singles": {
+        "base": 84.9,
+        "linear": 98.0,
+        "TIES": 133.2,
+        "DARE-TIES": 155.6
+      },
+      "unseen": {
+        "base": 52.5,
+        "linear": null,
+        "TIES": 83.1,
+        "DARE-TIES": 103.6
+      }
+    },
+    "backward": {
+      "L0": {
+        "base": 100.0,
+        "linear": null,
+        "TIES": 103.8,
+        "DARE-TIES": 107.3
+      },
+      "singles": {
+        "base": 83.7,
+        "linear": null,
+        "TIES": 94.8,
+        "DARE-TIES": 104.0
+      },
+      "unseen": {
+        "base": 64.9,
+        "linear": null,
+        "TIES": 77.3,
+        "DARE-TIES": 80.7
+      }
+    },
+    "lock": {
+      "base": 0.0,
+      "linear": 0.42848593656493117,
+      "TIES": 0.0,
+      "DARE-TIES": 0.0
+    }
+  },
+  "Granite-3.1-8B": {
+    "forward": {
+      "L0": {
+        "base": 100.0,
+        "linear": null,
+        "TIES": 133.4,
+        "DARE-TIES": 151.5
+      },
+      "singles": {
+        "base": 92.2,
+        "linear": null,
+        "TIES": 119.2,
+        "DARE-TIES": 132.4
+      },
+      "unseen": {
+        "base": 58.1,
+        "linear": null,
+        "TIES": 72.1,
+        "DARE-TIES": 82.1
+      }
+    }
+  }
+}
