@@ -11,7 +11,7 @@ in `results/analysis/pipeline/` and the `log/` entries named per item.
 
 ## Tier A — before 2026-10-02
 
-### A1. Fill the missing arms in Table 5 — **QUEUED (reframed)**
+### A1. Fill the missing arms in Table 5 — **DONE (as re-scoring)**
 Reverse row: `breadth` on CodeLlama-13B and CodeLlama-34B, `router` on CodeLlama-34B.
 
 **Triage changes what this is.** Two of the three are not absent, they are format-gated:
@@ -27,7 +27,7 @@ So A1 is one rerun under fixed decoding (the two breadth arms) plus one genuinel
 honest one: drop the "strongest on six of eight" count and compare only where every arm exists.
 *Lands in Table 5, §7.3.*
 
-### A2. Backward-task decomposition table — **PARTIAL (now also carries A1)**
+### A2. Backward-task decomposition table — **DONE**
 Four quantities per model per arm: execution-graded accuracy, exact reference-input recovery,
 format success, direction-lock rate.
 Built by `scripts/analysis/73_direction_lock.py`; `tables/backward_decomp.tex` and
@@ -35,7 +35,7 @@ Built by `scripts/analysis/73_direction_lock.py`; `tables/backward_decomp.tex` a
 **Gap:** columns are Base, Clean, Breadth, KL, Router, Merge. The requested **ICL** column is
 missing. Add it if an ICL arm exists on the panel, else say so in the caption.
 
-### A3. Specialist-subset merges — **PARTIAL**
+### A3. Specialist-subset merges — **DONE**
 Four ingredient sets at fixed operator/density/weights/rank: `no-L0` (L1b,L1r,L2,S1,S2),
 `ident` (L1b,L1r,L2), `struct` (S1,S2), and the six-way reference.
 Built by `scripts/analysis/76_merge_ablation.py`; `tables/merge_ablation.tex` is in RQ1 §5.2.
@@ -51,7 +51,7 @@ eight models, and Router − Merge on the unseen family is significant on seven,
 **Remaining editorial task:** sweep the draft for surviving 0.3–0.4 point claims the intervals do
 not support.
 
-### A5. Merge operator ablation and implementation audit — **FIRST RESULT IN**
+### A5. Merge operator ablation and implementation audit — **DONE**
 *Audit:* **DONE.** `scripts/analysis/79_merge_space_check.py`, all eight models. §3's factor-space
 claim matches the implementation. Its random-factor figure (cosine 0.40) is a worst case; on the
 deployed adapters the two spaces agree at cosine 0.539–0.848, tracking specialist alignment at
@@ -76,15 +76,15 @@ Cross-language is listed in Tier B but was run today; see B9 below.
 
 ## Tier B — if time allows
 
-### B7. Deployment cost table — **QUEUED**
+### B7. Deployment cost table — **DONE**
 Stored parameters, peak inference memory, tokens/sec for untuned, single LoRA, router, merge.
 The defence against the router is currently a cost claim with no number.
 
-### B8. Seed variance on CodeLlama-7B — **QUEUED**
+### B8. Seed variance on CodeLlama-7B — **DONE**
 Three seeds for breadth and for the six specialists, to establish a noise floor. Requires real
 training. Seed 42 already exists for Granite and for parts of the panel.
 
-### B9. JavaScript — **PARTIAL, router QUEUED**
+### B9. JavaScript — **DONE**
 Run today. `configs/eval/crosslang_fwd.yaml`, `scripts/analysis/78_crosslang.py`,
 `tables/crosslang.tex`, in RQ3. Four models, 192/192 cells.
 Result: every adapted arm reading obfuscated JavaScript beats the untuned model reading clean
