@@ -119,9 +119,15 @@ def main() -> int:
 
     # RQ-C (depth leg): does breadth's stacking gain persist / grow beyond depth 2?
     if a.ref_json and A:
-        ref = json.loads(Path(a.ref_json).read_text())["pooled"].get("mono_all - tuned_L0", {})
+        ref_pooled = json.loads(Path(a.ref_json).read_text())["pooled"]
+        ref = ref_pooled.get("mono_all - tuned_L0", {})
         ref_pt = ref.get("value_pts")
-        out["ref_depth2"] = {"mono_all - tuned_L0": ref}
+        # Carry EVERY contrast the reference computed, not just the one RQ-C compares against.
+        # The depth-2 reference already measures cons_lam3 against both controls; copying only
+        # one left the d0 row of the divergence ladder showing \pending for the other two while
+        # the numbers sat in the source file.
+        out["ref_depth2"] = {lab: ref_pooled.get(lab, {}) for t, c in PAIRS
+                             for lab in (f"{t} - {c}",)}
         out["verdicts"]["RQ-C-persists"] = "CONFIRMED" if A["ci_lo"] > 0 else "REFUTED"
         if ref_pt is not None:
             out["verdicts"]["RQ-C-grows"] = ("CONFIRMED" if A["ci_lo"] > ref_pt else
