@@ -176,14 +176,25 @@ Figure~\ref{fig:factorspace} contrasts them. The gap is not a rounding effect: f
 with $r = 4$, $n = 3$ and $\rho = 0.5$, $B_{\star}A_{\star}$ and $\mathrm{Merge}(\{B_cA_c\})$ have a
 cosine similarity of $0.40$ and disagree in sign on $39\%$ of coordinates.
 
+Random factors are, however, close to orthogonal, and trained specialists are not. We therefore
+measure the same quantity on the deployed adapters, comparing each merged adapter against the same
+\textsc{PEFT} primitive applied to the assembled updates, on every sixteenth module. Across the
+eight panel models the two agree at cosine $0.539$ to $0.848$ (mean $0.758$) and on $80.1\%$ to
+$89.0\%$ of signs. The agreement tracks how aligned a model's specialists are to begin with: against
+mean within-family cosine it gives $r = 0.95$ over the eight models, from Gemma-3-12B (specialists at
+$0.349$, merge spaces at $0.539$) to StarCoder2-15B ($0.750$ and $0.841$). The random-factor figure
+is therefore a worst case rather than a typical one, and the operations these experiments compare are
+closer in practice than that figure suggests.
+
 We merge in factor space because the alternative introduces a confound. Recovering a rank-$r$ adapter
 from a merged $\Delta^{\star}$ requires a truncated SVD, which changes the adapter's rank and
 introduces reconstruction error \emph{before} the merging rule is evaluated; the deployed artefact
 would no longer match the base architecture, and any measured effect would combine the merge with its
 re-extraction. Factor-space merging preserves the rank exactly. The consequence for interpretation is
 that our results characterise sign-consensus merging \emph{as it is applied to LoRA adapters in
-practice}, not the published task-vector algorithm in its original setting; whether the two differ in
-downstream accuracy is an open question these experiments do not address.
+practice}, not the published task-vector algorithm in its original setting. On these adapters the two
+produce updates that are close but not identical, so whether they differ in downstream accuracy
+remains an open question these experiments do not address.
 
 \subsection{Configuration}
 We use \textsc{DARE-TIES} (Eq.~\ref{eq:dare}) throughout, with density $\rho = 0.5$, the \texttt{total} majority-sign rule, and
