@@ -29,16 +29,61 @@ GROUPS = [("L0", ["L0"]),
           ("singles", ["L1b","L1r","L2","S1","S2"]),
           ("d2 seen", ["C_L1b_S1","C_L1r_S1","C_S1_L1r","C_L2_S4","C_L1r_S3","C_S4_S3"])]
 
-def pool(ph, m, arm, cs, lang):
-    fr = [d for d in (load_cell(ph, m, arm, c, language=lang) for c in cs)
-          if d is not None and d.format_fail.mean() <= 0.25]
+# --------------------------------------------------------------------- contamination
+# CruxEval-X is a PORT: `cruxevalx_js_N` is the same program as `cruxeval_sample_N` with
+# the same arguments and the same expected output, and `humaneval_js_N` pairs with
+# `humaneval_py_N`. Verified by reading a pair side by side (cruxevalx_js_14 /
+# cruxeval_sample_14: reverse a stripped string, args ("   OOP   ",), output "POO").
+#
+# 125 of the 168 JavaScript evaluation programs have their Python twin in the Python
+# TRAINING set. For those, an adapter can reproduce a memorised program->output pair
+# rather than read the JavaScript, so they cannot support a transfer claim. The default
+# here is therefore the 43-program uncontaminated subset; --all reports both.
+_TWIN = {"cruxevalx": "cruxeval_sample_{n}", "humaneval": "humaneval_py_{n}"}
+
+def _python_training_ids():
+    import glob
+    ids = set()
+    for f in sorted(glob.glob(str(ROOT/"data/train/**/python.jsonl"), recursive=True)):
+        with open(f) as fh:
+            for line in fh:
+                try: r = json.loads(line)
+                except Exception: continue
+                sid = r.get("snippet_id") or r.get("program_id")
+                if sid: ids.add(str(sid))
+    return ids
+
+def _twin(sid):
+    import re
+    m = re.match(r"^(.*?)_js_(\d+)$", str(sid))
+    if not m: return None
+    t = _TWIN.get(m.group(1))
+    return None if t is None else t.format(n=m.group(2))
+
+_PYIDS = None
+def contaminated(sid):
+    global _PYIDS
+    if _PYIDS is None: _PYIDS = _python_training_ids()
+    t = _twin(sid)
+    return t is not None and t in _PYIDS
+
+
+def pool(ph, m, arm, cs, lang, clean=True):
+    fr = []
+    for c in cs:
+        d = load_cell(ph, m, arm, c, language=lang)
+        if d is None or d.format_fail.mean() > 0.25: continue
+        if clean and lang == JS:
+            d = d[~d.snippet_id.map(contaminated)]
+            if d.empty: continue
+        fr.append(d)
     return pd.concat(fr) if fr else None
 
-def acc(ph, m, arm, cs, lang):
-    d = pool(ph, m, arm, cs, lang); return None if d is None else float(d.correct.mean())
+def acc(ph, m, arm, cs, lang, clean=True):
+    d = pool(ph, m, arm, cs, lang, clean); return None if d is None else float(d.correct.mean())
 
-def contrast(m, a, b, cs, lang, ph, n=2000):
-    A, B = pool(ph, m, a, cs, lang), pool(ph, m, b, cs, lang)
+def contrast(m, a, b, cs, lang, ph, n=2000, clean=True):
+    A, B = pool(ph, m, a, cs, lang, clean), pool(ph, m, b, cs, lang, clean)
     if A is None or B is None: return None
     ps = sorted(set(A.snippet_id) & set(B.snippet_id))
     if not ps: return None
@@ -64,7 +109,11 @@ def _tex(out):
          r"without any adapter having seen JavaScript. Pooled training, not the merge, transfers "
          r"best across the language boundary. The held-out obfuscator family has no JavaScript "
          r"variant and is therefore absent. Backward is not reported: grading it executes the "
-         r"predicted input, and our cluster has no JavaScript runtime.}",
+         r"predicted input, and our cluster has no JavaScript runtime. "
+         r"\\textbf{Restricted to the 43 of 168 evaluation programs whose Python twin is absent "
+         r"from training}: CruxEval-X and HumanEval-X are ports, so the remaining 125 programs "
+         r"appear in Python training with identical arguments and outputs and cannot support a "
+         r"transfer claim.}",
          r"\label{tab:crosslang}",
          r"\begin{tabular}{@{}ll" + "r"*len(cols) + r"@{}}", r"\toprule",
          r"model & group & " + " & ".join(cols) + r" \\", r"\midrule"]
@@ -94,6 +143,8 @@ def main() -> int:
             print(f"{NICE[m]}: no JavaScript cells yet\n"); continue
         ref_py = acc(PYPH, m, "base", ["L0"], PY)
         print(f"=== {NICE[m]} ===")
+        npg = pool(XPH, m, "base", ["L0"], JS).snippet_id.nunique()
+        print(f"[{npg} uncontaminated programs of 168; the rest have a Python twin in training]")
         print(f"untuned clean-code accuracy: JavaScript {ref_js:.3f}"
               + (f", Python {ref_py:.3f}" if ref_py else ", Python --"))
         print("\n% of the untuned model's clean-JavaScript accuracy "
