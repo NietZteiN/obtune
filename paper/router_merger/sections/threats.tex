@@ -23,5 +23,8 @@ the 1.5\,B pilot model and applied unchanged to all eight panel models; it is th
 the panel, but neither is it tuned for it. \textbf{Instrument failures are reported, not omitted.}
 The causal attention instrument is inert (an identifier knockout moves the gold log-probability by
 under 0.5\,\% everywhere), so any attention account would be correlational; we do not make one.
-\textbf{Single language.} Every headline is Python; the JavaScript corpus exists but cannot be
-regenerated on our cluster.
+\textbf{Single language.} Every headline is Python. The clean-code recovery result is checked on
+JavaScript for four models (Section~\ref{sec:rq3}) and holds, but only forward and only on the 81 of
+168 evaluation programs that are not ports of Python training programs: grading the reversed task
+executes the predicted input, and our cluster has no JavaScript runtime. The corpus also cannot be
+regenerated there, so no new JavaScript condition can be built.

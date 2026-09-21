@@ -55,8 +55,9 @@ transforms (\texttt{L1b}, \texttt{L1r}, \texttt{L2}), \emph{structural} transfor
 \texttt{S2}, and \texttt{S2}'s two halves \texttt{S3} and \texttt{S4}), and an \emph{encoding} family
 (\texttt{X1} and its halves) that is held out of all training. Each single transform is applied to
 the clean parent and never stacked during training; stacks are a separate namespace, evaluated only.
-Python throughout; a JavaScript corpus exists but could not be regenerated on our cluster
-(Section~\ref{sec:threats}).
+Training is Python throughout. The JavaScript corpus transferred intact and is used for the
+cross-language check of Section~\ref{sec:rq3}; it cannot be regenerated on our cluster, which fixes
+it to the conditions it already contains (Section~\ref{sec:threats}).
 
 \subsection{Model Panel}
 Table~\ref{tab:models} lists the panel: eight instruct models from four lineages (Meta, BigCode,

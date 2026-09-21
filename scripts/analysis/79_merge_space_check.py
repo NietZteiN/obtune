@@ -94,10 +94,21 @@ def main() -> int:
     out = {}
     for name, rs in rows.items():
         if not rs: continue
-        cos = sum(r[0] for r in rs)/len(rs); sg = sum(r[1] for r in rs)/len(rs)
-        out[name] = dict(cosine=round(cos, 4), sign_agree=round(sg, 4), n=len(rs))
+        cos = sum(r[0] for r in rs)/len(rs)
+        # A sampled module whose update-space merge is entirely zero -- every coordinate
+        # lost the sign election -- shares no non-zero coordinate with the factor-space
+        # merge and carries no sign information. Averaging its NaN propagated to the whole
+        # model: Gemma-3-12B reported `sign agreement nan` off 27 good samples. Skip those
+        # and say how many, rather than reporting nothing.
+        good = [r[1] for r in rs if r[1] == r[1]]
+        sg = sum(good)/len(good) if good else float("nan")
+        skipped = len(rs) - len(good)
+        out[name] = dict(cosine=round(cos, 4),
+                         sign_agree=None if not good else round(sg, 4),
+                         n=len(rs), n_sign=len(good), skipped_degenerate=skipped)
+        note = "" if not skipped else f", {skipped} degenerate module(s) excluded from sign"
         print(f"  {name:10s} factor-space vs update-space:  cosine {cos:+.3f}   "
-              f"sign agreement {sg:.3f}   ({len(rs)} samples)")
+              f"sign agreement {sg:.3f}   ({len(rs)} samples{note})")
 
     f = ROOT/f"results/analysis/pipeline/merge_space_{a.model}.json"
     f.write_text(json.dumps(out, indent=2)); print(f"\nwrote {f}")

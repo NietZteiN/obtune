@@ -307,6 +307,26 @@ training's $0.18$--$0.98$. The backward gain is therefore not a grading artefact
 failure mode, and the arms that lose backward accuracy do so in part by answering the forward
 question instead.
 
+\input{tables/crosslang}
+
+\paragraph{Unseen language.} Every adapter is trained on Python. We evaluate four of them on the
+JavaScript corpus, forward only, against the untuned model's accuracy on clean JavaScript
+(Table~\ref{tab:crosslang}). \textbf{Every adapted arm reading obfuscated JavaScript exceeds the
+untuned model reading clean JavaScript}, on every condition group and all four models, by $+16.4$ to
+$+30.8$ points, significant in all twelve comparisons. The clean-code recovery of
+Section~\ref{sec:recovery} is therefore not a property of the training language.
+
+Two restrictions apply. The held-out obfuscator family has no JavaScript variant, so the
+unseen-family claim does not cross languages. And CruxEval-X and HumanEval-X are ports: 87 of the
+168 JavaScript evaluation programs are the same programs, with the same arguments and outputs, as
+Python training programs, and an adapter could reproduce a memorised pair on those rather than read
+the JavaScript. All figures here use the remaining 81 programs. On the full set the apparent margins
+are 7 to 14 points larger, which is what memorisation buys.
+
+Unlike the unseen family, the merge holds no advantage here. Pooled training exceeds it by $+5.69$
+and $+5.56$ points on two models and is null on the other two ($+0.75$, $-0.58$). A new language and
+a new obfuscator are both unfamiliar surfaces, but only the latter is one the merge is better at.
+
 \paragraph{Source of the limit.} We train one further adapter with pooled training's recipe on the
 inverse prompt, and evaluate it in both directions. It exceeds the untuned model by $+10.30$ points
 backward on CodeLlama-7B and $+5.18$ on Llama-3.1-8B, above every forward-trained arm. Inversion is
@@ -316,8 +336,8 @@ training on output prediction reduces input prediction.
 
 \begin{takeaway}{RQ3}
 The merged capability survives increased composition depth, an unseen obfuscator family, and the
-reversed task. It is the only arm not significantly below the untuned model in any regime on any of
-eight models, and the backward gain replicates at a second seed. It is also the only arm that holds
+reversed task, and its clean-code recovery survives a change of programming language. It is the only
+arm not significantly below the untuned model in any regime on any of eight models, and the backward gain replicates at a second seed. It is also the only arm that holds
 the untuned direction-lock floor on all eight: the other arms answer the forward question when asked
 to reverse, at rates up to $0.67$. It is not the strongest arm on
 familiar surfaces or on the unseen family, and clean-code recovery does not extend to the untrained
