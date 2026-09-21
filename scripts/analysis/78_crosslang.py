@@ -35,23 +35,22 @@ GROUPS = [("L0", ["L0"]),
 # `humaneval_py_N`. Verified by reading a pair side by side (cruxevalx_js_14 /
 # cruxeval_sample_14: reverse a stripped string, args ("   OOP   ",), output "POO").
 #
-# 125 of the 168 JavaScript evaluation programs have their Python twin in the Python
-# TRAINING set. For those, an adapter can reproduce a memorised program->output pair
+# 87 of the 168 JavaScript evaluation programs have their Python twin in the Python
+# TRAIN split. For those, an adapter can reproduce a memorised program->output pair
 # rather than read the JavaScript, so they cannot support a transfer claim. The default
-# here is therefore the 43-program uncontaminated subset; --all reports both.
+# here is therefore the 81-program uncontaminated subset.
 _TWIN = {"cruxevalx": "cruxeval_sample_{n}", "humaneval": "humaneval_py_{n}"}
 
 def _python_training_ids():
-    import glob
-    ids = set()
-    for f in sorted(glob.glob(str(ROOT/"data/train/**/python.jsonl"), recursive=True)):
-        with open(f) as fh:
-            for line in fh:
-                try: r = json.loads(line)
-                except Exception: continue
-                sid = r.get("snippet_id") or r.get("program_id")
-                if sid: ids.add(str(sid))
-    return ids
+    """Programs actually TRAINED on, from the split assignment.
+
+    Not the contents of data/train/**/python.jsonl: that tree is the full pool, and the
+    train/val/test partition lives in data/splits/python.json. Reading the pool treats
+    every program as trained-on and over-filters -- it left 43 programs here where the
+    correct answer is 81.
+    """
+    asg = json.loads((ROOT/"data/splits/python.json").read_text())["assignment"]
+    return {k for k, v in asg.items() if v == "train"}
 
 def _twin(sid):
     import re
@@ -110,8 +109,8 @@ def _tex(out):
          r"best across the language boundary. The held-out obfuscator family has no JavaScript "
          r"variant and is therefore absent. Backward is not reported: grading it executes the "
          r"predicted input, and our cluster has no JavaScript runtime. "
-         r"\\textbf{Restricted to the 43 of 168 evaluation programs whose Python twin is absent "
-         r"from training}: CruxEval-X and HumanEval-X are ports, so the remaining 125 programs "
+         r"\\textbf{Restricted to the 81 of 168 evaluation programs whose Python twin is absent "
+         r"from training}: CruxEval-X and HumanEval-X are ports, so the remaining 87 programs "
          r"appear in Python training with identical arguments and outputs and cannot support a "
          r"transfer claim.}",
          r"\label{tab:crosslang}",
