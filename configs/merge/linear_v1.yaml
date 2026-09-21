@@ -1,0 +1,14 @@
+# PLAIN UNIFORM AVERAGING -- the control A5 asks for, and the one operator the paper never ran.
+#
+# TIES and DARE-TIES both do two things beyond averaging: they SPARSIFY (keep the top-density
+# coordinates by magnitude, or drop at random and rescale) and they ELECT A SIGN and merge only
+# the agreeing coordinates. Without a plain average in the table there is no way to tell whether
+# either step buys anything, and picking DARE-TIES looks arbitrary rather than justified.
+#
+# `linear` takes no density: PEFT's _DENSITY_TYPES excludes it, and passing one is an error.
+# Same adapters, same uniform weights, same rank and seed as the six-way merge, so the operator
+# is the only thing that differs.
+combination_type: linear
+adapters: [L0, L1b, L1r, L2, S1, S2]
+weights: null # null => uniform 1/n
+seed: 17

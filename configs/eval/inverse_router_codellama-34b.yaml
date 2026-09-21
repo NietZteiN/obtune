@@ -1,0 +1,43 @@
+# A1: the one genuinely ABSENT arm in Table 5's reverse row.
+#
+# CodeLlama-34B's router has no backward cells at all (the other two gaps, breadth on 13B and
+# 34B, are format-gated rather than missing -- see docs/EXPERIMENT_QUEUE.md). The mixture and
+# its gate exist on disk; only the evaluation was never run.
+_extends: _base_eval.yaml
+
+phase: inverse_generic
+experiment_id: inverse_router_codellama-34b
+run_tag: inverse_router_codellama-34b
+model: codellama-34b
+language: python
+eval_source: heldout
+task: input
+
+engine:
+  gpu_memory_utilization: 0.85
+
+experts:
+  L0:   runs/adapters/codellama-34b/python/L0_r32_s17/best
+  L1b:  runs/adapters/codellama-34b/python/L1b_r32_s17/best
+  L1r:  runs/adapters/codellama-34b/python/L1r_r32_s17/best
+  L2:   runs/adapters/codellama-34b/python/L2_r32_s17/best
+  S1:   runs/adapters/codellama-34b/python/S1_r32_s17/best
+  S2:   runs/adapters/codellama-34b/python/S2_r32_s17/best
+  S3:   runs/adapters/codellama-34b/python/S3_r32_s17/best
+  S4:   runs/adapters/codellama-34b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+gate_checkpoint: runs/mole/codellama-34b/python/routerlora_codellama34b_s17/gate.pt
+
+peft:
+  r: 32
+
+systems:
+  - {name: mole_router, arch: mole_router, train_cond: mix}
+
+arm_modes: {}
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C_L1r_X1, C_X1_S1, C_S2_X1]

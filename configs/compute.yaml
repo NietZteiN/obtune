@@ -157,8 +157,13 @@ share_limits:
   # directions, specialist geometry on all eight, the merge-space check on all eight, and the
   # cross-language JavaScript panel on four. obtune holds no job, so the other project on this
   # account has all four slots again. Raise it and say why here when the next round needs the pool.
-  h200: 0
-  normal: 0      # same juno pool as h200; the two numbers are one budget, not two
+  # RAISED 0 -> 2 ON 2026-09-20 (user: "Maximize GPU usage up to 15"). h100 (9 GPUs) and a30
+  # (4 GPUs) carry no QoS and supply 13 of the 15; the last 2 come from here. Deliberately NOT 4:
+  # MaxJobsPU=4 is the whole juno pool for BOTH projects on this account, so taking 4 would leave
+  # the other project none, and 2 is what reaching 15 actually requires. Return to 0 when the
+  # reviewer-response round finishes (docs/EXPERIMENT_QUEUE.md).
+  h200: 2
+  normal: 1      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
   retired: 2026-08-28

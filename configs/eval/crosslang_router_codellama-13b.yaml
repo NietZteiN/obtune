@@ -1,0 +1,45 @@
+# B9, ROUTER ARM: Python-trained mixture evaluated on JavaScript, forward only.
+#
+# A separate file per model because the router is not a templated adapter path: it needs the
+# expert bank AND a top-level `gate_checkpoint`, both per model, so it cannot ride along in
+# crosslang_fwd.yaml the way base/clean/breadth/merge do.
+#
+# Everything points at `python`. The experts and the gate are Python-trained like every other
+# adapter here; running them on JavaScript items IS the experiment. Forward only -- grading the
+# reverse task executes the predicted input and juno has no node.
+_extends: _base_eval.yaml
+
+phase: crosslang_generic
+experiment_id: crosslang_router_codellama-13b
+run_tag: crosslang_router_codellama-13b
+model: codellama-13b
+language: javascript
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+experts:
+  L0:   runs/adapters/codellama-13b/python/L0_r32_s17/best
+  L1b:  runs/adapters/codellama-13b/python/L1b_r32_s17/best
+  L1r:  runs/adapters/codellama-13b/python/L1r_r32_s17/best
+  L2:   runs/adapters/codellama-13b/python/L2_r32_s17/best
+  S1:   runs/adapters/codellama-13b/python/S1_r32_s17/best
+  S2:   runs/adapters/codellama-13b/python/S2_r32_s17/best
+  S3:   runs/adapters/codellama-13b/python/S3_r32_s17/best
+  S4:   runs/adapters/codellama-13b/python/S4_r32_s17/best
+
+gate:
+  d_router: 64
+  shared_query: false
+gate_checkpoint: runs/mole/codellama-13b/python/routerlora_codellama13b_s17/gate.pt
+
+peft:
+  r: 32
+
+systems:
+  - {name: mole_router, arch: mole_router, train_cond: mix}
+
+arm_modes: {}
+eval_conditions: [L0, L1b, L1r, L2, S1, S2,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3]
