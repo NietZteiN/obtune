@@ -1,5 +1,12 @@
 # START HERE — cluster handoff for `obtune`
 
+> **2026-09-23 — START HERE IF YOU ARE PICKING THIS UP OFF-CLUSTER.**
+> [`04_HANDOFF_2026-09-23.md`](04_HANDOFF_2026-09-23.md) is the current handoff: how to clone and
+> build, what changed on 09-22/23, the one known-broken thing (the router gate loader), and how to
+> submit jobs on Juno without an agent running there. **`00_STATE.md` is stale** — it is the
+> 2026-08-27 Qwen-1.5B snapshot, from before the CodeLlama panel existed.
+
+
 **Written 2026-08-27 on `csr-94608.utdallas.edu`, for a fresh Claude Code session on a different
 cluster.** Read this file first, in full, before touching anything.
 

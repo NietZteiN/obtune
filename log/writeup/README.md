@@ -134,3 +134,6 @@
 - [`2026-09-14_page-budget-is-a-table-problem.md`](2026-09-14_page-budget-is-a-table-problem.md) — prose is 4.4 of 13 pages; the overflow is tables, measured.
 - [`2026-09-14_table5-execution-only.md`](2026-09-14_table5-execution-only.md) — execution grade only in Table 5; overflow fixed.
 - [`2026-09-15_accuracy-pass-on-the-restructured-text.md`](2026-09-15_accuracy-pass-on-the-restructured-text.md) — nine claims corrected; the merge's never-below-base claim verified over 24 contrasts.
+- [`2026-09-17_merging-is-factor-space-not-task-vector.md`](2026-09-17_merging-is-factor-space-not-task-vector.md) — the merge-space audit reaches the paper.
+- [`2026-09-20_rq-restructure-and-the-recovery-claim.md`](2026-09-20_rq-restructure-and-the-recovery-claim.md) — results rewritten to the three RQs; the clean-code recovery claim checked before it was made.
+- [`2026-09-22_a5-b7-b8-into-the-paper-and-the-noise-floor.md`](2026-09-22_a5-b7-b8-into-the-paper-and-the-noise-floor.md) — the three finished reviewer items become tables and prose; the seed floor rescopes RQ3's router-vs-merge ordering from a ranking to *not below*. The draft now compiles (`envs/tex/bin/tectonic`).

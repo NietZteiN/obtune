@@ -51,14 +51,16 @@ eight models, and Router − Merge on the unseen family is significant on seven,
 **Remaining editorial task:** sweep the draft for surviving 0.3–0.4 point claims the intervals do
 not support.
 
-### A5. Merge operator ablation and implementation audit — **DONE**
+### A5. Merge operator ablation and implementation audit — **DONE, AND IN THE PAPER (2026-09-22)**
 *Audit:* **DONE.** `scripts/analysis/79_merge_space_check.py`, all eight models. §3's factor-space
 claim matches the implementation. Its random-factor figure (cosine 0.40) is a worst case; on the
 deployed adapters the two spaces agree at cosine 0.539–0.848, tracking specialist alignment at
 r = 0.95. `merging.tex` amended.
-**Gap:** the operator comparison. `ties`, `dare_ties` and `dare_linear` adapters exist; **plain
-uniform averaging (`linear`) does not** and is the control the reviewer actually wants. Build it
-and evaluate on two models.
+~~**Gap:** the operator comparison.~~ **CLOSED.** `linear` was built and evaluated on four models.
+`tables/merge_operator.tex` (`tab:mergeop`), emitted by `82_merge_operator.py::_tex`, is `\input`
+in RQ1 §5.3 "The Operator Is Not Arbitrary". Result is stronger than the 09-20 note: `linear` is
+format-gated on 3 of 4 models, and where readable on the unseen family sits at 25 % against an
+untuned 57 % — worse than not merging. Lock rates 0.174 / 0.428 vs TIES 0.000.
 
 ### A6. H1 — **BLOCKED, must be CUT not run**
 H1's budget is **fully spent** (CLAUDE.md §3.2, changelog 2026-09-05): one pilot pass and one
@@ -76,13 +78,22 @@ Cross-language is listed in Tier B but was run today; see B9 below.
 
 ## Tier B — if time allows
 
-### B7. Deployment cost table — **DONE**
+### B7. Deployment cost table — **DONE, AND IN THE PAPER (2026-09-22)**
 Stored parameters, peak inference memory, tokens/sec for untuned, single LoRA, router, merge.
-The defence against the router is currently a cost claim with no number.
+~~The defence against the router is currently a cost claim with no number.~~ It has one:
+`tables/deployment_cost.tex` (`tab:deploycost`), `\input` in RQ2. Router 648M/679M params vs the
+merge's 80M/84M (**8×**), +0.6–0.7 GB peak, throughput within 1 % of a single adapter.
+**Gap:** two models profiled, not eight. `80_deployment_cost.py --tex` is the GPU-free emitter.
 
-### B8. Seed variance on CodeLlama-7B — **DONE**
+### B8. Seed variance on CodeLlama-7B — **DONE, AND APPLIED TO THE CLAIMS (2026-09-22)**
 Three seeds for breadth and for the six specialists, to establish a noise floor. Requires real
 training. Seed 42 already exists for Granite and for parts of the panel.
+Floor: median range **0.66** pts over 21 arm × group combinations, max **2.39**, **1.57 median on
+the held-out family**. `tables/seed_noise.tex` (`tab:seednoise`) is `\input` in the evaluation
+section beside the measurement conventions, and `threats.tex` cross-references it.
+**The claim it undercut has been rescoped**: RQ3 no longer ranks the router above the merge on the
+held-out family off `+0.96`–`+2.75` on one seed; it claims only *not below*, on 8/8, with the
+consistent direction noted and a seeded replication named as what would settle it.
 
 ### B9. JavaScript — **DONE**
 Run today. `configs/eval/crosslang_fwd.yaml`, `scripts/analysis/78_crosslang.py`,
@@ -159,3 +170,37 @@ and DARE-TIES sit at 0.02--0.04. Averaging six adapters degrades the answer cont
 a sign does not.
 
 Three models to go.
+
+---
+
+## New item, opened 2026-09-22
+
+### B10. General-coding-benchmark retention across the panel — **QUEUED**
+*Does obfuscation tuning cost general code ability?* CLAUDE.md §4.7 asks for this per adapter and
+it has never been run on the CodeLlama-era panel.
+
+**Why it is not just a rerun.** `results/forgetting/` holds three CodeLlama-7B readings and two of
+them are **pass@1 = 0.0000 exactly** (`tuned_L0`, `mono_all`) against a base of 0.439/0.390 — and
+nothing in those files says whether that is catastrophic forgetting or an output-prediction adapter
+declining to emit a function. The HumanEval+ path records no format-failure rate and saves no
+generations. Worse, it *cannot*: `_extract_code` prepends the prompt (which contains the signature)
+whenever the completion has no `def`, so a bare-literal reply scores `format_fail = 0.0` there.
+Verified today — scoring `"42"` reads 0.0 on HumanEval+ and 1.0 on MBPP+.
+
+**So MBPP+ is the primary probe** (399 tasks, 0/399 in our training corpus; HumanEval is one of the
+corpus's three sources and 74/164 of its problems are in the train split, which biases the
+arms-vs-base contrast *toward* the arms). HumanEval+ runs as the contaminated secondary.
+
+`src/obtune/bench_retention.py` — one vLLM engine per (model, benchmark), six arms served through
+it via `eval_vllm.Engine`'s multi-LoRA registry. Reports `format_fail_rate`, the new
+`raw_no_def_rate` (computed on the text before extraction), `entry_point_mismatch`, saved
+generations, per-task verdicts for McNemar pairing, and an explicit byte-identical-to-base check
+(CLAUDE.md §4.2).
+
+Arms: `base`, `tuned_L0`, `mono_all`, `cons_lam3`, `merge_ties`, `merge_dare_ties` — all six
+resolve on all eight models (48/48 verified before submission).
+**Stated gap:** `mole_router` is excluded. It is a learned mixture over eight experts, not a plain
+LoRA, so a vLLM LoRARequest cannot serve it; it needs the HF mixture engine and is a separate job.
+
+16 jobs (8 models × 2 benchmarks), submitted 2026-09-22: a30 ×8 (7–8B only), h100 ×6 (12–15B),
+h200 ×2 (CodeLlama-34B, which needs the 141 GB card). Share raised 0 → 2 for the 34B pair only.

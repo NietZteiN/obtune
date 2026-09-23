@@ -2223,3 +2223,56 @@ hardcodes `L0_r32_s17/best` and `objectives.py` exposes no override. The second 
 the student's initialisation and data order and holds the teacher fixed. Consistent across models;
 must be stated in the method when s42 results are reported. Not a bug; a choice made visible.
 
+
+---
+
+## 2026-09-22 · Three tasks: paper tables (A5/B7/B8), seed-floor re-read, benchmark retention panel
+
+**User:** "wire A5/B7/B8 into the paper + seed-floor re-read + check all models on general coding
+benchmarks to see if there is a drop", then "Maximize GPU use just use max go bam".
+
+### Task 3 is the GPU task, and it is the one with a live correctness question
+
+`results/forgetting/` holds only THREE CodeLlama-era readings, and two of them are
+**pass@1 = 0.0000 exactly** (`tuned_L0`, `mono_all`) against base 0.439/0.390. That is either real
+catastrophic forgetting or a format artefact, and **the files cannot tell us which**: the
+HumanEval+ path records no `format_fail_rate` and saves no generations, only per-task booleans.
+`mbpp_plus` has both diagnostics; `humaneval_plus` does not. So the first thing the sweep must do
+is make a 0.0 diagnosable.
+
+**vLLM is NOT blocked.** CLAUDE.md §2 and `continuation/02_ENVIRONMENT.md` still say it is; that
+was corrected on 2026-08-30 (`log/setup/2026-08-30_vllm-unblocked.md` — the 08-28 verdict rested
+on a missing `if __name__ == "__main__":` in a test script, plus a flashinfer JIT that needs nvcc,
+fixed by `VLLM_USE_FLASHINFER_SAMPLER=0` in scripts/env.sh). Verified again today: `import vllm`
+succeeds in `envs/obtune-cu129` (0.26.0 / torch 2.11.0+cu129). **Charter needs fixing.**
+
+### Design: one engine per (model, benchmark), six arms through it
+
+Not one job per arm — that pays ~2-3 min of engine start 96 times. `eval_vllm.Engine` already has
+the correct multi-LoRA registry (unique `lora_name` = full path, which is what the 2026-09-03
+prefix-cache collision fix turned on), so the sweep reuses it rather than building `LLM(...)`.
+
+Arms, uniform across all eight models (verified present):
+`base` · `tuned_L0` · `mono_all` (breadth) · `cons_lam3` (KL) · `merge_ties` · `merge_dare_ties`.
+**`mole_router` is excluded** — it is a learned mixture of 8 experts, not a plain LoRA, so vLLM
+cannot serve it. Stated as a gap, not quietly dropped.
+
+Benchmarks: **MBPP+ primary** (399 tasks, 0/399 in our corpus — genuinely held out) and
+**HumanEval+ secondary** (164 tasks, but 74 of them have reference solutions in our train split,
+so the arms-vs-base contrast is contaminated *in the arms' favour*). Lead with MBPP+.
+
+**Sampling must NOT inherit `_base_eval.yaml`'s `stop: ["\n\n", "```"]`** — those would cut a
+generated function at its first blank line and at the closing fence. Code generation uses
+temperature 0, max_tokens 512, no stop strings, as `forgetting.py` does.
+
+### Placement (the 09-21 lesson: check sinfo for idle, use --nodelist, before raising the share)
+- `a30` g-01-01/g-02-01, 4 GPUs @ 23.5 GB — 7-8B ONLY (13B OOM'd there on 09-13).
+- `h100` g-04-02 4x80 GB + g-05-01 1x94 GB — everything incl. 34B. g-06-01 is 4x47 GB MIG.
+- Both carry NO QoS => unlimited concurrency. That is 13 GPUs before touching the juno pool.
+- `h200` share is 0 today. Raise deliberately and say why in configs/compute.yaml; ceiling is 4
+  for BOTH projects on this account, so take 2 at most.
+
+### Tasks 1-2 run on CPU while the GPUs work
+A5 `merge_operator.json`, B7 `deployment_cost_*.json`, B8 `seed_variance.json` all exist and none
+is in the paper: no table emitter, no prose. Seed-floor re-read then sweeps the draft for claims
+below the floor (0.66 pts on L0/singles, 2.39 on the unseen family).

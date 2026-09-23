@@ -170,7 +170,20 @@ share_limits:
   # nodes and submit with --nodelist before raising this. g-06-01 in particular was excluded
   # from every submission out of habit, for a CUDA-fork failure that VLLM_WORKER_MULTIPROC_METHOD
   # =spawn (scripts/env.sh) already fixes; it ran the final eval without incident.
-  h200: 0
+  # RAISED 0 -> 2 ON 2026-09-22 (user: "Maximize GPU use just use max go bam"). A new panel is
+  # running: general-coding-benchmark retention (MBPP+ / HumanEval+) for six arms on all eight
+  # models, to answer whether obfuscation tuning costs general code ability. Sixteen jobs; the
+  # h100/a30 partitions carry no QoS and take fourteen of them. The two slots here exist for
+  # CodeLlama-34B ALONE: 34B is ~67 GB in bf16, which fits an 80 GB H100 only with ~9 GB left
+  # for KV and activations, and h200's 141 GB removes that risk for the two jobs that cannot be
+  # placed anywhere else. STILL NOT 4 -- MaxJobsPU=4 is the whole juno pool for both projects on
+  # this account, so 2 leaves the other project two. Return to 0 when the retention panel lands.
+  #
+  # NOTE FOR THIS ROUND, unlike 09-21: there are no idle GPUs to --nodelist into. Every GPU on
+  # a30, h100 and h200 reads AllocTRES gres/gpu == CfgTRES gres/gpu today, and g-07-05 is
+  # IDLE+RESERVED (a reservation, not ours). So this round genuinely queues and backfills, and
+  # the 09-21 lesson does not apply to it -- it was checked before the share was touched.
+  h200: 2
   normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
