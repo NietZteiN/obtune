@@ -1,0 +1,1676 @@
+{
+  "n_tasks": 399,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.7018,
+  "pass@1_plus": 0.599,
+  "format_fail_rate": 0.0,
+  "raw_no_def_rate": 0.0,
+  "entry_point_mismatch": 3,
+  "entry_point_mismatch_rate": 0.0075,
+  "extraction_repaired": 0,
+  "extraction_repaired_rate": 0.0,
+  "uncompilable_rate": 0.0025,
+  "per_task": {
+    "Mbpp/100": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/101": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/102": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/103": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/104": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/105": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/106": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/108": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/109": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/11": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/111": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/113": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/115": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/116": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/117": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/118": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/119": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/12": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/120": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/123": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/124": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/125": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/126": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/127": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/128": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/129": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/130": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/131": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/132": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/133": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/135": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/137": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/138": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/139": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/14": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/140": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/141": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/142": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/143": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/145": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/16": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/160": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/161": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/162": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/164": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/165": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/166": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/167": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/168": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/17": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/170": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/171": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/172": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/18": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/19": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/2": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/20": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/222": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/223": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/224": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/226": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/227": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/229": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/230": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/232": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/233": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/234": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/235": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/237": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/238": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/239": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/240": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/242": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/244": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/245": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/247": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/249": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/250": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/251": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/252": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/253": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/255": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/256": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/257": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/259": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/260": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/261": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/262": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/264": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/265": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/266": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/267": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/268": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/269": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/270": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/271": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/272": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/273": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/274": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/276": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/277": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/278": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/279": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/280": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/281": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/282": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/283": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/284": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/285": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/286": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/287": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/290": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/292": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/293": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/294": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/295": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/296": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/297": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/299": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/3": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/300": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/301": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/305": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/306": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/308": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/309": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/310": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/311": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/312": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/388": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/389": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/390": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/391": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/392": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/394": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/395": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/396": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/397": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/398": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/4": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/400": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/404": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/405": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/406": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/407": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/409": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/410": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/412": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/413": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/414": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/415": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/418": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/419": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/420": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/421": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/422": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/424": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/425": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/426": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/427": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/428": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/429": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/430": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/431": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/432": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/433": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/435": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/436": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/437": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/438": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/439": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/440": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/441": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/442": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/445": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/446": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/447": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/448": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/450": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/451": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/453": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/454": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/455": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/456": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/457": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/458": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/459": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/460": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/461": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/462": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/463": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/465": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/468": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/470": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/471": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/472": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/473": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/474": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/475": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/476": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/477": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/478": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/479": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/554": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/555": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/556": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/557": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/558": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/559": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/56": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/560": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/562": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/563": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/564": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/565": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/566": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/567": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/568": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/569": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/57": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/572": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/573": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/574": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/576": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/577": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/578": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/579": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/58": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/580": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/581": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/582": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/583": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/585": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/586": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/587": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/588": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/589": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/59": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/590": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/591": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/592": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/593": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/594": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/595": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/596": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/597": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/598": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/599": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/6": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/600": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/602": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/603": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/604": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/605": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/606": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/607": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/608": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/61": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/610": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/611": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/612": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/614": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/615": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/616": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/618": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/619": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/62": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/620": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/622": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/623": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/624": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/626": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/628": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/629": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/63": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/630": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/631": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/632": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/633": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/635": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/637": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/638": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/639": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/64": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/640": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/641": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/643": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/644": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/65": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/66": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/67": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/68": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/69": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/7": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/70": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/71": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/72": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/720": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/721": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/722": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/723": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/724": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/725": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/726": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/728": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/730": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/731": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/732": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/733": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/734": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/735": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/736": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/737": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/739": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/74": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/740": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/741": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/742": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/743": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/744": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/745": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/746": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/748": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/749": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/75": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/750": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/751": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/752": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/753": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/754": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/755": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/757": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/758": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/759": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/760": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/762": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/763": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/764": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/765": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/766": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/767": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/769": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/77": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/770": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/771": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/772": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/773": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/775": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/777": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/778": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/780": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/781": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/782": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/783": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/784": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/785": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/786": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/787": {
+      "base": false,
+      "plus": true
+    },
+    "Mbpp/788": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/79": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/790": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/791": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/792": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/793": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/794": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/796": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/797": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/798": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/799": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/8": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/80": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/800": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/801": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/803": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/804": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/805": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/806": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/807": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/808": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/809": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/82": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/83": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/84": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/85": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/86": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/87": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/88": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/89": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/9": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/90": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/91": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/92": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/93": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/94": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/95": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/96": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/97": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/98": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/99": {
+      "base": true,
+      "plus": false
+    }
+  },
+  "model_key": "llama31-8b",
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "arm": "merge_ties",
+  "benchmark": "mbppplus",
+  "adapter": "/work/jvl210002/migration/obtune/runs/adapters/llama31-8b/python/merge_ties_r32_s17",
+  "gen_seconds": 21.9,
+  "identical_to_base": 121,
+  "sample_generations": [
+    "def next_smallest_palindrome(n):\n    n += 1\n    while not is_palindrome(n):\n        n += 1\n    return n\n\ndef is_palindrome(n):\n    return str(n) == str(n)[::-1]",
+    "def kth_element(arr, k):\n    return arr[k-1]",
+    "```python\ndef snake_to_camel(s):\n    \"\"\"\n    Converts a snake case string to camel case string.\n    \n    Args:\n        s (str): The input string in snake case.\n    \n    Returns:\n        str: The input string converted to camel case.\n    \"\"\"\n    words = s.split('_')\n    return words[0] + ''.join(word.capitalize() for word in words[1:])\n```",
+    "def eulerian_num(n, m):\n    def factorial(x):\n        if x == 0:\n            return 1\n        else:\n            return x * factorial(x-1)\n    return factorial(n) // factorial(n-m)",
+    "```python\ndef sort_sublists(lists):\n    return [sorted(sublist) for sublist in lists]\n```"
+  ],
+  "sample_format_failures": [],
+  "provenance": {
+    "experiment": "retention/benchmark-panel",
+    "run_id": "mbppplus_llama31-8b_merge_ties",
+    "seed": 17,
+    "config_path": "configs/eval/_base_eval.yaml",
+    "config_resolved": {
+      "engine": {
+        "backend": "vllm",
+        "dtype": "bfloat16",
+        "gpu_memory_utilization": 0.9,
+        "max_lora_rank": 64,
+        "max_loras": 4,
+        "max_cpu_loras": 32,
+        "seed": 17,
+        "max_model_len": 8192
+      },
+      "sampling": {
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_tokens": 512,
+        "stop": [],
+        "seed": 17
+      }
+    },
+    "model_hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+    "model_revision_resolved": null,
+    "adapter": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/llama31-8b/python/merge_ties_r32_s17",
+      "sha256": "598caaf981497875d93ea707f40530ea78c825ee6cfd6508ac1c4eda2e462d0e"
+    },
+    "gpu_visible": "0",
+    "command": "/work/jvl210002/migration/obtune/src/obtune/bench_retention.py --model llama31-8b --benchmark mbpp",
+    "git_commit": "8795bfebf3061de99407f4d0772b47b72d0081d0",
+    "script_sha256": {
+      "src/obtune/bench_retention.py": "25d5dfd29c8657eaacaa102ee5a93337df29aa005b964b4e9a050f56d653703a"
+    },
+    "started_utc": "2026-09-23T07:52:32.249747+00:00",
+    "finished_utc": "2026-09-23T07:52:32.308991+00:00",
+    "libraries": {
+      "python": "3.12.14",
+      "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+      "torch": "2.11.0+cu129",
+      "transformers": "5.14.1",
+      "peft": "0.20.0",
+      "trl": "1.9.2",
+      "vllm": "0.26.0",
+      "numpy": "2.3.5"
+    },
+    "extra": {}
+  }
+}

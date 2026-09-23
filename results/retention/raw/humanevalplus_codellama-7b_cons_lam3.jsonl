@@ -1,0 +1,164 @@
+{"task_id": "HumanEval/0", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/1", "raw": " \"()\" ", "solution": "\"()\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/10", "raw": " \"catac\" ", "solution": "\"catac\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/100", "raw": " [3,5,7] ", "solution": "[3,5,7] ", "extraction_repaired": true}
+{"task_id": "HumanEval/101", "raw": " [\"Hi\",\"my\",\"name\",\"is\",\"John\"] ", "solution": "[\"Hi\",\"my\",\"name\",\"is\",\"John\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/102", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/103", "raw": " \"0b11\" ", "solution": "\"0b11\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/104", "raw": " [1,15,33] ", "solution": "[1,15,33] ", "extraction_repaired": true}
+{"task_id": "HumanEval/105", "raw": " [\"Five\",\"Four\",\"Three\",\"Two\",\"Two\",\"One\",\"One\",\"Eight\"] ", "solution": "[\"Five\",\"Four\",\"Three\",\"Two\",\"Two\",\"One\",\"One\",\"Eight\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/106", "raw": " [1,2,6,24,15] ", "solution": "[1,2,6,24,15] ", "extraction_repaired": true}
+{"task_id": "HumanEval/107", "raw": " [4,6] ", "solution": "[4,6] ", "extraction_repaired": true}
+{"task_id": "HumanEval/108", "raw": " count_nums(arr) ", "solution": "count_nums(arr) ", "extraction_repaired": true}
+{"task_id": "HumanEval/109", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/11", "raw": " \"100\" ", "solution": "\"100\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/110", "raw": " \"YES\" ", "solution": "\"YES\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/111", "raw": " {\"a\":2,\"b\":2} ", "solution": "{\"a\":2,\"b\":2} ", "extraction_repaired": true}
+{"task_id": "HumanEval/112", "raw": " \"cdedc\" ", "solution": "\"cdedc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/113", "raw": " [\"the number of odd elements 4n the str4ng 4 of the 4nput.\",\n \"the number of odd elements 8n the str8ng 8 of the 8nput.\"] ", "solution": "[\"the number of odd elements 4n the str4ng 4 of the 4nput.\",\n\"the number of odd elements 8n the str8ng 8 of the 8nput.\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/114", "raw": " minSubArraySum(nums) ", "solution": "minSubArraySum(nums) ", "extraction_repaired": true}
+{"task_id": "HumanEval/115", "raw": " 6 ", "solution": "6 ", "extraction_repaired": true}
+{"task_id": "HumanEval/116", "raw": " [0,1,2,3,4] ", "solution": "[0,1,2,3,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/117", "raw": " [\"little\"] ", "solution": "[\"little\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/118", "raw": " \"u\" ", "solution": "\"u\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/119", "raw": " \"Yes\" ", "solution": "\"Yes\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/12", "raw": " \"ccc\" ", "solution": "\"ccc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/120", "raw": " [4,4] ", "solution": "[4,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/121", "raw": " solution(lst) ", "solution": "solution(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/122", "raw": " add_elements(arr, k) ", "solution": "add_elements(arr, k) ", "extraction_repaired": true}
+{"task_id": "HumanEval/123", "raw": " [1,5] ", "solution": "[1,5] ", "extraction_repaired": true}
+{"task_id": "HumanEval/124", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/125", "raw": " \"Hello world!\" ", "solution": "\"Hello world!\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/126", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/127", "raw": " \"NO\" ", "solution": "\"NO\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/128", "raw": " prod_signs = lambda arr: sum(abs(x)*(1 if x>0 else -1 if x<0 else 0) for x in arr) if arr else None ", "solution": "prod_signs = lambda arr: sum(abs(x)*(1 if x>0 else -1 if x<0 else 0) for x in arr) if arr else None ", "extraction_repaired": true}
+{"task_id": "HumanEval/129", "raw": " [1,2,1] ", "solution": "[1,2,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/13", "raw": " greatest_common_divisor(a,b) ", "solution": "greatest_common_divisor(a,b) ", "extraction_repaired": true}
+{"task_id": "HumanEval/130", "raw": " [1,3,2,8] ", "solution": "[1,3,2,8] ", "extraction_repaired": true}
+{"task_id": "HumanEval/131", "raw": " digits(1)  == 1 ", "solution": "digits(1)  == 1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/132", "raw": " \"[]\" ", "solution": "\"[]\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/133", "raw": " sum([int(round(x))**2 for x in lst]) ", "solution": "sum([int(round(x))**2 for x in lst]) ", "extraction_repaired": true}
+{"task_id": "HumanEval/134", "raw": " \"apple pie\" ", "solution": "\"apple pie\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/135", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/136", "raw": " largest_smallest_integers(lst) ", "solution": "largest_smallest_integers(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/137", "raw": " \"2,3\" ", "solution": "\"2,3\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/138", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/139", "raw": " def special_factorial(n): \n    result = 1 \n    for i in range(1, n+1): \n        result *= i \n    return result ", "solution": "def special_factorial(n): \n   result = 1 \n   for i in range(1, n+1): \n       result *= i \n   return result ", "extraction_repaired": true}
+{"task_id": "HumanEval/14", "raw": " [\"a\",\"ab\",\"abc\"] ", "solution": "[\"a\",\"ab\",\"abc\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/140", "raw": " \"Example\" ", "solution": "\"Example\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/141", "raw": " \"Yes\" ", "solution": "\"Yes\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/142", "raw": " sum_squares(lst) ", "solution": "sum_squares(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/143", "raw": " \"is go for\" ", "solution": "\"is go for\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/144", "raw": " \"7/10\" ", "solution": "\"7/10\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/145", "raw": " [] ", "solution": "[] ", "extraction_repaired": true}
+{"task_id": "HumanEval/146", "raw": " specialFilter(nums) ", "solution": "specialFilter(nums) ", "extraction_repaired": true}
+{"task_id": "HumanEval/147", "raw": " get_max_triples(5) ", "solution": "get_max_triples(5) ", "extraction_repaired": true}
+{"task_id": "HumanEval/148", "raw": " [\"Venus\",\"Earth\",\"Mars\",\"Jupiter\",\"Saturn\"] ", "solution": "[\"Venus\",\"Earth\",\"Mars\",\"Jupiter\",\"Saturn\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/149", "raw": " [\"aa\"] ", "solution": "[\"aa\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/15", "raw": " \"0 1 2 3 4 5\" ", "solution": "\"0 1 2 3 4 5\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/150", "raw": " \"x_or_y(n, x, y) = x if n is prime else y\" ", "solution": "\"x_or_y(n, x, y) = x if n is prime else y\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/151", "raw": " double_the_difference(lst) ", "solution": "double_the_difference(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/152", "raw": " [4,1,1,0,0,6] ", "solution": "[4,1,1,0,0,6] ", "extraction_repaired": true}
+{"task_id": "HumanEval/153", "raw": " \"Slices.SErviNGSliCes\" ", "solution": "\"Slices.SErviNGSliCes\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/154", "raw": " \"himenss\" is a rotation of \"simen\" ", "solution": "\ndef cycpattern_check(a , b):\n    \"\"\"You are given 2 words. You need to return True if the second word or any of its rotations is a substring in the first word\n    cycpattern_check(\"abcd\",\"abd\") => False\n    cycpattern_check(\"hello\",\"ell\") => True\n    cycpattern_check(\"whassup\",\"psus\") => False\n    cycpattern_check(\"abab\",\"baa\") => True\n    cycpattern_check(\"efef\",\"eeff\") => False\n    cycpattern_check(\"himenss\",\"simen\") => True\n\n    \"\"\"\n \"himenss\" is a rotation of \"simen\" ", "extraction_repaired": false}
+{"task_id": "HumanEval/155", "raw": " even_odd_count(num) ", "solution": "even_odd_count(num) ", "extraction_repaired": true}
+{"task_id": "HumanEval/156", "raw": " \"cdxxvi\" ", "solution": "\"cdxxvi\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/157", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/158", "raw": " \"aaaaaaa\" ", "solution": "\"aaaaaaa\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/159", "raw": " [number+need,remaining-number] ", "solution": "[number+need,remaining-number] ", "extraction_repaired": true}
+{"task_id": "HumanEval/16", "raw": " \"Jerry\".lower().count(\"j\") ", "solution": "\"Jerry\".lower().count(\"j\") ", "extraction_repaired": true}
+{"task_id": "HumanEval/160", "raw": " \"SyntaxError: invalid syntax\" ", "solution": "\"SyntaxError: invalid syntax\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/161", "raw": " \"4321\" ", "solution": "\"4321\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/162", "raw": " true ", "solution": "true ", "extraction_repaired": true}
+{"task_id": "HumanEval/163", "raw": " generate_integers(a, b) ", "solution": "generate_integers(a, b) ", "extraction_repaired": true}
+{"task_id": "HumanEval/17", "raw": " [4,2,1,2,2,1,1,1,1,4,4] ", "solution": "[4,2,1,2,2,1,1,1,1,4,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/18", "raw": " how_many_times(string,substring) ", "solution": "how_many_times(string,substring) ", "extraction_repaired": true}
+{"task_id": "HumanEval/19", "raw": " \"one three five\" ", "solution": "\"one three five\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/2", "raw": " 0.5 ", "solution": "0.5 ", "extraction_repaired": true}
+{"task_id": "HumanEval/20", "raw": " [2.0,2.0] ", "solution": "[2.0,2.0] ", "extraction_repaired": true}
+{"task_id": "HumanEval/21", "raw": " [0,0.25,0.5,0.75,1] ", "solution": "[0,0.25,0.5,0.75,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/22", "raw": " [1,2,3] ", "solution": "[1,2,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/23", "raw": " \"abc\" ", "solution": "\"abc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/24", "raw": " 5 ", "solution": "5 ", "extraction_repaired": true}
+{"task_id": "HumanEval/25", "raw": " [2,2,2,5,5,7] ", "solution": "[2,2,2,5,5,7] ", "extraction_repaired": true}
+{"task_id": "HumanEval/26", "raw": " [1,3,4] ", "solution": "[1,3,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/27", "raw": " \"hELLO\" ", "solution": "\"hELLO\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/28", "raw": " \"abc\" ", "solution": "\"abc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/29", "raw": " [\"abc\",\"array\"] ", "solution": "[\"abc\",\"array\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/3", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/30", "raw": " get_positive(l) ", "solution": "get_positive(l) ", "extraction_repaired": true}
+{"task_id": "HumanEval/31", "raw": " is_prime(n) ", "solution": "is_prime(n) ", "extraction_repaired": true}
+{"task_id": "HumanEval/32", "raw": " round(find_zero([1,2]),2) # f(x) = 1 + 2x \n-0.5 \nround(find_zero([-6,11,-6,1]),2) # (x-1)*(x-2)*(x-3) = -6 + 11x - 6x^2 + x^3 \n1 ", "solution": "import math\n\n\ndef poly(xs: list, x: float):\n    \"\"\"\n    Evaluates polynomial with coefficients xs at point x.\n    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n\n    \"\"\"\n    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])\n\n\ndef find_zero(xs: list):\n    \"\"\" xs are coefficients of a polynomial.\n    find_zero find x such that poly(x) = 0.\n    find_zero returns only only zero point, even if there are many.\n    Moreover, find_zero only takes list xs having even number of coefficients\n    and largest non zero coefficient as it guarantees\n    a solution.\n    >>> round(find_zero([1, 2]), 2) # f(x) = 1 + 2x\n    -0.5\n    >>> round(find_zero([-6, 11, -6, 1]), 2) # (x - 1) * (x - 2) * (x - 3) = -6 + 11x - 6x^2 + x^3\n    1.0\n    \"\"\"\n round(find_zero([1,2]),2) # f(x) = 1 + 2x \n-0.5 \nround(find_zero([-6,11,-6,1]),2) # (x-1)*(x-2)*(x-3) = -6 + 11x - 6x^2 + x^3 \n1 ", "extraction_repaired": false}
+{"task_id": "HumanEval/33", "raw": " [5,6,3,4,8,9,2] ", "solution": "[5,6,3,4,8,9,2] ", "extraction_repaired": true}
+{"task_id": "HumanEval/34", "raw": " [0,2,3,5,9,123] ", "solution": "[0,2,3,5,9,123] ", "extraction_repaired": true}
+{"task_id": "HumanEval/35", "raw": " max_element([5,3,-5,2,-3,3,9,0,123,1,-10]) ", "solution": "max_element([5,3,-5,2,-3,3,9,0,123,1,-10]) ", "extraction_repaired": true}
+{"task_id": "HumanEval/36", "raw": " 3 ", "solution": "3 ", "extraction_repaired": true}
+{"task_id": "HumanEval/37", "raw": " [3,6,5,4] ", "solution": "[3,6,5,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/38", "raw": " \"codewars\" ", "solution": "\"codewars\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/39", "raw": " \"This function is not implemented yet\" ", "solution": "\"This function is not implemented yet\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/4", "raw": " 1.0 ", "solution": "1.0 ", "extraction_repaired": true}
+{"task_id": "HumanEval/40", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/41", "raw": " 0 ", "solution": "0 ", "extraction_repaired": true}
+{"task_id": "HumanEval/42", "raw": " [2,3,4] ", "solution": "[2,3,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/43", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/44", "raw": " \"22\" ", "solution": "\"22\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/45", "raw": " 3.75 ", "solution": "3.75 ", "extraction_repaired": true}
+{"task_id": "HumanEval/46", "raw": " fib4(n) ", "solution": "fib4(n) ", "extraction_repaired": true}
+{"task_id": "HumanEval/47", "raw": " median(l) ", "solution": "median(l) ", "extraction_repaired": true}
+{"task_id": "HumanEval/48", "raw": " \"zbcd\" ", "solution": "\"zbcd\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/49", "raw": " modp(n,p) = pow(2,n)%p ", "solution": "\n\ndef modp(n: int, p: int):\n    \"\"\"Return 2^n modulo p (be aware of numerics).\n    >>> modp(3, 5)\n    3\n    >>> modp(1101, 101)\n    2\n    >>> modp(0, 101)\n    1\n    >>> modp(3, 11)\n    8\n    >>> modp(100, 101)\n    1\n    \"\"\"\n modp(n,p) = pow(2,n)%p ", "extraction_repaired": false}
+{"task_id": "HumanEval/5", "raw": " [1,4,2,4,3] ", "solution": "[1,4,2,4,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/50", "raw": " \"hello\" ", "solution": "\"hello\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/51", "raw": " \"bcdf\\nghjklm\" ", "solution": "\"bcdf\\nghjklm\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/52", "raw": " \"False\" ", "solution": "\"False\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/53", "raw": " \"add\" ", "solution": "\"add\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/54", "raw": " \"abcd\" ", "solution": "\"abcd\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/55", "raw": " \"This function is not implemented yet\" ", "solution": "\"This function is not implemented yet\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/56", "raw": " \"><\" ", "solution": "\"><\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/57", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/58", "raw": " [2,3] ", "solution": "[2,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/59", "raw": " largest_prime_factor(n) ", "solution": "largest_prime_factor(n) ", "extraction_repaired": true}
+{"task_id": "HumanEval/6", "raw": " [2,3,1,3] ", "solution": "[2,3,1,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/60", "raw": " \"sum_to_n is a function that sums numbers from 1 to n.\" ", "solution": "\"sum_to_n is a function that sums numbers from 1 to n.\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/61", "raw": " \"()\" ", "solution": "\"()\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/62", "raw": " [1,4,12,20] ", "solution": "[1,4,12,20] ", "extraction_repaired": true}
+{"task_id": "HumanEval/63", "raw": " fibfib(n) ", "solution": "fibfib(n) ", "extraction_repaired": true}
+{"task_id": "HumanEval/64", "raw": " \"ACEDY\" ", "solution": "\"ACEDY\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/65", "raw": " \"21\" ", "solution": "\"21\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/66", "raw": " \"abAB\"  => 131 ", "solution": "\ndef digitSum(s):\n    \"\"\"Task\n    Write a function that takes a string as input and returns the sum of the upper characters only'\n    ASCII codes.\n\n    Examples:\n        digitSum(\"\") => 0\n        digitSum(\"abAB\") => 131\n        digitSum(\"abcCd\") => 67\n        digitSum(\"helloE\") => 69\n        digitSum(\"woArBld\") => 131\n        digitSum(\"aAaaaXa\") => 153\n    \"\"\"\n \"abAB\"  => 131 ", "extraction_repaired": false}
+{"task_id": "HumanEval/67", "raw": " \"mango\" ", "solution": "\"mango\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/68", "raw": " [2,1] ", "solution": "[2,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/69", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/7", "raw": " [\"abc\",\"bacd\",\"array\"] ", "solution": "[\"abc\",\"bacd\",\"array\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/70", "raw": " [] ", "solution": "[] ", "extraction_repaired": true}
+{"task_id": "HumanEval/71", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/72", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/73", "raw": " smallest_change(arr) ", "solution": "smallest_change(arr) ", "extraction_repaired": true}
+{"task_id": "HumanEval/74", "raw": " [\"hI\",\"hi\",\"hi\"] ", "solution": "[\"hI\",\"hi\",\"hi\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/75", "raw": " is_multiply_prime(30) ", "solution": "is_multiply_prime(30) ", "extraction_repaired": true}
+{"task_id": "HumanEval/76", "raw": " \"is_simple_power\" ", "solution": "\"is_simple_power\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/77", "raw": " iscube(a) ", "solution": "iscube(a) ", "extraction_repaired": true}
+{"task_id": "HumanEval/78", "raw": " \"AB\"  -> 1  (2, 11) \n\"1077E\" -> 2  (2, 13) \n\"ABED1A33\" -> 4  (2, 3, 5, 11) \n\"123456789ABCDEF0\" -> 6  (2, 3, 5, 7, 11, 13) \n\"2020\" -> 2  (2, 2) ", "solution": "\ndef hex_key(num):\n    \"\"\"You have been tasked to write a function that receives \n    a hexadecimal number as a string and counts the number of hexadecimal \n    digits that are primes (prime number, or a prime, is a natural number \n    greater than 1 that is not a product of two smaller natural numbers).\n    Hexadecimal digits are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F.\n    Prime numbers are 2, 3, 5, 7, 11, 13, 17,...\n    So you have to determine a number of the following digits: 2, 3, 5, 7, \n    B (=decimal 11), D (=decimal 13).\n    Note: you may assume the input is always correct or empty string, \n    and symbols A,B,C,D,E,F are always uppercase.\n    Examples:\n    For num = \"AB\" the output should be 1.\n    For num = \"1077E\" the output should be 2.\n    For num = \"ABED1A33\" the output should be 4.\n    For num = \"123456789ABCDEF0\" the output should be 6.\n    For num = \"2020\" the output should be 2.\n    \"\"\"\n \"AB\"  -> 1  (2, 11) \n\"1077E\" -> 2  (2, 13) \n\"ABED1A33\" -> 4  (2, 3, 5, 11) \n\"123456789ABCDEF0\" -> 6  (2, 3, 5, 7, 11, 13) \n\"2020\" -> 2  (2, 2) ", "extraction_repaired": false}
+{"task_id": "HumanEval/79", "raw": " \"db1111db\" ", "solution": "\"db1111db\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/8", "raw": " [10,24] ", "solution": "[10,24] ", "extraction_repaired": true}
+{"task_id": "HumanEval/80", "raw": " \"is_happy\" ", "solution": "\"is_happy\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/81", "raw": " \"grade_equation([4.0, 3, 1.7, 2, 3.5])\" ", "solution": "\"grade_equation([4.0, 3, 1.7, 2, 3.5])\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/82", "raw": " \"orange\" is not a prime number ", "solution": "\ndef prime_length(string):\n    \"\"\"Write a function that takes a string and returns True if the string\n    length is a prime number or False otherwise\n    Examples\n    prime_length('Hello') == True\n    prime_length('abcdcba') == True\n    prime_length('kittens') == True\n    prime_length('orange') == False\n    \"\"\"\n \"orange\" is not a prime number ", "extraction_repaired": false}
+{"task_id": "HumanEval/83", "raw": " 10 ", "solution": "10 ", "extraction_repaired": true}
+{"task_id": "HumanEval/84", "raw": " \"110010110100\" ", "solution": "\"110010110100\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/85", "raw": " 6 ", "solution": "6 ", "extraction_repaired": true}
+{"task_id": "HumanEval/86", "raw": " \"Hello !!!Wdlor\" ", "solution": "\"Hello !!!Wdlor\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/87", "raw": " [[0,0],[1,4],[1,0],[2,5],[2,0]] ", "solution": "[[0,0],[1,4],[1,0],[2,5],[2,0]] ", "extraction_repaired": true}
+{"task_id": "HumanEval/88", "raw": " [0,1,2,3,4,5,6] ", "solution": "[0,1,2,3,4,5,6] ", "extraction_repaired": true}
+{"task_id": "HumanEval/89", "raw": " \"lm\" ", "solution": "\"lm\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/9", "raw": " [1,2,3,3,3,4,4] ", "solution": "[1,2,3,3,3,4,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/90", "raw": " next_smallest(lst) ", "solution": "next_smallest(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/91", "raw": " 1 ", "solution": "1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/92", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/93", "raw": " \"TGST\" ", "solution": "\"TGST\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/94", "raw": " skjkasdkd(lst) ", "solution": "skjkasdkd(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/95", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/96", "raw": " [2,3,5,7,11,13,17,19] ", "solution": "[2,3,5,7,11,13,17,19] ", "extraction_repaired": true}
+{"task_id": "HumanEval/97", "raw": " multiply(a,b) ", "solution": "multiply(a,b) ", "extraction_repaired": true}
+{"task_id": "HumanEval/98", "raw": " count_upper(s) ", "solution": "count_upper(s) ", "extraction_repaired": true}
+{"task_id": "HumanEval/99", "raw": " \"15\" ", "solution": "\"15\" ", "extraction_repaired": true}
