@@ -1,0 +1,342 @@
+\section{Empirical Setup}
+\label{sec:setup}
+
+% We evaluate three research questions:
+
+% \begin{itemize}
+%     \item \textbf{RQ1: What capabilities does model merging compose?}
+%     We test whether merging combines transform-specific adaptations or more
+%     general program-reasoning capabilities.
+
+%     \item \textbf{RQ2: How effectively can capabilities learned from individual
+%     obfuscations be composed for stacked obfuscation?}
+%     We compare prompting, pooled training, consistency training,
+%     inference-time routing, and parameter-space merging.
+
+%     \item \textbf{RQ3: How robust and generalizable is the capability produced
+%     by model merging?}
+%     We evaluate deeper stacks, an unseen obfuscation family, cross-language
+%     transfer, and reversed input/output reasoning.
+% \end{itemize}
+
+
+\subsection{Models}
+
+We evaluate eight instruction-tuned models spanning four model families:
+CodeLlama-7B, CodeLlama-13B, and CodeLlama-34B~\cite{code_llama};
+Llama-3.1-8B~\cite{llama3herd};
+StarCoder2-15B~\cite{lozhkov2024starcoder2stackv2};
+Gemma-3-12B~\cite{gemma3};
+CodeGemma-7B~\cite{codegemma}; and
+Granite-3.1-8B~\cite{granite31}.
+The panel includes both general-purpose and code-specialized models from
+7B to 34B parameters. We additionally use the pretrained Llama-3.1-8B
+checkpoint for the one-shot baseline. All adapted models use rank-32 LoRA
+with the same target modules.
+
+
+\subsection{Dataset}
+
+Our Python corpus contains 2,231 programs drawn from
+APPS~\cite{hendrycks2021apps},
+CRUXEval~\cite{cruxeval}, and
+HumanEval~\cite{Chen2021}.
+We retain 1,584 APPS programs, 543 CRUXEval programs, and all 104
+HumanEval programs. We split the corpus by program so that no transformed
+variant of a training program appears in evaluation. Each program is evaluated
+on three fixed inputs, with reference outputs obtained by executing the clean
+program.
+
+\begin{table}[t]
+\centering
+\small
+\caption{\textbf{Dataset summary.} Corpus composition and program-level split.}
+\label{tab:dataset}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.05}
+
+\begin{tabular}{@{}lr@{\hspace{18pt}}lr@{}}
+\toprule
+\multicolumn{2}{c}{\textbf{Corpus}} &
+\multicolumn{2}{c}{\textbf{Split and properties}} \\
+\cmidrule(r){1-2}
+\cmidrule(l){3-4}
+
+\textbf{Dataset} & \textbf{Programs} &
+\textbf{Property} & \textbf{Value} \\
+\midrule
+
+APPS~\cite{hendrycks2021apps} & 1,584 &
+Training programs & 1,563 \\
+
+CRUXEval~\cite{cruxeval} & 543 &
+Validation programs & 111 \\
+
+HumanEval~\cite{Chen2021} & 104 &
+Held-out programs & 557 \\
+
+\textbf{Total} & \textbf{2,231} &
+Inputs per program & 3 \\
+
+& &
+Held-out clean instances & 1,671 \\
+
+& &
+Mean program length & 8.4 LOC \\
+
+& &
+Maximum program length & 57 LOC \\
+
+\midrule
+
+JavaScript & 168 programs &
+JavaScript instances & 504 \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+Coverage varies by transformation because some structural and encoding
+transforms are not applicable to every program. All paired comparisons are
+therefore computed over the intersection of programs available in the
+conditions being compared.
+
+
+\subsection{Obfuscation Types}
+
+We organize the obfuscation conditions into \textbf{seen single transforms},
+\textbf{held-out encoding transforms}, and \textbf{stacked composites}.
+See Table~\ref{tab:taxonomy} for the full definitions and coverage of each
+condition.
+
+\paragraph{Seen single transforms.}
+The main training set contains five obfuscations:
+three identifier transforms---\texttt{L1b}, \texttt{L1r}, and \texttt{L2}---and
+two structural transforms---\texttt{S1} and \texttt{S2}.
+\texttt{L1b} performs adversarial identifier renaming, \texttt{L1r} performs
+random renaming, and \texttt{L2} minifies identifiers.
+\texttt{S1} applies control-flow flattening, while \texttt{S2} combines opaque
+predicates with dead-code insertion.
+Each specialist is trained on exactly one of these conditions, and no specialist
+is trained on a stacked obfuscation. Together with the clean-code
+condition \texttt{L0}, these form the six specialist conditions used by the
+default breadth and merge systems.
+
+\paragraph{Structural components.}
+We additionally separate \texttt{S2} into its two constituent mechanisms:
+\texttt{S3} contains dead-code insertion only, and \texttt{S4} contains opaque
+predicates only. These conditions are used to construct and analyze stacked
+composites; they are not part of the five-transform training set used by the
+breadth and merge systems.
+
+\paragraph{Held-out encoding family.}
+The encoding family is excluded from the main systems' training data.
+\texttt{X1} combines string encoding with semantics-preserving arithmetic
+rewriting. \texttt{X1m} contains only the arithmetic component, and
+\texttt{X1s} contains only the string-encoding component.
+\texttt{H1} is a quarantined held-out obfuscator using a distinct
+Base64/RC4-based string encoding together with mixed-boolean-arithmetic
+rewriting. Thus, \texttt{X1}, \texttt{X1m}, and \texttt{X1s} define the
+held-out encoding conditions used in the main generalization experiments,
+while \texttt{H1} is reserved as the quarantined reference family.
+
+\paragraph{Stacked composites.}
+Stacked conditions apply multiple transforms sequentially to the same clean
+program, with order treated as part of the condition because later transforms
+may modify code introduced by earlier ones. We evaluate sixteen stacks:
+six depth-2 stacks composed only of seen transforms
+(\texttt{L1b}, \texttt{L1r}, \texttt{L2}, \texttt{S1}, \texttt{S2},
+\texttt{S3}, or \texttt{S4});
+four deeper stacks of seen transforms at depth 3 or 4; and six stacks that
+contain the held-out encoding family through \texttt{X1}, \texttt{X1m}, or
+\texttt{X1s}. No system is trained directly on any stacked condition.
+
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.8pt}
+\renewcommand{\arraystretch}{1.10}
+\caption{\textbf{Obfuscation conditions.}
+Single transforms define the atomic conditions used for training and
+generalization evaluation; stacked conditions are constructed only for
+evaluation.}
+\label{tab:taxonomy}
+
+\begin{tabular}{@{}llp{0.42\textwidth}cl@{}}
+\toprule
+\textbf{Code / group} &
+\textbf{Family} &
+\textbf{Transformation} &
+\textbf{Programs} &
+\textbf{Role} \\
+\midrule
+
+\multicolumn{5}{@{}l}{\textbf{Clean reference}} \\
+L0 &
+none &
+Normalized source with comments and docstrings removed &
+557 &
+clean \\
+
+\midrule
+\multicolumn{5}{@{}l}{\textbf{Seen single-transform conditions}} \\
+
+L1b &
+identifier &
+Adversarial renaming of bindings and the entry function &
+553 &
+train / eval \\
+
+L1r &
+identifier &
+Random hexadecimal renaming of all bindings &
+557 &
+train / eval \\
+
+L2 &
+identifier &
+Sequential identifier minification and removal of type annotations &
+557 &
+train / eval \\
+
+S1 &
+structural &
+Control-flow flattening into a dispatch loop with randomized states &
+416 &
+train / eval \\
+
+S2 &
+structural &
+Opaque predicates combined with never-called dead helper functions &
+556 &
+train / eval \\
+
+\midrule
+\multicolumn{5}{@{}l}{\textbf{Structural components used in stacks}} \\
+
+S3 &
+structural &
+Dead-code insertion using never-called helper functions &
+557 &
+stacks \\
+
+S4 &
+structural &
+Opaque predicates inserted at statement boundaries &
+556 &
+stacks \\
+
+\midrule
+\multicolumn{5}{@{}l}{\textbf{Held-out encoding family}} \\
+
+X1 &
+encoding &
+String encoding and semantics-preserving arithmetic rewriting &
+405 &
+held-out eval \\
+
+X1m &
+encoding &
+Arithmetic-rewriting component of X1 &
+351 &
+held-out eval \\
+
+X1s &
+encoding &
+String-encoding component of X1 &
+246 &
+held-out eval \\
+
+H1 &
+encoding &
+Base64/RC4 string encoding with mixed-boolean-arithmetic rewriting &
+-- &
+quarantined \\
+
+\midrule
+\multicolumn{5}{@{}l}{\textbf{Stacked evaluation conditions}} \\
+
+Seen depth-2 &
+composite &
+Two sequentially applied seen transforms &
+varies &
+6 conditions \\
+
+Seen depth-3/4 &
+composite &
+Three or four sequentially applied seen transforms &
+varies &
+4 conditions \\
+
+Held-out stacks &
+composite &
+Stacks containing X1, X1m, or X1s together with seen transforms &
+varies &
+6 conditions \\
+
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+\subsection{Systems}
+
+All trainable systems use rank-32 LoRA adapters with $\alpha=64$ and identical
+target modules. Systems differ only in their training data or composition
+mechanism as described in Sections \ref{sec:merging} and \ref{sec:baselines}.
+
+
+\subsection{Measurement}
+
+Let $p_i$ denote a program, $x_i$ an input, and
+$y_i = p_i(x_i)$ its reference output.
+
+\paragraph{Seed noise floor.} A bootstrap over programs does not contain training variation, so
+we measure that separately. Three independently seeded runs of the same recipe --- seeds 17, 101
+and 202, six specialists and pooled training, on CodeLlama-7B --- give a median range of $0.66$
+accuracy points across 21 arm $\times$ condition-group combinations, with a maximum of $2.39$
+(Table~\ref{tab:seednoise}). The noise is not uniform: it is roughly three times wider on the
+held-out family (median $1.57$) than on clean code (median $0.66$). The two quantities answer
+different questions and neither subsumes the other, so we do not narrate single-seed differences
+below roughly one point on clean code or the seen singles, or below roughly $2.4$ points on the
+held-out family. Measured on one model; the other seven are not measured and may differ.
+
+\input{tables/seed_noise}
+
+\paragraph{Forward accuracy.}
+Given $(p_i, x_i)$, the model predicts an output $\hat{y}_i$. We measure
+normalized exact-match accuracy:
+\[
+\mathrm{Acc}_{\mathrm{fwd}}
+=
+\frac{1}{N}
+\sum_{i=1}^{N}
+\mathbf{1}
+\!\left[
+\operatorname{norm}(\hat{y}_i)
+=
+\operatorname{norm}(y_i)
+\right].
+\]
+
+\paragraph{Backward accuracy.}
+Given $(p_i, y_i)$, the model predicts an input $\hat{x}_i$. Because multiple
+inputs may produce the same output, correctness is determined by execution:
+\[
+\mathrm{Acc}_{\mathrm{bwd}}
+=
+\frac{1}{N}
+\sum_{i=1}^{N}
+\mathbf{1}
+\!\left[
+p_i(\hat{x}_i) = y_i
+\right].
+\]
+We additionally report \textbf{reference-input recovery}, the fraction of
+predictions that exactly recover the reference input $x_i$.
+
+\paragraph{Statistical comparisons.}
+All system comparisons are paired over the intersection of programs available
+in the compared conditions. We report confidence intervals from a
+program-clustered bootstrap with 2,000 resamples. 

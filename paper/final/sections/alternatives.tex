@@ -1,0 +1,100 @@
+\section{Alternative Approaches}
+\label{sec:baselines}
+
+We compare specialist merging against six systems that differ in where
+adaptation occurs: no weight update, prompting, clean-task adaptation,
+joint training across transforms, consistency-regularized joint training,
+and inference-time specialist composition. Where applicable, trainable systems
+use the same base model, LoRA configuration, optimization budget, and underlying
+training examples.
+
+\noindent\textbf{Untuned.}
+The instruction-tuned base checkpoint evaluated with no parameter updates.
+This provides the reference performance for each model and condition.
+
+\noindent\textbf{In-context learning.}
+The untuned checkpoint with one solved example prepended to the
+prompt~\cite{fewshot}. The demonstration is a fixed seven-line program written
+for this study, is not drawn from the evaluation corpus, and is always shown
+unobfuscated. The same demonstration is used for every model and condition.
+This baseline measures the effect of providing task-format supervision without
+parameter adaptation or exposure to obfuscated code.
+
+\noindent\textbf{Clean-code LoRA.}
+A LoRA adapter trained only on unobfuscated programs using the same prompt and
+optimization schedule as the obfuscation-trained adapters. This baseline
+isolates task adaptation from adaptation to obfuscation. The resulting adapter
+also serves as the frozen teacher for KL-consistency training.
+
+\paragraph{Pooled training.}
+A single LoRA adapter trained on the same six conditions used by the default
+merge: \texttt{L0}, \texttt{L1b}, \texttt{L1r}, \texttt{L2}, \texttt{S1},
+and \texttt{S2}. The examples are pooled and shuffled during optimization.
+This provides the data-matched comparison to parameter-space specialist
+composition.
+
+\noindent\textbf{KL-consistency training.}
+A pooled adapter trained with an additional consistency objective that aligns
+its predictions on an obfuscated program with those of the frozen clean-code
+teacher on the corresponding clean parent~\cite{distillation}. For an
+obfuscated program $x_{\mathrm{obf}}$, clean parent $x_{\mathrm{clean}}$, and
+gold answer $y$,
+
+\begin{equation}
+\mathcal{L}
+=
+\mathrm{CE}\!\left(y \mid x_{\mathrm{obf}}\right)
++
+\lambda
+D_{\mathrm{KL}}\!\left(
+p_{\mathrm{teacher}}(\cdot \mid x_{\mathrm{clean}})
+\,\Vert\,
+p_{\mathrm{student}}(\cdot \mid x_{\mathrm{obf}})
+\right).
+\label{eq:kl}
+\end{equation}
+
+The KL term is computed over answer tokens only. The teacher is fixed, and the
+student receives only the obfuscated program as input. Setting $\lambda=0$
+recovers the pooled-training objective.
+
+\noindent\textbf{Router.}
+The transform specialists are kept separate and combined at inference time by
+a learned gate. At decoder layer input $h$, the gate assigns weights to expert
+$e$ using a learned query projection $W_q$ and expert key $k_e$:
+
+\begin{equation}
+a_e
+=
+\mathrm{softmax}_e
+\left(
+\frac{
+\left(W_q\,\mathrm{LayerNorm}(h)\right)^\top k_e
+}{
+\sqrt{d_r}\,\tau
+}
+\right),
+\label{eq:gate}
+\end{equation}
+
+where $d_r$ is the router dimension and $\tau$ is a learned temperature.
+The base model and specialist adapters remain frozen while the routing
+parameters are trained. The resulting mixture combines expert updates
+per token and per layer.
+
+We additionally evaluate three routing controls: \textbf{hard routing}, which
+selects the highest-weight expert; \textbf{uniform routing}, which assigns equal
+weight to all experts; and \textbf{random routing}, which freezes the gate at
+its initialization. These controls separate gains from maintaining a
+multi-expert mixture from gains attributable to the learned routing function.
+\noindent\textbf{Deployment cost.} The router's cost relative to a merge is a storage cost rather
+than a speed one, and we measure it rather than assert it (Table~\ref{tab:deploycost}). On an
+identical greedy decode workload the router ships $648$M and $679$M parameters beside the base model
+on the two models profiled, against $80$M and $84$M for the merge --- $8\times$ --- and holds
+$0.6$--$0.7$\,GB more at peak, while its throughput is within $1\,\%$ of a single adapter's. Running
+a gate at every layer and token is therefore not what one pays for; keeping eight experts resident
+is. Decoding through any adapter costs roughly half the untuned model's tokens per second in our
+unfused implementation, but that is shared by every adapted arm and separates none of them.
+
+\input{tables/deployment_cost}
+

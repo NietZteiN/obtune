@@ -1,0 +1,247 @@
+\section{Introduction}
+
+Code obfuscation is widely used to make software difficult to inspect
+while preserving its intended functionality. In benign settings,
+developers employ obfuscation to protect intellectual property,
+implementation details, and proprietary business logic. In adversarial
+settings, however, malware authors routinely exploit the same
+techniques to conceal malicious behavior and frustrate program
+analysis and reverse engineering. Common transformations include
+identifier renaming, control-flow restructuring, dead-code insertion,
+expression rewriting, call indirection, etc~\cite{collberg1997taxonomy}. Although such
+transformations are intended to preserve program semantics, they can
+substantially obscure how those semantics are expressed in the source
+code, thereby increasing the difficulty of understanding the
+behavior of malware code~\cite{collberg1997taxonomy,collberg2002manufacturing,
+Obfuscation-The-Hidden-Malware,
+An-Observational-Investigation-of-Reverse-Engineers-Process-and-Mental-Models}.
+
+This difficulty is well established for human analysts. Nguyen
+{\em et al.}~\cite{nguyen2026effectcodeobfuscationhuman}, for example,
+showed that code obfuscation significantly reduces humans' accuracy in
+reasoning about program outputs. Such findings are particularly
+important for malware analysis, where analysts must often infer the
+behavior of code whose surface structure has been deliberately
+engineered to resist comprehension.
+
+Large language models (LLMs) offer a promising alternative for
+automating such reasoning. Models have demonstrated strong
+capabilities in code generation, code understanding, summarization, and vulnerability
+detection~\cite{chen2021evaluatinglargelanguagemodels,li2022codebert,
+guo2021graphcodebert,roziere2023codegen,
+Competition-level-code-generation-with-AlphaCode}.
+However, most evaluations are performed on naturally written programs,
+where meaningful identifiers, familiar control structures, and common
+coding idioms provide abundant lexical and structural cues. Obfuscated
+programs remove or distort many of these cues while retaining the
+underlying computation, creating a useful stress test of whether an
+LLM actually reasons about program behavior or instead depends on
+surface regularities.
+
+Recent studies suggest that this distinction matters.
+Rong {\em et al.}~\cite{ase26} showed that semantics-preserving
+obfuscations can cause substantial degradation in LLM program
+reasoning, including program-output prediction. Similarly, Nikiema
+{\em et al.}~\cite{nikiema2025codebarrierllmsactually} reported a
+statistically significant decline in model performance as the
+complexity of obfuscation increases. Together, these findings indicate
+that this limitation is especially problematic
+for security applications: an AI-assisted malware analyzer should not
+cease to understand a malicious computation merely due to obfuscation.
+
+An important challenge, however, has received considerably less
+attention: \emph{real obfuscated programs rarely contain only one
+transformation}. Obfuscators can combine multiple techniques so that,
+for example, renamed identifiers are embedded inside flattened control
+flow, rewritten expressions, and additional irrelevant code. Such
+{\bf \em stacked obfuscation} creates a fundamentally harder deployment
+setting. Success on each transformation independently does not
+necessarily imply success when those transformations occur together.
+Consequently, simply demonstrating that a model can be adapted to
+individual obfuscations is insufficient. For practical malware
+analysis, the learned capability must also \emph{compose}.
+
+% This leads to the central question studied in this paper:
+% \emph{How should capabilities learned from individual obfuscations be
+% composed so that an LLM can reason robustly about programs containing
+% multiple transformations?} We investigate this question through four
+% natural composition strategies operating at different levels. First,
+% \emph{routing} trains a specialist for each transformation and attempts
+% to select the appropriate specialist at inference time. Second,
+% \emph{breadth training} exposes a single model to examples from many
+% individual transformations, with the expectation that separately
+% learned capabilities will recombine when transformations are stacked.
+% Third, \emph{model merging} independently trains transformation
+% specialists and then combines their learned parameter updates into a
+% single model. Finally, \emph{paired-consistency anchoring} uses a
+% clean-code teacher to regularize a student processing the corresponding
+% obfuscated program through KL-divergence minimization. These strategies
+% represent four different hypotheses about where composition should
+% occur: in model selection, in the training distribution, in parameter
+% space, or through behavioral alignment.
+
+% Our empirical evaluation reveals substantial differences among these
+% strategies. Routing provides little benefit because deciding which
+% single specialist should process a stacked input does not effectively
+% combine the knowledge required for multiple simultaneous
+% transformations. Breadth training performs considerably better:
+% training across diverse individual obfuscations enables the model to
+% generalize to combinations of transformations represented by the
+% training distribution. However, this advantage comes with an important
+% cost. As breadth increases, the model becomes increasingly adapted to
+% the transformation surfaces it has observed and can lose performance
+% on a previously unseen obfuscation family. Thus, greater exposure to
+% known transformations can improve reasoning over familiar stacks while
+% simultaneously reducing robustness beyond them.
+
+% Paired-consistency anchoring addresses this problem from a different
+% direction. Rather than encouraging the model to learn increasingly many
+% obfuscation surfaces, it constrains an obfuscated-code student to
+% preserve the behavior of a model reasoning over the corresponding clean
+% program. Specifically, for an obfuscated program $x_{\mathrm{obf}}$
+% with clean parent $x_{\mathrm{clean}}$, the training objective combines
+% the ordinary task loss with a KL-divergence term between the output
+% distributions of the clean-code teacher and the obfuscated-code student:
+% %
+% \begin{equation}
+% \mathcal{L}
+% =
+% \mathrm{CE}\!\left(y \mid x_{\mathrm{obf}}\right)
+% +
+% \lambda\,
+% D_{\mathrm{KL}}\!\left(
+% p_{\mathrm{teacher}}(\cdot \mid x_{\mathrm{clean}})
+% \,\Vert\,
+% p_{\mathrm{student}}(\cdot \mid x_{\mathrm{obf}})
+% \right).
+% \label{eq:paired_consistency}
+% \end{equation}
+% %
+% This approach reduces the tendency of adaptation to drift toward
+% obfuscation-specific behavior by explicitly tying the student's
+% predictions to the semantics-equivalent clean program. Nevertheless,
+% our evaluation shows that behavioral anchoring is not the strongest
+% composition mechanism.
+
+% Instead, \emph{model merging} provides the strongest overall
+% performance. Unlike routing, which chooses among specialists, merging
+% attempts to retain useful parameter updates from multiple specialists
+% simultaneously. Unlike breadth training, it does not require a single
+% optimization trajectory to learn all transformation surfaces jointly.
+% And unlike paired-consistency anchoring, it is not constrained merely
+% to reproduce the behavior of a clean-code teacher. By composing
+% independently learned parameter updates, the merged model achieves
+% stronger reasoning performance over stacked obfuscations than the
+% routing, breadth-training, and KL-based alternatives.
+
+%we propose composing independently trained obfuscation specialists using \emph{model merging}. We compare our approach against three baseline 
+
+This leads to our central question:
+\emph{How should capabilities learned from individual obfuscations be
+composed so that an LLM can reason robustly about programs containing
+multiple transformations without sacrificing capabilities that are not
+reinforced during adaptation?} To address this question, we compare approaches that compose
+obfuscation-specific knowledge at different stages of the pipeline:
+breadth training, which exposes a single adapter to multiple transformations;
+paired-consistency training, which regularizes an obfuscated-code student
+against a clean-code teacher; inference-time routing, which maintains
+separate specialists and combines them dynamically; and parameter-space
+merging, which combines independently trained specialists before inference.
+
+Our evaluation reveals a consistent trade-off between
+\emph{specialization} and \emph{capability preservation}. Monolithic
+fine-tuning methods achieve the highest peak accuracy when evaluation closely
+matches the transformation distribution and reasoning direction used during
+training. However, this specialization can come at a cost: performance
+degrades more sharply when the model is evaluated on an unseen obfuscation
+family or asked to reason in an untrained reverse direction. In particular,
+fine-tuned models frequently lose capability that was present in the base
+model even as their performance improves on the trained forward task.
+
+In this paper, we propose composing independently trained obfuscation
+specialists using {\bf model merging}. Rather than asking a single
+optimization trajectory to internalize all transformations jointly, merging
+first learns each transformation independently and then combines the resulting
+parameter updates into one adapter. The resulting model requires neither an
+expert bank nor an inference-time router. Although merged models do not always
+achieve the highest in-distribution accuracy, they remain competitive on
+familiar stacked obfuscations while preserving substantially more capability
+outside the trained objective. Across the evaluated regimes, model merging
+therefore achieves the strongest overall balance between performance on stacked
+obfuscations and preservation of untrained reasoning capabilities.
+
+This distinction becomes clear when the reasoning task is
+reversed. Our adapters are trained only for forward program reasoning, yet we
+also evaluate whether they can infer an input that produces a specified output.
+Several monolithic fine-tuning approaches degrade below the untuned model on
+this task, despite improving substantially on forward reasoning. Merged models,
+by contrast, largely preserve or improve this pre-existing capability. We
+further find that many fine-tuned failures are not arbitrary: the model often
+returns the correct \emph{forward} answer to a backward prompt, indicating
+strong specialization to the reasoning direction reinforced during training.
+
+Merged models also substantially outperform their corresponding base models
+on the original unobfuscated programs. Because the default merge includes a
+clean-code specialist in addition to five obfuscation specialists, this result
+by itself does not identify which specialists are responsible for the clean-code
+gain. We therefore treat clean-code performance as evidence that merging can
+preserve general program-reasoning capability while composing
+obfuscation-specific adaptations, and separately examine specialist subsets to
+test whether this capability also emerges from the obfuscation specialists
+alone.
+
+We hypothesize that the robustness of merging arises from the independence of
+the specialist training trajectories. Semantics-preserving obfuscations provide
+multiple \emph{views} of the same underlying computation. A specialist may
+therefore learn both transformation-specific information associated with one
+surface representation and updates that support reasoning about the computation
+shared across representations. Training these specialists independently avoids
+forcing all such signals through a single joint optimization trajectory.
+Parameter-space composition can then combine complementary updates while
+reducing the degree to which adaptation is dominated by one transformation
+or reasoning direction. We test this hypothesis through clean-code evaluation,
+specialist-subset ablations, unseen transformations, stacked obfuscations, and
+reversed reasoning.
+
+These results lead to a broader conclusion about robustness to code
+obfuscation. The challenge is not simply to expose a model to more
+transformations. Increasing training coverage can improve peak performance on
+familiar conditions while simultaneously narrowing the set of capabilities
+preserved by the adapted model. Robust adaptation therefore depends not only
+on \emph{what} transformations are observed, but also on \emph{how} the
+resulting knowledge is composed. Model merging provides a way to retain most
+of the adaptation benefit while reducing this loss of untrained capability.
+
+
+{\em Contributions.}
+This paper makes the following main contributions:
+
+\textbf{1. A systematic study of compositional robustness under stacked
+obfuscation.}
+We study whether capabilities learned from individual obfuscation
+transformations compose when multiple transformations occur simultaneously,
+reflecting an important characteristic of real obfuscations.
+
+\textbf{2. An empirical characterization of specialization and forgetting
+under obfuscation adaptation.}
+We show that conventional fine-tuning achieves strong performance on familiar
+transformations and stacked combinations, but can become increasingly
+specialized to the observed transformation distribution and reasoning
+direction. This specialization can degrade capabilities that are not reinforced
+by the training objective, including reverse program reasoning.
+
+\textbf{3. Model merging as a mechanism for balancing adaptation and
+capability preservation.}
+Parameter-space merging remains competitive with the strongest fine-tuning
+approaches on stacked obfuscations while substantially better preserving
+performance on an untrained reverse-reasoning task. Across evaluation regimes,
+it provides the strongest overall balance between adaptation performance and
+preservation of untrained reasoning capabilities, while producing a single
+deployed adapter with no expert bank or inference-time router.
+
+\textbf{4. Evidence that independently trained specialists preserve
+complementary reasoning capabilities.}
+Through clean-code evaluation, specialist-subset comparisons, unseen
+transformations, and reversed reasoning, we examine whether independently
+trained specialists retain capabilities shared across semantics-preserving
+views in addition to transformation-specific adaptations.

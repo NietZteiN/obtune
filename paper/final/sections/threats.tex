@@ -1,0 +1,18 @@
+\section{Threats to Validity}
+\label{sec:threats}
+
+\textbf{Held-out obfuscation family.}
+Unseen-family generalization is evaluated primarily through X1, a trainable
+sibling of the quarantined H1 obfuscator. Although X1 closely matches H1 in
+difficulty, this covers only one held-out family and may not generalize to
+qualitatively different obfuscation mechanisms.
+
+\textbf{Uneven condition coverage.}
+Some transformations are not applicable to every program, so paired comparisons
+are computed only on programs shared by the relevant conditions. The evaluated
+program subset therefore varies across some experiments.
+
+\textbf{Model and language scope.}
+The study evaluates eight models, with the main experiments conducted in Python.
+The JavaScript set provides a limited cross-language check but does not establish
+generalization across programming languages.

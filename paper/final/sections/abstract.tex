@@ -1,0 +1,19 @@
+Software developers and malware authors widely use code obfuscation to conceal program logic.
+In real-world scenarios, these actors rarely rely on isolated techniques. Instead, they stack multiple
+transformations together to build resilient, layered defenses. While large language models (LLMs)
+can effectively reason about clean source code, their performance drops significantly when they
+encounter these complex defenses. Despite stacked transformations being the realistic standard
+in practice, current literature almost exclusively evaluates models against individual, isolated
+obfuscations. Existing approaches fundamentally fail to assess and effectively handle layered
+techniques, and learning to counter individual transformations does not automatically help models
+handle stacked ones. To address this critical gap, we evaluate model merging as a solution for realistic stacked
+obfuscation. We compare this approach against three fine-tuning baselines, which achieve strong
+performance on familiar transformations but struggle to generalize beyond their training distribution
+and can exhibit catastrophic forgetting of untrained reasoning capabilities. Model merging mitigates
+these limitations and achieves the strongest overall balance between performance on stacked
+obfuscations and preservation of untrained reasoning capabilities. Merged models significantly outperform their base models on obfuscated code and, surprisingly,
+also improve prediction on the original, clean programs. They additionally preserve performance on
+an untrained reverse-reasoning task, where the fine-tuning baselines frequently degrade. By
+successfully combining specific adaptations with broader reasoning capabilities, these results
+demonstrate that merging independently learned models is a highly effective strategy for analyzing
+complex, realistically obfuscated code.

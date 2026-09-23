@@ -1,0 +1,25 @@
+\section{Research Questions}
+\label{sec:rqs}
+
+We evaluate three research questions:
+
+\begin{itemize}
+
+    \item \textbf{RQ1: Does specialist merging improve reasoning across clean
+    and obfuscated code?}
+    We evaluate clean code and individual obfuscations to determine whether
+    combining specialists improves performance over the untuned model across
+    both settings.
+
+    \item \textbf{RQ2: Do adaptations learned from individual obfuscations
+    transfer to stacked obfuscation?}
+    We evaluate unseen stacks of increasing depth to determine whether
+    separately learned adaptations remain effective as multiple obfuscations
+    are combined.
+
+    \item \textbf{RQ3: How well do adapted models generalize beyond the
+    training setting?}
+    We evaluate a held-out obfuscation family and reverse reasoning, neither of
+    which is used during adaptation.
+
+\end{itemize}

@@ -1,0 +1,18 @@
+\section{Conclusion}
+
+We studied whether capabilities learned from individual obfuscation transforms
+can be composed to support reasoning over stacked and previously unseen
+obfuscations. Across eight models, pooled and consistency-based training perform
+well on familiar transformation combinations but can lose capability outside
+the training distribution, particularly on unseen obfuscation families and the
+untrained reverse-reasoning task.
+
+Parameter-space merging provides a different trade-off. By composing
+independently trained specialists, it preserves robustness across these
+out-of-distribution settings while requiring only a single adapter at inference.
+These results suggest that semantics-preserving transformations provide
+complementary training views of the same underlying computation, and that
+composing their learned updates can retain program-reasoning capabilities that
+are lost under monolithic adaptation. Evaluating this effect across additional
+languages and substantially different held-out obfuscation families is the
+primary direction for future work.

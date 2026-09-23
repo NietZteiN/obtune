@@ -1,0 +1,33 @@
+\section{Related Work}
+
+\textbf{Deobfuscation and robustness.}
+Prior work on code deobfuscation focuses primarily on recovering a cleaner
+representation from transformed code. Our setting instead evaluates program
+reasoning while the code remains obfuscated, measuring robustness to
+semantics-preserving changes rather than reconstruction quality.
+
+\textbf{Model merging.}
+Model merging can preserve or strengthen knowledge shared across independently
+trained models, while knowledge specific to individual models is more likely to
+degrade during composition~\cite{zaman-etal-2024-fuse,hess2025forgetting}.
+This asymmetry has also been exploited for bias reduction and machine
+unlearning~\cite{zaman-etal-2024-fuse,xu-etal-2025-zjuklab}.
+Merge quality further depends on specialist training dynamics: memorization late
+in fine-tuning can produce idiosyncratic parameter updates that interfere during
+merging, while earlier checkpoints can compose more effectively
+~\cite{horoi2026memorization}.
+
+\textbf{Modular adaptation.}
+Related work identifies similar shared-versus-specific structure within
+low-rank adapters. LoRA can exhibit capacity limits on high-entropy objectives,
+motivating architectures that route updates between low-rank and full-parameter
+experts~\cite{tang2026beyond}. Token-dependent routing has likewise been used to
+separate shared and subdomain-specific adapter updates
+~\cite{chen2026alter}.
+
+\textbf{Connection to our setting.}
+These findings motivate our treatment of obfuscation specialists as containing
+both transform-specific adaptations and reasoning updates shared across
+semantics-preserving views. We test whether parameter-space composition can
+retain this shared program-reasoning capability while reducing dependence on
+individual transformation surfaces.
