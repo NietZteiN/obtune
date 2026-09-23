@@ -422,7 +422,10 @@ def build_router_engine(model_key: str, language: str, mcfg: dict, ecfg: dict):
     holder = build_mole_model(model_key, experts, d_router=64, shared_query=False,
                               dtype=ecfg.get("dtype", "bfloat16"), device_map="auto")
     sd = torch.load(gate_p, map_location="cpu")
-    holder.gate.load_state_dict(sd.get("state_dict", sd))
+    # gate.pt is a wrapper {"gate": state_dict, "summary": {...}} -- the same layout
+    # `mole.eval_mole._load_gate` reads. The earlier `sd.get("state_dict", sd)` fell through
+    # to the wrapper itself and failed on every model (2026-09-23 handoff, section 5).
+    holder.gate.load_state_dict(sd["gate"])
     holder.gate.to(next(holder.model.parameters()).device)
     print(f"[retention] router gate loaded from {gate_p} "
           f"({holder.summary.get('n_experts')} experts)", flush=True)
