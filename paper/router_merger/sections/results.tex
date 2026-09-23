@@ -186,15 +186,18 @@ the untuned model reads unobfuscated ones, including on an obfuscator family abs
 The gain on clean code is not specific to merging. On \texttt{L0} itself the merge exceeds the
 untuned model by $+14.79$ to $+22.81$ points, significant on every model where the untuned reading
 clears the format gate. Against the clean-code LoRA, however, the merge differs by $-0.30$ to
-$+1.38$ points and the interval contains zero on all eight models. Merging and clean-code tuning
-reach the same accuracy on unobfuscated source; what separates them appears only once the input is
-obfuscated.
+$+1.38$ points and the interval contains zero on all eight models. We therefore do not separate
+merging from clean-code tuning on unobfuscated source; a difference of this size is also inside
+what a re-rolled training seed moves a single arm on \texttt{L0} (up to $1.50$ points,
+Table~\ref{tab:seednoise}), so this is a limit on our resolution as much as a null. What separates
+the two arms appears only once the input is obfuscated, and there the gap is far larger.
 
 In the backward direction 29 of 78 cells reach 100\,\%, and the merge is the closest arm. The effect
 is specific to the trained direction.
 
 \input{tables/merge_ablation}
 \input{tables/specialist_geometry}
+\input{tables/merge_operator}
 
 \subsubsection{The Gain Does Not Come From the Clean-Code Specialist}
 \label{sec:ablation}
@@ -206,9 +209,11 @@ different ingredients while holding the operator, density, weights and rank fixe
 
 Forward, none of it matters. Dropping the clean-code specialist changes \texttt{L0} accuracy by
 $-0.60$ to $+0.60$ points across four models, every interval containing zero, and cutting from five
-specialists to two changes it by $-1.20$ to $+0.54$, again containing zero everywhere. A merge of two
-structural specialists recovers as much clean-code accuracy as the full six. The gain is a property
-of adapting to obfuscation, not of any particular ingredient and not of the number of ingredients.
+specialists to two changes it by $-1.20$ to $+0.54$, again containing zero everywhere. Both ranges
+sit within the seed floor on this condition group, so these are bounds rather than equivalences: a
+merge of two structural specialists reaches clean-code accuracy within about a point of the full
+six, and we cannot resolve a difference smaller than that. The gain is not attributable to any
+particular ingredient, nor does it scale with the number of ingredients.
 
 The adapter geometry gives the mechanism (Table~\ref{tab:geometry}). Measured on the weights alone,
 the clean-code specialist's mean cosine to the five obfuscation specialists matches the
@@ -221,21 +226,51 @@ distance to orthogonality.
 
 Backward, the ingredients do matter, and the contrast with the forward result is the finding. Cutting
 to two specialists costs $4.19$, $8.98$ and $6.52$ points on the three models where the narrow arm
-clears the format gate, all significant. Dropping only the clean-code specialist costs $1.38$ to
-$3.47$ points on three of four models and is null on the fourth. Breadth of semantic view, not the
+clears the format gate, all significant and an order above anything a seed moves. Dropping only the
+clean-code specialist costs $1.38$ to $3.47$ points on three of four models and is null on the
+fourth; the low end of that range is the one figure here we would not narrate from a single seed,
+and the seed floor is measured forward only, so it does not license this direction either. Breadth of semantic view, not the
 clean-code specialist, is what the untrained direction needs. On CodeLlama the narrow merge also
 loses the answer contract outright, at a format-failure rate of $0.33$ and $0.72$ against the six-way
 merge's $0.04$ and $0.06$; on Llama-3.1-8B it holds the contract at $0.10$ with nothing gated and
 still loses $8.98$ points, so the deficit is accuracy rather than formatting.
+
+\subsubsection{The Operator Is Not Arbitrary}
+\label{sec:operator}
+Section~\ref{sec:ablation} holds the operator fixed and varies the ingredients. The complementary
+question is whether the operator earns its place, or whether averaging the same six adapters would
+do as well --- a reasonable suspicion, since \textsc{dare-ties} adds sparsification and sign
+election to what is otherwise a mean. We rebuild the merge with plain uniform averaging
+(\emph{linear}) at identical ingredients, weights, density, rank and seed, and evaluate it against
+\textsc{ties} and \textsc{dare-ties} on four models (Table~\ref{tab:mergeop}).
+
+Averaging does not merely lose; it fails differently. On Llama-3.1-8B, the one model where it
+clears the format gate on clean code, it recovers $115\,\%$ of the untuned model's clean-code
+accuracy where \textsc{dare-ties} reaches $178\,\%$ --- barely better than not merging at all. On
+the other three models it does not clear the gate on clean code or on the seen singles, and the
+single unseen-family cell where it is readable, on CodeLlama-13B, puts it at $25\,\%$ against an
+untuned baseline of $57\,\%$: worse than leaving the base model alone. The direction-lock column
+gives the mechanism. \emph{linear} answers the forward question when asked to reverse on $0.174$
+and $0.428$ of items across the two models where the backward direction was read, while
+\textsc{ties} sits at $0.000$ on both and \textsc{dare-ties} at $0.019$ and $0.000$. Averaging six
+adapters degrades the answer contract; electing a sign does not.
+
+So the sparsification and sign election do most of the work, and the choice of operator is a load-
+bearing part of the method rather than a detail inherited from the merging literature. What this
+does \emph{not} show is that \textsc{dare-ties} is optimal: three operators at one density is not a
+search, and no operator beyond these three was tried.
 
 \begin{takeaway}{RQ1}
 The merge is not the strongest arm on the transformations its specialists were trained on, and its
 advantage is largest where the surface is unfamiliar. Forward adaptation exceeds the untuned model's
 clean-code accuracy on 78 of 84 cells, including on an unseen obfuscator family. The effect does not
 appear in the untrained direction. It does not come from the merge's clean-code specialist: rebuilt
-from two structural specialists alone, the merge recovers the same clean-code accuracy on four of
-four models, and the specialist updates share directions that make this expected.
+from two structural specialists alone, the merge recovers clean-code accuracy to within about a
+point on four of four models --- the resolution a re-rolled seed leaves us --- and the specialist
+updates share directions that make this expected.
 \end{takeaway}
+
+\input{tables/deployment_cost}
 
 \subsection{RQ2: Composing Capabilities for Stacked Obfuscation}
 \label{sec:rq2}
@@ -252,8 +287,14 @@ seven of eight models. Adding transformations to the training set reduced accura
 transformation outside it.
 
 The router system is the strongest forward arm. It requires all eight experts resident at inference
-and a gate evaluation at every layer and token. Two of its experts, \texttt{S3} and \texttt{S4}, are
-absent from the merge. These do not account for its advantage: measured against the merge it gains
+and a gate evaluation at every layer and token, and that cost is a storage cost rather than a speed
+one (Table~\ref{tab:deploycost}). Measured on an identical decode workload, the router ships $648$M
+and $679$M parameters beside the base model on the two models we profile, against $80$M and $84$M
+for the merge --- $8\times$ --- and holds $0.6$--$0.7$\,GB more at peak. Its throughput is within
+$1\,\%$ of a single adapter's, so the gate is not what one pays for. Decoding through any adapter
+costs roughly half the untuned model's tokens per second in our unfused implementation, but that is
+shared by every adapted arm and does not separate them. Two of the router's experts, \texttt{S3} and
+\texttt{S4}, are absent from the merge. These do not account for its advantage: measured against the merge it gains
 $+2.8$ to $+5.3$ points on composites containing neither, and $+2.2$ to $+4.7$ on composites
 containing one, on all eight models.
 
@@ -261,7 +302,9 @@ containing one, on all eight models.
 Capabilities learned from individual transformations compose. The composition method determines what
 survives outside the training distribution. Pooling the data into a single adapter falls below every
 arm built from the same rows on 8/8 models on the held-out family, and below a clean-code-only
-adapter on 7/8. Routing and merging both carry the capability outside that distribution.
+adapter on 7/8. Routing and merging both carry the capability outside that distribution. Routing is
+the stronger of the two forward and costs $8\times$ the stored parameters to deploy, at
+indistinguishable throughput.
 \end{takeaway}
 
 \subsection{RQ3: Robustness and Generalisation of the Merged Capability}
@@ -273,10 +316,20 @@ depth four on seen transformations. Its margin over pooled training does not dec
 
 \paragraph{Unseen obfuscator family.} The merge exceeds the untuned model on the held-out family and
 the stacks containing it on all eight models, by 6.6--17.6 points, significant wherever the reference
-is readable. Paired by program with a 2{,}000-resample program-clustered bootstrap, the router system exceeds the
-merge in this condition by $+0.96$ to $+2.75$ points on seven of eight models, and by $+0.76$ on the
-eighth with an interval containing zero. On the stacks containing the held-out family the same
-comparison gives $+1.00$ to $+2.77$ points, significant on seven.
+is readable. That margin is far outside anything a seed moves.
+
+The router-versus-merge comparison in this condition is not, and we report it with that caveat
+attached. Paired by program with a 2{,}000-resample program-clustered bootstrap, the router system
+exceeds the merge by $+0.96$ to $+2.75$ points on seven of eight models, and by $+0.76$ on the
+eighth with an interval containing zero; on the stacks containing the held-out family the same
+comparison gives $+1.00$ to $+2.77$ points, significant on seven. Those intervals are correctly
+computed and they answer a narrower question than the ordering suggests: the held-out family is
+also where a re-rolled training seed moves a single arm by a median of $1.57$ points and by as much
+as $2.39$ (Table~\ref{tab:seednoise}). Most of this range sits inside that floor. We therefore
+claim only that the router system is \emph{not below} the merge on the held-out family, on eight of
+eight models, and we do not rank the two there on the strength of a single seed. The direction is
+consistent across all eight, which is itself weak evidence for an ordering, but a seeded
+replication of both arms is what would settle it and we have not run one.
 
 \paragraph{Reversed task.} No arm is trained in this direction. Pooled training falls below the
 untuned model on four of the six models where it is readable, and KL-consistency on five of eight, by

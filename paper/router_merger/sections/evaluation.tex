@@ -236,3 +236,22 @@ whose replies are genuinely unparseable. Gating removes cells non-randomly, conc
 backward direction and on weaker models, so backward means rest on fewer cells than forward ones.
 Untuned format failure measures adherence to the prompt contract, not capability, so screening base
 models by it is unsound.
+
+\paragraph{The seed noise floor.} A bootstrap over programs does not contain training variation, so
+we measure that separately and report it beside the results it governs. Three independently seeded
+runs of the same recipe --- seeds 17, 101 and 202, six specialists and pooled training, on
+CodeLlama-7B --- give a median range of $0.66$ points across 21 arm $\times$ condition-group
+combinations, with a maximum of $2.39$ (Table~\ref{tab:seednoise}). The noise is not uniform: it is
+roughly three times wider on the held-out family (median $1.57$) than on clean code (median
+$0.66$), which is the condition our sharpest comparisons are made on.
+
+The two quantities answer different questions and neither subsumes the other. The paired intervals
+reported throughout measure sampling variation over programs for one set of adapters and are
+correctly computed; this measures what a re-rolled seed moves the same arm, which those intervals
+do not contain at all. A difference can therefore exclude zero under the bootstrap and still be
+smaller than the seed range on that condition group. We accordingly do not narrate differences
+below roughly one point on clean code or the seen singles, or below roughly $2.4$ points on the
+held-out family, as findings from a single seed, and we mark them where the argument still needs
+them. This floor is measured on one model; the other seven are not measured and may differ.
+
+\input{tables/seed_noise}
