@@ -183,7 +183,12 @@ share_limits:
   # a30, h100 and h200 reads AllocTRES gres/gpu == CfgTRES gres/gpu today, and g-07-05 is
   # IDLE+RESERVED (a reservation, not ours). So this round genuinely queues and backfills, and
   # the 09-21 lesson does not apply to it -- it was checked before the share was touched.
-  h200: 2
+  # BACK TO 0 ON 2026-09-23. The retention round was stopped early: Juno's admins flagged the
+  # Claude Code sessions running on the cluster and are terminating them pending a security
+  # review of AI agents, so the 35 queued retention/ICL/router jobs were cancelled and the
+  # project holds nothing. The other project on this account has all four slots again.
+  # Raise it and say why here when work resumes; docs/EXPERIMENT_QUEUE.md B10 is where it left off.
+  h200: 0
   normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
