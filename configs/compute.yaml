@@ -188,7 +188,12 @@ share_limits:
   # review of AI agents, so the 35 queued retention/ICL/router jobs were cancelled and the
   # project holds nothing. The other project on this account has all four slots again.
   # Raise it and say why here when work resumes; docs/EXPERIMENT_QUEUE.md B10 is where it left off.
-  h200: 0
+  # RAISED 0 -> 2 ON 2026-09-24, user's choice ("Take 2 h200 slots") after "maximize gpu usage".
+  # Two jobs only, both CodeLlama-34B: icl_mbpp_codellama-34b (OOM on the 80 GB H100 and on
+  # the 94 GB H100 NVL even at gpu_memory_utilization 0.95) and cost_codellama-34b (B7's last
+  # model). 2 leaves the other project on this account (../probing) two of the four slots.
+  # Return to 0 when both land.
+  h200: 2
   normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:

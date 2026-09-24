@@ -49,8 +49,10 @@ def main() -> int:
         if a.benchmark and bench != a.benchmark:
             continue
         # <model>_<arm>: the arm is the last component, models carry hyphens
+        # mole_router and icl_k4 were missing until 2026-09-24, so their cells were silently
+        # SKIPPED -- the CodeGemma router kept 0.0 from the pre-fix extractor after a full run.
         for arm in ("base", "tuned_L0", "mono_all", "cons_lam3",
-                    "merge_ties", "merge_dare_ties"):
+                    "merge_ties", "merge_dare_ties", "mole_router", "icl_k4"):
             if rest.endswith("_" + arm):
                 model = rest[: -len(arm) - 1]
                 break
