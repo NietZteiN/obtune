@@ -36,13 +36,24 @@ def build_icl_prompt(
     condition: Optional[str] = None,
     oracle: bool = False,
     demos: Sequence[Demo] = (),
+    task: str = "output",
+    output_repr: Optional[str] = None,
 ) -> list[dict[str, str]]:
     """The chat message list for a k-shot prompt, k = len(demos).
 
     Demos are laid out as alternating user/assistant turns in order, exactly as the
     one-shot path does, then the query as the final user turn.
+
+    `task="input"` is the BACKWARD form (2026-09-24, A2's missing ICL column): each demo
+    shows program + return value and answers with its call, and the query carries
+    `output_repr`. Same contract as forward -- at k=1 it is byte-identical to
+    `prompts.build_prompt(task="input", one_shot=True, demo=d)`, pinned in the tests.
     """
-    messages: list[dict[str, str]] = [{"role": "system", "content": prompts.SYSTEM_PROMPT}]
+    inverse = task == "input"
+    if inverse and output_repr is None:
+        raise ValueError("task='input' needs the query's output_repr")
+    system = prompts.SYSTEM_PROMPT_INVERSE if inverse else prompts.SYSTEM_PROMPT
+    messages: list[dict[str, str]] = [{"role": "system", "content": system}]
     for d in demos:
         messages.append({
             "role": "user",
@@ -51,13 +62,17 @@ def build_icl_prompt(
                 # Matches build_prompt: when the oracle line is on, a demo carries its own
                 # truthful condition description so both user turns have the same shape.
                 condition=d.condition, oracle=oracle,
+                **({"task": task, "output_repr": d.output_repr} if inverse else {}),
             ),
         })
-        messages.append({"role": "assistant", "content": d.output_repr})
+        messages.append({"role": "assistant",
+                         "content": (prompts.format_call(d.entry_point, d.args_repr)
+                                     if inverse else d.output_repr)})
     messages.append({
         "role": "user",
         "content": prompts.build_user_content(
-            code, entry_point, args_repr, language, condition=condition, oracle=oracle
+            code, entry_point, args_repr, language, condition=condition, oracle=oracle,
+            **({"task": task, "output_repr": output_repr} if inverse else {}),
         ),
     })
     return messages

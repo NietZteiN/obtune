@@ -25,7 +25,9 @@ MODELS = ["codellama-7b","codellama-13b","codellama-34b","llama31-8b","starcoder
 NICE = {"codellama-7b":"CodeLlama-7B","codellama-13b":"CodeLlama-13B","codellama-34b":"CodeLlama-34B",
         "llama31-8b":"Llama-3.1-8B","starcoder2-15b":"StarCoder2-15B","gemma3-12b":"Gemma-3-12B",
         "codegemma-7b":"CodeGemma-7B","granite31-8b":"Granite-3.1-8B"}
-ARMS = [("Base","base"),("Clean","tuned_L0"),("Breadth","mono_all"),
+# ICL added 2026-09-24 (A2's requested column): configs/eval/inverse_icl.yaml writes `icl_k4`
+# into inverse_generic. A model whose ICL eval has not landed renders `--`, like any absent arm.
+ARMS = [("Base","base"),("ICL","icl_k4"),("Clean","tuned_L0"),("Breadth","mono_all"),
         ("KL","cons_lam3"),("Router","mole_router"),("Merge","merge_dare_ties")]
 BWD = ["inverse_1shot","inverse_generic"]
 CONDS = ["L0","L1b","L1r","L2","S1","S2","X1","C_L1b_S1","C_L1r_S1","C_S1_L1r","C_L2_S4",

@@ -34,6 +34,13 @@ Built by `scripts/analysis/73_direction_lock.py`; `tables/backward_decomp.tex` a
 `tables/direction_lock.tex` are `\input` in RQ3.
 **Gap:** columns are Base, Clean, Breadth, KL, Router, Merge. The requested **ICL** column is
 missing. Add it if an ICL arm exists on the panel, else say so in the caption.
+**2026-09-24 — ICL column QUEUED.** `eval_vllm` refused ICL on the backward task; the composer now
+has a `task="input"` mode, byte-identical to the one-shot inverse prompt at k=1
+(`tests/test_icl_prompts.py`). `configs/eval/inverse_icl.yaml` writes `icl_k4` (4 demos from
+L1b/L1r/L2/S1/S2, the forward ICL arm's recipe) into `inverse_generic` at `max_model_len` 8192 --
+at the default 2176 a large, length-biased share of four-demo prompts would have been dropped.
+`73_direction_lock.py` has the column. 7 of 8 models submitted behind a smoke (422772);
+**CodeLlama-34B not submitted** -- it needs an h200 slot and both are held.
 
 ### A3. Specialist-subset merges — **DONE**
 Four ingredient sets at fixed operator/density/weights/rank: `no-L0` (L1b,L1r,L2,S1,S2),
@@ -42,6 +49,10 @@ Built by `scripts/analysis/76_merge_ablation.py`; `tables/merge_ablation.tex` is
 Complete on four models, both directions, 92 forward + 64 backward cells each.
 **Gap:** condition groups are `L0`, singles, depth-2, held-out. **Depth-3 stacks are not
 reported** and the reviewer asks for them.
+**2026-09-24 — correction and QUEUED.** Forward d3/d4 were always evaluated and are in
+`76_merge_ablation.py`'s groups; the gap is **backward** only. The four `mergeablate_bwd_*` configs
+now carry `C3_L1r_S3_S4`, `C3_S1_S3_S4`, `C3_L1r_S1_S4`, `C4_L1r_S1_S3_S4`; the six-way reference
+already has those backward cells in `inverse_generic`. Jobs 422780-422783.
 
 ### A4. Paired bootstrap intervals — **DONE**
 All eight requested contrasts are computed by `scripts/analysis/74_main_contrasts.py --ablation`,

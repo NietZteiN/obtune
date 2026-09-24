@@ -1,0 +1,49 @@
+# A2's MISSING ICL COLUMN (2026-09-24). The backward decomposition table
+# (scripts/analysis/73_direction_lock.py) reports Base, Clean, Breadth, KL, Router, Merge; the
+# reviewer asked for ICL beside them, and until today eval_vllm refused icl_k on task='input'.
+#
+# The arm is the UNTUNED weights with four in-context demonstrations drawn from the obfuscated
+# training conditions -- the same sources and k as the forward `icl_k4` arm and the B10 retention
+# ICL arm, so "ICL" means one thing across the paper. H1 is refused by `pick_demos` (CLAUDE.md
+# §3.2 rule 2). The evaluated program is excluded from its own demos (eval_vllm._icl_demos).
+#
+# PROMPT. The k demos REPLACE the frozen L0 one-shot demo every other backward arm carries; they
+# are not added to it. At k=1 the composer is byte-identical to that one-shot inverse prompt
+# (tests/test_icl_prompts.py), so the only difference from `base` is which, and how many, demos.
+#
+# Same phase as inverse_generic, where 73_direction_lock.py reads every other arm: cells key on
+# (phase, system, condition), so nothing already written is recomputed. MODEL-NEUTRAL; pass
+# --model. Same 16 conditions as the table (CONDS in 73_direction_lock.py).
+_extends: _base_eval.yaml
+
+phase: inverse_generic
+experiment_id: inverse_icl
+run_tag: inverse_icl
+language: python
+eval_source: heldout
+task: input
+
+engine:
+  # 0.90, not the 0.85 the other backward configs use: CodeLlama-34B's bf16 weights are ~63 GiB
+  # of an 80 GB H100, and 0.85 leaves too little KV for four-demo prompts.
+  gpu_memory_utilization: 0.90
+  # 8192, not the default max_seq_len + 128 = 2176. Four demos put the median prompt at
+  # 1.5-1.9k tokens and the max near 5k (measured on L0/S1/S2/C_S4_S3, CodeLlama tokenizer),
+  # and eval_vllm DROPS over-budget items rather than truncating -- at 2176 that would drop
+  # a large, length-biased share of items from this arm alone. Every panel model takes 8k.
+  max_model_len: 8192
+
+sampling:
+  max_tokens: 128
+  stop: ["\n", "\n\n", "```", "<end_of_turn>"]
+
+scoring:
+  float_tol: 1.0e-6
+  exec: {timeout_s: 2.0, mem_mb: 512, workers: 16}
+
+systems:
+  - {name: icl_k4, arch: none, icl_k: 4, icl_source: [L1b, L1r, L2, S1, S2]}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
+                  C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
+                  C_L1r_X1, C_X1_S1, C_S2_X1]
