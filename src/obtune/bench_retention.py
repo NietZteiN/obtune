@@ -465,6 +465,10 @@ def main() -> int:
     ap.add_argument("--max-tokens", type=int, default=512)
     ap.add_argument("--arms", default=None, help="comma-separated subset of ARMS")
     ap.add_argument("--gpu-mem-util", type=float, default=None)
+    ap.add_argument("--seed", type=int, default=17,
+                    help="training seed of the adapters to serve (default 17, the panel's). "
+                         "Any other seed writes to results/retention/seed<N>/ so a replication "
+                         "can never overwrite or mix into the seed-17 table")
     args = ap.parse_args()
 
     from obtune.eval_vllm import Engine
@@ -476,6 +480,16 @@ def main() -> int:
         ecfg["gpu_memory_utilization"] = args.gpu_mem_util
 
     want = set(args.arms.split(",")) if args.arms else None
+
+    # SEED REPLICATION (B10 x B8, 2026-09-24). Only the adapter arms have a training seed.
+    # The router's gate exists at s17 alone and ICL is the untuned weights, so a non-default
+    # seed refuses both rather than silently re-running the seed-17 thing under a new name.
+    # `base` stays in: it is seed-free, and serving it in the same engine is what makes the
+    # identical-to-base check below possible.
+    outdir = RESULTS if args.seed == 17 else RESULTS / f"seed{args.seed}"
+    if args.seed != 17 and want and want & {ROUTER_ARM, ICL_ARM}:
+        raise SystemExit(f"--seed {args.seed}: {ROUTER_ARM} and {ICL_ARM} have no per-seed "
+                         f"variant; run them at the default seed")
 
     # The router owns its process. The mixture holds the base weights plus eight adapters
     # resident; building it beside a vLLM engine means two models on one card. Refused
@@ -497,7 +511,8 @@ def main() -> int:
         resolved = [(ROUTER_ARM, None)]
         engine = build_router_engine(args.model, args.language, mcfg, ecfg)
     else:
-        arms = [(n, p) for n, p in ARMS if want is None or n in want]
+        arms = [(n, p if p is None else p.replace("_s17", f"_s{args.seed}"))
+                for n, p in ARMS if want is None or n in want]
         if icl:
             arms = [(ICL_ARM, None)] + [a for a in arms if a[0] != ICL_ARM]
         # Resolve every adapter BEFORE the engine starts. A missing path found 40 minutes
@@ -522,7 +537,7 @@ def main() -> int:
     sampling = {"temperature": 0.0, "top_p": 1.0, "max_tokens": args.max_tokens,
                 "stop": [], "seed": int(ecfg.get("seed", 17))}
 
-    RESULTS.mkdir(parents=True, exist_ok=True)
+    outdir.mkdir(parents=True, exist_ok=True)
     base_raw: Optional[list[str]] = None
     summary: dict[str, Any] = {}
 
@@ -580,7 +595,8 @@ def main() -> int:
         rep["provenance"] = asdict(
             rm.hash_scripts(["src/obtune/bench_retention.py"]).capture_git().finalize())
 
-        out = RESULTS / f"{rep['benchmark']}_{args.model}_{name}.json"
+        rep["train_seed"] = args.seed  # the ADAPTERS' seed; provenance.seed is decoding
+        out = outdir / f"{rep['benchmark']}_{args.model}_{name}.json"
         out.write_text(json.dumps(rep, indent=2, default=str))
 
         # EVERY generation, to a sidecar. This is the lesson of the artefact this module
@@ -588,7 +604,7 @@ def main() -> int:
         # else, so a pass@1 of 0.0000 could not be told from a broken extractor without
         # re-running the model. With the raw text on disk, any future change to
         # `extract_code` is a re-scoring job, not a GPU job.
-        rawdir = RESULTS / "raw"
+        rawdir = outdir / "raw"
         rawdir.mkdir(parents=True, exist_ok=True)
         with (rawdir / f"{rep['benchmark']}_{args.model}_{name}.jsonl").open("w") as fh:
             for tid, r, (sol, repd) in zip(task_ids, raw, pairs):
