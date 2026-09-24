@@ -180,7 +180,29 @@ def extract_code(raw: str, prompt: str) -> tuple[str, bool]:
     for i, cand in enumerate(_candidates(raw, prompt)):
         if _compiles(cand):
             return cand, i > 0
+    # A THIRD way, found 2026-09-24 on CodeGemma-7B: the tuned arms emit the chat
+    # template's end-of-turn marker as TEXT, so vLLM does not stop on it and the reply is
+    # `def f(): ...<end_of_turn>` plus hundreds of lines of chatter. Nothing compiles, and
+    # tuned_L0 read 0.0 on MBPP+ while writing real functions on 399/399 tasks. The base
+    # model fences its answer and never reaches this path. Tried only AFTER the uncut text
+    # has failed, so a marker-like string inside legitimate code is never cut.
+    cut = _cut_at_turn_end(raw)
+    if cut != raw:
+        for cand in _candidates(cut, prompt):
+            if _compiles(cand):
+                return cand, True
     return v1, False  # genuinely unrunnable; score it as the failure it is
+
+
+# End-of-turn markers of the panel's chat templates (Gemma, Llama-3, Qwen/ChatML, Llama-2,
+# Granite, StarCoder2), for replies where the marker arrived as text rather than as a stop.
+_TURN_END = ("<end_of_turn>", "<|eot_id|>", "<|im_end|>", "</s>", "<|end_of_text|>",
+             "<|endoftext|>", "<|end_of_role|>")
+
+
+def _cut_at_turn_end(raw: str) -> str:
+    idx = [i for i in (raw.find(m) for m in _TURN_END) if i >= 0]
+    return raw[:min(idx)] if idx else raw
 
 
 def _compiles(src: str) -> bool:
