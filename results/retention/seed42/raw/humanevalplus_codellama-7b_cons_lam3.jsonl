@@ -1,0 +1,164 @@
+{"task_id": "HumanEval/0", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/1", "raw": " [\"()\",\"(())\",\"(()())\"] ", "solution": "[\"()\",\"(())\",\"(()())\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/10", "raw": " \"catac\" ", "solution": "\"catac\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/100", "raw": " [3,5,7] ", "solution": "[3,5,7] ", "extraction_repaired": true}
+{"task_id": "HumanEval/101", "raw": " [\"Hi\",\"my\",\"name\",\"is\",\"John\"] ", "solution": "[\"Hi\",\"my\",\"name\",\"is\",\"John\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/102", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/103", "raw": " \"0b1111\" ", "solution": "\"0b1111\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/104", "raw": " [1,15,33] ", "solution": "[1,15,33] ", "extraction_repaired": true}
+{"task_id": "HumanEval/105", "raw": " [\"Five\",\"Four\",\"Three\",\"Two\",\"Two\",\"One\",\"One\"] ", "solution": "[\"Five\",\"Four\",\"Three\",\"Two\",\"Two\",\"One\",\"One\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/106", "raw": " [1,2,6,24,15] ", "solution": "[1,2,6,24,15] ", "extraction_repaired": true}
+{"task_id": "HumanEval/107", "raw": " [4,6] ", "solution": "[4,6] ", "extraction_repaired": true}
+{"task_id": "HumanEval/108", "raw": " count_nums(arr) ", "solution": "count_nums(arr) ", "extraction_repaired": true}
+{"task_id": "HumanEval/109", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/11", "raw": " \"100\" ", "solution": "\"100\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/110", "raw": " \"YES\" ", "solution": "\"YES\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/111", "raw": " {\"\":{}} ", "solution": "{\"\":{}} ", "extraction_repaired": true}
+{"task_id": "HumanEval/112", "raw": " [\"bcd\",false] ", "solution": "[\"bcd\",false] ", "extraction_repaired": true}
+{"task_id": "HumanEval/113", "raw": " [\"the number of odd elements 4n the str4ng 4 of the 4nput.\"] ", "solution": "[\"the number of odd elements 4n the str4ng 4 of the 4nput.\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/114", "raw": " -6 ", "solution": "-6 ", "extraction_repaired": true}
+{"task_id": "HumanEval/115", "raw": " 6 ", "solution": "6 ", "extraction_repaired": true}
+{"task_id": "HumanEval/116", "raw": " [0,1,2,3,4] ", "solution": "[0,1,2,3,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/117", "raw": " [\"little\"] ", "solution": "[\"little\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/118", "raw": " \"u\" ", "solution": "\"u\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/119", "raw": " \"Yes\" ", "solution": "\"Yes\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/12", "raw": " \"ccc\" ", "solution": "\"ccc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/120", "raw": " [4,4] ", "solution": "[4,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/121", "raw": " solution(lst) ", "solution": "solution(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/122", "raw": " 24 ", "solution": "24 ", "extraction_repaired": true}
+{"task_id": "HumanEval/123", "raw": " [1,5] ", "solution": "[1,5] ", "extraction_repaired": true}
+{"task_id": "HumanEval/124", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/125", "raw": " 3 ", "solution": "3 ", "extraction_repaired": true}
+{"task_id": "HumanEval/126", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/127", "raw": " \"YES\" ", "solution": "\"YES\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/128", "raw": " null ", "solution": "null ", "extraction_repaired": true}
+{"task_id": "HumanEval/129", "raw": " [1,2,1] ", "solution": "[1,2,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/13", "raw": " function greatest_common_divisor(a,b):\n    if a==0:\n        return b\n    if b==0:\n        return a\n    if a>b:\n        return greatest_common_divisor(a%b,b)\n    else:\n        return greatest_common_divisor(a,b%a) ", "solution": "\n\ndef greatest_common_divisor(a: int, b: int) -> int:\n    \"\"\" Return a greatest common divisor of two integers a and b\n    >>> greatest_common_divisor(3, 5)\n    1\n    >>> greatest_common_divisor(25, 15)\n    5\n    \"\"\"\n function greatest_common_divisor(a,b):\n    if a==0:\n        return b\n    if b==0:\n        return a\n    if a>b:\n        return greatest_common_divisor(a%b,b)\n    else:\n        return greatest_common_divisor(a,b%a) ", "extraction_repaired": false}
+{"task_id": "HumanEval/130", "raw": " [1,3,2,8] ", "solution": "[1,3,2,8] ", "extraction_repaired": true}
+{"task_id": "HumanEval/131", "raw": " 15 ", "solution": "15 ", "extraction_repaired": true}
+{"task_id": "HumanEval/132", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/133", "raw": " sum([int(round(x))**2 for x in lst]) ", "solution": "sum([int(round(x))**2 for x in lst]) ", "extraction_repaired": true}
+{"task_id": "HumanEval/134", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/135", "raw": " 3 ", "solution": "3 ", "extraction_repaired": true}
+{"task_id": "HumanEval/136", "raw": " [None,1] ", "solution": "[None,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/137", "raw": " \"6\" ", "solution": "\"6\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/138", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/139", "raw": " 288 ", "solution": "288 ", "extraction_repaired": true}
+{"task_id": "HumanEval/14", "raw": " [\"\",\"a\",\"ab\",\"abc\"] ", "solution": "[\"\",\"a\",\"ab\",\"abc\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/140", "raw": " \"Example\" ", "solution": "\"Example\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/141", "raw": " \"Yes\" ", "solution": "\"Yes\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/142", "raw": " sum_squares([1,2,3]) ", "solution": "sum_squares([1,2,3]) ", "extraction_repaired": true}
+{"task_id": "HumanEval/143", "raw": " \"is go for\" ", "solution": "\"is go for\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/144", "raw": " true ", "solution": "true ", "extraction_repaired": true}
+{"task_id": "HumanEval/145", "raw": " [1,11,-1,-11,-12] ", "solution": "[1,11,-1,-11,-12] ", "extraction_repaired": true}
+{"task_id": "HumanEval/146", "raw": " 2 ", "solution": "2 ", "extraction_repaired": true}
+{"task_id": "HumanEval/147", "raw": " 1 ", "solution": "1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/148", "raw": " [\"Venus\",\"Earth\",\"Mars\",\"Jupiter\",\"Saturn\"] ", "solution": "[\"Venus\",\"Earth\",\"Mars\",\"Jupiter\",\"Saturn\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/149", "raw": " [\"aa\"] ", "solution": "[\"aa\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/15", "raw": " \"0 1 2 3 4 5\" ", "solution": "\"0 1 2 3 4 5\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/150", "raw": " n = 7 \nx = 34 \ny = 12 \n\nreturn 34 ", "solution": "\ndef x_or_y(n, x, y):\n    \"\"\"A simple program which should return the value of x if n is \n    a prime number and should return the value of y otherwise.\n\n    Examples:\n    for x_or_y(7, 34, 12) == 34\n    for x_or_y(15, 8, 5) == 5\n    \n    \"\"\"\n n = 7 \nx = 34 \ny = 12 \n\nreturn 34 ", "extraction_repaired": false}
+{"task_id": "HumanEval/151", "raw": " double_the_difference(lst) ", "solution": "double_the_difference(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/152", "raw": " [4,4,1,0,0,6] ", "solution": "[4,4,1,0,0,6] ", "extraction_repaired": true}
+{"task_id": "HumanEval/153", "raw": " \"Slices.SErviNGSliCes\" ", "solution": "\"Slices.SErviNGSliCes\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/154", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/155", "raw": " [1,1] ", "solution": "[1,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/156", "raw": " \"cdxxvi\" ", "solution": "\"cdxxvi\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/157", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/158", "raw": " \"aaaaaaa\" ", "solution": "\"aaaaaaa\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/159", "raw": " [number+need,remaining-number] ", "solution": "[number+need,remaining-number] ", "extraction_repaired": true}
+{"task_id": "HumanEval/16", "raw": " count_distinct_characters(string) ", "solution": "count_distinct_characters(string) ", "extraction_repaired": true}
+{"task_id": "HumanEval/160", "raw": " do_algebra([\"+\", \"*\", \"-\"], [2,3,4,5]) == 9 ", "solution": "do_algebra([\"+\", \"*\", \"-\"], [2,3,4,5]) == 9 ", "extraction_repaired": true}
+{"task_id": "HumanEval/161", "raw": " \"4321\" ", "solution": "\"4321\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/162", "raw": " true ", "solution": "true ", "extraction_repaired": true}
+{"task_id": "HumanEval/163", "raw": " [2,4,6,8] ", "solution": "[2,4,6,8] ", "extraction_repaired": true}
+{"task_id": "HumanEval/17", "raw": " [4,2,1,2,2,1,1,1,1,4,4] ", "solution": "[4,2,1,2,2,1,1,1,1,4,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/18", "raw": " 0 ", "solution": "0 ", "extraction_repaired": true}
+{"task_id": "HumanEval/19", "raw": " \"five one three\" ", "solution": "\"five one three\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/2", "raw": " 0.5 ", "solution": "0.5 ", "extraction_repaired": true}
+{"task_id": "HumanEval/20", "raw": " [2.0,2.0] ", "solution": "[2.0,2.0] ", "extraction_repaired": true}
+{"task_id": "HumanEval/21", "raw": " [0,0.25,0.5,0.75,1] ", "solution": "[0,0.25,0.5,0.75,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/22", "raw": " [1,2,3] ", "solution": "[1,2,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/23", "raw": " 3 ", "solution": "3 ", "extraction_repaired": true}
+{"task_id": "HumanEval/24", "raw": " 5 ", "solution": "5 ", "extraction_repaired": true}
+{"task_id": "HumanEval/25", "raw": " [2,2,2,5,5,7] ", "solution": "[2,2,2,5,5,7] ", "extraction_repaired": true}
+{"task_id": "HumanEval/26", "raw": " [1,3,4] ", "solution": "[1,3,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/27", "raw": " \"hELLO\" ", "solution": "\"hELLO\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/28", "raw": " \"abc\" ", "solution": "\"abc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/29", "raw": " [s for s in strings if s.startswith(prefix)] ", "solution": "[s for s in strings if s.startswith(prefix)] ", "extraction_repaired": true}
+{"task_id": "HumanEval/3", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/30", "raw": " [2,5,6,5,3,2,3,9,123,1] ", "solution": "[2,5,6,5,3,2,3,9,123,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/31", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/32", "raw": " round(find_zero([1,2]),2) # f(x) = 1 + 2x \n-0.5 \nround(find_zero([-6,11,-6,1]),2) # (x-1)*(x-2)*(x-3) = -6+11x-6x^2+x^3 \n1 ", "solution": "import math\n\n\ndef poly(xs: list, x: float):\n    \"\"\"\n    Evaluates polynomial with coefficients xs at point x.\n    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n\n    \"\"\"\n    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])\n\n\ndef find_zero(xs: list):\n    \"\"\" xs are coefficients of a polynomial.\n    find_zero find x such that poly(x) = 0.\n    find_zero returns only only zero point, even if there are many.\n    Moreover, find_zero only takes list xs having even number of coefficients\n    and largest non zero coefficient as it guarantees\n    a solution.\n    >>> round(find_zero([1, 2]), 2) # f(x) = 1 + 2x\n    -0.5\n    >>> round(find_zero([-6, 11, -6, 1]), 2) # (x - 1) * (x - 2) * (x - 3) = -6 + 11x - 6x^2 + x^3\n    1.0\n    \"\"\"\n round(find_zero([1,2]),2) # f(x) = 1 + 2x \n-0.5 \nround(find_zero([-6,11,-6,1]),2) # (x-1)*(x-2)*(x-3) = -6+11x-6x^2+x^3 \n1 ", "extraction_repaired": false}
+{"task_id": "HumanEval/33", "raw": " [5,6,3,4,8,9,2] ", "solution": "[5,6,3,4,8,9,2] ", "extraction_repaired": true}
+{"task_id": "HumanEval/34", "raw": " [0,2,3,5,9,123] ", "solution": "[0,2,3,5,9,123] ", "extraction_repaired": true}
+{"task_id": "HumanEval/35", "raw": " max(l) ", "solution": "max(l) ", "extraction_repaired": true}
+{"task_id": "HumanEval/36", "raw": " 3 ", "solution": "3 ", "extraction_repaired": true}
+{"task_id": "HumanEval/37", "raw": " [3,6,5,4] ", "solution": "[3,6,5,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/38", "raw": " \"abc\" ", "solution": "\"abc\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/39", "raw": " int(math.sqrt(5*n+1))-int(math.sqrt(5*n-1)) ", "solution": "int(math.sqrt(5*n+1))-int(math.sqrt(5*n-1)) ", "extraction_repaired": true}
+{"task_id": "HumanEval/4", "raw": " 1.0 ", "solution": "1.0 ", "extraction_repaired": true}
+{"task_id": "HumanEval/40", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/41", "raw": " 0 ", "solution": "0 ", "extraction_repaired": true}
+{"task_id": "HumanEval/42", "raw": " [x+1 for x in l] ", "solution": "[x+1 for x in l] ", "extraction_repaired": true}
+{"task_id": "HumanEval/43", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/44", "raw": " \"2010\" ", "solution": "\"2010\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/45", "raw": " 3*a*h/2 ", "solution": "3*a*h/2 ", "extraction_repaired": true}
+{"task_id": "HumanEval/46", "raw": " function fib4(n) {\n  let a = 0, b = 0, c = 2, d = 0;\n  for (let i = 4; i <= n; i++) {\n    d = a + b + c;\n    a = b;\n    b = c;\n    c = d;\n  }\n  return d;\n} ", "solution": "\n\ndef fib4(n: int):\n    \"\"\"The Fib4 number sequence is a sequence similar to the Fibbonacci sequnece that's defined as follows:\n    fib4(0) -> 0\n    fib4(1) -> 0\n    fib4(2) -> 2\n    fib4(3) -> 0\n    fib4(n) -> fib4(n-1) + fib4(n-2) + fib4(n-3) + fib4(n-4).\n    Please write a function to efficiently compute the n-th element of the fib4 number sequence.  Do not use recursion.\n    >>> fib4(5)\n    4\n    >>> fib4(6)\n    8\n    >>> fib4(7)\n    14\n    \"\"\"\n function fib4(n) {\n  let a = 0, b = 0, c = 2, d = 0;\n  for (let i = 4; i <= n; i++) {\n    d = a + b + c;\n    a = b;\n    b = c;\n    c = d;\n  }\n  return d;\n} ", "extraction_repaired": false}
+{"task_id": "HumanEval/47", "raw": " median(l) ", "solution": "median(l) ", "extraction_repaired": true}
+{"task_id": "HumanEval/48", "raw": " is_palindrome(text) ", "solution": "is_palindrome(text) ", "extraction_repaired": true}
+{"task_id": "HumanEval/49", "raw": " modp(n,p) = pow(2,n)%p ", "solution": "\n\ndef modp(n: int, p: int):\n    \"\"\"Return 2^n modulo p (be aware of numerics).\n    >>> modp(3, 5)\n    3\n    >>> modp(1101, 101)\n    2\n    >>> modp(0, 101)\n    1\n    >>> modp(3, 11)\n    8\n    >>> modp(100, 101)\n    1\n    \"\"\"\n modp(n,p) = pow(2,n)%p ", "extraction_repaired": false}
+{"task_id": "HumanEval/5", "raw": " [1,4,2,4,3] ", "solution": "[1,4,2,4,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/50", "raw": " \"hello\" ", "solution": "\"hello\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/51", "raw": " \"bcdf\\nghjklm\" ", "solution": "\"bcdf\\nghjklm\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/52", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/53", "raw": " return x+y ", "solution": "\n\ndef add(x: int, y: int):\n    \"\"\"Add two numbers x and y\n    >>> add(2, 3)\n    5\n    >>> add(5, 7)\n    12\n    \"\"\"\n return x+y ", "extraction_repaired": false}
+{"task_id": "HumanEval/54", "raw": " function same_chars(s0, s1): \n    return sorted(s0) == sorted(s1) ", "solution": "\n\ndef same_chars(s0: str, s1: str):\n    \"\"\"\n    Check if two words have the same characters.\n    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddeddabc')\n    True\n    >>> same_chars('abcd', 'dddddddabc')\n    True\n    >>> same_chars('dddddddabc', 'abcd')\n    True\n    >>> same_chars('eabcd', 'dddddddabc')\n    False\n    >>> same_chars('abcd', 'dddddddabce')\n    False\n    >>> same_chars('eabcdzzzz', 'dddzzzzzzzddddabc')\n    False\n    \"\"\"\n function same_chars(s0, s1): \n    return sorted(s0) == sorted(s1) ", "extraction_repaired": false}
+{"task_id": "HumanEval/55", "raw": " function fib(n) {\n  if (n <= 1) return n;\n  return fib(n-1) + fib(n-2);\n} ", "solution": "\n\ndef fib(n: int):\n    \"\"\"Return n-th Fibonacci number.\n    >>> fib(10)\n    55\n    >>> fib(1)\n    1\n    >>> fib(8)\n    21\n    \"\"\"\n function fib(n) {\n  if (n <= 1) return n;\n  return fib(n-1) + fib(n-2);\n} ", "extraction_repaired": false}
+{"task_id": "HumanEval/56", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/57", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/58", "raw": " [1,5,653] ", "solution": "[1,5,653] ", "extraction_repaired": true}
+{"task_id": "HumanEval/59", "raw": " largest_prime_factor(n) ", "solution": "largest_prime_factor(n) ", "extraction_repaired": true}
+{"task_id": "HumanEval/6", "raw": " [2,3,1,3] ", "solution": "[2,3,1,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/60", "raw": " 1+2+3+4+5+6+7+8+9+10 ", "solution": "1+2+3+4+5+6+7+8+9+10 ", "extraction_repaired": true}
+{"task_id": "HumanEval/61", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/62", "raw": " [2,6] ", "solution": "[2,6] ", "extraction_repaired": true}
+{"task_id": "HumanEval/63", "raw": " fibfib(n) = fibfib(n-1) + fibfib(n-2) + fibfib(n-3) ", "solution": "\n\ndef fibfib(n: int):\n    \"\"\"The FibFib number sequence is a sequence similar to the Fibbonacci sequnece that's defined as follows:\n    fibfib(0) == 0\n    fibfib(1) == 0\n    fibfib(2) == 1\n    fibfib(n) == fibfib(n-1) + fibfib(n-2) + fibfib(n-3).\n    Please write a function to efficiently compute the n-th element of the fibfib number sequence.\n    >>> fibfib(1)\n    0\n    >>> fibfib(5)\n    4\n    >>> fibfib(8)\n    24\n    \"\"\"\n fibfib(n) = fibfib(n-1) + fibfib(n-2) + fibfib(n-3) ", "extraction_repaired": false}
+{"task_id": "HumanEval/64", "raw": " \"ACEDY\"  -> 3 ", "solution": "\nFIX = \"\"\"\nAdd more test cases.\n\"\"\"\n\ndef vowels_count(s):\n    \"\"\"Write a function vowels_count which takes a string representing\n    a word as input and returns the number of vowels in the string.\n    Vowels in this case are 'a', 'e', 'i', 'o', 'u'. Here, 'y' is also a\n    vowel, but only when it is at the end of the given word.\n\n    Example:\n    >>> vowels_count(\"abcde\")\n    2\n    >>> vowels_count(\"ACEDY\")\n    3\n    \"\"\"\n \"ACEDY\"  -> 3 ", "extraction_repaired": false}
+{"task_id": "HumanEval/65", "raw": " \"21\" ", "solution": "\"21\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/66", "raw": " digitSum(\"\") => 0 ", "solution": "\ndef digitSum(s):\n    \"\"\"Task\n    Write a function that takes a string as input and returns the sum of the upper characters only'\n    ASCII codes.\n\n    Examples:\n        digitSum(\"\") => 0\n        digitSum(\"abAB\") => 131\n        digitSum(\"abcCd\") => 67\n        digitSum(\"helloE\") => 69\n        digitSum(\"woArBld\") => 131\n        digitSum(\"aAaaaXa\") => 153\n    \"\"\"\n digitSum(\"\") => 0 ", "extraction_repaired": false}
+{"task_id": "HumanEval/67", "raw": " \"100 apples and 1 oranges\"  -> 120 - 100 - 1 = 19 ", "solution": "\ndef fruit_distribution(s,n):\n    \"\"\"\n    In this task, you will be given a string that represents a number of apples and oranges \n    that are distributed in a basket of fruit this basket contains \n    apples, oranges, and mango fruits. Given the string that represents the total number of \n    the oranges and apples and an integer that represent the total number of the fruits \n    in the basket return the number of the mango fruits in the basket.\n    for examble:\n    fruit_distribution(\"5 apples and 6 oranges\", 19) ->19 - 5 - 6 = 8\n    fruit_distribution(\"0 apples and 1 oranges\",3) -> 3 - 0 - 1 = 2\n    fruit_distribution(\"2 apples and 3 oranges\", 100) -> 100 - 2 - 3 = 95\n    fruit_distribution(\"100 apples and 1 oranges\",120) -> 120 - 100 - 1 = 19\n    \"\"\"\n \"100 apples and 1 oranges\"  -> 120 - 100 - 1 = 19 ", "extraction_repaired": false}
+{"task_id": "HumanEval/68", "raw": " [2,1] ", "solution": "[2,1] ", "extraction_repaired": true}
+{"task_id": "HumanEval/69", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/7", "raw": " [\"abc\",\"bacd\",\"array\"] ", "solution": "[\"abc\",\"bacd\",\"array\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/70", "raw": " [1,4,2,3] ", "solution": "[1,4,2,3] ", "extraction_repaired": true}
+{"task_id": "HumanEval/71", "raw": " -1 ", "solution": "-1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/72", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/73", "raw": " 4 ", "solution": "4 ", "extraction_repaired": true}
+{"task_id": "HumanEval/74", "raw": " [\"hI\",\"Hi\"] ", "solution": "[\"hI\",\"Hi\"] ", "extraction_repaired": true}
+{"task_id": "HumanEval/75", "raw": " true ", "solution": "true ", "extraction_repaired": true}
+{"task_id": "HumanEval/76", "raw": " is_simple_power(x, n) ", "solution": "is_simple_power(x, n) ", "extraction_repaired": true}
+{"task_id": "HumanEval/77", "raw": " iscube(a) ", "solution": "iscube(a) ", "extraction_repaired": true}
+{"task_id": "HumanEval/78", "raw": " 2 ", "solution": "2 ", "extraction_repaired": true}
+{"task_id": "HumanEval/79", "raw": " \"db1111db\" ", "solution": "\"db1111db\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/8", "raw": " [10,24] ", "solution": "[10,24] ", "extraction_repaired": true}
+{"task_id": "HumanEval/80", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/81", "raw": " [4.0,3.7,1.7,2,3.5] ", "solution": "[4.0,3.7,1.7,2,3.5] ", "extraction_repaired": true}
+{"task_id": "HumanEval/82", "raw": " true ", "solution": "true ", "extraction_repaired": true}
+{"task_id": "HumanEval/83", "raw": " 10 ", "solution": "10 ", "extraction_repaired": true}
+{"task_id": "HumanEval/84", "raw": " \"10000\" ", "solution": "\"10000\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/85", "raw": " [4,2,6,7] ", "solution": "[4,2,6,7] ", "extraction_repaired": true}
+{"task_id": "HumanEval/86", "raw": " \"Hello !!!Wdlor\" ", "solution": "\"Hello !!!Wdlor\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/87", "raw": " [[0,0],[1,4],[1,0],[2,5],[2,0]] ", "solution": "[[0,0],[1,4],[1,0],[2,5],[2,0]] ", "extraction_repaired": true}
+{"task_id": "HumanEval/88", "raw": " [0,1,2,3,4,5] ", "solution": "[0,1,2,3,4,5] ", "extraction_repaired": true}
+{"task_id": "HumanEval/89", "raw": " \"ix\" ", "solution": "\"ix\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/9", "raw": " [1,2,3,3,3,4,4] ", "solution": "[1,2,3,3,3,4,4] ", "extraction_repaired": true}
+{"task_id": "HumanEval/90", "raw": " next_smallest(lst) ", "solution": "next_smallest(lst) ", "extraction_repaired": true}
+{"task_id": "HumanEval/91", "raw": " 1 ", "solution": "1 ", "extraction_repaired": true}
+{"task_id": "HumanEval/92", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/93", "raw": " \"TGST\" ", "solution": "\"TGST\" ", "extraction_repaired": true}
+{"task_id": "HumanEval/94", "raw": " 10 ", "solution": "10 ", "extraction_repaired": true}
+{"task_id": "HumanEval/95", "raw": " false ", "solution": "false ", "extraction_repaired": true}
+{"task_id": "HumanEval/96", "raw": " [2,3,5,7,11,13,17,19] ", "solution": "[2,3,5,7,11,13,17,19] ", "extraction_repaired": true}
+{"task_id": "HumanEval/97", "raw": " multiply(a, b) ", "solution": "multiply(a, b) ", "extraction_repaired": true}
+{"task_id": "HumanEval/98", "raw": " count_upper(s) ", "solution": "count_upper(s) ", "extraction_repaired": true}
+{"task_id": "HumanEval/99", "raw": " \"10\" ", "solution": "\"10\" ", "extraction_repaired": true}

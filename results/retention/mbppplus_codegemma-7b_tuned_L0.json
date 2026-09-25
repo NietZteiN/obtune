@@ -1,0 +1,1695 @@
+{
+  "n_tasks": 399,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.6692,
+  "pass@1_plus": 0.5739,
+  "format_fail_rate": 0.0175,
+  "raw_no_def_rate": 0.0,
+  "entry_point_mismatch": 20,
+  "entry_point_mismatch_rate": 0.0175,
+  "extraction_repaired": 0,
+  "extraction_repaired_rate": 0.9649,
+  "uncompilable_rate": 0.0125,
+  "per_task": {
+    "Mbpp/100": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/101": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/102": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/103": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/104": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/105": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/106": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/108": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/109": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/11": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/111": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/113": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/115": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/116": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/117": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/118": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/119": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/12": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/120": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/123": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/124": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/125": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/126": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/127": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/128": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/129": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/130": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/131": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/132": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/133": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/135": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/137": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/138": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/139": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/14": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/140": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/141": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/142": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/143": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/145": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/16": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/160": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/161": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/162": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/164": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/165": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/166": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/167": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/168": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/17": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/170": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/171": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/172": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/18": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/19": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/2": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/20": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/222": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/223": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/224": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/226": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/227": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/229": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/230": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/232": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/233": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/234": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/235": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/237": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/238": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/239": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/240": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/242": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/244": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/245": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/247": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/249": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/250": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/251": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/252": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/253": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/255": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/256": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/257": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/259": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/260": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/261": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/262": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/264": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/265": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/266": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/267": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/268": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/269": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/270": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/271": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/272": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/273": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/274": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/276": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/277": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/278": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/279": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/280": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/281": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/282": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/283": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/284": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/285": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/286": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/287": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/290": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/292": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/293": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/294": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/295": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/296": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/297": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/299": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/3": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/300": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/301": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/305": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/306": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/308": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/309": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/310": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/311": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/312": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/388": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/389": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/390": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/391": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/392": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/394": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/395": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/396": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/397": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/398": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/4": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/400": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/404": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/405": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/406": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/407": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/409": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/410": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/412": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/413": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/414": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/415": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/418": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/419": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/420": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/421": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/422": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/424": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/425": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/426": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/427": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/428": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/429": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/430": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/431": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/432": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/433": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/435": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/436": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/437": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/438": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/439": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/440": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/441": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/442": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/445": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/446": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/447": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/448": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/450": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/451": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/453": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/454": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/455": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/456": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/457": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/458": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/459": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/460": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/461": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/462": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/463": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/465": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/468": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/470": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/471": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/472": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/473": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/474": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/475": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/476": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/477": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/478": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/479": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/554": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/555": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/556": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/557": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/558": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/559": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/56": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/560": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/562": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/563": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/564": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/565": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/566": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/567": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/568": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/569": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/57": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/572": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/573": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/574": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/576": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/577": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/578": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/579": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/58": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/580": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/581": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/582": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/583": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/585": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/586": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/587": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/588": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/589": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/59": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/590": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/591": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/592": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/593": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/594": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/595": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/596": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/597": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/598": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/599": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/6": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/600": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/602": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/603": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/604": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/605": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/606": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/607": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/608": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/61": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/610": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/611": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/612": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/614": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/615": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/616": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/618": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/619": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/62": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/620": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/622": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/623": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/624": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/626": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/628": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/629": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/63": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/630": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/631": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/632": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/633": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/635": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/637": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/638": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/639": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/64": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/640": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/641": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/643": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/644": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/65": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/66": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/67": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/68": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/69": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/7": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/70": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/71": {
+      "base": false,
+      "plus": true
+    },
+    "Mbpp/72": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/720": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/721": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/722": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/723": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/724": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/725": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/726": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/728": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/730": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/731": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/732": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/733": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/734": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/735": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/736": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/737": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/739": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/74": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/740": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/741": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/742": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/743": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/744": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/745": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/746": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/748": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/749": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/75": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/750": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/751": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/752": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/753": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/754": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/755": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/757": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/758": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/759": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/760": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/762": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/763": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/764": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/765": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/766": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/767": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/769": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/77": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/770": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/771": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/772": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/773": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/775": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/777": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/778": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/780": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/781": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/782": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/783": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/784": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/785": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/786": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/787": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/788": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/79": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/790": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/791": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/792": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/793": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/794": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/796": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/797": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/798": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/799": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/8": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/80": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/800": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/801": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/803": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/804": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/805": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/806": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/807": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/808": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/809": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/82": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/83": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/84": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/85": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/86": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/87": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/88": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/89": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/9": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/90": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/91": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/92": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/93": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/94": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/95": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/96": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/97": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/98": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/99": {
+      "base": false,
+      "plus": false
+    }
+  },
+  "model_key": "codegemma-7b",
+  "model": "google/codegemma-7b-it",
+  "arm": "tuned_L0",
+  "benchmark": "mbppplus",
+  "adapter": "/work/jvl210002/migration/obtune/runs/adapters/codegemma-7b/python/L0_r32_s17/best",
+  "icl_demos": null,
+  "engine": "vllm-0.26.0",
+  "gen_seconds": 27.4,
+  "identical_to_base": 0,
+  "sample_generations": [
+    "def next_smallest_palindrome(num):\n    \"\"\"\n    Write a function to find the next smallest palindrome of a specified integer, returned as an integer.\n    assert next_smallest_palindrome(99)==101\n    \"\"\"\n    num += 1\n    while not is_palindrome(num):\n        num += 1\n    return num\n\ndef is_palindrome(num):\n    \"\"\"\n    Write a function to check if a number is a palindrome, returned as a boolean.\n    assert is_palindrome(121)==True\n    \"\"\"\n    return str(num) == str(num)[::-1]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef is_palindrome(num):\n    \"\"\"\n    Write a function to check if a number is a palindrome, returned as a boolean.\n    assert is_palindrome(121)==True\n    \"\"\"\n    return str(num) == str(num)[::-1]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef next_smallest_palindrome(num):\n    \"\"\"\n    Write a function to find the next smallest palindrome of a specified integer, returned as an integer.\n    assert next_smallest_palindrome(99)==101\n    \"\"\"\n    num += 1\n    while not is_palindrome(num):\n        num += 1\n    return num<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef is_palindrome(num):\n    \"\"\"\n    Write a function to check if a number is a palindrome, returned as a boolean.\n    assert is_palindrome(121)==True\n    \"\"\"\n    return str(num) == str(num)[::-1]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef next_smallest_palindrome(num):\n    \"\"\"\n    Write a function to find the next smallest palindrome of a specified integer, returned as an integer.\n    assert next_smallest_palindrome(99)==101\n    \"\"\"\n    num += 1\n    while not is_palindrome(num):\n        num += 1\n    return num<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef is_palindrome(num):\n    \"\"\"\n    Write a function to check if a number is a palindrome, returned as a boolean.\n    assert is_palindrome(121)==True\n    \"\"\"\n    return str(num) == str(num)[::-1]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef next_smallest_palindrome(num",
+    "def kth_element(array, k):\n  return array[k-1]<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 2) == 3<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 3) == 5<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 5) == 19<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 1) == 12<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 10) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 0) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], -1) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([], 1) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12], 1) == 12<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12], 2) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12], 0) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-based indexing.\nassert kth_element([12], -1) == None<end_of_turn>\n<end_of_turn>\nThe kth element in the given array using 1-",
+    "def snake_to_camel(snake_str):\n    \"\"\"\n    Converts a snake case string to camel case string.\n    \"\"\"\n    camel_str = \"\"\n    for word in snake_str.split(\"_\"):\n        camel_str += word.capitalize()\n    return camel_str<end_of_turn>\n<end_of_turn>\nThe function is working as expected.\n\"\"\"<end_of_turn>\nThe function is working as expected.<end_of_turn>\n\"\"\"<end_of_turn>\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"<end_of_turn>\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe function is working as expected.<end_of_turn>\n\"\"\"\nThe",
+    "def eulerian_num(n, m):\n    if m == 0 or m == n:\n        return 1\n    else:\n        return (n * eulerian_num(n - 1, m - 1) - (n - 1) * eulerian_num(n - 1, m)) / n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n\"\"\"<end_of_turn>\n<end_of_turn>\ndef eulerian_num(n, m):\n    if m == 0 or m == n:\n        return 1\n    else:\n        return (n * eulerian_num(n - 1, m - 1) - (n - 1) * eulerian_num(n - 1, m)) / n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n\"\"\"<end_of_turn>\n<end_of_turn>\ndef eulerian_num(n, m):\n    if m == 0 or m == n:\n        return 1\n    else:\n        return (n * eulerian_num(n - 1, m - 1) - (n - 1) * eulerian_num(n - 1, m)) / n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n\"\"\"<end_of_turn>\n<end_of_turn>\ndef eulerian_num(n, m):\n    if m == 0 or m == n:\n        return 1\n    else:\n        return (n * eulerian_num(n - 1, m - 1) - (n - 1) * eulerian_num(n - 1, m)) / n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to find the Eulerian number a(n, m).\nassert eulerian_num(3, 1) == 4\n\"\"\"<end_of_turn>\n<end_of_turn>\ndef eulerian_num(n, m):\n    if m == 0 or m == n:\n        return 1\n    else:",
+    "def sort_sublists(list_of_lists):\n  \"\"\"\n  Sort each sublist of strings in a given list of lists.\n  \"\"\"\n  for sublist in list_of_lists:\n    sublist.sort()\n  return list_of_lists<end_of_turn>\n<end_of_turn>\n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n\"\"\"<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef sort_sublists(list_of_lists):\n  \"\"\"\n  Sort each sublist of strings in a given list of lists.\n  \"\"\"\n  for sublist in list_of_lists:\n    sublist.sort()\n  return list_of_lists<end_of_turn>\n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n\"\"\"<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef sort_sublists(list_of_lists):\n  \"\"\"\n  Sort each sublist of strings in a given list of lists.\n  \"\"\"\n  for sublist in list_of_lists:\n    sublist.sort()\n  return list_of_lists<end_of_turn>\n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to sort each sublist of strings in a given list of lists.\nassert sort_sublists(([\"green\", \"orange\"], [\"black\", \"white\"], [\"white\", \"black\", \"orange\"]))==[['green', 'orange'], ['black', 'white'], ['black', 'orange', 'white']]\n\"\"\"<end_of_turn>\n<end_of_turn>\n<end_of_turn>\ndef sort_sublists(list_of_lists):\n  \"\"\"\n  Sort each sublist of strings in a given list of lists.\n  \"\"\"\n  for sublist in list_of_lists:\n    sublist.sort()\n  return list_of_lists<end_of_turn>\n<end_of_turn>\n<end_of_turn>\n\"\"\"\nWrite a function to sort each sublist of strings in a given"
+  ],
+  "sample_format_failures": [
+    "def remove_Occ(str, c):\n    \"\"\"\n    Write a python function to remove first and last occurrence of a given character from the string.\n    assert remove_Occ(\"hello\",\"l\") == \"heo\"\n    \"\"\"\n    if str[0] == c:\n        str = str[1:]\n    if str[-1] == c:\n        str = str[:-1]\n    return str<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function should be called remove_Occ and it should take two arguments, a string and a character. The function should return a new string with the first and last occurrence of the character removed. The function should not modify the original string.\nThe function should be tested with the following assert statement:\n```\nassert remove_Occ(\"hello\",\"l\") == \"heo\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"world\",\"d\") == \"worl\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"ll\",\"l\") == \"\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"a\",\"a\") == \"\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"aa\",\"a\") == \"\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"aaa\",\"a\") == \"aa\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"ab\",\"a\") == \"b\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"ab\",\"b\") == \"a\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"aba\",\"a\") == \"ba\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"aba\",\"b\") == \"aa\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_Occ(\"abaa\",\"a\") == \"ba\"<end_of_turn>\n```\nThe function should also be tested with the following assert statement:\n```\nassert remove_",
+    "def sort_matrix(matrix):\n    \"\"\"\n    Write a function to sort a given matrix in ascending order according to the sum of its rows.\n    assert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]\n    \"\"\"\n    for i in range(len(matrix)):\n        for j in range(i + 1, len(matrix)):\n            if sum(matrix[i]) > sum(matrix[j]):\n                matrix[i], matrix[j] = matrix[j], matrix[i]\n    return matrix<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `sort_matrix` takes a matrix as input and returns a new matrix with the rows sorted in ascending order of the sum of their elements. The function works by iterating over the matrix and comparing the sum of the elements in each row to the sum of the elements in the rows that follow it. If the sum of the elements in a row is greater than the sum of the elements in the row that follows it, the two rows are swapped. The function continues to iterate over the matrix until all the rows are sorted in ascending order of the sum of their elements.\n<end_of_turn>\nThe function `sort_matrix` satisfies the given specification. The following is a test of the function:\n```python\nassert sort_matrix([[1, 2, 3], [2, 4, 5], [1, 1, 1]])==[[1, 1, 1], [1, 2, 3], [2, 4, 5]]<end_of_turn>\n```\nThe function `sort_matrix` returns the following result:\n```\n[[1, 1, 1], [1, 2, 3], [2, 4, 5]]<end_of_turn>\n<end_of_turn>\nThe function `sort_matrix` is working as expected.\n<end_of_turn>\nThe function `sort_matrix` is a well-written and efficient function that can be used to sort a matrix in ascending order of the sum of its rows. The function is easy to understand and use, and it is also very fast.\n<end_of_turn>\nThe function `sort_matrix` is a valuable tool for anyone who needs to sort a matrix in ascending order of the",
+    "def count_samepair(list1, list2, list3):\n    count = 0\n    for i in range(len(list1)):\n        if list1[i] == list2[i] == list3[i]:\n            count += 1\n    return count<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function should return the number of items that are identical in the same position of three given lists. The function should be called with three arguments, each of which is a list of the same length. The function should return an integer representing the number of items that are identical in the same position of the three lists. The function should be called with the following arguments:\n```\n[1,2,3,4,5,6,7,8]\n[2,2,3,1,2,6,7,9]\n[2,1,3,1,2,6,7,9]\n```\nThe function should return the value 3. The first item in each list is 1, 2, and 2. The second item in each list is 2, 2, and 1. The third item in each list is 3, 3, and 3. The fourth item in each list is 4, 1, and 1. The fifth item in each list is 5, 2, and 2. The sixth item in each list is 6, 6, and 6. The seventh item in each list is 7, 7, and 7. The eighth item in each list is 8, 9, and 9. The first three items in the list are the same in all three lists.\nThe function should be called with the following arguments:\n```\n[1,2,3,4,5,6,7,8]\n[2,2,3,1,2,6,7,9]\n[2,1,3,1,2,6,7,9]\n```\nThe function should return the value 3. The first item in each list is 1, 2, and 2. The second item in each list is 2, 2, and 1. The third item in each list is 3, 3, and 3. The fourth item in each list is 4, 1, and 1. The fifth item in",
+    "def count_char_position(text):\n    count = 0\n    for i in range(len(text)):\n        if text[i].lower() == chr(ord('a') + i):\n            count += 1\n    return count<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function count_char_position() counts the number of characters in a string that occur at the same position in the string as in the English alphabet (case insensitive). The function takes a string as input and returns the number of characters that are in the correct position.\nFor example, the string \"xbcefg\" has two characters in the correct position, \"b\" and \"e\".\nThe function should be case insensitive, so the string \"XBCefg\" has also two characters in the correct position.\nThe function should also work for strings of any length.\nThe function should be written in Python 3.\nThe function should be tested with the following code:\n```\nassert count_char_position(\"xbcefg\") == 2\nassert count_char_position(\"XBCefg\") == 2\nassert count_char_position(\"abc\") == 1\nassert count_char_position(\"abcabc\") == 2\n```\nThe function should pass all of the tests.\nThe function should be written in Python 3.\nThe function should be written in a way that is easy to read and understand.\nThe function should be written in a way that is easy to maintain.\nThe function should be written in a way that is easy to extend.\nThe function should be written in a way that is easy to debug.\nThe function should be written in a way that is easy to test.\nThe function should be written in a way that is easy to use.\nThe function should be written in a way that is easy to deploy.\nThe function should be written in a way that is easy to scale.\nThe function should be written in a way that is easy to monitor.\nThe function should be written in a way that is easy to maintain.\nThe function should be written in a way that is easy to extend.\nThe function should be written in a way that is easy to debug.\nThe function should be written in a way that is easy to test.\nThe function should be written in a way that is easy to use.\nThe function should be written in a way that is easy to deploy.",
+    "def max_sum_increasing_subseq(arr, n, i, k):\n    if i < 0 or i >= n or k < i or k >= n:\n        return -1\n    \n    max_sum = arr[i]\n    for j in range(i + 1, k + 1):\n        if arr[j] > arr[j - 1]:\n            max_sum += arr[j]\n    return max_sum<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `max_sum_increasing_subseq` takes an array of integers, the size of the array, the index i, and the index k as input and returns the maximum sum of increasing subsequence from prefix until ith index and also including a given kth element which is after i, i.e., k > i .\nThe function first checks if the input indices are valid. If not, it returns -1.\nIf the indices are valid, the function initializes a variable max_sum to arr[i] and iterates from i + 1 to k + 1.\nInside the loop, the function checks if arr[j] is greater than arr[j - 1]. If it is, the function adds arr[j] to max_sum.\nFinally, the function returns max_sum.\nThe function is tested with the following example:\n```\nassert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 7, 4) == -1<end_of_turn>\n<end_of_turn>\nThe function `max_sum_increasing_subseq` is tested with the following example:\n```\nassert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 4, 6) == 11<end_of_turn>\n<end_of_turn>\nThe function `max_sum_increasing_subseq` is tested with the following example:\n```\nassert max_sum_increasing_subseq([1, 101, 2, 3, 100, 4, 5 ], 7, 0, 6) == 10<end_of_turn>\n<end_of_turn>\nThe function `max_sum_increasing_subseq` is tested with the following example:\n```\nassert",
+    "def min_product_tuple(list_of_tuples):\n  \"\"\"\n  This function finds the minimum product from the pairs of tuples within a given list.\n  \"\"\"\n  min_product = float('inf')\n  for i in range(len(list_of_tuples)):\n    for j in range(i + 1, len(list_of_tuples)):\n      product = list_of_tuples[i][0] * list_of_tuples[j][1]\n      if product < min_product:\n        min_product = product\n  return min_product<end_of_turn>\n<end_of_turn>\nThe function `min_product_tuple` takes a list of tuples as input and returns the minimum product from the pairs of tuples within the list. The function works by iterating over each pair of tuples and calculating the product of their elements. The function then keeps track of the minimum product found and returns it at the end.\nThe function is tested with the following example:\n```python\nassert min_product_tuple([(2, 7), (2, 6), (1, 8), (4, 9)] )==8<end_of_turn>\n```\nThe function returns the value 8, which is the minimum product from the pairs of tuples in the list.\nThe function is also tested with the following example:\n```python\nassert min_product_tuple([(1, 2), (3, 4), (5, 6), (7, 8)] )==12<end_of_turn>\n```\nThe function returns the value 12, which is the minimum product from the pairs of tuples in the list.\nThe function is also tested with the following example:\n```python\nassert min_product_tuple([(1, 1), (2, 2), (3, 3), (4, 4)] )==4<end_of_turn>\n```\nThe function returns the value 4, which is the minimum product from the pairs of tuples in the list.\nThe function is also tested with the following example:\n```python\nassert min_product_tuple([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)] )==10<end_of_turn>\n```\nThe function returns the value 10, which is the minimum product from the pairs of tuples in the list.\nThe function is also tested with the",
+    "def overlapping(seq1, seq2):\n    \"\"\"\n    This function checks if any value in a sequence exists in another sequence.\n    \"\"\"\n    for i in seq1:\n        if i in seq2:\n            return True\n    return False<end_of_turn>\n<end_of_turn>\nThe function `overlapping` takes two sequences as input and returns a boolean value indicating whether any value in the first sequence exists in the second sequence. The function works by iterating over the first sequence and checking if each value is in the second sequence. If a value is found in the second sequence, the function returns `True`. Otherwise, the function returns `False`.\n<end_of_turn>\nThe `assert` statement in the original code is used to test the function. The `assert` statement checks if the function returns the expected value for a given set of input values. In this case, the `assert` statement checks if the function returns `False` for the input values `[1,2,3,4,5]` and `[6,7,8,9]`. The `assert` statement will pass if the function returns `False`, and it will fail if the function returns `True`.\nThe `overlapping` function is a simple and efficient way to check if any value in a sequence exists in another sequence. The function is useful for a variety of applications, such as checking if two lists of words have any common words or checking if a set of numbers is a subset of another set of numbers.\n```<end_of_turn>\nThe `overlapping` function is a simple and efficient way to check if any value in a sequence exists in another sequence. The function is useful for a variety of applications, such as checking if two lists of words have any common words or checking if a set of numbers is a subset of another set of numbers.\n```<end_of_turn>\nThe `overlapping` function is a simple and efficient way to check if any value in a sequence exists in another sequence. The function is useful for a variety of applications, such as checking if two lists of words have any common words or checking if a set of numbers is a subset of another set of numbers.\n```\nThe `overlapping` function is a simple and efficient way to check if any value in a sequence exists in another sequence. The function is useful for a variety of applications, such as checking if two lists of words have any common words or checking if a set of numbers is a subset of another set of numbers.\n```\nThe `overlapping` function is",
+    "def Extract(list):\n  return [sublist[0] for sublist in list]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function is called `Extract` and takes a list of lists as input. It should return a new list containing the first element of each sublist in the input list.\nFor example, if the input list is `[[1, 2], [3, 4, 5], [6, 7, 8, 9]]`, the function should return `[1, 3, 6]`.\nThe function works by using a list comprehension to iterate over the sublists in the input list and extract the first element of each sublist.\nThe list comprehension is a concise way to write a for loop that iterates over a list and performs an operation on each element.\nIn this case, the list comprehension is used to create a new list that contains the first element of each sublist in the input list.\nThe list comprehension is written as follows:\n```python\n[sublist[0] for sublist in list]<end_of_turn>\n```\nThe first part of the list comprehension is `sublist[0]`, which is the first element of each sublist in the input list.\nThe second part of the list comprehension is `for sublist in list`, which iterates over the sublists in the input list.\nThe result of the list comprehension is a new list that contains the first element of each sublist in the input list.\nFor example, the following code will return the first element of each sublist in the input list `[[1, 2], [3, 4, 5], [6, 7, 8, 9]]`:\n```python\n[sublist[0] for sublist in [[1, 2], [3, 4, 5], [6, 7, 8, 9]]]<end_of_turn>\n[1, 3, 6]<end_of_turn>\n<end_of_turn>\nThe function is called `Extract` and takes a list of lists as input. It should return a new list containing the first element of each sublist in the input list.\nFor example, if the input list is `[[1, 2], [3, 4, 5], [6, 7, 8, 9]]`, the function should return `[1, 3, 6]`.\nThe function works by using a list comprehension",
+    "def upper_ctr(str):\n    count = 0\n    for i in str:\n        if i.isupper():\n            count += 1\n    return count<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `upper_ctr` takes a string as input and returns the number of upper case characters in the string. The function works by iterating over the string and checking if each character is an upper case character. If it is, the function increments the count variable. The function then returns the count variable.\nThe function is tested with the following test case:\n```\nassert upper_ctr('PYthon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pyThOn') == 2\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```\nThe test case passes, and the function works as expected.\nThe function is also tested with the following test case:\n```\nassert upper_ctr('pytHon') == 1\n```",
+    "def max_subarray_product(arr):\n    \"\"\"\n    Write a function to find the maximum product subarray of the given array.\n    assert max_subarray_product([1, -2, -3, 0, 7, -8, -2]) == 112\n    \"\"\"\n    max_product = float('-inf')\n    current_product = 1\n    for num in arr:\n        if num == 0:\n            current_product = 1\n        else:\n            current_product *= num\n            max_product = max(max_product, current_product)\n    return max_product<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `max_subarray_product` takes an array of numbers as input and returns the maximum product of a subarray in the array. The function first initializes the `max_product` variable to negative infinity and the `current_product` variable to 1. The function then iterates through the array and updates the `current_product` variable by multiplying it by the current number. The `max_product` variable is then updated to the maximum of the current product and the previous `max_product`. The function then returns the `max_product` variable.\n<end_of_turn>\n<end_of_turn>\nThe function `max_subarray_product` satisfies the following specification. The assert statement shows the exact function name and signature you must use.\n```python\n\"\"\"\nWrite a function to find the maximum product subarray of the given array.\nassert max_subarray_product([1, -2, -3, 0, 7, -8, -2]) == 112\n\"\"\"\n```<end_of_turn>\n<end_of_turn>\nThe function `max_subarray_product` is a function that takes an array of numbers as input and returns the maximum product of a subarray in the array. The function first initializes the `max_product` variable to negative infinity and the `current_product` variable to 1. The function then iterates through the array and updates the `current_product` variable by multiplying it by the current number. The `max_product` variable is then updated to the maximum of the current product and the previous `max_product`. The function then returns the `max_product` variable.\n<end_of_turn>\n<end_of_turn>\nThe function `max_subarray_product` satisfies the following specification. The assert statement shows the exact function",
+    "def max_product(arr):\n    \"\"\"\n    Write a function to find the maximum product formed by multiplying numbers of an increasing subsequence of that array.\n    assert max_product([3, 100, 4, 5, 150, 6]) == 3000\n    \"\"\"\n    max_product = float('-inf')\n    current_product = 1\n    for num in arr:\n        current_product *= num\n        if current_product > max_product:\n            max_product = current_product\n        if current_product == 0:\n            current_product = 1\n    return max_product<end_of_turn>\n<end_of_turn>\nThe function `max_product()` is defined to take an array of numbers as input and returns the maximum product formed by multiplying numbers of an increasing subsequence of that array. The function initializes a variable `max_product` to negative infinity and a variable `current_product` to 1. The function then iterates over the array and multiplies `current_product` by each number. If `current_product` is greater than `max_product`, it is updated to `max_product`. If `current_product` is equal to 0, it is reset to 1. The function then returns `max_product`.\nThe function is then tested with the following test case:\n```\nassert max_product([3, 100, 4, 5, 150, 6]) == 3000\n```\nThe function returns the value 3000, which is the expected result.\nThe function is then tested with the following test case:\n```\nassert max_product([0, 1, 2, 3, 4, 5]) == 0\n```\nThe function returns the value 0, which is the expected result.\nThe function is then tested with the following test case:\n```\nassert max_product([1, -1, -2, -3, -4, -5]) == -10\n```\nThe function returns the value -10, which is the expected result.\nThe function is then tested with the following test case:\n```\nassert max_product([1, -1, -2, -3, -4, 5]) == -5\n```\nThe function returns the value -5",
+    "def digit_distance_nums(num1, num2):\n    \"\"\"\n    Write a python function to find the sum of the per-digit difference between two integers.\n    assert digit_distance_nums(1,2) == 1\n    \"\"\"\n    num1, num2 = str(num1), str(num2)\n    sum_diff = 0\n    for i in range(max(len(num1), len(num2))):\n        digit1 = int(num1[i]) if i < len(num1) else 0\n        digit2 = int(num2[i]) if i < len(num2) else 0\n        sum_diff += abs(digit1 - digit2)\n    return sum_diff<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `digit_distance_nums` takes two integers as input and returns the sum of the per-digit difference between them. The function first converts the integers to strings to allow for easy access to each digit. It then iterates over the strings, comparing the digits at each position. If a digit is not present in a string, it is treated as 0. The difference between the digits is then added to the `sum_diff` variable. Finally, the function returns the `sum_diff` variable.<end_of_turn>\n<end_of_turn>\nThe function `digit_distance_nums` satisfies the following specification. The assert statement shows the exact function name and signature you must use.\n```\n\"\"\"\nWrite a python function to find the sum of the per-digit difference between two integers.\nassert digit_distance_nums(1,2) == 1\n\"\"\"\n<end_of_turn>\n<end_of_turn>\nThe function `digit_distance_nums` satisfies the following specification. The assert statement shows the exact function name and signature you must use.\n```\n\"\"\"\nWrite a python function to find the sum of the per-digit difference between two integers.\nassert digit_distance_nums(1,2) == 1\n\"\"\"\n<end_of_turn>\n<end_of_turn>\nThe function `digit_distance_nums` satisfies the following specification. The assert statement shows the exact function name and signature you must use.\n```\n\"\"\"\nWrite a python function to find the sum of the per-digit difference between two integers.\nassert digit_distance_nums(1,2) == 1\n\"\"\"\n<end_of_turn>\n<end_of_turn>\nThe function `digit_distance_nums` satisfies",
+    "def polar_rect(r,theta):\n    \"\"\"\n    Converts polar coordinates to rectangular coordinates.\n    \"\"\"\n    x = r * np.cos(theta)\n    y = r * np.sin(theta)\n    return (x, y), (x - 1.0j * y)<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `polar_rect` takes two arguments, `r` and `theta`, and returns a tuple of two elements. The first element is a tuple containing the rectangular coordinates (x, y), and the second element is a complex number representing the rectangular coordinates in the form (x - 1.0j * y).\n\nThe function first calculates the rectangular coordinates (x, y) using the following formulas:\n```\nx = r * np.cos(theta)\ny = r * np.sin(theta)\n```\nThe function then calculates the complex number representing the rectangular coordinates in the form (x - 1.0j * y) using the following formula:\n```\n(x - 1.0j * y)\n```\nThe function then returns a tuple of the two elements.\n\nFor example, the following code will call the `polar_rect` function with the arguments 3 and 4, and will print the result:\n```\n>>> print(polar_rect(3,4))\n((5.0, 0.9272952180016122), (-2+2.4492935982947064e-16j))<end_of_turn>\n```\nAs you can see, the result is a tuple of two elements. The first element is a tuple containing the rectangular coordinates (5.0, 0.9272952180016122), and the second element is a complex number representing the rectangular coordinates in the form (5.0 - 1.0j * 0.9272952180016122).<end_of_turn>\n<end_of_turn>\nThe function `polar_rect` is a useful tool for converting between polar and rectangular coordinates. It can be used to convert between different coordinate systems, or to perform calculations in one coordinate system and then convert the results to the other coordinate system.<end_of_turn>\n<end_of_turn>\nThe function `polar_rect` is a well-written and easy",
+    "def differ_At_One_Bit_Pos(num1, num2):\n    \"\"\"\n    Write a python function to check whether the two numbers differ at one bit position only or not.\n    \"\"\"\n    xor_result = num1 ^ num2\n    return (xor_result & (xor_result - 1)) == 0<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function works by performing a bitwise XOR operation on the two numbers and then checking if the result is a power of two. If the result is a power of two, then the two numbers differ at one bit position only. The & operation with (xor_result - 1) is used to clear the least significant set bit in the result. If the result is zero, then the two numbers differ at one bit position only.\n<end_of_turn>\nThe function is tested with the following code:\n```python\nassert differ_At_One_Bit_Pos(13,9) == True\nassert differ_At_One_Bit_Pos(13,10) == True\nassert differ_At_One_Bit_Pos(13,12) == True\nassert differ_At_One_Bit_Pos(13,14) == True\nassert differ_At_One_Bit_Pos(13,15) == False\n```\nThe function works as expected.\n<end_of_turn>\nThe function can be improved by using a more efficient bitwise operation to check if the result is a power of two. The following code shows an example of how to do this:\n```python\ndef differ_At_One_Bit_Pos(num1, num2):\n    \"\"\"\n    Write a python function to check whether the two numbers differ at one bit position only or not.\n    \"\"\"\n    xor_result = num1 ^ num2\n    return (xor_result & -xor_result) == xor_result<end_of_turn>\n<end_of_turn>\nThe function works by performing a bitwise AND operation on the result of the bitwise XOR operation and its negation. The result of this operation is a number with a single bit set to 1 in the position of the least significant set bit in the result. The function then checks if the result is equal to the original result. If the result is equal, then the two numbers differ at one bit position only.\nThe function is tested with the same code as before. The function works as expected.<end_of_turn>",
+    "def tuple_modulo(tuple1, tuple2):\n  \"\"\"\n  This function takes two tuples of the same length and performs the element wise modulo.\n  \"\"\"\n  return tuple(a % b for a, b in zip(tuple1, tuple2))<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function `tuple_modulo` takes two tuples of the same length and performs the element wise modulo. The function uses a list comprehension to iterate over the two tuples and perform the modulo operation on each element. The result is then returned as a new tuple.\n```\nassert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)<end_of_turn>\n```\nThe assert statement checks if the result of the `tuple_modulo` function is equal to the expected result. The result is as expected, so the test case passes.\n```\nassert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)<end_of_turn>\n```\nThe function `tuple_modulo` takes two tuples of the same length and performs the element wise modulo. The function uses a list comprehension to iterate over the two tuples and perform the modulo operation on each element. The result is then returned as a new tuple.\n```\nassert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)<end_of_turn>\n```\nThe assert statement checks if the result of the `tuple_modulo` function is equal to the expected result. The result is as expected, so the test case passes.\n```\nassert tuple_modulo((10, 4, 5, 6), (5, 6, 7, 5)) == (0, 4, 5, 1)<end_of_turn>\n```\nThe function `tuple_modulo` takes two tuples of the same length and performs the element wise modulo. The function uses a list comprehension to iterate over the two tuples and perform the modulo operation on each element. The result is then returned as a new tuple.\n```\nassert tuple_modulo((10, 4, 5, 6), (5, 6, 7, "
+  ],
+  "provenance": {
+    "experiment": "retention/benchmark-panel",
+    "run_id": "mbppplus_codegemma-7b_tuned_L0",
+    "seed": 17,
+    "config_path": "configs/eval/_base_eval.yaml",
+    "config_resolved": {
+      "engine": {
+        "backend": "vllm",
+        "dtype": "bfloat16",
+        "gpu_memory_utilization": 0.9,
+        "max_lora_rank": 64,
+        "max_loras": 4,
+        "max_cpu_loras": 32,
+        "seed": 17,
+        "max_model_len": 8192
+      },
+      "sampling": {
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_tokens": 512,
+        "stop": [],
+        "seed": 17
+      }
+    },
+    "model_hf_id": "google/codegemma-7b-it",
+    "model_revision_resolved": null,
+    "adapter": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters/codegemma-7b/python/L0_r32_s17/best",
+      "sha256": "0e2d2d6dd39d17890c12e329fb776539d2b473e6146a356d83daed55890d08aa"
+    },
+    "gpu_visible": "0",
+    "command": "/work/jvl210002/migration/obtune/src/obtune/bench_retention.py --model codegemma-7b --benchmark mbpp",
+    "git_commit": "2d440e1c57db39818e0f01a19d4025d0d211a8a5",
+    "script_sha256": {
+      "src/obtune/bench_retention.py": "7c307ac0b24db6663104853e74899616e6244cc7e75b8c1c13100592db73c6b3"
+    },
+    "started_utc": "2026-09-23T23:56:42.637174+00:00",
+    "finished_utc": "2026-09-23T23:56:42.726054+00:00",
+    "libraries": {
+      "python": "3.12.14",
+      "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+      "torch": "2.11.0+cu129",
+      "transformers": "5.14.1",
+      "peft": "0.20.0",
+      "trl": "1.9.2",
+      "vllm": "0.26.0",
+      "numpy": "2.3.5"
+    },
+    "extra": {}
+  },
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
+}

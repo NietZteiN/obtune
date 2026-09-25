@@ -2,7 +2,7 @@
   "n_tasks": 399,
   "n_scorer_errors": 0,
   "pass@1_base": 0.6516,
-  "pass@1_plus": 0.5414,
+  "pass@1_plus": 0.5439,
   "format_fail_rate": 0.0025,
   "raw_no_def_rate": 0.0025,
   "entry_point_mismatch": 1,
@@ -349,7 +349,7 @@
     },
     "Mbpp/259": {
       "base": true,
-      "plus": false
+      "plus": true
     },
     "Mbpp/260": {
       "base": false,

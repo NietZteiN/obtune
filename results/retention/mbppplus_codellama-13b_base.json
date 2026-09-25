@@ -1,8 +1,8 @@
 {
   "n_tasks": 399,
   "n_scorer_errors": 0,
-  "pass@1_base": 0.604,
-  "pass@1_plus": 0.4912,
+  "pass@1_base": 0.6015,
+  "pass@1_plus": 0.4812,
   "format_fail_rate": 0.0,
   "raw_no_def_rate": 0.0,
   "entry_point_mismatch": 24,
@@ -657,7 +657,7 @@
     },
     "Mbpp/429": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "Mbpp/430": {
       "base": false,
@@ -785,7 +785,7 @@
     },
     "Mbpp/470": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "Mbpp/471": {
       "base": true,
@@ -881,7 +881,7 @@
     },
     "Mbpp/568": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "Mbpp/569": {
       "base": true,
@@ -925,7 +925,7 @@
     },
     "Mbpp/580": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "Mbpp/581": {
       "base": false,
@@ -936,7 +936,7 @@
       "plus": true
     },
     "Mbpp/583": {
-      "base": true,
+      "base": false,
       "plus": false
     },
     "Mbpp/585": {
