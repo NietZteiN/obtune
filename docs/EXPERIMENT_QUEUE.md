@@ -95,6 +95,12 @@ Stored parameters, peak inference memory, tokens/sec for untuned, single LoRA, r
 `tables/deployment_cost.tex` (`tab:deploycost`), `\input` in RQ2. Router 648M/679M params vs the
 merge's 80M/84M (**8×**), +0.6–0.7 GB peak, throughput within 1 % of a single adapter.
 **Gap:** two models profiled, not eight. `80_deployment_cost.py --tex` is the GPU-free emitter.
+**2026-09-25 — gap CLOSED.** All eight models profiled (34B on h200, job 422519). The table is
+transposed to one row per model (24 numeric columns did not fit acmsmall) and now writes to
+`paper/final/tables/` as well as `router_merger/`. Two claims from the two-model version did not
+survive eight: router throughput is **-8 % to +9 %** of a single LoRA, not "within 1 %", and the LoRA
+decode cost is 12-55 %, not "roughly half". The caption computes its ranges from the JSONs; the
+`alternatives.tex` paragraph is updated to match. Paper compiles clean.
 
 ### B8. Seed variance on CodeLlama-7B — **DONE, AND APPLIED TO THE CLAIMS (2026-09-22)**
 Three seeds for breadth and for the six specialists, to establish a noise floor. Requires real

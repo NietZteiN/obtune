@@ -89,12 +89,13 @@ its initialization. These controls separate gains from maintaining a
 multi-expert mixture from gains attributable to the learned routing function.
 \noindent\textbf{Deployment cost.} The router's cost relative to a merge is a storage cost rather
 than a speed one, and we measure it rather than assert it (Table~\ref{tab:deploycost}). On an
-identical greedy decode workload the router ships $648$M and $679$M parameters beside the base model
-on the two models profiled, against $80$M and $84$M for the merge --- $8\times$ --- and holds
-$0.6$--$0.7$\,GB more at peak, while its throughput is within $1\,\%$ of a single adapter's. Running
-a gate at every layer and token is therefore not what one pays for; keeping eight experts resident
-is. Decoding through any adapter costs roughly half the untuned model's tokens per second in our
-unfused implementation, but that is shared by every adapted arm and separates none of them.
+identical greedy decode workload across all eight models, the router ships $404$M--$1{,}768$M
+parameters beside the base model against $48$M--$218$M for the merge ($8.1$--$8.3\times$) and holds
+$0.4$--$1.7$\,GB more at peak, while its throughput is $-8\,\%$ to $+9\,\%$ of a single adapter's,
+a spread within the noise of one timed run. Running a gate at every layer and token is therefore not
+what one pays for; keeping eight experts resident is. Decoding through any adapter costs $12$--$55\,\%$
+of the untuned model's tokens per second in our unfused implementation, but that is shared by every
+adapted arm and separates none of them.
 
 \input{tables/deployment_cost}
 
