@@ -197,7 +197,10 @@ share_limits:
   # feeder is stopped and ../probing holds nothing, so the whole MaxJobsPU=4 pool is free; 4 is the
   # ceiling. Carries the A2 ICL-backward, A3 backward depth-3 and B10 seed-42 jobs. Return to 0 (or
   # hand slots back) the moment another project on this account needs them.
-  h200: 4
+  # BACK TO 0 ON 2026-09-25: the round's GPU work is finished -- A2 ICL-backward (8/8), A3
+  # backward depth-3 (4/4), B7 cost (8/8) and B10 retention incl. the seed-42 replication. obtune
+  # holds nothing; the other projects on this account have the whole pool.
+  h200: 0
   normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:

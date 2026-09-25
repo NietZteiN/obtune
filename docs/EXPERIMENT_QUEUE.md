@@ -41,6 +41,11 @@ L1b/L1r/L2/S1/S2, the forward ICL arm's recipe) into `inverse_generic` at `max_m
 at the default 2176 a large, length-biased share of four-demo prompts would have been dropped.
 `73_direction_lock.py` has the column. 7 of 8 models submitted behind a smoke (422772);
 **CodeLlama-34B not submitted** -- it needs an h200 slot and both are held.
+**2026-09-25 — DONE on all eight models** (34B: job 424652). Backward exec accuracy, ICL vs the
+one-shot base: below on 6 of 8 (by 1.1-5.6 pts), level on Llama-3.1-8B and Granite; the merge beats
+ICL on 7 of 8 (Granite: all three within 1.1 pts). ICL's direction-lock rate is 0.000-0.007, the same
+as base -- its shortfall is not the forward-answer fallback that sinks the tuned arms. Tables in
+`paper/router_merger/tables/{direction_lock,backward_decomp}.tex`; **not yet in `paper/final/`**.
 
 ### A3. Specialist-subset merges — **DONE**
 Four ingredient sets at fixed operator/density/weights/rank: `no-L0` (L1b,L1r,L2,S1,S2),
@@ -53,6 +58,9 @@ reported** and the reviewer asks for them.
 `76_merge_ablation.py`'s groups; the gap is **backward** only. The four `mergeablate_bwd_*` configs
 now carry `C3_L1r_S3_S4`, `C3_S1_S3_S4`, `C3_L1r_S1_S4`, `C4_L1r_S1_S3_S4`; the six-way reference
 already has those backward cells in `inverse_generic`. Jobs 422780-422783.
+**2026-09-25 — DONE.** Backward, breadth wins at every depth (d3: 6-way >= no-L0 > ident > struct
+wherever the narrow arms clear the format gate); forward, the two-specialist structural merge is at
+or above the six-way at d3/d4 on all four models. `merge_ablation.tex` is in `router_merger/` only.
 
 ### A4. Paired bootstrap intervals — **DONE**
 All eight requested contrasts are computed by `scripts/analysis/74_main_contrasts.py --ablation`,
@@ -192,7 +200,7 @@ Three models to go.
 
 ## New item, opened 2026-09-22
 
-### B10. General-coding-benchmark retention across the panel — **QUEUED**
+### B10. General-coding-benchmark retention across the panel — **DONE (2026-09-25), not yet in `paper/final/`**
 *Does obfuscation tuning cost general code ability?* CLAUDE.md §4.7 asks for this per adapter and
 it has never been run on the CodeLlama-era panel.
 
