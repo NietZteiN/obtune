@@ -193,7 +193,11 @@ share_limits:
   # the 94 GB H100 NVL even at gpu_memory_utilization 0.95) and cost_codellama-34b (B7's last
   # model). 2 leaves the other project on this account (../probing) two of the four slots.
   # Return to 0 when both land.
-  h200: 2
+  # RAISED 2 -> 4 ON 2026-09-25 (user: "ok maximize all gpus now bidir i stopped"). The bidirectional
+  # feeder is stopped and ../probing holds nothing, so the whole MaxJobsPU=4 pool is free; 4 is the
+  # ceiling. Carries the A2 ICL-backward, A3 backward depth-3 and B10 seed-42 jobs. Return to 0 (or
+  # hand slots back) the moment another project on this account needs them.
+  h200: 4
   normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
