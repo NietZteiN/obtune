@@ -91,15 +91,15 @@
         "d3 seen": {
           "base": 104.79,
           "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "ident": 97.87,
+          "no-L0": 113.51,
           "6-way": 114.11
         },
         "d4 seen": {
           "base": 99.1,
           "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "ident": 91.82,
+          "no-L0": 107.78,
           "6-way": 103.86
         },
         "unseen": {
@@ -124,24 +124,24 @@
       },
       "format_fail": {
         "base": {
-          "mean_ff": 0.061,
+          "mean_ff": 0.062,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "struct": {
-          "mean_ff": 0.327,
-          "gated": 12,
-          "cells": 16
+          "mean_ff": 0.38,
+          "gated": 16,
+          "cells": 20
         },
         "ident": {
-          "mean_ff": 0.081,
+          "mean_ff": 0.089,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "no-L0": {
-          "mean_ff": 0.054,
+          "mean_ff": 0.052,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "6-way": {
           "mean_ff": 0.041,
@@ -241,17 +241,17 @@
           "6-way": 124.62
         },
         "d3 seen": {
-          "base": 107.87,
+          "base": 107.79,
           "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "ident": 115.22,
+          "no-L0": 122.4,
           "6-way": 125.14
         },
         "d4 seen": {
-          "base": 108.9,
+          "base": 108.34,
           "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "ident": 119.54,
+          "no-L0": 122.34,
           "6-way": 124.02
         },
         "unseen": {
@@ -272,24 +272,24 @@
       },
       "format_fail": {
         "base": {
-          "mean_ff": 0.024,
+          "mean_ff": 0.023,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "struct": {
-          "mean_ff": 0.717,
-          "gated": 16,
-          "cells": 16
+          "mean_ff": 0.711,
+          "gated": 20,
+          "cells": 20
         },
         "ident": {
-          "mean_ff": 0.224,
+          "mean_ff": 0.2,
           "gated": 3,
-          "cells": 16
+          "cells": 20
         },
         "no-L0": {
-          "mean_ff": 0.134,
+          "mean_ff": 0.122,
           "gated": 1,
-          "cells": 16
+          "cells": 20
         },
         "6-way": {
           "mean_ff": 0.053,
@@ -389,17 +389,17 @@
           "6-way": 91.51
         },
         "d3 seen": {
-          "base": 77.7,
-          "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "base": 77.17,
+          "struct": 67.04,
+          "ident": 79.06,
+          "no-L0": 88.18,
           "6-way": 90.79
         },
         "d4 seen": {
-          "base": 68.47,
-          "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "base": 66.53,
+          "struct": 61.87,
+          "ident": 71.38,
+          "no-L0": 81.27,
           "6-way": 82.63
         },
         "unseen": {
@@ -424,24 +424,24 @@
       },
       "format_fail": {
         "base": {
-          "mean_ff": 0.075,
+          "mean_ff": 0.081,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "struct": {
-          "mean_ff": 0.103,
+          "mean_ff": 0.097,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "ident": {
-          "mean_ff": 0.052,
+          "mean_ff": 0.049,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "no-L0": {
-          "mean_ff": 0.054,
+          "mean_ff": 0.053,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "6-way": {
           "mean_ff": 0.054,
@@ -541,17 +541,17 @@
           "6-way": 96.77
         },
         "d3 seen": {
-          "base": 109.22,
-          "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "base": 109.31,
+          "struct": 68.12,
+          "ident": 70.05,
+          "no-L0": 89.85,
           "6-way": 94.88
         },
         "d4 seen": {
           "base": 104.95,
-          "struct": null,
-          "ident": null,
-          "no-L0": null,
+          "struct": 73.08,
+          "ident": 74.46,
+          "no-L0": 92.04,
           "6-way": 93.69
         },
         "unseen": {
@@ -576,24 +576,24 @@
       },
       "format_fail": {
         "base": {
-          "mean_ff": 0.21,
+          "mean_ff": 0.192,
           "gated": 2,
-          "cells": 16
+          "cells": 20
         },
         "struct": {
-          "mean_ff": 0.161,
+          "mean_ff": 0.157,
           "gated": 1,
-          "cells": 16
+          "cells": 20
         },
         "ident": {
-          "mean_ff": 0.193,
+          "mean_ff": 0.184,
           "gated": 3,
-          "cells": 16
+          "cells": 20
         },
         "no-L0": {
-          "mean_ff": 0.04,
+          "mean_ff": 0.039,
           "gated": 0,
-          "cells": 16
+          "cells": 20
         },
         "6-way": {
           "mean_ff": 0.036,
