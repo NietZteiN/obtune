@@ -2,7 +2,7 @@
   "n_tasks": 399,
   "n_scorer_errors": 0,
   "pass@1_base": 0.5313,
-  "pass@1_plus": 0.4361,
+  "pass@1_plus": 0.4336,
   "format_fail_rate": 0.0501,
   "raw_no_def_rate": 0.0501,
   "entry_point_mismatch": 20,
@@ -937,7 +937,7 @@
     },
     "Mbpp/583": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "Mbpp/585": {
       "base": true,
@@ -1691,5 +1691,6 @@
     },
     "extra": {}
   },
-  "train_seed": 42
+  "train_seed": 42,
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
 }

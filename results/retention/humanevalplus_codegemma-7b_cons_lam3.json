@@ -8,8 +8,8 @@
   "entry_point_mismatch": 0,
   "entry_point_mismatch_rate": 0.0,
   "extraction_repaired": 0,
-  "extraction_repaired_rate": 0.9756,
-  "uncompilable_rate": 0.0122,
+  "extraction_repaired_rate": 0.9817,
+  "uncompilable_rate": 0.0061,
   "per_task": {
     "HumanEval/0": {
       "base": true,

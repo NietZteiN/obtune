@@ -1,15 +1,15 @@
 {
   "n_tasks": 164,
   "n_scorer_errors": 0,
-  "pass@1_base": 0.3963,
-  "pass@1_plus": 0.3354,
+  "pass@1_base": 0.4146,
+  "pass@1_plus": 0.3476,
   "format_fail_rate": 0.0,
   "raw_no_def_rate": 0.0793,
   "entry_point_mismatch": 1,
   "entry_point_mismatch_rate": 0.0061,
   "extraction_repaired": 0,
-  "extraction_repaired_rate": 0.939,
-  "uncompilable_rate": 0.0488,
+  "extraction_repaired_rate": 0.9756,
+  "uncompilable_rate": 0.0122,
   "per_task": {
     "HumanEval/0": {
       "base": false,
@@ -320,8 +320,8 @@
       "plus": false
     },
     "HumanEval/20": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/21": {
       "base": false,
@@ -620,8 +620,8 @@
       "plus": false
     },
     "HumanEval/89": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/9": {
       "base": false,
@@ -652,7 +652,7 @@
       "plus": false
     },
     "HumanEval/96": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/97": {

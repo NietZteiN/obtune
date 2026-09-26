@@ -8,8 +8,8 @@
   "entry_point_mismatch": 20,
   "entry_point_mismatch_rate": 0.0175,
   "extraction_repaired": 0,
-  "extraction_repaired_rate": 0.9649,
-  "uncompilable_rate": 0.0125,
+  "extraction_repaired_rate": 0.9674,
+  "uncompilable_rate": 0.01,
   "per_task": {
     "Mbpp/100": {
       "base": true,

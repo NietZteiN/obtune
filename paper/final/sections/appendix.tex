@@ -415,3 +415,12 @@ model on which every arm exists.
 % landed after the bibliography. \clearpage emits them immediately, in order, right after this
 % section's text -- which is where the reader is told to look for them.
 \clearpage
+\section{Reverse-task decomposition}
+\label{app:bwddecomp}
+Table~\ref{tab:bwddecomp} splits reverse accuracy four ways for every model and method:
+execution-graded accuracy, exact recovery of the reference input, format success, and the
+direction-lock rate of Table~\ref{tab:dirlock}. It separates reverse reasoning from formatting
+failure and from answering the forward question instead.
+
+\input{tables/backward_decomp}
+\clearpage

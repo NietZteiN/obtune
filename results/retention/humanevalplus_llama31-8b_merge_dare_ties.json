@@ -2,7 +2,7 @@
   "n_tasks": 164,
   "n_scorer_errors": 0,
   "pass@1_base": 0.6341,
-  "pass@1_plus": 0.5915,
+  "pass@1_plus": 0.5854,
   "format_fail_rate": 0.0,
   "raw_no_def_rate": 0.0,
   "entry_point_mismatch": 0,
@@ -217,7 +217,7 @@
     },
     "HumanEval/144": {
       "base": false,
-      "plus": true
+      "plus": false
     },
     "HumanEval/145": {
       "base": false,

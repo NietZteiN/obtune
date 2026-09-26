@@ -1,15 +1,15 @@
 {
   "n_tasks": 399,
   "n_scorer_errors": 0,
-  "pass@1_base": 0.4862,
-  "pass@1_plus": 0.4185,
+  "pass@1_base": 0.5238,
+  "pass@1_plus": 0.4461,
   "format_fail_rate": 0.2105,
   "raw_no_def_rate": 0.0551,
   "entry_point_mismatch": 50,
   "entry_point_mismatch_rate": 0.213,
   "extraction_repaired": 0,
-  "extraction_repaired_rate": 0.8947,
-  "uncompilable_rate": 0.0652,
+  "extraction_repaired_rate": 0.9574,
+  "uncompilable_rate": 0.0025,
   "per_task": {
     "Mbpp/100": {
       "base": true,
@@ -20,7 +20,7 @@
       "plus": true
     },
     "Mbpp/102": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/103": {
@@ -404,7 +404,7 @@
       "plus": true
     },
     "Mbpp/274": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/276": {
@@ -608,8 +608,8 @@
       "plus": true
     },
     "Mbpp/414": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/415": {
       "base": true,
@@ -648,7 +648,7 @@
       "plus": false
     },
     "Mbpp/427": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/428": {
@@ -816,8 +816,8 @@
       "plus": true
     },
     "Mbpp/478": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/479": {
       "base": true,
@@ -996,20 +996,20 @@
       "plus": false
     },
     "Mbpp/598": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/599": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/6": {
       "base": false,
       "plus": false
     },
     "Mbpp/600": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/602": {
       "base": true,
@@ -1056,8 +1056,8 @@
       "plus": true
     },
     "Mbpp/614": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/615": {
       "base": false,
@@ -1164,8 +1164,8 @@
       "plus": true
     },
     "Mbpp/65": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/66": {
       "base": true,
@@ -1248,8 +1248,8 @@
       "plus": false
     },
     "Mbpp/734": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/735": {
       "base": false,
@@ -1300,7 +1300,7 @@
       "plus": false
     },
     "Mbpp/748": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/749": {
@@ -1348,8 +1348,8 @@
       "plus": false
     },
     "Mbpp/760": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/762": {
       "base": true,
@@ -1420,8 +1420,8 @@
       "plus": false
     },
     "Mbpp/782": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/783": {
       "base": false,
@@ -1441,7 +1441,7 @@
     },
     "Mbpp/787": {
       "base": false,
-      "plus": false
+      "plus": true
     },
     "Mbpp/788": {
       "base": true,
@@ -1596,8 +1596,8 @@
       "plus": true
     },
     "Mbpp/97": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/98": {
       "base": true,

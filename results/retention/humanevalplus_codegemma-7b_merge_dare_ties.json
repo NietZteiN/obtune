@@ -1,19 +1,19 @@
 {
   "n_tasks": 164,
   "n_scorer_errors": 0,
-  "pass@1_base": 0.0976,
-  "pass@1_plus": 0.0915,
+  "pass@1_base": 0.5427,
+  "pass@1_plus": 0.4695,
   "format_fail_rate": 0.0061,
   "raw_no_def_rate": 0.0427,
   "entry_point_mismatch": 2,
   "entry_point_mismatch_rate": 0.0122,
   "extraction_repaired": 1,
-  "extraction_repaired_rate": 0.0427,
-  "uncompilable_rate": 0.8049,
+  "extraction_repaired_rate": 0.8171,
+  "uncompilable_rate": 0.0305,
   "per_task": {
     "HumanEval/0": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/1": {
       "base": false,
@@ -40,20 +40,20 @@
       "plus": false
     },
     "HumanEval/104": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/105": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/106": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/107": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/108": {
       "base": false,
@@ -64,36 +64,36 @@
       "plus": false
     },
     "HumanEval/11": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/110": {
       "base": false,
       "plus": false
     },
     "HumanEval/111": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/112": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/113": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/114": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/115": {
       "base": false,
       "plus": false
     },
     "HumanEval/116": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/117": {
       "base": false,
@@ -108,8 +108,8 @@
       "plus": false
     },
     "HumanEval/12": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/120": {
       "base": false,
@@ -120,7 +120,7 @@
       "plus": true
     },
     "HumanEval/122": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/123": {
@@ -132,8 +132,8 @@
       "plus": false
     },
     "HumanEval/125": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/126": {
       "base": false,
@@ -144,8 +144,8 @@
       "plus": false
     },
     "HumanEval/128": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/129": {
       "base": false,
@@ -180,24 +180,24 @@
       "plus": false
     },
     "HumanEval/136": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/137": {
       "base": false,
       "plus": false
     },
     "HumanEval/138": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/139": {
       "base": false,
       "plus": false
     },
     "HumanEval/14": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/140": {
       "base": false,
@@ -208,12 +208,12 @@
       "plus": false
     },
     "HumanEval/142": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/143": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/144": {
       "base": false,
@@ -228,8 +228,8 @@
       "plus": false
     },
     "HumanEval/147": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/148": {
       "base": false,
@@ -240,16 +240,16 @@
       "plus": false
     },
     "HumanEval/15": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/150": {
       "base": false,
       "plus": false
     },
     "HumanEval/151": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/152": {
       "base": true,
@@ -268,24 +268,24 @@
       "plus": false
     },
     "HumanEval/156": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/157": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/158": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/159": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/16": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/160": {
       "base": false,
@@ -296,8 +296,8 @@
       "plus": false
     },
     "HumanEval/162": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/163": {
       "base": false,
@@ -308,11 +308,11 @@
       "plus": false
     },
     "HumanEval/18": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/19": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/2": {
@@ -320,52 +320,52 @@
       "plus": true
     },
     "HumanEval/20": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/21": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/22": {
       "base": true,
       "plus": false
     },
     "HumanEval/23": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/24": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/25": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/26": {
       "base": false,
       "plus": false
     },
     "HumanEval/27": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/28": {
       "base": true,
       "plus": true
     },
     "HumanEval/29": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/3": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/30": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/31": {
       "base": true,
@@ -384,12 +384,12 @@
       "plus": true
     },
     "HumanEval/35": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/36": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/37": {
       "base": false,
@@ -408,8 +408,8 @@
       "plus": true
     },
     "HumanEval/40": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/41": {
       "base": false,
@@ -424,27 +424,27 @@
       "plus": false
     },
     "HumanEval/44": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/45": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/46": {
       "base": false,
       "plus": false
     },
     "HumanEval/47": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/48": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/49": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/5": {
@@ -460,55 +460,55 @@
       "plus": true
     },
     "HumanEval/52": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/53": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/54": {
       "base": false,
       "plus": false
     },
     "HumanEval/55": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/56": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/57": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/58": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/59": {
       "base": false,
       "plus": false
     },
     "HumanEval/6": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/60": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/61": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/62": {
       "base": true,
       "plus": true
     },
     "HumanEval/63": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/64": {
@@ -520,8 +520,8 @@
       "plus": false
     },
     "HumanEval/66": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/67": {
       "base": false,
@@ -532,8 +532,8 @@
       "plus": false
     },
     "HumanEval/69": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/7": {
       "base": true,
@@ -544,16 +544,16 @@
       "plus": false
     },
     "HumanEval/71": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/72": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/73": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/74": {
       "base": true,
@@ -572,20 +572,20 @@
       "plus": false
     },
     "HumanEval/78": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/79": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/8": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/80": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/81": {
       "base": false,
@@ -604,11 +604,11 @@
       "plus": false
     },
     "HumanEval/85": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/86": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/87": {
@@ -616,8 +616,8 @@
       "plus": false
     },
     "HumanEval/88": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/89": {
       "base": false,
@@ -625,14 +625,14 @@
     },
     "HumanEval/9": {
       "base": false,
-      "plus": false
+      "plus": true
     },
     "HumanEval/90": {
       "base": false,
       "plus": false
     },
     "HumanEval/91": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/92": {
@@ -656,12 +656,12 @@
       "plus": true
     },
     "HumanEval/97": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "HumanEval/98": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "HumanEval/99": {
       "base": false,

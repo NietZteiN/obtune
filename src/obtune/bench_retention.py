@@ -186,8 +186,7 @@ def extract_code(raw: str, prompt: str) -> tuple[str, bool]:
     # tuned_L0 read 0.0 on MBPP+ while writing real functions on 399/399 tasks. The base
     # model fences its answer and never reaches this path. Tried only AFTER the uncut text
     # has failed, so a marker-like string inside legitimate code is never cut.
-    cut = _cut_at_turn_end(raw)
-    if cut != raw:
+    for cut in _truncations(raw):
         for cand in _candidates(cut, prompt):
             if _compiles(cand):
                 return cand, True
@@ -196,13 +195,41 @@ def extract_code(raw: str, prompt: str) -> tuple[str, bool]:
 
 # End-of-turn markers of the panel's chat templates (Gemma, Llama-3, Qwen/ChatML, Llama-2,
 # Granite, StarCoder2), for replies where the marker arrived as text rather than as a stop.
+# "<|file_separator|>" added 2026-09-25: CodeGemma's DARE-TIES merge ends its code with it, and
+# the merge read 11.0 on MBPP+ against a base of 56.4 with 78 % of replies uncompilable.
 _TURN_END = ("<end_of_turn>", "<|eot_id|>", "<|im_end|>", "</s>", "<|end_of_text|>",
-             "<|endoftext|>", "<|end_of_role|>")
+             "<|endoftext|>", "<|end_of_role|>", "<|file_separator|>")
 
 
 def _cut_at_turn_end(raw: str) -> str:
     idx = [i for i in (raw.find(m) for m in _TURN_END) if i >= 0]
     return raw[:min(idx)] if idx else raw
+
+
+def _cut_at_closing_fence(raw: str) -> str:
+    """Bare code followed by a CLOSING fence and prose, with no opening fence (2026-09-25).
+
+    `def f(): ...` then "```" then "The function ...": no block regex matches (there is no
+    opening fence), and dropping the fence line leaves the prose in the program. Keep only what
+    precedes the first fence line -- and only when a def does, so a reply that opens with a
+    fence is left to the block readings.
+    """
+    lines = raw.splitlines()
+    for i, ln in enumerate(lines):
+        if ln.strip().startswith("```"):
+            head = "\n".join(lines[:i])
+            return head if re.search(r"^\s*def\s+\w+\s*\(", head, re.M) else raw
+    return raw
+
+
+def _truncations(raw: str):
+    """Shorter readings of `raw`, tried only after the full text has failed to compile."""
+    seen = {raw}
+    a = _cut_at_turn_end(raw)
+    for t in (a, _cut_at_closing_fence(raw), _cut_at_closing_fence(a)):
+        if t not in seen:
+            seen.add(t)
+            yield t
 
 
 def _compiles(src: str) -> bool:

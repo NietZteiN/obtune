@@ -1,23 +1,23 @@
 {
   "n_tasks": 399,
   "n_scorer_errors": 0,
-  "pass@1_base": 0.1429,
-  "pass@1_plus": 0.1103,
-  "format_fail_rate": 0.1378,
+  "pass@1_base": 0.6466,
+  "pass@1_plus": 0.5414,
+  "format_fail_rate": 0.0,
   "raw_no_def_rate": 0.0,
   "entry_point_mismatch": 55,
-  "entry_point_mismatch_rate": 0.1378,
+  "entry_point_mismatch_rate": 0.0,
   "extraction_repaired": 0,
-  "extraction_repaired_rate": 0.005,
-  "uncompilable_rate": 0.7769,
+  "extraction_repaired_rate": 0.7569,
+  "uncompilable_rate": 0.0251,
   "per_task": {
     "Mbpp/100": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/101": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/102": {
       "base": false,
@@ -28,20 +28,20 @@
       "plus": false
     },
     "Mbpp/104": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/105": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/106": {
       "base": false,
       "plus": false
     },
     "Mbpp/108": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/109": {
       "base": false,
@@ -56,7 +56,7 @@
       "plus": false
     },
     "Mbpp/113": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/115": {
@@ -64,19 +64,19 @@
       "plus": false
     },
     "Mbpp/116": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/117": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/118": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/119": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/12": {
@@ -84,8 +84,8 @@
       "plus": true
     },
     "Mbpp/120": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/123": {
       "base": false,
@@ -104,39 +104,39 @@
       "plus": false
     },
     "Mbpp/127": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/128": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/129": {
       "base": false,
       "plus": false
     },
     "Mbpp/130": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/131": {
       "base": false,
       "plus": false
     },
     "Mbpp/132": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/133": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/135": {
       "base": false,
       "plus": false
     },
     "Mbpp/137": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/138": {
@@ -144,35 +144,35 @@
       "plus": false
     },
     "Mbpp/139": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/14": {
       "base": true,
       "plus": true
     },
     "Mbpp/140": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/141": {
       "base": false,
       "plus": false
     },
     "Mbpp/142": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/143": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/145": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/16": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/160": {
@@ -180,24 +180,24 @@
       "plus": false
     },
     "Mbpp/161": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/162": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/164": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/165": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/166": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/167": {
       "base": true,
@@ -208,28 +208,28 @@
       "plus": true
     },
     "Mbpp/17": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/170": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/171": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/172": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/18": {
       "base": true,
       "plus": true
     },
     "Mbpp/19": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/2": {
       "base": false,
@@ -240,44 +240,44 @@
       "plus": false
     },
     "Mbpp/222": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/223": {
       "base": true,
       "plus": false
     },
     "Mbpp/224": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/226": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/227": {
       "base": true,
       "plus": false
     },
     "Mbpp/229": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/230": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/232": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/233": {
       "base": false,
       "plus": false
     },
     "Mbpp/234": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/235": {
       "base": false,
@@ -288,23 +288,23 @@
       "plus": false
     },
     "Mbpp/238": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/239": {
       "base": false,
       "plus": false
     },
     "Mbpp/240": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/242": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/244": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/245": {
@@ -320,8 +320,8 @@
       "plus": false
     },
     "Mbpp/250": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/251": {
       "base": false,
@@ -332,20 +332,20 @@
       "plus": false
     },
     "Mbpp/253": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/255": {
       "base": false,
       "plus": false
     },
     "Mbpp/256": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/257": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/259": {
       "base": false,
@@ -356,24 +356,24 @@
       "plus": false
     },
     "Mbpp/261": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/262": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/264": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/265": {
       "base": false,
       "plus": false
     },
     "Mbpp/266": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/267": {
       "base": true,
@@ -384,24 +384,24 @@
       "plus": false
     },
     "Mbpp/269": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/270": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/271": {
       "base": false,
       "plus": false
     },
     "Mbpp/272": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/273": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/274": {
       "base": false,
@@ -412,8 +412,8 @@
       "plus": false
     },
     "Mbpp/277": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/278": {
       "base": false,
@@ -424,44 +424,44 @@
       "plus": false
     },
     "Mbpp/280": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/281": {
       "base": true,
       "plus": true
     },
     "Mbpp/282": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/283": {
       "base": false,
       "plus": false
     },
     "Mbpp/284": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/285": {
       "base": false,
       "plus": false
     },
     "Mbpp/286": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/287": {
       "base": false,
       "plus": false
     },
     "Mbpp/290": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/292": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/293": {
       "base": true,
@@ -472,24 +472,24 @@
       "plus": false
     },
     "Mbpp/295": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/296": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/297": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/299": {
       "base": false,
       "plus": false
     },
     "Mbpp/3": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/300": {
       "base": false,
@@ -512,8 +512,8 @@
       "plus": false
     },
     "Mbpp/309": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/310": {
       "base": false,
@@ -524,20 +524,20 @@
       "plus": false
     },
     "Mbpp/312": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/388": {
       "base": false,
       "plus": false
     },
     "Mbpp/389": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/390": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/391": {
       "base": true,
@@ -552,8 +552,8 @@
       "plus": true
     },
     "Mbpp/395": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/396": {
       "base": false,
@@ -568,16 +568,16 @@
       "plus": false
     },
     "Mbpp/4": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/400": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/404": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/405": {
       "base": false,
@@ -600,60 +600,60 @@
       "plus": false
     },
     "Mbpp/412": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/413": {
       "base": true,
       "plus": true
     },
     "Mbpp/414": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/415": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/418": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/419": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/420": {
       "base": false,
       "plus": false
     },
     "Mbpp/421": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/422": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/424": {
       "base": true,
       "plus": true
     },
     "Mbpp/425": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/426": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/427": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/428": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/429": {
       "base": false,
@@ -664,8 +664,8 @@
       "plus": false
     },
     "Mbpp/431": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/432": {
       "base": false,
@@ -688,20 +688,20 @@
       "plus": false
     },
     "Mbpp/438": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/439": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/440": {
       "base": false,
       "plus": false
     },
     "Mbpp/441": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/442": {
       "base": true,
@@ -712,36 +712,36 @@
       "plus": false
     },
     "Mbpp/446": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/447": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/448": {
       "base": false,
       "plus": false
     },
     "Mbpp/450": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/451": {
       "base": true,
       "plus": true
     },
     "Mbpp/453": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/454": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/455": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/456": {
       "base": true,
@@ -752,32 +752,32 @@
       "plus": false
     },
     "Mbpp/458": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/459": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/460": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/461": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/462": {
       "base": false,
       "plus": false
     },
     "Mbpp/463": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/465": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/468": {
       "base": false,
@@ -788,12 +788,12 @@
       "plus": true
     },
     "Mbpp/471": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/472": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/473": {
       "base": false,
@@ -804,24 +804,24 @@
       "plus": true
     },
     "Mbpp/475": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/476": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/477": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/478": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/479": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/554": {
       "base": true,
@@ -832,12 +832,12 @@
       "plus": false
     },
     "Mbpp/556": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/557": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/558": {
       "base": true,
@@ -856,8 +856,8 @@
       "plus": false
     },
     "Mbpp/562": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/563": {
       "base": false,
@@ -868,36 +868,36 @@
       "plus": false
     },
     "Mbpp/565": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/566": {
       "base": true,
       "plus": true
     },
     "Mbpp/567": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/568": {
       "base": true,
       "plus": true
     },
     "Mbpp/569": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/57": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/572": {
       "base": false,
       "plus": false
     },
     "Mbpp/573": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/574": {
       "base": false,
@@ -920,43 +920,43 @@
       "plus": false
     },
     "Mbpp/58": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/580": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/581": {
       "base": false,
       "plus": false
     },
     "Mbpp/582": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/583": {
       "base": false,
       "plus": false
     },
     "Mbpp/585": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/586": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/587": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/588": {
       "base": true,
       "plus": true
     },
     "Mbpp/589": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/59": {
@@ -968,8 +968,8 @@
       "plus": false
     },
     "Mbpp/591": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/592": {
       "base": false,
@@ -980,8 +980,8 @@
       "plus": false
     },
     "Mbpp/594": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/595": {
       "base": false,
@@ -1000,36 +1000,36 @@
       "plus": false
     },
     "Mbpp/599": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/6": {
       "base": false,
       "plus": false
     },
     "Mbpp/600": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/602": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/603": {
       "base": false,
       "plus": false
     },
     "Mbpp/604": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/605": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/606": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/607": {
       "base": true,
@@ -1040,12 +1040,12 @@
       "plus": false
     },
     "Mbpp/61": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/610": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/611": {
       "base": true,
@@ -1056,28 +1056,28 @@
       "plus": false
     },
     "Mbpp/614": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/615": {
       "base": false,
       "plus": false
     },
     "Mbpp/616": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/618": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/619": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/62": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/620": {
       "base": false,
@@ -1092,16 +1092,16 @@
       "plus": true
     },
     "Mbpp/624": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/626": {
       "base": false,
       "plus": false
     },
     "Mbpp/628": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/629": {
       "base": true,
@@ -1124,20 +1124,20 @@
       "plus": true
     },
     "Mbpp/633": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/635": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/637": {
       "base": false,
       "plus": false
     },
     "Mbpp/638": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/639": {
       "base": true,
@@ -1156,7 +1156,7 @@
       "plus": false
     },
     "Mbpp/643": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/644": {
@@ -1168,8 +1168,8 @@
       "plus": true
     },
     "Mbpp/66": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/67": {
       "base": false,
@@ -1180,16 +1180,16 @@
       "plus": false
     },
     "Mbpp/69": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/7": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/70": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/71": {
       "base": false,
@@ -1200,8 +1200,8 @@
       "plus": false
     },
     "Mbpp/720": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/721": {
       "base": false,
@@ -1212,12 +1212,12 @@
       "plus": false
     },
     "Mbpp/723": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/724": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/725": {
       "base": false,
@@ -1232,8 +1232,8 @@
       "plus": true
     },
     "Mbpp/730": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/731": {
       "base": false,
@@ -1244,12 +1244,12 @@
       "plus": false
     },
     "Mbpp/733": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/734": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/735": {
       "base": false,
@@ -1260,11 +1260,11 @@
       "plus": true
     },
     "Mbpp/737": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/739": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/74": {
@@ -1272,24 +1272,24 @@
       "plus": false
     },
     "Mbpp/740": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/741": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/742": {
       "base": false,
       "plus": false
     },
     "Mbpp/743": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/744": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/745": {
       "base": false,
@@ -1308,27 +1308,27 @@
       "plus": false
     },
     "Mbpp/75": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/750": {
       "base": false,
       "plus": false
     },
     "Mbpp/751": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/752": {
       "base": false,
       "plus": false
     },
     "Mbpp/753": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/754": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/755": {
@@ -1340,16 +1340,16 @@
       "plus": true
     },
     "Mbpp/758": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/759": {
       "base": false,
       "plus": false
     },
     "Mbpp/760": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/762": {
       "base": true,
@@ -1360,8 +1360,8 @@
       "plus": false
     },
     "Mbpp/764": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/765": {
       "base": false,
@@ -1372,8 +1372,8 @@
       "plus": true
     },
     "Mbpp/767": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/769": {
       "base": false,
@@ -1388,24 +1388,24 @@
       "plus": false
     },
     "Mbpp/771": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/772": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/773": {
       "base": false,
       "plus": false
     },
     "Mbpp/775": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/777": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/778": {
       "base": true,
@@ -1416,7 +1416,7 @@
       "plus": false
     },
     "Mbpp/781": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/782": {
@@ -1432,16 +1432,16 @@
       "plus": false
     },
     "Mbpp/785": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/786": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/787": {
       "base": false,
-      "plus": false
+      "plus": true
     },
     "Mbpp/788": {
       "base": true,
@@ -1452,7 +1452,7 @@
       "plus": false
     },
     "Mbpp/790": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/791": {
@@ -1460,7 +1460,7 @@
       "plus": false
     },
     "Mbpp/792": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/793": {
@@ -1468,7 +1468,7 @@
       "plus": true
     },
     "Mbpp/794": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/796": {
@@ -1476,56 +1476,56 @@
       "plus": true
     },
     "Mbpp/797": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/798": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/799": {
       "base": true,
       "plus": true
     },
     "Mbpp/8": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/80": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/800": {
       "base": true,
       "plus": true
     },
     "Mbpp/801": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/803": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/804": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/805": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/806": {
-      "base": false,
+      "base": true,
       "plus": false
     },
     "Mbpp/807": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/808": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/809": {
       "base": true,
@@ -1544,20 +1544,20 @@
       "plus": false
     },
     "Mbpp/85": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/86": {
       "base": false,
       "plus": false
     },
     "Mbpp/87": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/88": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/89": {
       "base": true,
@@ -1572,39 +1572,39 @@
       "plus": true
     },
     "Mbpp/91": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/92": {
       "base": false,
       "plus": false
     },
     "Mbpp/93": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/94": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/95": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/96": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/97": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/98": {
-      "base": false,
-      "plus": false
+      "base": true,
+      "plus": true
     },
     "Mbpp/99": {
-      "base": false,
+      "base": true,
       "plus": false
     }
   },

@@ -201,10 +201,15 @@ percentage points on the remaining two. Combining several specialists
 therefore does not require giving up the gain obtained from clean-code
 training.
 
-Because the default merge contains the \texttt{L0} specialist, this does not
-show that the obfuscation specialists alone cause the clean-code improvement.
-Rather, the improvement learned by the clean specialist remains intact after
-the other specialists are incorporated.
+Because the default merge contains the \texttt{L0} specialist, the clean-code
+gain could come from that specialist alone. Table~\ref{tab:ablation} rules this
+out on four models. A merge of the five obfuscation specialists without
+\texttt{L0} reaches the same clean-code accuracy as the six-way merge; every
+paired interval for the difference contains zero. A merge of only the two
+structural specialists does as well. The forward gain is therefore shared by
+the obfuscation specialists rather than carried by the clean one.
+
+\input{tables/merge_ablation}
 
 \paragraph{The improvement extends to individual obfuscations.}
 The same merged adapter is also substantially stronger than the untuned model
@@ -766,12 +771,35 @@ on six of eight models.
 These results suggest that the SFT-based methods often learn the trained
 input--output mapping too narrowly. Their strong forward performance does not
 consistently transfer when the same program must be reasoned about in the
-opposite direction. In inspection of the reverse-task outputs, the fine-tuned
-models frequently return the program's \emph{forward output} even though the
-prompt asks for an input that would produce a specified value. This behavior
-is consistent with task-specific memorization of the forward prediction
-pattern rather than learning a more general relation between program inputs
-and outputs.
+opposite direction. They often return the program's \emph{forward output} even
+though the prompt asks for an input that would produce a given value.
+Table~\ref{tab:dirlock} measures this as the fraction of reverse replies that
+are exactly the gold forward answer. The untuned model is at 0.000 on seven of
+eight models and the merge at 0.000--0.001 on all eight, while single adapters
+reach 0.181 (Clean), 0.252 (Breadth), 0.296 and 0.668 (KL). This is
+consistent with memorization of the forward prediction pattern rather than a
+more general relation between program inputs and outputs.
+
+\input{tables/direction_lock}
+
+Prompting does not substitute for this. An in-context baseline, the untuned
+model given four obfuscated demonstrations in place of the single clean one,
+is below the one-shot untuned model on six of eight models and below the merge
+on seven. It does not fall back to the forward answer (at most 0.007), so its
+shortfall is a smaller gain rather than the failure mode of the tuned arms.
+Appendix Table~\ref{tab:bwddecomp} separates reverse accuracy into
+execution-graded accuracy, exact reference-input recovery, format success and
+direction locking for every model and method.
+
+What the merge retains in reverse depends on its breadth
+(Table~\ref{tab:ablation}). Cutting the merge from five obfuscation
+specialists to the two structural ones costs 4--9 points of reverse accuracy on
+clean code wherever the smaller merge is readable. At depth three the six-way
+merge stays 24--27 points of relative accuracy above the structural merge on
+Llama-3.1-8B and Granite-3.1-8B, and the structural merge fails the format gate
+on both CodeLlama models. Forward, the same structural merge is at or above the
+six-way at depth three on all four models. Breadth buys reverse reasoning, not
+forward accuracy.
 
 Merging behaves differently. The specialists are optimized independently and
 combined only after training, rather than being jointly optimized toward the
@@ -785,6 +813,28 @@ value is counted as correct. Approximately 15\% of items have a trivial target
 value that a well-formed guess can recover, so
 Appendix~\ref{app:absmaster} also reports exact reference-input recovery.
 
+\paragraph{Merging preserves general code generation; single adapters often do not.}
+All adapters are trained only to predict outputs. Table~\ref{tab:retention}
+asks whether that costs the ability to write code, on MBPP+~\cite{liu2023evalplus}
+(399 tasks, none in our training data, graded by its extended tests). A TIES
+merge of the same specialists is never below the untuned model, at $+0.7$ to
+$+3.8$ points on all eight models. The paper's DARE-TIES merge is at or above the
+untuned model on four models and 2.3--10.3 points below on the other four.
+Breadth and KL fall below the untuned model on seven of eight models, and the
+largest losses are not wrong code but no code: on StarCoder2-15B every
+single adapter and the router return no function on 98--99\% of tasks,
+typically a predicted value instead. HumanEval+ shows the same ordering, but 74 of its 164 problems occur in
+our training corpus, so we do not rely on it.
+
+These collapses depend on the training seed. Repeating the evaluation with
+seed-42 adapters on three models, the merges change by at most 4.5 points
+relative to the untuned model, while single adapters move by up to 56:
+Breadth on Granite-3.1-8B loses 3.5 points at one seed and 59.9 at the
+other, and Clean on CodeLlama-7B loses 17.5 and 1.8. A single seed can show
+that adapters sometimes stop generating code, but not which ones.
+
+\input{tables/retention}
+
 \begin{takeaway}
 \textbf{Takeaway.}
 Fine-tuning and routing provide the strongest peak forward performance, but
@@ -792,7 +842,8 @@ that specialization does not reliably transfer beyond the trained task.
 The SFT baselines often lose reverse-reasoning performance and frequently
 fall back to predicting the forward output when asked to reason in reverse.
 Merging sacrifices some peak forward accuracy but retains substantially more
-reverse-reasoning ability.
+reverse-reasoning ability, and a TIES merge also preserves general code
+generation on every model, where single adapters lose it unpredictably.
 \end{takeaway}
 
 \FloatBarrier

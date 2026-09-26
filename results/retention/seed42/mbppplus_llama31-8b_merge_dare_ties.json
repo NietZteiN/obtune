@@ -1041,7 +1041,7 @@
     },
     "Mbpp/61": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "Mbpp/610": {
       "base": true,
@@ -1433,7 +1433,7 @@
     },
     "Mbpp/785": {
       "base": true,
-      "plus": false
+      "plus": true
     },
     "Mbpp/786": {
       "base": true,
@@ -1675,5 +1675,6 @@
     },
     "extra": {}
   },
-  "train_seed": 42
+  "train_seed": 42,
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
 }

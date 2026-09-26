@@ -2,7 +2,7 @@
   "n_tasks": 164,
   "n_scorer_errors": 0,
   "pass@1_base": 0.4329,
-  "pass@1_plus": 0.3902,
+  "pass@1_plus": 0.3963,
   "format_fail_rate": 0.0,
   "raw_no_def_rate": 0.0,
   "entry_point_mismatch": 0,
@@ -241,7 +241,7 @@
     },
     "HumanEval/15": {
       "base": true,
-      "plus": false
+      "plus": true
     },
     "HumanEval/150": {
       "base": true,
@@ -732,5 +732,6 @@
     },
     "extra": {}
   },
-  "train_seed": 42
+  "train_seed": 42,
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
 }

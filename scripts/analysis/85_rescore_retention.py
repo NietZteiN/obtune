@@ -34,9 +34,14 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model", default=None)
     ap.add_argument("--benchmark", default=None, choices=["mbpp", "humaneval"])
+    ap.add_argument("--seed", type=int, default=17,
+                    help="training seed of the cells to rescore; non-17 lives in results/retention/seed<N>/")
     ap.add_argument("--dry-run", action="store_true",
                     help="print the deltas and write nothing")
     a = ap.parse_args()
+    global RES
+    if a.seed != 17:
+        RES = RES/f"seed{a.seed}"
 
     from obtune.bench_retention import score
     from evalplus.data import get_human_eval_plus, get_mbpp_plus

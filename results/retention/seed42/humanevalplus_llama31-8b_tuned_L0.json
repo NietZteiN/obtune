@@ -229,7 +229,7 @@
     },
     "HumanEval/147": {
       "base": true,
-      "plus": true
+      "plus": false
     },
     "HumanEval/148": {
       "base": true,
@@ -241,7 +241,7 @@
     },
     "HumanEval/15": {
       "base": true,
-      "plus": false
+      "plus": true
     },
     "HumanEval/150": {
       "base": true,
@@ -735,5 +735,6 @@
     },
     "extra": {}
   },
-  "train_seed": 42
+  "train_seed": 42,
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
 }
