@@ -2,9 +2,14 @@
 \label{sec:threats}
 
 \textbf{Held-out obfuscation family.}
-Unseen-family generalization is evaluated primarily through X1, a trainable
-sibling of the quarantined H1 obfuscator. Although X1 closely matches H1 in
-difficulty, this covers only one held-out family and may not generalize to
+Unseen-family generalization is evaluated through X1, a trainable sibling of
+the quarantined H1 obfuscator. H1 was read exactly twice, a pilot and a final
+pass under pre-registered hypotheses, and no method, hyperparameter or
+checkpoint in this paper was selected on it. On six systems trained on neither
+family, X1 and H1 accuracy agree at Pearson $r = 0.9992$ (mean absolute
+difference 0.48 points), and adapters trained on X1 lose 0.08 points when
+evaluated on H1. X1 therefore stands in for H1 in every experiment. This still
+covers only one held-out mechanism family and may not generalize to
 qualitatively different obfuscation mechanisms.
 
 \textbf{Uneven condition coverage.}

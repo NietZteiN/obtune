@@ -195,11 +195,11 @@ Granite-3.1-8B
 
 \paragraph{Merging improves clean-code performance.}
 On \texttt{L0}, the merged adapter substantially exceeds the untuned model
-wherever a readable baseline is available. It also matches or exceeds direct
-clean-code tuning on six of eight models and trails by only 0.1 and 0.3
-percentage points on the remaining two. Combining several specialists
-therefore does not require giving up the gain obtained from clean-code
-training.
+wherever a readable baseline is available, by 14.8--22.8 percentage points.
+It is statistically indistinguishable from direct clean-code tuning on all
+eight models: the paired differences range from $-0.3$ to $+1.4$ points and
+every 95\% interval contains zero. Combining several specialists therefore
+does not require giving up the gain obtained from clean-code training.
 
 Because the default merge contains the \texttt{L0} specialist, the clean-code
 gain could come from that specialist alone. Table~\ref{tab:ablation} rules this
@@ -221,8 +221,8 @@ across clean and obfuscated code within a single adapter.
 \begin{takeaway}
 \textbf{Takeaway.}
 Specialist merging produces large gains over the untuned model on both clean
-and individually obfuscated code. On clean code, it also matches or exceeds
-clean-only tuning on six of eight models, showing that multiple specialized
+and individually obfuscated code. On clean code, it is indistinguishable
+from clean-only tuning on all eight models, showing that multiple specialized
 adaptations can be combined without giving up the gains of direct clean-code
 training.
 \end{takeaway}
@@ -748,13 +748,17 @@ Granite-3.1-8B
 
 \paragraph{Routing performs best on the unseen obfuscation family.}
 Routing achieves the highest forward accuracy on six models, while
-KL-consistency is strongest on the remaining two. The router is also above
-the merge on all eight models in this block. Merging therefore does not
-provide the highest forward accuracy when the transformation itself is new.
+KL-consistency is strongest on the remaining two. The router is above the
+merge on all eight models in this block, by 0.8--2.8 points, and the paired
+interval excludes zero on seven. These margins are of the same size as the
+seed-to-seed variation on this family (Table~\ref{tab:seednoise}: median 1.6,
+maximum 2.4 points), so we claim only that the router is not below the merge,
+not that it ranks above it. Merging does not provide the highest forward
+accuracy when the transformation itself is new.
 
 Breadth and merge provide a more direct comparison because they use the same
 six training conditions. Across the full held-out block, merging exceeds
-breadth on seven of eight models. The router, by contrast, keeps a larger bank
+breadth on seven of eight models, significantly on five. The router, by contrast, keeps a larger bank
 of specialists and chooses among them at inference time, whereas the merge
 combines its specialists beforehand and deploys only one adapter.
 

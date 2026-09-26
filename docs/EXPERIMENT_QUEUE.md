@@ -62,7 +62,7 @@ already has those backward cells in `inverse_generic`. Jobs 422780-422783.
 wherever the narrow arms clear the format gate); forward, the two-specialist structural merge is at
 or above the six-way at d3/d4 on all four models. `merge_ablation.tex` is in `router_merger/` only.
 
-### A4. Paired bootstrap intervals — **DONE**
+### A4. Paired bootstrap intervals — **DONE, sweep applied to paper/final (2026-09-25)**
 All eight requested contrasts are computed by `scripts/analysis/74_main_contrasts.py --ablation`,
 program-clustered, 2,000 resamples, seed 17.
 Two prose claims were already deleted as unsupported: Merge − Clean LoRA on `L0` is null on all
@@ -81,7 +81,7 @@ in RQ1 §5.3 "The Operator Is Not Arbitrary". Result is stronger than the 09-20 
 format-gated on 3 of 4 models, and where readable on the unseen family sits at 25 % against an
 untuned 57 % — worse than not merging. Lock rates 0.174 / 0.428 vs TIES 0.000.
 
-### A6. H1 — **BLOCKED, must be CUT not run**
+### A6. H1 — **RESOLVED 2026-09-25: existing final read reported, nothing re-run**
 H1's budget is **fully spent** (CLAUDE.md §3.2, changelog 2026-09-05): one pilot pass and one
 final pass, both taken. Rule 3 permits no further read, and no H1 number may select, tune or rank
 anything. **Running it is forbidden and I will not.**
@@ -229,3 +229,23 @@ LoRA, so a vLLM LoRARequest cannot serve it; it needs the HF mixture engine and 
 
 16 jobs (8 models × 2 benchmarks), submitted 2026-09-22: a30 ×8 (7–8B only), h100 ×6 (12–15B),
 h200 ×2 (CodeLlama-34B, which needs the 141 GB card). Share raised 0 → 2 for the 34B pair only.
+
+---
+
+## 2026-09-25 — A4 sweep and A6, applied to `paper/final/`
+
+**A4.** Against `74_main_contrasts.py` (program-clustered, 2,000 resamples) and `tab:seednoise`:
+* RQ1 "matches or exceeds clean-code tuning on six of eight, trails by 0.1 and 0.3" counted point
+  estimates -- Merge $-$ Clean on `L0` contains zero on **all eight**. Rewritten as
+  indistinguishable on all eight ($-0.3$ to $+1.4$); takeaway to match.
+* RQ3 "router above the merge on all eight" -- +0.8 to +2.8, CI excludes zero on seven, and the
+  margins sit inside the unseen-family seed floor (median 1.57, max 2.39). Now claims only *not
+  below*, citing the floor. This is the B8 rescoping, which had reached router_merger/ but not the
+  author's final/ revision.
+* "merging exceeds breadth on seven of eight" -- now "significantly on five".
+* Kept: Merge $-$ Base backward +3.0 to +6.4, significant on seven -- the text already said seven.
+
+**A6.** Reported, not re-run. `threats.tex` replaces "X1 closely matches H1" with the evidence from
+the two pre-registered reads: r = 0.9992 (mean |Δ| 0.48) on six systems trained on neither family,
+0.08-pt X1→H1 transfer for X1-trained adapters, and that nothing in the paper was selected on H1.
+The H1 budget remains spent; no H1 cell was read.
