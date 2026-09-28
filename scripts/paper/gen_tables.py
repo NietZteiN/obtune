@@ -140,7 +140,9 @@ def t_ladder():
     d1v = (dep or {}).get("pooled", {}).get("cons_lam3 - mono_all")
     lv = (d or {}).get("by_level", {})
     rows = [
-        r"d0 & depth 2, all seen & " + ci(d0) + " & " + PENDING + " & " + PENDING + r" \\",
+        r"d0 & depth 2, all seen & " + ci(d0)
+        + " & " + ci((dep or {}).get("ref_depth2", {}).get("cons_lam3 - tuned_L0"))
+        + " & " + ci((dep or {}).get("ref_depth2", {}).get("cons_lam3 - mono_all")) + r" \\",
         r"d1 & depth 3--4, all seen & " + ci(d1) + " & " + ci(d1c) + " & " + ci(d1v) + r" \\",
         r"\midrule",
         r"\textbf{d2} & depth 2, \textbf{unseen inside} & " + ci(lv.get("d2", {}).get("mono_all - tuned_L0"))

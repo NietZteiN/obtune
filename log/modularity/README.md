@@ -1,7 +1,8 @@
 # modularity — RQ2 — router, merges, monolithic, oracle arms
 
-*Last updated: 2026-09-05*
-**Status:** **CLOSED, negative** — no combination of per-transformation specialists beats a
+*Last updated: 2026-09-20*
+**Status:** **REOPENED 2026-09-20** for the merge-ingredient ablation (forward: ingredients irrelevant on 4/4; backward: breadth matters, 4–9 points). The 09-05 close below concerned the held-out-obfuscator comparison and still stands as written.
+**Status at 2026-09-05:** **CLOSED, negative** — no combination of per-transformation specialists beats a
 clean-code adapter on the held-out obfuscator; closing report:
 [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md).
 Historical status at close: router saturated (100% route accuracy); the uniform-epoch sweep, the merge-optimal
@@ -128,6 +129,10 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
   — RouterLoRA built end to end; composite purity was vacuous and skipped the H1 content scan.
 - [`2026-08-10_overtraining-and-merge-geometry.md`](2026-08-10_overtraining-and-merge-geometry.md)
   — geometry null + the reason for it; forgetting gate run for the first time; six bugs.
+- [`2026-09-20_specialist-task-vectors-are-aligned.md`](2026-09-20_specialist-task-vectors-are-aligned.md) — specialist updates are aligned, not orthogonal; explains why TIES and DARE-TIES agree.
+- [`2026-09-20_the-l0-ingredient-matters-backward-only.md`](2026-09-20_the-l0-ingredient-matters-backward-only.md) — **superseded**, read mid-write on one model; kept per the §6 protocol.
+- [`2026-09-20_ablation-panel-complete-breadth-not-l0.md`](2026-09-20_ablation-panel-complete-breadth-not-l0.md) — four models, both directions, complete. Forward the ingredients are irrelevant; backward it is **breadth** of semantic view that matters, 3–6× the effect of the clean-code specialist, and not a format artefact.
+- [`2026-09-20_factor-space-merging-is-closer-than-the-paper-says.md`](2026-09-20_factor-space-merging-is-closer-than-the-paper-says.md) — factor- vs update-space merging on the deployed adapters: cosine 0.539–0.848, sign agreement 0.801–0.890, against the section's random-factor 0.40/0.61. **Resolved since that entry:** CodeLlama-34B landed at 0.840/0.877 (8/8 models), the agreement tracks specialist alignment at r = 0.95, and `merging.tex` is amended (`eea634f0`).
 
 ## Doc / results links
 - [`../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md`](../../docs/MASTER_REPORT_2026-08-27_router-and-merging.md)
@@ -169,3 +174,4 @@ aliasing, and 21 already-collected 7B Grid A cells have no matched floor
 - [`2026-09-14_router-backwards-second-model.md`](2026-09-14_router-backwards-second-model.md) — Granite: the router locks (0.089) where Llama's did not; merge beats router on both.
 - [`2026-09-14_router-backwards-three-models.md`](2026-09-14_router-backwards-three-models.md) — three models, three outcomes; the rule's band was miscalibrated and is left as written.
 - [`2026-09-17_granite-exception-replicates-at-seed-42.md`](2026-09-17_granite-exception-replicates-at-seed-42.md) — the exception replicates; TIES carries Granite at both seeds.
+- [`2026-09-21_seed-noise-floor.md`](2026-09-21_seed-noise-floor.md) — **APPLIED 2026-09-22**: the floor is now `tab:seednoise` in the paper and RQ3's router-vs-merge ordering on the held-out family is rescoped to *not below*. See [`../writeup/2026-09-22_a5-b7-b8-into-the-paper-and-the-noise-floor.md`](../writeup/2026-09-22_a5-b7-b8-into-the-paper-and-the-noise-floor.md).

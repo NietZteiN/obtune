@@ -1,0 +1,31 @@
+{
+  "untuned": {
+    "stored_params": 0,
+    "peak_mem_gb": 62.85,
+    "tokens_per_s": 1142.0,
+    "n_prompts": 32,
+    "max_new": 64
+  },
+  "single LoRA": {
+    "stored_params": 217841664,
+    "peak_mem_gb": 64.51,
+    "tokens_per_s": 756.3,
+    "n_prompts": 32,
+    "max_new": 64
+  },
+  "merge": {
+    "stored_params": 217841664,
+    "peak_mem_gb": 64.51,
+    "tokens_per_s": 755.8,
+    "n_prompts": 32,
+    "max_new": 64
+  },
+  "router": {
+    "stored_params": 1767923760,
+    "n_experts": 8,
+    "peak_mem_gb": 66.22,
+    "tokens_per_s": 821.4,
+    "n_prompts": 32,
+    "max_new": 64
+  }
+}

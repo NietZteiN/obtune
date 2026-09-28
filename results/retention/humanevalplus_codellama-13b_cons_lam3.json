@@ -1,0 +1,737 @@
+{
+  "n_tasks": 164,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.0305,
+  "pass@1_plus": 0.0244,
+  "format_fail_rate": 0.3841,
+  "raw_no_def_rate": 0.6585,
+  "entry_point_mismatch": 0,
+  "entry_point_mismatch_rate": 0.3841,
+  "extraction_repaired": 43,
+  "extraction_repaired_rate": 0.6829,
+  "uncompilable_rate": 0.0244,
+  "per_task": {
+    "HumanEval/0": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/1": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/10": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/100": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/101": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/102": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/103": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/104": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/105": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/106": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/107": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/108": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/109": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/11": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/110": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/111": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/112": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/113": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/114": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/115": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/116": {
+      "base": true,
+      "plus": true
+    },
+    "HumanEval/117": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/118": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/119": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/12": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/120": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/121": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/122": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/123": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/124": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/125": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/126": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/127": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/128": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/129": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/13": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/130": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/131": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/132": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/133": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/134": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/135": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/136": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/137": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/138": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/139": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/14": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/140": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/141": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/142": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/143": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/144": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/145": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/146": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/147": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/148": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/149": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/15": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/150": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/151": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/152": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/153": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/154": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/155": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/156": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/157": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/158": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/159": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/16": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/160": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/161": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/162": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/163": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/17": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/18": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/19": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/2": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/20": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/21": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/22": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/23": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/24": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/25": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/26": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/27": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/28": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/29": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/3": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/30": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/31": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/32": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/33": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/34": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/35": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/36": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/37": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/38": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/39": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/4": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/40": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/41": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/42": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/43": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/44": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/45": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/46": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/47": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/48": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/49": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/5": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/50": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/51": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/52": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/53": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/54": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/55": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/56": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/57": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/58": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/59": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/6": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/60": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/61": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/62": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/63": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/64": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/65": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/66": {
+      "base": true,
+      "plus": true
+    },
+    "HumanEval/67": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/68": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/69": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/7": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/70": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/71": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/72": {
+      "base": true,
+      "plus": true
+    },
+    "HumanEval/73": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/74": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/75": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/76": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/77": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/78": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/79": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/8": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/80": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/81": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/82": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/83": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/84": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/85": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/86": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/87": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/88": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/89": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/9": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/90": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/91": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/92": {
+      "base": true,
+      "plus": true
+    },
+    "HumanEval/93": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/94": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/95": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/96": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/97": {
+      "base": true,
+      "plus": false
+    },
+    "HumanEval/98": {
+      "base": false,
+      "plus": false
+    },
+    "HumanEval/99": {
+      "base": false,
+      "plus": false
+    }
+  },
+  "model_key": "codellama-13b",
+  "model": "codellama/CodeLlama-13b-Instruct-hf",
+  "arm": "cons_lam3",
+  "benchmark": "humanevalplus",
+  "adapter": "/work/jvl210002/migration/obtune/runs/adapters_objectives/codellama-13b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best",
+  "gen_seconds": 4.0,
+  "identical_to_base": 0,
+  "sample_generations": [
+    " \"Your code here\" ",
+    " \"Your answer\" ",
+    " \"catac\" ",
+    " \"TODO\" ",
+    " \"Your code here\" "
+  ],
+  "sample_format_failures": [],
+  "provenance": {
+    "experiment": "retention/benchmark-panel",
+    "run_id": "humanevalplus_codellama-13b_cons_lam3",
+    "seed": 17,
+    "config_path": "configs/eval/_base_eval.yaml",
+    "config_resolved": {
+      "engine": {
+        "backend": "vllm",
+        "dtype": "bfloat16",
+        "gpu_memory_utilization": 0.9,
+        "max_lora_rank": 64,
+        "max_loras": 4,
+        "max_cpu_loras": 32,
+        "seed": 17,
+        "max_model_len": 8192
+      },
+      "sampling": {
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_tokens": 512,
+        "stop": [],
+        "seed": 17
+      }
+    },
+    "model_hf_id": "codellama/CodeLlama-13b-Instruct-hf",
+    "model_revision_resolved": null,
+    "adapter": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_objectives/codellama-13b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best",
+      "sha256": "884ee6ca7486259695d4402b518bf2c9f514bbf249157ea59b9f5130486a9e81"
+    },
+    "gpu_visible": "0",
+    "command": "/work/jvl210002/migration/obtune/src/obtune/bench_retention.py --model codellama-13b --benchmark humaneval",
+    "git_commit": "8795bfebf3061de99407f4d0772b47b72d0081d0",
+    "script_sha256": {
+      "src/obtune/bench_retention.py": "dea8bf337a8407f41df9b991ded98d077fa1a88b3c18dcc36b6bf558947b9ccc"
+    },
+    "started_utc": "2026-09-23T02:46:47.092845+00:00",
+    "finished_utc": "2026-09-23T02:46:47.190961+00:00",
+    "libraries": {
+      "python": "3.12.14",
+      "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+      "torch": "2.11.0+cu129",
+      "transformers": "5.14.1",
+      "peft": "0.20.0",
+      "trl": "1.9.2",
+      "vllm": "0.26.0",
+      "numpy": "2.3.5"
+    },
+    "extra": {}
+  },
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
+}

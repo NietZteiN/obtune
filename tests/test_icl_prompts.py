@@ -86,3 +86,27 @@ def test_pick_demos_is_deterministic_across_calls() -> None:
     a = [d.program_id for d in pick_demos("python", 4, ["L0"], seed=17)]
     b = [d.program_id for d in pick_demos("python", 4, ["L0"], seed=17)]
     assert a == b
+
+
+@pytest.mark.parametrize("oracle", [False, True])
+def test_backward_k1_is_byte_identical_to_the_one_shot_inverse_path(oracle) -> None:
+    """A2's ICL column (2026-09-24): the backward k-shot prompt must reduce to the inverse
+    one-shot prompt at k=1, or its cells are not comparable to the one-shot base arm."""
+    d = _demo(1)
+    mine = build_icl_prompt(**QUERY, oracle=oracle, demos=[d], task="input", output_repr="2")
+    theirs = prompts.build_prompt(**QUERY, oracle=oracle, one_shot=True, demo=d,
+                                  task="input", output_repr="2")
+    assert mine == theirs
+
+
+def test_backward_k0_is_byte_identical_to_zero_shot_inverse() -> None:
+    mine = build_icl_prompt(**QUERY, demos=[], task="input", output_repr="2")
+    theirs = prompts.build_prompt(**QUERY, one_shot=False, task="input", output_repr="2")
+    assert mine == theirs
+
+
+def test_backward_demos_answer_with_their_call() -> None:
+    demos = [_demo(1), _demo(2)]
+    msgs = build_icl_prompt(**QUERY, demos=demos, task="input", output_repr="2")
+    answers = [m["content"] for m in msgs if m["role"] == "assistant"]
+    assert answers == [prompts.format_call(d.entry_point, d.args_repr) for d in demos]

@@ -152,8 +152,56 @@ share_limits:
   # for a single deliberate exception without editing the agreement.
   # RAISED 0 -> 4 ON 2026-09-20: a new round of ablations (no-L0 merge, specialist-family merges)
   # is running, so the project needs the pool again. Return this to 0 when they finish.
-  h200: 4
-  normal: 3      # same juno pool as h200; the two numbers are one budget, not two
+  # DROPPED 4 -> 0 ON 2026-09-20, the ablation round having finished. Everything it was raised
+  # for is read and analysed: the merge-ingredient ablation is complete on four models in both
+  # directions, specialist geometry on all eight, the merge-space check on all eight, and the
+  # cross-language JavaScript panel on four. obtune holds no job, so the other project on this
+  # account has all four slots again. Raise it and say why here when the next round needs the pool.
+  # RAISED 0 -> 2 ON 2026-09-20 (user: "Maximize GPU usage up to 15"). h100 (9 GPUs) and a30
+  # (4 GPUs) carry no QoS and supply 13 of the 15; the last 2 come from here. Deliberately NOT 4:
+  # MaxJobsPU=4 is the whole juno pool for BOTH projects on this account, so taking 4 would leave
+  # the other project none, and 2 is what reaching 15 actually requires. Return to 0 when the
+  # reviewer-response round finishes (docs/EXPERIMENT_QUEUE.md).
+  # BACK TO 0 ON 2026-09-21: the reviewer-response round is finished (8 of 9 items; A6 is
+  # blocked by the spent H1 budget and is a writing decision). obtune holds no job.
+  # LESSON FROM THIS ROUND, worth more than the share number: the binding constraint was never
+  # the share. Jobs sat on (Priority) for hours on h100/h200 -- SLURM estimated 22 h at one
+  # point -- while a30's g-02-01 and h100's g-06-01 sat fully IDLE. Check `sinfo` for idle
+  # nodes and submit with --nodelist before raising this. g-06-01 in particular was excluded
+  # from every submission out of habit, for a CUDA-fork failure that VLLM_WORKER_MULTIPROC_METHOD
+  # =spawn (scripts/env.sh) already fixes; it ran the final eval without incident.
+  # RAISED 0 -> 2 ON 2026-09-22 (user: "Maximize GPU use just use max go bam"). A new panel is
+  # running: general-coding-benchmark retention (MBPP+ / HumanEval+) for six arms on all eight
+  # models, to answer whether obfuscation tuning costs general code ability. Sixteen jobs; the
+  # h100/a30 partitions carry no QoS and take fourteen of them. The two slots here exist for
+  # CodeLlama-34B ALONE: 34B is ~67 GB in bf16, which fits an 80 GB H100 only with ~9 GB left
+  # for KV and activations, and h200's 141 GB removes that risk for the two jobs that cannot be
+  # placed anywhere else. STILL NOT 4 -- MaxJobsPU=4 is the whole juno pool for both projects on
+  # this account, so 2 leaves the other project two. Return to 0 when the retention panel lands.
+  #
+  # NOTE FOR THIS ROUND, unlike 09-21: there are no idle GPUs to --nodelist into. Every GPU on
+  # a30, h100 and h200 reads AllocTRES gres/gpu == CfgTRES gres/gpu today, and g-07-05 is
+  # IDLE+RESERVED (a reservation, not ours). So this round genuinely queues and backfills, and
+  # the 09-21 lesson does not apply to it -- it was checked before the share was touched.
+  # BACK TO 0 ON 2026-09-23. The retention round was stopped early: Juno's admins flagged the
+  # Claude Code sessions running on the cluster and are terminating them pending a security
+  # review of AI agents, so the 35 queued retention/ICL/router jobs were cancelled and the
+  # project holds nothing. The other project on this account has all four slots again.
+  # Raise it and say why here when work resumes; docs/EXPERIMENT_QUEUE.md B10 is where it left off.
+  # RAISED 0 -> 2 ON 2026-09-24, user's choice ("Take 2 h200 slots") after "maximize gpu usage".
+  # Two jobs only, both CodeLlama-34B: icl_mbpp_codellama-34b (OOM on the 80 GB H100 and on
+  # the 94 GB H100 NVL even at gpu_memory_utilization 0.95) and cost_codellama-34b (B7's last
+  # model). 2 leaves the other project on this account (../probing) two of the four slots.
+  # Return to 0 when both land.
+  # RAISED 2 -> 4 ON 2026-09-25 (user: "ok maximize all gpus now bidir i stopped"). The bidirectional
+  # feeder is stopped and ../probing holds nothing, so the whole MaxJobsPU=4 pool is free; 4 is the
+  # ceiling. Carries the A2 ICL-backward, A3 backward depth-3 and B10 seed-42 jobs. Return to 0 (or
+  # hand slots back) the moment another project on this account needs them.
+  # BACK TO 0 ON 2026-09-25: the round's GPU work is finished -- A2 ICL-backward (8/8), A3
+  # backward depth-3 (4/4), B7 cost (8/8) and B10 retention incl. the seed-42 replication. obtune
+  # holds nothing; the other projects on this account have the whole pool.
+  h200: 0
+  normal: 0      # same juno pool as h200; the two numbers are one budget, not two
 
 legacy_scheduler_policy:
   retired: 2026-08-28

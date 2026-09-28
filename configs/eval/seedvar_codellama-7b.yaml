@@ -1,0 +1,43 @@
+# B8: SEED NOISE FLOOR on CodeLlama-7B.
+#
+# Many narrated differences in the draft are 1-2 points and there is currently no way to say
+# whether that is signal. This evaluates seeds 101 and 202 for the six specialists and for
+# breadth; seed 17 is the panel's own and is already read, so the three-seed spread comes from
+# comparing these against it.
+#
+# Condition set is deliberately the three GROUPS the claims are made over -- clean code, the
+# seen singles, and the held-out family -- not all 23. A noise floor needs the conditions the
+# paper argues about, and 14 arms x 23 conditions is 322 cells for a variance estimate.
+_extends: _base_eval.yaml
+
+phase: seedvar_generic
+experiment_id: seedvar_codellama-7b
+run_tag: seedvar_codellama-7b
+model: codellama-7b
+language: python
+eval_source: heldout
+
+engine:
+  gpu_memory_utilization: 0.85
+
+peft:
+  r: 32
+
+systems:
+  - {name: base, arch: none}
+  - {name: tuned_L0_s101, adapter: "runs/adapters/{model}/{language}/L0_r32_s101/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L1b_s101, adapter: "runs/adapters/{model}/{language}/L1b_r32_s101/best", arch: per_type, train_cond: L1b}
+  - {name: tuned_L1r_s101, adapter: "runs/adapters/{model}/{language}/L1r_r32_s101/best", arch: per_type, train_cond: L1r}
+  - {name: tuned_L2_s101, adapter: "runs/adapters/{model}/{language}/L2_r32_s101/best", arch: per_type, train_cond: L2}
+  - {name: tuned_S1_s101, adapter: "runs/adapters/{model}/{language}/S1_r32_s101/best", arch: per_type, train_cond: S1}
+  - {name: tuned_S2_s101, adapter: "runs/adapters/{model}/{language}/S2_r32_s101/best", arch: per_type, train_cond: S2}
+  - {name: mono_all_s101, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s101/best", arch: per_type, train_cond: mix}
+  - {name: tuned_L0_s202, adapter: "runs/adapters/{model}/{language}/L0_r32_s202/best", arch: per_type, train_cond: L0}
+  - {name: tuned_L1b_s202, adapter: "runs/adapters/{model}/{language}/L1b_r32_s202/best", arch: per_type, train_cond: L1b}
+  - {name: tuned_L1r_s202, adapter: "runs/adapters/{model}/{language}/L1r_r32_s202/best", arch: per_type, train_cond: L1r}
+  - {name: tuned_L2_s202, adapter: "runs/adapters/{model}/{language}/L2_r32_s202/best", arch: per_type, train_cond: L2}
+  - {name: tuned_S1_s202, adapter: "runs/adapters/{model}/{language}/S1_r32_s202/best", arch: per_type, train_cond: S1}
+  - {name: tuned_S2_s202, adapter: "runs/adapters/{model}/{language}/S2_r32_s202/best", arch: per_type, train_cond: S2}
+  - {name: mono_all_s202, adapter: "runs/adapters/{model}/{language}/L0-L1b-L1r-L2-S1-S2_r32_s202/best", arch: per_type, train_cond: mix}
+
+eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1]

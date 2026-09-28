@@ -1,0 +1,80 @@
+\section{Pre-Registered Hypotheses and Their Outcomes}
+\label{sec:prereg}
+% Written 2026-09-23 from docs/CHECKLIST.md §1 (the ledger as registered on 2026-08-05) and the
+% dated log entries that resolved each row. Verdicts are quoted from those entries; a row with no
+% deciding entry is marked NOT RESOLVED rather than given a plausible outcome.
+
+This project registered a hypothesis ledger before its main grids ran, and the study that resulted
+is not the study that was planned. We report the ledger in full, including the rows that were
+refuted, the row that was retired as ill-posed, and the two rows that were never resolved at all.
+Table~\ref{tab:prereg} is that accounting. Three points in it are load-bearing for how the rest of
+this paper should be read.
+
+\paragraph{The original discriminator was refuted early, and the paper is a consequence of that.}
+\textbf{H1c} as registered --- that a positive raw gain on the held-out obfuscator demonstrates
+semantic invariance --- was retired within a day of the pilot, because an adapter trained on
+\emph{clean} code reached the held-out family at least as well as one trained on obfuscated code
+($0.414$ versus $0.384$). The raw gain measures task acquisition, not robustness. Its replacement,
+\textbf{H1c-rev}, asks the same question relative to that clean-code control, and was refuted for
+the condition it was first tested on ($-3.0$ points, CI $[-10.5, +3.9]$). Every claim in this paper
+is stated against a clean-code-tuned control for this reason, and no raw difference from the
+untuned model is ever reported as invariance.
+
+\paragraph{Modularity was registered as a positive hypothesis and came back negative.}
+\textbf{H2b} and \textbf{H2d} predicted that per-type adapters plus a router would beat monolithic
+tuning, and that merges would retain most of the per-type gains. Neither held in the form
+registered. The decisive measurement is that the two effects offset: merging \emph{costs}
+$-3.13$ points (CI $[-4.78, -1.40]$) while the specialists \emph{contribute} $+2.47$
+(CI $[+1.32, +3.70]$), for a net wash. \textbf{H2a}'s premise was confirmed and its consequence was
+not: obfuscation type is almost perfectly surface-detectable --- a hard router dispatches at
+$1.000$ accuracy --- and routing on that signal still bought nothing on the held-out family. The
+present paper's RQ2 is the descendant of that result, which is why it compares composition
+\emph{strategies} rather than arguing for one.
+
+\paragraph{Two rows were never resolved, and we do not claim them.}
+\textbf{H3} --- that the anchoring shift predicts which transfers succeed --- required a regression
+of shift against transfer across all system $\times$ condition cells. That regression was never
+run. What exists is the mechanism it presupposed: re-anchoring is real and causal
+(\textbf{H3-causal}, confirmed by an identifier-knockout intervention, paired difference $+0.104$
+nats, CI $[+0.011, +0.209]$), and an independent symbolic dead-code-elimination pass agrees with
+it. That supports the mechanism and does \emph{not} establish the predictive claim, which we
+therefore do not make. \textbf{HA1}, on alignment to human difficulty orderings, is likewise
+unresolved: only the untuned correlation was read ($\rho = +0.132$, CI $[-0.140, +0.381]$), and the
+pre/post change it was about was never measured.
+
+\begin{table}[t]
+\centering\small\setlength{\tabcolsep}{4pt}
+\caption{\textbf{The pre-registered ledger, as registered and as it ended.} Registered
+2026-08-05 before the main grids; verdicts are quoted from the dated log entry that decided each
+row. \textsc{n/r} marks a row that no experiment resolved --- reported rather than dropped, because
+a ledger that only lists its successes is not a ledger.}
+\label{tab:prereg}
+\begin{tabular}{@{}llp{3.1cm}@{}}
+\toprule
+ID & outcome & deciding evidence \\
+\midrule
+\textbf{H1a-trainable} & \textsc{supported} & self-gain $+27.3$ [$+11.0, +43.2$] \\
+\textbf{H1a} family structure & \textsc{supported} & within-family $+33.3$ vs cross $+15.2$ \\
+\textbf{H1b} cross-language & \textsc{partial} & JavaScript panel run; the registered contrast was not computed \\
+\textbf{H1c} raw & \textsc{retired} & confounded with task acquisition \\
+\textbf{H1c-rev} control-relative & \textsc{refuted} & $-3.0$ [$-10.5, +3.9$] on the held-out family \\
+\textbf{H2a} detectable $\Rightarrow$ routable & \textsc{split} & dispatch $1.000$; no gain follows \\
+\textbf{H2b} routed $\ge$ monolithic & \textsc{refuted} & as registered, at 1.5\,B \\
+\textbf{H2c} conditioning vs capacity & \textsc{inconclusive} & recovery $0.26$--$0.33$, inside the reserved band \\
+\textbf{H2d} merges retain $\ge 0.7$ & \textsc{refuted} & $-3.13$ cost against $+2.47$ contribution \\
+\textbf{H3} shift predicts transfer & \textsc{n/r} & the regression was never run \\
+\textbf{H3-causal} & \textsc{supported} & knockout $+0.104$ [$+0.011, +0.209$] nats \\
+\textbf{HA1} human alignment & \textsc{n/r} & only the untuned $\rho$ was read \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Standing correctness checks.} The ledger was accompanied by a fixed list of
+silent-failure checks to be cleared before any result was trusted: that splits partition by
+program and never by row; that a tuned model's outputs actually differ from the untuned one's on
+the same items; that one prompt builder serves training, both evaluation paths and attention
+extraction; that the loss mask is verified on a real batch; that format-failure and truncation
+rates are reported rather than assumed; that catastrophic forgetting is measured on a general
+coding benchmark; and that headline numbers use the subset of programs on which every condition
+succeeded. Each is enforced in code or reported in this paper. The forgetting check is the one that
+proved hardest to make trustworthy, and Section~\ref{sec:threats} records why.

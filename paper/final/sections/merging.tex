@@ -1,0 +1,122 @@
+\section{Merging Obfuscation Specialists}
+\label{sec:merging}
+
+We train low-rank adapters independently on different program
+representations and compose the resulting specialists into a single adapter
+before inference. The default merge contains six adapters: one clean-code
+specialist, \texttt{L0}, and five obfuscation specialists,
+\texttt{L1b}, \texttt{L1r}, \texttt{L2}, \texttt{S1}, and \texttt{S2}.
+Each specialist is optimized independently while the base model remains
+frozen. After training, the specialists are merged once offline and the
+individual adapters are discarded.
+
+
+Figure~\ref{fig:merge_pipeline} summarizes the complete procedure. Each
+condition produces an independently trained LoRA specialist; corresponding
+adapter parameters are then composed offline using DARE-TIES, yielding a
+single adapter that is deployed without routing or an expert bank.
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/pipeline_fig.png}
+\caption{\textbf{Overview of our methodology.}
+We train six LoRA specialists: one on clean code (\texttt{L0}) and five on
+seen obfuscations (\texttt{L1b}, \texttt{L1r}, \texttt{L2}, \texttt{S1},
+and \texttt{S2}). We merge the corresponding $A$ and $B$ factors separately
+with DARE-TIES to obtain a single adapter, which is deployed without a router
+or expert bank and evaluated across clean, stacked, held-out, and
+reverse-reasoning conditions.}
+\label{fig:merge_pipeline}
+\end{figure}
+
+
+
+This separates \emph{specialization} from \emph{composition}. Each adapter
+learns from a single transformation condition without jointly optimizing
+against examples from the other conditions. Composition then occurs only after
+specialist training, producing one adapter with the same inference-time
+architecture as an ordinary LoRA model. Unlike routing, the deployed model
+requires neither a gate nor a resident bank of specialists.
+
+Let the frozen base parameters be $\theta$, and let
+$\Delta\theta_t$ denote the low-rank update learned by specialist $t$.
+Independent training produces
+
+\[
+\{\Delta\theta_1,\ldots,\Delta\theta_T\}.
+\]
+
+We compose these updates using a parameter-space merge operator
+$\mathcal{M}$,
+
+\[
+\Delta\theta_{\mathrm{merge}}
+=
+\mathcal{M}
+\left(
+\Delta\theta_1,\ldots,\Delta\theta_T
+\right),
+\]
+
+and deploy
+
+\[
+\theta'
+=
+\theta + \Delta\theta_{\mathrm{merge}}.
+\]
+
+\paragraph{LoRA representation.}
+For an adapted weight matrix $W$, specialist $t$ represents its update as
+
+\[
+\Delta W_t = B_t A_t,
+\]
+
+where $A_t$ and $B_t$ are rank-$r$ LoRA factors. All specialists use the
+same rank, scaling coefficient, and target modules, so corresponding adapter
+parameters can be merged directly across specialists. The resulting merged
+adapter has the same rank and target modules as the individual specialists.
+
+\paragraph{Merge operator.}
+We evaluate TIES and DARE-TIES merging. All specialists receive uniform merge
+weights. TIES first removes low-magnitude parameter changes, determines a
+consensus sign for each retained coordinate, and averages only updates that
+agree with that sign. DARE-TIES applies random sparsification and rescaling to
+the task-specific parameter updates before the TIES sign-resolution and
+aggregation step. We use a retained density of $0.5$ for all models.
+
+The density is fixed across the eight evaluation models. It was selected from
+$\{0.3,0.5,0.7\}$ using a separate 1.5B-parameter pilot model and was not tuned
+on the reported model panel. Unless otherwise stated, the main results use
+DARE-TIES; TIES is reported as a merge ablation.
+
+% VERIFY THIS SENTENCE AGAINST THE IMPLEMENTATION:
+The merge is applied independently to corresponding LoRA parameter tensors at
+each adapted layer, rather than materializing and merging the full base-model
+weights.
+
+
+\paragraph{The operator is not arbitrary.} Sparsification and sign election, rather than averaging,
+do most of the work. Rebuilding the merge with plain uniform averaging at identical ingredients,
+weights, density, rank and seed (Table~\ref{tab:mergeop}) does not merely lose: on three of four
+models it does not clear the format gate on clean code or on the seen single transforms at all, and
+on the one unseen-family cell where it is readable it reaches $25\,\%$ of the untuned model's
+clean-code accuracy against an untuned baseline of $57\,\%$ --- worse than not merging. Averaging is
+also the only operator that loses the answer contract: it answers the forward question when asked to
+reverse on $0.174$ and $0.428$ of items on the two models read in that direction, where TIES sits at
+$0.000$ and DARE-TIES at $0.019$ and $0.000$. Three operators at one density is not a search, so we
+do not claim DARE-TIES is optimal, only that the choice is load-bearing.
+
+\input{tables/merge_operator}
+
+\paragraph{Training and deployment.}
+Specialists are trained independently using the same optimization setup and
+base checkpoint. Merging is performed only after specialist training and
+requires no additional optimization. No transform identity, routing decision,
+or dynamic expert selection is used during evaluation. Consequently, the
+deployed artifact is a single low-rank adapter and has the same inference-time
+parameterization and computational structure as the other single-adapter
+baselines.

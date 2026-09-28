@@ -1,0 +1,127 @@
+% Preamble requirements:
+%   \usepackage{tikz,pifont,graphicx,textcomp}
+%   \usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.callouts}
+% Real example, CodeGemma-7B, held-out stack C3_L1r_S1_X1, item apps_3468_0::C3_L1r_S1_X1::2
+% (APPS `scramble`). Program is the entry function verbatim except: two long conditional
+% expressions are line-wrapped in parentheses, the unreachable RuntimeError message is elided,
+% and the unused helper defs (_rs, _ar_p, _ar_m, _ar_x) are omitted.
+% The value/call in each bubble is the model's verbatim reply; the rest of the sentence is our
+% explanation (the eval stores answers only, no reasoning). Sources:
+%   forward : results/cells/{f2_divergence,merge_panel}/codegemma-7b/python/<arm>__C3_L1r_S1_X1
+%   backward: results/cells/inverse_generic/codegemma-7b/python/<arm>__C3_L1r_S1_X1
+% Middle row = cons_lam3 and mono_all (identical replies on this item). The router is NOT in the
+% middle row: it answers forward correctly but backward writes f_eba3([1,2,3,3], [1,1,2,2]),
+% which returns False -- a wrong call, not forward-locking (3.8% locked on this condition).
+\begin{figure*}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+% ---- Colors (shared with the other obfuscation figures) ----
+\definecolor{renC}{HTML}{3B6FB6}\definecolor{flowC}{HTML}{D9822B}\definecolor{exprC}{HTML}{8A5AB8}
+\colorlet{renF}{renC!18}\colorlet{flowF}{flowC!22}\colorlet{exprF}{exprC!20}
+\definecolor{okC}{HTML}{2E8B57}\definecolor{badC}{HTML}{C0392B}
+\pgfdeclarehorizontalshading{tricolor}{100bp}{%
+  color(0bp)=(renF); color(38bp)=(renF); color(50bp)=(flowF);
+  color(62bp)=(exprF); color(100bp)=(exprF)}
+\providecommand{\hlstrut}{\rule[-0.32em]{0pt}{1.08em}}
+\providecommand{\rn}[1]{{\setlength{\fboxsep}{0.6pt}\smash{\colorbox{renF}{\hlstrut #1}}}}
+\providecommand{\fl}[1]{{\setlength{\fboxsep}{0.9pt}\smash{\colorbox{flowF}{\hlstrut #1}}}}
+\providecommand{\ex}[1]{{\setlength{\fboxsep}{0.6pt}\smash{\colorbox{exprF}{\hlstrut #1}}}}
+\providecommand{\ind}[1]{\hspace*{#1\fontcharwd\font`\ }}
+\newcommand{\ok}{{\color{okC}\ding{51}}}
+\newcommand{\no}{{\color{badC}\ding{55}}}
+\begin{tikzpicture}[
+  font=\sffamily\small,
+  title/.style={font=\sffamily\bfseries\small, anchor=base west},
+  task/.style={font=\sffamily\bfseries\small, anchor=base west},
+  bubble/.style={rectangle callout, rounded corners=3pt, draw=black!45, fill=white,
+     align=left, font=\sffamily\footnotesize\frenchspacing, inner sep=4pt, text width=5.5cm,
+     },
+  bad/.style={bubble, draw=badC!70, fill=badC!4},
+  good/.style={bubble, draw=okC!70, fill=okC!5},
+  mname/.style={font=\sffamily\bfseries\scriptsize, align=center},
+  % little model face; #1 = fill style. botgood smiles, botbad frowns
+  botbase/.pic={
+    \draw[black!55, thick] (0,0.42) -- (0,0.58); \fill[black!55] (0,0.62) circle (0.05);
+    \draw[draw=black!60, rounded corners=3pt, #1, thick] (-0.36,-0.3) rectangle (0.36,0.42);
+    \fill[white] (-0.15,0.12) circle (0.085) (0.15,0.12) circle (0.085);
+    \fill[black!75] (-0.15,0.12) circle (0.04) (0.15,0.12) circle (0.04);
+  },
+  botgood/.pic={\pic{botbase={#1}}; \draw[black!70, thick, line cap=round] (-0.13,-0.08) to[bend right=45] (0.13,-0.08);},
+  botbad/.pic={\pic{botbase={#1}}; \draw[black!70, thick, line cap=round] (-0.13,-0.16) to[bend left=45] (0.13,-0.16);},
+]
+% ================= Program and tasks =================
+\node[draw=black!40, rounded corners=2pt, inner sep=6pt, anchor=north west] (code) at (0,0) {%
+\ttfamily\scriptsize
+\begin{tabular}{@{}l@{}}
+def \rn{f\_eba3}(\rn{v\_9beb}, \rn{v\_9857}):\\
+\ind{4}\fl{\_sn\_e705 = object()}\\
+\ind{4}\fl{\_st\_bbb9 = \ex{-11891 + 11903}}\\
+\ind{4}\fl{while \_st\_bbb9 != \ex{-(-20148 + 20149)}:}\\
+\ind{8}\fl{if \_st\_bbb9 == \ex{44042 - (44042 - 70)}:}\\
+\ind{12}return True\\
+\ind{8}\fl{elif \_st\_bbb9 == \ex{23300 - (23300 - 26)}:}\\
+\ind{12}\rn{v\_dbfa} = \fl{\_v\_5220}\\
+\ind{12}\fl{\_st\_bbb9 = \ex{-2854 + 2917}}\\
+\ind{8}\fl{elif \_st\_bbb9 == \ex{-26285 + 26348}:}\\
+\ind{12}\fl{\_st\_bbb9 = (\ex{24950 - (24950 - 18)}}\\
+\ind{16}\fl{if} \rn{v\_9beb}.count(\rn{v\_dbfa}) < \rn{v\_9857}.count(\rn{v\_dbfa})\\
+\ind{16}\fl{else \ex{45625 - (45625 - 15)})}\\
+\ind{8}\fl{elif \_st\_bbb9 == \ex{52158 - (52158 - 12)}:}\\
+\ind{12}\fl{\_it\_2ee9 = iter(}set(\rn{v\_9857})\fl{)}\\
+\ind{12}\fl{\_st\_bbb9 = \ex{30429 - (30429 - 15)}}\\
+\ind{8}\fl{elif \_st\_bbb9 == \ex{3334 - (3334 - 18)}:}\\
+\ind{12}return False\\
+\ind{8}\fl{elif \_st\_bbb9 == \ex{33788 - (33788 - 15)}:}\\
+\ind{12}\fl{\_v\_5220 = next(\_it\_2ee9, \_sn\_e705)}\\
+\ind{12}\fl{\_st\_bbb9 = (\ex{8050 - (8050 - 26)} if \_v\_5220 is not \_sn\_e705}\\
+\ind{16}\fl{else \ex{61435 - (61435 - 70)})}\\
+\ind{8}\fl{else:}\\
+\ind{12}\fl{raise RuntimeError(...)}
+\end{tabular}};
+\node[title] (ta) at ($(code.north west)+(0,0.78)$) {Stacked-obfuscated program};
+\node[font=\sffamily\footnotesize, anchor=base west, inner sep=0pt] at ($(code.north west)+(0,0.3)$) {%
+  {\setlength{\fboxsep}{1.5pt}\fcolorbox{renC}{renF}{\strut\texttt{L1r} renaming}}%
+  \ $\rightarrow$\ %
+  {\setlength{\fboxsep}{1.5pt}\fcolorbox{flowC}{flowF}{\strut\texttt{S1} flattening}}%
+  \ $\rightarrow$\ %
+  {\setlength{\fboxsep}{1.5pt}\fcolorbox{exprC}{exprF}{\strut\texttt{X1} arithmetic}}};
+% ================= Grid of models x tasks =================
+\def\xA{10.4}\def\xB{17.7}   % face x-positions for the two task columns
+\def\bw{0.72}              % gap from face to bubble
+\node[task] at ({\xA-0.45},0.78) {Forward reasoning};
+\node[font=\sffamily\footnotesize, anchor=base west] at ({\xA-0.45},0.3) {Output prediction: \texttt{f\_eba3(s1, s2) = ?}};
+\node[font=\sffamily\footnotesize, anchor=base west] at ({\xA-0.45},-0.12) {\texttt{s1=\textquotesingle cedewaraaossoqqyt\textquotesingle, s2=\textquotesingle codewars\textquotesingle}};
+\node[task] at ({\xB-0.45},0.78) {Reverse reasoning};
+\node[font=\sffamily\footnotesize, anchor=base west] at ({\xB-0.45},0.3) {Input prediction: find \texttt{s1, s2} such that};
+\node[font=\sffamily\footnotesize, anchor=base west] at ({\xB-0.45},-0.12) {\texttt{f\_eba3(s1, s2) == True}};
+\newcommand{\cell}[5]{% x, y, face style, bubble style, text
+  \pic at (#1,#2) {bot#4={#3}};
+  \node[#4, anchor=west, callout absolute pointer={({#1+0.42},{#2+0.05})}] at ({#1+\bw},{#2+0.05}) {#5};}
+\newcommand{\rowname}[2]{\node[mname, anchor=north] at (\xA,{#1-0.38}) {#2};}
+
+% Base model
+\rowname{-1.3}{Base}
+\cell{\xA}{-1.3}{fill=black!8}{bad}{Predicts \texttt{False}, but every letter of\\\texttt{codewars} occurs often enough in \texttt{s1}. \no}
+\cell{\xB}{-1.3}{fill=black!8}{bad}{Calls \texttt{f\_eba3(\{1,2,3\}, \{1,2,3\})}, which\\raises: a set has no \texttt{.count}. \no}
+% KL-consistency / pooled SFT
+\rowname{-3.9}{KL-consistency\\Pooled SFT}
+\cell{\xA}{-3.9}{fill=cyan!10}{good}{Predicts \texttt{True}: every letter of\\\texttt{codewars} occurs often enough in \texttt{s1}. \ok}
+\cell{\xB}{-3.9}{fill=cyan!10}{bad}{Replies \texttt{True}, the output itself,\\instead of a call to \texttt{f\_eba3}. \no\\[1pt]{\color{badC!80!black}\itshape\scriptsize answers the trained forward task instead}}
+% Merged
+\rowname{-6.5}{Merged}
+\cell{\xA}{-6.5}{shading=tricolor}{good}{Predicts \texttt{True}: every letter of\\\texttt{codewars} occurs often enough in \texttt{s1}. \ok}
+\cell{\xB}{-6.5}{shading=tricolor}{good}{Calls \texttt{f\_eba3([1,2,3], [1,2,3])}, which\\returns \texttt{True}: every count is equal. \ok}
+\end{tikzpicture}}
+\caption{Qualitative example of capability preservation under model merging, taken from the
+evaluation: CodeGemma-7B on a held-out program from the three-deep stack
+\texttt{L1r}\,$\rightarrow$\,\texttt{S1}\,$\rightarrow$\,\texttt{X1} (APPS \texttt{scramble}:
+does \texttt{s1} contain enough of each character of \texttt{s2}?). Each bubble gives the
+model's verbatim answer with our explanation of it. The untuned model fails forward prediction,
+while the KL-consistency and pooled-SFT arms predict the output correctly. Asked to reason in
+the reverse direction, however, they reply with the output value itself rather than an input,
+effectively answering the forward task they were trained on; on this stack the KL arm does so on
+88\,\% of items and pooled SFT on 25\,\%. The DARE-TIES merge handles both directions.
+Backward answers are graded by execution. The listing wraps two long lines and omits unused
+helper definitions.}
+\label{fig:case-study}
+\end{figure*}

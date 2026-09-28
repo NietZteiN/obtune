@@ -1,6 +1,6 @@
 # Claude System Instructions & Workflow Protocol (CLAUDE.md)
 
-*Last updated: 2026-08-28*
+*Last updated: 2026-09-22*
 
 You are executing within a constrained compute environment as an expert AI research engineer. You must strictly adhere to the infrastructure layout, experiment discipline, and cognitive workflow defined below.
 
@@ -115,11 +115,16 @@ Before executing any complex command, code modification, or long GPU run, update
   `torch 2.11.0+cu129` installed from `https://download.pytorch.org/whl/cu129`. CUDA 12
   minor-version compatibility covers an r550 driver, and it is verified on an H200 —
   `cuda available: True`, sm_90, 150 GB, 161.7 TFLOP/s bf16.
-  **vLLM is a separate, unsolved problem:** every PyPI `vllm` wheel back to 0.23 is built
-  against CUDA 13 (`vllm._C_stable_libtorch` links `libcudart.so.13`), and the `rhel9`
-  repo publishes no `cuda-compat-13-x` forward-compatibility package. Training and the HF
-  eval path work; the vLLM eval path does not. Fixing this properly means the cluster
-  driver moving to r580+.
+  ~~**vLLM is a separate, unsolved problem**~~ — **RESOLVED 2026-08-30, and this paragraph was
+  wrong for three weeks after it was.** The `libcudart.so.13` blocker is real of the *default*
+  `envs/obtune` and is gone in `envs/obtune-cu129`: vLLM 0.26.0 starts, serves multi-LoRA and
+  generates correctly on a30, h100 and h200. The 08-28 verdict that produced the original text
+  rested on a test script with no `if __name__ == "__main__":` guard — vLLM starts its engine core
+  with `spawn`, which re-imports the main module and re-executed `LLM(...)` — plus flashinfer
+  JIT-compiling a sampling kernel that needs an `nvcc` the compute nodes do not have. The latter is
+  fixed by `VLLM_USE_FLASHINFER_SAMPLER=0`, exported in `scripts/env.sh`, so every job inherits it.
+  Neither was the driver. Full account: `log/setup/2026-08-30_vllm-unblocked.md`; re-verified
+  2026-09-22. **The vLLM eval path is the normal path — use it.**
 - Node workspace: `js/node_modules` (`npm ci` from the committed lockfile). **`javascript-obfuscator`
   is installed for the H1 generator only.** ⚠️ **`node` is not installed on juno.** The
   814 MB `node_modules` tree transferred intact but has no interpreter, so the H1/H2/H3
@@ -231,6 +236,15 @@ Every working day, for each thread you advanced: create the entry file from `log
 ---
 
 ## Changelog
+- **2026-09-22** — §2's vLLM paragraph is corrected. It declared the vLLM eval path blocked by the
+  CUDA-12 driver; that was refuted on 2026-08-30 and the charter was never updated, so for three
+  weeks the operating rules told anyone reading them that the project's fastest eval path did not
+  work. It does, under `envs/obtune-cu129`. The two real faults were a missing `__main__` guard in
+  a *test script* and a flashinfer JIT needing `nvcc`; both are fixed and neither was the driver.
+  Recorded rather than silently edited because the failure mode is the interesting part: the 08-28
+  diagnosis was sound on its evidence, and its evidence came from the harness, not the environment.
+  `paper/NUMBERS.md`'s "there is no LaTeX toolchain on this host" is stale in the same way —
+  `envs/tex/bin/tectonic` compiles the draft, verified today.
 - **2026-09-05** — **§3.2's H1 budget is now FULLY SPENT.** The pilot went 2026-09-02 (repaired
   2026-09-04) and the final pass 2026-09-05 (jobs 378518/378519, authorised by the user against a
   concrete five-arm manifest, hypotheses committed as `361d354` before submission). Rule 3 permits

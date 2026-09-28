@@ -1,0 +1,90 @@
+{
+  "codellama-13b": {
+    "Base": {
+      "n": 23415,
+      "strict_format": 0.9995,
+      "repaired": 0.0005,
+      "strict_acc": 0.2898,
+      "rescored_acc": 0.2901
+    },
+    "Clean": {
+      "n": 23415,
+      "strict_format": 0.8947,
+      "repaired": 0.1053,
+      "strict_acc": 0.2974,
+      "rescored_acc": 0.3318
+    },
+    "Breadth": {
+      "n": 23415,
+      "strict_format": 0.2262,
+      "repaired": 0.7738,
+      "strict_acc": 0.039,
+      "rescored_acc": 0.2316
+    },
+    "KL": {
+      "n": 23415,
+      "strict_format": 0.812,
+      "repaired": 0.188,
+      "strict_acc": 0.2139,
+      "rescored_acc": 0.2662
+    },
+    "Router": {
+      "n": 23415,
+      "strict_format": 0.7625,
+      "repaired": 0.2375,
+      "strict_acc": 0.2542,
+      "rescored_acc": 0.3323
+    },
+    "Merge": {
+      "n": 23415,
+      "strict_format": 0.9902,
+      "repaired": 0.0098,
+      "strict_acc": 0.3396,
+      "rescored_acc": 0.3414
+    }
+  },
+  "codellama-34b": {
+    "Base": {
+      "n": 23415,
+      "strict_format": 1.0,
+      "repaired": 0.0,
+      "strict_acc": 0.329,
+      "rescored_acc": 0.329
+    },
+    "Clean": {
+      "n": 23415,
+      "strict_format": 0.9233,
+      "repaired": 0.0767,
+      "strict_acc": 0.294,
+      "rescored_acc": 0.3146
+    },
+    "Breadth": {
+      "n": 23415,
+      "strict_format": 0.6067,
+      "repaired": 0.3933,
+      "strict_acc": 0.163,
+      "rescored_acc": 0.2854
+    },
+    "KL": {
+      "n": 23415,
+      "strict_format": 0.8978,
+      "repaired": 0.1022,
+      "strict_acc": 0.2604,
+      "rescored_acc": 0.2859
+    },
+    "Router": {
+      "n": 23415,
+      "strict_format": 0.5963,
+      "repaired": 0.4037,
+      "strict_acc": 0.1988,
+      "rescored_acc": 0.3411
+    },
+    "Merge": {
+      "n": 23415,
+      "strict_format": 0.9971,
+      "repaired": 0.0029,
+      "strict_acc": 0.3829,
+      "rescored_acc": 0.3841
+    }
+  }
+}

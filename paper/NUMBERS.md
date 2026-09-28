@@ -43,8 +43,13 @@ seen-composite run did not compute.
 `\vok` / `\vrefuted` / `\vinc` carry the verdict marks. They are **not** `\ok` / `\ref` / `\inc`:
 `\ref` is LaTeX's own cross-reference command, and defining a verdict macro over it makes every
 `\ref{tab:...}` in the prose render as a superscript instead of a table number. The first draft did
-exactly that and it was caught by structural validation, not by a compiler — there is no LaTeX
-toolchain on this host.
+exactly that and it was caught by structural validation, not by a compiler.
+
+**Correction 2026-09-22:** "there is no LaTeX toolchain on this host" is no longer true —
+`/work/jvl210002/migration/envs/tex/bin/tectonic -X compile fse27.tex` builds
+`paper/router_merger/fse27.pdf` at exit 0. Compile the draft before claiming a table is fine; the
+`.aux` is also how you check that a new `\label` actually resolved. The only undefined citation as
+of today is `ase26`.
 
 ## What the paper must not claim
 

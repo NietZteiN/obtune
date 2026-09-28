@@ -1,0 +1,251 @@
+# Experiment queue — reviewer response round
+*Opened 2026-09-20. Deadline for Tier A: 2026-10-02.*
+
+Status values: **DONE** (result exists and is in the paper) · **PARTIAL** (result exists, a stated
+gap remains) · **QUEUED** (submitted) · **TODO** · **BLOCKED** (cannot run, reason given).
+
+Update this file when an item changes state. Numbers here are pointers, not results; results live
+in `results/analysis/pipeline/` and the `log/` entries named per item.
+
+---
+
+## Tier A — before 2026-10-02
+
+### A1. Fill the missing arms in Table 5 — **DONE (as re-scoring)**
+Reverse row: `breadth` on CodeLlama-13B and CodeLlama-34B, `router` on CodeLlama-34B.
+
+**Triage changes what this is.** Two of the three are not absent, they are format-gated:
+
+| model | arm | backward format-failure |
+|---|---|---|
+| CodeLlama-13B | breadth | 0.72–0.94 |
+| CodeLlama-34B | breadth | 0.32–0.52 |
+| CodeLlama-34B | router | no cells at all |
+
+So A1 is one rerun under fixed decoding (the two breadth arms) plus one genuinely new eval
+(34B router). If the rerun does not clear the 0.25 gate, the fallback the reviewer offers is the
+honest one: drop the "strongest on six of eight" count and compare only where every arm exists.
+*Lands in Table 5, §7.3.*
+
+### A2. Backward-task decomposition table — **DONE**
+Four quantities per model per arm: execution-graded accuracy, exact reference-input recovery,
+format success, direction-lock rate.
+Built by `scripts/analysis/73_direction_lock.py`; `tables/backward_decomp.tex` and
+`tables/direction_lock.tex` are `\input` in RQ3.
+**Gap:** columns are Base, Clean, Breadth, KL, Router, Merge. The requested **ICL** column is
+missing. Add it if an ICL arm exists on the panel, else say so in the caption.
+**2026-09-24 — ICL column QUEUED.** `eval_vllm` refused ICL on the backward task; the composer now
+has a `task="input"` mode, byte-identical to the one-shot inverse prompt at k=1
+(`tests/test_icl_prompts.py`). `configs/eval/inverse_icl.yaml` writes `icl_k4` (4 demos from
+L1b/L1r/L2/S1/S2, the forward ICL arm's recipe) into `inverse_generic` at `max_model_len` 8192 --
+at the default 2176 a large, length-biased share of four-demo prompts would have been dropped.
+`73_direction_lock.py` has the column. 7 of 8 models submitted behind a smoke (422772);
+**CodeLlama-34B not submitted** -- it needs an h200 slot and both are held.
+**2026-09-25 — DONE on all eight models** (34B: job 424652). Backward exec accuracy, ICL vs the
+one-shot base: below on 6 of 8 (by 1.1-5.6 pts), level on Llama-3.1-8B and Granite; the merge beats
+ICL on 7 of 8 (Granite: all three within 1.1 pts). ICL's direction-lock rate is 0.000-0.007, the same
+as base -- its shortfall is not the forward-answer fallback that sinks the tuned arms. Tables in
+`paper/router_merger/tables/{direction_lock,backward_decomp}.tex`; **not yet in `paper/final/`**.
+
+### A3. Specialist-subset merges — **DONE**
+Four ingredient sets at fixed operator/density/weights/rank: `no-L0` (L1b,L1r,L2,S1,S2),
+`ident` (L1b,L1r,L2), `struct` (S1,S2), and the six-way reference.
+Built by `scripts/analysis/76_merge_ablation.py`; `tables/merge_ablation.tex` is in RQ1 §5.2.
+Complete on four models, both directions, 92 forward + 64 backward cells each.
+**Gap:** condition groups are `L0`, singles, depth-2, held-out. **Depth-3 stacks are not
+reported** and the reviewer asks for them.
+**2026-09-24 — correction and QUEUED.** Forward d3/d4 were always evaluated and are in
+`76_merge_ablation.py`'s groups; the gap is **backward** only. The four `mergeablate_bwd_*` configs
+now carry `C3_L1r_S3_S4`, `C3_S1_S3_S4`, `C3_L1r_S1_S4`, `C4_L1r_S1_S3_S4`; the six-way reference
+already has those backward cells in `inverse_generic`. Jobs 422780-422783.
+**2026-09-25 — DONE.** Backward, breadth wins at every depth (d3: 6-way >= no-L0 > ident > struct
+wherever the narrow arms clear the format gate); forward, the two-specialist structural merge is at
+or above the six-way at d3/d4 on all four models. `merge_ablation.tex` is in `router_merger/` only.
+
+### A4. Paired bootstrap intervals — **DONE, sweep applied to paper/final (2026-09-25)**
+All eight requested contrasts are computed by `scripts/analysis/74_main_contrasts.py --ablation`,
+program-clustered, 2,000 resamples, seed 17.
+Two prose claims were already deleted as unsupported: Merge − Clean LoRA on `L0` is null on all
+eight models, and Router − Merge on the unseen family is significant on seven, not six.
+**Remaining editorial task:** sweep the draft for surviving 0.3–0.4 point claims the intervals do
+not support.
+
+### A5. Merge operator ablation and implementation audit — **DONE, AND IN THE PAPER (2026-09-22)**
+*Audit:* **DONE.** `scripts/analysis/79_merge_space_check.py`, all eight models. §3's factor-space
+claim matches the implementation. Its random-factor figure (cosine 0.40) is a worst case; on the
+deployed adapters the two spaces agree at cosine 0.539–0.848, tracking specialist alignment at
+r = 0.95. `merging.tex` amended.
+~~**Gap:** the operator comparison.~~ **CLOSED.** `linear` was built and evaluated on four models.
+`tables/merge_operator.tex` (`tab:mergeop`), emitted by `82_merge_operator.py::_tex`, is `\input`
+in RQ1 §5.3 "The Operator Is Not Arbitrary". Result is stronger than the 09-20 note: `linear` is
+format-gated on 3 of 4 models, and where readable on the unseen family sits at 25 % against an
+untuned 57 % — worse than not merging. Lock rates 0.174 / 0.428 vs TIES 0.000.
+
+### A6. H1 — **RESOLVED 2026-09-25: existing final read reported, nothing re-run**
+H1's budget is **fully spent** (CLAUDE.md §3.2, changelog 2026-09-05): one pilot pass and one
+final pass, both taken. Rule 3 permits no further read, and no H1 number may select, tune or rank
+anything. **Running it is forbidden and I will not.**
+The resolvable half: the 2026-09-05 final read exists (`log/transfer/2026-09-05_h1-final-read.md`).
+Reporting those already-paid-for numbers is not a new read. So the choice is *report the existing
+final-read result* or *remove H1 from Table 2* — a writing decision, not an experiment.
+X1 is the trainable sibling and is already reported throughout as the held-out family.
+
+### B9-equivalent note
+Cross-language is listed in Tier B but was run today; see B9 below.
+
+---
+
+## Tier B — if time allows
+
+### B7. Deployment cost table — **DONE, AND IN THE PAPER (2026-09-22)**
+Stored parameters, peak inference memory, tokens/sec for untuned, single LoRA, router, merge.
+~~The defence against the router is currently a cost claim with no number.~~ It has one:
+`tables/deployment_cost.tex` (`tab:deploycost`), `\input` in RQ2. Router 648M/679M params vs the
+merge's 80M/84M (**8×**), +0.6–0.7 GB peak, throughput within 1 % of a single adapter.
+**Gap:** two models profiled, not eight. `80_deployment_cost.py --tex` is the GPU-free emitter.
+**2026-09-25 — gap CLOSED.** All eight models profiled (34B on h200, job 422519). The table is
+transposed to one row per model (24 numeric columns did not fit acmsmall) and now writes to
+`paper/final/tables/` as well as `router_merger/`. Two claims from the two-model version did not
+survive eight: router throughput is **-8 % to +9 %** of a single LoRA, not "within 1 %", and the LoRA
+decode cost is 12-55 %, not "roughly half". The caption computes its ranges from the JSONs; the
+`alternatives.tex` paragraph is updated to match. Paper compiles clean.
+
+### B8. Seed variance on CodeLlama-7B — **DONE, AND APPLIED TO THE CLAIMS (2026-09-22)**
+Three seeds for breadth and for the six specialists, to establish a noise floor. Requires real
+training. Seed 42 already exists for Granite and for parts of the panel.
+Floor: median range **0.66** pts over 21 arm × group combinations, max **2.39**, **1.57 median on
+the held-out family**. `tables/seed_noise.tex` (`tab:seednoise`) is `\input` in the evaluation
+section beside the measurement conventions, and `threats.tex` cross-references it.
+**The claim it undercut has been rescoped**: RQ3 no longer ranks the router above the merge on the
+held-out family off `+0.96`–`+2.75` on one seed; it claims only *not below*, on 8/8, with the
+consistent direction noted and a seeded replication named as what would settle it.
+
+### B9. JavaScript — **DONE**
+Run today. `configs/eval/crosslang_fwd.yaml`, `scripts/analysis/78_crosslang.py`,
+`tables/crosslang.tex`, in RQ3. Four models, 192/192 cells.
+Result: every adapted arm reading obfuscated JavaScript beats the untuned model reading clean
+JavaScript, +16.4 to +30.8 points, significant in all twelve comparisons.
+**Two gaps and one hard limit:**
+* `router` arm not included (Base, Clean, Breadth, Merge were).
+* **Backward is impossible**: grading executes the predicted input and juno has no `node`.
+* **Contamination**: CruxEval-X/HumanEval-X are ports; 87 of 168 JS test programs are Python
+  training programs. All figures use the clean 81. Pinned by `tests/test_split_integrity.py`.
+
+---
+
+## Compute note
+The juno pool share was returned to **0** on 2026-09-20 and `submit.py` refuses h200/normal
+submissions at that setting. **`h100` and `a30` carry no QoS** and are where this round runs.
+Raise the share deliberately, and say why in `configs/compute.yaml`, only if that proves
+insufficient.
+
+
+---
+
+## Launched 2026-09-20, 15 GPUs
+
+Share raised 0 -> 2 for this round; h100 and a30 carry no QoS and supply the rest.
+
+| job | n | partition | item |
+|---|---|---|---|
+| `ev_xlrouter_*` | 4 | h100 | B9 router arm on JavaScript |
+| `ev_invrouter_codellama-34b` | 1 | h200 | A1, the one genuinely unrun arm |
+| `ev_mergeop_{fwd,bwd}_*` | 8 | h100/a30 | A5 operator ablation, 4 models |
+| `tr_seedvar_s{101,202}` | 2 x 2 GPU | h100 | B8 noise floor, 7 trainings each |
+| `cost_*` | 2 | h100 | B7 deployment cost |
+
+### A1 was reframed, and this is the substantive change
+The reviewer asks to rerun breadth on CodeLlama-13B/34B "under a fixed prompt and decoding
+setting". The raw outputs say that will not work. Asked for a call, CodeLlama-13B replies
+`" 3,2,1 "` and 34B replies `' "1+(2+3)" '` -- bare arguments with no call wrapper -- where
+CodeLlama-7B replies `'longestCommonSubsequence("abcdef", "abc")'` and clears the gate.
+`SYSTEM_PROMPT_INVERSE` rule 1 already demands `name(arg1, ...)` verbatim, so those models are
+ignoring the contract rather than being misprompted, and an identical rerun reproduces it.
+
+**This is a re-scoring problem, which is exactly what A2 is for.** The fix is a uniform,
+arm-blind recovery in `inverse.extract_call` that accepts bare arguments when the entry point is
+known, applied to every arm and model and reported beside the strict rate. That is also the
+honest reading of the reviewer's own point: the strict contract is conflating formatting with
+reverse reasoning, which they call the load-bearing ambiguity. Only 34B's router is a real gap
+and it is running.
+
+
+---
+
+## A5 first result: the operator is not arbitrary (Llama-3.1-8B, forward, 2026-09-20)
+
+Percent of the untuned model's clean-code accuracy. Ingredients, weights, rank and seed are
+identical across the three merges; only the operator differs.
+
+| group | base | linear | TIES | DARE-TIES |
+|---|---|---|---|---|
+| `L0` | 100 | 115 | 154 | **178** |
+| singles | 85 | 98 | 133 | **156** |
+| d2 seen | 70 | 87 | 116 | **140** |
+| unseen | 53 | gated | 83 | **104** |
+
+**Plain uniform averaging recovers 115 % of clean-code accuracy where DARE-TIES reaches 178 %.**
+So sparsification and sign election do most of the work, and the choice of DARE-TIES is
+justified rather than arbitrary — which is what the reviewer doubted. Averaging is barely
+better than not merging at all on the unseen family, where it fails the format gate outright
+(format-failure 0.29 against DARE-TIES' 0.03).
+
+Note the format column: `linear` runs at 0.17--0.29 format failure on every group while TIES
+and DARE-TIES sit at 0.02--0.04. Averaging six adapters degrades the answer contract; electing
+a sign does not.
+
+Three models to go.
+
+---
+
+## New item, opened 2026-09-22
+
+### B10. General-coding-benchmark retention across the panel — **DONE (2026-09-25), not yet in `paper/final/`**
+*Does obfuscation tuning cost general code ability?* CLAUDE.md §4.7 asks for this per adapter and
+it has never been run on the CodeLlama-era panel.
+
+**Why it is not just a rerun.** `results/forgetting/` holds three CodeLlama-7B readings and two of
+them are **pass@1 = 0.0000 exactly** (`tuned_L0`, `mono_all`) against a base of 0.439/0.390 — and
+nothing in those files says whether that is catastrophic forgetting or an output-prediction adapter
+declining to emit a function. The HumanEval+ path records no format-failure rate and saves no
+generations. Worse, it *cannot*: `_extract_code` prepends the prompt (which contains the signature)
+whenever the completion has no `def`, so a bare-literal reply scores `format_fail = 0.0` there.
+Verified today — scoring `"42"` reads 0.0 on HumanEval+ and 1.0 on MBPP+.
+
+**So MBPP+ is the primary probe** (399 tasks, 0/399 in our training corpus; HumanEval is one of the
+corpus's three sources and 74/164 of its problems are in the train split, which biases the
+arms-vs-base contrast *toward* the arms). HumanEval+ runs as the contaminated secondary.
+
+`src/obtune/bench_retention.py` — one vLLM engine per (model, benchmark), six arms served through
+it via `eval_vllm.Engine`'s multi-LoRA registry. Reports `format_fail_rate`, the new
+`raw_no_def_rate` (computed on the text before extraction), `entry_point_mismatch`, saved
+generations, per-task verdicts for McNemar pairing, and an explicit byte-identical-to-base check
+(CLAUDE.md §4.2).
+
+Arms: `base`, `tuned_L0`, `mono_all`, `cons_lam3`, `merge_ties`, `merge_dare_ties` — all six
+resolve on all eight models (48/48 verified before submission).
+**Stated gap:** `mole_router` is excluded. It is a learned mixture over eight experts, not a plain
+LoRA, so a vLLM LoRARequest cannot serve it; it needs the HF mixture engine and is a separate job.
+
+16 jobs (8 models × 2 benchmarks), submitted 2026-09-22: a30 ×8 (7–8B only), h100 ×6 (12–15B),
+h200 ×2 (CodeLlama-34B, which needs the 141 GB card). Share raised 0 → 2 for the 34B pair only.
+
+---
+
+## 2026-09-25 — A4 sweep and A6, applied to `paper/final/`
+
+**A4.** Against `74_main_contrasts.py` (program-clustered, 2,000 resamples) and `tab:seednoise`:
+* RQ1 "matches or exceeds clean-code tuning on six of eight, trails by 0.1 and 0.3" counted point
+  estimates -- Merge $-$ Clean on `L0` contains zero on **all eight**. Rewritten as
+  indistinguishable on all eight ($-0.3$ to $+1.4$); takeaway to match.
+* RQ3 "router above the merge on all eight" -- +0.8 to +2.8, CI excludes zero on seven, and the
+  margins sit inside the unseen-family seed floor (median 1.57, max 2.39). Now claims only *not
+  below*, citing the floor. This is the B8 rescoping, which had reached router_merger/ but not the
+  author's final/ revision.
+* "merging exceeds breadth on seven of eight" -- now "significantly on five".
+* Kept: Merge $-$ Base backward +3.0 to +6.4, significant on seven -- the text already said seven.
+
+**A6.** Reported, not re-run. `threats.tex` replaces "X1 closely matches H1" with the evidence from
+the two pre-registered reads: r = 0.9992 (mean |Δ| 0.48) on six systems trained on neither family,
+0.08-pt X1→H1 transfer for X1-trained adapters, and that nothing in the paper was selected on H1.
+The H1 budget remains spent; no H1 cell was read.

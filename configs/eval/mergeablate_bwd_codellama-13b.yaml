@@ -35,4 +35,9 @@ systems:
 
 eval_conditions: [L0, L1b, L1r, L2, S1, S2, X1,
                   C_L1b_S1, C_L1r_S1, C_S1_L1r, C_L2_S4, C_L1r_S3, C_S4_S3,
-                  C_L1r_X1, C_X1_S1, C_S2_X1]
+                  C_L1r_X1, C_X1_S1, C_S2_X1,
+                  # DEPTH 3 AND 4 ADDED 2026-09-24 (A3's gap): the forward phase always had them,
+                  # the backward one did not, so 76_merge_ablation.py rendered `--` there. The
+                  # six-way reference already has these backward cells in inverse_generic
+                  # (configs/eval/inverse_stacks.yaml); only the new cells below are computed.
+                  C3_L1r_S3_S4, C3_S1_S3_S4, C3_L1r_S1_S4, C4_L1r_S1_S3_S4]

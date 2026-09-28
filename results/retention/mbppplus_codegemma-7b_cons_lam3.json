@@ -1,0 +1,1695 @@
+{
+  "n_tasks": 399,
+  "n_scorer_errors": 0,
+  "pass@1_base": 0.188,
+  "pass@1_plus": 0.1654,
+  "format_fail_rate": 0.7293,
+  "raw_no_def_rate": 0.5238,
+  "entry_point_mismatch": 213,
+  "entry_point_mismatch_rate": 0.7293,
+  "extraction_repaired": 1,
+  "extraction_repaired_rate": 0.9549,
+  "uncompilable_rate": 0.005,
+  "per_task": {
+    "Mbpp/100": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/101": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/102": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/103": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/104": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/105": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/106": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/108": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/109": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/11": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/111": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/113": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/115": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/116": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/117": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/118": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/119": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/12": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/120": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/123": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/124": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/125": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/126": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/127": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/128": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/129": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/130": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/131": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/132": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/133": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/135": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/137": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/138": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/139": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/14": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/140": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/141": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/142": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/143": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/145": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/16": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/160": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/161": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/162": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/164": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/165": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/166": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/167": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/168": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/17": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/170": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/171": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/172": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/18": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/19": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/2": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/20": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/222": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/223": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/224": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/226": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/227": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/229": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/230": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/232": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/233": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/234": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/235": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/237": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/238": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/239": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/240": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/242": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/244": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/245": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/247": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/249": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/250": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/251": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/252": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/253": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/255": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/256": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/257": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/259": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/260": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/261": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/262": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/264": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/265": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/266": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/267": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/268": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/269": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/270": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/271": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/272": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/273": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/274": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/276": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/277": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/278": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/279": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/280": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/281": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/282": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/283": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/284": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/285": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/286": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/287": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/290": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/292": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/293": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/294": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/295": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/296": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/297": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/299": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/3": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/300": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/301": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/305": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/306": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/308": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/309": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/310": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/311": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/312": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/388": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/389": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/390": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/391": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/392": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/394": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/395": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/396": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/397": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/398": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/4": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/400": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/404": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/405": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/406": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/407": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/409": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/410": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/412": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/413": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/414": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/415": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/418": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/419": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/420": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/421": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/422": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/424": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/425": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/426": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/427": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/428": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/429": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/430": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/431": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/432": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/433": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/435": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/436": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/437": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/438": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/439": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/440": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/441": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/442": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/445": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/446": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/447": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/448": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/450": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/451": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/453": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/454": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/455": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/456": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/457": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/458": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/459": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/460": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/461": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/462": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/463": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/465": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/468": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/470": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/471": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/472": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/473": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/474": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/475": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/476": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/477": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/478": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/479": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/554": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/555": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/556": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/557": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/558": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/559": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/56": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/560": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/562": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/563": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/564": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/565": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/566": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/567": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/568": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/569": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/57": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/572": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/573": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/574": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/576": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/577": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/578": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/579": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/58": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/580": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/581": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/582": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/583": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/585": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/586": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/587": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/588": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/589": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/59": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/590": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/591": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/592": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/593": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/594": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/595": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/596": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/597": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/598": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/599": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/6": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/600": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/602": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/603": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/604": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/605": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/606": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/607": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/608": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/61": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/610": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/611": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/612": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/614": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/615": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/616": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/618": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/619": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/62": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/620": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/622": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/623": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/624": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/626": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/628": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/629": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/63": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/630": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/631": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/632": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/633": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/635": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/637": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/638": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/639": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/64": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/640": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/641": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/643": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/644": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/65": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/66": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/67": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/68": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/69": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/7": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/70": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/71": {
+      "base": false,
+      "plus": true
+    },
+    "Mbpp/72": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/720": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/721": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/722": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/723": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/724": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/725": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/726": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/728": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/730": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/731": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/732": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/733": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/734": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/735": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/736": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/737": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/739": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/74": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/740": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/741": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/742": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/743": {
+      "base": true,
+      "plus": false
+    },
+    "Mbpp/744": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/745": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/746": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/748": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/749": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/75": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/750": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/751": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/752": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/753": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/754": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/755": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/757": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/758": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/759": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/760": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/762": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/763": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/764": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/765": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/766": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/767": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/769": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/77": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/770": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/771": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/772": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/773": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/775": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/777": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/778": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/780": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/781": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/782": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/783": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/784": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/785": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/786": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/787": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/788": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/79": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/790": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/791": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/792": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/793": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/794": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/796": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/797": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/798": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/799": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/8": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/80": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/800": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/801": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/803": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/804": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/805": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/806": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/807": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/808": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/809": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/82": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/83": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/84": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/85": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/86": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/87": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/88": {
+      "base": true,
+      "plus": true
+    },
+    "Mbpp/89": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/9": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/90": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/91": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/92": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/93": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/94": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/95": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/96": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/97": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/98": {
+      "base": false,
+      "plus": false
+    },
+    "Mbpp/99": {
+      "base": false,
+      "plus": false
+    }
+  },
+  "model_key": "codegemma-7b",
+  "model": "google/codegemma-7b-it",
+  "arm": "cons_lam3",
+  "benchmark": "mbppplus",
+  "adapter": "/work/jvl210002/migration/obtune/runs/adapters_objectives/codegemma-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best",
+  "icl_demos": null,
+  "engine": "vllm-0.26.0",
+  "gen_seconds": 27.2,
+  "identical_to_base": 0,
+  "sample_generations": [
+    "101<end_of_turn>\n<end_of_turn>\nThe function should find the next smallest palindrome of a specified integer by adding 1 to the integer and then checking if the new number is a palindrome. If it is not, the function should add 1 to the new number and check again. The function should continue this process until it finds a palindrome. The function should return the smallest palindrome that is greater than the specified integer.\nThe function should be able to handle integers of any size.\nThe function should be able to handle negative integers.\nThe function should be able to handle integers that are already palindromes.\nThe function should be able to handle integers that are not palindromes.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers",
+    "3<end_of_turn>\n<end_of_turn>\nThe function is as follows:\n```python\ndef kth_element(array, k):\n    return array[k - 1]<end_of_turn>\n<end_of_turn>\nThe function is tested with the following code:\n```python\nassert kth_element([12,3,5,7,19], 2) == 3<end_of_turn>\nassert kth_element([12,3,5,7,19], 3) == 5<end_of_turn>\nassert kth_element([12,3,5,7,19], 5) == 19<end_of_turn>\n```<end_of_turn>\nThe function is also tested with the following code:\n```python\ntry:\n    kth_element([12,3,5,7,19], 0)\nexcept IndexError as e:\n    print(e)<end_of_turn>\n```\nThe output is:\n```\nIndexError: list index out of range<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following code:\n```python\ntry:\n    kth_element([12,3,5,7,19], 6)\nexcept IndexError as e:\n    print(e)<end_of_turn>\n```\nThe output is:\n```\nIndexError: list index out of range<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following code:\n```python\ntry:\n    kth_element([12,3,5,7,19], 1)\nexcept IndexError as e:\n    print(e)<end_of_turn>\n```\nThe output is:\n```\nIndexError: list index out of range<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following code:\n```python\ntry:\n    kth_element([12,3,5,7,19], 5)\nexcept IndexError as e:\n    print(e)<end_of_turn>\n```\nThe output is:\n```\nIndexError: list index out of range<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following code:\n```python\ntry:\n    kth_element([12,3,5,7,19], 5)\nexcept IndexError as e:\n    print(e)<end_of_turn>\n```\nThe output is:\n```\nIndexError: list index out of range<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following code:\n```python",
+    "def snake_to_camel(snake):\n    \"\"\"\n    Converts a snake case string to camel case string.\n    \"\"\"\n    camel = \"\"\n    for i in range(len(snake)):\n        if snake[i] == \"_\":\n            camel += snake[i + 1].upper()\n        else:\n            camel += snake[i]\n    return camel<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings of any length and should be case-sensitive. The function should also be able to handle strings that do not contain any underscores. In this case, the function should return the same string as the input string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain multiple underscores. In this case, the function should capitalize the first letter of each word that follows an underscore. The function should also be able to handle strings that start with an underscore. In this case, the function should capitalize the first letter of the second word.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that end with an underscore. In this case, the function should not capitalize the last letter of the string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain a mix of letters and numbers. The function should capitalize the first letter of each word that follows an underscore, and should not capitalize the first letter of a word that does not follow an underscore.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain special characters. The function should not capitalize the first letter of a word that follows an underscore, and should not capitalize the first letter of a word that does not follow an underscore.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that are empty. In this case, the function should return an empty string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain only underscores. In this case, the function should return an empty string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain only letters. In this case, the function should return the same string as the input string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain only numbers. In this case, the function should return the same string as the input string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings that contain only special characters. In this case, the function should return the same string as the input string.<end_of_turn>\n<end_of_turn>\nThe function should be able to handle strings",
+    "4<end_of_turn>\n<end_of_turn>\nThe Eulerian number a(n, m) is the number of ways to choose m out of n things without regard to order. The formula for a(n, m) is:\na(n, m) = n! / m!(n-m)!\nThe function should be implemented as follows:\ndef eulerian_num(n, m):\n    return int(factorial(n) / factorial(m) / factorial(n-m))\n    \ndef factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n-1)<end_of_turn>\n<end_of_turn>\nThe function should be able to handle the case where m = 0 by returning 1.\nThe function should also be able to handle the case where m > n by returning 0.\nThe function should be able to handle the case where m = n by returning 1.\nThe function should be able to handle the case where m = 1 by returning n.\nThe function should be able to handle the case where m = n-1 by returning n.\nThe function should be able to handle the case where m = n/2 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2+1 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2-1 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2+2 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2-2 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2+3 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2-3 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2+4 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2-4 by returning n*(n-1)/2.\nThe function should be able to handle the case where m = n/2+5 by returning n*(n-1)/2",
+    "def sort_sublists(list_of_lists):\n  return [sorted(sublist) for sublist in list_of_lists]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function is a list comprehension that iterates over the list of lists and applies the `sorted()` function to each sublist. The result is a new list of lists with the sublists sorted in ascending order.\n\nThe `assert` statement in the function is used to test the function's output. The function is called with a list of lists and the expected output is a new list of lists with the sublists sorted in ascending order. The function returns the expected output, which is a new list of lists with the sublists sorted in ascending order.\n\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function is also a good example of how to use the `sorted()` function to sort a list of strings.\n\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function is also a good example of how to use the `sorted()` function to sort a list of strings.\n\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function is also a good example of how to use the `sorted()` function to sort a list of strings.<end_of_turn>\n<end_of_turn>\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function is also a good example of how to use the `sorted()` function to sort a list of strings.<end_of_turn>\n<end_of_turn>\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function is also a good example of how to use the `sorted()` function to sort a list of strings.<end_of_turn>\n<end_of_turn>\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function is also a good example of how to use the `sorted()` function to sort a list of strings.<end_of_turn>\n<end_of_turn>\nThe function is a good example of how to use list comprehensions to iterate over a list of lists and apply a function to each sublist. The function"
+  ],
+  "sample_format_failures": [
+    "101<end_of_turn>\n<end_of_turn>\nThe function should find the next smallest palindrome of a specified integer by adding 1 to the integer and then checking if the new number is a palindrome. If it is not, the function should add 1 to the new number and check again. The function should continue this process until it finds a palindrome. The function should return the smallest palindrome that is greater than the specified integer.\nThe function should be able to handle integers of any size.\nThe function should be able to handle negative integers.\nThe function should be able to handle integers that are already palindromes.\nThe function should be able to handle integers that are not palindromes.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are not palindromes and are not the next smallest palindrome of the specified integer.\nThe function should be able to handle integers that are palindromes and are the next smallest palindrome of the specified integer.\nThe function should be able to handle integers",
+    "2<end_of_turn>\n<end_of_turn>\nThe function should count the number of true booleans in a list. The function should be called count and the signature should be count(list). The function should return the number of true booleans in the list. The function should be able to count any number of true booleans in the list. The function should be able to count true booleans in a list of any type. The function should be able to count true booleans in a list of any size. The function should be able to count true booleans in a list of any number of true booleans. The function should be able to count true booleans in a list of any number of false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should be able to count true booleans in a list of any number of true and false booleans. The function should",
+    "set([12,18])<end_of_turn>\n<end_of_turn>\nThe function should take a list of lists and return a set of the common elements in all the lists. The set should not contain any duplicates.\n\nThe function should work as follows:\n\n1. Create an empty set to store the common elements.\n2. Iterate over the first list in the input list of lists.\n3. For each element in the first list, check if it is in the other lists.\n4. If the element is in the other lists, add it to the set of common elements.\n5. Return the set of common elements.\n\nThe function should work for any number of lists in the input list of lists.\n\nThe function should work for any number of elements in the lists in the input list of lists.\n\nThe function should work for any type of elements in the lists in the input list of lists.\n\nThe function should be efficient in terms of time and space complexity.\n\nThe function should be well-documented.\n\nThe function should be easy to understand and follow.\n\nThe function should be well-tested.\n\nThe function should be in a file named \"common_in_nested_lists.py\".\n\nThe function should be in a module named \"common_in_nested_lists\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_elements\".\n\nThe function should be in a class named \"CommonInNestedLists\".\n\nThe function should be in a method named \"find_common_",
+    "false<end_of_turn>\n<end_of_turn>\nThe function should return false if the string is not an integer.\nThe function should return true if the string is an integer.\nThe function should not be case sensitive.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if the string is a valid integer in a specific range.\nThe function should not be able to check if",
+    "true<end_of_turn>\n<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\n",
+    "3<end_of_turn>\n<end_of_turn>\nThe function should return the element that appears only once in a sorted array.\nThe function should be efficient and use as little memory as possible.\nThe function should be able to handle an array of any size.\nThe function should be able to handle an array of any type.\nThe function should be able to handle an array of any order.\nThe function should be able to handle an array of any number of unique elements.\nThe function should be able to handle an array of any number of duplicate elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe function should be able to handle an array of any number of elements.\nThe",
+    "36<end_of_turn>\n<end_of_turn>\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be called max_product_tuple.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to handle a list of tuples of any length.\nThe function should return the maximum absolute product between numbers in pairs of tuples within a given list.\nThe function should be able to",
+    "504<end_of_turn>\n<end_of_turn>\nThe amicable numbers are the numbers that are the sum of the proper divisors of the other number and the other number is the sum of the proper divisors of the first number.\nThe amicable numbers are (220, 284), (118, 124), (262, 292), (502, 504), (6, 6), (77, 84), (100, 100), (102, 108), (110, 116), (130, 132), (133, 144), (134, 132), (135, 135), (140, 140), (150, 150), (152, 152), (153, 153), (154, 152), (155, 155), (156, 156), (157, 157), (162, 162), (165, 165), (166, 166), (168, 168), (170, 170), (171, 171), (172, 172), (173, 180), (174, 182), (175, 180), (177, 180), (182, 180), (183, 186), (185, 186), (186, 186), (188, 190), (190, 190), (192, 192), (193, 200), (195, 200), (196, 204), (198, 200), (201, 201), (202, 200), (203, 203), (205, 200), (2",
+    "6<end_of_turn>\n<end_of_turn>\nThe function should return the sum of the common divisors of the two given numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle any two numbers. The function should be able to handle",
+    "200<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments. The function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should return the product of the two integers passed in as arguments.<end_of_turn>\n<end_of_turn>\nThe function is not complete. The function should",
+    "def long_words(n,str):\n  return [word for word in str.split() if len(word)>n]<end_of_turn>\n<end_of_turn>\n<end_of_turn>\nThe function is a list comprehension that takes a number n and a string str as input. The function returns a list of words in the string that are longer than n characters. The function uses a for loop to iterate over the string and a if statement to check if the word is longer than n characters. The function then returns a list of words that meet the condition.<end_of_turn>\n<end_of_turn>\nThe function is tested with the following example:\n```python\nassert long_words(3,\"python is a programming language\")==['python','programming','language']<end_of_turn>\n```\nThe function returns the list [\"python\",\"programming\",\"language\"] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(2,\"hello world\")==['hello','world']<end_of_turn>\n```\nThe function returns the list [\"hello\",\"world\"] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\"hello world\")==['hello','world']<end_of_turn>\n```\nThe function returns the list [\"hello\",\"world\"] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\"hello\")==['hello']<end_of_turn>\n```\nThe function returns the list [\"hello\"] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\"\")==[]<end_of_turn>\n```\nThe function returns the list [] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\" \")==[]<end_of_turn>\n```\nThe function returns the list [] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\"a\")==['a']<end_of_turn>\n```\nThe function returns the list [\"a\"] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\"aa\")==['aa']<end_of_turn>\n```\nThe function returns the list [\"aa\"] as expected.<end_of_turn>\n<end_of_turn>\nThe function is also tested with the following example:\n```python\nassert long_words(1,\"aaa",
+    "true<end_of_turn>\n<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\ntrue<end_of_turn>\n",
+    "2<end_of_turn>\n<end_of_turn>\nThe function should find the item with maximum frequency in a given list.\nThe function should return the item with maximum frequency in the list.\nThe function should be able to handle lists of any size.\nThe function should be able to handle lists of any data type.\nThe function should be able to handle lists with multiple items with the same maximum frequency.\nThe function should be able to handle empty lists.\nThe function should be able to handle lists with one item.\nThe function should be able to handle lists with no items with the same maximum frequency.\nThe function should be able to handle lists with items of different data types.\nThe function should be able to handle lists with items of the same data type.\nThe function should be able to handle lists with items of the same data type in a different order.\nThe function should be able to handle lists with items of the same data type in the same order.\nThe function should be able to handle lists with items of the same data type in a different order and with different maximum frequency.\nThe function should be able to handle lists with items of the same data type in the same order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in a different order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in the same order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in a different order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in the same order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in a different order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in the same order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in a different order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in the same order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in a different order and with the same maximum frequency.\nThe function should be able to handle lists with items of the same data type in the same order and",
+    "\"Python\"<end_of_turn>\n<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```python\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"Hello\") == \"Heoll\"\n\"\"\"\n```\n\"Heoll\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```python\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"Java\") == \"Java\"\n\"\"\"\n```\n\"Java\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"JavaScript\") == \"JavaScirpt\"\n\"\"\"\n```\n\"JavaScirpt\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"Hello World\") == \"Heoll World\"\n\"\"\"\n```\n\"Heoll World\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"This is a string\") == \"This is a string\"\n\"\"\"\n```\n\"This is a string\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"This is a string\") == \"This is a string\"\n\"\"\"\n```\n\"This is a string\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.\n```\n\"\"\"\nWrite a python function to reverse only the vowels of a given string (where y is not a vowel).\nassert reverse_vowels(\"This is a string\") == \"This is a string\"\n\"\"\"\n```\n\"This is a string\"<end_of_turn>\nThe function should not change the string if it does not contain any vowels.",
+    "-32<end_of_turn>\n<end_of_turn>\nThe function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a given list of numbers. The function should return the sum of the negative numbers of a"
+  ],
+  "provenance": {
+    "experiment": "retention/benchmark-panel",
+    "run_id": "mbppplus_codegemma-7b_cons_lam3",
+    "seed": 17,
+    "config_path": "configs/eval/_base_eval.yaml",
+    "config_resolved": {
+      "engine": {
+        "backend": "vllm",
+        "dtype": "bfloat16",
+        "gpu_memory_utilization": 0.9,
+        "max_lora_rank": 64,
+        "max_loras": 4,
+        "max_cpu_loras": 32,
+        "seed": 17,
+        "max_model_len": 8192
+      },
+      "sampling": {
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "max_tokens": 512,
+        "stop": [],
+        "seed": 17
+      }
+    },
+    "model_hf_id": "google/codegemma-7b-it",
+    "model_revision_resolved": null,
+    "adapter": {
+      "path": "/work/jvl210002/migration/obtune/runs/adapters_objectives/codegemma-7b/python/L0-L1b-L1r-L2-S1-S2_r32_cons_parent_lam3_s17/best",
+      "sha256": "6b7d010db146b37244b2cff0d48fcec1f67eaeaf31b355d3a21ab44b7e82aafb"
+    },
+    "gpu_visible": "0",
+    "command": "/work/jvl210002/migration/obtune/src/obtune/bench_retention.py --model codegemma-7b --benchmark mbpp",
+    "git_commit": "2d440e1c57db39818e0f01a19d4025d0d211a8a5",
+    "script_sha256": {
+      "src/obtune/bench_retention.py": "7c307ac0b24db6663104853e74899616e6244cc7e75b8c1c13100592db73c6b3"
+    },
+    "started_utc": "2026-09-23T23:59:15.400865+00:00",
+    "finished_utc": "2026-09-23T23:59:15.480385+00:00",
+    "libraries": {
+      "python": "3.12.14",
+      "platform": "Linux-5.14.0-503.40.1.el9_5.x86_64-x86_64-with-glibc2.34",
+      "torch": "2.11.0+cu129",
+      "transformers": "5.14.1",
+      "peft": "0.20.0",
+      "trl": "1.9.2",
+      "vllm": "0.26.0",
+      "numpy": "2.3.5"
+    },
+    "extra": {}
+  },
+  "rescored_by": "scripts/analysis/85_rescore_retention.py"
+}

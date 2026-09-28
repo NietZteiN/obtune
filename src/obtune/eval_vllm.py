@@ -268,10 +268,34 @@ def render_prompts(
     if system.trace and (system.icl_k or system.one_shot or system.baseline or system.normalize):
         raise ValueError(f"system {system.name!r}: trace cannot combine with icl/one_shot/baseline")
     if task == "input":
-        # The inverse task (RQ5', src/obtune/inverse.py) has one prompt family; the ICL
-        # composer, the external baselines and the trace template are all forward-only.
-        if system.icl_k or system.baseline or system.trace:
-            raise ValueError(f"system {system.name!r}: task='input' cannot combine with icl/baseline/trace")
+        # The inverse task (RQ5', src/obtune/inverse.py). The external baselines and the
+        # trace template are forward-only. ICL is not, since 2026-09-24: A2's backward
+        # decomposition table asks for an ICL column, and the composer's task="input" mode
+        # keeps the k=1 byte-identity with the one-shot inverse prompt.
+        if system.baseline or system.trace:
+            raise ValueError(f"system {system.name!r}: task='input' cannot combine with baseline/trace")
+        if system.icl_k:
+            if system.one_shot:
+                raise ValueError(f"system {system.name!r}: icl_k already supplies the demos; drop one_shot")
+            from obtune.icl.prompts import build_icl_prompt
+
+            return [
+                prompts.render_chat(
+                    build_icl_prompt(
+                        code=_normalized_code(system, it),
+                        entry_point=it.entry_point,
+                        args_repr=it.args_repr,
+                        language=it.language,
+                        condition=it.condition,
+                        oracle=system.prompt_oracle,
+                        demos=_icl_demos(system, it),
+                        task="input",
+                        output_repr=it.output_repr,
+                    ),
+                    tokenizer,
+                )
+                for it in items
+            ]
         return [
             prompts.render_chat(
                 prompts.build_prompt(
