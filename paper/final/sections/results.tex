@@ -30,11 +30,10 @@ code.}
 Forward exact-match accuracy on clean code (\texttt{L0}) and mean accuracy
 over the five individual seen obfuscations
 (\texttt{L1b}, \texttt{L1r}, \texttt{L2}, \texttt{S1}, and \texttt{S2}).
-Green and red denote performance above and below a readable untuned baseline,
+Green and red denote performance above and below the untuned baseline,
 respectively. Bold denotes the strongest adapted method in each row.
-A red value marked $\dagger$ is an untuned baseline whose format-failure rate
-exceeds 0.25; it is reported for completeness but is not a readable baseline,
-so its row is left uncoloured.}
+All evaluated cells are included, regardless of format-failure rate.}
+% All evaluated cells included; no format-failure gate.
 \label{tab:rq1_performance}
 
 \begin{tabular}{@{}llrrrrrr@{}}
@@ -87,12 +86,12 @@ CodeLlama-13B
 
 CodeLlama-34B
 & Clean
-& \textcolor{red!70!black}{.254$^{\dagger}$}
-& .520
-& .494
-& .525
-& .526
-& \textbf{.527} \\
+& .254
+& \textcolor{green!55!black}{.520}
+& \textcolor{green!55!black}{.494}
+& \textcolor{green!55!black}{.525}
+& \textcolor{green!55!black}{.526}
+& \textbf{\textcolor{green!55!black}{.527}} \\
 & Singles
 & .214
 & \textcolor{green!55!black}{.462}
@@ -123,37 +122,37 @@ Llama-3.1-8B
 
 StarCoder2-15B
 & Clean
-& \textcolor{red!70!black}{.000$^{\dagger}$}
-& .542
-& .529
-& .532
-& \textbf{.546}
-& .539 \\
+& .000
+& \textcolor{green!55!black}{.542}
+& \textcolor{green!55!black}{.529}
+& \textcolor{green!55!black}{.532}
+& \textbf{\textcolor{green!55!black}{.546}}
+& \textcolor{green!55!black}{.539} \\
 & Singles
-& \textcolor{red!70!black}{.000$^{\dagger}$}
-& .482
-& .492
-& \textbf{.512}
-& .503
-& .475 \\
+& .000
+& \textcolor{green!55!black}{.482}
+& \textcolor{green!55!black}{.492}
+& \textbf{\textcolor{green!55!black}{.512}}
+& \textcolor{green!55!black}{.503}
+& \textcolor{green!55!black}{.475} \\
 
 \addlinespace[2pt]
 
 Gemma-3-12B
 & Clean
-& \textcolor{red!70!black}{.334$^{\dagger}$}
-& .520
-& .507
-& .502
-& \textbf{.530}
-& .523 \\
+& .334
+& \textcolor{green!55!black}{.520}
+& \textcolor{green!55!black}{.507}
+& \textcolor{green!55!black}{.502}
+& \textbf{\textcolor{green!55!black}{.530}}
+& \textcolor{green!55!black}{.523} \\
 & Singles
-& \textcolor{red!70!black}{.273$^{\dagger}$}
-& .462
-& .474
-& .485
-& \textbf{.492}
-& .479 \\
+& .272
+& \textcolor{green!55!black}{.462}
+& \textcolor{green!55!black}{.474}
+& \textcolor{green!55!black}{.485}
+& \textbf{\textcolor{green!55!black}{.492}}
+& \textcolor{green!55!black}{.479} \\
 
 \addlinespace[2pt]
 
@@ -256,9 +255,8 @@ Forward exact-match accuracy by stack depth. \textbf{Base \texttt{L0}} is the
 untuned model on clean code; $\Delta$ vs.\ \texttt{L0} is
 \textbf{Merge $-$ Base \texttt{L0}} in percentage points. Positive values mean
 that the merged model on obfuscated code outperforms the untuned model on clean
-code. A red value marked $\dagger$ is an untuned accuracy whose format-failure
-rate exceeds 0.25, and a $\Delta$ marked $\dagger$ is taken against such a
-baseline; neither is a fair reading of the untuned model. }
+code. All evaluated cells are included, regardless of format-failure rate.}
+% All evaluated cells included; no format-failure gate.
 \label{tab:rq2_depth}
 
 \begin{tabular}{@{}lrrrrrrrrr@{}}
@@ -338,7 +336,7 @@ CodeLlama-13B
 \addlinespace[2pt]
 
 CodeLlama-34B
-& \textcolor{red!70!black}{.254$^{\dagger}$}
+& .254
 & 2
 & .180
 & \textcolor{green!55!black}{.401}
@@ -346,7 +344,7 @@ CodeLlama-34B
 & \textbf{\textcolor{green!55!black}{.459}}
 & \textcolor{green!55!black}{.437}
 & \textcolor{green!55!black}{.408}
-& +15.4$^{\dagger}$ \\
+& \textcolor{green!55!black}{+15.3} \\
 &
 & 3
 & .141
@@ -355,7 +353,7 @@ CodeLlama-34B
 & \textbf{\textcolor{green!55!black}{.452}}
 & \textcolor{green!55!black}{.436}
 & \textcolor{green!55!black}{.407}
-& +15.3$^{\dagger}$ \\
+& \textcolor{green!55!black}{+15.2} \\
 &
 & 4
 & .105
@@ -364,7 +362,7 @@ CodeLlama-34B
 & \textbf{\textcolor{green!55!black}{.413}}
 & \textcolor{green!55!black}{.380}
 & \textcolor{green!55!black}{.351}
-& +9.7$^{\dagger}$ \\
+& \textcolor{green!55!black}{+9.7} \\
 
 \addlinespace[2pt]
 
@@ -400,64 +398,64 @@ Llama-3.1-8B
 \addlinespace[2pt]
 
 StarCoder2-15B
-& \textcolor{red!70!black}{.000$^{\dagger}$}
+& .000
 & 2
-& \textcolor{red!70!black}{.000$^{\dagger}$}
-& .428
-& .452
-& \textbf{.480}
-& .459
-& .422
-& +42.2$^{\dagger}$ \\
+& .000
+& \textcolor{green!55!black}{.428}
+& \textcolor{green!55!black}{.452}
+& \textbf{\textcolor{green!55!black}{.480}}
+& \textcolor{green!55!black}{.459}
+& \textcolor{green!55!black}{.422}
+& \textcolor{green!55!black}{+42.2} \\
 &
 & 3
-& \textcolor{red!70!black}{.000$^{\dagger}$}
-& .431
-& .455
-& \textbf{.478}
-& .456
-& .425
-& +42.5$^{\dagger}$ \\
+& .000
+& \textcolor{green!55!black}{.431}
+& \textcolor{green!55!black}{.455}
+& \textbf{\textcolor{green!55!black}{.478}}
+& \textcolor{green!55!black}{.456}
+& \textcolor{green!55!black}{.425}
+& \textcolor{green!55!black}{+42.5} \\
 &
 & 4
-& \textcolor{red!70!black}{.000$^{\dagger}$}
-& .357
-& .412
-& \textbf{.437}
-& .401
-& .358
-& +35.8$^{\dagger}$ \\
+& .000
+& \textcolor{green!55!black}{.357}
+& \textcolor{green!55!black}{.412}
+& \textbf{\textcolor{green!55!black}{.437}}
+& \textcolor{green!55!black}{.401}
+& \textcolor{green!55!black}{.358}
+& \textcolor{green!55!black}{+35.8} \\
 
 \addlinespace[2pt]
 
 Gemma-3-12B
-& \textcolor{red!70!black}{.334$^{\dagger}$}
+& .334
 & 2
-& \textcolor{red!70!black}{.230$^{\dagger}$}
-& .395
-& .436
-& \textbf{.448}
-& .440
-& .409
-& +7.5$^{\dagger}$ \\
+& .230
+& \textcolor{green!55!black}{.395}
+& \textcolor{green!55!black}{.436}
+& \textbf{\textcolor{green!55!black}{.448}}
+& \textcolor{green!55!black}{.440}
+& \textcolor{green!55!black}{.409}
+& \textcolor{green!55!black}{+7.6} \\
 &
 & 3
-& \textcolor{red!70!black}{.209$^{\dagger}$}
-& .388
-& .432
-& \textbf{.449}
-& .444
-& .410
-& +7.6$^{\dagger}$ \\
+& .209
+& \textcolor{green!55!black}{.388}
+& \textcolor{green!55!black}{.432}
+& \textbf{\textcolor{green!55!black}{.449}}
+& \textcolor{green!55!black}{.444}
+& \textcolor{green!55!black}{.410}
+& \textcolor{green!55!black}{+7.7} \\
 &
 & 4
-& \textcolor{red!70!black}{.170$^{\dagger}$}
-& .302
-& .394
-& \textbf{.413}
-& .383
-& .332
-& $-$0.2$^{\dagger}$ \\
+& .170
+& \textcolor{green!55!black}{.302}
+& \textcolor{green!55!black}{.394}
+& \textbf{\textcolor{green!55!black}{.413}}
+& \textcolor{green!55!black}{.383}
+& \textcolor{green!55!black}{.332}
+& \textcolor{red!70!black}{-0.2} \\
 
 \addlinespace[2pt]
 
@@ -470,7 +468,7 @@ CodeGemma-7B
 & \textcolor{green!55!black}{.395}
 & \textbf{\textcolor{green!55!black}{.403}}
 & \textcolor{green!55!black}{.358}
-& \textcolor{green!55!black}{+12.1} \\
+& \textcolor{green!55!black}{+12.2} \\
 &
 & 3
 & .147
@@ -488,7 +486,7 @@ CodeGemma-7B
 & \textcolor{green!55!black}{.359}
 & \textcolor{green!55!black}{.360}
 & \textcolor{green!55!black}{.303}
-& \textcolor{green!55!black}{+6.6} \\
+& \textcolor{green!55!black}{+6.7} \\
 
 \addlinespace[2pt]
 
@@ -587,12 +585,11 @@ methods are fine-tuned to perform.
 
 \caption{\textbf{Performance beyond the training setting.}
 Forward exact-match accuracy over the held-out encoding-family block and
-execution-graded accuracy on the reverse-reasoning task.
-Green and red denote performance above and below a readable untuned baseline,
-respectively. Bold denotes the strongest adapted method in each row.
-A red value marked $\dagger$ averages cells whose format-failure rate exceeds
-0.25, so it is not a fair reading of the arm; $\ddagger$ marks the same, where
-most replies are the gold \emph{forward} answer.}
+execution-graded accuracy over all 23 conditions on the reverse-reasoning task.
+All evaluated cells are included, regardless of format-failure rate.
+Green and red denote performance above and below the untuned baseline,
+respectively. Bold denotes the strongest adapted method in each row.}
+% All evaluated cells included; no format-failure gate.
 \label{tab:rq3_stress}
 
 \begin{tabular}{@{}llrrrrrr@{}}
@@ -617,10 +614,10 @@ CodeLlama-7B
 & \textcolor{green!55!black}{.266} \\
 & Reverse
 & .282
-& \textcolor{red!70!black}{.266}
-& \textcolor{red!70!black}{.249}
+& \textcolor{red!70!black}{.210}
+& \textcolor{red!70!black}{.245}
 & \textcolor{green!55!black}{.287}
-& \textcolor{green!55!black}{.287}
+& \textcolor{red!70!black}{.234}
 & \textbf{\textcolor{green!55!black}{.311}} \\
 
 \addlinespace[2pt]
@@ -635,10 +632,10 @@ CodeLlama-13B
 & \textcolor{green!55!black}{.295} \\
 & Reverse
 & .294
-& \textcolor{green!55!black}{.312}
-& \textcolor{red!70!black}{.039$^{\dagger}$}
-& \textcolor{red!70!black}{.223}
-& .294
+& \textcolor{green!55!black}{.303}
+& \textcolor{red!70!black}{.039}
+& \textcolor{red!70!black}{.212}
+& \textcolor{red!70!black}{.261}
 & \textbf{\textcolor{green!55!black}{.337}} \\
 
 \addlinespace[2pt]
@@ -654,9 +651,9 @@ CodeLlama-34B
 & Reverse
 & .319
 & \textcolor{red!70!black}{.295}
-& \textcolor{red!70!black}{.152$^{\dagger}$}
-& \textcolor{red!70!black}{.260}
-& \textcolor{red!70!black}{.173$^{\dagger}$}
+& \textcolor{red!70!black}{.152}
+& \textcolor{red!70!black}{.246}
+& \textcolor{red!70!black}{.173}
 & \textbf{\textcolor{green!55!black}{.381}} \\
 
 \addlinespace[2pt]
@@ -681,25 +678,25 @@ Llama-3.1-8B
 
 StarCoder2-15B
 & Held-out
-& \textcolor{red!70!black}{.000$^{\dagger}$}
-& .339
-& .332
-& .349
-& \textbf{.358}
-& .344 \\
+& .000
+& \textcolor{green!55!black}{.339}
+& \textcolor{green!55!black}{.332}
+& \textcolor{green!55!black}{.349}
+& \textbf{\textcolor{green!55!black}{.358}}
+& \textcolor{green!55!black}{.344} \\
 & Reverse
-& .361
-& \textcolor{red!70!black}{.335}
-& \textcolor{red!70!black}{.295}
-& \textcolor{red!70!black}{.336}
-& \textcolor{red!70!black}{.350}
+& .205
+& \textcolor{green!55!black}{.300}
+& \textcolor{green!55!black}{.226}
+& \textcolor{green!55!black}{.314}
+& \textcolor{green!55!black}{.311}
 & \textbf{\textcolor{green!55!black}{.376}} \\
 
 \addlinespace[2pt]
 
 Gemma-3-12B
 & Held-out
-& .170
+& .161
 & \textcolor{green!55!black}{.290}
 & \textcolor{green!55!black}{.276}
 & \textcolor{green!55!black}{.296}
@@ -709,7 +706,7 @@ Gemma-3-12B
 & .372
 & \textcolor{red!70!black}{.345}
 & \textcolor{green!55!black}{.385}
-& \textcolor{red!70!black}{.355}
+& \textcolor{red!70!black}{.220}
 & \textbf{\textcolor{green!55!black}{.406}}
 & \textcolor{green!55!black}{.403} \\
 
@@ -724,10 +721,10 @@ CodeGemma-7B
 & \textbf{\textcolor{green!55!black}{.294}}
 & \textcolor{green!55!black}{.267} \\
 & Reverse
-& .218
+& .211
 & \textbf{\textcolor{green!55!black}{.303}}
-& \textcolor{green!55!black}{.284}
-& \textcolor{red!70!black}{.080$^{\ddagger}$}
+& \textcolor{green!55!black}{.278}
+& \textcolor{red!70!black}{.080}
 & \textcolor{green!55!black}{.284}
 & \textcolor{green!55!black}{.287} \\
 
@@ -742,10 +739,10 @@ Granite-3.1-8B
 & \textbf{\textcolor{green!55!black}{.256}}
 & \textcolor{green!55!black}{.234} \\
 & Reverse
-& .285
-& \textcolor{red!70!black}{.202}
-& \textcolor{red!70!black}{.217}
-& \textcolor{red!70!black}{.150}
+& .271
+& \textcolor{red!70!black}{.170}
+& \textcolor{red!70!black}{.212}
+& \textcolor{red!70!black}{.096}
 & \textcolor{red!70!black}{.247}
 & \textbf{\textcolor{red!70!black}{.270}} \\
 
@@ -776,7 +773,7 @@ None of the adaptation methods are trained on this task.
 Here, the pattern is almost the opposite of the forward results. Clean-code,
 breadth, and KL fine-tuning frequently reduce reverse accuracy below the
 untuned model. Merging instead improves over the untuned model on seven of
-eight models by 3.0--6.4 percentage points and is the strongest adapted method
+eight models by 3.0--17.1 percentage points and is the strongest adapted method
 on six of eight models.
 
 These results suggest that the SFT-based methods often learn the trained

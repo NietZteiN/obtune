@@ -2276,3 +2276,9 @@ temperature 0, max_tokens 512, no stop strings, as `forgetting.py` does.
 A5 `merge_operator.json`, B7 `deployment_cost_*.json`, B8 `seed_variance.json` all exist and none
 is in the paper: no table emitter, no prose. Seed-floor re-read then sweeps the draft for claims
 below the floor (0.66 pts on L0/singles, 2.39 on the unseen family).
+
+## 2026-09-29 — Tables 6–9, unfiltered results
+User authorized all four local A6000 GPUs for missing Table 7 values. All GPUs idle; local torch 2.11.0+cu130 / vLLM 0.26.0 verified. Original evaluation cells found on jvl210002@juno.utdallas.edu:/work/jvl210002/migration/obtune/results/cells. Retrieve metadata and trial parquet files, recompute without format filtering, and rebuild paper/final. No inference needed if original cells are complete. Preserve other tables and existing user changes. Seed 17; no new model generations.
+Commit: 081a3d014103be86225ab727b066da224d49a81b
+
+Completed: original Juno results recovered; four Table 7 blanks filled (45, 35, 84, 36), Tables 6/8/9 recomputed, PDF built and Table 7 visually checked. No GPU rerun needed. See log/writeup/2026-09-29_unfiltered-final-tables.md.
